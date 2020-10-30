@@ -1,4 +1,4 @@
-#+TITLE: The Open Star Tracking Framework
+#+TITLE: LOST: Open-source Star Tracker
 
 This is a framework for developing high-accuracy star trackers on small, low-power, low-cost
 satellites. It is being developed in the Husky Satellite Lab, a cubesat team at the University of
