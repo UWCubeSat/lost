@@ -1,27 +1,28 @@
 #+TITLE: Downloading a Star Catalog
 
-I recommend using http://vizier.cfa.harvard.edu/viz-bin/VizieR?-source=I/305/out. VizieR is a web
-interface for accessing about a bajillion different catalogs of stellar objects. The one selected
-here is a 2006 version of the Guide Star Catalog. It contains a total of 945,592,683 objects.
-Luckily, you can filter before downloading!
+* Automatically
+  Run ~./download-bright-star-database~ from the base directory of LOST to generate
+  ~bright-star-database.tsv~.
+* Manually
+  I recommend using http://vizier.cfa.harvard.edu/viz-bin/VizieR-3?-source=I/50. VizieR is a web
+  interface for accessing about a bajillion different catalogs of stellar objects. This specific
+  catalog is the "Brightest Stars Catalog". It contains about 9,000 stars, which are all that any
+  relatively cheap camera is likely to pick up.
 
-First, go over to the little "Preferences" box on the left. Near the top, set the max rows to
-"unlimited" and the output style to ~|-separated values~. Make sure that ~J2000~ is checked and tha
-the ~Decimal~ option is selected. This tells the database to convert into a standard stellar
-coordinate system.
+  First, go over to the little "Preferences" box on the left. Near the top, set the max rows to
+  "unlimited" and the output style to ~|-separated values~. Make sure that ~J2000~ is checked and that
+  the ~Decimal~ option is selected. This tells the database to convert into a standard stellar
+  coordinate system.
 
-Then, see the "target" box near the top of the center. Write "0+0", "J2000", 360 deg. This field is
-for people who want to only fetch stars from a certain slice of the sky, but we want to download the
-hole thing!
+  Then, see the "target" box near the top of the center. Write "0+0", "J2000", 360 deg. This field is
+  for people who want to only fetch stars from a certain slice of the sky, but we want to download the
+  whole thing!
 
-In the main panel, you should check only the ~VMag~ box, which corresponds to star brightness.
-Uncheck all others; we only need position and magnitude.
+  In the main panel, you should check the ~HR~, ~Multiple~, and ~VMag~ boxes, which correspond to a
+  unique ID for the star, an indicator whether the star is binary (or more), and star brightness.
+  Uncheck the others.
 
-Finally, set up some filters so you don't download the whole database:
-+ VMag: ~<5.5~: Only select stars bright enough to see.
-+ Class: ~0~. This corresponds to stars only; we're unlikely to track nebulas or whatever very well.
+  Then hit "Submit" and download your stars!
 
-Then hit "Submit" and download your stars!
-
-After downloading, remove all the lines from the file that aren't data; there's some header-y stuff
-near the top.
+  After downloading, remove all the lines from the file that aren't data; there's some header-y stuff
+  near the top.
