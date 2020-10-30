@@ -1,0 +1,61 @@
+#+TITLE: The Open Star Tracking Framework
+
+This is a framework for developing high-accuracy star trackers on small, low-power, low-cost
+satellites. It is being developed in the Husky Satellite Lab, a cubesat team at the University of
+Washington.
+
+* Parts of a Star Tracking System
+  + Undistortion or cropping: It's critical for captured images to be "flat". Unfortunately, real
+    world lenses make things look a little less than flat. Algorithms can undistort images or simply
+    crop out the edges to remove the areas where distortion is the worst.
+
+    Our framework does...
+    - [ ] Undistortion Routines (probably should happen after centroiding)
+    - [ ] Cropping Routines (that keep track of how FOV changes due to crop)
+    - [ ] Noise removal (median of images from many angles)
+  + Centroiding: Each star in the photo should be reduced to a single point, with sub-pixel
+    accuracy. Auxiliary data, such as star brightness or the likelihood it is a binary star, may be
+    collected too.
+
+    Our framework does...
+    - [ ] Simple centroiding (mean-based?)
+    - [ ] Gaussian centroiding
+    - [ ] Coordinate Conversion (from pixel↔celestial sphere)
+  + Catalog Building: This happens on the ground. The format of this catalog depends a lot on the
+    Star Identification algorithm used. It might contain information about distances to adjacent
+    stars, expected brightness, etc. One thing all catalogs have in common is the actual spherical
+    coordinates of the stars, so that once the stars have been identified, the spacecraft's actual
+    attitude can be determined.
+
+    Our framework does...
+    - [ ] Downloading the latest versions of various catalogs in generic format.
+    - [ ] Generic API for accessing data from those catalogs to produce customized catalogs.
+    - [ ] Several catalog-building routines for common Star-ID algorithms.
+  + Star Identification: The "main" step of star tracking: Going from a list star positions (and
+    possibly magnitudes or other info)
+
+    Our framework does...
+    - [ ] Padgett Grid identification method with variations:
+      - [ ] Flower Method
+      - [ ] Sequential Sum method
+    - [ ] Pyramid method
+    - [ ] Geometric Voting
+    - [ ] Uncalibrated K-vectory method
+    - [ ] Star-ND or Liebe
+    - [ ] LIS, Tracking, and Uncalibrated modes
+  + Attitude Determination: Once enough stars have been identified, they can be combined with
+    information on camera parameters to determine the attitude.
+
+    Our framework does...
+    - [ ] Attitude Determination (QUEST?)
+
+  Other parts of our framework that are not essential parts of a star-tracking system:
+  - [ ] Centroiding Visualization
+  - [ ] Algorithm Visualizations
+  - [ ] Re-projection of starts after fix visualization
+  - [ ] Benchmarking against reference images
+  - [ ] Demo App that acquires a fix, calibrates the camera, then tracks, with real-time
+    visualizations. Would be really cool to make it work on a phone!
+  - [ ] Automatic corruption of images to test noise tolerance. Star removal, false star adding,
+    moon and earth and sun adding, optical offset, focal length mismatch.
+
