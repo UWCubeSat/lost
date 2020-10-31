@@ -26,7 +26,7 @@ OBJS := $(patsubst %.c,%.o,$(SRCS))
 DEPS := $(patsubst %.c,%.d,$(SRCS))
 BIN  := lost
 
-LDFLAGS := -lcairo
+LDFLAGS := -lcairo -lm
 
 all: $(BIN)
 
