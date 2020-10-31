@@ -18,15 +18,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Simple makefile: Compile all .c files into .o files, generating "dependency" .d files too (see
+# https://stackoverflow.com/q/2394609)
+
 SRCS := $(wildcard src/*.c)
 OBJS := $(patsubst %.c,%.o,$(SRCS))
 DEPS := $(patsubst %.c,%.d,$(SRCS))
 BIN  := lost
 
+LDFLAGS := -lcairo
+
 all: $(BIN)
 
 $(BIN): $(OBJS)
-	gcc -o $(BIN) $(OBJS)
+	$(CC) $(LDFLAGS) -o $(BIN) $(OBJS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -MMD -c $< -o $@

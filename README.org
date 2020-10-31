@@ -18,9 +18,11 @@ Washington.
     collected too.
 
     Our framework does...
-    - [ ] Simple centroiding (mean-based?)
-    - [ ] Gaussian centroiding
-    - [ ] Coordinate Conversion (from pixel↔celestial sphere)
+    - [ ] Simple centroiding
+    - [ ] Iterative weighted centroiding
+    - [ ] 2D Gaussian fit centroiding
+    - [ ] Gaussian Grid centroiding
+    - [ ] Coordinate Conversion (between pixel and spherical/angular)
   + Catalog Building: This happens on the ground. The format of this catalog depends a lot on the
     Star Identification algorithm used. It might contain information about distances to adjacent
     stars, expected brightness, etc. One thing all catalogs have in common is the actual spherical
@@ -28,9 +30,8 @@ Washington.
     attitude can be determined.
 
     Our framework does...
-    - [ ] Downloading the latest versions of various catalogs in generic format.
-    - [ ] Generic API for accessing data from those catalogs to produce customized catalogs.
-    - [ ] Several catalog-building routines for common Star-ID algorithms.
+    - [X] Downloading a star catalog and converting to an internal format
+    - [ ] Database-building routines for common Star-ID algorithms.
   + Star Identification: The "main" step of star tracking: Going from a list star positions (and
     possibly magnitudes or other info)
 
@@ -59,3 +60,24 @@ Washington.
   - [ ] Automatic corruption of images to test noise tolerance. Star removal, false star adding,
     moon and earth and sun adding, optical offset, focal length mismatch.
 
+* Building LOST
+  When making an actual, physical star tracker, you will most likely need to pick out the specific
+  parts of LOST you want and make lots of changes. However, there's a LOST binary you can use to
+  test and benchmark things quickly.
+
+  Requirements:
+  + Linux or Mac. If you have Windows, I recommend installing the Windows Subsystem for Linux.
+  + A C compiler, such as GCC. On Debian, ~apt install gcc~
+  + GNU Make. On Debian, ~apt install make~
+  + Git. On Debian, ~apt install git~
+  + Cairo, to read and write PNGs as well as draw on them for debugging and demo purposes. You won't
+    need this on your cubesat. Follow the instructions here: https://www.cairographics.org/download/
+    under the Binary Packages section. On debian, it's just ~apt install libcairo2-dev~
+
+  Then, clone this repository (~git clone https://github.com/uwcubesat/lost~), then ~cd lost~, then
+  ~make~ will compile everything. Then you can just run ~./lost~ and play around with the options!
+
+  If you're developing LOST, you need to re-run ~make~ every time you edit any of the source code
+  before running ~./lost~.
+
+  

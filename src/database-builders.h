@@ -1,28 +1,24 @@
 #ifndef DATABASE_BUILDER_H
 #define DATABASE_BUILDER_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "catalog-generic.h"
 
-#include "database-builder-pairwise-kvector.h"
+typedef void *(*db_builder_function_t)(catalog_t *px_catalog, void *pv_config);
+typedef void *(*db_config_function_t)(void);
+typedef void (*db_stats_function_t)(void *pv_db);
 
-static char *s_database_builder_name(int i) {
-	switch (i) {
-	case 0:
-		return "Pairwise K-Vector (Pyramid)";
-	default:
-		return NULL;
-	}
-}
+typedef struct db_builder_algorithm_t {
+    char *s_name;
+    int  i_config_size;
+    
+    db_config_function_t  pf_config;
+    db_builder_function_t pf_algorithm;
+    db_stats_function_t   pf_stats;
+} db_builder_algorithm_t;
 
-typedef void (*database_builder_t)(catalog_t *x_catalog);
-
-static database_builder_t pf_database_builder(int i) {
-	switch (i) {
-	case 0:
-		return (database_builder_t)(*px_pairwise_kvector_build);
-	default:
-		return NULL;
-	}
-}
+db_builder_algorithm_t x_db_builder_algorithm(int i);
 
 #endif

@@ -1,0 +1,17 @@
+#+TITLE: Style Guide
+
+* Naming
+  Based on the naming scheme used in FreeRTOS, with some differences.
+  + Underscores to separate words.
+  + Lowercase
+  + Nouns First: Eg, "v_catalog_build" is better than "v_build_catalog"
+  + Prefix all variable and function names with a type, such as ~l~ for long, ~pi~ for pointer to
+    integer, ~s~ for string (pointer to character), or ~x~ (custom type, such as a struct).
+
+  For example, the correct signature for a function that finds the length of a string is ~int
+  i_string_length(const char *s_input)~
+* Layout
+  + 4 spaces for indentation
+  + Aligning equals signs, field names in a struct, etc is recommended.
+  + All variable declarations (except for loop variables) at the top of their function.
+  + Max line length: 100, try to keep to 90 when possible.
