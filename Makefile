@@ -26,9 +26,14 @@ OBJS := $(patsubst %.c,%.o,$(SRCS))
 DEPS := $(patsubst %.c,%.d,$(SRCS))
 BIN  := lost
 
+BSD  := bright-star-database.tsv
+
 LDFLAGS := -lcairo -lm
 
-all: $(BIN)
+all: $(BIN) $(BSD)
+
+$(BSD): download-bright-star-database.sh
+	./download-bright-star-database.sh
 
 $(BIN): $(OBJS)
 	$(CC) $(LDFLAGS) -o $(BIN) $(OBJS)
@@ -40,5 +45,6 @@ $(BIN): $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(DEPS)
+	rm -i $(BSD)
 
 .PHONY: all clean

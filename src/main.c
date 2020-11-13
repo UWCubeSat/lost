@@ -9,82 +9,7 @@
 #include "catalog-generic.h"
 #include "database-builders.h"
 #include "centroiders.h"
-
-static catalog_t *px_bsd_parse(char *s_path) {
-    catalog_t      *px_result;
-    catalog_star_t *px_star_current;
-    FILE           *px_file;
-    long           l_raj2000_h, l_raj2000_l, // high and low parts
-                   l_dej2000_h, l_dej2000_l;
-    int            i_magnitude_h, i_magnitude_l;
-    char           c_weird;
-
-    px_result = calloc(sizeof(catalog_t), 1);
-
-    px_file = fopen(s_path, "r");
-    if (px_file == NULL) {
-        printf("Error opening file: %s\n", strerror(errno));
-        return NULL;
-    }
-
-    while (EOF != fscanf(px_file, "%ld.%ld|%ld.%ld|%*d|%c|%d.%d",
-                         &l_raj2000_h, &l_raj2000_l,
-                         &l_dej2000_h, &l_dej2000_l,
-                         &c_weird,
-                         &i_magnitude_h, &i_magnitude_l)) {
-           
-        if (px_result->l_stars_length % 1000 == 0) {
-            px_result->px_stars = realloc(px_result->px_stars,
-                                          sizeof(catalog_star_t) *
-                                          (px_result->l_stars_length/1000 + 1) * 1000);
-        }
-
-        px_star_current = &px_result->px_stars[px_result->l_stars_length];
-        px_star_current->l_raj2000 = l_raj2000_h * 1000000 + l_raj2000_l;
-        px_star_current->l_dej2000 = l_dej2000_h * 1000000 + l_dej2000_l;
-        px_star_current->i_magnitude = i_magnitude_h * 100 + i_magnitude_l;
-        px_star_current->i_weird = c_weird != ' ';
-        px_result->l_stars_length++;
-    }
-
-    fclose(px_file);
-    return px_result;
-}
-
-#define RED_MASK   0x00FF0000
-#define GREEN_MASK 0x0000FF00
-#define BLUE_MASK  0x000000FF
-
-// convert an RGB cairo surface into one byte per pixel.
-static unsigned char *pc_surface_grayscale(cairo_surface_t *px_surface) {
-    int i_width, i_height;
-    unsigned char *pc_result;
-    uint32_t      *px_surface_data, x_pixel;
-
-    if (cairo_image_surface_get_format(px_surface) != CAIRO_FORMAT_ARGB32 &&
-        cairo_image_surface_get_format(px_surface) != CAIRO_FORMAT_RGB24) {
-        puts("Can't convert weird image formats to grayscale.");
-        return NULL;
-    }
-    
-    i_width  = cairo_image_surface_get_width(px_surface);
-    i_height = cairo_image_surface_get_height(px_surface);
-
-    pc_result = malloc(i_width * i_height);
-    px_surface_data = (uint32_t *)cairo_image_surface_get_data(px_surface);
-
-    for (int i = 0; i < i_height * i_width; i++) {
-        x_pixel = px_surface_data[i];
-        // use "luminosity" method of grayscaling
-        pc_result[i] = round(
-            (x_pixel&RED_MASK)   *0.21 +
-            (x_pixel&GREEN_MASK) *0.71 +
-            (x_pixel&BLUE_MASK)  *0.07
-            );
-    }
-
-    return pc_result;
-}
+#include "io.h"
 
 // prompts the user for a path, reads it, creates rgb cairo surface, 
 static cairo_surface_t *px_read_png() {
@@ -156,7 +81,8 @@ static void v_centroids_find() {
 
     int                  i_centroid_choice, i_centroids_length;
     centroid_algorithm_t x_algorithm;
-    void                 *pv_algorithm_config, *pv_centroids;
+    star_t           *px_centroids;
+    void                 *pv_algorithm_config;
 
     cairo_t   *px_cairo;
 
@@ -176,7 +102,7 @@ static void v_centroids_find() {
     }
     pv_algorithm_config = (*x_algorithm.pf_config)();
 
-    pv_centroids = (*x_algorithm.pf_algorithm)(
+    px_centroids = (*x_algorithm.pf_algorithm)(
         pc_image,
         cairo_image_surface_get_width(px_surface),
         cairo_image_surface_get_height(px_surface),
@@ -193,24 +119,9 @@ static void v_centroids_find() {
     getchar();
 
     // plotting
-    px_cairo = cairo_create(px_surface);
-    cairo_set_source_rgb(px_cairo, 1.0, 0.0, 0.0);
-    for (int i = 0; i < i_centroids_length; i++) {
-        switch (x_algorithm.i_centroid_type) {
-        case CENTROID_TYPE_BASE:
-            ;
-            centroid_base_t *px_centroid = ((centroid_base_t *)pv_centroids) + i;
-            cairo_rectangle(px_cairo,
-                            round(px_centroid->l_x / 1000000.0),
-                            round(px_centroid->l_y / 1000000.0),
-                            1, 1);
-            cairo_fill(px_cairo);
-            break;
-        }
-    }
+    v_surface_plot_centroids(px_surface, px_centroids, i_centroids_length, 1.0, 0.0, 0.0, 0.5);
     cairo_surface_write_to_png(px_surface, s_output_path);
     cairo_surface_destroy(px_surface);
-    cairo_destroy(px_cairo);
 }
 
 int main() {
