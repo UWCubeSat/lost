@@ -13,7 +13,7 @@ catalog_t *px_bsd_parse(char *s_path) {
     int            i_magnitude_h, i_magnitude_l;
     char           c_weird;
 
-    px_result = calloc(sizeof(catalog_t), 1);
+    px_result = (catalog_t *)calloc(sizeof(catalog_t), 1);
 
     px_file = fopen(s_path, "r");
     if (px_file == NULL) {
@@ -28,7 +28,7 @@ catalog_t *px_bsd_parse(char *s_path) {
                          &i_magnitude_h, &i_magnitude_l)) {
            
         if (px_result->l_stars_length % 1000 == 0) {
-            px_result->px_stars = realloc(px_result->px_stars,
+            px_result->px_stars = (catalog_star_t *)realloc(px_result->px_stars,
                                           sizeof(catalog_star_t) *
                                           (px_result->l_stars_length/1000 + 1) * 1000);
         }
@@ -59,7 +59,7 @@ unsigned char *pc_surface_grayscale(cairo_surface_t *px_surface) {
     i_width  = cairo_image_surface_get_width(px_surface);
     i_height = cairo_image_surface_get_height(px_surface);
 
-    pc_result = malloc(i_width * i_height);
+    pc_result = (unsigned char *)malloc(i_width * i_height);
     px_surface_data = (uint32_t *)cairo_image_surface_get_data(px_surface);
 
     for (int i = 0; i < i_height * i_width; i++) {

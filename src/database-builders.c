@@ -16,7 +16,7 @@ void *pv_pairwise_db_build(catalog_t *px_catalog, void *pv_config) {
 }
 
 void *pv_pairwise_db_config() {
-    pairwise_db_config_t *result = malloc(sizeof(pairwise_db_config_t));
+    pairwise_db_config_t *result = (pairwise_db_config_t *)malloc(sizeof(pairwise_db_config_t));
 
     printf("FOV (in millionths of a degree): ");
     scanf("%ld", &result->l_fov);
@@ -24,7 +24,7 @@ void *pv_pairwise_db_config() {
     return result;
 }
 
-void pv_pairwise_db_stats() {
+void pv_pairwise_db_stats(void *blah) {
     puts("In the future, this will print, for example, the size of the database.");
 }
 

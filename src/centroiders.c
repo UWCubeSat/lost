@@ -16,7 +16,7 @@ star_t *pv_dummy_centroid(unsigned char *pc_image,
                               int *pi_result_length,
                               void *pv_config) {
     dummy_centroid_config_t *px_config = (dummy_centroid_config_t *)pv_config;
-    star_t *px_result = calloc(sizeof(star_t), px_config->num_stars);
+    star_t *px_result = (star_t *)calloc(sizeof(star_t), px_config->num_stars);
 
     *pi_result_length = px_config->num_stars;
     
@@ -26,11 +26,11 @@ star_t *pv_dummy_centroid(unsigned char *pc_image,
         px_result[i].f_radius_x = 10.0;
     }
 
-    return (void *)px_result;
+    return (star_t *)px_result;
 }
 
 void *pv_dummy_centroid_config() {
-    dummy_centroid_config_t *px_result = malloc(sizeof(dummy_centroid_config_t));
+    dummy_centroid_config_t *px_result = (dummy_centroid_config_t *)malloc(sizeof(dummy_centroid_config_t));
 
     printf("How many stars to generate: ");
     scanf("%d", &px_result->num_stars);
@@ -42,16 +42,22 @@ void *pv_dummy_centroid_config() {
 
 centroid_algorithm_t x_dummy_centroid_algorithm = {
     .s_name        = "Dummy Centroider",
-    .pf_config     = *pv_dummy_centroid_config,
     .pf_algorithm  = *pv_dummy_centroid,
+    .pf_config     = *pv_dummy_centroid_config,
 };
 
-centroid_algorithm_t x_empty_centroid_algorithm = { 0 };
+centroid_algorithm_t center_of_gravity_centroid_algorithm = {
+    .s_name = "Hello World",
+};
+
+centroid_algorithm_t x_empty_centroid_algorithm = {0};
 
 centroid_algorithm_t x_centroid_algorithm(int i) {
     switch (i) {
     case 0:
     return x_dummy_centroid_algorithm;
+    case 1:
+        return center_of_gravity_centroid_algorithm;
     default:
         return x_empty_centroid_algorithm;
     }
@@ -93,8 +99,8 @@ centroid_comparison_t x_compare_centroids(float f_threshold,
 
     centroid_comparison_t result = { 0 };
     // maps from indexes in each list to the closest centroid from other list
-    int *pi_expected_to_actual = malloc(sizeof(int) * i_expected_length),
-        *pi_actual_to_expected = malloc(sizeof(int) * i_actual_length);
+    int *pi_expected_to_actual = (int *)malloc(sizeof(int) * i_expected_length),
+        *pi_actual_to_expected = (int *)malloc(sizeof(int) * i_actual_length);
 
     v_closest_centroids(f_threshold,
                         px_expected, i_expected_length,
