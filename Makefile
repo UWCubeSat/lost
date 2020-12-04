@@ -21,15 +21,15 @@
 # Simple makefile: Compile all .c files into .o files, generating "dependency" .d files too (see
 # https://stackoverflow.com/q/2394609)
 
-SRCS := $(wildcard src/*.c)
-OBJS := $(patsubst %.c,%.o,$(SRCS))
-DEPS := $(patsubst %.c,%.d,$(SRCS))
+SRCS := $(wildcard src/*.cpp)
+OBJS := $(patsubst %.cpp,%.o,$(SRCS))
+DEPS := $(patsubst %.cpp,%.d,$(SRCS))
 BIN  := lost
 
 BSD  := bright-star-database.tsv
 
 LDFLAGS := -lcairo -lm
-CXXFLAGS := $(CXXFLAGS) -Wall
+CXXFLAGS := $(CXXFLAGS) -Wall --std=c++11
 
 all: $(BIN) $(BSD)
 
@@ -39,7 +39,7 @@ $(BSD): download-bright-star-database.sh
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS)
 
-%.o: %.c
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
 -include $(DEPS)
