@@ -21,6 +21,11 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
+std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+    std::vector<Star> result;
+    return result;
+}
+
 // OTHER CENTROID RELATED FUNCTIONS
 
 float StarDistancePixels(Star one, Star two) {

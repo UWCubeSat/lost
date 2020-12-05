@@ -48,6 +48,12 @@ private:
     int numStars;
 };
 
+class CenterOfGravityAlgorithm : public CentroidAlgorithm {
+    public:
+        CenterOfGravityAlgorithm() { };
+        std::vector<Star> Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
+
 float StarDistancePixels(Star one, Star two);
 // compare two lists of centroids to find differences.
 CentroidComparison StarCentroidsCompare(float distanceThreshold, // stars further apart than
