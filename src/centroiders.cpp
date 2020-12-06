@@ -9,6 +9,8 @@
 
 #include <unordered_map>
 
+#include <unordered_set>
+
 namespace lost {
 
 // DUMMY
@@ -37,12 +39,21 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             cutoff = values[values.size() / 2];
         }
     }
-    std::unordered_map<int, int> indicesAlreadyChecked;
+    std::unordered_map<int, std::unordered_set<int>> indicesAlreadyChecked;
     //result =  5 (3, 2)
     // 0  0  0 
     // 0 [0] 0 
-    //distance from *image. y = (result / height) - 1 and x = result % width  
-    
+    //distance from *image. y = (result / height) - 1 and x = result % width
+    for (int i = 0; i < imageHeight * imageWidth; i++) {
+        if (*image + i >= cutoff && (indicesAlreadyChecked.count(i % imageHeight) == 0 || indicesAlreadyChecked.find(i % imageWidth)) {
+            //insert coords to already checked indicies
+            if(indicesAlreadyChecked.count(i % imageHeight) == 0) {
+                indicesAlreadyChecked.insert(i % imageWidth, std::set<int>());
+            }
+            indicesAlreadyChecked.find(i % imageWidth).insert((i / imageHeight) - 1);
+        }
+
+    }
     return result;
 }
 
