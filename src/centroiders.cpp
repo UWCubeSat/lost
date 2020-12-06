@@ -32,7 +32,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //add all values to a vector, find the middle element
         std::vector<char> values;
-        values.push_back(*image + i);
+        values.push_back((*image + i));
         if (values.size() % 2 == 0) {
             cutoff = values[(values.size() / 2) + 1];
         } else {
@@ -45,12 +45,15 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     // 0 [0] 0 
     //distance from *image. y = (result / height) - 1 and x = result % width
     for (int i = 0; i < imageHeight * imageWidth; i++) {
-        if (*image + i >= cutoff && (indicesAlreadyChecked.count(i % imageHeight) == 0 || indicesAlreadyChecked.find(i % imageWidth)) {
+        //check if pixel is part of a "star" and has not been iterated over
+        if ((*image + i) >= cutoff && 
+           (indicesAlreadyChecked.count(i % imageHeight) == 0 ||
+            indicesAlreadyChecked.find(i % imageWidth)->second.count((i / imageHeight) - 1) == 0) {
             //insert coords to already checked indicies
             if(indicesAlreadyChecked.count(i % imageHeight) == 0) {
                 indicesAlreadyChecked.insert(i % imageWidth, std::set<int>());
             }
-            indicesAlreadyChecked.find(i % imageWidth).insert((i / imageHeight) - 1);
+            indicesAlreadyChecked.find(i % imageWidth)->second.insert((i / imageHeight) - 1);
         }
 
     }
