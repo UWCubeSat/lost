@@ -28,7 +28,7 @@ BIN  := lost
 
 BSD  := bright-star-database.tsv
 
-LDFLAGS := -lcairo -lm
+LIBS     := -lcairo -lm
 CXXFLAGS := $(CXXFLAGS) -Wall --std=c++11
 
 all: $(BIN) $(BSD)
@@ -37,7 +37,7 @@ $(BSD): download-bright-star-database.sh
 	./download-bright-star-database.sh
 
 $(BIN): $(OBJS)
-	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS)
+	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
