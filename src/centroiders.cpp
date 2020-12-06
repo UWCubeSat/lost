@@ -7,6 +7,8 @@
 #include <vector>
 #include <iostream>
 
+#include <unordered_map>
+
 namespace lost {
 
 // DUMMY
@@ -23,6 +25,24 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
+    //loop through the entire array, use the median as the cutoff intensity 
+    char cutoff;
+    for (int i = 0; i < imageHeight * imageWidth; i++) {
+        //add all values to a vector, find the middle element
+        std::vector<char> values;
+        values.push_back(*image + i);
+        if (values.size() % 2 == 0) {
+            cutoff = values[(values.size() / 2) + 1];
+        } else {
+            cutoff = values[values.size() / 2];
+        }
+    }
+    std::unordered_map<int, int> indicesAlreadyChecked;
+    //result =  5 (3, 2)
+    // 0  0  0 
+    // 0 [0] 0 
+    //distance from *image. y = (result / height) - 1 and x = result % width  
+    
     return result;
 }
 
