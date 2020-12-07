@@ -75,7 +75,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         totalMag += image[i];
     }
-    cutoff = totalMag/(imageHeight * imageWidth) + 1;
+    cutoff = ((totalMag/(imageHeight * imageWidth)) * 15) / 10;
 
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
