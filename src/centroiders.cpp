@@ -65,13 +65,13 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                     checkedIndeces.insert(i + k + (imageWidth * l));
                     magSum += image[i + k + (imageWidth * l)];
                     xCoordMagSum += (((i + k + (imageWidth * l)) % imageWidth) + 1) * image[i + k + (imageWidth * l)];
-                    yCoordMagSum += (((i + k + (imageWidth * l)) / imageHeight) + 1) * image[i + k + (imageWidth * l)];
+                    yCoordMagSum += (((i + k + (imageWidth * l)) / imageWidth) + 1) * image[i + k + (imageWidth * l)];
                 }
             }
 
             //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (xCoordMagSum / (magSum * 1.0)) - 1.0;      
-            float yCoord = (yCoordMagSum / (magSum * 1.0)) - 1.0;
+            float xCoord = (xCoordMagSum / (magSum * 1.0));      
+            float yCoord = (yCoordMagSum / (magSum * 1.0));
             //Star *currentStar = new Star(xCoord, yCoord, (double)(radius * 1.0));
             result.push_back(Star(xCoord, yCoord, ((double)(radius * 1.0))/2));
             i += radius;
