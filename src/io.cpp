@@ -117,10 +117,15 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt(std::ostream &os, std::istream &
     return new DummyCentroidAlgorithm(numStars);
 }
 
+CentroidAlgorithm *CogCentroidAlgorithmPrompt(std::ostream &os, std::istream &is) {
+    return new CenterOfGravityAlgorithm();
+}
+
 InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice() {
     InteractiveChoice<CentroidAlgorithmFactory> result;
 
     result.Register("dummy", "Random Centroid Algorithm", &DummyCentroidAlgorithmPrompt);
+    result.Register("cog", "Center of Gravity Centroid Algorithm", &CogCentroidAlgorithmPrompt);
 
     return result;
 }

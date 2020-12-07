@@ -27,35 +27,58 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
-    //loop through the entire array, use the median as the cutoff intensity 
-    char cutoff;
+    //loop through entire array, find sum of magnitudes
+    int totalMag;
     for (int i = 0; i < imageHeight * imageWidth; i++) {
-        //add all values to a vector, find the middle element
-        std::vector<char> values;
-        values.push_back((*image + i));
-        if (values.size() % 2 == 0) {
-            cutoff = values[(values.size() / 2) + 1];
-        } else {
-            cutoff = values[values.size() / 2];
-        }
+        totalMag += image[i];
     }
-    std::unordered_map<int, std::unordered_set<int>> indicesAlreadyChecked;
-    //result =  5 (3, 2)
-    // 0  0  0 
-    // 0 [0] 0 
-    //distance from *image. y = (result / height) - 1 and x = result % width
+    int cutoff = totalMag/(imageHeight * imageWidth) + 1;
+    cutoff = 150;
+
+    //std::unordered_map<int, std::unordered_set<int>> indicesAlreadyChecked;
+    std::unordered_set<int> checkedIndeces;
+
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
-        if ((*image + i) >= cutoff && 
-           (indicesAlreadyChecked.count(i % imageHeight) == 0 ||
-            indicesAlreadyChecked.find(i % imageWidth)->second.count((i / imageHeight) - 1) == 0) {
-            //insert coords to already checked indicies
-            if(indicesAlreadyChecked.count(i % imageHeight) == 0) {
-                indicesAlreadyChecked.insert(i % imageWidth, std::set<int>());
-            }
-            indicesAlreadyChecked.find(i % imageWidth)->second.insert((i / imageHeight) - 1);
-        }
+        if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
+            checkedIndeces.insert(i);
+            //iterate over pixels that are part of the star
 
+            int radius = 0; //radius of current star
+            int magSum; //current magnitude sum of star pixels
+            float yCoordMagSum; //sum of magnitudes * their coordinate
+            float xCoordMagSum;
+
+            int j = i;
+            
+            //find radius
+            while (image[j] >= cutoff) {
+                radius++;
+                j++;
+            }
+
+            //iterate over star pixels within the radius to make a square
+            for (int k = 0; k < radius; k++) {
+                for (int l = 0; l < radius; l++) {
+                    magSum += image[i + k + (imageWidth * l)];
+                    xCoordMagSum += (((i + k + (imageWidth * l)) % imageWidth) + 1) * image[i + k + (imageWidth * l)];
+                    yCoordMagSum += (((i + k + (imageWidth * l)) / imageHeight) + 1) * image[i + k + (imageWidth * l)];
+                }
+            }
+
+            //use the sums to finish CoG equation and add stars to the result
+            float xCoord = (xCoordMagSum / (magSum * 1.0)) - 1.0;
+            std::cout << xCoord;
+            std::cout << "\n";
+            
+            float yCoord = (yCoordMagSum / (magSum * 1.0)) - 1.0;
+            std::cout << yCoord;
+            std::cout << "\n";
+
+            //Star *currentStar = new Star(xCoord, yCoord, (double)(radius * 1.0));
+            result.push_back(Star(xCoord, yCoord, ((double)(radius * 1.0))/2));
+            i += radius;
+        }
     }
     return result;
 }
