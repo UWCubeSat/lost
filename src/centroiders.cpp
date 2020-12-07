@@ -25,20 +25,44 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
+//I dont think this follows style guidelines but its the only way I could
+//think about doing recursion
+float yCoordMagSum = 0; 
+float xCoordMagSum = 0;
+int magSum = 0;
+int xMin;
+int xMax;
+int cutoff;
+std::unordered_set<int> checkedIndeces;
+
+//recursive helper here
+
+void cogHelper(int i, unsigned char *image, int imageWidth) {
+    if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
+        checkedIndeces.insert(i);
+        if (i % imageWidth > xMax) {
+            xMax = i % imageWidth;
+        } else if (i % imageWidth < xMin) {
+            xMin = i % imageWidth;
+        }
+        magSum += image[i];
+        xCoordMagSum += ((i % imageWidth) + 1) * image[i];
+        yCoordMagSum += ((i / imageWidth) + 1) * image[i];
+        cogHelper(i + 1, image, imageWidth);
+        cogHelper(i - 1, image, imageWidth);
+        cogHelper(i + imageWidth, image, imageWidth);
+    }
+}
+
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
+    
     for (int i = 0; i < imageHeight * imageWidth; i++) {
-        int temp = image[i];
-        //std::cout << temp;
-        //std::cout << "\n";
         totalMag += image[i];
     }
-    int cutoff = totalMag/(imageHeight * imageWidth) + 1;
-
-    //std::unordered_map<int, std::unordered_set<int>> indicesAlreadyChecked;
-    std::unordered_set<int> checkedIndeces;
+    cutoff = totalMag/(imageHeight * imageWidth) + 1;
 
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
@@ -47,32 +71,23 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             //iterate over pixels that are part of the star
 
             int radius = 0; //radius of current star
-            int magSum = 0; //current magnitude sum of star pixels
-            float yCoordMagSum = 0; //sum of magnitudes * their coordinate
-            float xCoordMagSum = 0;
+            yCoordMagSum = 0; //y coordinate of current star
+            xCoordMagSum = 0; //x coordinate of current star
+            magSum = 0; //sum of magnitudes of current star
 
-            int j = i;
-            
-            //find radius
-            while (image[j] >= cutoff) {
-                radius++;
-                j++;
-            }
-
-            //iterate over star pixels within the radius to make a square
-            for (int k = 0; k < radius; k++) {
-                for (int l = 0; l < radius; l++) {
-                    checkedIndeces.insert(i + k + (imageWidth * l));
-                    magSum += image[i + k + (imageWidth * l)];
-                    xCoordMagSum += (((i + k + (imageWidth * l)) % imageWidth) + 1) * image[i + k + (imageWidth * l)];
-                    yCoordMagSum += (((i + k + (imageWidth * l)) / imageWidth) + 1) * image[i + k + (imageWidth * l)];
-                }
-            }
+            magSum += image[i];
+            xMax = i % imageWidth;
+            xMin = i % imageWidth;
+            xCoordMagSum += ((i % imageWidth) + 1) * image[i];
+            yCoordMagSum += ((i / imageWidth) + 1) * image[i];
+            cogHelper(i + 1, image, imageWidth);
+            cogHelper(i - 1, image, imageWidth);
+            cogHelper(i + imageWidth, image, imageWidth);
+            radius = (xMax - xMin) + 1;
 
             //use the sums to finish CoG equation and add stars to the result
             float xCoord = (xCoordMagSum / (magSum * 1.0));      
             float yCoord = (yCoordMagSum / (magSum * 1.0));
-            //Star *currentStar = new Star(xCoord, yCoord, (double)(radius * 1.0));
             result.push_back(Star(xCoord, yCoord, ((double)(radius * 1.0))/2));
             i += radius;
         }
