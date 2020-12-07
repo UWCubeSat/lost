@@ -28,12 +28,14 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
     //loop through entire array, find sum of magnitudes
-    int totalMag;
+    int totalMag = 0;
     for (int i = 0; i < imageHeight * imageWidth; i++) {
+        int temp = image[i];
+        //std::cout << temp;
+        //std::cout << "\n";
         totalMag += image[i];
     }
     int cutoff = totalMag/(imageHeight * imageWidth) + 1;
-    cutoff = 150;
 
     //std::unordered_map<int, std::unordered_set<int>> indicesAlreadyChecked;
     std::unordered_set<int> checkedIndeces;
@@ -45,9 +47,9 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             //iterate over pixels that are part of the star
 
             int radius = 0; //radius of current star
-            int magSum; //current magnitude sum of star pixels
-            float yCoordMagSum; //sum of magnitudes * their coordinate
-            float xCoordMagSum;
+            int magSum = 0; //current magnitude sum of star pixels
+            float yCoordMagSum = 0; //sum of magnitudes * their coordinate
+            float xCoordMagSum = 0;
 
             int j = i;
             
@@ -60,6 +62,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             //iterate over star pixels within the radius to make a square
             for (int k = 0; k < radius; k++) {
                 for (int l = 0; l < radius; l++) {
+                    checkedIndeces.insert(i + k + (imageWidth * l));
                     magSum += image[i + k + (imageWidth * l)];
                     xCoordMagSum += (((i + k + (imageWidth * l)) % imageWidth) + 1) * image[i + k + (imageWidth * l)];
                     yCoordMagSum += (((i + k + (imageWidth * l)) / imageHeight) + 1) * image[i + k + (imageWidth * l)];
@@ -67,14 +70,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             }
 
             //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (xCoordMagSum / (magSum * 1.0)) - 1.0;
-            std::cout << xCoord;
-            std::cout << "\n";
-            
+            float xCoord = (xCoordMagSum / (magSum * 1.0)) - 1.0;      
             float yCoord = (yCoordMagSum / (magSum * 1.0)) - 1.0;
-            std::cout << yCoord;
-            std::cout << "\n";
-
             //Star *currentStar = new Star(xCoord, yCoord, (double)(radius * 1.0));
             result.push_back(Star(xCoord, yCoord, ((double)(radius * 1.0))/2));
             i += radius;
