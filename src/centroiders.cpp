@@ -40,7 +40,7 @@ std::unordered_set<int> checkedIndeces;
 //recursive helper here
 
 void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
-    if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
+    if (image[i] >= cutoff && checkedIndeces.count(i) == 0 && i >= 0 && i <= imageWidth * imageHeight) {
         checkedIndeces.insert(i);
         if (i % imageWidth > xMax) {
             xMax = i % imageWidth;
@@ -55,15 +55,13 @@ void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
         magSum += image[i];
         xCoordMagSum += ((i % imageWidth) + 1) * image[i];
         yCoordMagSum += ((i / imageWidth) + 1) * image[i];
-        if((i + 1) % imageWidth != 0 && (i + 1) <= imageWidth * imageHeight) {
+        if((i + 1) % imageWidth != 0) {
             cogHelper(i + 1, image, imageWidth, imageHeight);
         }
-        if ((i - 1) % imageWidth != (imageWidth - 1) && (i - 1) <= imageWidth * imageHeight) {
+        if ((i - 1) % imageWidth != (imageWidth - 1)) {
             cogHelper(i - 1, image, imageWidth, imageHeight);
         }
-        if ((i + imageWidth) <= imageWidth * imageHeight) {
-            cogHelper(i + imageWidth, image, imageWidth, imageHeight);
-        }
+        cogHelper(i + imageWidth, image, imageWidth, imageHeight);
     }
 }
 
@@ -96,15 +94,13 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             yMin = i / imageWidth;
             xCoordMagSum += ((i % imageWidth) + 1) * image[i];
             yCoordMagSum += ((i / imageWidth) + 1) * image[i];
-            if((i + 1) % imageWidth != 0 && (i + 1) <= imageWidth * imageHeight) {
+            if((i + 1) % imageWidth != 0) {
                 cogHelper(i + 1, image, imageWidth, imageHeight);
             }
-            if ((i - 1) % imageWidth != (imageWidth - 1) && (i - 1) <= imageWidth * imageHeight) {
+            if ((i - 1) % imageWidth != (imageWidth - 1)) {
                 cogHelper(i - 1, image, imageWidth, imageHeight);
             }
-            if ((i + imageWidth) <= imageWidth * imageHeight) {
-                cogHelper(i + imageWidth, image, imageWidth, imageHeight);
-            }
+            cogHelper(i + imageWidth, image, imageWidth, imageHeight);
             xDiameter = (xMax - xMin) + 1;
             yDiameter = (yMax - yMin) + 1;
             //use the sums to finish CoG equation and add stars to the result
