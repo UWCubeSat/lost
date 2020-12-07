@@ -32,6 +32,8 @@ float xCoordMagSum = 0;
 int magSum = 0;
 int xMin;
 int xMax;
+int yMin;
+int yMax;
 int cutoff;
 std::unordered_set<int> checkedIndeces;
 
@@ -44,6 +46,11 @@ void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
             xMax = i % imageWidth;
         } else if (i % imageWidth < xMin) {
             xMin = i % imageWidth;
+        }
+        if (i / imageWidth > yMax) {
+            yMax = i / imageWidth;
+        } else if (i / imageWidth < yMin) {
+            yMin = i / imageWidth;
         }
         magSum += image[i];
         xCoordMagSum += ((i % imageWidth) + 1) * image[i];
@@ -76,7 +83,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             checkedIndeces.insert(i);
             //iterate over pixels that are part of the star
 
-            int radius = 0; //radius of current star
+            int xDiameter = 0; //radius of current star
+            int yDiameter = 0;
             yCoordMagSum = 0; //y coordinate of current star
             xCoordMagSum = 0; //x coordinate of current star
             magSum = 0; //sum of magnitudes of current star
@@ -84,6 +92,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             magSum += image[i];
             xMax = i % imageWidth;
             xMin = i % imageWidth;
+            yMax = i / imageWidth;
+            yMin = i / imageWidth;
             xCoordMagSum += ((i % imageWidth) + 1) * image[i];
             yCoordMagSum += ((i / imageWidth) + 1) * image[i];
             if((i + 1) % imageWidth != 0 && (i + 1) <= imageWidth * imageHeight) {
@@ -95,13 +105,13 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             if ((i + imageWidth) <= imageWidth * imageHeight) {
                 cogHelper(i + imageWidth, image, imageWidth, imageHeight);
             }
-            radius = (xMax - xMin) + 1;
-
+            xDiameter = (xMax - xMin) + 1;
+            yDiameter = (yMax - yMin) + 1;
             //use the sums to finish CoG equation and add stars to the result
             float xCoord = (xCoordMagSum / (magSum * 1.0));      
             float yCoord = (yCoordMagSum / (magSum * 1.0));
-            result.push_back(Star(xCoord, yCoord, ((double)(radius * 1.0))/2));
-            i += radius;
+            result.push_back(Star(xCoord, yCoord, ((double)(xDiameter * 1.0))/2.0, ((double)(yDiameter * 1.0))/2.0, 0));
+            i += xDiameter;
         }
     }
     return result;
