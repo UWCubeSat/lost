@@ -36,7 +36,6 @@ void cogHelper(float &yCoordMagSum,
     int &cutoff, 
     std::unordered_set<int> &checkedIndeces, int i, unsigned char *image, int imageWidth, int imageHeight) {
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndeces.count(i) == 0) {
-        //std::cout << i << "\n";
         checkedIndeces.insert(i);
         if (i % imageWidth > xMax) {
             xMax = i % imageWidth;
