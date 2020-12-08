@@ -25,21 +25,16 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
-//I dont think this follows style guidelines but its the only way I could
-//think about doing recursion
-float yCoordMagSum = 0; 
-float xCoordMagSum = 0;
-int magSum = 0;
-int xMin;
-int xMax;
-int yMin;
-int yMax;
-int cutoff;
-std::unordered_set<int> checkedIndeces;
-
 //recursive helper here
-
-void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
+void cogHelper(float &yCoordMagSum,  
+    float &xCoordMagSum, 
+    int &magSum, 
+    int &xMin, 
+    int &xMax, 
+    int &yMin, 
+    int &yMax, 
+    int &cutoff, 
+    std::unordered_set<int> &checkedIndeces, int i, unsigned char *image, int imageWidth, int imageHeight) {
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndeces.count(i) == 0) {
         //std::cout << i << "\n";
         checkedIndeces.insert(i);
@@ -57,18 +52,27 @@ void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
         xCoordMagSum += ((i % imageWidth) + 1) * image[i];
         yCoordMagSum += ((i / imageWidth) + 1) * image[i];
         if((i + 1) % imageWidth != 0) {
-            
-            cogHelper(i + 1, image, imageWidth, imageHeight);
+            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + 1, image, imageWidth, imageHeight);
         }
         if ((i - 1) % imageWidth != (imageWidth - 1)) {
-            cogHelper(i - 1, image, imageWidth, imageHeight);
+            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - 1, image, imageWidth, imageHeight);
         }
-        cogHelper(i + imageWidth, image, imageWidth, imageHeight);
-        cogHelper(i - imageWidth, image, imageWidth, imageHeight);
+        cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + imageWidth, image, imageWidth, imageHeight);
+        cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - imageWidth, image, imageWidth, imageHeight);
     }
 }
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+    float yCoordMagSum = 0; 
+    float xCoordMagSum = 0;
+    int magSum = 0;
+    int xMin;
+    int xMax;
+    int yMin;
+    int yMax;
+    int cutoff;
+    std::unordered_set<int> checkedIndeces;
+    
     std::vector<Star> result;
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
@@ -103,13 +107,13 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             xCoordMagSum += ((i % imageWidth) + 1) * image[i];
             yCoordMagSum += ((i / imageWidth) + 1) * image[i];
             if((i + 1) % imageWidth != 0) {
-                cogHelper(i + 1, image, imageWidth, imageHeight);
+                cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + 1, image, imageWidth, imageHeight);
             }
             if ((i - 1) % imageWidth != (imageWidth - 1)) {
-                cogHelper(i - 1, image, imageWidth, imageHeight);
+                cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - 1, image, imageWidth, imageHeight);
             }
-            cogHelper(i + imageWidth, image, imageWidth, imageHeight);
-            cogHelper(i - imageWidth, image, imageWidth, imageHeight);
+            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + imageWidth, image, imageWidth, imageHeight);
+            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - imageWidth, image, imageWidth, imageHeight);
             xDiameter = (xMax - xMin) + 1;
             yDiameter = (yMax - yMin) + 1;
             //use the sums to finish CoG equation and add stars to the result
