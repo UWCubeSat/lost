@@ -28,8 +28,7 @@ static cairo_surface_t *PngRead() {
     while (cairoSurface == NULL ||
            cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
 
-        printf("Location of PNG file: ");
-        std::cin >> pngPath;
+        pngPath = Prompt<std::string>("Location of PNG file");
 
         cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
 
@@ -80,8 +79,8 @@ static void CentroidsFind() {
     cairoSurface = PngRead();
     image   = SurfaceToGrayscaleImage(cairoSurface);
 
-    auto factory = makeCentroidAlgorithmChoice().Prompt(std::cout, std::cin, std::string("Choose centroiding algo"));
-    CentroidAlgorithm *centroidAlgorithm = factory(std::cout, std::cin);
+    auto factory = makeCentroidAlgorithmChoice().Prompt(std::string("Choose centroiding algo"));
+    CentroidAlgorithm *centroidAlgorithm = factory();
 
     std::vector<Star> stars = centroidAlgorithm->Go(
         image,
@@ -93,8 +92,7 @@ static void CentroidsFind() {
     free(image);
 
     std::cout << stars.size() << " stars detected." << std::endl;
-    std::cout << "Plot output to PNG file: ";
-    std::cin >> outputPath;
+    outputPath = Prompt<std::string>("Plot output to PNG file");
     // TODO: show exact coordinates
 
     // plotting
@@ -105,24 +103,11 @@ static void CentroidsFind() {
 
 }
 
-int main() {
-    puts("LOST: Open-source Star Tracker");
-
-    while (1) {
-        std::cout << "Would you like to Build Catalog (b), Find Centroids (c), or Quit (q)? ";
-        char choice;
-        scanf(" %c", &choice);
-        getchar();
-        switch (choice) {
-        case 'b':
-            lost::CatalogBuild();
-            break;
-        case 'c':
-            lost::CentroidsFind();
-        default:
-            puts("Bye!");
-            exit(0);
-        }
-    }
-    puts("");
+int main(int argc, char **argv) {
+    lost::RegisterCliArgs(argc, argv);
+    std::cout << "LOST: Open-source Star Tracker" << std::endl;
+    lost::InteractiveChoice<void (*)()> mainChoices;
+    mainChoices.Register("catalog", "Build catalog", &lost::CatalogBuild);
+    mainChoices.Register("centroid", "Find centroids", &lost::CentroidsFind);
+    (*mainChoices.Prompt("Choose action"))();
 }

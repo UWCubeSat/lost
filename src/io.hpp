@@ -7,7 +7,9 @@
 #include <map>
 #include <utility>
 #include <string>
+#include <sstream>
 #include <iostream>
+#include <memory>
 
 #include <cairo/cairo.h>
 
@@ -16,12 +18,31 @@
 
 namespace lost {
 
+void RegisterCliArgs(int, char **);
+bool HasNextCliArg();
+std::string NextCliArg();
+
+template <typename S>
+S Prompt(const std::string &prompt) {
+    S result;
+    std::cout << prompt << ": ";
+    if (HasNextCliArg()) {
+        std::string nextArg = NextCliArg();
+        std::cout << nextArg << std::endl;
+        std::stringstream(nextArg) >> result;
+    } else {
+        std::cin >> result;
+    }
+    return result;
+}
+
+
 // can prompt the user between multiple options.
 template <typename S>
 class InteractiveChoice {
 public:
     // prompt the user until they enter a valid option
-    S Prompt(std::ostream &, std::istream &, const std::string &) const;
+    S Prompt(const std::string &) const;
     void Register(std::string, std::string, S);
 private:
     std::map<std::string, std::pair<std::string, S>> options;
@@ -33,17 +54,22 @@ void InteractiveChoice<S>::Register(std::string shortKey, std::string longKey, S
 }
 
 template <typename S>
-S InteractiveChoice<S>::Prompt(std::ostream &os, std::istream &is, const std::string &prompt) const {
+S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
     std::string userChoice;
+    bool useCli = HasNextCliArg();
     while (1) {
-        for (auto it = options.begin(); it != options.end(); it++) {
-            os << "(" << it->first << ") " << it->second.first << std::endl;
+        if (!useCli) {
+            for (auto it = options.begin(); it != options.end(); it++) {
+                std::cout << "(" << it->first << ") " << it->second.first << std::endl;
+            }
         }
-        os << prompt << ": ";
-        is >> userChoice;
+        userChoice = lost::Prompt<std::string>(prompt);
         auto found = options.find(userChoice);
         if (found == options.end()) {
-            os << "Peace was never an option." << std::endl;
+            std::cout << "Peace was never an option." << std::endl;
+            if (useCli) {
+                exit(1);
+            }
         } else {
             return found->second.second; // I've been programming too much Lisp
         }
@@ -70,7 +96,7 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
 //                         int             *pi_centroids_length); // TODO: fov, actual angle, etc
 
 // type for functions that create a centroid algorithm (by prompting the user usually)
-typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)(std::ostream &, std::istream &);
+typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 
 InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice();
 

@@ -7,8 +7,33 @@
 #include <string.h>
 
 #include <vector>
+#include <sstream>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <memory>
 
 namespace lost {
+
+char **argv = NULL;
+int argc = 0;
+
+void RegisterCliArgs(int newArgc, char **newArgv) {
+    argv = newArgv + 1;
+    argc = newArgc - 1;
+}
+
+bool HasNextCliArg() {
+    return argc > 0;
+}
+
+std::string NextCliArg() {
+    if (HasNextCliArg()) {
+        argc--;
+        return std::string(*argv++);
+    }
+    return std::string("You incompetent fool!");
+}
 
 std::vector<CatalogStar> BsdParse(std::string tsvPath) {
     std::vector<CatalogStar> result;
@@ -110,10 +135,8 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
 
 // ALGORITHM PROMPTERS
 
-CentroidAlgorithm *DummyCentroidAlgorithmPrompt(std::ostream &os, std::istream &is) {
-    int numStars;
-    os << "How many stars to generate: ";
-    is >> numStars;
+CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
+    int numStars = Prompt<int>("How many stars to generate");
     return new DummyCentroidAlgorithm(numStars);
 }
 
