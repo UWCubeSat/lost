@@ -40,7 +40,8 @@ std::unordered_set<int> checkedIndeces;
 //recursive helper here
 
 void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
-    if (i >= 0 && i <= imageWidth * imageHeight && image[i] >= cutoff && checkedIndeces.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndeces.count(i) == 0) {
+        //std::cout << i << "\n";
         checkedIndeces.insert(i);
         if (i % imageWidth > xMax) {
             xMax = i % imageWidth;
@@ -56,13 +57,20 @@ void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
         xCoordMagSum += ((i % imageWidth) + 1) * image[i];
         yCoordMagSum += ((i / imageWidth) + 1) * image[i];
         if((i + 1) % imageWidth != 0) {
+            
             cogHelper(i + 1, image, imageWidth, imageHeight);
+            
         }
         if ((i - 1) % imageWidth != (imageWidth - 1)) {
             cogHelper(i - 1, image, imageWidth, imageHeight);
+
         }
+        
         cogHelper(i + imageWidth, image, imageWidth, imageHeight);
+        
+        
         cogHelper(i - imageWidth, image, imageWidth, imageHeight);
+        
     }
 }
 
@@ -70,14 +78,16 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     std::vector<Star> result;
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
-    
+    std::cout << imageWidth * imageHeight << "\n";
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         totalMag += image[i];
     }
-    cutoff = ((totalMag/(imageHeight * imageWidth)) * 15) / 10;
-
+    // cutoff might need a new equation
+    cutoff = (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
+    std::cout << cutoff << "\n";
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
+        std::cout << i << "\n";
         if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
             checkedIndeces.insert(i);
             //iterate over pixels that are part of the star
@@ -87,6 +97,12 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             yCoordMagSum = 0; //y coordinate of current star
             xCoordMagSum = 0; //x coordinate of current star
             magSum = 0; //sum of magnitudes of current star
+
+            //computes indices to skip after done w current star
+            int j = i;
+            while(j < imageWidth * imageHeight && (j + 1) % imageWidth != 0 && image[j] >= cutoff) {
+                j++;
+            }
 
             magSum += image[i];
             xMax = i % imageWidth;
@@ -109,7 +125,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float xCoord = (xCoordMagSum / (magSum * 1.0));      
             float yCoord = (yCoordMagSum / (magSum * 1.0));
             result.push_back(Star(xCoord, yCoord, ((double)(xDiameter * 1.0))/2.0, ((double)(yDiameter * 1.0))/2.0, 0));
-            i += xDiameter;
+            i = j - 1;
         }
     }
     return result;
