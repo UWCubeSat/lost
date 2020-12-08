@@ -72,13 +72,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     std::vector<Star> result;
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
-    std::cout << imageWidth * imageHeight << "\n";
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         totalMag += image[i];
     }
     // cutoff might need a new equation
     cutoff = (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
-    std::cout << cutoff << "\n";
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
