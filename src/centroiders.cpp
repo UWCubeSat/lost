@@ -59,18 +59,12 @@ void cogHelper(int i, unsigned char *image, int imageWidth, int imageHeight) {
         if((i + 1) % imageWidth != 0) {
             
             cogHelper(i + 1, image, imageWidth, imageHeight);
-            
         }
         if ((i - 1) % imageWidth != (imageWidth - 1)) {
             cogHelper(i - 1, image, imageWidth, imageHeight);
-
         }
-        
         cogHelper(i + imageWidth, image, imageWidth, imageHeight);
-        
-        
         cogHelper(i - imageWidth, image, imageWidth, imageHeight);
-        
     }
 }
 
@@ -87,7 +81,6 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     std::cout << cutoff << "\n";
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
-        std::cout << i << "\n";
         if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
             checkedIndeces.insert(i);
             //iterate over pixels that are part of the star
