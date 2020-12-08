@@ -25,99 +25,94 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
-//recursive helper here
-void cogHelper(float &yCoordMagSum,  
-    float &xCoordMagSum, 
-    int &magSum, 
-    int &xMin, 
-    int &xMax, 
-    int &yMin, 
-    int &yMax, 
-    int &cutoff, 
-    std::unordered_set<int> &checkedIndeces, int i, unsigned char *image, int imageWidth, int imageHeight) {
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndeces.count(i) == 0) {
-        checkedIndeces.insert(i);
-        if (i % imageWidth > xMax) {
-            xMax = i % imageWidth;
-        } else if (i % imageWidth < xMin) {
-            xMin = i % imageWidth;
-        }
-        if (i / imageWidth > yMax) {
-            yMax = i / imageWidth;
-        } else if (i / imageWidth < yMin) {
-            yMin = i / imageWidth;
-        }
-        magSum += image[i];
-        xCoordMagSum += ((i % imageWidth) + 1) * image[i];
-        yCoordMagSum += ((i / imageWidth) + 1) * image[i];
-        if((i + 1) % imageWidth != 0) {
-            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + 1, image, imageWidth, imageHeight);
-        }
-        if ((i - 1) % imageWidth != (imageWidth - 1)) {
-            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - 1, image, imageWidth, imageHeight);
-        }
-        cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + imageWidth, image, imageWidth, imageHeight);
-        cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - imageWidth, image, imageWidth, imageHeight);
-    }
-}
-
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
-    float yCoordMagSum = 0; 
-    float xCoordMagSum = 0;
-    int magSum = 0;
+struct params {
+    float yCoordMagSum; 
+    float xCoordMagSum;
+    int magSum;
     int xMin;
     int xMax;
     int yMin;
     int yMax;
     int cutoff;
     std::unordered_set<int> checkedIndeces;
-    
-    std::vector<Star> result;
+};
+
+//recursive helper here
+void cogHelper(params &p, int i, unsigned char *image, int imageWidth, int imageHeight) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
+        p.checkedIndeces.insert(i);
+        if (i % imageWidth > p.xMax) {
+            p.xMax = i % imageWidth;
+        } else if (i % imageWidth < p.xMin) {
+            p.xMin = i % imageWidth;
+        }
+        if (i / imageWidth > p.yMax) {
+            p.yMax = i / imageWidth;
+        } else if (i / imageWidth < p.yMin) {
+            p.yMin = i / imageWidth;
+        }
+        p.magSum += image[i];
+        p.xCoordMagSum += ((i % imageWidth) + 1) * image[i];
+        p.yCoordMagSum += ((i / imageWidth) + 1) * image[i];
+        if((i + 1) % imageWidth != 0) {
+            cogHelper(p, i + 1, image, imageWidth, imageHeight);
+        }
+        if ((i - 1) % imageWidth != (imageWidth - 1)) {
+            cogHelper(p, i - 1, image, imageWidth, imageHeight);
+        }
+        cogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
+        cogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
+    }
+}
+
+int cutoffFunction(unsigned char *image, int imageWidth, int imageHeight) {
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         totalMag += image[i];
     }
-    // cutoff might need a new equation
-    cutoff = (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
+    return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
+}
+
+std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+    params p;
+    std::unordered_set<int> checkedIndeces;
+    
+    std::vector<Star> result;
+    
+    p.cutoff = cutoffFunction(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
-        if (image[i] >= cutoff && checkedIndeces.count(i) == 0) {
+        if (image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
             checkedIndeces.insert(i);
             //iterate over pixels that are part of the star
 
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
-            yCoordMagSum = 0; //y coordinate of current star
-            xCoordMagSum = 0; //x coordinate of current star
-            magSum = 0; //sum of magnitudes of current star
+            p.yCoordMagSum = 0; //y coordinate of current star
+            p.xCoordMagSum = 0; //x coordinate of current star
+            p.magSum = 0; //sum of magnitudes of current star
 
             //computes indices to skip after done w current star
             int j = i;
-            while(j < imageWidth * imageHeight && (j + 1) % imageWidth != 0 && image[j] >= cutoff) {
+            while(j < imageWidth * imageHeight && (j + 1) % imageWidth != 0 && image[j] >= p.cutoff) {
                 j++;
             }
 
-            magSum += image[i];
-            xMax = i % imageWidth;
-            xMin = i % imageWidth;
-            yMax = i / imageWidth;
-            yMin = i / imageWidth;
-            xCoordMagSum += ((i % imageWidth) + 1) * image[i];
-            yCoordMagSum += ((i / imageWidth) + 1) * image[i];
-            if((i + 1) % imageWidth != 0) {
-                cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + 1, image, imageWidth, imageHeight);
-            }
-            if ((i - 1) % imageWidth != (imageWidth - 1)) {
-                cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - 1, image, imageWidth, imageHeight);
-            }
-            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i + imageWidth, image, imageWidth, imageHeight);
-            cogHelper(yCoordMagSum, xCoordMagSum, magSum, xMin, xMax, yMin, yMax, cutoff, checkedIndeces, i - imageWidth, image, imageWidth, imageHeight);
-            xDiameter = (xMax - xMin) + 1;
-            yDiameter = (yMax - yMin) + 1;
+            p.magSum += image[i];
+            p.xMax = i % imageWidth;
+            p.xMin = i % imageWidth;
+            p.yMax = i / imageWidth;
+            p.yMin = i / imageWidth;
+            p.xCoordMagSum += ((i % imageWidth)) * image[i];
+            p.yCoordMagSum += ((i / imageWidth)) * image[i];
+
+            cogHelper(p, i, image, imageWidth, imageHeight);
+            xDiameter = (p.xMax - p.xMin) + 1;
+            yDiameter = (p.yMax - p.yMin) + 1;
             //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (xCoordMagSum / (magSum * 1.0));      
-            float yCoord = (yCoordMagSum / (magSum * 1.0));
+            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
             result.push_back(Star(xCoord, yCoord, ((double)(xDiameter * 1.0))/2.0, ((double)(yDiameter * 1.0))/2.0, 0));
             i = j - 1;
         }

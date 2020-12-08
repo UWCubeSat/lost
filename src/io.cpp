@@ -140,7 +140,7 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     return new DummyCentroidAlgorithm(numStars);
 }
 
-CentroidAlgorithm *CogCentroidAlgorithmPrompt(std::ostream &os, std::istream &is) {
+CentroidAlgorithm *CogCentroidAlgorithmPrompt() {
     return new CenterOfGravityAlgorithm();
 }
 
