@@ -34,13 +34,13 @@ struct CentroidParams {
     int yMin;
     int yMax;
     int cutoff;
-    std::unordered_set<int> checkedIndeces;
+    std::unordered_set<int> checkedIndices;
 };
 
 //recursive helper here
 void CogHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, int imageHeight) {
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
-        p.checkedIndeces.insert(i);
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        p.checkedIndices.insert(i);
         if (i % imageWidth > p.xMax) {
             p.xMax = i % imageWidth;
         } else if (i % imageWidth < p.xMin) {
@@ -54,10 +54,10 @@ void CogHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, i
         p.magSum += image[i];
         p.xCoordMagSum += ((i % imageWidth)) * image[i];
         p.yCoordMagSum += ((i / imageWidth)) * image[i];
-        if((i + 1) % imageWidth != 0) {
+        if(i % imageWidth != imageWidth - 1) {
             CogHelper(p, i + 1, image, imageWidth, imageHeight);
         }
-        if ((i - 1) % imageWidth != (imageWidth - 1)) {
+        if (i % imageWidth != 0) {
             CogHelper(p, i - 1, image, imageWidth, imageHeight);
         }
         CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
@@ -76,15 +76,15 @@ int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    std::unordered_set<int> checkedIndeces;
+    std::unordered_set<int> checkedIndices;
     
     std::vector<Star> result;
     
     p.cutoff = DetermineCutoff(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
-        if (image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
-            checkedIndeces.insert(i);
+        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+            checkedIndices.insert(i);
             //iterate over pixels that are part of the star
 
             int xDiameter = 0; //radius of current star
