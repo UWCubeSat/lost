@@ -107,6 +107,7 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
     cairoCtx = cairo_create(cairoSurface);
     cairo_set_source_rgba(cairoCtx, red, green, blue, alpha);
     cairo_set_line_width(cairoCtx, 1.0);
+    cairo_set_antialias(cairoCtx, CAIRO_ANTIALIAS_NONE);
 
     for (const Star &centroid : centroids) {
         if (centroid.radiusX > 0.0f) {
@@ -117,8 +118,8 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
             // Rectangles should be entirely /outside/ the radius of the star, so the star is fully
             // visible.
             cairo_rectangle(cairoCtx,
-                            centroid.x - radiusX,
-                            centroid.y - radiusY,
+                            centroid.x+.5 - radiusX,
+                            centroid.y+.5 - radiusY,
                             radiusX * 2,
                             radiusY * 2);
             cairo_stroke(cairoCtx);

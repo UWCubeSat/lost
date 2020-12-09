@@ -96,7 +96,7 @@ static void CentroidsFind() {
     // TODO: show exact coordinates
 
     // plotting
-    SurfacePlotCentroids(cairoSurface, stars, 1.0, 0.0, 0.0, 0.5);
+    SurfacePlotCentroids(cairoSurface, stars, 1.0, 0.0, 0.0, 0.3);
     cairo_surface_write_to_png(cairoSurface, outputPath.c_str());
     cairo_surface_destroy(cairoSurface);
 }
