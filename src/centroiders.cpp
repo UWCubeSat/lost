@@ -113,7 +113,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             //use the sums to finish CoG equation and add stars to the result
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
-            result.push_back(Star(xCoord, yCoord, ((double)(xDiameter * 1.0))/2.0, ((double)(yDiameter * 1.0))/2.0, 0));
+            result.push_back(Star(xCoord, yCoord, ((float)(xDiameter * 1.0))/2.0, ((double)(yDiameter * 1.0))/2.0, 0));
             i = j - 1;
         }
     }
