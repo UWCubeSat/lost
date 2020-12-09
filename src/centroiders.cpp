@@ -25,7 +25,7 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
-struct params {
+struct CentroidParams {
     float yCoordMagSum; 
     float xCoordMagSum;
     int magSum;
@@ -38,7 +38,7 @@ struct params {
 };
 
 //recursive helper here
-void cogHelper(params &p, int i, unsigned char *image, int imageWidth, int imageHeight) {
+void CogHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, int imageHeight) {
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
         p.checkedIndeces.insert(i);
         if (i % imageWidth > p.xMax) {
@@ -55,17 +55,17 @@ void cogHelper(params &p, int i, unsigned char *image, int imageWidth, int image
         p.xCoordMagSum += ((i % imageWidth) + 1) * image[i];
         p.yCoordMagSum += ((i / imageWidth) + 1) * image[i];
         if((i + 1) % imageWidth != 0) {
-            cogHelper(p, i + 1, image, imageWidth, imageHeight);
+            CogHelper(p, i + 1, image, imageWidth, imageHeight);
         }
         if ((i - 1) % imageWidth != (imageWidth - 1)) {
-            cogHelper(p, i - 1, image, imageWidth, imageHeight);
+            CogHelper(p, i - 1, image, imageWidth, imageHeight);
         }
-        cogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
-        cogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
+        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
+        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
     }
 }
 
-int cutoffFunction(unsigned char *image, int imageWidth, int imageHeight) {
+int CutoffFunction(unsigned char *image, int imageWidth, int imageHeight) {
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
     for (int i = 0; i < imageHeight * imageWidth; i++) {
@@ -75,12 +75,12 @@ int cutoffFunction(unsigned char *image, int imageWidth, int imageHeight) {
 }
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
-    params p;
+    CentroidParams p;
     std::unordered_set<int> checkedIndeces;
     
     std::vector<Star> result;
     
-    p.cutoff = cutoffFunction(image, imageWidth, imageHeight);
+    p.cutoff = CutoffFunction(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
@@ -107,7 +107,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             p.xCoordMagSum += ((i % imageWidth)) * image[i];
             p.yCoordMagSum += ((i / imageWidth)) * image[i];
 
-            cogHelper(p, i, image, imageWidth, imageHeight);
+            CogHelper(p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
             //use the sums to finish CoG equation and add stars to the result
