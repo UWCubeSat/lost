@@ -65,7 +65,7 @@ void CogHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, i
     }
 }
 
-int CutoffFunction(unsigned char *image, int imageWidth, int imageHeight) {
+int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
     //loop through entire array, find sum of magnitudes
     int totalMag = 0;
     for (int i = 0; i < imageHeight * imageWidth; i++) {
@@ -80,7 +80,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     
     std::vector<Star> result;
     
-    p.cutoff = CutoffFunction(image, imageWidth, imageHeight);
+    p.cutoff = DetermineCutoff(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndeces.count(i) == 0) {
