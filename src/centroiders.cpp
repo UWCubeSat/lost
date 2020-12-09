@@ -52,8 +52,8 @@ void CogHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, i
             p.yMin = i / imageWidth;
         }
         p.magSum += image[i];
-        p.xCoordMagSum += ((i % imageWidth) + 1) * image[i];
-        p.yCoordMagSum += ((i / imageWidth) + 1) * image[i];
+        p.xCoordMagSum += ((i % imageWidth)) * image[i];
+        p.yCoordMagSum += ((i / imageWidth)) * image[i];
         if((i + 1) % imageWidth != 0) {
             CogHelper(p, i + 1, image, imageWidth, imageHeight);
         }
