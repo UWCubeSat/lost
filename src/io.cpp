@@ -106,7 +106,7 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
 
     cairoCtx = cairo_create(cairoSurface);
     cairo_set_source_rgba(cairoCtx, red, green, blue, alpha);
-    cairo_set_line_width(cairoCtx, 1.0); // I wonder what <1.0 does?
+    cairo_set_line_width(cairoCtx, 1.0);
 
     for (const Star &centroid : centroids) {
         if (centroid.radiusX > 0.0f) {
@@ -117,10 +117,10 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
             // Rectangles should be entirely /outside/ the radius of the star, so the star is fully
             // visible.
             cairo_rectangle(cairoCtx,
-                            floor(centroid.x - radiusX) - 1,
-                            floor(centroid.y - radiusY) - 1,
-                            ceil(radiusX) * 2 + 2,
-                            ceil(radiusY) * 2 + 2);
+                            centroid.x - radiusX,
+                            centroid.y - radiusY,
+                            radiusX * 2,
+                            radiusY * 2);
             cairo_stroke(cairoCtx);
         } else {
             cairo_rectangle(cairoCtx,
@@ -140,10 +140,15 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     return new DummyCentroidAlgorithm(numStars);
 }
 
+CentroidAlgorithm *CogCentroidAlgorithmPrompt() {
+    return new CenterOfGravityAlgorithm();
+}
+
 InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice() {
     InteractiveChoice<CentroidAlgorithmFactory> result;
 
     result.Register("dummy", "Random Centroid Algorithm", &DummyCentroidAlgorithmPrompt);
+    result.Register("cog", "Center of Gravity Centroid Algorithm", &CogCentroidAlgorithmPrompt);
 
     return result;
 }
