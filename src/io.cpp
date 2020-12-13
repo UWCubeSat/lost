@@ -141,15 +141,20 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     return new DummyCentroidAlgorithm(numStars);
 }
 
-CentroidAlgorithm *CogCentroidAlgorithmPrompt() {
+CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
     return new CenterOfGravityAlgorithm();
+}
+
+CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
+    return new IterativeWeightedCenterOfGravityAlgorithm();
 }
 
 InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice() {
     InteractiveChoice<CentroidAlgorithmFactory> result;
 
     result.Register("dummy", "Random Centroid Algorithm", &DummyCentroidAlgorithmPrompt);
-    result.Register("cog", "Center of Gravity Centroid Algorithm", &CogCentroidAlgorithmPrompt);
+    result.Register("cog", "Center of Gravity Centroid Algorithm", &CoGCentroidAlgorithmPrompt);
+    result.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm", &IWCoGCentroidAlgorithmPrompt);
 
     return result;
 }
