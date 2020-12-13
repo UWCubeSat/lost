@@ -76,7 +76,7 @@ int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    std::unordered_set<int> checkedIndices;
+    //std::unordered_set<int> checkedIndices;
     
     std::vector<Star> result;
     
@@ -84,7 +84,6 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
-            checkedIndices.insert(i);
             //iterate over pixels that are part of the star
 
             int xDiameter = 0; //radius of current star
@@ -99,13 +98,13 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                 j++;
             }
 
-            p.magSum += image[i];
+           // p.magSum += image[i];
             p.xMax = i % imageWidth;
             p.xMin = i % imageWidth;
             p.yMax = i / imageWidth;
             p.yMin = i / imageWidth;
-            p.xCoordMagSum += ((i % imageWidth)) * image[i];
-            p.yCoordMagSum += ((i / imageWidth)) * image[i];
+            //p.xCoordMagSum += ((i % imageWidth)) * image[i];
+            //p.yCoordMagSum += ((i / imageWidth)) * image[i];
 
             CogHelper(p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
@@ -120,9 +119,101 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     return result;
 }
 
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+void IWCoGHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> starIndices, std::vector<int> starIntensity, int maxIntensity, int firstGuess) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        p.checkedIndices.insert(i);
+        starIndices.push_back(i);
+        starIntensity.push_back(image[i]);
+        if (image[i] > maxIntensity) {
+            maxIntensity = image[i];
+            firstGuess = i;
+        }
+        if (i % imageWidth > p.xMax) {
+            p.xMax = i % imageWidth;
+        } else if (i % imageWidth < p.xMin) {
+            p.xMin = i % imageWidth;
+        }
+        if (i / imageWidth > p.yMax) {
+            p.yMax = i / imageWidth;
+        } else if (i / imageWidth < p.yMin) {
+            p.yMin = i / imageWidth;
+        }
+        //p.magSum += image[i];
+        //p.xCoordMagSum += ((i % imageWidth)) * image[i];
+        //p.yCoordMagSum += ((i / imageWidth)) * image[i];
+        if(i % imageWidth != imageWidth - 1) {
+            IWCoGHelper(p, i + 1, image, imageWidth, imageHeight, starIndices, starIntensity, maxIntensity, firstGuess);
+        }
+        if (i % imageWidth != 0) {
+            IWCoGHelper(p, i - 1, image, imageWidth, imageHeight, starIndices, starIntensity, maxIntensity, firstGuess);
+        }
+        IWCoGHelper(p, i + imageWidth, image, imageWidth, imageHeight, starIndices, starIntensity, maxIntensity, firstGuess);
+        IWCoGHelper(p, i - imageWidth, image, imageWidth, imageHeight, starIndices, starIntensity, maxIntensity, firstGuess);
+    }
+}
+
+std::vector<Star> IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
+    //std::unordered_set<int> checkedIndices;
     std::vector<Star> result;
+
+    p.cutoff = DetermineCutoff(image, imageWidth, imageHeight);
+    for (int i = 0; i < imageHeight * imageWidth; i++) {
+        //check if pixel is part of a "star" and has not been iterated over
+        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+            std::vector<int> starIndices;
+            std::vector<int> starIntensity;
+            //iterate over pixels that are part of the star
+
+            int xDiameter = 0; //radius of current star
+            int yDiameter = 0;
+            p.yCoordMagSum = 0; //y coordinate of current star
+            p.xCoordMagSum = 0; //x coordinate of current star
+            p.magSum = 0; //sum of magnitudes of current star
+            int maxIntensity = 0;
+            float fwhm;
+            float standardDeviation;
+            int firstGuess;
+            
+            //computes indices to skip after done w current star
+            int j = i;
+            while(j < imageWidth * imageHeight && (j + 1) % imageWidth != 0 && image[j] >= p.cutoff) {
+                j++;
+            }
+
+            //p.magSum += image[i];
+            p.xMax = i % imageWidth;
+            p.xMin = i % imageWidth;
+            p.yMax = i / imageWidth;
+            p.yMin = i / imageWidth;
+
+            //p.xCoordMagSum += ((i % imageWidth)) * image[i];
+            //p.yCoordMagSum += ((i / imageWidth)) * image[i];
+
+            IWCoGHelper(p, i, image, imageWidth, imageHeight, starIndices, starIntensity, maxIntensity, firstGuess);
+            xDiameter = (p.xMax - p.xMin) + 1;
+            yDiameter = (p.yMax - p.yMin) + 1;
+
+            //calculate fwhm
+            int count = 0;
+            for (int j = 0; j < starIndices.size(); j++) {
+                if (starIndices.at(j) > maxIntensity / 2) {
+                    count++;
+                }
+            }
+            fwhm = sqrt((float) count);
+            standardDeviation = fwhm / (2.0 * sqrt(2.0 * log(2.0)));
+
+            //while we see some large enough change in estimated centroid:
+            //traverse through star indices, calculate W at each coordinate, add to final coordinate sums
+
+            //use the sums to finish CoG equation and add stars to the result
+            //float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            //float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
+            result.push_back(Star(xCoord, yCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
+            i = j - 1;
+        }
+    }
     return result;
 }
 
