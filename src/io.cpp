@@ -4,7 +4,6 @@
 #include <inttypes.h>
 #include <math.h>
 #include <errno.h>
-#include <string.h>
 
 #include <vector>
 #include <sstream>
@@ -12,6 +11,7 @@
 #include <sstream>
 #include <iostream>
 #include <memory>
+#include <cstring>
 
 namespace lost {
 
@@ -93,6 +93,20 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
             );
     }
 
+    return result;
+}
+
+cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
+                                         const int width, const int height) {
+    cairo_surface_t *result = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
+    uint32_t *resultData = (uint32_t *)cairo_image_surface_get_data(result);
+    // hopefully unnecessary
+    cairo_surface_flush(result);
+    for (long i = 0; i < width * height; i++) {
+        // equal r, g, and b components
+        resultData[i] = (image[i] << 16) + (image[i] << 8) + (image[i]);
+    }
+    cairo_surface_mark_dirty(result);
     return result;
 }
 

@@ -81,6 +81,7 @@ S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
 std::vector<CatalogStar> BsdParse(std::string tsvPath);
 // Convert a cairo surface to array of grayscale bytes
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
+cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
 // plot dots at the specified centroids
 void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
                           std::vector<Star> centroids,

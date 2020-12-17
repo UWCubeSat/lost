@@ -18,7 +18,7 @@ Washington.
     collected too.
 
     Our framework does...
-    - [ ] Simple centroiding
+    - [X] Simple centroiding
     - [ ] Iterative weighted centroiding
     - [ ] 2D Gaussian fit centroiding
     - [ ] Gaussian Grid centroiding
@@ -51,7 +51,7 @@ Washington.
     - [ ] Attitude Determination (QUEST?)
 
   Other parts of our framework that are not essential parts of a star-tracking system:
-  - [ ] Centroiding Visualization
+  - [X] Centroiding Visualization
   - [ ] Algorithm Visualizations
   - [ ] Re-projection of starts after fix visualization
   - [ ] Benchmarking against reference images
