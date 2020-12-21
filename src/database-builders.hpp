@@ -1,20 +1,40 @@
 #ifndef DATABASE_BUILDER_H
 #define DATABASE_BUILDER_H
 
+#include <vector>
+
 #include "catalog-generic.hpp"
 
-// typedef void *(*db_builder_function_t)(Catalog_t *catalog, void *pv_config);
-// typedef void *(*db_config_function_t)(void);
-// typedef void (*db_stats_function_t)(void *pv_db);
+class DatabaseBuilder {
+public:
+    virtual unsigned char *Go(int *length) const;
+};
 
-// typedef struct db_builder_algorithm_t {
-//     char *s_name;
-    
-//     db_config_function_t  pf_config;
-//     db_builder_function_t pf_algorithm;
-//     db_stats_function_t   pf_stats;
-// } db_builder_algorithm_t;
+/**
+ For a K-vector database with `n' stars and `m' distance bins
+     | size          | description         |
+     |---------------+---------------------|
+     | sizeof(int)   | stores `n'          |
+     | n*sizeof(int) | stores star indices, sorted  |
+     |               |                     |
+ */
 
-// db_builder_algorithm_t x_db_builder_algorithm(int i);
+class KVectorDatabaseBuilder {
+public:
+    KVectorDatabaseBuilder(long minDistance, long maxDistance)
+        : minDistance(minDistance), maxDistance(maxDistance) { };
+    unsigned char *Go(int *length) const;
+private:
+    long minDistance; // millionth of a degree-
+    long maxDistance;
+};
+
+KVectorDatabaseBuilder PromptKVectorDatabaseBuilder();
+
+class KVectorDatabase {
+    std::vector<int> StarsWithDistance(long minDistance, long maxDistance);
+private:
+    unsigned char *bytes;
+};
 
 #endif

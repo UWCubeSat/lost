@@ -15,6 +15,10 @@
 
 #include "catalog-generic.hpp"
 #include "centroiders.hpp"
+#include "star-id.hpp"
+#include "camera.hpp"
+#include "attitude-utils.hpp"
+#include "attitude-estimators.hpp"
 
 namespace lost {
 
@@ -84,7 +88,7 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
 // plot dots at the specified centroids
 void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
-                          std::vector<Star> centroids,
+                          std::vector<Stars> centroids,
                           double red,
                           double green,
                           double blue,
@@ -100,6 +104,112 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 
 InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice();
+
+class Image {
+public:
+    unsigned char *image;
+    int width;
+    int height;
+};
+
+////////////////////
+// PIPELINE INPUT //
+////////////////////
+
+// represents the input and expected outputs of a pipeline run.
+class PipelineInput {
+public:
+    virtual const Image *InputImage() const { return NULL; };
+    // TODO: a more solid type here
+    virtual const void *InputDatabase() const { return NULL; };
+    virtual const Centroids *InputCentroids() const { return NULL; };
+    virtual const Stars *InputStars() const { return NULL; };
+    // for tracking
+    virtual const Attitude *InputAttitude() const { return NULL; };
+    virtual const Camera *InputCamera() const { return NULL; };
+
+    virtual const Centroids *ExpectedCentroids() const { return InputCentroids(); };
+    virtual const Stars *ExpectedStars() const { return InputStars(); };
+    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
+};
+
+typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
+
+class AstrometryPipelineInput : public PipelineInput {
+public:
+    AstrometryPipelineInput(const std::string &path);
+
+    const Image *InputImage() const { return &image; };
+    const Attitude *InputAttitude() const { return &attitude; };
+private:
+    Image image;
+    Attitude attitude;
+};
+
+// prompt for the directory
+PipelineInput *PromptAstrometryPipelineInput();
+
+class GeneratedPipelineInput : public PipelineInput {
+public:
+    // TODO: correct params
+    GeneratedPipelineInput(Attitude attitude, int imageWidth, int imageHeight, unsigned char avg_noise);
+
+    const Image *InputImage() const { return &image; };
+    const Centroids *InputCentroids() const { return &centroids; };
+    const Stars *InputStars() const { return &stars; };
+    const Attitude *InputAttitude() const { return &attitude; };
+private:
+    Image image;
+    Centroids centroids;
+    Stars stars;
+    Attitude attitude;
+};
+
+PipelineInput *PromptGeneratedPipelineInput();
+
+// pipeline input to be used in "tracking" mode when a rough orientation is already known. Wraps a
+// normal pipeline input, applying mild changes to attitude.
+// class RandomTrackingPipelineInput : public PipelineInput {
+// public:
+//     const Attitude *InputAttitude() const;
+// private:
+    
+// };
+
+std::unique_ptr<PipelineInput> PromptPipelineInput();
+
+/////////////////////
+// PIPELINE OUTPUT //
+/////////////////////
+
+class PipelineOutput {
+public:
+    std::unique_ptr<Centroids> centroids;
+    std::unique_ptr<Stars> stars;
+    std::unique_ptr<Attitude> attitude;
+};
+
+//////////////
+// PIPELINE //
+//////////////
+
+// a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
+
+class Pipeline {
+    friend Pipeline PromptPipeline();
+public:
+    PipelineOutput Go(PipelineInput *);
+private:
+    std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
+    std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
+    std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+};
+
+Pipeline PromptPipeline();
+
+// ask the user what to do with actual and expected outputs
+void PromptPipelineComparison(const std::vector<PipelineInput> &expected,
+                              const std::vector<PipelineOutput> &actual);
 
 }
 

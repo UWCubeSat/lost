@@ -7,6 +7,7 @@
 
 #include <string>
 #include <iostream>
+#include <chrono>
 
 #include "catalog-generic.hpp"
 #include "database-builders.hpp"
@@ -101,13 +102,31 @@ static void CentroidsFind() {
     cairo_surface_destroy(cairoSurface);
 }
 
+static void PipelineBenchmark() {
+    PipelineInput input = PromptPipelineInput();
+    Pipeline pipeline = PromptPipeline();
+    int iterations = Prompt<int>("Times to run the pipeline");
+    std::cerr << "Benchmarking..." << std::endl;
+
+    // TODO: we can do better than this :| maybe include mean time, 99% time, or allow a vector of
+    // input and determine which one took the longest
+    auto startTime = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < iterations; i++) {
+        PipelineRun()
+    }
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto totalTime = std::chrono::duration<double, std::milli>(startTime - endTime);
+    std::cerr << "Complete in " << totalTime.count() << " milliseconds" << std::endl;
+}
+
 }
 
 int main(int argc, char **argv) {
     lost::RegisterCliArgs(argc, argv);
     std::cout << "LOST: Open-source Star Tracker" << std::endl;
     lost::InteractiveChoice<void (*)()> mainChoices;
-    mainChoices.Register("catalog", "Build catalog", &lost::CatalogBuild);
-    mainChoices.Register("centroid", "Find centroids", &lost::CentroidsFind);
+    mainChoices.Register("pipeline", "Run a pipeline", &lost::PipelineRun);
+    mainChoices.Register("benchmark", "Benchmark a pipeline", &lost::PipelineBenchmark);
+    mainChoices.Register("build_database", "Build database from catalog", &lost::CatalogBuild);
     (*mainChoices.Prompt("Choose action"))();
 }
