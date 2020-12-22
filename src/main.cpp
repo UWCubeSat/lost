@@ -16,29 +16,6 @@
 
 namespace lost {
 
-// prompts the user for a path, reads it, creates rgb cairo surface, 
-static cairo_surface_t *PngRead() {
-    std::string pngPath;
-    cairo_surface_t *cairoSurface = NULL;
-
-#ifndef CAIRO_HAS_PNG_FUNCTIONS
-    puts("Your version of Cairo was compiled without PNG support. Bailing out.");
-    exit(0);
-#endif
-    
-    while (cairoSurface == NULL ||
-           cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
-
-        pngPath = Prompt<std::string>("Location of PNG file");
-
-        cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
-
-        printf("Reading file: %s\n", cairo_status_to_string(cairo_surface_status(cairoSurface)));
-    }
-
-    return cairoSurface;
-}
-
 static void CatalogBuild() {
     // std::string tsvPath;
     // Catalog_t *catalog;
@@ -72,38 +49,15 @@ static void CatalogBuild() {
     // (*x_algorithm.pf_stats)(pv_db);
 }
 
-static void CentroidsFind() {
-    std::string     outputPath;
-    cairo_surface_t *cairoSurface;
-    unsigned char   *image;
-
-    cairoSurface = PngRead();
-    image   = SurfaceToGrayscaleImage(cairoSurface);
-
-    auto factory = makeCentroidAlgorithmChoice().Prompt(std::string("Choose centroiding algo"));
-    CentroidAlgorithm *centroidAlgorithm = factory();
-
-    std::vector<Star> stars = centroidAlgorithm->Go(
-        image,
-        cairo_image_surface_get_width(cairoSurface),
-        cairo_image_surface_get_height(cairoSurface)
-        );
-
-    delete centroidAlgorithm;
-    free(image);
-
-    std::cout << stars.size() << " stars detected." << std::endl;
-    outputPath = Prompt<std::string>("Plot output to PNG file");
-    // TODO: show exact coordinates
-
-    // plotting
-    SurfacePlotCentroids(cairoSurface, stars, 1.0, 0.0, 0.0, 0.3);
-    cairo_surface_write_to_png(cairoSurface, outputPath.c_str());
-    cairo_surface_destroy(cairoSurface);
+static void PipelineRun() {
+    PipelineInputList input = PromptPipelineInput();
+    Pipeline pipeline = PromptPipeline();
+    std::vector<PipelineOutput> outputs = pipeline.Go(input);
+    PromptPipelineComparison(input, outputs);
 }
 
 static void PipelineBenchmark() {
-    PipelineInput input = PromptPipelineInput();
+    PipelineInputList input = PromptPipelineInput();
     Pipeline pipeline = PromptPipeline();
     int iterations = Prompt<int>("Times to run the pipeline");
     std::cerr << "Benchmarking..." << std::endl;
@@ -112,7 +66,7 @@ static void PipelineBenchmark() {
     // input and determine which one took the longest
     auto startTime = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < iterations; i++) {
-        PipelineRun()
+        pipeline.Go(input);
     }
     auto endTime = std::chrono::high_resolution_clock::now();
     auto totalTime = std::chrono::duration<double, std::milli>(startTime - endTime);

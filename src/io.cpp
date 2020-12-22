@@ -1,5 +1,6 @@
 #include "io.hpp"
 
+#include <cairo/cairo.h>
 #include <stdio.h>
 #include <inttypes.h>
 #include <math.h>
@@ -10,6 +11,7 @@
 #include <sstream>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <cstring>
@@ -99,6 +101,7 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
 
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
                                          const int width, const int height) {
+    // cairo's 8-bit type isn't BW, it's an alpha channel only, which would look a bit weird lol
     cairo_surface_t *result = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
     uint32_t *resultData = (uint32_t *)cairo_image_surface_get_data(result);
     // hopefully unnecessary
@@ -112,7 +115,7 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
 }
 
 void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
-                          Centroids centroids,
+                          Stars centroids,
                           double red,
                           double green,
                           double blue,
@@ -124,7 +127,7 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
     cairo_set_line_width(cairoCtx, 1.0);
     cairo_set_antialias(cairoCtx, CAIRO_ANTIALIAS_NONE);
 
-    for (const CentroidStar &centroid : centroids) {
+    for (const Star &centroid : centroids) {
         if (centroid.radiusX > 0.0f) {
             float radiusX = centroid.radiusX;
             float radiusY = centroid.radiusY > 0.0f ?
@@ -161,7 +164,73 @@ CentroidAlgorithm *CogCentroidAlgorithmPrompt() {
 }
 
 InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice() {
+    InteractiveChoice<CentroidAlgorithmFactory> result;
 
+    result.Register("dummy", "Dummy algo", DummyCentroidAlgorithmPrompt);
+    result.Register("cog", "Center-of-Gravity", CogCentroidAlgorithmPrompt);
+
+    return result;
+}
+
+class PngPipelineInput : public PipelineInput {
+public:
+    PngPipelineInput(const std::string &path);
+
+    const Image *InputImage() const { return &image; };
+private:
+    Image image;
+};
+
+class AstrometryPipelineInput : public PipelineInput {
+public:
+    AstrometryPipelineInput(const std::string &path);
+
+    const Image *InputImage() const { return &image; };
+    const Attitude *InputAttitude() const { return &attitude; };
+private:
+    Image image;
+    Attitude attitude;
+};
+
+class GeneratedPipelineInput : public PipelineInput {
+public:
+    // TODO: correct params
+    GeneratedPipelineInput(Attitude attitude, Camera camera, unsigned char avg_noise);
+
+    const Image *InputImage() const { return &image; };
+    const Stars *InputCentroids() const { return &centroids; };
+    const Stars *InputStars() const { return &stars; };
+    const Attitude *InputAttitude() const { return &attitude; };
+private:
+    Image image;
+    Stars centroids;
+    Stars stars;
+    Attitude attitude;
+};
+
+PngPipelineInput::PngPipelineInput(const std::string &path) {
+    std::string pngPath;
+    cairo_surface_t *cairoSurface = NULL;
+
+    while (cairoSurface == NULL ||
+           cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
+
+        pngPath = Prompt<std::string>("Location of PNG file");
+
+        cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
+    }
+
+    image.image = SurfaceToGrayscaleImage(cairoSurface);
+    image.width = cairo_image_surface_get_width(cairoSurface);
+    image.height = cairo_image_surface_get_height(cairoSurface);
+}
+
+PipelineInputList PromptPngPipelineInput() {
+    // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
+    // with copying unique ptrs
+    PipelineInputList result;
+    result.push_back(std::unique_ptr<PipelineInput>(
+                         new PngPipelineInput(Prompt<std::string>("PNG Path"))));
     return result;
 }
 
@@ -169,22 +238,43 @@ AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
 
-PipelineInput *PromptAstrometryPipelineInput() {
+PipelineInputList PromptAstrometryPipelineInput() {
     // TODO: why does it let us do a reference to an ephemeral return value?
     std::string path = Prompt<std::string>("Astrometry download directory");
-    return (PipelineInput *)new AstrometryPipelineInput(path);
+    PipelineInputList result;
+    result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
+    return result;
 }
 
 GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
-                                               int imageWidth,
-                                               int imageHeight,
+                                               Camera camera,
                                                unsigned char avg_noise) {
     this->attitude = attitude;
     // TODO: actually generate the image!
 }
 
-PipelineInput *PromptGeneratedPipelineInput() {
+PipelineInputList PromptGeneratedPipelineInput() {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
+    int numImages = Prompt<int>("Number of images to generate");
+    int xResolution = Prompt<int>("Horizontal Resolution");
+    int yResolution = Prompt<int>("Vertical Resolution");
+    double xFovDeg = Prompt<double>("Horizontal FOV (in degrees)");
+    // TODO: I don't actually think this calculation is correct; if xFov=90deg and the image is
+    // three times as high as it is wide, the vertical fov is not 270 deg!
+    double yFovDeg = xFovDeg * yResolution / xResolution;
+
+    PipelineInputList result;
+
+    for (int i = 0; i < numImages; i++) {
+        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
+            Attitude(),
+            Camera(round(xFovDeg * 1000000), round(yFovDeg * 1000000), xResolution, yResolution),
+            0);
+
+        result.push_back(std::unique_ptr<PipelineInput>(curr));
+    }
+
+    return result;
 }
 
 typedef PipelineInputList (*PipelineInputFactory)();
@@ -245,34 +335,44 @@ Pipeline PromptPipeline() {
     return result;
 }
 
-PipelineOutput Pipeline::Go(PipelineInput *input) {
+PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From
     // there, execute each successive stage of the pipeline using the output of the last stage
     // (human centipede) until there are no more stages set.
     PipelineOutput result = { 0 };
 
-    const Image *inputImage = input->InputImage();
-    const Centroids *inputCentroids = input->InputCentroids();
-    const Stars *inputStars = input->InputStars();
+    const Image *inputImage = input.InputImage();
+    const Stars *inputCentroids = input.InputCentroids();
+    const Stars *inputStars = input.InputStars();
 
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
         // TODO: don't copy the vector!
-        result.centroids = std::unique_ptr<Centroids>(new std::vector<CentroidStar>(
+        result.centroids = std::unique_ptr<Stars>(new std::vector<Star>(
             centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height)));
         inputCentroids = result.centroids.get();
     }
 
-    if (starIdAlgorithm && inputCentroids && input->InputDatabase()) {
+    if (starIdAlgorithm && inputCentroids && input.InputDatabase()) {
         // TODO: don't copy the vector!
-        result.stars = std::unique_ptr<Stars>(new std::vector<IdentifiedStar>(
-            starIdAlgorithm->Go(input->InputDatabase(), *inputCentroids)));
+        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(
+            starIdAlgorithm->Go(input.InputDatabase(), *inputCentroids)));
         inputStars = result.stars.get();
     }
 
-    if (attitudeEstimationAlgorithm && inputStars && input->InputCamera()) {
+    if (attitudeEstimationAlgorithm && inputStars && input.InputCamera()) {
         result.attitude = std::unique_ptr<Attitude>(
-            new Attitude(attitudeEstimationAlgorithm->Go(*input->InputCamera(), *inputStars)));
+            new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars)));
+    }
+
+    return result;
+}
+
+std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
+    std::vector<PipelineOutput> result;
+    
+    for (const std::unique_ptr<PipelineInput> &input : inputs) {
+        result.push_back(Go(*input));
     }
 
     return result;
@@ -293,16 +393,10 @@ public:
     // count in extra_num
 };
 
-float CentroidStarDistancePixels(CentroidStar one, CentroidStar two) {
-    float distX = one.x - two.x;
-    float distY = one.y - two.y;
-    return sqrt(distX*distX + distY*distY);
-}
-
 // helper for StarCentroidsCompare
 static std::vector<int> FindClosestCentroids(float threshold,
-                                              const Centroids &one,
-                                              const Centroids &two) {
+                                              const Stars &one,
+                                              const Stars &two) {
     std::vector<int> result;
 
     for (int i = 0; i < (int)one.size(); i++) {
@@ -310,7 +404,7 @@ static std::vector<int> FindClosestCentroids(float threshold,
         int   closestIndex = -1;
 
         for (int k = 0; k < (int)two.size(); k++) {
-            float currDistance = CentroidStarDistancePixels(one[i], two[k]);
+            float currDistance = StarDistancePixels(one[i], two[k]);
             if (currDistance < threshold && currDistance < closestDistance) {
                 closestDistance = currDistance;
                 closestIndex = k;
@@ -324,8 +418,8 @@ static std::vector<int> FindClosestCentroids(float threshold,
 }
 
 CentroidComparison CentroidsCompare(float threshold,
-                                    const Centroids &expected,
-                                    const Centroids &actual) {
+                                    const Stars &expected,
+                                    const Stars &actual) {
 
     CentroidComparison result;
     // maps from indexes in each list to the closest centroid from other list
@@ -340,7 +434,7 @@ CentroidComparison CentroidsCompare(float threshold,
             actualToExpected[expectedToActual[i]] != i) {
             result.numMissingStars++;
         } else {
-            result.meanError += CentroidStarDistancePixels(expected[i], actual[expectedToActual[i]]);
+            result.meanError += StarDistancePixels(expected[i], actual[expectedToActual[i]]);
         }
     }
     result.meanError /= (expected.size() - result.numMissingStars);
@@ -379,63 +473,126 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 // PIPELINE OUTPUT //
 /////////////////////
 
-class Comparator {
-public:
-    virtual void Go(const PipelineInput &, const PipelineOutput &) { };
-    virtual void Go(const std::vector<PipelineInput> &expected,
-                    const std::vector<PipelineOutput> &actual) {
-        assert(expected.size() == 1);
-        assert(actual.size() == 1);
-        Go(expected[0], actual[0]);
-    };
-    virtual bool Applicable(const PipelineInput &, const PipelineOutput &) = 0;
-    virtual ~Comparator() { };
-};
+typedef void (*PipelineComparator)(std::ostream *os,
+                                   const PipelineInputList &,
+                                   const std::vector<PipelineOutput> &);
 
-class CentroidComparator {
-public:
-    void Go(std::ostream *os, const std::vector<PipelineInput> &expected, const std::vector<PipelineOutput> &actual) {
-        assert(expected.size() == actual.size() && expected.size() > 0);
-        int size = (int)expected.size();
+cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned int length) {
+    std::ostream *os = (std::ostream *)closure;
+    os->write((const char *)data, length);
+    return CAIRO_STATUS_SUCCESS;
+}
 
-        float threshold = Prompt<float>("Threshold to count as the same star (pixels, float)");
+void PipelineComparatorPlotInput(std::ostream *os,
+                                 const PipelineInputList &expected,
+                                 const std::vector<PipelineOutput> &actual) {
+    const Image *inputImage = expected[0]->InputImage();
+    cairo_surface_t *resultSurface = GrayscaleImageToSurface(
+        inputImage->image, inputImage->width, inputImage->height);
+    
+    cairo_surface_write_to_png_stream(resultSurface, OstreamPlotter, os);
+}
 
-        std::vector<CentroidComparison> comparisons;
-        for (int i = 0; i < size; i++) {
-            comparisons.push_back(CentroidsCompare(threshold, expected[i].ExpectedCentroids(),
-                                                   actual[i].centroids));
-        }
+void PipelineComparatorCentroids(std::ostream *os,
+                                 const PipelineInputList &expected,
+                                 const std::vector<PipelineOutput> &actual) {
+    int size = (int)expected.size();
 
-        CentroidComparison result = CentroidComparisonsCombine(comparisons);
-        os << "extra_stars="
-    };
+    float threshold = Prompt<float>("Threshold to count as the same star (pixels, float)");
 
-    bool Applicable(const PipelineInput &expected, const PipelineOutput &actual) {
-        return expected.ExpectedCentroids() != NULL && actual.centroids != NULL;
-    };
-};
+    std::vector<CentroidComparison> comparisons;
+    for (int i = 0; i < size; i++) {
+        comparisons.push_back(CentroidsCompare(threshold,
+                                               *(expected[i]->ExpectedCentroids()),
+                                               *(actual[i].centroids)));
+    }
 
-void PromptPipelineComparison(const std::vector<PipelineInput> &expected,
+    CentroidComparison result = CentroidComparisonsCombine(comparisons);
+    (*os) << "extra_stars " << result.numExtraStars << std::endl
+          << "missing_stars " << result.numMissingStars << std::endl
+          << "mean_error " << result.meanError << std::endl;
+}
+
+void PipelineComparatorPlotCentroids(std::ostream *os,
+                                     const PipelineInputList &expected,
+                                     const std::vector<PipelineOutput> &actual) {
+    (*os) << "Unimplemented" << std::endl;
+}
+
+void PipelineComparatorStars(std::ostream *os,
+                                     const PipelineInputList &expected,
+                                     const std::vector<PipelineOutput> &actual) {
+    (*os) << "Unimplemented" << std::endl;
+}
+
+void PipelineComparatorPlotStars(std::ostream *os,
+                                     const PipelineInputList &expected,
+                                     const std::vector<PipelineOutput> &actual) {
+    (*os) << "Unimplemented" << std::endl;
+}
+
+void PromptPipelineComparison(const PipelineInputList &expected,
                               const std::vector<PipelineOutput> &actual) {
-    assert(expected.size() == actual.size());
+    assert(expected.size() == actual.size() && expected.size() > 0);
 
-    InteractiveChoice<std::unique_ptr<Comparator>> comparatorChoice;
+    InteractiveChoice<PipelineComparator> comparatorChoice;
 
-#define LOST_COMPARATOR(className) std::unique_ptr<Comparator>((Comparator *)new className())
+    if (expected[0]->InputImage() && expected.size() == 1) {
+        comparatorChoice.Register("plot_input", "Plot raw BW input image to PNG",
+                                  PipelineComparatorPlotInput);
+    }
 
-    std::unique_ptr<Comparator> comparator[] = {
-        LOST_COMPARATOR(CentroidComparator),
-    };
+    // Centroids
+    if (actual[0].centroids != NULL) {
+        if (actual.size() == 1) {
+            comparatorChoice.Register("plot_centroids", "Plot centroids to PNG",
+                                      PipelineComparatorPlotCentroids);
+        }
+        if (expected[0]->ExpectedCentroids()) {
+            comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
+                                      PipelineComparatorCentroids);
+        }
+    }
+
+    // Stars
+    if (actual[0].stars != NULL) {
+        if (actual.size() == 1) {
+            comparatorChoice.Register("plot_stars", "Plot identified stars to PNG",
+                                      PipelineComparatorPlotStars);
+        }
+        if (expected[0]->ExpectedStars()) {
+            comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
+                                      PipelineComparatorStars);
+        }
+    }
+
+    // TODO: Attitude
 
     comparatorChoice.Register("done", "No more comparisons", NULL);
 
     while (true) {
-        std::unique_ptr<Comparator> comparator = comparatorChoice.Prompt("What to do with output");
+        PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
         if (comparator == NULL) {
             break;
         }
 
-        comparator()
+        // prompt output file
+        std::ostream *os;
+        std::fstream fs;
+
+        std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
+        if (filePath == "-") {
+            os = &std::cout;
+        } else {
+            fs.open(filePath, std::fstream::out);
+            os = &fs;
+        }
+
+        comparator(os, expected, actual);
+
+        if (fs.is_open()) {
+            fs.close();
+        }
     }
 }
 

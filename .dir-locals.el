@@ -6,6 +6,7 @@
   (c-file-offsets
    (innamespace . nil))
   (c-basic-offset . 4)
-  (indent-tabs-mode . nil)))
+  (indent-tabs-mode . nil)
+  (fill-column . 100)))
 
 

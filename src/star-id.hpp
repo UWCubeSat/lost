@@ -4,29 +4,24 @@
 #include <vector>
 
 #include "centroiders.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
-class IdentifiedStar {
-    
-};
-
-typedef std::vector<IdentifiedStar> Stars;
-
 class StarIdAlgorithm {
 public:
-    virtual Stars Go(const void *database, const Centroids &) const = 0;
+    virtual Stars Go(const void *database, const Stars &) const = 0;
     virtual ~StarIdAlgorithm() { };
 };
 
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    Stars Go(const void *database, const Centroids &) const;
+    Stars Go(const void *database, const Stars &) const;
 };
 
 class PyramidStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    Stars Go(const void *database, const Centroids &) const;
+    Stars Go(const void *database, const Stars &) const;
 };
 
 }

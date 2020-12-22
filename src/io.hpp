@@ -13,6 +13,10 @@
 
 #include <cairo/cairo.h>
 
+#ifndef CAIRO_HAS_PNG_FUNCTIONS
+#error LOST requires Cairo to be compiled with PNG support
+#endif
+
 #include "catalog-generic.hpp"
 #include "centroiders.hpp"
 #include "star-id.hpp"
@@ -122,61 +126,20 @@ public:
     virtual const Image *InputImage() const { return NULL; };
     // TODO: a more solid type here
     virtual const void *InputDatabase() const { return NULL; };
-    virtual const Centroids *InputCentroids() const { return NULL; };
+    virtual const Stars *InputCentroids() const { return NULL; };
     virtual const Stars *InputStars() const { return NULL; };
     // for tracking
     virtual const Attitude *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
 
-    virtual const Centroids *ExpectedCentroids() const { return InputCentroids(); };
+    virtual const Stars *ExpectedCentroids() const { return InputCentroids(); };
     virtual const Stars *ExpectedStars() const { return InputStars(); };
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
-class AstrometryPipelineInput : public PipelineInput {
-public:
-    AstrometryPipelineInput(const std::string &path);
-
-    const Image *InputImage() const { return &image; };
-    const Attitude *InputAttitude() const { return &attitude; };
-private:
-    Image image;
-    Attitude attitude;
-};
-
-// prompt for the directory
-PipelineInput *PromptAstrometryPipelineInput();
-
-class GeneratedPipelineInput : public PipelineInput {
-public:
-    // TODO: correct params
-    GeneratedPipelineInput(Attitude attitude, int imageWidth, int imageHeight, unsigned char avg_noise);
-
-    const Image *InputImage() const { return &image; };
-    const Centroids *InputCentroids() const { return &centroids; };
-    const Stars *InputStars() const { return &stars; };
-    const Attitude *InputAttitude() const { return &attitude; };
-private:
-    Image image;
-    Centroids centroids;
-    Stars stars;
-    Attitude attitude;
-};
-
-PipelineInput *PromptGeneratedPipelineInput();
-
-// pipeline input to be used in "tracking" mode when a rough orientation is already known. Wraps a
-// normal pipeline input, applying mild changes to attitude.
-// class RandomTrackingPipelineInput : public PipelineInput {
-// public:
-//     const Attitude *InputAttitude() const;
-// private:
-    
-// };
-
-std::unique_ptr<PipelineInput> PromptPipelineInput();
+PipelineInputList PromptPipelineInput();
 
 /////////////////////
 // PIPELINE OUTPUT //
@@ -184,7 +147,7 @@ std::unique_ptr<PipelineInput> PromptPipelineInput();
 
 class PipelineOutput {
 public:
-    std::unique_ptr<Centroids> centroids;
+    std::unique_ptr<Stars> centroids;
     std::unique_ptr<Stars> stars;
     std::unique_ptr<Attitude> attitude;
 };
@@ -198,7 +161,8 @@ public:
 class Pipeline {
     friend Pipeline PromptPipeline();
 public:
-    PipelineOutput Go(PipelineInput *);
+    PipelineOutput Go(const PipelineInput &);
+    std::vector<PipelineOutput> Go(const PipelineInputList &);
 private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
@@ -208,7 +172,7 @@ private:
 Pipeline PromptPipeline();
 
 // ask the user what to do with actual and expected outputs
-void PromptPipelineComparison(const std::vector<PipelineInput> &expected,
+void PromptPipelineComparison(const PipelineInputList &expected,
                               const std::vector<PipelineOutput> &actual);
 
 }

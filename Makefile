@@ -28,7 +28,7 @@ BIN  := lost
 
 BSD  := bright-star-database.tsv
 
-LIBS     := -lcairo -lm
+LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Wall --std=c++11
 
 all: $(BIN) $(BSD)
