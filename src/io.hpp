@@ -33,10 +33,10 @@ std::string NextCliArg();
 template <typename S>
 S Prompt(const std::string &prompt) {
     S result;
-    std::cout << prompt << ": ";
+    std::cerr << prompt << ": ";
     if (HasNextCliArg()) {
         std::string nextArg = NextCliArg();
-        std::cout << nextArg << std::endl;
+        std::cerr << nextArg << std::endl;
         std::stringstream(nextArg) >> result;
     } else {
         std::cin >> result;
@@ -44,6 +44,16 @@ S Prompt(const std::string &prompt) {
     return result;
 }
 
+template <typename S>
+class InteractiveChoiceOption {
+public:
+    InteractiveChoiceOption(std::string shortName, std::string longName, S value)
+        : shortName(shortName), longName(longName), value(value) { };
+
+    std::string shortName;
+    std::string longName;
+    S value;
+};
 
 // can prompt the user between multiple options.
 template <typename S>
@@ -53,12 +63,12 @@ public:
     S Prompt(const std::string &) const;
     void Register(std::string, std::string, S);
 private:
-    std::map<std::string, std::pair<std::string, S>> options;
+    std::vector<InteractiveChoiceOption<S>> options;
 };
 
 template <typename S>
 void InteractiveChoice<S>::Register(std::string shortKey, std::string longKey, S value) {
-    options.emplace(shortKey, std::make_pair(longKey, value));
+    options.push_back(InteractiveChoiceOption<S>(shortKey, longKey, value));
 }
 
 template <typename S>
@@ -67,19 +77,24 @@ S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
     bool useCli = HasNextCliArg();
     while (1) {
         if (!useCli) {
-            for (auto it = options.begin(); it != options.end(); it++) {
-                std::cout << "(" << it->first << ") " << it->second.first << std::endl;
+            for (const auto &option : options) {
+                std::cerr << "(" << option.shortName << ") " << option.longName << std::endl;
             }
         }
         userChoice = lost::Prompt<std::string>(prompt);
-        auto found = options.find(userChoice);
+
+        auto found = options.begin();
+        while (found != options.end() && found->shortName != userChoice) {
+            found++;
+        }
+
         if (found == options.end()) {
-            std::cout << "Peace was never an option." << std::endl;
+            std::cerr << "Peace was never an option." << std::endl;
             if (useCli) {
                 exit(1);
             }
         } else {
-            return found->second.second; // I've been programming too much Lisp
+            return found->value;
         }
     }
 
@@ -90,13 +105,6 @@ std::vector<CatalogStar> BsdParse(std::string tsvPath);
 // Convert a cairo surface to array of grayscale bytes
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
-// plot dots at the specified centroids
-void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
-                          std::vector<Stars> centroids,
-                          double red,
-                          double green,
-                          double blue,
-                          double alpha);
 
 // take an astrometry download from the bash script, and parse it into stuff.
 // void v_astrometry_parse(std::string 
@@ -135,6 +143,8 @@ public:
     virtual const Stars *ExpectedCentroids() const { return InputCentroids(); };
     virtual const Stars *ExpectedStars() const { return InputStars(); };
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
+
+    cairo_surface_t *InputImageSurface() const;
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;

@@ -115,7 +115,7 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
 }
 
 void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
-                          Stars centroids,
+                          const Stars &centroids,
                           double red,
                           double green,
                           double blue,
@@ -172,9 +172,14 @@ InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice() {
     return result;
 }
 
+cairo_surface_t *PipelineInput::InputImageSurface() const {
+    const Image *inputImage = InputImage();
+    return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
+}
+
 class PngPipelineInput : public PipelineInput {
 public:
-    PngPipelineInput(const std::string &path);
+    PngPipelineInput(cairo_surface_t *);
 
     const Image *InputImage() const { return &image; };
 private:
@@ -208,18 +213,7 @@ private:
     Attitude attitude;
 };
 
-PngPipelineInput::PngPipelineInput(const std::string &path) {
-    std::string pngPath;
-    cairo_surface_t *cairoSurface = NULL;
-
-    while (cairoSurface == NULL ||
-           cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
-
-        pngPath = Prompt<std::string>("Location of PNG file");
-
-        cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
-    }
-
+PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface) {
     image.image = SurfaceToGrayscaleImage(cairoSurface);
     image.width = cairo_image_surface_get_width(cairoSurface);
     image.height = cairo_image_surface_get_height(cairoSurface);
@@ -229,8 +223,13 @@ PipelineInputList PromptPngPipelineInput() {
     // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
     // with copying unique ptrs
     PipelineInputList result;
-    result.push_back(std::unique_ptr<PipelineInput>(
-                         new PngPipelineInput(Prompt<std::string>("PNG Path"))));
+    cairo_surface_t *cairoSurface = NULL;
+    std::string pngPath;
+
+    while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
+        cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
+    }
+    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface)));
     return result;
 }
 
@@ -486,11 +485,8 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
 void PipelineComparatorPlotInput(std::ostream *os,
                                  const PipelineInputList &expected,
                                  const std::vector<PipelineOutput> &actual) {
-    const Image *inputImage = expected[0]->InputImage();
-    cairo_surface_t *resultSurface = GrayscaleImageToSurface(
-        inputImage->image, inputImage->width, inputImage->height);
     
-    cairo_surface_write_to_png_stream(resultSurface, OstreamPlotter, os);
+    cairo_surface_write_to_png_stream(expected[0]->InputImageSurface(), OstreamPlotter, os);
 }
 
 void PipelineComparatorCentroids(std::ostream *os,
@@ -516,13 +512,18 @@ void PipelineComparatorCentroids(std::ostream *os,
 void PipelineComparatorPlotCentroids(std::ostream *os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
-    (*os) << "Unimplemented" << std::endl;
+
+    cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
+    SurfacePlotCentroids(cairoSurface, *actual[0].centroids, 1.0, 0.0, 0.0, 0.5);
+    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, os);
 }
 
 void PipelineComparatorStars(std::ostream *os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
     (*os) << "Unimplemented" << std::endl;
+    // TODO: plot all stars, maybe a different color for unidentified stars, and put text next to
+    // properly identified stars.
 }
 
 void PipelineComparatorPlotStars(std::ostream *os,
