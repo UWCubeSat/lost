@@ -13,6 +13,7 @@ public:
     Star(float x, float y, float radiusX, float radiusY, long magnitude) :
         x(x), y(y), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude), spherePhi(-1.0) { };
     Star(float x, float y, float radiusX) : Star(x, y, radiusX, radiusX, 0) { };
+    Star() : Star(0.0, 0.0, 0.0) { };
 
     float x; // pixels*10^6
     float y; // pixels*10^6

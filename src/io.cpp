@@ -203,12 +203,13 @@ public:
     GeneratedPipelineInput(Attitude attitude, Camera camera, unsigned char avg_noise);
 
     const Image *InputImage() const { return &image; };
-    const Stars *InputCentroids() const { return &centroids; };
+    const Stars *InputCentroids() const { return &stars; };
     const Stars *InputStars() const { return &stars; };
     const Attitude *InputAttitude() const { return &attitude; };
 private:
+    // we don't use an Image here because we want to 
+    std::unique_ptr<unsigned char[]> imageData;
     Image image;
-    Stars centroids;
     Stars stars;
     Attitude attitude;
 };
@@ -249,7 +250,28 @@ GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
                                                Camera camera,
                                                unsigned char avg_noise) {
     this->attitude = attitude;
-    // TODO: actually generate the image!
+    image.width = camera.xResolution;
+    image.height = camera.yResolution;
+    unsigned char *imageRaw = (unsigned char *)calloc(image.width * image.height, 1);
+    imageData = std::unique_ptr<unsigned char[]>(imageRaw);
+    image.image = imageData.get();
+
+    // TODO: not this
+    // randomly generate some centroids
+    stars = std::vector<Star>(100);
+    for (int i = 0; i < 100; i++) {
+        stars[i].x = rand() % image.width;
+        stars[i].y = rand() % image.height;
+        stars[i].radiusX = rand() % 10;
+
+        for (int k = stars[i].y - stars[i].radiusX; k < stars[i].y + stars[i].radiusX; k++) {
+            for(int j = stars[i].x - stars[i].radiusX; j < stars[i].x + stars[i].radiusX; j++) {
+                if (k*image.width + j < image.width * image.height && k >= 0 && j >= 0) {
+                    imageData[k*image.width + j] = rand() % 128 + 128;
+                }
+            }
+        }
+    }
 }
 
 PipelineInputList PromptGeneratedPipelineInput() {
@@ -437,7 +459,6 @@ CentroidComparison CentroidsCompare(float threshold,
         }
     }
     result.meanError /= (expected.size() - result.numMissingStars);
-
 
     // any actual star whose closest expected star does not refer to them is extra
     for (int i = 0; i < (int)actual.size(); i++) {
