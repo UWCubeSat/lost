@@ -15,6 +15,7 @@
 #include <iostream>
 #include <memory>
 #include <cstring>
+#include <random>
 
 namespace lost {
 
@@ -200,7 +201,7 @@ private:
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
-    GeneratedPipelineInput(Attitude attitude, Camera camera, unsigned char avg_noise);
+    GeneratedPipelineInput(Attitude attitude, Camera camera, unsigned char noise_deviation);
 
     const Image *InputImage() const { return &image; };
     const Stars *InputCentroids() const { return &stars; };
@@ -248,7 +249,7 @@ PipelineInputList PromptAstrometryPipelineInput() {
 
 GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
                                                Camera camera,
-                                               unsigned char avg_noise) {
+                                               unsigned char noise_deviation) {
     this->attitude = attitude;
     image.width = camera.xResolution;
     image.height = camera.yResolution;
@@ -258,6 +259,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
 
     // TODO: not this
     // randomly generate some centroids
+
     stars = std::vector<Star>(100);
     for (int i = 0; i < 100; i++) {
         stars[i].x = rand() % image.width;
@@ -272,6 +274,21 @@ GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
             }
         }
     }
+
+    // generate gaussina noise w a normal distribution
+    std::normal_distribution<float> dist(0.0, noise_deviation);
+    std::default_random_engine generator;
+    for (int i = 0; i < image.width * image.height; i++) {
+        int noise = int(dist(generator));
+        int temp = imageData[i] + noise;
+        if (temp < 0) {
+            imageData[i] = 0;
+        } else if (temp > 255) {
+            imageData[i] = 255;
+        } else {
+            imageData[i] = temp;
+        }
+    }  
 }
 
 PipelineInputList PromptGeneratedPipelineInput() {
@@ -290,7 +307,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             Attitude(),
             Camera(round(xFovDeg * 1000000), round(yFovDeg * 1000000), xResolution, yResolution),
-            0);
+            3);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
     }
