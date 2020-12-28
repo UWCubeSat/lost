@@ -48,9 +48,10 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
 
     // when we are modifying the coordinate axes, the quaternion multiplication works so that the
     // rotations are applied from left to right. This is the opposite as for modifying vectors.
-    return Quaternion({ 0, 0, 1 }, -ra)
-        * Quaternion({ 0, 1, 0 }, -dec)
-        * Quaternion({ 1, 0, 0 }, -roll);
+    auto a = Quaternion({ 0, 0, 1 }, ra);
+    auto b = Quaternion({ 0, 1, 0 }, dec);
+    auto c = Quaternion({ 1, 0, 0 }, roll);
+    return c*b*a;
 }
 
 float RadToDeg(float rad) {

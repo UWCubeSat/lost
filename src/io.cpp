@@ -9,6 +9,7 @@
 #include <math.h>
 #include <errno.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include <vector>
 #include <sstream>
@@ -63,11 +64,10 @@ PromptedOutputStream::~PromptedOutputStream() {
 
 std::vector<CatalogStar> BscParse(std::string tsvPath) {
     std::vector<CatalogStar> result;
-    FILE           *file;
-    long           raj2000High, raj2000Low, // high and low parts
-                   dej2000High, dej2000Low;
-    int            magnitudeHigh, magnitudeLow;
-    char           weird;
+    FILE *file;
+    double raj2000, dej2000;
+    int magnitudeHigh, magnitudeLow, name;
+    char weird;
 
     file = fopen(tsvPath.c_str(), "r");
     if (file == NULL) {
@@ -75,17 +75,16 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
         return result; // TODO
     }
 
-    while (EOF != fscanf(file, "%ld.%ld|%ld.%ld|%*d|%c|%d.%d",
-                         &raj2000High, &raj2000Low,
-                         &dej2000High, &dej2000Low,
-                         &weird,
+    while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d",
+                         &raj2000, &dej2000,
+                         &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
-           
-        result.push_back(CatalogStar(
-                             raj2000High * 1000000 + raj2000Low,
-                             dej2000High * 1000000 + dej2000Low,
-                             magnitudeHigh * 100 + magnitudeLow,
-                             weird != ' '));
+        char strName[8];
+        sprintf(strName, "%d", name);
+        result.push_back(CatalogStar(DegToRad(raj2000), DegToRad(dej2000),
+                                     magnitudeHigh*100 + magnitudeLow,
+                                     weird != ' ',
+                                     strName));
     }
 
     fclose(file);
@@ -308,7 +307,7 @@ PipelineInputList PromptAstrometryPipelineInput() {
     return result;
 }
 
-GeneratedPipelineInput::GeneratedPipelineInput(const std::vector<CatalogStar> &catalog,
+GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Quaternion attitude,
                                                Camera camera,
                                                unsigned char noise_deviation) {
@@ -319,17 +318,28 @@ GeneratedPipelineInput::GeneratedPipelineInput(const std::vector<CatalogStar> &c
     imageData = std::unique_ptr<unsigned char[]>(imageRaw);
     image.image = imageData.get();
 
-    // TODO: not this
-    // randomly generate some centroids
+    for (const CatalogStar &catalogStar : catalog) {
+        Vec3 spatial = {
+            cos(catalogStar.raj2000)*cos(catalogStar.dej2000),
+            sin(catalogStar.raj2000)*cos(catalogStar.dej2000),
+            sin(catalogStar.dej2000),
+        };
+        Vec3 rotated = attitude.Rotate(spatial);
+        if (rotated.x < 0) {
+            continue;
+        }
+        Vec2 camCoords = camera.ConvertCoordinates(rotated);
+        if (camera.InSensor(camCoords)) {
+            stars.push_back(Star(camCoords.x, camCoords.y,
+                                 (750-catalogStar.magnitude)/200.0,
+                                 (750-catalogStar.magnitude)/200.0,
+                                 catalogStar.magnitude));
+        }
+    }
 
-    stars = std::vector<Star>(100);
-    for (int i = 0; i < 100; i++) {
-        stars[i].x = rand() % image.width;
-        stars[i].y = rand() % image.height;
-        stars[i].radiusX = rand() % 10;
-
-        for (int k = stars[i].y - stars[i].radiusX; k < stars[i].y + stars[i].radiusX; k++) {
-            for(int j = stars[i].x - stars[i].radiusX; j < stars[i].x + stars[i].radiusX; j++) {
+    for (const Star &star : stars) {
+        for (int k = star.y - star.radiusX; k < star.y + star.radiusX; k++) {
+            for(int j = star.x - star.radiusX; j < star.x + star.radiusX; j++) {
                 if (k*image.width + j < image.width * image.height && k >= 0 && j >= 0) {
                     imageData[k*image.width + j] = rand() % 128 + 128;
                 }
@@ -375,7 +385,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
-            Camera(xFovDeg, xResolution, yResolution),
+            Camera(DegToRad(xFovDeg), xResolution, yResolution),
             3);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));

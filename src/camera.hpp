@@ -7,7 +7,7 @@ namespace lost {
 
 class Camera {
 public:
-    Camera(long xFov, long xResolution, long yResolution)
+    Camera(float xFov, int xResolution, int yResolution)
         : xFov(xFov), xResolution(xResolution), yResolution(yResolution) { };
 
     // Converts from a 3D point in space to a 2D point on the camera sensor. Assumes that X is the

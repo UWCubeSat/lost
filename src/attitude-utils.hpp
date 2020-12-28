@@ -23,7 +23,7 @@ public:
     Quaternion() = default; // I guess this lets you call Attitude on an attitude object?
     Quaternion(const Vec3 &); // Pure quaternion
     Quaternion(const Vec3 &, float);
-    Quaternion(long real, long i, long j, long k)
+    Quaternion(float real, float i, float j, float k)
         : real(real), i(i), j(j), k(k) { };
 
     Quaternion operator*(const Quaternion &other) const;

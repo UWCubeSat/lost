@@ -2,10 +2,14 @@
 #include "attitude-utils.hpp"
 
 #include <math.h>
+#include <assert.h>
 
 namespace lost {
 
 Vec2 Camera::ConvertCoordinates(const Vec3 &vector) const {
+    // can't handle things behind the camera.
+    assert(vector.x > 0);
+    assert(xFov > 0 && xFov < M_PI);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
     float yTangent = vector.y/vector.x;
     float zTangent = vector.z/vector.x;
