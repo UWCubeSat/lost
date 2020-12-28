@@ -26,15 +26,15 @@ OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS))
 BIN  := lost
 
-BSD  := bright-star-database.tsv
+BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Wall --std=c++11
 
-all: $(BIN) $(BSD)
+all: $(BIN) $(BSC)
 
-$(BSD): download-bright-star-database.sh
-	./download-bright-star-database.sh
+$(BSC): download-bsc.sh
+	./download-bsc.sh
 
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
@@ -46,6 +46,6 @@ $(BIN): $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(DEPS)
-	rm -i $(BSD)
+	rm -i $(BSC)
 
 .PHONY: all clean

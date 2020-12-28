@@ -10,18 +10,23 @@ namespace lost {
 
 class StarIdAlgorithm {
 public:
-    virtual Stars Go(const void *database, const Stars &) const = 0;
+    virtual void Go(const unsigned char *database, Stars *) const = 0;
     virtual ~StarIdAlgorithm() { };
+};
+
+class DummyStarIdAlgorithm : public StarIdAlgorithm {
+public:
+    void Go(const unsigned char *database, Stars *) const;
 };
 
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    Stars Go(const void *database, const Stars &) const;
+    void Go(const unsigned char *database, Stars *) const;
 };
 
 class PyramidStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    Stars Go(const void *database, const Stars &) const;
+    void Go(const unsigned char *database, Stars *) const;
 };
 
 }

@@ -1,6 +1,8 @@
 #ifndef CATALOG_GENERIC_H
 #define CATALOG_GENERIC_H
 
+#include <vector>
+
 namespace lost {
 
 class CatalogStar {
@@ -12,6 +14,8 @@ public:
     int  magnitude;         // *10^-2
     bool weird;             // nonzero for binary, etc
 };
+
+typedef std::vector<CatalogStar> Catalog;
 
 }
 

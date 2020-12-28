@@ -1,4 +1,7 @@
 #include "io.hpp"
+#include "attitude-utils.hpp"
+#include "database-builders.hpp"
+#include "star-id.hpp"
 
 #include <cairo/cairo.h>
 #include <stdio.h>
@@ -39,7 +42,26 @@ std::string NextCliArg() {
     return std::string("You incompetent fool!");
 }
 
-std::vector<CatalogStar> BsdParse(std::string tsvPath) {
+PromptedOutputStream::PromptedOutputStream() {
+    std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
+    if (filePath == "-") {
+        stream = &std::cout;
+        isFstream = false;
+    } else {
+        std::fstream *fs = new std::fstream();
+        fs->open(filePath, std::fstream::out);
+        stream = fs;
+        isFstream = true;
+    }
+}
+
+PromptedOutputStream::~PromptedOutputStream() {
+    if (isFstream) {
+        delete stream;
+    }
+}
+
+std::vector<CatalogStar> BscParse(std::string tsvPath) {
     std::vector<CatalogStar> result;
     FILE           *file;
     long           raj2000High, raj2000Low, // high and low parts
@@ -68,6 +90,22 @@ std::vector<CatalogStar> BsdParse(std::string tsvPath) {
 
     fclose(file);
     return result;
+}
+
+#ifndef DEFAULT_BSC_PATH
+#define DEFAULT_BSC_PATH "bright-star-catalog.tsv"
+#endif
+
+std::vector<CatalogStar> CatalogRead() {
+    static bool readYet = false;
+    static std::vector<CatalogStar> catalog;
+
+    if (!readYet) {
+        readYet = true;
+        char *tsvPath = getenv("LOST_BSC_PATH");
+        catalog = BscParse(tsvPath ? tsvPath : DEFAULT_BSC_PATH);
+    }
+    return catalog;
 }
 
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
@@ -155,6 +193,8 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
 
 // ALGORITHM PROMPTERS
 
+typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
+
 CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     int numStars = Prompt<int>("How many stars to generate");
     return new DummyCentroidAlgorithm(numStars);
@@ -164,14 +204,34 @@ CentroidAlgorithm *CogCentroidAlgorithmPrompt() {
     return new CenterOfGravityAlgorithm();
 }
 
-InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice() {
-    InteractiveChoice<CentroidAlgorithmFactory> result;
+typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
-    result.Register("dummy", "Dummy algo", DummyCentroidAlgorithmPrompt);
-    result.Register("cog", "Center-of-Gravity", CogCentroidAlgorithmPrompt);
-
-    return result;
+StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
+    return new DummyStarIdAlgorithm();
 }
+
+StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
+    return new GeometricVotingStarIdAlgorithm();
+}
+
+StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
+    return new PyramidStarIdAlgorithm();
+}
+
+unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length) {
+    float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
+    float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
+    long numBins = Prompt<long>("Number of distance bins");
+    return BuildKVectorDatabase(catalog, length, minDistance, maxDistance, numBins);
+}
+
+DbBuilder PromptDbBuilder() {
+    InteractiveChoice<DbBuilder> dbBuilderChoice;
+    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
+    return dbBuilderChoice.Prompt("Choose database builder");
+}
+
+// PIPELINE INPUT STUFF
 
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
@@ -192,27 +252,28 @@ public:
     AstrometryPipelineInput(const std::string &path);
 
     const Image *InputImage() const { return &image; };
-    const Attitude *InputAttitude() const { return &attitude; };
+    const Quaternion *InputAttitude() const { return &attitude; };
 private:
     Image image;
-    Attitude attitude;
+    Quaternion attitude;
 };
 
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
-    GeneratedPipelineInput(Attitude attitude, Camera camera, unsigned char noise_deviation);
+    GeneratedPipelineInput(const std::vector<CatalogStar> &, Quaternion, Camera,
+                           unsigned char noise_deviation);
 
     const Image *InputImage() const { return &image; };
     const Stars *InputCentroids() const { return &stars; };
     const Stars *InputStars() const { return &stars; };
-    const Attitude *InputAttitude() const { return &attitude; };
+    const Quaternion *InputAttitude() const { return &attitude; };
 private:
     // we don't use an Image here because we want to 
     std::unique_ptr<unsigned char[]> imageData;
     Image image;
     Stars stars;
-    Attitude attitude;
+    Quaternion attitude;
 };
 
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface) {
@@ -247,7 +308,8 @@ PipelineInputList PromptAstrometryPipelineInput() {
     return result;
 }
 
-GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
+GeneratedPipelineInput::GeneratedPipelineInput(const std::vector<CatalogStar> &catalog,
+                                               Quaternion attitude,
                                                Camera camera,
                                                unsigned char noise_deviation) {
     this->attitude = attitude;
@@ -291,22 +353,29 @@ GeneratedPipelineInput::GeneratedPipelineInput(Attitude attitude,
     }  
 }
 
+Quaternion PromptSphericalAttitude() {
+    float ra = Prompt<float>("Boresight right ascension");
+    float dec = Prompt<float>("Boresight declination");
+    float roll = Prompt<float>("Boresight roll");
+    return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
+}
+
 PipelineInputList PromptGeneratedPipelineInput() {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
     int numImages = Prompt<int>("Number of images to generate");
     int xResolution = Prompt<int>("Horizontal Resolution");
     int yResolution = Prompt<int>("Vertical Resolution");
-    double xFovDeg = Prompt<double>("Horizontal FOV (in degrees)");
-    // TODO: I don't actually think this calculation is correct; if xFov=90deg and the image is
-    // three times as high as it is wide, the vertical fov is not 270 deg!
-    double yFovDeg = xFovDeg * yResolution / xResolution;
+    float xFovDeg = Prompt<float>("Horizontal FOV (in degrees)");
+    // TODO: allow random angle generation?
+    Quaternion attitude = PromptSphericalAttitude();
 
     PipelineInputList result;
 
     for (int i = 0; i < numImages; i++) {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
-            Attitude(),
-            Camera(round(xFovDeg * 1000000), round(yFovDeg * 1000000), xResolution, yResolution),
+            CatalogRead(),
+            attitude,
+            Camera(xFovDeg, xResolution, yResolution),
             3);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
@@ -328,13 +397,14 @@ PipelineInputList PromptPipelineInput() {
 
 Pipeline PromptPipeline() {
     enum class PipelineStage {
-        Centroid, StarId, AttitudeEstimation, Done
+        Centroid, Database, StarId, AttitudeEstimation, Done
     };
 
     Pipeline result;
     
     InteractiveChoice<PipelineStage> stageChoice;
     stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
+    stageChoice.Register("database", "Database", PipelineStage::Database);
     stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
     stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
@@ -345,15 +415,35 @@ Pipeline PromptPipeline() {
 
         case PipelineStage::Centroid: {
             InteractiveChoice<CentroidAlgorithmFactory> centroidChoice;
-            centroidChoice.Register("dummy", "Random Centroid Algorithm", &DummyCentroidAlgorithmPrompt);
-            centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm", &CogCentroidAlgorithmPrompt);
+            centroidChoice.Register("dummy", "Random Centroid Algorithm", DummyCentroidAlgorithmPrompt);
+            centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm", CogCentroidAlgorithmPrompt);
+
             result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
                 (centroidChoice.Prompt("Choose centroid algo"))());
             break;
         }
 
+        case PipelineStage::Database: {
+            std::string path = Prompt<std::string>("Database file");
+            std::fstream fs;
+            fs.open(path, std::fstream::in | std::fstream::binary);
+            fs.seekg(0, fs.end);
+            long length = fs.tellg();
+            fs.seekg(0, fs.beg);
+            std::cerr << "Reading " << length << " bytes of database" << std::endl;
+            result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
+            fs.read((char *)result.database.get(), length);
+            std::cerr << "Done" << std::endl;
+        }
+
         case PipelineStage::StarId: {
-            std::cerr << "TODO" << std::endl;
+            InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
+            starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
+            starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
+            starIdChoice.Register("pyramid", "Pyramid codes", PyramidStarIdAlgorithmPrompt);
+
+            result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
+                (starIdChoice.Prompt("Choose Star-ID algo"))());
             break;
         }
 
@@ -391,16 +481,16 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         inputCentroids = result.centroids.get();
     }
 
-    if (starIdAlgorithm && inputCentroids && input.InputDatabase()) {
+    if (starIdAlgorithm && database && inputCentroids) {
         // TODO: don't copy the vector!
-        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(
-            starIdAlgorithm->Go(input.InputDatabase(), *inputCentroids)));
+        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(*result.centroids));
+        starIdAlgorithm->Go(database.get(), result.stars.get());
         inputStars = result.stars.get();
     }
 
     if (attitudeEstimationAlgorithm && inputStars && input.InputCamera()) {
-        result.attitude = std::unique_ptr<Attitude>(
-            new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars)));
+        result.attitude = std::unique_ptr<Quaternion>(
+            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars)));
     }
 
     return result;
@@ -510,7 +600,7 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 // PIPELINE OUTPUT //
 /////////////////////
 
-typedef void (*PipelineComparator)(std::ostream *os,
+typedef void (*PipelineComparator)(std::ostream &os,
                                    const PipelineInputList &,
                                    const std::vector<PipelineOutput> &);
 
@@ -520,14 +610,14 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
     return CAIRO_STATUS_SUCCESS;
 }
 
-void PipelineComparatorPlotInput(std::ostream *os,
+void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
                                  const std::vector<PipelineOutput> &actual) {
     
-    cairo_surface_write_to_png_stream(expected[0]->InputImageSurface(), OstreamPlotter, os);
+    cairo_surface_write_to_png_stream(expected[0]->InputImageSurface(), OstreamPlotter, &os);
 }
 
-void PipelineComparatorCentroids(std::ostream *os,
+void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineInputList &expected,
                                  const std::vector<PipelineOutput> &actual) {
     int size = (int)expected.size();
@@ -542,32 +632,32 @@ void PipelineComparatorCentroids(std::ostream *os,
     }
 
     CentroidComparison result = CentroidComparisonsCombine(comparisons);
-    (*os) << "extra_stars " << result.numExtraStars << std::endl
-          << "missing_stars " << result.numMissingStars << std::endl
-          << "mean_error " << result.meanError << std::endl;
+    os << "extra_stars " << result.numExtraStars << std::endl
+       << "missing_stars " << result.numMissingStars << std::endl
+       << "mean_error " << result.meanError << std::endl;
 }
 
-void PipelineComparatorPlotCentroids(std::ostream *os,
+void PipelineComparatorPlotCentroids(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
 
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlotCentroids(cairoSurface, *actual[0].centroids, 1.0, 0.0, 0.0, 0.5);
-    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, os);
+    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
 }
 
-void PipelineComparatorStars(std::ostream *os,
+void PipelineComparatorStars(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
-    (*os) << "Unimplemented" << std::endl;
+    os << "Unimplemented" << std::endl;
     // TODO: plot all stars, maybe a different color for unidentified stars, and put text next to
     // properly identified stars.
 }
 
-void PipelineComparatorPlotStars(std::ostream *os,
+void PipelineComparatorPlotStars(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
-    (*os) << "Unimplemented" << std::endl;
+    os << "Unimplemented" << std::endl;
 }
 
 void PromptPipelineComparison(const PipelineInputList &expected,
@@ -615,23 +705,8 @@ void PromptPipelineComparison(const PipelineInputList &expected,
             break;
         }
 
-        // prompt output file
-        std::ostream *os;
-        std::fstream fs;
-
-        std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
-        if (filePath == "-") {
-            os = &std::cout;
-        } else {
-            fs.open(filePath, std::fstream::out);
-            os = &fs;
-        }
-
-        comparator(os, expected, actual);
-
-        if (fs.is_open()) {
-            fs.close();
-        }
+        PromptedOutputStream pos;
+        comparator(pos.Stream(), expected, actual);
     }
 }
 

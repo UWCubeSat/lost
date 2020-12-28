@@ -1,40 +1,44 @@
 #ifndef DATABASE_BUILDER_H
 #define DATABASE_BUILDER_H
 
+#include <inttypes.h>
 #include <vector>
 
 #include "catalog-generic.hpp"
 
-class DatabaseBuilder {
-public:
-    virtual unsigned char *Go(int *length) const;
-};
+namespace lost {
 
 /**
- For a K-vector database with `n' stars and `m' distance bins
-     | size          | description         |
-     |---------------+---------------------|
-     | sizeof(int)   | stores `n'          |
-     | n*sizeof(int) | stores star indices, sorted  |
-     |               |                     |
+ K-vector database layout
+     | size (bytes) | name        | description                                                 |
+     |--------------+-------------+-------------------------------------------------------------|
+     |            4 | numPairs    | Number of star pairs that are in the min/max distance range |
+     |            4 | minDistance | Millionths of a degree                                      |
+     |            4 | maxDistance | Millionths of a degree                                      |
+     |            4 | numBins     | Number of distance bins                                     |
+     | 2*2*numPairs | pairs       | Pairs, sorted by distance between the stars in the pair.    |
+     |              |             | Simply stores the BSC index of the first star immediately   |
+     |              |             | followed by the BSC index of the other star.                |
+     |    4*numBins | bins        | The `i'th bin (starting from zero) stores how many pairs of |
+     |              |             | stars have a distance less than or equal to:                |
+     |              |             | minDistance+(maxDistance-minDistance)*i/numBins             |
  */
 
-class KVectorDatabaseBuilder {
-public:
-    KVectorDatabaseBuilder(long minDistance, long maxDistance)
-        : minDistance(minDistance), maxDistance(maxDistance) { };
-    unsigned char *Go(int *length) const;
-private:
-    long minDistance; // millionth of a degree-
-    long maxDistance;
-};
-
-KVectorDatabaseBuilder PromptKVectorDatabaseBuilder();
+unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
+                                    float minDistance, float maxDistance, long numBins);
 
 class KVectorDatabase {
     std::vector<int> StarsWithDistance(long minDistance, long maxDistance);
 private:
-    unsigned char *bytes;
+    long numPairs;
+    long minDistance;
+    long maxDistance;
+    long numBins;
+    // TODO: endianness
+    int16_t *pairs;
+    int32_t *bins;
 };
+
+}
 
 #endif

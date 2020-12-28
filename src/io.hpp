@@ -100,8 +100,21 @@ S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
 
 }
 
-// parse the Bright Star Catalog tsv file (see Bash)
-std::vector<CatalogStar> BsdParse(std::string tsvPath);
+class PromptedOutputStream {
+public:
+    PromptedOutputStream();
+    ~PromptedOutputStream();
+    std::ostream &Stream() { return *stream; };
+private:
+    bool isFstream;
+    std::ostream *stream;
+};
+
+// prompts for an output stream, then calls the given function with it.
+void WithOutputStream(void (*)(std::ostream *));
+
+// use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
+std::vector<CatalogStar> CatalogRead();
 // Convert a cairo surface to array of grayscale bytes
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
@@ -113,9 +126,6 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width,
 //                         int             *pi_centroids_length); // TODO: fov, actual angle, etc
 
 // type for functions that create a centroid algorithm (by prompting the user usually)
-typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
-
-InteractiveChoice<CentroidAlgorithmFactory> makeCentroidAlgorithmChoice();
 
 class Image {
 public:
@@ -133,16 +143,15 @@ class PipelineInput {
 public:
     virtual const Image *InputImage() const { return NULL; };
     // TODO: a more solid type here
-    virtual const void *InputDatabase() const { return NULL; };
     virtual const Stars *InputCentroids() const { return NULL; };
     virtual const Stars *InputStars() const { return NULL; };
     // for tracking
-    virtual const Attitude *InputAttitude() const { return NULL; };
+    virtual const Quaternion *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
 
     virtual const Stars *ExpectedCentroids() const { return InputCentroids(); };
     virtual const Stars *ExpectedStars() const { return InputStars(); };
-    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
+    virtual const Quaternion *ExpectedAttitude() const { return InputAttitude(); };
 
     cairo_surface_t *InputImageSurface() const;
 };
@@ -159,7 +168,7 @@ class PipelineOutput {
 public:
     std::unique_ptr<Stars> centroids;
     std::unique_ptr<Stars> stars;
-    std::unique_ptr<Attitude> attitude;
+    std::unique_ptr<Quaternion> attitude;
 };
 
 //////////////
@@ -177,6 +186,7 @@ private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+    std::unique_ptr<unsigned char[]> database;
 };
 
 Pipeline PromptPipeline();
@@ -184,6 +194,14 @@ Pipeline PromptPipeline();
 // ask the user what to do with actual and expected outputs
 void PromptPipelineComparison(const PipelineInputList &expected,
                               const std::vector<PipelineOutput> &actual);
+
+////////////////
+// DB BUILDER //
+////////////////
+
+// unlike the other algorithm prompters, db builders aren't a 
+typedef unsigned char *(*DbBuilder)(const Catalog &, long *);
+DbBuilder PromptDbBuilder();
 
 }
 
