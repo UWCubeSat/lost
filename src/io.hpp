@@ -17,8 +17,8 @@
 #error LOST requires Cairo to be compiled with PNG support
 #endif
 
-#include "catalog-generic.hpp"
 #include "centroiders.hpp"
+#include "star-utils.hpp"
 #include "star-id.hpp"
 #include "camera.hpp"
 #include "attitude-utils.hpp"
@@ -142,15 +142,15 @@ public:
 class PipelineInput {
 public:
     virtual const Image *InputImage() const { return NULL; };
-    // TODO: a more solid type here
-    virtual const Stars *InputCentroids() const { return NULL; };
     virtual const Stars *InputStars() const { return NULL; };
+    // whether the input stars have identification information.
+    virtual const StarIdentifiers *InputStarIds() const { return NULL; };
     // for tracking
     virtual const Quaternion *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
 
-    virtual const Stars *ExpectedCentroids() const { return InputCentroids(); };
     virtual const Stars *ExpectedStars() const { return InputStars(); };
+    virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
     virtual const Quaternion *ExpectedAttitude() const { return InputAttitude(); };
 
     cairo_surface_t *InputImageSurface() const;
@@ -164,10 +164,9 @@ PipelineInputList PromptPipelineInput();
 // PIPELINE OUTPUT //
 /////////////////////
 
-class PipelineOutput {
-public:
-    std::unique_ptr<Stars> centroids;
+struct PipelineOutput {
     std::unique_ptr<Stars> stars;
+    std::unique_ptr<StarIdentifiers> starIds;
     std::unique_ptr<Quaternion> attitude;
 };
 

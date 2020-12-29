@@ -2,6 +2,7 @@
 #include "attitude-utils.hpp"
 #include "database-builders.hpp"
 #include "star-id.hpp"
+#include "star-utils.hpp"
 
 #include <cairo/cairo.h>
 #include <stdio.h>
@@ -12,9 +13,7 @@
 #include <stdlib.h>
 
 #include <vector>
-#include <sstream>
 #include <string>
-#include <sstream>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -79,12 +78,9 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                          &raj2000, &dej2000,
                          &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
-        char strName[8];
-        sprintf(strName, "%d", name);
         result.push_back(CatalogStar(DegToRad(raj2000), DegToRad(dej2000),
                                      magnitudeHigh*100 + magnitudeLow,
-                                     weird != ' ',
-                                     strName));
+                                     weird != ' ', name));
     }
 
     fclose(file);
@@ -152,27 +148,37 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
     return result;
 }
 
-void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
-                          const Stars &centroids,
-                          double red,
-                          double green,
-                          double blue,
-                          double alpha) {
+void SurfacePlot(cairo_surface_t *cairoSurface,
+                 const Stars &stars,
+                 const StarIdentifiers *starIds,
+                 const Quaternion *attitude,
+                 double red,
+                 double green,
+                 double blue,
+                 double alpha) {
     cairo_t *cairoCtx;
+    std::string metadata = "";
 
     cairoCtx = cairo_create(cairoSurface);
     cairo_set_source_rgba(cairoCtx, red, green, blue, alpha);
     cairo_set_line_width(cairoCtx, 1.0);
     cairo_set_antialias(cairoCtx, CAIRO_ANTIALIAS_NONE);
+    cairo_font_options_t *cairoFontOptions = cairo_font_options_create();
+    cairo_font_options_set_antialias(cairoFontOptions, CAIRO_ANTIALIAS_NONE);
+    cairo_set_font_options(cairoCtx, cairoFontOptions);
+    cairo_text_extents_t cairoTextExtents;
+    cairo_text_extents(cairoCtx, "1234567890", &cairoTextExtents);
+    double textHeight = cairoTextExtents.height;
 
-    for (const Star &centroid : centroids) {
+    for (const Star &centroid : stars) {
+        // plot the box around the star
         if (centroid.radiusX > 0.0f) {
             float radiusX = centroid.radiusX;
             float radiusY = centroid.radiusY > 0.0f ?
                 centroid.radiusY : radiusX;
 
-            // Rectangles should be entirely /outside/ the radius of the star, so the star is fully
-            // visible.
+            // Rectangles should be entirely /outside/ the radius of the star, so the star is
+            // fully visible.
             cairo_rectangle(cairoCtx,
                             centroid.x+.5 - radiusX,
                             centroid.y+.5 - radiusY,
@@ -187,6 +193,38 @@ void SurfacePlotCentroids(cairo_surface_t *cairoSurface,
             cairo_fill(cairoCtx);
         }
     }
+
+    metadata += std::to_string(stars.size()) + " centroids   ";
+
+    if (starIds != NULL) {
+        const Catalog &catalog = CatalogRead(); // TODO: this is nasty
+
+        for (const StarIdentifier &starId : *starIds) {
+            const Star &centroid = stars[starId.starIndex];
+            cairo_move_to(cairoCtx,
+
+                          centroid.radiusX > 0.0f
+                          ? centroid.x + centroid.radiusX + 3
+                          : centroid.x + 8,
+
+                          centroid.radiusY > 0.0f
+                          ? centroid.y - centroid.radiusY + textHeight
+                          : centroid.y + 10);
+
+            cairo_show_text(cairoCtx, std::to_string(catalog[starId.catalogIndex].name).c_str());
+        }
+        metadata += std::to_string(starIds->size()) + " identified   ";
+    }
+
+    if (attitude != NULL) {
+        metadata += "TODO: convert quaternion back into spherical coordinates.   ";
+    }
+
+    // plot metadata
+    cairo_move_to(cairoCtx, 3, 3 + textHeight);
+    cairo_show_text(cairoCtx, metadata.c_str());
+
+    cairo_font_options_destroy(cairoFontOptions);
     cairo_destroy(cairoCtx);
 }
 
@@ -264,14 +302,16 @@ public:
                            unsigned char noise_deviation);
 
     const Image *InputImage() const { return &image; };
-    const Stars *InputCentroids() const { return &stars; };
     const Stars *InputStars() const { return &stars; };
+    const StarIdentifiers *InputStarIds() const { return &starIds; };
+    bool InputStarsIdentified() const { return true; };
     const Quaternion *InputAttitude() const { return &attitude; };
 private:
     // we don't use an Image here because we want to 
     std::unique_ptr<unsigned char[]> imageData;
     Image image;
     Stars stars;
+    StarIdentifiers starIds;
     Quaternion attitude;
 };
 
@@ -318,7 +358,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     imageData = std::unique_ptr<unsigned char[]>(imageRaw);
     image.image = imageData.get();
 
-    for (const CatalogStar &catalogStar : catalog) {
+    for (int i = 0; i < (int)catalog.size(); i++) {
+        const CatalogStar &catalogStar = catalog[i];
         Vec3 spatial = {
             cos(catalogStar.raj2000)*cos(catalogStar.dej2000),
             sin(catalogStar.raj2000)*cos(catalogStar.dej2000),
@@ -334,6 +375,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                  (750-catalogStar.magnitude)/200.0,
                                  (750-catalogStar.magnitude)/200.0,
                                  catalogStar.magnitude));
+            starIds.push_back(StarIdentifier(stars.size() - 1, i));
         }
     }
 
@@ -414,6 +456,8 @@ Pipeline PromptPipeline() {
     
     InteractiveChoice<PipelineStage> stageChoice;
     stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
+    // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
+    // choices to those compatible with the database?
     stageChoice.Register("database", "Database", PipelineStage::Database);
     stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
@@ -444,6 +488,7 @@ Pipeline PromptPipeline() {
             result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
             fs.read((char *)result.database.get(), length);
             std::cerr << "Done" << std::endl;
+            break;
         }
 
         case PipelineStage::StarId: {
@@ -480,25 +525,26 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     PipelineOutput result = { 0 };
 
     const Image *inputImage = input.InputImage();
-    const Stars *inputCentroids = input.InputCentroids();
     const Stars *inputStars = input.InputStars();
+    const StarIdentifiers *inputStarIds = input.InputStarIds();
 
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
         // TODO: don't copy the vector!
-        result.centroids = std::unique_ptr<Stars>(new std::vector<Star>(
+        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(
             centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height)));
-        inputCentroids = result.centroids.get();
-    }
-
-    if (starIdAlgorithm && database && inputCentroids) {
-        // TODO: don't copy the vector!
-        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(*result.centroids));
-        starIdAlgorithm->Go(database.get(), result.stars.get());
         inputStars = result.stars.get();
     }
 
-    if (attitudeEstimationAlgorithm && inputStars && input.InputCamera()) {
+    if (starIdAlgorithm && database && inputStars) {
+        // TODO: don't copy the vector!
+        result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
+            starIdAlgorithm->Go(database.get(), *result.stars)));
+        inputStarIds = result.starIds.get();
+    }
+
+    if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
+        assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
             new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars)));
     }
@@ -620,11 +666,28 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
     return CAIRO_STATUS_SUCCESS;
 }
 
+void PipelineComparatorPlotRawInput(std::ostream &os,
+                                    const PipelineInputList &expected,
+                                    const std::vector<PipelineOutput> &actual) {
+    
+    cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
+    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
+    cairo_surface_destroy(cairoSurface);
+}
+
 void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
                                  const std::vector<PipelineOutput> &actual) {
-    
-    cairo_surface_write_to_png_stream(expected[0]->InputImageSurface(), OstreamPlotter, &os);
+    cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
+    assert(expected[0]->InputStars() != NULL);
+    SurfacePlot(cairoSurface,
+                *expected[0]->InputStars(),
+                expected[0]->InputStarIds(),
+                expected[0]->InputAttitude(),
+                // green
+                0.0, 1.0, 0.0, 0.6);
+    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
+    cairo_surface_destroy(cairoSurface);
 }
 
 void PipelineComparatorCentroids(std::ostream &os,
@@ -637,8 +700,8 @@ void PipelineComparatorCentroids(std::ostream &os,
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
         comparisons.push_back(CentroidsCompare(threshold,
-                                               *(expected[i]->ExpectedCentroids()),
-                                               *(actual[i].centroids)));
+                                               *(expected[i]->ExpectedStars()),
+                                               *(actual[i].stars)));
     }
 
     CentroidComparison result = CentroidComparisonsCombine(comparisons);
@@ -647,13 +710,19 @@ void PipelineComparatorCentroids(std::ostream &os,
        << "mean_error " << result.meanError << std::endl;
 }
 
-void PipelineComparatorPlotCentroids(std::ostream &os,
+void PipelineComparatorPlotOutput(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
-
+    // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
-    SurfacePlotCentroids(cairoSurface, *actual[0].centroids, 1.0, 0.0, 0.0, 0.5);
+    SurfacePlot(cairoSurface,
+                *actual[0].stars,
+                actual[0].starIds.get(),
+                actual[0].attitude.get(),
+                // red
+                1.0, 0.0, 0.0, 0.5);
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
+    cairo_surface_destroy(cairoSurface);
 }
 
 void PipelineComparatorStars(std::ostream &os,
@@ -677,31 +746,32 @@ void PromptPipelineComparison(const PipelineInputList &expected,
     InteractiveChoice<PipelineComparator> comparatorChoice;
 
     if (expected[0]->InputImage() && expected.size() == 1) {
-        comparatorChoice.Register("plot_input", "Plot raw BW input image to PNG",
-                                  PipelineComparatorPlotInput);
-    }
+        comparatorChoice.Register("plot_raw_input", "Plot raw BW input image to PNG",
+                                  PipelineComparatorPlotRawInput);
 
-    // Centroids
-    if (actual[0].centroids != NULL) {
-        if (actual.size() == 1) {
-            comparatorChoice.Register("plot_centroids", "Plot centroids to PNG",
-                                      PipelineComparatorPlotCentroids);
-        }
-        if (expected[0]->ExpectedCentroids()) {
-            comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
-                                      PipelineComparatorCentroids);
+        if (expected[0]->InputStars()) {
+            comparatorChoice.Register("plot_input", "Plot annotated input image to PNG",
+                                      PipelineComparatorPlotInput);
         }
     }
 
     // Stars
-    if (actual[0].stars != NULL) {
+    if (actual[0].stars) {
         if (actual.size() == 1) {
-            comparatorChoice.Register("plot_stars", "Plot identified stars to PNG",
-                                      PipelineComparatorPlotStars);
+            comparatorChoice.Register("plot_output", "Plot output to PNG",
+                                      PipelineComparatorPlotOutput);
         }
+        // TODO: write centroid coordinates to txt or something (ideally fits, but oh well)
+
         if (expected[0]->ExpectedStars()) {
-            comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
-                                      PipelineComparatorStars);
+            comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
+                                      PipelineComparatorCentroids);
+
+            // Star-IDs
+            if (expected[0]->ExpectedStarIds() && actual[0].starIds) {
+                comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
+                                          PipelineComparatorStars);
+            }
         }
     }
 

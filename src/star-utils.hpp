@@ -5,13 +5,21 @@
 
 namespace lost {
 
-// Different centroiding algorithms may return different amounts of data. Because there won't ever
-// be /that/ many different centroids in a single image, it's acceptable to waste some space on
-// un-used fields. Set unused fields to negative
+class CatalogStar {
+public:
+    CatalogStar(float raj2000, float dej2000, int magnitude, bool weird, int name) :
+        raj2000(raj2000), dej2000(dej2000), magnitude(magnitude), weird(weird), name(name) { }
+    float raj2000;           // *10^-6, right ascension
+    float dej2000;           // *10^-6, declination
+    int  magnitude;         // *10^-2
+    bool weird;             // nonzero for binary, etc
+    int name;
+};
+
 class Star {
 public:
-    Star(float x, float y, float radiusX, float radiusY, long magnitude) :
-        x(x), y(y), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude), spherePhi(-1.0) { };
+    Star(float x, float y, float radiusX, float radiusY, int magnitude) :
+        x(x), y(y), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) { };
     Star(float x, float y, float radiusX) : Star(x, y, radiusX, radiusX, 0) { };
     Star() : Star(0.0, 0.0, 0.0) { };
 
@@ -19,18 +27,25 @@ public:
     float y; // pixels*10^6
     float radiusX;
     float radiusY;  // if omitted, but x is present, assume circular.
-    long  magnitude; // some relative number
+    int   magnitude; // some relative number
     // eccentricity?
-
-    // viewport-relative spherical coordinates. Assumes the center of the viewport is theta = 90deg and phi=0deg
-    float sphereTheta;
-    float spherePhi; // -1.0 indicates spherical coordinates not set
-
-    int identifiedBscIndex; // if the star has been identified, refers to the index in the BSC,
-                            // starting at zero
 };
 
+class StarIdentifier {
+public:
+    StarIdentifier(int starIndex, int catalogIndex, int weight)
+        : starIndex(starIndex), catalogIndex(catalogIndex), weight(weight) { };
+    StarIdentifier(int starIndex, int catalogIndex)
+        : StarIdentifier(starIndex, catalogIndex, 1) { };
+
+    int starIndex;
+    int catalogIndex;
+    int weight;
+};
+
+typedef std::vector<CatalogStar> Catalog;
 typedef std::vector<Star> Stars;
+typedef std::vector<StarIdentifier> StarIdentifiers;
 
 float StarDistancePixels(Star one, Star two);
 

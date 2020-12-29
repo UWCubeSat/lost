@@ -4,20 +4,24 @@
 
 namespace lost {
 
-void DummyStarIdAlgorithm::Go(const unsigned char *database, Stars *stars) const {
-    for (Star &star : *stars) {
+StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+    StarIdentifiers result;
+
+    for (int i = 0; i < (int)stars.size(); i++) {
         if (rand() > RAND_MAX/5) {
-            star.identifiedBscIndex = rand() % 9110;
+            result.push_back(StarIdentifier(i, rand() % 2000));
         }
     }
+
+    return result;
 }
 
-void GeometricVotingStarIdAlgorithm::Go(const unsigned char *database, Stars *stars) const {
+StarIdentifiers GeometricVotingStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
     // TODO
     ;
 }
 
-void PyramidStarIdAlgorithm::Go(const unsigned char *database, Stars *stars) const {
+StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
     // TODO
     ;
 }

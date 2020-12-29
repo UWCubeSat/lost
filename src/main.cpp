@@ -3,7 +3,6 @@
 #include <fstream>
 #include <chrono>
 
-#include "catalog-generic.hpp"
 #include "database-builders.hpp"
 #include "centroiders.hpp"
 #include "io.hpp"
