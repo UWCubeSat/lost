@@ -76,7 +76,6 @@ int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    //std::unordered_set<int> checkedIndices;
     
     std::vector<Star> result;
     
@@ -92,18 +91,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             p.magSum = 0; //sum of magnitudes of current star
 
             //computes indices to skip after done w current star
-            int j = i;
-            while(j < imageWidth * imageHeight && (j + 1) % imageWidth != 0 && image[j] >= p.cutoff) {
-                j++;
-            }
 
-            //p.magSum += image[i];
             p.xMax = i % imageWidth;
             p.xMin = i % imageWidth;
             p.yMax = i / imageWidth;
             p.yMin = i / imageWidth;
-            //p.xCoordMagSum += ((i % imageWidth)) * image[i];
-            //p.yCoordMagSum += ((i / imageWidth)) * image[i];
 
             CogHelper(p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
@@ -112,7 +104,6 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
             result.push_back(Star(xCoord, yCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
-            i = j - 1;
         }
     }
     return result;
@@ -179,12 +170,6 @@ std::vector<Star> IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *i
             float fwhm; //fwhm variable
             float standardDeviation;
             float w; //weight value
-            
-            //computes indices to skip after done w current star
-            int step = i;
-            while(step < imageWidth * imageHeight && (step + 1) % imageWidth != 0 && image[step] >= p.cutoff) {
-                step++;
-            }
 
             p.xMax = i % imageWidth;
             p.xMin = i % imageWidth;
@@ -208,7 +193,7 @@ std::vector<Star> IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *i
             float guessXCoord = (float) (p.guess % imageWidth);
             float guessYCoord = (float) (p.guess / imageWidth);
             //how much our new centroid estimate changes w each iteration
-            float change = 100.0;
+            float change = INFINITY;
             //while we see some large enough change in estimated, maybe make it a global variable
             while (change > 0.0001) {
             //traverse through star indices, calculate W at each coordinate, add to final coordinate sums
@@ -216,7 +201,7 @@ std::vector<Star> IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *i
                     //calculate w
                     float currXCoord = (float) (starIndices.at(j) % imageWidth);
                     float currYCoord = (float) (starIndices.at(j) / imageWidth);
-                    float modifiedStdDev = 2.0 * pow(2, standardDeviation);
+                    float modifiedStdDev = 2.0 * pow(standardDeviation, 2);
                     w = p.maxIntensity * exp(-1.0 * ((pow(currXCoord - guessXCoord, 2) / modifiedStdDev) + (pow(currYCoord - guessYCoord, 2) / modifiedStdDev)));
 
                     xWeightedCoordMagSum += w * currXCoord * ((float) image[starIndices.at(j)]);
@@ -233,7 +218,6 @@ std::vector<Star> IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *i
                 }
             }
             result.push_back(Star(guessXCoord, guessYCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
-            i = step - 1;
         }
     }
     return result;
