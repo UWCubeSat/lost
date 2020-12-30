@@ -28,6 +28,12 @@ class CenterOfGravityAlgorithm : public CentroidAlgorithm {
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
+class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
+    public:
+        IterativeWeightedCenterOfGravityAlgorithm() { };
+        Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
+
 }
 
 #endif

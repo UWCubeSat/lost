@@ -237,8 +237,12 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     return new DummyCentroidAlgorithm(numStars);
 }
 
-CentroidAlgorithm *CogCentroidAlgorithmPrompt() {
+CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
     return new CenterOfGravityAlgorithm();
+}
+
+CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
+    return new IterativeWeightedCenterOfGravityAlgorithm();
 }
 
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
@@ -469,8 +473,12 @@ Pipeline PromptPipeline() {
 
         case PipelineStage::Centroid: {
             InteractiveChoice<CentroidAlgorithmFactory> centroidChoice;
-            centroidChoice.Register("dummy", "Random Centroid Algorithm", DummyCentroidAlgorithmPrompt);
-            centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm", CogCentroidAlgorithmPrompt);
+            centroidChoice.Register("dummy", "Random Centroid Algorithm",
+                                    DummyCentroidAlgorithmPrompt);
+            centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm",
+                                    CoGCentroidAlgorithmPrompt);
+            centroidChoice.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm",
+                                    IWCoGCentroidAlgorithmPrompt);
 
             result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
                 (centroidChoice.Prompt("Choose centroid algo"))());
