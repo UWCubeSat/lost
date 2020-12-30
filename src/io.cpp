@@ -79,7 +79,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                          &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
         result.push_back(CatalogStar(DegToRad(raj2000), DegToRad(dej2000),
-                                     magnitudeHigh*100 + magnitudeLow,
+                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
                                      weird != ' ', name));
     }
 

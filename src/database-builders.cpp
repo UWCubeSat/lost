@@ -12,8 +12,8 @@ namespace lost {
      |--------------+-------------+-------------------------------------------------------------|
      |            4 | magic       | Magic number 0x4253f009 (ensure database validity)          |
      |            4 | numPairs    | Number of star pairs that are in the min/max distance range |
-     |            4 | minDistance | Millionths of a degree                                      |
-     |            4 | maxDistance | Millionths of a degree                                      |
+     |            4 | minDistance | Floating point, radians                                     |
+     |            4 | maxDistance | Floating point, radians                                     |
      |            4 | numBins     | Number of distance bins                                     |
      | 2*2*numPairs | pairs       | Pairs, sorted by distance between the stars in the pair.    |
      |              |             | Simply stores the BSC index of the first star immediately   |
