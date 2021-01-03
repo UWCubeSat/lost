@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: cimg/base:stable
+    working_directory: ~/circleci-googletest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - run:
+          name: Install CMake
+          command: |
+            sudo apt -y -q update
+            sudo apt -y -q install cmake
+      - checkout
+      - run:
+          name: CMake build files
+          command: |
+            mkdir build
+            cd build
+            cmake ..
+      - run: |
+          cd build
+          make
+      - run:
+          name: Run unit tests
+          command: |
+            # The "environment:" option doesn't expand vars.
+            export GTEST_OUTPUT=xml:${TEST_RESULTS}/
+            mkdir -p $TEST_RESULTS
+            cd build
+            GTEST_COLOR=1 test/Factorial_test -V
+      - store_test_results:
+          # This option doesn't expand $TEST_RESULTS if used.
+          path: /tmp/test-results

@@ -8,3 +8,7 @@
 
 /lost
 *.jpg
+
+cmake-build-debug
+.idea
+build
