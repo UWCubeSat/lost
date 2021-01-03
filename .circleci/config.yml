@@ -1,11 +1,23 @@
-version: 2
+version: 2.1
+
+references:
+  workspace_root: &workspace_root
+                    ~/lost
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+executors:
+  lost:
+    docker:
+      - image: cimg/base:stable
+    working_directory: ~/lost
+
 jobs:
   build:
     docker:
       - image: cimg/base:stable
-    working_directory: ~/circleci-googletest
-    environment:
-      TEST_RESULTS: /tmp/test-results
+    working_directory: ~/lost
     steps:
       - run:
           name: Install CMake
@@ -22,6 +34,12 @@ jobs:
       - run: |
           cd build
           make
+  test:
+    executor: lost
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - *attach_workspace
       - run:
           name: Run unit tests
           command: |
@@ -29,7 +47,26 @@ jobs:
             export GTEST_OUTPUT=xml:${TEST_RESULTS}/
             mkdir -p $TEST_RESULTS
             cd build
-            GTEST_COLOR=1 test/Factorial_test -V
+            GTEST_COLOR=1 test/lost_test -V
       - store_test_results:
           # This option doesn't expand $TEST_RESULTS if used.
           path: /tmp/test-results
+  lint:
+    working_directory: ~/lost
+    docker:
+      - image: circleci/python:2.7
+    steps:
+      - checkout
+      - run:
+          name: install cpplint
+          command: sudo pip install cpplint
+      - run: make cpplint
+workflows:
+  version: 2
+  build_lint_test:
+    jobs:
+      - build
+      - lint
+      - test:
+          requires:
+            - build
