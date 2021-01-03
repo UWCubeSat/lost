@@ -12,3 +12,5 @@
 cmake-build-debug
 .idea
 build
+
+bright-star-catalog.csv
