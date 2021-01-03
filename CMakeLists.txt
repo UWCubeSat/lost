@@ -17,7 +17,7 @@ set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
 target_link_libraries(${CMAKE_PROJECT_NAME} cairo)
 
 if (UNIX)
-    add_custom_target(bsc ALL
+    execute_process(
             COMMAND ./download-bsc.sh
             OUTPUT ./bright-star-catalog.tsv
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
