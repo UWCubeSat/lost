@@ -15,10 +15,9 @@ executors:
 
 jobs:
   build:
-    docker:
-      - image: cimg/base:stable
-    working_directory: ~/lost
+    executor: lost
     steps:
+      - *attach_workspace
       - run:
           name: Install CMake
           command: |
