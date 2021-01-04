@@ -264,6 +264,7 @@ unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length
     float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
     long numBins = Prompt<long>("Number of distance bins");
     return BuildKVectorDatabase(catalog, length, minDistance, maxDistance, numBins);
+    // TODO: also parse it and print out some stats before returning
 }
 
 DbBuilder PromptDbBuilder() {

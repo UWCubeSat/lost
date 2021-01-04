@@ -1,10 +1,28 @@
 #include "database-builders.hpp"
+#include "attitude-utils.hpp"
 #include "star-utils.hpp"
 
 #include <vector>
+#include <algorithm>
+#include <assert.h>
+#include <math.h>
 
 namespace lost {
 
+static float GreatCircleDistance(const CatalogStar &one, const CatalogStar &two) {
+    return 2.0*asin(sqrt(pow(sin(abs(one.dej2000-two.dej2000)/2.0), 2.0)
+                         + cos(one.dej2000)*cos(two.dej2000)*pow(sin(abs(one.raj2000-two.raj2000)/2.0), 2.0)));
+}
+
+struct KVectorPair {
+    int16_t index1;
+    int16_t index2;
+    float distance;
+};
+
+bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
+    return p1.distance < p2.distance;
+}
 
 /**
  K-vector database layout
@@ -24,22 +42,65 @@ namespace lost {
  */
 unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
                            float minDistance, float maxDistance, long numBins) {
-    *length = 0;
+    std::vector<int32_t> kVector(numBins); // numBins = length, all elements zero
+    std::vector<KVectorPair> pairs;
+    for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
+        for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
 
-    std::vector<long> kVector(numBins); // numBins = length, all elements zero
-    std::vector<std::pair<int, int>> pairs;
-    for (const CatalogStar &one : catalog) {
-        for (const CatalogStar &two : catalog) {
-            // TODO: great circle (haversine) distance between the two stars, check if within
-            // minDistance-maxDistance, if so add to `pairs` and increment the appropriate bins of
-            // kVector.
+            KVectorPair pair = { i, k, GreatCircleDistance(catalog[i], catalog[k]) };
+            assert(isfinite(pair.distance));
+            assert(pair.distance >= 0);
+            assert(pair.distance <= M_PI);
+
+            if (pair.distance >= minDistance && pair.distance <= maxDistance) {
+                // we'll sort later
+                pairs.push_back(pair);
+
+                for (int j = 0;
+                     j < numBins && pair.distance <= minDistance+(maxDistance-minDistance)*j/numBins;
+                     j++) {
+                    kVector[j]++;
+                }
+            }
         }
     }
 
-    // TODO: determine the correct length, copy the correct vectors and numbers into result
-    *length = 6969;
-    unsigned char *result = new unsigned char[*length];
+    // sort pairs in increasing order.
+    std::sort(pairs.begin(), pairs.end(), CompareKVectorPairs);
 
+    // TODO: determine the correct length, copy the correct vectors and numbers into result
+    *length = 4+4+4+4+4 + 2*sizeof(int16_t)*pairs.size() + sizeof(int32_t)*numBins;
+    
+    unsigned char *result = new unsigned char[*length];
+    int32_t *resultMagicValue = (int32_t *)result;
+    int32_t *resultNumPairs = resultMagicValue + 1;
+    float *resultMinDistance = (float *)(resultNumPairs + 1);
+    float *resultMaxDistance = (float *)(resultMinDistance + 1);
+    int32_t *resultNumBins = (int32_t *)(resultMaxDistance + 1);
+    int16_t *resultPairs = (int16_t *)(resultNumBins + 1);
+    int32_t *resultKVector = (int32_t *)(resultPairs + pairs.size()*2);
+
+    *resultNumPairs = pairs.size();
+    *resultMinDistance = minDistance;
+    *resultMaxDistance = maxDistance;
+    *resultNumBins = numBins;
+
+    for (const KVectorPair &pair : pairs) {
+        resultPairs[0] = pair.index1;
+        resultPairs[1] = pair.index2;
+        resultPairs += 2;
+    }
+    assert((void *)resultPairs == (void *)resultKVector);
+
+    // you could probably do this with memcpy instead, but the explicit loop is necessary for endian
+    // concerns? TODO endianness
+    for (const int32_t &bin : kVector) {
+        *resultKVector = bin;
+        resultKVector++;
+    }
+    assert((unsigned char *)resultKVector - result == *length);
+
+    *resultMagicValue = 0x4253f009;
     return result;
 }
 
