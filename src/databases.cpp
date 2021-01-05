@@ -1,4 +1,4 @@
-#include "database-builders.hpp"
+#include "databases.hpp"
 #include "attitude-utils.hpp"
 #include "star-utils.hpp"
 
@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <assert.h>
 #include <math.h>
+
+#define kKVectorMagicNumber 0x4253f009
 
 namespace lost {
 
@@ -28,7 +30,7 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  K-vector database layout
      | size (bytes) | name        | description                                                 |
      |--------------+-------------+-------------------------------------------------------------|
-     |            4 | magic       | Magic number 0x4253f009 (ensure database validity)          |
+     |            4 | magic       | Magic number kKvectorMagicNumber (ensure database validity) |
      |            4 | numPairs    | Number of star pairs that are in the min/max distance range |
      |            4 | minDistance | Floating point, radians                                     |
      |            4 | maxDistance | Floating point, radians                                     |
@@ -73,7 +75,7 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     
     unsigned char *result = new unsigned char[*length];
     int32_t *resultMagicValue = (int32_t *)result;
-    int32_t *resultNumPairs = resultMagicValue + 1;
+    int32_t *resultNumPairs = (int32_t *)resultMagicValue + 1;
     float *resultMinDistance = (float *)(resultNumPairs + 1);
     float *resultMaxDistance = (float *)(resultMinDistance + 1);
     int32_t *resultNumBins = (int32_t *)(resultMaxDistance + 1);
@@ -100,8 +102,50 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     }
     assert((unsigned char *)resultKVector - result == *length);
 
-    *resultMagicValue = 0x4253f009;
+    *resultMagicValue = kKVectorMagicNumber;
     return result;
+}
+
+KVectorDatabase::KVectorDatabase(unsigned char *databaseBytes) {
+    // TODO: errors?
+    int32_t *bytesMagicValue = (int32_t *)databaseBytes;
+    int32_t *bytesNumPairs = (int32_t *)bytesMagicValue + 1;
+    float *bytesMinDistance = (float *)(bytesNumPairs + 1);
+    float *bytesMaxDistance = (float *)(bytesMinDistance + 1);
+    int32_t *bytesNumBins = (int32_t *)(bytesMaxDistance + 1);
+
+    assert(*bytesMagicValue == kKVectorMagicNumber);
+    numPairs = *bytesNumPairs;
+    minDistance = *bytesMinDistance;
+    assert(minDistance > 0.0f);
+    maxDistance = *bytesMaxDistance;
+    assert(maxDistance > minDistance);
+    numBins = *bytesNumBins;
+
+    pairs = (int16_t *)(bytesNumBins + 1);
+    bins = (int32_t *)(pairs + 2*numPairs);
+}
+
+int16_t *KVectorDatabase::FindPossibleStarPairsExact(
+    float minDistance, float maxDistance, const Catalog &catalog, int *numReturnedPairs) const {
+
+    
+}
+
+void KVectorDatabase::BinBounds(int bin, float *min, float *max) const {
+    assert(bin >= 0 && bin < numBins);
+
+    if (min != NULL) {
+        *min = (maxDistance-minDistance)/numBins*bin;
+    }
+
+    if (max != NULL) {
+        *max = (maxDistance-minDistance)/numBins*(bin+1);
+    }
+}
+
+int KVectorDatabase::BinForDistance(float distance) const {
+    // TODO: Be careful about rounding!
 }
 
 }

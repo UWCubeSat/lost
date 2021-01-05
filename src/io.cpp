@@ -1,6 +1,6 @@
 #include "io.hpp"
 #include "attitude-utils.hpp"
-#include "database-builders.hpp"
+#include "databases.hpp"
 #include "star-id.hpp"
 #include "star-utils.hpp"
 
@@ -304,7 +304,8 @@ class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
     GeneratedPipelineInput(const std::vector<CatalogStar> &, Quaternion, Camera,
-                           unsigned char noise_deviation);
+                           int referenceBrightness, float brightnessDeviation,
+                           float noiseDeviation);
 
     const Image *InputImage() const { return &image; };
     const Stars *InputStars() const { return &stars; };
@@ -350,12 +351,20 @@ PipelineInputList PromptAstrometryPipelineInput() {
     PipelineInputList result;
     result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
     return result;
+
 }
+
+// does NOT protect against multiple evaluation of arguments
+#define IncrementPixelXY(x, y, amt) imageData[(y)*image.width+(x)] = \
+        std::max(0, std::min(255,imageData[(y)*image.width+(x)]+(amt)))
+#define IncrementPixelI(i, amt) imageData[i] = std::max(0, std::min(255,imageData[i]+(amt)))
 
 GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Quaternion attitude,
                                                Camera camera,
-                                               unsigned char noise_deviation) {
+                                               int referenceBrightness,
+                                               float brightnessDeviation,
+                                               float noiseDeviation) {
     this->attitude = attitude;
     image.width = camera.xResolution;
     image.height = camera.yResolution;
@@ -375,38 +384,39 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             continue;
         }
         Vec2 camCoords = camera.ConvertCoordinates(rotated);
+
+        float radiusX = 15.0; // TODO
         if (camera.InSensor(camCoords)) {
-            stars.push_back(Star(camCoords.x, camCoords.y,
-                                 (750-catalogStar.magnitude)/200.0,
-                                 (750-catalogStar.magnitude)/200.0,
-                                 catalogStar.magnitude));
+            stars.push_back(Star(camCoords.x, camCoords.y, radiusX, radiusX, catalogStar.magnitude));
             starIds.push_back(StarIdentifier(stars.size() - 1, i));
         }
     }
 
     for (const Star &star : stars) {
-        for (int k = star.y - star.radiusX; k < star.y + star.radiusX; k++) {
-            for(int j = star.x - star.radiusX; j < star.x + star.radiusX; j++) {
-                if (k*image.width + j < image.width * image.height && k >= 0 && j >= 0) {
-                    imageData[k*image.width + j] = rand() % 128 + 128;
-                }
+        // "brightness" = number of photons received, for eg
+        int totalBrightness = referenceBrightness * pow(100.0f, -star.magnitude/500.0f);
+
+        for (int k = star.y - star.radiusX; k >= 0 && k < star.y + star.radiusX && k < image.height; k++) {
+            for(int j = star.x - star.radiusX; k >= 0 && j < star.x + star.radiusX && k < image.width; j++) {
+                float distanceSquared = pow(k-star.y, 2) + pow(j-star.x, 2);
+                int pixelBrightness = totalBrightness / pow(brightnessDeviation, 2)
+                    * exp(-distanceSquared/pow(brightnessDeviation, 2));
+                IncrementPixelXY(j, k, pixelBrightness);
             }
         }
     }
 
-    // generate gaussina noise w a normal distribution
-    std::normal_distribution<float> dist(0.0, noise_deviation);
+    std::normal_distribution<float> readNoiseDist(0.0, noiseDeviation);
     std::default_random_engine generator;
     for (int i = 0; i < image.width * image.height; i++) {
-        int noise = int(dist(generator));
-        int temp = imageData[i] + noise;
-        if (temp < 0) {
-            imageData[i] = 0;
-        } else if (temp > 255) {
-            imageData[i] = 255;
-        } else {
-            imageData[i] = temp;
-        }
+        // dark current
+
+        // shot noise
+        std::poisson_distribution<char> shotNoiseDist(imageData[i]);
+        // TODO: prompt for sensitivity so we can accurately apply shot noise.
+
+        // read noise
+        IncrementPixelI(i, (int)readNoiseDist(generator));
     }  
 }
 
@@ -423,6 +433,10 @@ PipelineInputList PromptGeneratedPipelineInput() {
     int xResolution = Prompt<int>("Horizontal Resolution");
     int yResolution = Prompt<int>("Vertical Resolution");
     float xFovDeg = Prompt<float>("Horizontal FOV (in degrees)");
+    int referenceBrightness = Prompt<int>("Reference star brightness");
+    float brightnessDeviation = Prompt<float>("Star spread stddev");
+    float noiseDeviation = Prompt<float>("Noise stddev");
+
     // TODO: allow random angle generation?
     Quaternion attitude = PromptSphericalAttitude();
 
@@ -433,7 +447,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
             CatalogRead(),
             attitude,
             Camera(DegToRad(xFovDeg), xResolution, yResolution),
-            3);
+            referenceBrightness, brightnessDeviation, noiseDeviation);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
     }
