@@ -126,6 +126,16 @@ KVectorDatabase::KVectorDatabase(unsigned char *databaseBytes) {
     bins = (int32_t *)(pairs + 2*numPairs);
 }
 
+int16_t *KVectorDatabase::FindPossibleStarPairsApprox(float minQueryDistance, float maxQueryDistance, int *numReturnedPairs) const {
+    //minDistance is going the starting point
+    float binWidth = (maxDistance - minDistance) / numBins;
+    //tbr v
+    int lowerBound = bins[(int16_t)floor((minQueryDistance - minDistance) / binWidth)];
+    int upperBound = bins[(int16_t)floor((maxQueryDistance - maxDistance) / binWidth)];
+    *numReturnedPairs = upperBound - lowerBound;
+    return &pairs[lowerBound * 2];
+}
+
 int16_t *KVectorDatabase::FindPossibleStarPairsExact(
     float minDistance, float maxDistance, const Catalog &catalog, int *numReturnedPairs) const {
 
