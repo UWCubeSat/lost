@@ -111,7 +111,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
 //Determines how accurate and how much iteration is done by the IWCoG algorithm,
 //smaller means more accurate and more iterations.
-float iWCoGMinChange = 0.00001;
+float iWCoGMinChange = 0.0002;
 
 struct IWCoGParams {
     int xMin;
@@ -182,40 +182,42 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             yDiameter = (p.yMax - p.yMin) + 1;
 
             //calculate fwhm
-            int count = 0;
+            float count = 0;
             for (int j = 0; j < (int) starIndices.size(); j++) {
                 if (image[starIndices.at(j)] > p.maxIntensity / 2) {
                     count++;
                 }
             }
-            fwhm = sqrt((float) count);
+            fwhm = sqrt(count);
             standardDeviation = fwhm / (2.0 * sqrt(2.0 * log(2.0)));
+            float modifiedStdDev = 2.0 * pow(standardDeviation, 2);
             float guessXCoord = (float) (p.guess % imageWidth);
             float guessYCoord = (float) (p.guess / imageWidth);
             //how much our new centroid estimate changes w each iteration
             float change = INFINITY;
             //while we see some large enough change in estimated, maybe make it a global variable
-            while (change > 0.0001) {
+            while (change > iWCoGMinChange) {
             //traverse through star indices, calculate W at each coordinate, add to final coordinate sums
+                yWeightedCoordMagSum = 0;
+                xWeightedCoordMagSum = 0;
+                weightedMagSum = 0;
                 for (int j = 0; j < (int) starIndices.size(); j++) {
                     //calculate w
                     float currXCoord = (float) (starIndices.at(j) % imageWidth);
                     float currYCoord = (float) (starIndices.at(j) / imageWidth);
-                    float modifiedStdDev = 2.0 * pow(standardDeviation, 2);
                     w = p.maxIntensity * exp(-1.0 * ((pow(currXCoord - guessXCoord, 2) / modifiedStdDev) + (pow(currYCoord - guessYCoord, 2) / modifiedStdDev)));
 
                     xWeightedCoordMagSum += w * currXCoord * ((float) image[starIndices.at(j)]);
                     yWeightedCoordMagSum += w * currYCoord * ((float) image[starIndices.at(j)]);
                     weightedMagSum += w * ((float) image[starIndices.at(j)]);
-
-                    float xTemp = xWeightedCoordMagSum / weightedMagSum;
-                    float yTemp = yWeightedCoordMagSum / weightedMagSum;
-
-                    change = abs(guessXCoord - xTemp) + abs(guessYCoord - yTemp);
-
-                    guessXCoord = xTemp;
-                    guessYCoord = yTemp;
                 }
+                float xTemp = xWeightedCoordMagSum / weightedMagSum;
+                float yTemp = yWeightedCoordMagSum / weightedMagSum;
+
+                change = abs(guessXCoord - xTemp) + abs(guessYCoord - yTemp);
+
+                guessXCoord = xTemp;
+                guessYCoord = yTemp;
             }
             result.push_back(Star(guessXCoord, guessYCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
         }
