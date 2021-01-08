@@ -195,12 +195,14 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             float guessYCoord = (float) (p.guess / imageWidth);
             //how much our new centroid estimate changes w each iteration
             float change = INFINITY;
+            int stop = 0;
             //while we see some large enough change in estimated, maybe make it a global variable
-            while (change > iWCoGMinChange) {
+            while (change > iWCoGMinChange && stop < 100000) {
             //traverse through star indices, calculate W at each coordinate, add to final coordinate sums
                 yWeightedCoordMagSum = 0;
                 xWeightedCoordMagSum = 0;
                 weightedMagSum = 0;
+                stop++;
                 for (int j = 0; j < (int) starIndices.size(); j++) {
                     //calculate w
                     float currXCoord = (float) (starIndices.at(j) % imageWidth);
