@@ -559,10 +559,10 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         inputStars = result.stars.get();
     }
 
-    if (starIdAlgorithm && database && inputStars) {
+    if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *result.stars)));
+            starIdAlgorithm->Go(database.get(), *result.stars, *input.InputCamera())));
         inputStarIds = result.starIds.get();
     }
 
@@ -781,6 +781,7 @@ void PromptPipelineComparison(const PipelineInputList &expected,
     // Stars
     if (actual[0].stars) {
         if (actual.size() == 1) {
+            // maybe TODO: plot star-id output even if no centroiding step?
             comparatorChoice.Register("plot_output", "Plot output to PNG",
                                       PipelineComparatorPlotOutput);
         }

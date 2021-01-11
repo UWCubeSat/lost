@@ -4,7 +4,9 @@
 
 namespace lost {
 
-StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+StarIdentifiers DummyStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+
     StarIdentifiers result;
 
     for (int i = 0; i < (int)stars.size(); i++) {
@@ -16,12 +18,15 @@ StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *database, const St
     return result;
 }
 
-StarIdentifiers GeometricVotingStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+
     // TODO
     ;
 }
 
-StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+StarIdentifiers PyramidStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
     // TODO
     ;
 }
