@@ -10,7 +10,7 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.real - i*other.i - j*other.j - k*other.k,
         real*other.i + other.real*i + j*other.k - k*other.j,
         real*other.j + other.real*j - i*other.k + k*other.i,
-        real*other.k + other.real*k + i*other.j - other.i*j);
+        real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
 Quaternion Quaternion::Conjugate() const {
@@ -29,11 +29,11 @@ Quaternion::Quaternion(const Vec3 &input) {
 }
 
 Quaternion::Quaternion(const Vec3 &input, float theta) {
-    real = sin(theta/2);
+    real = cos(theta/2);
     // the compiler will optimize it. Right?
-    i = input.x * cos(theta/2);
-    j = input.y * cos(theta/2);
-    k = input.z * cos(theta/2);
+    i = input.x * sin(theta/2);
+    j = input.y * sin(theta/2);
+    k = input.z * sin(theta/2);
 }
 
 Vec3 Quaternion::Rotate(const Vec3 &input) const {
@@ -49,9 +49,9 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     // when we are modifying the coordinate axes, the quaternion multiplication works so that the
     // rotations are applied from left to right. This is the opposite as for modifying vectors.
     auto a = Quaternion({ 0, 0, 1 }, ra);
-    auto b = Quaternion({ 0, 1, 0 }, dec);
-    auto c = Quaternion({ 1, 0, 0 }, roll);
-    return c*b*a;
+    auto b = Quaternion({ 0, 1, 0 }, -dec);
+    auto c = Quaternion({ 1, 0, 0 }, -roll);
+    return (a*b*c).Conjugate();
 }
 
 float RadToDeg(float rad) {
