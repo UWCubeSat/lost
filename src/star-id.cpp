@@ -4,7 +4,9 @@
 
 namespace lost {
 
-StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+StarIdentifiers DummyStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+
     StarIdentifiers result;
 
     for (int i = 0; i < (int)stars.size(); i++) {
@@ -16,16 +18,24 @@ StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *database, const St
     return result;
 }
 
-StarIdentifiers GeometricVotingStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
     //convert x and y coordinates to degree differences 
-    //give a greater range for min-max Query for bigger radius(?) (GreatCircleDistance)
-    //us voting system 
+    //give a greter range for min-max Query for bigger radius (GreatCircleDistance)
+    //US voting system 
     //optimizations? N^2
     //testing, add false stars and see if the accuracy is still good (maybe just 1 or 2 false stars)
+}
+
+StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+
+    // TODO
     ;
 }
 
-StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars) const {
+StarIdentifiers PyramidStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Camera &camera) const {
     // TODO
     ;
 }

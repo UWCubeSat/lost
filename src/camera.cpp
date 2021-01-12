@@ -17,13 +17,13 @@ Vec2 Camera::ConvertCoordinates(const Vec3 &vector) const {
 
     // TODO: analyze off-by-one errors (is fov for the center of the pixels, in which case we should
     // use xResolution-1??)
-    float yPixel = yTangent/tan(xFov)*(xResolution-1);
-    float zPixel = zTangent/tan(xFov)*(xResolution-1);
+    float yPixel = yTangent/tan(xFov/2)*(xResolution-1)/2;
+    float zPixel = zTangent/tan(xFov/2)*(xResolution-1)/2;
 
     // now convert to using 0,0 as the top left, as usual. TODO: analyze off-by-one errors here too.
     // Right now, if we have 5x5, the center becomes (2,2), and if we have 4x4, the center becomes
     // (1.5, 1.5). I think this is right?
-    return { yPixel + (xResolution-1)/2.0f, zPixel + (yResolution-1)/2.0f };
+    return { -yPixel + (xResolution-1)/2.0f, -zPixel + (yResolution-1)/2.0f };
 }
 
 bool Camera::InSensor(const Vec2 &vector) const {
