@@ -39,13 +39,13 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
      | 2*2*numPairs | pairs       | Pairs, sorted by distance between the stars in the pair.    |
      |              |             | Simply stores the BSC index of the first star immediately   |
      |              |             | followed by the BSC index of the other star.                |
-     |    4*numBins | bins        | The `i'th bin (starting from zero) stores how many pairs of |
+     |4*(numBins+1) | bins        | The `i'th bin (starting from zero) stores how many pairs of |
      |              |             | stars have a distance less than or equal to:                |
      |              |             | minDistance+(maxDistance-minDistance)*i/numBins             |
  */
 unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
                            float minDistance, float maxDistance, long numBins) {
-    std::vector<int32_t> kVector(numBins); // numBins = length, all elements zero
+    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs;
     float binWidth = (maxDistance - minDistance) / numBins;
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
@@ -59,10 +59,6 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
             if (pair.distance >= minDistance && pair.distance <= maxDistance) {
                 // we'll sort later
                 pairs.push_back(pair);
-
-                for (int j = ceil((pair.distance - minDistance)/binWidth); j < numBins; j++) {
-                    kVector[j]++;
-                }
             }
         }
     }
@@ -70,8 +66,34 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     // sort pairs in increasing order.
     std::sort(pairs.begin(), pairs.end(), CompareKVectorPairs);
 
+    // generate the k-vector part
+    long lastBin = 0;
+    for (int32_t i = 0; i < (int32_t)pairs.size(); i++) {
+        long thisBin = (long)floor((pairs[i].distance - minDistance) / binWidth);
+        if (thisBin == numBins) {
+            // rounding error? TODO
+            thisBin--;
+        }
+        assert(thisBin >= 0);
+        assert(thisBin < numBins);
+        for (long bin = lastBin; bin <= thisBin; bin++) {
+            kVector[bin+1]=i;
+        }
+        lastBin = thisBin;
+    }
+    for (long bin = lastBin + 1; bin < numBins; bin++) {
+        kVector[bin+1] = kVector[lastBin+1];
+    }
+
+    // verify kvector
+    int32_t lastBinVal = -1;
+    for (const int32_t &bin : kVector) {
+        assert(bin >= lastBinVal);
+        lastBinVal = bin;
+    }
+
     // TODO: determine the correct length, copy the correct vectors and numbers into result
-    *length = 4+4+4+4+4 + 2*sizeof(int16_t)*pairs.size() + sizeof(int32_t)*numBins;
+    *length = 4+4+4+4+4 + 2*sizeof(int16_t)*pairs.size() + sizeof(int32_t)*(numBins+1);
     
     unsigned char *result = new unsigned char[*length];
     int32_t *resultMagicValue = (int32_t *)result;
@@ -139,15 +161,14 @@ int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
         *numReturnedPairs = 0;
         return NULL;
     }
-    // minDistance is going the starting point
-    float binWidth = (maxDistance - minDistance) / numBins;
     //tbr v
-    int lowerBin = (int16_t)floor((minQueryDistance - minDistance) / binWidth);
-    int upperBin = (int16_t)ceil((maxQueryDistance - minDistance) / binWidth);
+    long lowerBin = BinForDistance(minQueryDistance);
+    long upperBin = BinForDistance(maxQueryDistance);
     assert(upperBin >= lowerBin);
+    assert(upperBin < numBins);
     int lowerPair = bins[lowerBin];
     assert(lowerPair < numPairs);
-    int upperPair = bins[upperBin];
+    int upperPair = bins[upperBin+1];
     *numReturnedPairs = upperPair - lowerPair;
     assert(*numReturnedPairs >= 0);
     return &pairs[lowerPair * 2];
@@ -171,8 +192,15 @@ void KVectorDatabase::BinBounds(int bin, float *min, float *max) const {
     }
 }
 
-int KVectorDatabase::BinForDistance(float distance) const {
-    // TODO: Be careful about rounding!
+long KVectorDatabase::BinForDistance(float distance) const {
+    float binWidth = (maxDistance - minDistance) / numBins;
+    long result = (long)floor((distance - minDistance) / binWidth);
+    assert (result <= numBins);
+    if (result == numBins) {
+        return numBins - 1;
+    } else {
+        return result;
+    }
 }
 
 }

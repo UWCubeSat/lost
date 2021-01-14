@@ -30,7 +30,7 @@ public:
     int NumStars() const;
 private:
     void BinBounds(int bin, float *min, float *max) const;
-    int BinForDistance(float dist) const;
+    long BinForDistance(float dist) const;
 
     long numPairs;
     float minDistance;
