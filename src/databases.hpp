@@ -23,7 +23,7 @@ public:
     std::vector<int16_t> FindPossibleStarsExact(
         float minDistance, float maxDistance, const Catalog &) const;
     int16_t *FindPossibleStarPairsApprox(
-        float minQueryDistance, float maxQueryDistance, int *numReturnedPairs) const;
+        float minQueryDistance, float maxQueryDistance, long *numReturnedPairs) const;
     int16_t *FindPossibleStarPairsExact(
         float minDistance, float maxDistance, const Catalog &, int *numReturnedPairs) const;
 

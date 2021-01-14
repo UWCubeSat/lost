@@ -153,7 +153,7 @@ float Clamp(float num, float low, float high) {
 }
 
 int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
-    float minQueryDistance, float maxQueryDistance, int *numReturnedPairs) const {
+    float minQueryDistance, float maxQueryDistance, long *numReturnedPairs) const {
 
     assert(maxQueryDistance > minQueryDistance);
     if (minQueryDistance < minDistance || minQueryDistance > maxDistance ||
