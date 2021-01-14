@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include <math.h>
+#include <iostream>
 #include "star-id.hpp"
 #include "databases.hpp"
 
@@ -25,16 +26,16 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     KVectorDatabase vectorDatabase(database);
     StarIdentifiers identified;
     //make star datastructure that will keep track of the votes?
-    for (auto i = 0; i < stars.size(); i++) {
+    for (int i = 0; i < (int)stars.size(); i++) {
         std::vector<int16_t> votes(10000); // Catalog size
         //convert x and y coordinates to degree differences 
         //ascension or declination = arctan(xpos/(xRes/2/tan(FOV/2)))
         float declination = atan(stars[i].x/(camera.xResolution/2/tan(camera.xFov/2)));
         float rascension = atan(stars[i].y/(camera.xResolution/2/tan(camera.xFov/2)));
-        for (const Star &j: stars) {
-            if (&stars[i] != &j) {
-                float secondStarDeclination = atan(j.x/(camera.xResolution/2/tan(camera.xFov/2)));
-                float secondStarRascension = atan(stars[i].y/(camera.xResolution/2/tan(camera.xFov/2)));
+        for (int j = 0; j < (int)stars.size(); j++) {
+            if (i != j) {
+                float secondStarDeclination = atan(stars[j].x/(camera.xResolution/2/tan(camera.xFov/2)));
+                float secondStarRascension = atan(stars[j].y/(camera.xResolution/2/tan(camera.xFov/2)));
                 float GCD = 2.0*asin(sqrt(pow(sin(abs(declination-secondStarDeclination)/2.0), 2.0)
                          + cos(declination)*cos(secondStarDeclination)*pow(sin(abs(rascension-secondStarRascension)/2.0), 2.0)));
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
@@ -56,7 +57,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         // Find star w most votes
         int16_t maxVotes = votes[0];
         int indexOfMax = 0;
-        for (auto v = 0; v < votes.size(); v++) {
+        for (int v = 0; v < (int)votes.size(); v++) {
             if (votes[v] > maxVotes) {
                 maxVotes = votes[v];
                 indexOfMax = v;
@@ -69,6 +70,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     }
     //optimizations? N^2
     //testing, add false stars and see if the accuracy is still good (maybe just 1 or 2 false stars)
+    return identified;
 }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(

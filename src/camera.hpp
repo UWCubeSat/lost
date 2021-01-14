@@ -7,6 +7,7 @@ namespace lost {
 
 class Camera {
 public:
+    Camera() = default;
     Camera(float xFov, int xResolution, int yResolution)
         : xFov(xFov), xResolution(xResolution), yResolution(yResolution) { };
 

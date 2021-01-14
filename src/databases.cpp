@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 #include <assert.h>
 #include <math.h>
 
@@ -46,6 +47,7 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
                            float minDistance, float maxDistance, long numBins) {
     std::vector<int32_t> kVector(numBins); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs;
+    float binWidth = (maxDistance - minDistance) / numBins;
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
 
@@ -58,9 +60,7 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
                 // we'll sort later
                 pairs.push_back(pair);
 
-                for (int j = 0;
-                     j < numBins && pair.distance <= minDistance+(maxDistance-minDistance)*j/numBins;
-                     j++) {
+                for (int j = ceil((pair.distance - minDistance)/binWidth); j < numBins; j++) {
                     kVector[j]++;
                 }
             }
@@ -126,14 +126,39 @@ KVectorDatabase::KVectorDatabase(const unsigned char *databaseBytes) {
     bins = (int32_t *)(pairs + 2*numPairs);
 }
 
-int16_t *KVectorDatabase::FindPossibleStarPairsApprox(float minQueryDistance, float maxQueryDistance, int *numReturnedPairs) const {
+float Clamp(float num, float low, float high) {
+    return num < low ? low : num > high ? high : num;
+}
+
+int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
+    float minQueryDistance, float maxQueryDistance, int *numReturnedPairs) const {
+
+    assert(maxQueryDistance > minQueryDistance);
+    minQueryDistance = Clamp(minQueryDistance, minDistance, maxDistance);
+    maxQueryDistance = Clamp(maxQueryDistance, minDistance, maxDistance);
     //minDistance is going the starting point
     float binWidth = (maxDistance - minDistance) / numBins;
     //tbr v
-    int lowerBound = bins[(int16_t)floor((minQueryDistance - minDistance) / binWidth)];
-    int upperBound = bins[(int16_t)floor((maxQueryDistance - maxDistance) / binWidth)];
-    *numReturnedPairs = upperBound - lowerBound;
-    return &pairs[lowerBound * 2];
+    int lowerBin = (int16_t)floor((minQueryDistance - minDistance) / binWidth);
+    int upperBin = (int16_t)ceil((maxQueryDistance - minDistance) / binWidth);
+    if (lowerBin >= numBins) {
+        *numReturnedPairs = 0;
+        return NULL;
+    }
+    if (upperBin >= numBins) {
+        upperBin = numBins - 1;
+    }
+    assert(upperBin >= lowerBin);
+    int lowerPair = bins[lowerBin];
+    assert(lowerPair < numPairs);
+    int upperPair = bins[upperBin];
+    if (upperPair >= numPairs) {
+        *numReturnedPairs = numPairs - 1 - lowerPair;
+    } else {
+        *numReturnedPairs = upperPair - lowerPair;
+    }
+    assert(*numReturnedPairs >= 0);
+    return &pairs[lowerPair * 2];
 }
 
 int16_t *KVectorDatabase::FindPossibleStarPairsExact(
