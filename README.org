@@ -40,7 +40,7 @@ Washington.
       - [ ] Flower Method
       - [ ] Sequential Sum method
     - [ ] Pyramid method
-    - [ ] Geometric Voting
+    - [X] Geometric Voting
     - [ ] Uncalibrated K-vectory method
     - [ ] Star-ND or Liebe
     - [ ] LIS, Tracking, and Uncalibrated modes
@@ -48,12 +48,14 @@ Washington.
     information on camera parameters to determine the attitude.
 
     Our framework does...
-    - [ ] Attitude Determination (QUEST?)
+    - [ ] Davenport Q method
+    - [ ] QUEST
+    - [ ] ESOQ
 
   Other parts of our framework that are not essential parts of a star-tracking system:
-  - [X] Centroiding Visualization
-  - [ ] Algorithm Visualizations
-  - [ ] Re-projection of starts after fix visualization
+  - [X] Centroiding and Star-ID Results Visualization
+  - [X] Simulated image generation
+  - [ ] Re-projection of stars after fix visualization
   - [ ] Benchmarking against reference images
   - [ ] Demo App that acquires a fix, calibrates the camera, then tracks, with real-time
     visualizations. Would be really cool to make it work on a phone!

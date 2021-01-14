@@ -70,4 +70,9 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+float GreatCircleDistance(float ra1, float de1, float ra2, float de2) {
+    return 2.0*asin(sqrt(pow(sin(abs(de1-de2)/2.0), 2.0)
+                         + cos(de1)*cos(de2)*pow(sin(abs(ra1-ra2)/2.0), 2.0)));
+}
+
 }

@@ -12,11 +12,6 @@
 
 namespace lost {
 
-static float GreatCircleDistance(const CatalogStar &one, const CatalogStar &two) {
-    return 2.0*asin(sqrt(pow(sin(abs(one.dej2000-two.dej2000)/2.0), 2.0)
-                         + cos(one.dej2000)*cos(two.dej2000)*pow(sin(abs(one.raj2000-two.raj2000)/2.0), 2.0)));
-}
-
 struct KVectorPair {
     int16_t index1;
     int16_t index2;
@@ -51,7 +46,8 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
 
-            KVectorPair pair = { i, k, GreatCircleDistance(catalog[i], catalog[k]) };
+            KVectorPair pair = { i, k, GreatCircleDistance(catalog[i].raj2000, catalog[i].dej2000,
+                                                           catalog[k].raj2000, catalog[k].dej2000) };
             assert(isfinite(pair.distance));
             assert(pair.distance >= 0);
             assert(pair.distance <= M_PI);
