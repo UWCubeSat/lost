@@ -252,7 +252,8 @@ StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
 }
 
 StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
-    return new GeometricVotingStarIdAlgorithm();
+    float tolerance = Prompt<float>("How much tolerance? (degrees)");
+    return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
 }
 
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {

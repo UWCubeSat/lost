@@ -106,7 +106,7 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     return result;
 }
 
-KVectorDatabase::KVectorDatabase(unsigned char *databaseBytes) {
+KVectorDatabase::KVectorDatabase(const unsigned char *databaseBytes) {
     // TODO: errors?
     int32_t *bytesMagicValue = (int32_t *)databaseBytes;
     int32_t *bytesNumPairs = (int32_t *)bytesMagicValue + 1;

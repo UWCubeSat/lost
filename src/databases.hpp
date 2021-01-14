@@ -13,7 +13,7 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
 
 class KVectorDatabase {
 public:
-    KVectorDatabase(unsigned char *databaseBytes);
+    KVectorDatabase(const unsigned char *databaseBytes);
 
     // the "Approx" functions assume star distances are uniformly distributed through the bins. The
     // "Exact" functions actually check the distances between the returned stars to make sure it's correct.

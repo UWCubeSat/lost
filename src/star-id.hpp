@@ -23,6 +23,9 @@ public:
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Camera &) const;
+    GeometricVotingStarIdAlgorithm(const float tolerance): tolerance(tolerance) { };
+private:
+    float tolerance;
 };
 
 
