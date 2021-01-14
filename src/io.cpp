@@ -566,14 +566,16 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *inputStars, *input.InputCamera())));
+                                                              // TODO: no CatalogRead!
+            starIdAlgorithm->Go(database.get(), *inputStars, CatalogRead(), *input.InputCamera())));
         inputStarIds = result.starIds.get();
     }
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
-            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars)));
+            // TODO: no CatalogRead!
+            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead())));
     }
 
     return result;

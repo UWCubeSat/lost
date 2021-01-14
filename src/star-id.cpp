@@ -8,7 +8,7 @@
 namespace lost {
 
 StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
     StarIdentifiers result;
 
@@ -22,14 +22,11 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 }
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
     KVectorDatabase vectorDatabase(database);
     StarIdentifiers identified;
-    //make star datastructure that will keep track of the votes?
     for (int i = 0; i < (int)stars.size(); i++) {
-        std::vector<int16_t> votes(10000); // Catalog size
-        //convert x and y coordinates to degree differences 
-        //ascension or declination = arctan(xpos/(xRes/2/tan(FOV/2)))
+        std::vector<int16_t> votes(catalog.size());
         float ra1, de1;
         camera.CoordinateAngles({ stars[i].x, stars[i].y }, &ra1, &de1);
         for (int j = 0; j < (int)stars.size(); j++) {
@@ -74,7 +71,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
 }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
     // TODO
     ;
 }
