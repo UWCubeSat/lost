@@ -134,29 +134,21 @@ int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
     float minQueryDistance, float maxQueryDistance, int *numReturnedPairs) const {
 
     assert(maxQueryDistance > minQueryDistance);
-    minQueryDistance = Clamp(minQueryDistance, minDistance, maxDistance);
-    maxQueryDistance = Clamp(maxQueryDistance, minDistance, maxDistance);
-    //minDistance is going the starting point
+    if (minQueryDistance < minDistance || minQueryDistance > maxDistance ||
+        maxQueryDistance < minDistance || maxQueryDistance > maxDistance) {
+        *numReturnedPairs = 0;
+        return NULL;
+    }
+    // minDistance is going the starting point
     float binWidth = (maxDistance - minDistance) / numBins;
     //tbr v
     int lowerBin = (int16_t)floor((minQueryDistance - minDistance) / binWidth);
     int upperBin = (int16_t)ceil((maxQueryDistance - minDistance) / binWidth);
-    if (lowerBin >= numBins) {
-        *numReturnedPairs = 0;
-        return NULL;
-    }
-    if (upperBin >= numBins) {
-        upperBin = numBins - 1;
-    }
     assert(upperBin >= lowerBin);
     int lowerPair = bins[lowerBin];
     assert(lowerPair < numPairs);
     int upperPair = bins[upperBin];
-    if (upperPair >= numPairs) {
-        *numReturnedPairs = numPairs - 1 - lowerPair;
-    } else {
-        *numReturnedPairs = upperPair - lowerPair;
-    }
+    *numReturnedPairs = upperPair - lowerPair;
     assert(*numReturnedPairs >= 0);
     return &pairs[lowerPair * 2];
 }
