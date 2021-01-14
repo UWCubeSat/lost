@@ -23,7 +23,7 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Camera &camera) const {
     KVectorDatabase vectorDatabase(database);
-    StarIdentifiers identified(sizeof(stars));
+    StarIdentifiers identified;
     //make star datastructure that will keep track of the votes?
     for (auto i = 0; i < stars.size(); i++) {
         std::vector<int16_t> votes(10000); // Catalog size
@@ -54,9 +54,18 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
             }
         }
         // Find star w most votes
-        
-        // Set identified[i] to value of catalog index of star w most votes
-
+        int16_t maxVotes = votes[0];
+        int indexOfMax = 0;
+        for (auto v = 0; v < votes.size(); v++) {
+            if (votes[v] > maxVotes) {
+                maxVotes = votes[v];
+                indexOfMax = v;
+            }
+        }
+        //starIndex = i, catalog index = indexOfMax
+        StarIdentifier newStar(i, indexOfMax);
+        // Set identified[i] to value of catalog index of star w most votesr
+        identified.push_back(newStar);
     }
     //optimizations? N^2
     //testing, add false stars and see if the accuracy is still good (maybe just 1 or 2 false stars)
