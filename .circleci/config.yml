@@ -18,38 +18,23 @@ jobs:
     executor: lost
     steps:
       - *attach_workspace
-      - run:
-          name: Install CMake
-          command: |
-            sudo apt -y -q update
-            sudo apt -y -q install cmake
       - checkout
       - run:
-          name: CMake build files
+          name: Build files
           command: |
-            mkdir build
-            cd build
-            cmake ..
+            make all
       - run: |
           cd build
           make
   test:
     executor: lost
-    environment:
-      TEST_RESULTS: /tmp/test-results
     steps:
       - *attach_workspace
       - run:
           name: Run unit tests
           command: |
-            # The "environment:" option doesn't expand vars.
-            export GTEST_OUTPUT=xml:${TEST_RESULTS}/
-            mkdir -p $TEST_RESULTS
-            cd build
-            GTEST_COLOR=1 test/lost_test -V
-      - store_test_results:
-          # This option doesn't expand $TEST_RESULTS if used.
-          path: /tmp/test-results
+            ./lost_test
+
   lint:
     working_directory: ~/lost
     docker:

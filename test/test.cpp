@@ -1,5 +1,8 @@
-#include "gtest/gtest.h"
+#define CATCH_CONFIG_MAIN
 
-TEST(GoogleTestCi, Foo) {
-  ASSERT_TRUE(true);
+#include "catch.hpp"
+
+TEST_CASE("Base", "True")
+{
+    REQUIRE(1 == 0);
 }

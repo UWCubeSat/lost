@@ -24,7 +24,13 @@
 SRCS := $(wildcard src/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS))
+
+TEST_SRCS := $(wildcard test/*.cpp)
+TEST_OBJS := $(patsubst %.cpp,%.o,$(TEST_SRCS))
+TEST_DEPS := $(patsubst %.cpp,%.d,$(TEST_SRCS))
+
 BIN  := lost
+TEST_BIN  := $(BIN)_test
 
 BSC  := bright-star-catalog.tsv
 
@@ -41,6 +47,9 @@ $(BIN): $(OBJS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
+
+$(TEST_BIN): $(TEST_OBJS)
+	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(TEST_LIBS)
 
 -include $(DEPS)
 
