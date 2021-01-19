@@ -26,6 +26,13 @@ Vec2 Camera::ConvertCoordinates(const Vec3 &vector) const {
     return { -yPixel + (xResolution-1)/2.0f, -zPixel + (yResolution-1)/2.0f };
 }
 
+void Camera::CoordinateAngles(const Vec2 &vector, float *ra, float *de) const {
+    // TODO: off-by-one with xResolution - 1?
+    // TODO: minimize floating point error?
+    *ra = atan((xResolution/2.0-vector.x)/(xResolution/2.0/tan(xFov/2.0)));
+    *de = atan((yResolution/2.0-vector.y)/(xResolution/2.0/tan(xFov/2.0)));
+}
+
 bool Camera::InSensor(const Vec2 &vector) const {
     return vector.x >= 0 && vector.x <= xResolution
         && vector.y >= 0 && vector.y <= yResolution;

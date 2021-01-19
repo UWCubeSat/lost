@@ -11,23 +11,28 @@ namespace lost {
 
 class StarIdAlgorithm {
 public:
-    virtual StarIdentifiers Go(const unsigned char *database, const Stars &, const Camera &) const = 0;
+    virtual StarIdentifiers Go(
+        const unsigned char *database, const Stars &, const Catalog &, const Camera &) const = 0;
     virtual ~StarIdAlgorithm() { };
 };
 
 class DummyStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Camera &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
 };
 
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Camera &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+    GeometricVotingStarIdAlgorithm(const float tolerance): tolerance(tolerance) { };
+private:
+    float tolerance;
 };
+
 
 class PyramidStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Camera &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
 };
 
 }

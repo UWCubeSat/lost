@@ -252,7 +252,8 @@ StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
 }
 
 StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
-    return new GeometricVotingStarIdAlgorithm();
+    float tolerance = Prompt<float>("How much tolerance? (degrees)");
+    return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
 }
 
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
@@ -309,6 +310,7 @@ public:
 
     const Image *InputImage() const { return &image; };
     const Stars *InputStars() const { return &stars; };
+    const Camera *InputCamera() const { return &camera; };
     const StarIdentifiers *InputStarIds() const { return &starIds; };
     bool InputStarsIdentified() const { return true; };
     const Quaternion *InputAttitude() const { return &attitude; };
@@ -317,6 +319,7 @@ private:
     std::unique_ptr<unsigned char[]> imageData;
     Image image;
     Stars stars;
+    Camera camera;
     StarIdentifiers starIds;
     Quaternion attitude;
 };
@@ -366,6 +369,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                float brightnessDeviation,
                                                float noiseDeviation) {
     this->attitude = attitude;
+    this->camera = camera;
     image.width = camera.xResolution;
     image.height = camera.yResolution;
     unsigned char *imageRaw = (unsigned char *)calloc(image.width * image.height, 1);
@@ -385,7 +389,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
         Vec2 camCoords = camera.ConvertCoordinates(rotated);
 
-        float radiusX = 15.0; // TODO
+        float radiusX = 3.0; // TODO
         if (camera.InSensor(camCoords)) {
             stars.push_back(Star(camCoords.x, camCoords.y, radiusX, radiusX, catalogStar.magnitude));
             starIds.push_back(StarIdentifier(stars.size() - 1, i));
@@ -562,14 +566,16 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *result.stars, *input.InputCamera())));
+                                                              // TODO: no CatalogRead!
+            starIdAlgorithm->Go(database.get(), *inputStars, CatalogRead(), *input.InputCamera())));
         inputStarIds = result.starIds.get();
     }
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
-            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars)));
+            // TODO: no CatalogRead!
+            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead())));
     }
 
     return result;

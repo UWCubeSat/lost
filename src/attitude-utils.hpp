@@ -47,6 +47,8 @@ float DegToRad(float);
 float RadToArcSec(float);
 float ArcSecToRad(float);
 
+float GreatCircleDistance(float ra1, float de1, float ra2, float de2);
+
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
 }
