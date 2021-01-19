@@ -80,4 +80,4 @@ Washington.
   If you're developing LOST, you need to re-run ~make~ every time you edit any of the source code
   before running ~./lost~.
 
-  
+Builds in CircleCI.
