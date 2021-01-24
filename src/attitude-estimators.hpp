@@ -9,7 +9,7 @@ namespace lost {
 
 class AttitudeEstimationAlgorithm {
 public:
-    virtual Quaternion Go(const Camera &, const Stars &, const Catalog &) = 0;
+    virtual Quaternion Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &) = 0;
     virtual ~AttitudeEstimationAlgorithm() { };
 };
 
