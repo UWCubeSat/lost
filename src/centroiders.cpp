@@ -227,4 +227,41 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
     return result;
 }
 
+void Gauss1DHelper(int i, int cutoff, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices, std::unordered_set<int> &checkedIndices) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndices.count(i) == 0) {
+        checkedIndices.insert(i);
+        starIndices.push_back(i);
+        if(i % imageWidth != imageWidth - 1) {
+            Gauss1DHelper(i + 1, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+        }
+        if (i % imageWidth != 0) {
+            Gauss1DHelper(i - 1, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+        }
+        Gauss1DHelper(i + imageWidth, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+        Gauss1DHelper(i - imageWidth, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+    }
+}
+
+Stars GaussianFit1DAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+    std::vector<Star> result;
+    std::unordered_set<int> checkedIndices;
+    int cutoff = DetermineCutoff(image, imageWidth, imageHeight);
+    for (int i = 0; i < imageHeight * imageWidth; i++) {
+        //check if pixel is part of a "star" and has not been iterated over
+        if (image[i] >= cutoff && checkedIndices.count(i) == 0) {
+            std::vector<int> starIndices;
+            Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+            
+        }
+    }
+    //TODO: write the whole algorithm
+    // find star indices
+        // find x-marginal
+            // calculate nb
+        // solve least squares problem
+
+        // do the same for y coords
+    return result;
+}
+
 }

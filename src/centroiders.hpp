@@ -34,6 +34,12 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
+class GaussianFit1DAlgorithm : public CentroidAlgorithm {
+    public:
+        GaussianFit1DAlgorithm() { };
+        Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
+
 }
 
 #endif
