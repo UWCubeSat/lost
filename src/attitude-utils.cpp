@@ -9,7 +9,7 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
     return Quaternion(
         real*other.real - i*other.i - j*other.j - k*other.k,
         real*other.i + other.real*i + j*other.k - k*other.j,
-        real*other.j + other.real*j - i*other.k + k*other.i,
+        real*other.j + other.real*j + k*other.i - i*other.k,
         real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
