@@ -9,4 +9,4 @@
 /lost
 *.jpg
 
-/vendor/eigen
+/vendor/eigen3
