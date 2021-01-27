@@ -13,6 +13,11 @@ public:
     virtual ~AttitudeEstimationAlgorithm() { };
 };
 
+class DavenportQAlgorithm : public AttitudeEstimationAlgorithm {
+    public:
+        Quaternion Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
+};
+
 }
 
 #endif

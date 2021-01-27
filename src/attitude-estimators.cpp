@@ -3,7 +3,7 @@
 #include <eigen3/Eigen/Eigenvalues>
 
 namespace lost {
-    Quaternion AttitudeEstimationAlgorithm::Go(const Camera &cameraBoy, const Stars &starBoy, const Catalog &catalogBoy, const StarIdentifiers &StarIdentifiersBoy) {
+    Quaternion DavenportQAlgorithm::Go(const Camera &cameraBoy, const Stars &starBoy, const Catalog &catalogBoy, const StarIdentifiers &StarIdentifiersBoy) {
         //create a vector that'll hold {bi} (Stars in our frame)
         //create a vector that'll hold {ri} (Stars in catalog frame)
         std::vector<Eigen::Vector3f> b;
@@ -44,16 +44,16 @@ namespace lost {
             B(0,1) - B(1,0);
         //K =  [[[sigma], [Z[0]], [Z[1]], [Z[2]]], [[Z[0]], [S[0][0] - sigma], [S[0][1]], [S[0][2]]], [[Z[1]], [S[1][0]], [S[1][1] - sigma], [S[1][2]]], [[Z[2]], [S[2][0]], [S[2][1]], [S[2][2] - sigma]]]
         Eigen::Matrix3f K;
-        K << sigma, Z[0], Z[1], Z[2], 
-            Z[0], S(0,0) - sigma, S(0,1), S(0,2),
-            Z[1], S(1,0), S(1,1) - sigma, S(1,2),
-            Z[2], S(2,0), S(2,1), S(2,2) - sigma;
+        K << sigma, Z(0), Z(1), Z(2), 
+            Z(0), S(0,0) - sigma, S(0,1), S(0,2),
+            Z(1), S(1,0), S(1,1) - sigma, S(1,2),
+            Z(2), S(2,0), S(2,1), S(2,2) - sigma;
         //Find eigenvalues of K, store the largest one as lambda 
         Eigen::Vector3cf eigens = K.eigenvalues();
         //find the maximum index
-        Eigen::ComplexEigenSolver<Eigen::Matrix3f> solver(K);
+        Eigen::EigenSolver<Eigen::Matrix3f> solver(K);
         Eigen::Vector3cf values = solver.eigenvalues();
-        Eigen::Vector3cf vectors = solver.eigenvectors();
+        Eigen::Matrix3cf vectors = solver.eigenvectors();
         int maxIndex = 0;
         std::complex<float> maxIndexValue = values(0);
         for (int i = 1; i < values.size(); i++) {
@@ -63,6 +63,6 @@ namespace lost {
         }
         //The return quaternion components = eigenvector assocaited with lambda 
         auto maxAmount = vectors.col(maxIndex);
-        return Quaternion(abs(maxAmount.x()), abs(maxAmount.y()), abs(maxAmount.z()), abs(maxAmount.w()));
+        return Quaternion(abs(maxAmount(0)), abs(maxAmount(1)), abs(maxAmount(2)), abs(maxAmount(3)));
     }
 }

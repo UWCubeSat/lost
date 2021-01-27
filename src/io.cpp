@@ -247,6 +247,8 @@ CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
 
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
+typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
+
 StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
     return new DummyStarIdAlgorithm();
 }
@@ -259,6 +261,10 @@ StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
     return new PyramidStarIdAlgorithm();
 }
+
+AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
+    return new DavenportQAlgorithm();
+};
 
 unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length) {
     float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
@@ -530,7 +536,10 @@ Pipeline PromptPipeline() {
         }
 
         case PipelineStage::AttitudeEstimation: {
-            std::cerr << "TODO" << std::endl;
+            InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
+            attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
+            result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
+                (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
             break;
         }
 
@@ -575,7 +584,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
             // TODO: no CatalogRead!
-            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead())));
+            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead(), *inputStarIds)));
     }
 
     return result;
