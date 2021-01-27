@@ -29,7 +29,7 @@ BIN  := lost
 BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Wall --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Wall --std=c++11
 
 all: $(BIN) $(BSC)
 
