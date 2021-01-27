@@ -6,8 +6,6 @@ namespace lost {
     Quaternion DavenportQAlgorithm::Go(const Camera &cameraBoy, const Stars &starBoy, const Catalog &catalogBoy, const StarIdentifiers &StarIdentifiersBoy) {
         //create a vector that'll hold {bi} (Stars in our frame)
         //create a vector that'll hold {ri} (Stars in catalog frame)
-        std::vector<Eigen::Vector3f> b;
-        std::vector<Eigen::Vector3f> r;
         Eigen::Matrix3f B;
         for (const StarIdentifier &s: StarIdentifiersBoy) {
             Star bStar = starBoy[s.starIndex];
