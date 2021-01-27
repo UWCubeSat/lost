@@ -8,6 +8,7 @@ namespace lost {
         //create a vector that'll hold {ri} (Stars in catalog frame)
         std::vector<Eigen::Vector3f> b;
         std::vector<Eigen::Vector3f> r;
+        Eigen::Matrix3f B;
         for (const StarIdentifier &s: StarIdentifiersBoy) {
             Star bStar = starBoy[s.starIndex];
             float ra;
@@ -17,21 +18,16 @@ namespace lost {
             bi << cos(ra)*cos(dej),
                 sin(ra)*cos(dej),
                 sin(dej);
-            b.push_back(bi);
 
             CatalogStar rStar = catalogBoy[s.catalogIndex];
             Eigen::Vector3f ri;
             ri << cos(rStar.raj2000)*cos(rStar.dej2000),
                 sin(rStar.raj2000)*cos(rStar.dej2000),
                 sin(rStar.dej2000);
-            r.push_back(ri);
-        }
-        
-        //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
-        //Calculate matrix B = sum({ai}{bi}{ri}T)
-        Eigen::Matrix3f B;
-        for (int i = 0; i < (int) b.size(); i++) {
-            B += b[i] * r[i].transpose();
+
+            //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
+            //Calculate matrix B = sum({ai}{bi}{ri}T)
+            B += bi * ri.transpose();
         }
         // S = B + Transpose(B)
         Eigen::Matrix3f S = B + B.transpose();
