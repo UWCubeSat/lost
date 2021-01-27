@@ -17,7 +17,7 @@ namespace lost {
             bi << cos(ra)*cos(dej),
                 sin(ra)*cos(dej),
                 sin(dej);
-            r.push_back(bi);
+            b.push_back(bi);
 
             CatalogStar rStar = catalogBoy[s.catalogIndex];
             Eigen::Vector3f ri;
