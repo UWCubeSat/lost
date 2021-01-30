@@ -1,6 +1,8 @@
 #ifndef ATTITUDE_UTILS_H
 #define ATTITUDE_UTILS_H
 
+#include <memory>
+
 namespace lost {
 
 // At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
@@ -30,6 +32,8 @@ public:
     Quaternion Conjugate() const;
     Vec3 Vector() const;
     Vec3 Rotate(const Vec3 &) const;
+    float Angle() const;
+    void ToSpherical(float *ra, float *dec, float *roll) const;
 
     float real;
     float i;

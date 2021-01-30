@@ -41,6 +41,16 @@ Vec3 Quaternion::Rotate(const Vec3 &input) const {
     return ((*this)*Quaternion(input)*Conjugate()).Vector();
 }
 
+float Quaternion::Angle() const {
+    return acos(real)*2;
+}
+
+void Quaternion::ToSpherical(float *ra, float *de, float *roll) const {
+    *ra = -atan((2*i*j+2*real*k)/(2*real*real+2*i*i-1));
+    *de = -atan((2*j*k+2*real*i)/(2*real*real+2*k*k-1));
+    *roll = -asin(-2*i*k+2*real*j);
+}
+
 Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     assert(roll >= 0.0 && roll <= 2*M_PI);
     assert(ra >= 0 && ra <= 2*M_PI);
@@ -48,9 +58,9 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
 
     // when we are modifying the coordinate axes, the quaternion multiplication works so that the
     // rotations are applied from left to right. This is the opposite as for modifying vectors.
-    auto a = Quaternion({ 0, 0, 1 }, ra);
-    auto b = Quaternion({ 0, 1, 0 }, -dec);
-    auto c = Quaternion({ 1, 0, 0 }, -roll);
+    Quaternion a = Quaternion({ 0, 0, 1 }, ra);
+    Quaternion b = Quaternion({ 0, 1, 0 }, -dec);
+    Quaternion c = Quaternion({ 1, 0, 0 }, -roll);
     return (a*b*c).Conjugate();
 }
 

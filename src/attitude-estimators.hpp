@@ -9,6 +9,7 @@ namespace lost {
 
 class AttitudeEstimationAlgorithm {
 public:
+    // TODO: more detail in return type (eg, whether attitude estimation failed, measure of error)
     virtual Quaternion Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &) = 0;
     virtual ~AttitudeEstimationAlgorithm() { };
 };
