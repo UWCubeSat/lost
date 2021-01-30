@@ -963,7 +963,17 @@ void PromptPipelineComparison(const PipelineInputList &expected,
                                           PipelineComparatorStars);
     }
 
-    // TODO: Attitude
+    if (actual[0].attitude) {
+        if (actual.size() == 1) {
+            comparatorChoice.Register("print_attitude", "Print the determined ra, de, and roll",
+                                      PipelineComparatorPrintAttitude);
+        }
+
+        if (expected[0]->ExpectedAttitude()) {
+            comparatorChoice.Register("compare_attitude", "Compare expected to actual attitude",
+                                      PipelineComparatorAttitude);
+        }
+    }
 
     comparatorChoice.Register("done", "No more comparisons", NULL);
 
