@@ -709,14 +709,40 @@ bool StarIdCompare(const StarIdentifier &a, const StarIdentifier &b) {
     return a.starIndex < b.starIndex;
 }
 
-StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual) {
+StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                // stars are ignored if threshold<0
+                                float centroidThreshold,
+                                const Stars *expectedStars, const Stars *actualStars) {
+
     StarIdComparison result = {
         .numCorrect = 0,
         .numIncorrect = 0,
         .numTotal = (int)expected.size()
     };
     StarIdentifiers expectedSorted = expected;
-    StarIdentifiers actualSorted = actual;
+    StarIdentifiers actualSorted;
+    if (expectedStars && actualStars) {
+        // map from actual centroid index -> expected centroid index
+        std::vector<int> closestCentroids =
+            FindClosestCentroids(centroidThreshold, *actualStars, *expectedStars);
+        // ensure that even if two actual centroids are close to the same expected centroid, we
+        // don't double count.
+        std::vector<bool> expectedCentroidsUsed(expected.size());
+
+        for (const StarIdentifier &starId : actual) {
+            int closestIndex = closestCentroids[starId.starIndex];
+
+            if (closestIndex == -1) {
+                result.numIncorrect++;
+            } else if (!expectedCentroidsUsed[closestIndex]) {
+                expectedCentroidsUsed[closestIndex] = true;
+                actualSorted.push_back(
+                    StarIdentifier(closestIndex, starId.catalogIndex, starId.weight));
+            }
+        }
+    } else {
+        actualSorted = actual;
+    }
     sort(expectedSorted.begin(), expectedSorted.end(), StarIdCompare);
     sort(actualSorted.begin(), actualSorted.end(), StarIdCompare);
 
@@ -838,27 +864,9 @@ void PipelineComparatorStars(std::ostream &os,
 
     std::vector<StarIdComparison> comparisons;
     for (int i = 0; i < (int)expected.size(); i++) {
-        // expected identifiers have `starIndex` set to the index in the /expected/ array. If the
-        // centroiding step was set, though, we need to convert the detected centroid indices into
-        // expected centroid indices.
-        StarIdentifiers actualStarIds;
-        if (actual[i].stars) {
-            // map from actual centroid index -> expected centroid index
-            std::vector<int> closestCentroids =
-                FindClosestCentroids(centroidThreshold, *actual[i].stars, *expected[i]->ExpectedStars());
-
-            for (const StarIdentifier &starId : *actual[i].starIds) {
-                int closestIndex = closestCentroids[starId.starIndex];
-                if (closestIndex != -1) {
-                    actualStarIds.push_back(
-                        StarIdentifier(closestIndex, starId.catalogIndex, starId.weight));
-                }
-            }
-        } else {
-            actualStarIds = *actual[i].starIds;
-        }
-
-        comparisons.push_back(StarIdsCompare(*expected[i]->ExpectedStarIds(), actualStarIds));
+        comparisons.push_back(
+            StarIdsCompare(*expected[i]->ExpectedStarIds(), *actual[i].starIds,
+                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get()));
     }
 
     if (comparisons.size() == 1) {
