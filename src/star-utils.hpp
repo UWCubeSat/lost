@@ -36,11 +36,11 @@ public:
     StarIdentifier(int starIndex, int catalogIndex, int weight)
         : starIndex(starIndex), catalogIndex(catalogIndex), weight(weight) { };
     StarIdentifier(int starIndex, int catalogIndex)
-        : StarIdentifier(starIndex, catalogIndex, 1) { };
+        : StarIdentifier(starIndex, catalogIndex, 1.0f) { };
 
     int starIndex;
     int catalogIndex;
-    int weight;
+    float weight;
 };
 
 typedef std::vector<CatalogStar> Catalog;

@@ -7,6 +7,7 @@ namespace lost {
         //create a vector that'll hold {bi} (Stars in our frame)
         //create a vector that'll hold {ri} (Stars in catalog frame)
         Eigen::Matrix3f B;
+        B.setZero();
         for (const StarIdentifier &s: StarIdentifiersBoy) {
             Star bStar = starBoy[s.starIndex];
             float ra;
@@ -25,12 +26,12 @@ namespace lost {
 
             //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
             //Calculate matrix B = sum({ai}{bi}{ri}T)
-            B += bi * ri.transpose();
+            B += ri * bi.transpose() * s.weight;
         }
         // S = B + Transpose(B)
         Eigen::Matrix3f S = B + B.transpose();
         //sigma = B[0][0] + B[1][1] + B[2][2]
-        float sigma = B(0,0) + B(1,1) + B(2,2);
+        float sigma = B.trace();
         //Z = [[B[1][2] - B[2][1]], [B[2][0] - B[0][2]], [B[0][1] - B[1][0]]]
         Eigen::Vector3f Z;
         Z << B(1,2) - B(2,1), 
@@ -50,12 +51,12 @@ namespace lost {
         int maxIndex = 0;
         std::complex<float> maxIndexValue = values(0);
         for (int i = 1; i < values.size(); i++) {
-            if (abs(values(i)) > abs(maxIndexValue)) {
+            if (abs(values(i).imag()) < 0.00001 && values(i).real() > maxIndexValue.real()) {
                 maxIndex = i;
             }
         }
         //The return quaternion components = eigenvector assocaited with lambda 
-        auto maxAmount = vectors.col(maxIndex);
-        return Quaternion(abs(maxAmount(0)), abs(maxAmount(1)), abs(maxAmount(2)), abs(maxAmount(3)));
+        Eigen::Vector4cf maxAmount = vectors.col(maxIndex);
+        return Quaternion(maxAmount[0].real(), maxAmount[1].real(), maxAmount[2].real(), maxAmount[3].real());
     }
 }

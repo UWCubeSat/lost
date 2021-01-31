@@ -895,6 +895,10 @@ void PipelineComparatorPrintAttitude(std::ostream &os,
     assert(actual.size() == 1);
     assert(actual[0].attitude);
 
+    os << "attitude_real " << actual[0].attitude->real << std::endl;
+    os << "attitude_i " << actual[0].attitude->i << std::endl;
+    os << "attitude_j " << actual[0].attitude->j << std::endl;
+    os << "attitude_k " << actual[0].attitude->k << std::endl;
     float ra, de, roll;
     actual[0].attitude->ToSpherical(&ra, &de, &roll);
     os << "attitude_ra " << ra << std::endl;
