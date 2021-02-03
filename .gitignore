@@ -8,3 +8,5 @@
 
 /lost
 *.jpg
+
+/vendor/eigen3

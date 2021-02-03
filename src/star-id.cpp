@@ -73,6 +73,8 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
     // TODO
+        StarIdentifiers identified;
+        return identified;
     ;
 }
 

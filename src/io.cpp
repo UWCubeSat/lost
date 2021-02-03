@@ -1,4 +1,5 @@
 #include "io.hpp"
+
 #include "attitude-utils.hpp"
 #include "databases.hpp"
 #include "star-id.hpp"
@@ -19,6 +20,7 @@
 #include <memory>
 #include <cstring>
 #include <random>
+#include <algorithm>
 
 namespace lost {
 
@@ -217,7 +219,12 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
     }
 
     if (attitude != NULL) {
-        metadata += "TODO: convert quaternion back into spherical coordinates.   ";
+        float ra, de, roll;
+        attitude->ToSpherical(&ra, &de, &roll);
+        metadata +=
+            "RA: " + std::to_string(RadToDeg(ra)) + "  " +
+            "DE: " + std::to_string(RadToDeg(de)) + "  " +
+            "Roll: " + std::to_string(RadToDeg(roll)) + "   ";
     }
 
     // plot metadata
@@ -247,6 +254,8 @@ CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
 
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
+typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
+
 StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
     return new DummyStarIdAlgorithm();
 }
@@ -259,6 +268,10 @@ StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
     return new PyramidStarIdAlgorithm();
 }
+
+AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
+    return new DavenportQAlgorithm();
+};
 
 unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length) {
     float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
@@ -530,7 +543,10 @@ Pipeline PromptPipeline() {
         }
 
         case PipelineStage::AttitudeEstimation: {
-            std::cerr << "TODO" << std::endl;
+            InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
+            attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
+            result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
+                (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
             break;
         }
 
@@ -575,7 +591,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
             // TODO: no CatalogRead!
-            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead())));
+            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead(), *inputStarIds)));
     }
 
     return result;
@@ -681,6 +697,76 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     return result;
 }
 
+struct StarIdComparison {
+    int numCorrect;
+    int numIncorrect;
+    int numTotal;
+    float fractionCorrect;
+    float fractionIncorrect;
+};
+
+bool StarIdCompare(const StarIdentifier &a, const StarIdentifier &b) {
+    return a.starIndex < b.starIndex;
+}
+
+StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                // stars are ignored if threshold<0
+                                float centroidThreshold,
+                                const Stars *expectedStars, const Stars *actualStars) {
+
+    StarIdComparison result = {
+        .numCorrect = 0,
+        .numIncorrect = 0,
+        .numTotal = (int)expected.size()
+    };
+    StarIdentifiers expectedSorted = expected;
+    StarIdentifiers actualSorted;
+    if (expectedStars && actualStars) {
+        // map from actual centroid index -> expected centroid index
+        std::vector<int> closestCentroids =
+            FindClosestCentroids(centroidThreshold, *actualStars, *expectedStars);
+        // ensure that even if two actual centroids are close to the same expected centroid, we
+        // don't double count.
+        std::vector<bool> expectedCentroidsUsed(expected.size());
+
+        for (const StarIdentifier &starId : actual) {
+            int closestIndex = closestCentroids[starId.starIndex];
+
+            if (closestIndex == -1) {
+                result.numIncorrect++;
+            } else if (!expectedCentroidsUsed[closestIndex]) {
+                expectedCentroidsUsed[closestIndex] = true;
+                actualSorted.push_back(
+                    StarIdentifier(closestIndex, starId.catalogIndex, starId.weight));
+            }
+        }
+    } else {
+        actualSorted = actual;
+    }
+    sort(expectedSorted.begin(), expectedSorted.end(), StarIdCompare);
+    sort(actualSorted.begin(), actualSorted.end(), StarIdCompare);
+
+    auto currActual = actualSorted.cbegin();
+    for (const StarIdentifier &currExpected : expectedSorted) {
+        if (currActual != actualSorted.cend() &&
+            currActual->starIndex == currExpected.starIndex) {
+
+            if (currActual->catalogIndex == currExpected.catalogIndex) {
+                result.numCorrect++;
+            } else {
+                result.numIncorrect++;
+            }
+
+            currActual++;
+        }
+    }
+
+    result.fractionCorrect = (float)result.numCorrect / result.numTotal;
+    result.fractionIncorrect = (float)result.numIncorrect / result.numTotal;
+
+    return result;
+}
+
 /////////////////////
 // PIPELINE OUTPUT //
 /////////////////////
@@ -739,13 +825,28 @@ void PipelineComparatorCentroids(std::ostream &os,
        << "mean_error " << result.meanError << std::endl;
 }
 
+void PipelineComparatorPrintCentroids(std::ostream &os,
+                                      const PipelineInputList &expected,
+                                      const std::vector<PipelineOutput> &actual) {
+    assert(actual.size() == 1);
+    assert(actual[0].stars);
+
+    os << "num_centroids " << actual[0].stars->size() << std::endl;
+    for (int i = 0; i < (int)actual[0].stars->size(); i++) {
+        const Star &star = actual[0].stars->at(i);
+        os << "centroid_" << i << "_x " << star.x << std::endl;
+        os << "centroid_" << i << "_y " << star.y << std::endl;
+        // TODO: print other stats too?
+    }
+}
+
 void PipelineComparatorPlotOutput(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
-                *actual[0].stars,
+                actual[0].stars ? *actual[0].stars : *expected[0]->ExpectedStars(),
                 actual[0].starIds.get(),
                 actual[0].attitude.get(),
                 // red
@@ -755,17 +856,83 @@ void PipelineComparatorPlotOutput(std::ostream &os,
 }
 
 void PipelineComparatorStars(std::ostream &os,
-                                     const PipelineInputList &expected,
-                                     const std::vector<PipelineOutput> &actual) {
-    os << "Unimplemented" << std::endl;
-    // TODO: plot all stars, maybe a different color for unidentified stars, and put text next to
-    // properly identified stars.
+                             const PipelineInputList &expected,
+                             const std::vector<PipelineOutput> &actual) {
+    float centroidThreshold = actual[0].stars
+        ? Prompt<float>("Threshold to count centroids as the same star (pixels)")
+        : 0.0f;
+
+    std::vector<StarIdComparison> comparisons;
+    for (int i = 0; i < (int)expected.size(); i++) {
+        comparisons.push_back(
+            StarIdsCompare(*expected[i]->ExpectedStarIds(), *actual[i].starIds,
+                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get()));
+    }
+
+    if (comparisons.size() == 1) {
+        os << "starid_num_correct " << comparisons[0].numCorrect << std::endl;
+        os << "starid_num_incorrect " << comparisons[0].numIncorrect << std::endl;
+        os << "starid_num_total " << comparisons[0].numTotal << std::endl;
+    }
+ 
+    float fractionIncorrectSum = 0;
+    float fractionCorrectSum = 0;
+    for (const StarIdComparison &comparison : comparisons) {
+        fractionIncorrectSum += comparison.fractionIncorrect;
+        fractionCorrectSum += comparison.fractionCorrect;
+    }
+
+    float fractionIncorrectMean = fractionIncorrectSum / comparisons.size();
+    float fractionCorrectMean = fractionCorrectSum / comparisons.size();
+
+    os << "starid_fraction_correct " << fractionCorrectMean << std::endl;
+    os << "starid_fraction_incorrect " << fractionIncorrectMean << std::endl;
 }
 
-void PipelineComparatorPlotStars(std::ostream &os,
+void PipelineComparatorPrintAttitude(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual) {
-    os << "Unimplemented" << std::endl;
+    assert(actual.size() == 1);
+    assert(actual[0].attitude);
+
+    os << "attitude_real " << actual[0].attitude->real << std::endl;
+    os << "attitude_i " << actual[0].attitude->i << std::endl;
+    os << "attitude_j " << actual[0].attitude->j << std::endl;
+    os << "attitude_k " << actual[0].attitude->k << std::endl;
+    float ra, de, roll;
+    actual[0].attitude->ToSpherical(&ra, &de, &roll);
+    os << "attitude_ra " << ra << std::endl;
+    os << "attitude_de " << de << std::endl;
+    os << "attitude_roll " << roll << std::endl;
+}
+
+void PipelineComparatorAttitude(std::ostream &os,
+                                const PipelineInputList &expected,
+                                const std::vector<PipelineOutput> &actual) {
+
+    // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
+    // apart roll error from boresight error. This is just quick and dirty for testing
+    float angleThreshold = DegToRad(
+        Prompt<float>("Threshold to count two attitudes as the same (deg)"));
+
+    float attitudeErrorSum = 0.0f;
+    int numCorrect = 0;
+
+    for (int i = 0; i < (int)expected.size(); i++) {
+        float attitudeError = (*expected[i]->ExpectedAttitude() * actual[0].attitude->Conjugate()).Angle();
+        assert(attitudeError >= 0);
+        attitudeErrorSum += attitudeError;
+        if (attitudeError <= angleThreshold) {
+            numCorrect++;
+        }
+    }
+
+    float attitudeErrorMean = attitudeErrorSum / expected.size();
+    float fractionCorrect = (float)numCorrect / expected.size();
+
+    os << "attitude_error_mean " << attitudeErrorMean << std::endl;
+    os << "attitude_num_correct " << numCorrect << std::endl;
+    os << "attitude_fraction_correct " << fractionCorrect << std::endl;
 }
 
 void PromptPipelineComparison(const PipelineInputList &expected,
@@ -784,28 +951,41 @@ void PromptPipelineComparison(const PipelineInputList &expected,
         }
     }
 
-    // Stars
-    if (actual[0].stars) {
-        if (actual.size() == 1) {
-            // maybe TODO: plot star-id output even if no centroiding step?
+    if (actual.size() == 1 && (actual[0].stars || actual[0].starIds)) {
             comparatorChoice.Register("plot_output", "Plot output to PNG",
                                       PipelineComparatorPlotOutput);
+    }
+
+    // Centroids
+    if (actual[0].stars) {
+        if (actual.size() == 1) {
+            comparatorChoice.Register("print_centroids", "Print list of centroids",
+                                      PipelineComparatorPrintCentroids);
         }
-        // TODO: write centroid coordinates to txt or something (ideally fits, but oh well)
 
         if (expected[0]->ExpectedStars()) {
             comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
                                       PipelineComparatorCentroids);
-
-            // Star-IDs
-            if (expected[0]->ExpectedStarIds() && actual[0].starIds) {
-                comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
-                                          PipelineComparatorStars);
-            }
         }
     }
 
-    // TODO: Attitude
+    // Star-IDs
+    if (expected[0]->ExpectedStars() && actual[0].starIds) {
+                comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
+                                          PipelineComparatorStars);
+    }
+
+    if (actual[0].attitude) {
+        if (actual.size() == 1) {
+            comparatorChoice.Register("print_attitude", "Print the determined ra, de, and roll",
+                                      PipelineComparatorPrintAttitude);
+        }
+
+        if (expected[0]->ExpectedAttitude()) {
+            comparatorChoice.Register("compare_attitude", "Compare expected to actual attitude",
+                                      PipelineComparatorAttitude);
+        }
+    }
 
     comparatorChoice.Register("done", "No more comparisons", NULL);
 
