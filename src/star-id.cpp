@@ -25,7 +25,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
     KVectorDatabase vectorDatabase(database);
     StarIdentifiers identified;
-    for (int i = 0; i < (int)stars.size(); i++) {
+    for (int i = 0; i < (int)stars.size(); i++) {  
         std::vector<int16_t> votes(catalog.size());
         float ra1, de1;
         camera.CoordinateAngles({ stars[i].x, stars[i].y }, &ra1, &de1);
@@ -66,7 +66,15 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         identified.push_back(newStar);
     }
     //optimizations? N^2
-    //testing, add false stars and see if the accuracy is still good (maybe just 1 or 2 false stars)
+    //https://www.researchgate.net/publication/3007679_Geometric_voting_algorithm_for_star_trackers
+    //loop i from 1 through n 
+            //loop j from i+1 through n 
+                //calculate distance for catalog (call sDist)
+                //if sDist is in the range of (distance between stars in the image +- R)
+                    //add a vote for the match
+    //If the stars are within a certain range of the maximal number of votes, we consider it correct.
+    //maximal votes = n 
+    
     return identified;
 }
 
