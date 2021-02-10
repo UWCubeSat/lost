@@ -51,12 +51,16 @@ namespace lost {
         int maxIndex = 0;
         std::complex<float> maxIndexValue = values(0);
         for (int i = 1; i < values.size(); i++) {
-            if (abs(values(i).imag()) < 0.00001 && values(i).real() > maxIndexValue.real()) {
+            if (values(i).real() > maxIndexValue.real()) {
                 maxIndex = i;
             }
         }
         //The return quaternion components = eigenvector assocaited with lambda 
         Eigen::Vector4cf maxAmount = vectors.col(maxIndex);
+        // IMPORTANT: The matrix K is symmetric -- clearly first row and first column are equal.
+        // Furthermore, S is symmetric because s_i,j = b_i,j + b_j,i and s_j,i=b_j,i + b_i,j, so the
+        // bottom right 3x3 block of K is symmetric too. Thus all its eigenvalues and eigenvectors
+        // are real.
         return Quaternion(maxAmount[0].real(), maxAmount[1].real(), maxAmount[2].real(), maxAmount[3].real());
     }
 }
