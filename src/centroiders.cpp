@@ -11,6 +11,13 @@
 
 #include <unordered_set>
 
+#include <eigen3/Eigen/Eigen>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Core>
+
+#include <eigen3/unsupported/Eigen/NonLinearOptimization>
+#include <eigen3/unsupported/Eigen/NumericalDiff>
+
 namespace lost {
 
 // DUMMY
@@ -249,18 +256,198 @@ Stars GaussianFit1DAlgorithm::Go(unsigned char *image, int imageWidth, int image
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= cutoff && checkedIndices.count(i) == 0) {
-            std::vector<int> starIndices;
+            std::vector<int> starIndices; //vector of star coordinates
             Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
-            
-        }
-    }
-    //TODO: write the whole algorithm
-    // find star indices
-        // find x-marginal
-            // calculate nb
-        // solve least squares problem
 
-        // do the same for y coords
+            int maxXInd = 0;
+            int minXInd = 10000;
+            int maxYInd = 0;  
+            int minYInd = 10000;
+            for (int j = 0; j < (int) starIndices.size(); j++) {
+                int temp = starIndices.at(j);
+                if (temp % imageWidth > maxXInd) {
+                    maxXInd = temp % imageWidth;
+                }
+                if (temp % imageWidth < minXInd) {
+                    minXInd = temp % imageWidth;
+                }
+                if (temp / imageWidth > maxYInd) {
+                    maxYInd = temp / imageWidth;
+                }
+                if (temp / imageWidth < minYInd) {
+                    minYInd = temp / imageWidth;
+                }
+            }
+
+            int xRange = 1 + maxXInd - minXInd;
+            int yRange = 1 + maxYInd - minYInd;
+
+            int xSums[xRange];
+            int ySums[yRange];
+
+            int start = (minYInd * imageWidth) + minXInd;
+            int end = (maxYInd * imageWidth) + maxXInd;
+            
+
+            Eigen::MatrixXf xMeasuredValues(xRange, 2);
+            Eigen::MatrixXf yMeasuredValues(yRange, 2);
+
+            // calculate xSums
+            for (int j = start; j <= end; j++) {
+                xSums[(j % imageWidth) - minXInd] += image[j];
+                xMeasuredValues((j % imageWidth) - minXInd, 0) = j % imageWidth;
+                xMeasuredValues((j % imageWidth) - minXInd, 1) += image[j];
+                if (j % imageWidth >= maxXInd) {
+                    j = ((j / imageWidth) * imageWidth) + minXInd;
+                }
+            }
+            // calculate ySums
+            for (int j = start; j <= end; j++) {
+                ySums[(j / imageWidth) - minYInd] += image[j];
+                yMeasuredValues((j / imageWidth) - minYInd, 0) = j / imageWidth;
+                yMeasuredValues((j / imageWidth) - minYInd, 1) += image[j];
+                if (j % imageWidth >= maxXInd) {
+                    j = ((j / imageWidth) * imageWidth) + minXInd;
+                }
+            }
+            // eigen stuff here:
+            
+            int n = 3; // num parameters
+            int xm = xRange; // column data points
+            int ym = yRange; // row data points
+
+            Eigen::VectorXf x(n);
+            //Eigen::MatrixXf xxMeasuredValues(xm, 2);
+
+            x(0) = 0.0;
+            x(1) = 0.0;
+            x(2) = 0.0;
+
+            struct XLMFunctor {
+                // computes m errors, one per data point, for the given params in x
+                int operator()(const Eigen::VectorXf &x, Eigen::VectorXf &fvec) const {
+                    float aParam = x(0);
+                    float x_bParam = x(1);
+                    float sdParam = x(2);
+
+                    for (int j = 0; j < values(); j++) {
+                        float xCoord = xMeasuredValues(j, 0);
+                        float magSum = xMeasuredValues(j, 1);
+
+                        fvec(j) = magSum - (aParam * (exp  ((-1 * pow(xCoord - x_bParam, 2)) / 2 * pow(sdParam, 2))  ));
+                    }
+
+                    return 0;
+                }
+                // Compute jacobian of teh errors
+                int df(const Eigen::VectorXf &x, const Eigen::MatrixXf &fjac) const {
+                    float epsilon;
+                    epsilon = 1e-5f;
+
+                    for (int i = 0; i < x.size(); i++) {
+                        Eigen::VectorXf xPlus(x);
+                        xPlus(i) += epsilon;
+                        Eigen::VectorXf xMinus(x);
+                        xMinus(i) -= epsilon;
+
+                        Eigen::VectorXf fvecPlus(values());
+                        operator()(xPlus, fvecPlus);
+
+                        Eigen::VectorXf fvecMinus(values());
+                        operator()(xMinus, fvecMinus);
+
+                        Eigen::VectorXf fvecDiff(values());
+                        fvecDiff = (fvecPlus - fvecMinus) / (2.0f * epsilon);
+
+                        fjac.block(0, i, values(), 1) = fvecDiff;
+                    }
+                    return 0;
+                }
+                // num data points
+                int m;
+
+                // gets m
+                int values() const { return m; }
+
+                // num parameters
+                int n;
+
+                int inputs() const { return n; }
+            };
+
+            XLMFunctor xFunctor;
+            xFunctor.m = xm;
+            xFunctor.n = n;
+
+            Eigen::LevenbergMarquardt<XLMFunctor, float> xlm(xFunctor);
+            xlm.minimize(x);
+            float xCoord = x(1);
+
+
+
+            struct YLMFunctor {
+                // computes m errors, one per data point, for the given params in x
+                int operator()(const Eigen::VectorXf &x, Eigen::VectorXf &fvec) const {
+                    float aParam = x(0);
+                    float y_bParam = x(1);
+                    float sdParam = x(2);
+
+                    for (int j = 0; j < values(); j++) {
+                        float yCoord = yMeasuredValues(j, 0);
+                        float magSum = yMeasuredValues(j, 1);
+
+                        fvec(j) = magSum - (aParam * (exp  ((-1 * pow(yCoord - y_bParam, 2)) / 2 * pow(sdParam, 2))  ));
+                    }
+
+                    return 0;
+                }
+                // Compute jacobian of teh errors
+                int df(const Eigen::VectorXf &x, const Eigen::MatrixXf &fjac) const {
+                    float epsilon;
+                    epsilon = 1e-5f;
+
+                    for (int i = 0; i < x.size(); i++) {
+                        Eigen::VectorXf xPlus(x);
+                        xPlus(i) += epsilon;
+                        Eigen::VectorXf xMinus(x);
+                        xMinus(i) -= epsilon;
+
+                        Eigen::VectorXf fvecPlus(values());
+                        operator()(xPlus, fvecPlus);
+
+                        Eigen::VectorXf fvecMinus(values());
+                        operator()(xMinus, fvecMinus);
+
+                        Eigen::VectorXf fvecDiff(values());
+                        fvecDiff = (fvecPlus - fvecMinus) / (2.0f * epsilon);
+
+                        fjac.block(0, i, values(), 1) = fvecDiff;
+                    }
+                    return 0;
+                }
+                // num data points
+                int m;
+
+                // gets m
+                int values() const { return m; }
+
+                // num parameters
+                int n;
+
+                int inputs() const { return n; }
+            };
+
+            YLMFunctor yFunctor;
+            yFunctor.m = ym;
+            yFunctor.n = n;
+
+            Eigen::LevenbergMarquardt<YLMFunctor, float> ylm(yFunctor);
+            ylm.minimize(x);
+            float yCoord = x(1);
+        
+            result.push_back(Star(xCoord, yCoord, (float) xRange / 2.0, (float) yRange / 2,0));
+        }  
+    }
     return result;
 }
 

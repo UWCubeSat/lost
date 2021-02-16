@@ -51,6 +51,8 @@
         "chrono": "cpp",
         "cstring": "cpp",
         "ctime": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "dense": "cpp",
+        "nonlinearoptimization": "cpp"
     }
 }
