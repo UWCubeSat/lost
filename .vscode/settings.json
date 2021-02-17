@@ -53,6 +53,8 @@
         "ctime": "cpp",
         "ratio": "cpp",
         "dense": "cpp",
-        "nonlinearoptimization": "cpp"
+        "nonlinearoptimization": "cpp",
+        "complex": "cpp",
+        "list": "cpp"
     }
 }
