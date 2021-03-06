@@ -71,9 +71,9 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     // Do we have a metric for localization uncertainty? Star brighntess?
     //loop i from 1 through n
     std::vector<int16_t> verificationVotes(identified.size());
-    for (int i = 0; i < identified.size(); i++) {
+    for (int i = 0; i < (int)identified.size(); i++) {
         //loop j from i+1 through n 
-        for (int j = i + 1; i < identified.size(); j++) {
+        for (int j = i + 1; j < (int)identified.size(); j++) {
             // Calculate distance between catalog stars
             CatalogStar first = catalog[identified[i].catalogIndex];
             CatalogStar second = catalog[identified[j].catalogIndex];
@@ -97,11 +97,9 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     }
     // Find star w most votes
     int16_t maxVotes = verificationVotes[0];
-    int indexOfMax = 0;
     for (int v = 0; v < (int)verificationVotes.size(); v++) {
         if (verificationVotes[v] > maxVotes) {
             maxVotes = verificationVotes[v];
-            indexOfMax = v;
         }
     }
 
@@ -109,9 +107,8 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     // we consider it correct.
     // maximal votes = maxVotes
     StarIdentifiers verified;
-    verified.push_back(identified[indexOfMax]);
     int16_t thresholdVotes = 0.75 * maxVotes;
-    for (int i = 0; i < verificationVotes.size(); i++) {
+    for (int i = 0; i < (int)verificationVotes.size(); i++) {
         if (verificationVotes[i] > thresholdVotes) {
             verified.push_back(identified[i]);
         }
