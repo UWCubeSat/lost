@@ -26,17 +26,16 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     KVectorDatabase vectorDatabase(database);
     StarIdentifiers identified;
     for (int i = 0; i < (int)stars.size(); i++) {  
-        std::vector<int16_t> votes(catalog.size());
-        float ra1, de1;
-        camera.CoordinateAngles({ stars[i].x, stars[i].y }, &ra1, &de1);
+        std::vector<int16_t> votes(catalog.size(), 0);
+        // TODO: store spatial coordinates in catalog to avoid this conversion
+        Vec3 iSpatial = camera.CameraToSpatial({ stars[i].x, stars[i].y });
         for (int j = 0; j < (int)stars.size(); j++) {
             if (i != j) {
-                float ra2, de2;
-                camera.CoordinateAngles({ stars[j].x, stars[j].y }, &ra2, &de2);
-                float gcd = GreatCircleDistance(ra1, de1, ra2, de2);
+                Vec3 jSpatial = camera.CameraToSpatial({ stars[j].x, stars[j].y });
+                float greatCircleDistance = Angle(iSpatial, jSpatial);
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
-                float lowerBoundRange = gcd - tolerance;
-                float upperBoundRange = gcd + tolerance;
+                float lowerBoundRange = greatCircleDistance - tolerance;
+                float upperBoundRange = greatCircleDistance + tolerance;
                 //if database is a KVectorDatabase
                 long numReturnedPairs; 
                 int16_t *lowerBoundSearch = vectorDatabase.FindPossibleStarPairsApprox(
@@ -54,7 +53,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         // Find star w most votes
         int16_t maxVotes = votes[0];
         int indexOfMax = 0;
-        for (int v = 0; v < (int)votes.size(); v++) {
+        for (int v = 1; v < (int)votes.size(); v++) {
             if (votes[v] > maxVotes) {
                 maxVotes = votes[v];
                 indexOfMax = v;
@@ -70,7 +69,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     //
     // Do we have a metric for localization uncertainty? Star brighntess?
     //loop i from 1 through n
-    std::vector<int16_t> verificationVotes(identified.size());
+    std::vector<int16_t> verificationVotes(identified.size(), 0);
     for (int i = 0; i < (int)identified.size(); i++) {
         //loop j from i+1 through n 
         for (int j = i + 1; j < (int)identified.size(); j++) {
@@ -81,11 +80,9 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
 
             Star firstIdentified = stars[identified[i].starIndex];
             Star secondIdentified = stars[identified[j].starIndex];
-            float ra1, de1;
-            camera.CoordinateAngles({firstIdentified.x, firstIdentified.y}, &ra1, &de1);
-            float ra2, de2;
-            camera.CoordinateAngles({secondIdentified.x, secondIdentified.y }, &ra2, &de2);
-            float sDist = GreatCircleDistance(ra1, de1, ra2, de2);
+            Vec3 firstSpatial = camera.CameraToSpatial({firstIdentified.x, firstIdentified.y});
+            Vec3 secondSpatial = camera.CameraToSpatial({secondIdentified.x, secondIdentified.y});
+            float sDist = Angle(firstSpatial, secondSpatial);
             
             //if sDist is in the range of (distance between stars in the image +- R)
             //add a vote for the match
@@ -97,7 +94,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     }
     // Find star w most votes
     int16_t maxVotes = verificationVotes[0];
-    for (int v = 0; v < (int)verificationVotes.size(); v++) {
+    for (int v = 1; v < (int)verificationVotes.size(); v++) {
         if (verificationVotes[v] > maxVotes) {
             maxVotes = verificationVotes[v];
         }

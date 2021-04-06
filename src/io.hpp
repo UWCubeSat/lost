@@ -114,7 +114,7 @@ private:
 void WithOutputStream(void (*)(std::ostream *));
 
 // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
-std::vector<CatalogStar> CatalogRead();
+std::vector<CatalogStar> &CatalogRead();
 // Convert a cairo surface to array of grayscale bytes
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);

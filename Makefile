@@ -22,14 +22,17 @@
 # https://stackoverflow.com/q/2394609)
 
 SRCS := $(wildcard src/*.cpp)
+TESTS := $(wildcard test/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
+TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS))
 BIN  := lost
+TEST_BIN := ./lost-test
 
 BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Wall --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Wall --std=c++11
 
 all: $(BIN) $(BSC)
 
@@ -44,8 +47,14 @@ $(BIN): $(OBJS)
 
 -include $(DEPS)
 
+test: $(TEST_BIN)
+	$(TEST_BIN)
+
+$(TEST_BIN): $(TEST_OBJS)
+	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
+
 clean:
 	rm -f $(OBJS) $(DEPS)
 	rm -i $(BSC)
 
-.PHONY: all clean
+.PHONY: all clean test
