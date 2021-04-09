@@ -78,6 +78,38 @@ int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
 
 int OTSUSCutoff(unsigned char *image, int imageWidth, int imageHeight) {
     // code here, duh
+    float total = imageWidth * imageHeight;
+    //float top = 255;
+    float sumB = 0;
+    float sum1 = 0;
+    float wB = 0;
+    float maximum = 0;
+    int level = 0;
+    // make the histogram (array length 256)
+    int * histogram = new int[256];
+    for (int i = 0; i < total; i++) {
+        histogram[image[i]] ++;
+    }
+    for (int i = 0; i < 256; i ++) {
+        sum1 += i * histogram[i];
+    }
+    for (int i = 0; i < 256; i ++) {
+        float wF = wB - total;
+        std::cout << "wF\n" << wB << "\n";
+        std::cout << "wB\n" << wF << "\n";
+        if (wB > 0 && wF > 0) {
+            float mF = (sum1 - sumB) / wF;
+            float val = wB * wF * ((sumB / wB) - mF) * ((sumB / wB) - mF);
+            std::cout << val << "\n";
+            if (val >= maximum) {
+                level = i;
+                maximum = val;
+            }
+        }
+        wB = wB + histogram[i];
+        sumB = sumB + i * histogram[i];
+    }
+    return level;
 }
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
@@ -85,7 +117,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     
     std::vector<Star> result;
     
-    p.cutoff = DetermineCutoff(image, imageWidth, imageHeight);
+    p.cutoff = OTSUSCutoff(image, imageWidth, imageHeight);
+    std::cout << "here\n" << p.cutoff << "\n";
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
