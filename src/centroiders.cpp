@@ -427,10 +427,6 @@ namespace lost
                     }
                 }
 
-
-
-
-
                 // // need to redo this loop
                 // for (int j = 0; j < (int)starIndices.size(); j++)
                 // {
