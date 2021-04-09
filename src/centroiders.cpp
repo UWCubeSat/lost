@@ -74,6 +74,12 @@ int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
     return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
 }
 
+//TODO: create more sophisticated cutoff using otsu's algorithm:
+
+int OTSUSCutoff(unsigned char *image, int imageWidth, int imageHeight) {
+    // code here, duh
+}
+
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
     
