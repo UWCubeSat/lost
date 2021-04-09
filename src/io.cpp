@@ -93,7 +93,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
 #define DEFAULT_BSC_PATH "bright-star-catalog.tsv"
 #endif
 
-std::vector<CatalogStar> CatalogRead() {
+std::vector<CatalogStar> &CatalogRead() {
     static bool readYet = false;
     static std::vector<CatalogStar> catalog;
 
@@ -380,27 +380,23 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Camera camera,
                                                int referenceBrightness,
                                                float brightnessDeviation,
-                                               float noiseDeviation) {
-    this->attitude = attitude;
-    this->camera = camera;
-    image.width = camera.xResolution;
-    image.height = camera.yResolution;
+                                               float noiseDeviation)
+    : camera(camera), attitude(attitude) {
+
+    image.width = camera.GetXResolution();
+    image.height = camera.GetYResolution();
     unsigned char *imageRaw = (unsigned char *)calloc(image.width * image.height, 1);
     imageData = std::unique_ptr<unsigned char[]>(imageRaw);
     image.image = imageData.get();
 
     for (int i = 0; i < (int)catalog.size(); i++) {
         const CatalogStar &catalogStar = catalog[i];
-        Vec3 spatial = {
-            cos(catalogStar.raj2000)*cos(catalogStar.dej2000),
-            sin(catalogStar.raj2000)*cos(catalogStar.dej2000),
-            sin(catalogStar.dej2000),
-        };
+        Vec3 spatial = SphericalToSpatial(catalog[i].raj2000, catalog[i].dej2000);
         Vec3 rotated = attitude.Rotate(spatial);
         if (rotated.x < 0) {
             continue;
         }
-        Vec2 camCoords = camera.ConvertCoordinates(rotated);
+        Vec2 camCoords = camera.SpatialToCamera(rotated);
 
         float radiusX = 3.0; // TODO
         if (camera.InSensor(camCoords)) {
@@ -450,6 +446,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
     int xResolution = Prompt<int>("Horizontal Resolution");
     int yResolution = Prompt<int>("Vertical Resolution");
     float xFovDeg = Prompt<float>("Horizontal FOV (in degrees)");
+    float xFocalLength = xResolution / (float)2.0 / tan(DegToRad(xFovDeg)/2);
     int referenceBrightness = Prompt<int>("Reference star brightness");
     float brightnessDeviation = Prompt<float>("Star spread stddev");
     float noiseDeviation = Prompt<float>("Noise stddev");
@@ -463,7 +460,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
-            Camera(DegToRad(xFovDeg), xResolution, yResolution),
+            Camera(xFocalLength, xResolution, yResolution),
             referenceBrightness, brightnessDeviation, noiseDeviation);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));

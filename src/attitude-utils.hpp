@@ -14,10 +14,16 @@ struct Vec2 {
     float y;
 };
 
-struct Vec3 {
+class Vec3 {
+public:
     float x;
     float y;
     float z;
+
+    float Magnitude() const;
+    Vec3 Normalize() const;
+
+    float operator*(const Vec3 &) const;
 };
 
 class Quaternion {
@@ -45,6 +51,12 @@ public:
 // right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
 // will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 Quaternion SphericalToQuaternion(float ra, float dec, float roll);
+
+Vec3 SphericalToSpatial(float ra, float de);
+// angle between two vectors, using dot product and magnitude division
+float Angle(const Vec3 &, const Vec3 &);
+// angle between two vectors, /assuming/ that they are already unit length
+float AngleUnit(const Vec3 &, const Vec3 &);
 
 float RadToDeg(float);
 float DegToRad(float);

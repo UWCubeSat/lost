@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <assert.h>
+#include <iostream>
 
 namespace lost {
 
@@ -64,6 +65,14 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     return (a*b*c).Conjugate();
 }
 
+Vec3 SphericalToSpatial(float ra, float de) {
+    return {
+        cos(ra)*cos(de),
+        sin(ra)*cos(de),
+        sin(de),
+    };
+}
+
 float RadToDeg(float rad) {
     return rad*180.0/M_PI;
 }
@@ -83,6 +92,31 @@ float ArcSecToRad(float arcSec) {
 float GreatCircleDistance(float ra1, float de1, float ra2, float de2) {
     return 2.0*asin(sqrt(pow(sin(abs(de1-de2)/2.0), 2.0)
                          + cos(de1)*cos(de2)*pow(sin(abs(ra1-ra2)/2.0), 2.0)));
+}
+
+float Vec3::Magnitude() const {
+    return sqrt(x*x+y*y+z*z);
+}
+
+Vec3 Vec3::Normalize() const {
+    float mag = Magnitude();
+    return {
+        x/mag, y/mag, z/mag,
+    };
+}
+
+float Vec3::operator*(const Vec3 &other) const {
+    return x*other.x + y*other.y + z*other.z;
+}
+
+float Angle(const Vec3 &vec1, const Vec3 &vec2) {
+    return AngleUnit(vec1.Normalize(), vec2.Normalize());
+}
+
+float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
+    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
+    float dot = vec1*vec2;
+    return dot >= 1 ? 0 : dot <= -1 ? -M_PI : acos(dot);
 }
 
 }

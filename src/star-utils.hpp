@@ -23,6 +23,8 @@ public:
     Star(float x, float y, float radiusX) : Star(x, y, radiusX, radiusX, 0) { };
     Star() : Star(0.0, 0.0, 0.0) { };
 
+    // TODO: store a Vec2 instead and then simply point to that Vec2 when passing Star to
+    // CameraToSpatial?
     float x; // pixels*10^6
     float y; // pixels*10^6
     float radiusX;
