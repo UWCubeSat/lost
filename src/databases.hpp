@@ -35,6 +35,7 @@ private:
     long numPairs;
     float minDistance;
     float maxDistance;
+    float binWidth;
     long numBins;
     // TODO: endianness
     int16_t *pairs;

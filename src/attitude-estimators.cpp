@@ -21,9 +21,7 @@ Quaternion DavenportQAlgorithm::Go(const Camera &camera,
 
         CatalogStar rStar = catalog[s.catalogIndex];
         Eigen::Vector3f ri;
-        ri << cos(rStar.raj2000)*cos(rStar.dej2000),
-            sin(rStar.raj2000)*cos(rStar.dej2000),
-            sin(rStar.dej2000);
+        ri << rStar.spatial.x, rStar.spatial.y, rStar.spatial.z;
 
         //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
         //Calculate matrix B = sum({ai}{bi}{ri}T)

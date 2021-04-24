@@ -32,7 +32,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         for (int j = 0; j < (int)stars.size(); j++) {
             if (i != j) {
                 Vec3 jSpatial = camera.CameraToSpatial({ stars[j].x, stars[j].y });
-                float greatCircleDistance = Angle(iSpatial, jSpatial);
+                float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
                 float lowerBoundRange = greatCircleDistance - tolerance;
                 float upperBoundRange = greatCircleDistance + tolerance;
@@ -76,7 +76,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
             // Calculate distance between catalog stars
             CatalogStar first = catalog[identified[i].catalogIndex];
             CatalogStar second = catalog[identified[j].catalogIndex];
-            float cDist = GreatCircleDistance(first.raj2000, first.dej2000, second.raj2000, second.dej2000);
+            float cDist = AngleUnit(first.spatial, second.spatial);
 
             Star firstIdentified = stars[identified[i].starIndex];
             Star secondIdentified = stars[identified[j].starIndex];

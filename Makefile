@@ -25,7 +25,7 @@ SRCS := $(wildcard src/*.cpp)
 TESTS := $(wildcard test/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
-DEPS := $(patsubst %.cpp,%.d,$(SRCS))
+DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS))
 BIN  := lost
 TEST_BIN := ./lost-test
 

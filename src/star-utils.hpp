@@ -3,14 +3,16 @@
 
 #include <vector>
 
+#include "attitude-utils.hpp"
+
 namespace lost {
 
 class CatalogStar {
 public:
     CatalogStar(float raj2000, float dej2000, int magnitude, bool weird, int name) :
-        raj2000(raj2000), dej2000(dej2000), magnitude(magnitude), weird(weird), name(name) { }
-    float raj2000;           // *10^-6, right ascension
-    float dej2000;           // *10^-6, declination
+        spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), weird(weird), name(name) { }
+
+    Vec3 spatial;
     int  magnitude;         // *10^-2
     bool weird;             // nonzero for binary, etc
     int name;
@@ -50,6 +52,10 @@ typedef std::vector<Star> Stars;
 typedef std::vector<StarIdentifier> StarIdentifiers;
 
 float StarDistancePixels(Star one, Star two);
+
+// TODO: make maxStars work right, need to sort by magnitude before filter! maxMagnitude is 10^-2
+// (so 523 = 5.23)
+Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 
 }
 

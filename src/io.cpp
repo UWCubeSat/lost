@@ -276,8 +276,17 @@ AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
 unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length) {
     float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
     float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
+    float maxSomething = Prompt<float>("Max magnitude or # of stars");
+    int maxMagnitude = 1000;
+    int maxStars = 10000;
+    assert(maxSomething > 0);
+    if (maxSomething < 10) {
+        maxMagnitude = 100 * (int)floor(maxSomething);
+    } else {
+        maxStars = (int)floor(maxSomething);
+    }
     long numBins = Prompt<long>("Number of distance bins");
-    return BuildKVectorDatabase(catalog, length, minDistance, maxDistance, numBins);
+    return BuildKVectorDatabase(NarrowCatalog(catalog, maxMagnitude, maxStars), length, minDistance, maxDistance, numBins);
     // TODO: also parse it and print out some stats before returning
 }
 
@@ -296,11 +305,13 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
 
 class PngPipelineInput : public PipelineInput {
 public:
-    PngPipelineInput(cairo_surface_t *);
+    PngPipelineInput(cairo_surface_t *, Camera);
 
     const Image *InputImage() const { return &image; };
+    const Camera *InputCamera() const { return &camera; };
 private:
     Image image;
+    Camera camera;
 };
 
 class AstrometryPipelineInput : public PipelineInput {
@@ -337,7 +348,17 @@ private:
     Quaternion attitude;
 };
 
-PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface) {
+Camera PromptCameraPhysical(int xResolution, int yResolution) {
+    float focalLength = Prompt<float>("Focal Length (mm)");
+    float pixelSize = Prompt<float>("Pixel size (µm)");
+    float focalLengthPixels = focalLength * 1000 / pixelSize;
+
+    return Camera(focalLengthPixels, xResolution, yResolution);
+}
+
+PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera)
+    : camera(camera) {
+
     image.image = SurfaceToGrayscaleImage(cairoSurface);
     image.width = cairo_image_surface_get_width(cairoSurface);
     image.height = cairo_image_surface_get_height(cairoSurface);
@@ -353,7 +374,10 @@ PipelineInputList PromptPngPipelineInput() {
     while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
         cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
     }
-    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface)));
+    int xResolution = cairo_image_surface_get_width(cairoSurface);
+    int yResolution = cairo_image_surface_get_height(cairoSurface);
+    result.push_back(std::unique_ptr<PipelineInput>(
+                         new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution))));
     return result;
 }
 
@@ -391,8 +415,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
     for (int i = 0; i < (int)catalog.size(); i++) {
         const CatalogStar &catalogStar = catalog[i];
-        Vec3 spatial = SphericalToSpatial(catalog[i].raj2000, catalog[i].dej2000);
-        Vec3 rotated = attitude.Rotate(spatial);
+        Vec3 rotated = attitude.Rotate(catalog[i].spatial);
         if (rotated.x < 0) {
             continue;
         }

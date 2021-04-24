@@ -89,11 +89,6 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
-float GreatCircleDistance(float ra1, float de1, float ra2, float de2) {
-    return 2.0*asin(sqrt(pow(sin(abs(de1-de2)/2.0), 2.0)
-                         + cos(de1)*cos(de2)*pow(sin(abs(ra1-ra2)/2.0), 2.0)));
-}
-
 float Vec3::Magnitude() const {
     return sqrt(x*x+y*y+z*z);
 }
@@ -114,9 +109,9 @@ float Angle(const Vec3 &vec1, const Vec3 &vec2) {
 }
 
 float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
-    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
     float dot = vec1*vec2;
-    return dot >= 1 ? 0 : dot <= -1 ? -M_PI : acos(dot);
+    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
+    return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }
 
 }

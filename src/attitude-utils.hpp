@@ -52,6 +52,7 @@ public:
 // will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 Quaternion SphericalToQuaternion(float ra, float dec, float roll);
 
+// returns unit vector
 Vec3 SphericalToSpatial(float ra, float de);
 // angle between two vectors, using dot product and magnitude division
 float Angle(const Vec3 &, const Vec3 &);
@@ -62,8 +63,6 @@ float RadToDeg(float);
 float DegToRad(float);
 float RadToArcSec(float);
 float ArcSecToRad(float);
-
-float GreatCircleDistance(float ra1, float de1, float ra2, float de2);
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 

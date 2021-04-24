@@ -46,8 +46,7 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
 
-            KVectorPair pair = { i, k, GreatCircleDistance(catalog[i].raj2000, catalog[i].dej2000,
-                                                           catalog[k].raj2000, catalog[k].dej2000) };
+            KVectorPair pair = { i, k, AngleUnit(catalog[i].spatial, catalog[k].spatial) };
             assert(isfinite(pair.distance));
             assert(pair.distance >= 0);
             assert(pair.distance <= M_PI);
@@ -139,6 +138,7 @@ KVectorDatabase::KVectorDatabase(const unsigned char *databaseBytes) {
     maxDistance = *bytesMaxDistance;
     assert(maxDistance > minDistance);
     numBins = *bytesNumBins;
+    binWidth = (maxDistance - minDistance) / numBins;
 
     pairs = (int16_t *)(bytesNumBins + 1);
     bins = (int32_t *)(pairs + 2*numPairs);
@@ -180,16 +180,15 @@ void KVectorDatabase::BinBounds(int bin, float *min, float *max) const {
     assert(bin >= 0 && bin < numBins);
 
     if (min != NULL) {
-        *min = (maxDistance-minDistance)/numBins*bin;
+        *min = binWidth * bin;
     }
 
     if (max != NULL) {
-        *max = (maxDistance-minDistance)/numBins*(bin+1);
+        *max = binWidth * (bin + 1);
     }
 }
 
 long KVectorDatabase::BinForDistance(float distance) const {
-    float binWidth = (maxDistance - minDistance) / numBins;
     long result = (long)floor((distance - minDistance) / binWidth);
     assert (result <= numBins);
     if (result == numBins) {
