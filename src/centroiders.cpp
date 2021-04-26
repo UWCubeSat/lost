@@ -87,6 +87,9 @@ int OTSUSCutoff(unsigned char *image, int imageWidth, int imageHeight) {
     int level = 0;
     // make the histogram (array length 256)
     int * histogram = new int[256];
+    for (int i = 0; i < 256; i++) {
+        histogram[i] = 0;
+    }
     for (int i = 0; i < total; i++) {
         histogram[image[i]] ++;
     }
@@ -94,13 +97,13 @@ int OTSUSCutoff(unsigned char *image, int imageWidth, int imageHeight) {
         sum1 += i * histogram[i];
     }
     for (int i = 0; i < 256; i ++) {
-        float wF = wB - total;
-        std::cout << "wF\n" << wB << "\n";
-        std::cout << "wB\n" << wF << "\n";
+        float wF = total - wB;
+        //std::cout << "wF\n" << wB << "\n";
+        //std::cout << "wB\n" << wF << "\n";
         if (wB > 0 && wF > 0) {
             float mF = (sum1 - sumB) / wF;
             float val = wB * wF * ((sumB / wB) - mF) * ((sumB / wB) - mF);
-            std::cout << val << "\n";
+            //std::cout << val << "\n";
             if (val >= maximum) {
                 level = i;
                 maximum = val;
@@ -112,24 +115,40 @@ int OTSUSCutoff(unsigned char *image, int imageWidth, int imageHeight) {
     return level;
 }
 
+int Cutoff(unsigned char *image, int imageWidth, int imageHeight) {
+    int totalMag = 0;
+    float std = 0;
+    int totalPixels = imageHeight * imageWidth;
+    for (int i = 0; i < totalPixels; i++) {
+        totalMag += image[i];
+    }
+    float mean = totalMag / totalPixels;
+
+    for (int i = 0; i < totalPixels; i++) {
+        std += std::pow(image[i] - mean, 2);
+    }
+
+    std = std::sqrt(std / totalPixels);
+
+    return mean + (std * 5);
+
+}
+
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
     
     std::vector<Star> result;
-    
-    p.cutoff = OTSUSCutoff(image, imageWidth, imageHeight);
-    std::cout << "here\n" << p.cutoff << "\n";
+
+    p.cutoff = Cutoff(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
-        //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
             p.yCoordMagSum = 0; //y coordinate of current star
             p.xCoordMagSum = 0; //x coordinate of current star
             p.magSum = 0; //sum of magnitudes of current star
-
-            //computes indices to skip after done w current star
 
             p.xMax = i % imageWidth;
             p.xMin = i % imageWidth;
@@ -139,9 +158,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             CogHelper(p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
+
             //use the sums to finish CoG equation and add stars to the result
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
+
             result.push_back(Star(xCoord, yCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
         }
     }
@@ -195,7 +216,7 @@ void IWCoGHelper(IWCoGParams &p, int i, unsigned char *image, int imageWidth, in
 Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
-    p.cutoff = DetermineCutoff(image, imageWidth, imageHeight);
+    p.cutoff = Cutoff(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
