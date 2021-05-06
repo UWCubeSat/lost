@@ -170,12 +170,6 @@ int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
     return &pairs[lowerPair * 2];
 }
 
-int16_t *KVectorDatabase::FindPossibleStarPairsExact(
-    float minDistance, float maxDistance, const Catalog &catalog, int *numReturnedPairs) const {
-
-    
-}
-
 void KVectorDatabase::BinBounds(int bin, float *min, float *max) const {
     assert(bin >= 0 && bin < numBins);
 

@@ -160,6 +160,15 @@ typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList PromptPipelineInput();
 
+class PngPipelineInput : public PipelineInput {
+public:
+    PngPipelineInput(cairo_surface_t *);
+
+    const Image *InputImage() const { return &image; };
+private:
+    Image image;
+};
+
 /////////////////////
 // PIPELINE OUTPUT //
 /////////////////////
