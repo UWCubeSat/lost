@@ -210,6 +210,10 @@ struct StarIdComparison {
     float fractionIncorrect;
 };
 
+StarIdComparison StarIdsCompare(const StarIdentifiers &, const StarIdentifiers &,
+                                float,
+                                const Stars *, const Stars *);
+
 //////////////
 // PIPELINE //
 //////////////

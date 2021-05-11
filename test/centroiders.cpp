@@ -47,9 +47,9 @@ TEST_CASE("Center of Gravity: Basic generated input comparison", "[centroid]") {
     std::vector<StarIdComparison> comparisons;
     for (int i = 0; i < (int)resultList.size(); i++) {
         // Need to figure out how to modularize StarIdsCompare()
-        // comparisons.push_back(
-        //     StarIdsCompare(*resultList[i]->ExpectedStarIds(), *outputs[i].starIds,
-        //                    centroidThreshold, resultList[i]->ExpectedStars(), outputs[i].stars.get()));
+        comparisons.push_back(
+            StarIdsCompare(*resultList[i]->ExpectedStarIds(), *outputs[i].starIds,
+                           centroidThreshold, resultList[i]->ExpectedStars(), outputs[i].stars.get()));
     }
 
     float fractionIncorrectSum = 0;

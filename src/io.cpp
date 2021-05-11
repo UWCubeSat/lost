@@ -662,14 +662,6 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     return result;
 }
 
-struct StarIdComparison {
-    int numCorrect;
-    int numIncorrect;
-    int numTotal;
-    float fractionCorrect;
-    float fractionIncorrect;
-};
-
 bool StarIdCompare(const StarIdentifier &a, const StarIdentifier &b) {
     return a.starIndex < b.starIndex;
 }
