@@ -25,6 +25,88 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
+// a poorly designed thresholding algorithm
+int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+    //loop through entire array, find sum of magnitudes
+    int totalMag = 0;
+    for (int i = 0; i < imageHeight * imageWidth; i++) {
+        totalMag += image[i];
+    }
+    return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
+}
+
+// a more sophisticated thresholding algorithm, not tailored to star images
+int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+    // code here, duh
+    float total = imageWidth * imageHeight;
+    //float top = 255;
+    float sumB = 0;
+    float sum1 = 0;
+    float wB = 0;
+    float maximum = 0;
+    int level = 0;
+    // make the histogram (array length 256)
+    int * histogram = new int[256];
+    for (int i = 0; i < 256; i++) {
+        histogram[i] = 0;
+    }
+    for (int i = 0; i < total; i++) {
+        histogram[image[i]] ++;
+    }
+    for (int i = 0; i < 256; i ++) {
+        sum1 += i * histogram[i];
+    }
+    for (int i = 0; i < 256; i ++) {
+        float wF = total - wB;
+        //std::cout << "wF\n" << wB << "\n";
+        //std::cout << "wB\n" << wF << "\n";
+        if (wB > 0 && wF > 0) {
+            float mF = (sum1 - sumB) / wF;
+            float val = wB * wF * ((sumB / wB) - mF) * ((sumB / wB) - mF);
+            //std::cout << val << "\n";
+            if (val >= maximum) {
+                level = i;
+                maximum = val;
+            }
+        }
+        wB = wB + histogram[i];
+        sumB = sumB + i * histogram[i];
+    }
+    return level;
+}
+
+// a simple, but well tested thresholding algorithm that works well with star images
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+    int totalMag = 0;
+    float std = 0;
+    int totalPixels = imageHeight * imageWidth;
+    for (int i = 0; i < totalPixels; i++) {
+        totalMag += image[i];
+    }
+    float mean = totalMag / totalPixels;
+    for (int i = 0; i < totalPixels; i++) {
+        std += std::pow(image[i] - mean, 2);
+    }
+    std = std::sqrt(std / totalPixels);
+    return mean + (std * 5);
+}
+
+// basic thresholding, but do it faster (trade off of some accuracy?)
+int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
+    int totalMag = 0;
+    float std = 0;
+    float sq_totalMag = 0;
+    int totalPixels = imageHeight * imageWidth;
+    for (int i = 0; i < totalPixels; i++) {
+        totalMag += image[i];
+        sq_totalMag += image[i] * image[i];
+    }
+    float mean = totalMag / totalPixels;
+    float variance = (sq_totalMag / totalPixels) - (mean * mean);
+    std = std::sqrt(variance);
+    return mean + (std * 5);
+}
+
 struct CentroidParams {
     float yCoordMagSum; 
     float xCoordMagSum;
@@ -65,81 +147,12 @@ void CogHelper(CentroidParams &p, int i, unsigned char *image, int imageWidth, i
     }
 }
 
-int DetermineCutoff(unsigned char *image, int imageWidth, int imageHeight) {
-    //loop through entire array, find sum of magnitudes
-    int totalMag = 0;
-    for (int i = 0; i < imageHeight * imageWidth; i++) {
-        totalMag += image[i];
-    }
-    return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
-}
-
-//TODO: create more sophisticated cutoff using otsu's algorithm:
-
-int OTSUSCutoff(unsigned char *image, int imageWidth, int imageHeight) {
-    // code here, duh
-    float total = imageWidth * imageHeight;
-    //float top = 255;
-    float sumB = 0;
-    float sum1 = 0;
-    float wB = 0;
-    float maximum = 0;
-    int level = 0;
-    // make the histogram (array length 256)
-    int * histogram = new int[256];
-    for (int i = 0; i < 256; i++) {
-        histogram[i] = 0;
-    }
-    for (int i = 0; i < total; i++) {
-        histogram[image[i]] ++;
-    }
-    for (int i = 0; i < 256; i ++) {
-        sum1 += i * histogram[i];
-    }
-    for (int i = 0; i < 256; i ++) {
-        float wF = total - wB;
-        //std::cout << "wF\n" << wB << "\n";
-        //std::cout << "wB\n" << wF << "\n";
-        if (wB > 0 && wF > 0) {
-            float mF = (sum1 - sumB) / wF;
-            float val = wB * wF * ((sumB / wB) - mF) * ((sumB / wB) - mF);
-            //std::cout << val << "\n";
-            if (val >= maximum) {
-                level = i;
-                maximum = val;
-            }
-        }
-        wB = wB + histogram[i];
-        sumB = sumB + i * histogram[i];
-    }
-    return level;
-}
-
-int Cutoff(unsigned char *image, int imageWidth, int imageHeight) {
-    int totalMag = 0;
-    float std = 0;
-    int totalPixels = imageHeight * imageWidth;
-    for (int i = 0; i < totalPixels; i++) {
-        totalMag += image[i];
-    }
-    float mean = totalMag / totalPixels;
-
-    for (int i = 0; i < totalPixels; i++) {
-        std += std::pow(image[i] - mean, 2);
-    }
-
-    std = std::sqrt(std / totalPixels);
-
-    return mean + (std * 5);
-
-}
-
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
     
     std::vector<Star> result;
 
-    p.cutoff = Cutoff(image, imageWidth, imageHeight);
+    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
 
@@ -163,7 +176,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
-            result.push_back(Star(xCoord, yCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
+            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter * 1.0))/2.0f, ((float)(yDiameter * 1.0))/2.0f, 0));
         }
     }
     return result;
@@ -216,7 +229,7 @@ void IWCoGHelper(IWCoGParams &p, int i, unsigned char *image, int imageWidth, in
 Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
-    p.cutoff = Cutoff(image, imageWidth, imageHeight);
+    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (int i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
@@ -281,7 +294,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 guessXCoord = xTemp;
                 guessYCoord = yTemp;
             }
-            result.push_back(Star(guessXCoord, guessYCoord, ((float)(xDiameter * 1.0))/2.0, ((float)(yDiameter * 1.0))/2.0, 0));
+            result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter * 1.0))/2.0f, ((float)(yDiameter * 1.0))/2.0f, 0));
         }
     }
     return result;
