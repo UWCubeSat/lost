@@ -36,7 +36,7 @@ TEST_CASE("Center of Gravity: Basic generated input comparison", "[centroid]") {
         CenterOfGravityAlgorithm *centroidAlgorithm = new CenterOfGravityAlgorithm();
         result.stars = std::unique_ptr<Stars>(new std::vector<Star>(
             centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height)));
-        outputs.push_back(result);
+        outputs.push_back(std::move(result));
     }
 
     PromptPipelineComparison(resultList, outputs);
