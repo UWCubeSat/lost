@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include <unordered_set>
+#include <string.h>
 
 namespace lost {
 
@@ -38,7 +39,7 @@ int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 // a more sophisticated thresholding algorithm, not tailored to star images
 int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     // code here, duh
-    float total = imageWidth * imageHeight;
+    long total = imageWidth * imageHeight;
     //float top = 255;
     float sumB = 0;
     float sum1 = 0;
@@ -46,10 +47,10 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     float maximum = 0;
     int level = 0;
     // make the histogram (array length 256)
-    int * histogram = new int[256];
-    for (int i = 0; i < 256; i++) {
-        histogram[i] = 0;
-    }
+    int histogram[256];
+
+    memset(histogram, 0, sizeof(int)*256);
+
     for (int i = 0; i < total; i++) {
         histogram[image[i]] ++;
     }
@@ -77,9 +78,9 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 
 // a simple, but well tested thresholding algorithm that works well with star images
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
-    int totalMag = 0;
+    unsigned long totalMag = 0;
     float std = 0;
-    int totalPixels = imageHeight * imageWidth;
+    long totalPixels = imageHeight * imageWidth;
     for (int i = 0; i < totalPixels; i++) {
         totalMag += image[i];
     }
@@ -93,10 +94,10 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 
 // basic thresholding, but do it faster (trade off of some accuracy?)
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
-    int totalMag = 0;
+    unsigned long totalMag = 0;
     float std = 0;
     float sq_totalMag = 0;
-    int totalPixels = imageHeight * imageWidth;
+    long totalPixels = imageHeight * imageWidth;
     for (int i = 0; i < totalPixels; i++) {
         totalMag += image[i];
         sq_totalMag += image[i] * image[i];
@@ -176,7 +177,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
-            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter * 1.0))/2.0f, ((float)(yDiameter * 1.0))/2.0f, 0));
+            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, 0));
         }
     }
     return result;
@@ -294,7 +295,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 guessXCoord = xTemp;
                 guessYCoord = yTemp;
             }
-            result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter * 1.0))/2.0f, ((float)(yDiameter * 1.0))/2.0f, 0));
+            result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, 0));
         }
     }
     return result;
