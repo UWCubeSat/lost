@@ -156,9 +156,43 @@ public:
     cairo_surface_t *InputImageSurface() const;
 };
 
+class GeneratedPipelineInput : public PipelineInput {
+public:
+    // TODO: correct params
+    GeneratedPipelineInput(const std::vector<CatalogStar> &, Quaternion, Camera,
+                           int referenceBrightness, float brightnessDeviation,
+                           float noiseDeviation);
+
+    const Image *InputImage() const { return &image; };
+    const Stars *InputStars() const { return &stars; };
+    const Camera *InputCamera() const { return &camera; };
+    const StarIdentifiers *InputStarIds() const { return &starIds; };
+    bool InputStarsIdentified() const { return true; };
+    const Quaternion *InputAttitude() const { return &attitude; };
+private:
+    // we don't use an Image here because we want to 
+    std::unique_ptr<unsigned char[]> imageData;
+    Image image;
+    Stars stars;
+    Camera camera;
+    StarIdentifiers starIds;
+    Quaternion attitude;
+};
+
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList PromptPipelineInput();
+
+class PngPipelineInput : public PipelineInput {
+public:
+    PngPipelineInput(cairo_surface_t *, Camera);
+
+    const Image *InputImage() const { return &image; };
+    const Camera *InputCamera() const { return &camera; };
+private:
+    Image image;
+    Camera camera;
+};
 
 /////////////////////
 // PIPELINE OUTPUT //
@@ -169,6 +203,18 @@ struct PipelineOutput {
     std::unique_ptr<StarIdentifiers> starIds;
     std::unique_ptr<Quaternion> attitude;
 };
+
+struct StarIdComparison {
+    int numCorrect;
+    int numIncorrect;
+    int numTotal;
+    float fractionCorrect;
+    float fractionIncorrect;
+};
+
+StarIdComparison StarIdsCompare(const StarIdentifiers &, const StarIdentifiers &,
+                                float,
+                                const Stars *, const Stars *);
 
 //////////////
 // PIPELINE //

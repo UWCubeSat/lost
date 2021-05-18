@@ -303,17 +303,6 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
 }
 
-class PngPipelineInput : public PipelineInput {
-public:
-    PngPipelineInput(cairo_surface_t *, Camera);
-
-    const Image *InputImage() const { return &image; };
-    const Camera *InputCamera() const { return &camera; };
-private:
-    Image image;
-    Camera camera;
-};
-
 class AstrometryPipelineInput : public PipelineInput {
 public:
     AstrometryPipelineInput(const std::string &path);
@@ -322,29 +311,6 @@ public:
     const Quaternion *InputAttitude() const { return &attitude; };
 private:
     Image image;
-    Quaternion attitude;
-};
-
-class GeneratedPipelineInput : public PipelineInput {
-public:
-    // TODO: correct params
-    GeneratedPipelineInput(const std::vector<CatalogStar> &, Quaternion, Camera,
-                           int referenceBrightness, float brightnessDeviation,
-                           float noiseDeviation);
-
-    const Image *InputImage() const { return &image; };
-    const Stars *InputStars() const { return &stars; };
-    const Camera *InputCamera() const { return &camera; };
-    const StarIdentifiers *InputStarIds() const { return &starIds; };
-    bool InputStarsIdentified() const { return true; };
-    const Quaternion *InputAttitude() const { return &attitude; };
-private:
-    // we don't use an Image here because we want to 
-    std::unique_ptr<unsigned char[]> imageData;
-    Image image;
-    Stars stars;
-    Camera camera;
-    StarIdentifiers starIds;
     Quaternion attitude;
 };
 
@@ -720,14 +686,6 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     
     return result;
 }
-
-struct StarIdComparison {
-    int numCorrect;
-    int numIncorrect;
-    int numTotal;
-    float fractionCorrect;
-    float fractionIncorrect;
-};
 
 bool StarIdCompare(const StarIdentifier &a, const StarIdentifier &b) {
     return a.starIndex < b.starIndex;
