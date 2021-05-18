@@ -234,6 +234,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+            // TODO: store longs --Mark
             std::vector<int> starIndices; //indices of the current star
             p.maxIntensity = 0;
             int xDiameter = 0; 
@@ -265,6 +266,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             fwhm = sqrt(count);
             standardDeviation = fwhm / (2.0 * sqrt(2.0 * log(2.0)));
             float modifiedStdDev = 2.0 * pow(standardDeviation, 2);
+            // TODO: Why are these floats? --Mark
             float guessXCoord = (float) (p.guess % imageWidth);
             float guessYCoord = (float) (p.guess / imageWidth);
             //how much our new centroid estimate changes w each iteration

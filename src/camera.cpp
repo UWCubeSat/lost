@@ -36,15 +36,6 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     };
 }
 
-// TODO: reimplement or determine we don't need it
-// void Camera::CoordinateAngles(const Vec2 &vector, float *ra, float *de) const {
-//     // TODO: off-by-one with xResolution - 1?
-//     // TODO: minimize floating point error?
-
-//     // *ra = atan((xResolution/2.0-vector.x)/(xResolution/2.0/tan(xFov/2.0)));
-//     // *de = atan((yResolution/2.0-vector.y)/(xResolution/2.0/tan(xFov/2.0)));
-// }
-
 bool Camera::InSensor(const Vec2 &vector) const {
     // if vector.x == xResolution, then it is at the leftmost point of the pixel that's "hanging
     // off" the edge of the image, so vector is still in the image.

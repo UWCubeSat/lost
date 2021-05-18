@@ -27,8 +27,8 @@ public:
 
     // TODO: store a Vec2 instead and then simply point to that Vec2 when passing Star to
     // CameraToSpatial?
-    float x; // pixels*10^6
-    float y; // pixels*10^6
+    float x; // pixels
+    float y; // pixels
     float radiusX;
     float radiusY;  // if omitted, but x is present, assume circular.
     int   magnitude; // some relative number

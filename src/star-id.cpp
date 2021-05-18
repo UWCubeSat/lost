@@ -59,6 +59,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
                 indexOfMax = v;
             }
         }
+        printf("Max votes: %d\n", maxVotes);
         //starIndex = i, catalog index = indexOfMax
         StarIdentifier newStar(i, indexOfMax);
         // Set identified[i] to value of catalog index of star w most votesr

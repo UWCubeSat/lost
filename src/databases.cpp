@@ -198,4 +198,8 @@ long KVectorDatabase::BinForDistance(float distance) const {
     }
 }
 
+long KVectorDatabase::NumPairs() const {
+    return numPairs;
+}
+
 }

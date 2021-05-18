@@ -182,8 +182,8 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
             // Rectangles should be entirely /outside/ the radius of the star, so the star is
             // fully visible.
             cairo_rectangle(cairoCtx,
-                            centroid.x+.5 - radiusX,
-                            centroid.y+.5 - radiusY,
+                            centroid.x - radiusX,
+                            centroid.y - radiusY,
                             radiusX * 2,
                             radiusY * 2);
             cairo_stroke(cairoCtx);
@@ -421,7 +421,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
-        float radiusX = 3.0; // TODO
+        float radiusX = 4.0; // TODO
         if (camera.InSensor(camCoords)) {
             stars.push_back(Star(camCoords.x, camCoords.y, radiusX, radiusX, catalogStar.magnitude));
             starIds.push_back(StarIdentifier(stars.size() - 1, i));
@@ -432,9 +432,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         // "brightness" = number of photons received, for eg
         int totalBrightness = referenceBrightness * pow(100.0f, -star.magnitude/500.0f);
 
+        // the star.x and star.y refer to the pixel whose top left corner the star should appear at
+        // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
+        // would integrate the intensity of the star over that pixel, but we can make do by sampling
+        // the intensity of the star at the /center/ of the pixel, ie, star.x+.5 and star.y+.5
         for (int k = star.y - star.radiusX; k >= 0 && k < star.y + star.radiusX && k < image.height; k++) {
             for(int j = star.x - star.radiusX; k >= 0 && j < star.x + star.radiusX && k < image.width; j++) {
-                float distanceSquared = pow(k-star.y, 2) + pow(j-star.x, 2);
+                float distanceSquared = pow(k+.5-star.y, 2) + pow(j+.5-star.x, 2);
                 int pixelBrightness = totalBrightness / pow(brightnessDeviation, 2)
                     * exp(-distanceSquared/pow(brightnessDeviation, 2));
                 IncrementPixelXY(j, k, pixelBrightness);

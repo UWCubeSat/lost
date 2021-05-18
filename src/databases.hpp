@@ -27,7 +27,7 @@ public:
     int16_t *FindPossibleStarPairsExact(
         float minDistance, float maxDistance, const Catalog &, int *numReturnedPairs) const;
 
-    int NumStars() const;
+    long NumPairs() const;
 private:
     void BinBounds(int bin, float *min, float *max) const;
     long BinForDistance(float dist) const;
