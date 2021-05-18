@@ -9,7 +9,7 @@ using namespace lost;
 TEST_CASE("Kvector full database stuff", "[kvector]") {
     long length;
     Catalog &catalog = CatalogRead();
-    unsigned char *dbBytes = BuildKVectorDatabase(catalog, &length, 1.0 * M_PI/180.0, 2.0 * M_PI/180.0, 100);
+    unsigned char *dbBytes = BuildKVectorDatabase(catalog, &length, DegToRad(1.0), DegToRad(2.0), 100);
     KVectorDatabase db(dbBytes);
     REQUIRE(length < 999999);
 
@@ -38,10 +38,28 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
         long totalReturnedPairs = 0;
         for (float i = 1.1; i < 2.01; i+= 0.1) {
             long numReturnedPairs;
-            db.FindPossibleStarPairsApprox((i-0.1) * M_PI/180.0, i * M_PI/180.0, &numReturnedPairs);
+            db.FindPossibleStarPairsApprox(DegToRad(i-0.1)+0.00001, DegToRad(i)-0.00001, &numReturnedPairs);
             totalReturnedPairs += numReturnedPairs;
-            printf("%f to %f: %ld\n", i-.1, i, numReturnedPairs);
         }
         REQUIRE(totalReturnedPairs == db.NumPairs());
+    }
+}
+
+TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
+    Catalog tripleCatalog = {
+        CatalogStar(DegToRad(2), DegToRad(-3), 3.0, false, 42),
+        CatalogStar(DegToRad(4), DegToRad(7), 2.0, false, 43),
+        CatalogStar(DegToRad(2), DegToRad(6), 4.0, false, 44),
+    };
+    unsigned char *dbBytes = BuildKVectorDatabase(tripleCatalog, NULL, DegToRad(0.5), DegToRad(20.0), 1000);
+    KVectorDatabase db(dbBytes);
+    REQUIRE(db.NumPairs() == 3);
+
+    float distances[] = {0.038823101, 0.157079488, 0.177976221};
+    for (float distance : distances) {
+        long numReturnedPairs;
+        int16_t *pairs = db.FindPossibleStarPairsApprox(distance - 0.001, distance + 0.001, &numReturnedPairs);
+        REQUIRE(numReturnedPairs == 1);
+        CHECK(AngleUnit(tripleCatalog[pairs[0]].spatial, tripleCatalog[pairs[1]].spatial) == Approx(distance));
     }
 }

@@ -29,7 +29,7 @@ public:
 
     long NumPairs() const;
 private:
-    void BinBounds(int bin, float *min, float *max) const;
+    // return the lowest-indexed bin that contains the number of pairs with distance <= dist
     long BinForDistance(float dist) const;
 
     long numPairs;

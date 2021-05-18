@@ -36,7 +36,7 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
      |              |             | followed by the BSC index of the other star.                |
      |4*(numBins+1) | bins        | The `i'th bin (starting from zero) stores how many pairs of |
      |              |             | stars have a distance less than or equal to:                |
-     |              |             | minDistance+(maxDistance-minDistance)*i/numBins             |
+     |              |             | minDistance+i*(maxDistance-minDistance)/numBins             |
  */
 unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
                            float minDistance, float maxDistance, long numBins) {
@@ -68,22 +68,20 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     std::sort(pairs.begin(), pairs.end(), CompareKVectorPairs);
 
     // generate the k-vector part
-    long lastBin = 0;
+    // Idea: When we find the first star that's across any bin boundary, we want to update all the newly sealed bins
+    long lastBin = 0; // first bin the last star belonged to
     for (int32_t i = 0; i < (int32_t)pairs.size(); i++) {
-        long thisBin = (long)floor((pairs[i].distance - minDistance) / binWidth);
-        if (thisBin == numBins) {
-            // rounding error? TODO
-            thisBin--;
-        }
+        long thisBin = (long)ceil((pairs[i].distance - minDistance) / binWidth); // first bin we belong to
         assert(thisBin >= 0);
-        assert(thisBin < numBins);
-        for (long bin = lastBin; bin <= thisBin; bin++) {
-            kVector[bin+1]=i;
+        assert(thisBin <= numBins); // thisBin == numBins is acceptable since kvector length == numBins + 1
+        // if thisBin > lastBin, then no more stars can be added to those bins between thisBin and lastBin, so set them.
+        for (long bin = lastBin; bin < thisBin; bin++) {
+            kVector[bin]=i; // our index is the number of pairs with shorter distance
         }
         lastBin = thisBin;
     }
-    for (long bin = lastBin + 1; bin < numBins; bin++) {
-        kVector[bin+1] = kVector[lastBin+1];
+    for (long bin = lastBin; bin <= numBins; bin++) {
+        kVector[bin] = pairs.size();
     }
 
     // verify kvector
@@ -163,39 +161,29 @@ int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
         *numReturnedPairs = 0;
         return NULL;
     }
-    //tbr v
     long lowerBin = BinForDistance(minQueryDistance);
     long upperBin = BinForDistance(maxQueryDistance);
     assert(upperBin >= lowerBin);
-    assert(upperBin < numBins);
-    int lowerPair = bins[lowerBin];
-    assert(lowerPair < numPairs);
-    int upperPair = bins[upperBin+1];
-    *numReturnedPairs = upperPair - lowerPair;
+    assert(upperBin <= numBins);
+    // bins[lowerBin-1]=number of pairs <= r < query distance, so it is the index of the
+    // first possible item that might be equal to the query distance
+    int lowerPair = bins[lowerBin-1];
+    if (lowerPair >= numPairs) {
+        // all pairs have distance less than queried
+        return NULL;
+    }
+    // bins[upperBin]=number of pairs <= r >= query distance
+    int upperPair = bins[upperBin] - 1;
+    *numReturnedPairs = upperPair - lowerPair + 1;
     assert(*numReturnedPairs >= 0);
     return &pairs[lowerPair * 2];
 }
 
-void KVectorDatabase::BinBounds(int bin, float *min, float *max) const {
-    assert(bin >= 0 && bin < numBins);
-
-    if (min != NULL) {
-        *min = binWidth * bin;
-    }
-
-    if (max != NULL) {
-        *max = binWidth * (bin + 1);
-    }
-}
-
 long KVectorDatabase::BinForDistance(float distance) const {
-    long result = (long)floor((distance - minDistance) / binWidth);
-    assert (result <= numBins);
-    if (result == numBins) {
-        return numBins - 1;
-    } else {
-        return result;
-    }
+    long result = (long)ceil((distance - minDistance) / binWidth);
+    assert(result >= 0);
+    assert(result <= numBins);
+    return result;
 }
 
 long KVectorDatabase::NumPairs() const {
