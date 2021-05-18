@@ -51,4 +51,8 @@ int Camera::GetYResolution() const {
     return yResolution;
 }
 
+float FovToFocalLength(float xFov, float xResolution) {
+    return xResolution / 2.0f / tan(xFov/2);
+}
+
 }

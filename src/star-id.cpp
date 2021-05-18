@@ -28,10 +28,10 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     for (int i = 0; i < (int)stars.size(); i++) {  
         std::vector<int16_t> votes(catalog.size(), 0);
         // TODO: store spatial coordinates in catalog to avoid this conversion
-        Vec3 iSpatial = camera.CameraToSpatial({ stars[i].x, stars[i].y });
+        Vec3 iSpatial = camera.CameraToSpatial({ stars[i].x, stars[i].y }).Normalize();
         for (int j = 0; j < (int)stars.size(); j++) {
             if (i != j) {
-                Vec3 jSpatial = camera.CameraToSpatial({ stars[j].x, stars[j].y });
+                Vec3 jSpatial = camera.CameraToSpatial({ stars[j].x, stars[j].y }).Normalize();
                 float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
                 float lowerBoundRange = greatCircleDistance - tolerance;
@@ -94,7 +94,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         }
     }
     // Find star w most votes
-    int16_t maxVotes = verificationVotes[0];
+    int16_t maxVotes = verificationVotes.size() > 0 ? verificationVotes[0] : 0;
     for (int v = 1; v < (int)verificationVotes.size(); v++) {
         if (verificationVotes[v] > maxVotes) {
             maxVotes = verificationVotes[v];

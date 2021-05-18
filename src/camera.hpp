@@ -43,6 +43,8 @@ private:
     int xResolution; int yResolution;
 };
 
+float FovToFocalLength(float xFov, float xResolution);
+
 }
 
 #endif

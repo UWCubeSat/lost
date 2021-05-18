@@ -25,7 +25,7 @@ SRCS := $(wildcard src/*.cpp)
 TESTS := $(wildcard test/*.cpp)
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
-DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS))
+DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS)) # includes tests
 BIN  := lost
 TEST_BIN := ./lost-test
 
@@ -54,7 +54,7 @@ $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
 clean:
-	rm -f $(OBJS) $(DEPS)
+	rm -f $(OBJS) $(DEPS) $(TEST_OBJS)
 	rm -i $(BSC)
 
 .PHONY: all clean test

@@ -1,5 +1,6 @@
 #include "io.hpp"
 
+#include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
 #include "databases.hpp"
 #include "star-id.hpp"
@@ -322,8 +323,8 @@ Camera PromptCameraPhysical(int xResolution, int yResolution) {
     return Camera(focalLengthPixels, xResolution, yResolution);
 }
 
-PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera)
-    : camera(camera) {
+PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
+    : camera(camera), catalog(catalog) {
 
     image.image = SurfaceToGrayscaleImage(cairoSurface);
     image.width = cairo_image_surface_get_width(cairoSurface);
@@ -343,7 +344,7 @@ PipelineInputList PromptPngPipelineInput() {
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
     result.push_back(std::unique_ptr<PipelineInput>(
-                         new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution))));
+                         new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution), CatalogRead())));
     return result;
 }
 
@@ -351,14 +352,13 @@ AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
 
-PipelineInputList PromptAstrometryPipelineInput() {
-    // TODO: why does it let us do a reference to an ephemeral return value?
-    std::string path = Prompt<std::string>("Astrometry download directory");
-    PipelineInputList result;
-    result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
-    return result;
-
-}
+// PipelineInputList PromptAstrometryPipelineInput() {
+//     // TODO: why does it let us do a reference to an ephemeral return value?
+//     std::string path = Prompt<std::string>("Astrometry download directory");
+//     PipelineInputList result;
+//     result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
+//     return result;
+// }
 
 // does NOT protect against multiple evaluation of arguments
 #define IncrementPixelXY(x, y, amt) imageData[(y)*image.width+(x)] = \
@@ -371,7 +371,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int referenceBrightness,
                                                float brightnessDeviation,
                                                float noiseDeviation)
-    : camera(camera), attitude(attitude) {
+    : camera(camera), attitude(attitude), catalog(catalog) {
 
     image.width = camera.GetXResolution();
     image.height = camera.GetYResolution();
@@ -439,7 +439,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
     int xResolution = Prompt<int>("Horizontal Resolution");
     int yResolution = Prompt<int>("Vertical Resolution");
     float xFovDeg = Prompt<float>("Horizontal FOV (in degrees)");
-    float xFocalLength = xResolution / (float)2.0 / tan(DegToRad(xFovDeg)/2);
+    float xFocalLength = FovToFocalLength(DegToRad(xFovDeg), xResolution);
     int referenceBrightness = Prompt<int>("Reference star brightness");
     float brightnessDeviation = Prompt<float>("Star spread stddev");
     float noiseDeviation = Prompt<float>("Noise stddev");
@@ -468,9 +468,28 @@ PipelineInputList PromptPipelineInput() {
     InteractiveChoice<PipelineInputFactory> inputTypeChoice;
     inputTypeChoice.Register("png", "PNG files", PromptPngPipelineInput);
     inputTypeChoice.Register("generate", "Generated image", PromptGeneratedPipelineInput);
-    inputTypeChoice.Register("astrometry", "Astrometry.net", PromptAstrometryPipelineInput);
+    // inputTypeChoice.Register("astrometry", "Astrometry.net", PromptAstrometryPipelineInput);
 
     return (inputTypeChoice.Prompt("Input from"))();
+}
+
+Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
+                   StarIdAlgorithm *starIdAlgorithm,
+                   AttitudeEstimationAlgorithm *attitudeEstimationAlgorithm,
+                   unsigned char *database)
+    : Pipeline() {
+    if (centroidAlgorithm) {
+        this->centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(centroidAlgorithm);
+    }
+    if (starIdAlgorithm) {
+        this->starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(starIdAlgorithm);
+    }
+    if (attitudeEstimationAlgorithm) {
+        this->attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
+    }
+    if (database) {
+        this->database = std::unique_ptr<unsigned char[]>(database);
+    }
 }
 
 Pipeline PromptPipeline() {
@@ -572,8 +591,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-                                                              // TODO: no CatalogRead!
-            starIdAlgorithm->Go(database.get(), *inputStars, CatalogRead(), *input.InputCamera())));
+            starIdAlgorithm->Go(database.get(), *inputStars, input.GetCatalog(), *input.InputCamera())));
         inputStarIds = result.starIds.get();
     }
 

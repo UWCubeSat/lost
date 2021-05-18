@@ -43,6 +43,12 @@ unsigned char *BuildKVectorDatabase(const Catalog &catalog, long *length,
     std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs;
     float binWidth = (maxDistance - minDistance) / numBins;
+
+    long dummyLength;
+    if (length == NULL) {
+        length = &dummyLength;
+    }
+
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
 

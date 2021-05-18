@@ -141,7 +141,9 @@ public:
 // represents the input and expected outputs of a pipeline run.
 class PipelineInput {
 public:
+    virtual ~PipelineInput() { };
     virtual const Image *InputImage() const { return NULL; };
+    virtual const Catalog &GetCatalog() const = 0;
     virtual const Stars *InputStars() const { return NULL; };
     // whether the input stars have identification information.
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
@@ -159,7 +161,7 @@ public:
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
-    GeneratedPipelineInput(const std::vector<CatalogStar> &, Quaternion, Camera,
+    GeneratedPipelineInput(const Catalog &, Quaternion, Camera,
                            int referenceBrightness, float brightnessDeviation,
                            float noiseDeviation);
 
@@ -169,14 +171,16 @@ public:
     const StarIdentifiers *InputStarIds() const { return &starIds; };
     bool InputStarsIdentified() const { return true; };
     const Quaternion *InputAttitude() const { return &attitude; };
+    const Catalog &GetCatalog() const { return catalog; };
 private:
     // we don't use an Image here because we want to 
     std::unique_ptr<unsigned char[]> imageData;
     Image image;
     Stars stars;
     Camera camera;
-    StarIdentifiers starIds;
     Quaternion attitude;
+    const Catalog &catalog;
+    StarIdentifiers starIds;
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
@@ -185,13 +189,15 @@ PipelineInputList PromptPipelineInput();
 
 class PngPipelineInput : public PipelineInput {
 public:
-    PngPipelineInput(cairo_surface_t *, Camera);
+    PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
 
     const Image *InputImage() const { return &image; };
     const Camera *InputCamera() const { return &camera; };
+    const Catalog &GetCatalog() const { return catalog; };
 private:
     Image image;
     Camera camera;
+    const Catalog &catalog;
 };
 
 /////////////////////
@@ -212,9 +218,10 @@ struct StarIdComparison {
     float fractionIncorrect;
 };
 
-StarIdComparison StarIdsCompare(const StarIdentifiers &, const StarIdentifiers &,
-                                float,
-                                const Stars *, const Stars *);
+// actualStars is optional, in which case it's assumed that expectedStars was passed to the star-id
+StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                float centroidThreshold,
+                                const Stars *expectedStars, const Stars *actualStars);
 
 //////////////
 // PIPELINE //
@@ -225,6 +232,9 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &, const StarIdentifiers &
 class Pipeline {
     friend Pipeline PromptPipeline();
 public:
+    // pointers just so they're nullable
+    Pipeline() = default;
+    Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
     std::vector<PipelineOutput> Go(const PipelineInputList &);
 private:
