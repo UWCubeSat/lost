@@ -156,8 +156,13 @@ int16_t *KVectorDatabase::FindPossibleStarPairsApprox(
     float minQueryDistance, float maxQueryDistance, long *numReturnedPairs) const {
 
     assert(maxQueryDistance > minQueryDistance);
-    if (minQueryDistance < minDistance || minQueryDistance > maxDistance ||
-        maxQueryDistance < minDistance || maxQueryDistance > maxDistance) {
+    if (maxQueryDistance >= maxDistance) {
+        maxQueryDistance = maxDistance - 0.00001; // TODO: better way to avoid hitting the bottom bin
+    }
+    if (minQueryDistance <= minDistance) {
+        minQueryDistance = minDistance + 0.00001;
+    }
+    if (minQueryDistance > maxDistance || maxQueryDistance < minDistance) {
         *numReturnedPairs = 0;
         return NULL;
     }
@@ -190,4 +195,17 @@ long KVectorDatabase::NumPairs() const {
     return numPairs;
 }
 
+std::vector<float> KVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
+    std::vector<float> result;
+    for (int i = 0; i < numPairs; i++) {
+        if (pairs[i*2] == star || pairs[i*2+1] == star) {
+            result.push_back(AngleUnit(catalog[pairs[i*2]].spatial, catalog[pairs[i*2+1]].spatial));
+        }
+    }
+    return result;
 }
+
+}
+
+// TODO: after creating the database, print more statistics, such as average number of pairs per
+// star, stars per bin, space distribution between array and index.

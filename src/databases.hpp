@@ -27,6 +27,10 @@ public:
     int16_t *FindPossibleStarPairsExact(
         float minDistance, float maxDistance, const Catalog &, int *numReturnedPairs) const;
 
+    // for debugging purposes. Return the distances from the given star to each other star it's
+    // paired with in the database.
+    std::vector<float> StarDistances(int16_t star, const Catalog &) const;
+
     long NumPairs() const;
 private:
     // return the lowest-indexed bin that contains the number of pairs with distance <= dist

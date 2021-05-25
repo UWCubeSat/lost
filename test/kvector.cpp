@@ -10,8 +10,8 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
     long length;
     Catalog &catalog = CatalogRead();
     unsigned char *dbBytes = BuildKVectorDatabase(catalog, &length, DegToRad(1.0), DegToRad(2.0), 100);
-    KVectorDatabase db(dbBytes);
     REQUIRE(length < 999999);
+    KVectorDatabase db(dbBytes);
 
     SECTION("basic consistency checks") {
         long lastNumReturnedPairs = 999999;
@@ -24,8 +24,8 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
                 if (distance < shortestDistance) {
                     shortestDistance = distance;
                 }
-                REQUIRE(i * M_PI/180.0 <=distance);
-                REQUIRE(distance<= 2.01 * M_PI/180.0);
+                CHECK(i * M_PI/180.0 <=distance);
+                CHECK(distance<= 2.01 * M_PI/180.0);
             }
             REQUIRE(0 < numReturnedPairs);
             REQUIRE(numReturnedPairs < lastNumReturnedPairs);
@@ -43,6 +43,37 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
         }
         REQUIRE(totalReturnedPairs == db.NumPairs());
     }
+}
+
+TEST_CASE("Tighter tolerance test", "[kvector]") {
+    long length;
+    Catalog &catalog = CatalogRead();
+    unsigned char *dbBytes = BuildKVectorDatabase(catalog, &length, DegToRad(0.5), DegToRad(5.0), 1000);
+    REQUIRE(length < 999999);
+    KVectorDatabase db(dbBytes);
+    // radius we'll request
+    float delta = 0.0001;
+    // radius we expect back: radius we request + width of a bin
+    float epsilon = delta + DegToRad(5.0 - 0.5) / 1000;
+    // in the first test_case, the ends of each request pretty much line up with the ends of the
+    // buckets (intentionally), so that we can do the "form a partition" test. Here, however, a
+    // request may intersect a bucket, in which case things slightly outside the requested range should
+    // be returned.
+    bool outsideRangeReturned = false;
+    for (float i = DegToRad(0.6); i < DegToRad(4.9); i += DegToRad(0.1228)) {
+        long numReturnedPairs;
+        int16_t *pairs = db.FindPossibleStarPairsApprox(i - delta, i + delta, &numReturnedPairs);
+        for (long k = 0; k < numReturnedPairs; k += 2) {
+            float distance = AngleUnit(catalog[pairs[k]].spatial, catalog[pairs[k+1]].spatial);
+            // only need to check one side, since we're only looking for one exception.
+            if (i - delta > distance) {
+                outsideRangeReturned = true;
+            }
+            CHECK(i - epsilon <=distance);
+            CHECK(distance<= i + epsilon);
+        }
+    }
+    CHECK(outsideRangeReturned);
 }
 
 TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {

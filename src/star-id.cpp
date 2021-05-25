@@ -1,6 +1,7 @@
 #include <stdlib.h>
-
 #include <math.h>
+#include <assert.h>
+
 #include "star-id.hpp"
 #include "databases.hpp"
 #include "attitude-utils.hpp"
@@ -27,25 +28,25 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     StarIdentifiers identified;
     for (int i = 0; i < (int)stars.size(); i++) {  
         std::vector<int16_t> votes(catalog.size(), 0);
-        // TODO: store spatial coordinates in catalog to avoid this conversion
         Vec3 iSpatial = camera.CameraToSpatial({ stars[i].x, stars[i].y }).Normalize();
         for (int j = 0; j < (int)stars.size(); j++) {
             if (i != j) {
+                // TODO: find a faster way to do this:
+                std::vector<bool> votedInPair(catalog.size(), false);
                 Vec3 jSpatial = camera.CameraToSpatial({ stars[j].x, stars[j].y }).Normalize();
                 float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
                 float lowerBoundRange = greatCircleDistance - tolerance;
                 float upperBoundRange = greatCircleDistance + tolerance;
-                //if database is a KVectorDatabase
-                long numReturnedPairs; 
+                long numReturnedPairs;
                 int16_t *lowerBoundSearch = vectorDatabase.FindPossibleStarPairsApprox(
                     lowerBoundRange, upperBoundRange, &numReturnedPairs);
                 //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
-                for (long k = 0; k < numReturnedPairs; k++) {
-                    int16_t first = *(lowerBoundSearch + 2 * k);
-                    int16_t second = *(lowerBoundSearch + 2 * k + 1);
-                    votes[first]++;
-                    votes[second]++;
+                for (int16_t *k = lowerBoundSearch; k < lowerBoundSearch + numReturnedPairs * 2; k++) {
+                    if (!votedInPair[*k]) {
+                        votes[*k]++;
+                        votedInPair[*k] = true;
+                    }
                 }
                 // US voting system
             }
@@ -94,7 +95,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         }
     }
     // Find star w most votes
-    int16_t maxVotes = verificationVotes.size() > 0 ? verificationVotes[0] : 0;
+    int maxVotes = verificationVotes.size() > 0 ? verificationVotes[0] : 0;
     for (int v = 1; v < (int)verificationVotes.size(); v++) {
         if (verificationVotes[v] > maxVotes) {
             maxVotes = verificationVotes[v];
@@ -105,7 +106,8 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     // we consider it correct.
     // maximal votes = maxVotes
     StarIdentifiers verified;
-    int16_t thresholdVotes = 0.75 * maxVotes;
+    int thresholdVotes = maxVotes * 3 / 4;
+    printf("Verification threshold: %d\n", thresholdVotes);
     for (int i = 0; i < (int)verificationVotes.size(); i++) {
         if (verificationVotes[i] > thresholdVotes) {
             verified.push_back(identified[i]);

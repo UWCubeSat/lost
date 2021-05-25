@@ -387,7 +387,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
-        float radiusX = 4.0; // TODO
+        float radiusX = ceil(brightnessDeviation*2);
         if (camera.InSensor(camCoords)) {
             stars.push_back(Star(camCoords.x, camCoords.y, radiusX, radiusX, catalogStar.magnitude));
             starIds.push_back(StarIdentifier(stars.size() - 1, i));
