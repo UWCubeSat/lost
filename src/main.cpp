@@ -10,13 +10,20 @@
 namespace lost {
 
 static void DatabaseBuild() {
-    DbBuilder dbBuilder = PromptDbBuilder();
-    long length;
-    void *db = dbBuilder(CatalogRead(), &length);
-    std::cerr << "Generated database with " << length << " bytes" << std::endl;
+    Catalog narrowedCatalog = PromptNarrowedCatalog(CatalogRead());
+    std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+
+    MultiDatabaseBuilder builder;
+    unsigned char *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue,
+                                                          // TODO: allow magnitude and weird
+                                                          SerializeLengthCatalog(narrowedCatalog, false, false));
+    SerializeCatalog(narrowedCatalog, false, false, catalogBuffer);
+
+    PromptDatabases(builder, narrowedCatalog);
+
+    std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
     PromptedOutputStream pos;
-    pos.Stream().write((char *)db, length);
-    free(db);
+    pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 }
 
 static void PipelineRun() {

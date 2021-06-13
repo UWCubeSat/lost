@@ -23,6 +23,7 @@
 #include "camera.hpp"
 #include "attitude-utils.hpp"
 #include "attitude-estimators.hpp"
+#include "databases.hpp"
 
 namespace lost {
 
@@ -208,6 +209,7 @@ struct PipelineOutput {
     std::unique_ptr<Stars> stars;
     std::unique_ptr<StarIdentifiers> starIds;
     std::unique_ptr<Quaternion> attitude;
+    Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
 };
 
 struct StarIdComparison {
@@ -220,6 +222,7 @@ struct StarIdComparison {
 
 // actualStars is optional, in which case it's assumed that expectedStars was passed to the star-id
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
                                 float centroidThreshold,
                                 const Stars *expectedStars, const Stars *actualStars);
 
@@ -254,9 +257,11 @@ void PromptPipelineComparison(const PipelineInputList &expected,
 // DB BUILDER //
 ////////////////
 
+Catalog PromptNarrowedCatalog(const Catalog &);
+
 // unlike the other algorithm prompters, db builders aren't a 
-typedef unsigned char *(*DbBuilder)(const Catalog &, long *);
-DbBuilder PromptDbBuilder();
+typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
+void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 }
 

@@ -81,9 +81,12 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                          &raj2000, &dej2000,
                          &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
-        result.push_back(CatalogStar(DegToRad(raj2000), DegToRad(dej2000),
-                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
-                                     weird != ' ', name));
+        if (weird == ' ') {
+            result.push_back(CatalogStar(DegToRad(raj2000),
+                                         DegToRad(dej2000),
+                                         magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
+                                         name));
+        }
     }
 
     fclose(file);
@@ -154,6 +157,7 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
 void SurfacePlot(cairo_surface_t *cairoSurface,
                  const Stars &stars,
                  const StarIdentifiers *starIds,
+                 const Catalog *catalog,
                  const Quaternion *attitude,
                  double red,
                  double green,
@@ -200,7 +204,7 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
     metadata += std::to_string(stars.size()) + " centroids   ";
 
     if (starIds != NULL) {
-        const Catalog &catalog = CatalogRead(); // TODO: this is nasty
+        assert(catalog != NULL);
 
         for (const StarIdentifier &starId : *starIds) {
             const Star &centroid = stars[starId.starIndex];
@@ -214,7 +218,7 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
                           ? centroid.y - centroid.radiusY + textHeight
                           : centroid.y + 10);
 
-            cairo_show_text(cairoCtx, std::to_string(catalog[starId.catalogIndex].name).c_str());
+            cairo_show_text(cairoCtx, std::to_string((*catalog)[starId.catalogIndex].name).c_str());
         }
         metadata += std::to_string(starIds->size()) + " identified   ";
     }
@@ -274,9 +278,7 @@ AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
     return new DavenportQAlgorithm();
 };
 
-unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length) {
-    float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
-    float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
+Catalog PromptNarrowedCatalog(const Catalog &catalog) {
     float maxSomething = Prompt<float>("Max magnitude or # of stars");
     int maxMagnitude = 1000;
     int maxStars = 10000;
@@ -286,15 +288,34 @@ unsigned char *PromptKVectorDatabaseBuilder(const Catalog &catalog, long *length
     } else {
         maxStars = (int)floor(maxSomething);
     }
+    return NarrowCatalog(catalog, maxMagnitude, maxStars);
+}
+
+void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog) {
+    float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
+    float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
     long numBins = Prompt<long>("Number of distance bins");
-    return BuildKVectorDatabase(NarrowCatalog(catalog, maxMagnitude, maxStars), length, minDistance, maxDistance, numBins);
+
+    // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
+    // database generation
+    long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
+    unsigned char *buffer = builder.AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
+    SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
+
     // TODO: also parse it and print out some stats before returning
 }
 
-DbBuilder PromptDbBuilder() {
+void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     InteractiveChoice<DbBuilder> dbBuilderChoice;
-    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
-    return dbBuilderChoice.Prompt("Choose database builder");
+    while (true) {
+        dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
+        dbBuilderChoice.Register("done", "Exit", NULL);
+        DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
+        if (choice == NULL) {
+            break;
+        }
+        (*choice)(builder, catalog);
+    }
 }
 
 // PIPELINE INPUT STUFF
@@ -580,6 +601,14 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     const Stars *inputStars = input.InputStars();
     const StarIdentifiers *inputStarIds = input.InputStarIds();
 
+    // if database is provided, that's where we get catalog from.
+    if (database) {
+        MultiDatabase multiDatabase(database.get());
+        result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+    } else {
+        result.catalog = input.GetCatalog();
+    }
+
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
         // TODO: don't copy the vector!
@@ -591,15 +620,14 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *inputStars, input.GetCatalog(), *input.InputCamera())));
+            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
         inputStarIds = result.starIds.get();
     }
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
-            // TODO: no CatalogRead!
-            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, CatalogRead(), *inputStarIds)));
+            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
     }
 
     return result;
@@ -710,6 +738,8 @@ bool StarIdCompare(const StarIdentifier &a, const StarIdentifier &b) {
 }
 
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                // use these to map indices to names for the respective lists of StarIdentifiers
+                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
                                 // stars are ignored if threshold<0
                                 float centroidThreshold,
                                 const Stars *expectedStars, const Stars *actualStars) {
@@ -743,6 +773,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
     } else {
         actualSorted = actual;
     }
+
     sort(expectedSorted.begin(), expectedSorted.end(), StarIdCompare);
     sort(actualSorted.begin(), actualSorted.end(), StarIdCompare);
 
@@ -751,7 +782,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
         if (currActual != actualSorted.cend() &&
             currActual->starIndex == currExpected.starIndex) {
 
-            if (currActual->catalogIndex == currExpected.catalogIndex) {
+            if (actualCatalog[currActual->catalogIndex].name == expectedCatalog[currExpected.catalogIndex].name) {
                 result.numCorrect++;
             } else {
                 result.numIncorrect++;
@@ -798,6 +829,7 @@ void PipelineComparatorPlotInput(std::ostream &os,
     SurfacePlot(cairoSurface,
                 *expected[0]->InputStars(),
                 expected[0]->InputStarIds(),
+                &expected[0]->GetCatalog(),
                 expected[0]->InputAttitude(),
                 // green
                 0.0, 1.0, 0.0, 0.6);
@@ -848,6 +880,7 @@ void PipelineComparatorPlotOutput(std::ostream &os,
     SurfacePlot(cairoSurface,
                 actual[0].stars ? *actual[0].stars : *expected[0]->ExpectedStars(),
                 actual[0].starIds.get(),
+                &actual[0].catalog,
                 actual[0].attitude.get(),
                 // red
                 1.0, 0.0, 0.0, 0.5);
@@ -866,6 +899,7 @@ void PipelineComparatorStars(std::ostream &os,
     for (int i = 0; i < (int)expected.size(); i++) {
         comparisons.push_back(
             StarIdsCompare(*expected[i]->ExpectedStarIds(), *actual[i].starIds,
+                           expected[i]->GetCatalog(), actual[i].catalog,
                            centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get()));
     }
 

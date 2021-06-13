@@ -9,13 +9,13 @@ namespace lost {
 
 class CatalogStar {
 public:
-    CatalogStar(float raj2000, float dej2000, int magnitude, bool weird, int name) :
-        spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), weird(weird), name(name) { }
+    CatalogStar() = default;
+    CatalogStar(float raj2000, float dej2000, int magnitude, int name) :
+        spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), name(name) { }
 
     Vec3 spatial;
     int  magnitude;         // *10^-2
-    bool weird;             // nonzero for binary, etc
-    int name;
+    int  name;
 };
 
 class Star {
@@ -50,6 +50,11 @@ public:
 typedef std::vector<CatalogStar> Catalog;
 typedef std::vector<Star> Stars;
 typedef std::vector<StarIdentifier> StarIdentifiers;
+
+long SerializeLengthCatalog(const Catalog &, bool inclMagnitude, bool inclName);
+void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName, unsigned char *buffer);
+// sets magnited and name to whether the catalog in the database contained magnitude and name
+Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn);
 
 float StarDistancePixels(Star one, Star two);
 

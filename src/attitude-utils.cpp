@@ -104,6 +104,26 @@ float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
+long SerializeLengthVec3() {
+    return sizeof(float)*3;
+}
+
+void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
+    float *fBuffer = (float *)buffer;
+    *fBuffer++ = vec.x;
+    *fBuffer++ = vec.y;
+    *fBuffer = vec.z;
+}
+
+Vec3 DeserializeVec3(const unsigned char *buffer) {
+    Vec3 result;
+    const float *fBuffer = (float *)buffer;
+    result.x = *fBuffer++;
+    result.y = *fBuffer++;
+    result.z = *fBuffer;
+    return result;
+}
+
 float Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }

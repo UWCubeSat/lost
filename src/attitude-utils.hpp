@@ -26,6 +26,10 @@ public:
     float operator*(const Vec3 &) const;
 };
 
+long SerializeLengthVec3();
+void SerializeVec3(const Vec3 &, unsigned char *);
+Vec3 DeserializeVec3(const unsigned char *);
+
 class Quaternion {
 public:
     Quaternion() = default; // I guess this lets you call Attitude on an attitude object?

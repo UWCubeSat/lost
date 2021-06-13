@@ -24,7 +24,8 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
-    KVectorDatabase vectorDatabase(database);
+    MultiDatabase multiDatabase(database);
+    PairDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue));
     StarIdentifiers identified;
     for (int i = 0; i < (int)stars.size(); i++) {  
         std::vector<int16_t> votes(catalog.size(), 0);
@@ -39,11 +40,20 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
                 float lowerBoundRange = greatCircleDistance - tolerance;
                 float upperBoundRange = greatCircleDistance + tolerance;
                 long numReturnedPairs;
-                int16_t *lowerBoundSearch = vectorDatabase.FindPossibleStarPairsApprox(
+                const int16_t *lowerBoundSearch = vectorDatabase.FindPairsLiberal(
                     lowerBoundRange, upperBoundRange, &numReturnedPairs);
                 //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
-                for (int16_t *k = lowerBoundSearch; k < lowerBoundSearch + numReturnedPairs * 2; k++) {
+                for (const int16_t *k = lowerBoundSearch; k < lowerBoundSearch + numReturnedPairs * 2; k++) {
+                    if ((k - lowerBoundSearch) % 2 == 0) {
+                        float actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
+                        assert(actualAngle <= greatCircleDistance + tolerance * 2);
+                        assert(actualAngle >= greatCircleDistance - tolerance * 2);
+                    }
                     if (!votedInPair[*k]) {
+                        // if (i == 542 && *k == 9085) {
+                        //     printf("INC, distance %f from query %f to %f\n", greatCircleDistance,
+                        //         lowerBoundRange, upperBoundRange);
+                        // }
                         votes[*k]++;
                         votedInPair[*k] = true;
                     }
@@ -60,7 +70,20 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
                 indexOfMax = v;
             }
         }
-        printf("Max votes: %d\n", maxVotes);
+        // if (i == 542) {
+        //     for (float dist : vectorDatabase.StarDistances(9085, catalog)) {
+        //         printf("Actual 9085 distance: %f\n", dist);
+        //     }
+        //     puts("Debug star.");
+        //     for (int i = 0; i < (int)votes.size(); i++) {
+        //         if (votes[i] > maxVotes/2) {
+        //             printf("Star %4d received %d votes.\n", catalog[i].name, votes[i]);
+        //         }
+        //     }
+        //     printf("Debug star: Actually voted for %d with %d votes\n",
+        //            catalog[indexOfMax].name, maxVotes);
+        // }
+        // printf("Max votes: %d\n", maxVotes);
         //starIndex = i, catalog index = indexOfMax
         StarIdentifier newStar(i, indexOfMax);
         // Set identified[i] to value of catalog index of star w most votesr
