@@ -1,6 +1,7 @@
 #include "star-utils.hpp"
 
 #include <math.h>
+#include <assert.h>
 #include <algorithm>
 
 namespace lost {
@@ -80,10 +81,12 @@ CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitu
 }
 
 long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName) {
-    return catalog.size() * SerializeLengthCatalogStar(inclMagnitude, inclName);
+    return sizeof(int16_t) + sizeof(int8_t) + catalog.size()*SerializeLengthCatalogStar(inclMagnitude, inclName);
 }
 
 void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName, unsigned char *buffer) {
+    unsigned char *bufferStart = buffer;
+
     // size
     *(int16_t *)buffer = catalog.size();
     buffer += sizeof(int16_t);
@@ -98,6 +101,8 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
         SerializeCatalogStar(catalogStar, inclMagnitude, inclName, buffer);
         buffer += catalogStarLength;
     }
+
+    assert(buffer-bufferStart == SerializeLengthCatalog(catalog, inclMagnitude, inclName));
 }
 
 // TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so

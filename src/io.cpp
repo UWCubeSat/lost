@@ -300,6 +300,9 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
     // database generation
     long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
     unsigned char *buffer = builder.AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
+    if (buffer == NULL) {
+        std::cerr << "No room for another database." << std::endl;
+    }
     SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
 
     // TODO: also parse it and print out some stats before returning
@@ -307,9 +310,9 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
 
 void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     InteractiveChoice<DbBuilder> dbBuilderChoice;
+    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
+    dbBuilderChoice.Register("done", "Exit", NULL);
     while (true) {
-        dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
-        dbBuilderChoice.Register("done", "Exit", NULL);
         DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
         if (choice == NULL) {
             break;
@@ -423,8 +426,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
         // would integrate the intensity of the star over that pixel, but we can make do by sampling
         // the intensity of the star at the /center/ of the pixel, ie, star.x+.5 and star.y+.5
-        for (int k = star.y - star.radiusX; k >= 0 && k < star.y + star.radiusX && k < image.height; k++) {
-            for(int j = star.x - star.radiusX; k >= 0 && j < star.x + star.radiusX && k < image.width; j++) {
+        for(int j = star.x - star.radiusX; j >= 0 && j < star.x + star.radiusX && j < image.width; j++) {
+            for (int k = star.y - star.radiusX; k >= 0 && k < star.y + star.radiusX && k < image.height; k++) {
                 float distanceSquared = pow(k+.5-star.y, 2) + pow(j+.5-star.x, 2);
                 int pixelBrightness = totalBrightness / pow(brightnessDeviation, 2)
                     * exp(-distanceSquared/pow(brightnessDeviation, 2));
@@ -604,7 +607,13 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // if database is provided, that's where we get catalog from.
     if (database) {
         MultiDatabase multiDatabase(database.get());
-        result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+        const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
+        if (catalogBuffer != NULL) {
+            result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+        } else {
+            std::cerr << "Warning: That database does not include a catalog." << std::endl;
+            result.catalog = input.GetCatalog();
+        }
     } else {
         result.catalog = input.GetCatalog();
     }

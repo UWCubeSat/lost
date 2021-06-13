@@ -24,9 +24,15 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
-    MultiDatabase multiDatabase(database);
-    PairDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue));
+
     StarIdentifiers identified;
+    MultiDatabase multiDatabase(database);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
+    if (databaseBuffer == NULL) {
+        return identified;
+    }
+    PairDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue));
+
     for (int i = 0; i < (int)stars.size(); i++) {  
         std::vector<int16_t> votes(catalog.size(), 0);
         Vec3 iSpatial = camera.CameraToSpatial({ stars[i].x, stars[i].y }).Normalize();
@@ -49,7 +55,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
                         assert(actualAngle <= greatCircleDistance + tolerance * 2);
                         assert(actualAngle >= greatCircleDistance - tolerance * 2);
                     }
-                    if (!votedInPair[*k]) {
+                    if (!votedInPair[*k] || true) {
                         // if (i == 542 && *k == 9085) {
                         //     printf("INC, distance %f from query %f to %f\n", greatCircleDistance,
                         //         lowerBoundRange, upperBoundRange);

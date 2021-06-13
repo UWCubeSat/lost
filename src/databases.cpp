@@ -53,6 +53,8 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
     // Idea: When we find the first star that's across any bin boundary, we want to update all the newly sealed bins
     long lastBin = 0; // first bin the last star belonged to
     for (int32_t i = 0; i < (int32_t)values.size(); i++) {
+        assert(values[i] >= min);
+        assert(values[i] <= max);
         long thisBin = (long)ceil((values[i] - min) / binWidth); // first bin we belong to
         assert(thisBin >= 0);
         assert(thisBin <= numBins); // thisBin == numBins is acceptable since kvector length == numBins + 1
@@ -283,26 +285,33 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
 unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long length) {
     // find unused spot in toc and take it!
     int32_t *toc = (int32_t *)buffer;
+    bool foundSpot = false;
     for (int i = 0; i < kMultiDatabaseMaxDatabases; i++) {
-        if (toc == 0) {
+        if (*toc == 0) {
             *toc = magicValue;
             toc++;
             *toc = bulkLength;
+            foundSpot = true;
             break;
         }
         // skip the entry
         toc += 2;
     }
 
+    // database is full
+    if (!foundSpot) {
+        return NULL;
+    }
+
     buffer = (unsigned char *)realloc(buffer, kMultiDatabaseTocLength+bulkLength+length);
     // just past the end of the last database
-    unsigned char *result = buffer+kMultiDatabaseTocLength+bulkLength+1;
+    unsigned char *result = buffer+kMultiDatabaseTocLength+bulkLength;
     bulkLength += length;
     return result;
 }
 
 MultiDatabaseBuilder::~MultiDatabaseBuilder() {
-    delete buffer;
+    delete[] buffer;
 }
 
 }

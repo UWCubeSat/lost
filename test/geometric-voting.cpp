@@ -14,24 +14,24 @@ using namespace lost;
 
 // three stars that should be easy to identify based on their distances to each other
 Catalog tripleCatalog = {
-    CatalogStar(DegToRad(2), DegToRad(-3), 3.0, false, 42),
-    CatalogStar(DegToRad(4), DegToRad(7), 2.0, false, 43),
-    CatalogStar(DegToRad(2), DegToRad(6), 4.0, false, 44),
+    CatalogStar(DegToRad(2), DegToRad(-3), 3.0, 42),
+    CatalogStar(DegToRad(4), DegToRad(7), 2.0, 43),
+    CatalogStar(DegToRad(2), DegToRad(6), 4.0, 44),
 };
 
 Catalog quadrupleCatalog = {
-    CatalogStar(DegToRad(2), DegToRad(-3), 3.0, false, 42),
-    CatalogStar(DegToRad(4), DegToRad(7), 2.0, false, 43),
-    CatalogStar(DegToRad(2), DegToRad(6), 4.0, false, 44),
-    CatalogStar(DegToRad(-1), DegToRad(-4), 1.0, false, 45),
+    CatalogStar(DegToRad(2), DegToRad(-3), 3.0, 42),
+    CatalogStar(DegToRad(4), DegToRad(7), 2.0, 43),
+    CatalogStar(DegToRad(2), DegToRad(6), 4.0, 44),
+    CatalogStar(DegToRad(-1), DegToRad(-4), 1.0, 45),
 };
 
 // distance between 42/43 == distance between 44/45, have to use distances to 43 to differentiate
 Catalog harderQuadrupleCatalog = {
-    CatalogStar(DegToRad(2), DegToRad(-3), 3.0, false, 42),
-    CatalogStar(DegToRad(4), DegToRad(7), 2.0, false, 43),
-    CatalogStar(DegToRad(2), DegToRad(5), 4.0, false, 44),
-    CatalogStar(DegToRad(2), DegToRad(1), 1.0, false, 45),
+    CatalogStar(DegToRad(2), DegToRad(-3), 3.0, 42),
+    CatalogStar(DegToRad(4), DegToRad(7), 2.0, 43),
+    CatalogStar(DegToRad(2), DegToRad(5), 4.0, 44),
+    CatalogStar(DegToRad(2), DegToRad(1), 1.0, 45),
 };
 
 Camera smolCamera(FovToFocalLength(DegToRad(36.0), 256), 256, 256);

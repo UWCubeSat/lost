@@ -16,8 +16,8 @@ static void DatabaseBuild() {
     MultiDatabaseBuilder builder;
     unsigned char *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue,
                                                           // TODO: allow magnitude and weird
-                                                          SerializeLengthCatalog(narrowedCatalog, false, false));
-    SerializeCatalog(narrowedCatalog, false, false, catalogBuffer);
+                                                          SerializeLengthCatalog(narrowedCatalog, false, true));
+    SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
     PromptDatabases(builder, narrowedCatalog);
 

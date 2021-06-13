@@ -49,6 +49,7 @@ TEST_CASE("Center of Gravity: Basic generated input comparison", "[centroid]") {
         // Need to figure out how to modularize StarIdsCompare()
         comparisons.push_back(
             StarIdsCompare(*resultList[i]->ExpectedStarIds(), *outputs[i].starIds,
+                           CatalogRead(), CatalogRead(),
                            centroidThreshold, resultList[i]->ExpectedStars(), outputs[i].stars.get()));
     }
 
