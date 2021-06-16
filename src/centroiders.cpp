@@ -169,6 +169,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             p.yMax = i / imageWidth;
             p.yMin = i / imageWidth;
 
+            int sizeBefore = p.checkedIndices.size();
+
             CogHelper(p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
@@ -177,7 +179,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
-            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, 0));
+            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
         }
     }
     return result;
@@ -250,6 +252,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.yMax = i / imageWidth;
             p.yMin = i / imageWidth;
 
+
             IWCoGHelper(p, i, image, imageWidth, imageHeight, starIndices);
 
             xDiameter = (p.xMax - p.xMin) + 1;
@@ -295,7 +298,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 guessXCoord = xTemp;
                 guessYCoord = yTemp;
             }
-            result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, 0));
+            result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, starIndices.size()));
         }
     }
     return result;
