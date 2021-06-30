@@ -17,8 +17,22 @@ struct KVectorPair {
     float distance;
 };
 
+// triple of stars 
+// small angle and large angle in triangle
+struct KVectorTriple {
+    int16_t index1;
+    int16_t index2;
+    int16_t index3;
+    float distance;
+};
+
 bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
     return p1.distance < p2.distance;
+}
+
+// sort triangles by the small angle in the KVector
+bool CompareKVectorTriples(const KVectorTriple &t1, const KVectorTriple &t2) {
+    return t1.distance < t2.distance;
 }
 
 // just the index part of the kvector, doesn't store the sorted list it refers to. This makes it
@@ -181,12 +195,51 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
     return result;
 }
 
+/**
+ triple K-vector database layout. The kvector appears before the bulk pair data because it contains the
+ number of triples, which is necessary to read the bulk triple data.
+
+     | size (bytes)                 | name         | description                                                 |
+     |------------------------------+--------------+-------------------------------------------------------------|
+     | sizeof kvectorIndex          | kVectorIndex | Serialized KVector index                                    |
+     | 3*sizeof(int16)*numTriples   | triples      | Bulk triple data                                            |
+ */
+std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, float minDistance, float maxDistance) {
+    std::vector<KVectorTriple> result;
+    for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
+        for (int16_t j = 0; j < (int16_t)catalog.size(); i++) {
+            for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
+
+                KVectorTriple triple = { i, j, k, std::min(std::min(AngleUnit(catalog[i].spatial, catalog[j].spatial),
+            AngleUnit(catalog[i].spatial, catalog[k].spatial)), AngleUnit(catalog[j].spatial, catalog[k].spatial))  }; 
+                assert(isfinite(triple.distance));
+                assert(triple.distance >= 0);
+                assert(triple.distance <= M_PI);
+
+                if (triple.distance>= minDistance && triple.distance <= maxDistance) {
+                    // we'll sort later
+                    result.push_back(triple);
+                }
+            }
+        }
+    }
+    return result;
+}
+
 long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
     return SerializeLengthKVectorIndex(numBins) + 2*sizeof(int16_t)*numPairs;
 }
 
+long SerializeLengthTripleDistanceKVector(long numTriples, long numBins) {
+    return SerializeLengthKVectorIndex(numBins) + 3*sizeof(int16_t)*numTriples;
+}
+
 long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     return SerializeLengthPairDistanceKVector(CatalogToPairDistances(catalog, minDistance, maxDistance).size(), numBins);
+}
+
+long SerializeLengthTripleDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+    return SerializeLengthTripleDistanceKVector(CatalogToTripleDistances(catalog, minDistance, maxDistance).size(), numBins);
 }
 
 void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
@@ -219,6 +272,38 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
+void SerializeTripleDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
+    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
+    std::vector<KVectorTriple> triples = CatalogToTripleDistances(catalog, minDistance, maxDistance);
+
+    // sort triples in increasing order.
+    std::sort(triples.begin(), triples.end(), CompareKVectorTriples);
+    std::vector<float> distances;
+
+    for (const KVectorTriple &triple : triples) {
+        distances.push_back(triple.distance);
+    }
+
+    unsigned char *bufferStart = buffer;
+
+    // index field
+    SerializeKVectorIndex(distances, minDistance, maxDistance, numBins, buffer);
+    buffer += SerializeLengthKVectorIndex(numBins);
+
+    // bulk triples field
+    for (const KVectorTriple &triple : triples) {
+        *(int16_t *)buffer = triple.index1;
+        buffer += sizeof(int16_t);
+        *(int16_t *)buffer = triple.index2;
+        buffer += sizeof(int16_t);
+        *(int16_t *)buffer = triple.index3;
+        buffer += sizeof(int16_t);
+    }
+
+    // verify length
+    assert(buffer - bufferStart == SerializeLengthTripleDistanceKVector(triples.size(), numBins));
+}
+
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
     
@@ -231,6 +316,14 @@ float Clamp(float num, float low, float high) {
     return num < low ? low : num > high ? high : num;
 }
 
+TripleDistanceKVectorDatabase::TripleDistanceKVectorDatabase(const unsigned char *buffer)
+    : index(KVectorIndex(buffer)) {
+    
+    // TODO: errors? (not even sure what i meant by this comment anymore); me neither...
+    buffer += SerializeLengthKVectorIndex(index.NumBins());
+    triples = (const int16_t *)buffer;
+}
+
 const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     float minQueryDistance, float maxQueryDistance, long *numReturnedPairs) const {
 
@@ -238,7 +331,18 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     return &pairs[lowerIndex * 2];
 }
 
+const int16_t *TripleDistanceKVectorDatabase::FindTriplesLiberal(
+    float minQueryDistance, float maxQueryDistance, long *numReturnedTriples) const {
+
+    long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, numReturnedTriples);
+    return &triples[lowerIndex * 2];
+}
+
 long PairDistanceKVectorDatabase::NumPairs() const {
+    return index.NumValues();
+}
+
+long TripleDistanceKVectorDatabase::NumTriples() const {
     return index.NumValues();
 }
 
@@ -247,6 +351,16 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
     for (int i = 0; i < NumPairs(); i++) {
         if (pairs[i*2] == star || pairs[i*2+1] == star) {
             result.push_back(AngleUnit(catalog[pairs[i*2]].spatial, catalog[pairs[i*2+1]].spatial));
+        }
+    }
+    return result;
+}
+
+std::vector<float> TripleDistanceKVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
+    std::vector<float> result;
+    for (int i = 0; i < NumTriples(); i++) {
+        if (triples[i*2] == star || triples[i*2+1] == star) {
+            result.push_back(AngleUnit(catalog[triples[i*2]].spatial, catalog[triples[i*2+1]].spatial));
         }
     }
     return result;
