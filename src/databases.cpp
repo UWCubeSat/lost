@@ -207,11 +207,10 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
 std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, float minDistance, float maxDistance) {
     std::vector<KVectorTriple> result;
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
-        for (int16_t j = 0; j < (int16_t)catalog.size(); i++) {
-            for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
+        for (int16_t j = i+1; j < (int16_t)catalog.size(); j++) {
+            for (int16_t k = j+1; k < (int16_t)catalog.size(); k++) {
 
-                KVectorTriple triple = { i, j, k, std::min(std::min(AngleUnit(catalog[i].spatial, catalog[j].spatial),
-            AngleUnit(catalog[i].spatial, catalog[k].spatial)), AngleUnit(catalog[j].spatial, catalog[k].spatial))  }; 
+                KVectorTriple triple = { i, j, k, Angle(catalog[j].spatial-catalog[i].spatial, catalog[k].spatial-catalog[i].spatial)  }; 
                 assert(isfinite(triple.distance));
                 assert(triple.distance >= 0);
                 assert(triple.distance <= M_PI);
