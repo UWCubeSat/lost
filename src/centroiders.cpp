@@ -279,7 +279,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 xWeightedCoordMagSum = 0;
                 weightedMagSum = 0;
                 stop++;
-                for (long j = 0; j < starIndices.size(); j++) {
+                for (long j = 0; j < (long) starIndices.size(); j++) {
                     //calculate w
                     float currXCoord = (float) (starIndices.at(j) % imageWidth);
                     float currYCoord = (float) (starIndices.at(j) / imageWidth);
