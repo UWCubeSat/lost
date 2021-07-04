@@ -117,12 +117,18 @@ struct CentroidParams {
     int yMin;
     int yMax;
     int cutoff;
+    bool isValid;
     std::unordered_set<int> checkedIndices;
 };
 
 //recursive helper here
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) {
+    
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
+        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
+            p.isValid = false;
+        }
         p.checkedIndices.insert(i);
         if (i % imageWidth > p.xMax) {
             p.xMax = i % imageWidth;
@@ -168,6 +174,9 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             p.xMin = i % imageWidth;
             p.yMax = i / imageWidth;
             p.yMin = i / imageWidth;
+            p.isValid = true;
+
+            int sizeBefore = p.checkedIndices.size();
 
             CogHelper(p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
@@ -177,7 +186,9 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
-            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, 0));
+            if (p.isValid) {
+                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
+            }
         }
     }
     return result;
@@ -195,11 +206,16 @@ struct IWCoGParams {
     int cutoff;
     int maxIntensity;
     int guess;
+    bool isValid;
     std::unordered_set<int> checkedIndices;
 };
 
 void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices) {
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
+        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
+            p.isValid = false;
+        }
         p.checkedIndices.insert(i);
         starIndices.push_back(i);
         if (image[i] > p.maxIntensity) {
@@ -250,6 +266,8 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.xMin = i % imageWidth;
             p.yMax = i / imageWidth;
             p.yMin = i / imageWidth;
+            p.isValid = true;
+
 
             IWCoGHelper(p, i, image, imageWidth, imageHeight, starIndices);
 
@@ -297,7 +315,9 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 guessXCoord = xTemp;
                 guessYCoord = yTemp;
             }
-            result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, 0));
+            if (p.isValid) {
+                result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, starIndices.size()));
+            }
         }
     }
     return result;
