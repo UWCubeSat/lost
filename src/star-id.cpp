@@ -154,4 +154,89 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     ;
 }
 
+StarIdentifiers NonDimStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+
+    StarIdentifiers identified;
+    MultiDatabase multiDatabase(database);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(TripleDistanceKVectorDatabase::kMagicValue);
+    if (databaseBuffer == NULL) {
+        return identified;
+    }
+    TripleDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(TripleDistanceKVectorDatabase::kMagicValue));
+
+    // constant lookup to see if one of the stars in a triangle has already been identified
+    char identified_fast[(int)stars.size()] {0};
+
+    // every possible triangle in the image
+    for (int i = 0; i < (int)stars.size(); i++) {  
+        for (int j = i + 1; j < (int)stars.size(); j++) {
+            for (int k = j + 1; k < (int)stars.size(); k++) {
+                if (identified_fast[i] || identified_fast[j] || identified_fast[k]) {
+                    continue;
+                }
+                // compute target small angle
+                float smallAngle = std::min(std::min(Angle(catalog[j].spatial-catalog[i].spatial, 
+            catalog[k].spatial-catalog[i].spatial), Angle(catalog[j].spatial-catalog[k].spatial, 
+            catalog[j].spatial-catalog[i].spatial)), Angle(catalog[k].spatial-catalog[i].spatial, 
+            catalog[k].spatial-catalog[j].spatial));
+                // compute target large angle
+                float largeAngle = std::max(std::max(Angle(catalog[j].spatial-catalog[i].spatial, 
+            catalog[k].spatial-catalog[i].spatial), Angle(catalog[j].spatial-catalog[k].spatial, 
+            catalog[j].spatial-catalog[i].spatial)), Angle(catalog[k].spatial-catalog[i].spatial, 
+            catalog[k].spatial-catalog[j].spatial));
+                // range of query
+                float lowerBoundRange = smallAngle - tolerance;
+                float upperBoundRange = smallAngle + tolerance;
+                long numReturnedTriples;
+                const int16_t *lowerBoundSearch = vectorDatabase.FindTriplesLiberal(
+                    lowerBoundRange, upperBoundRange, &numReturnedTriples);
+                if (numReturnedTriples < 1) {
+                    continue;
+                }
+                const int16_t* matched_triple = NULL;
+                bool unique = true;
+                /*
+                 * basically if we make a query on small angle, all returned catalog triangles have small angle
+                 * within toleranceand we want to compare each resulting triangle to affirm the large angle is 
+                 * also within tolerance but if there is more than one than we skip this query
+                */
+                for (const int16_t *l = lowerBoundSearch; l < lowerBoundSearch + numReturnedTriples * 3; l += 3) {
+                    float actualLargeAngle = std::max(std::max(Angle(catalog[*(l+1)].spatial-catalog[*l].spatial,
+                catalog[*(l+2)].spatial-catalog[*l].spatial), Angle(catalog[*(l+1)].spatial-catalog[*(l+2)].spatial, 
+                catalog[*(l+1)].spatial-catalog[*l].spatial)), Angle(catalog[*(l+2)].spatial-catalog[*l].spatial, 
+                catalog[*(l+2)].spatial-catalog[*(l+1)].spatial));
+                    if (actualLargeAngle > largeAngle - tolerance && actualLargeAngle < largeAngle + tolerance) {
+                        if (matched_triple != NULL) {
+                            unique = false;
+                        }
+                        matched_triple = l;
+                    }
+                }
+                // if there was no unique match then find new target triangle
+                if (matched_triple == NULL || !unique) {
+                    continue;
+                }
+                // otherwise use random 4th and 5th stars to confirm same triangle
+                // TODO
+                // ...
+                // we have a matching triple
+                identified_fast[i] = true;
+                identified_fast[j] = true;
+                identified_fast[k] = true;
+                // TODO figure out which one is which XDXDXDXD (compare angles small medium large)
+                StarIdentifier newStar1(i, *matched_triple);
+                StarIdentifier newStar2(j, *(matched_triple+1));
+                StarIdentifier newStar3(k, *(matched_triple+2));
+                // Set identified[i] to value of catalog index of star w most votesr
+                identified.push_back(newStar1);
+                identified.push_back(newStar2);
+                identified.push_back(newStar3);
+
+            }
+        }
+    }
+    return identified;
+}
+
 }

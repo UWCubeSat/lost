@@ -1,7 +1,7 @@
 #ifndef STAR_ID_H
 #define STAR_ID_H
 
-#include <vector>
+#include <set>
 
 #include "centroiders.hpp"
 #include "star-utils.hpp"
@@ -33,6 +33,14 @@ private:
 class PyramidStarIdAlgorithm : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+};
+
+class NonDimStarIdAlgorithm : public StarIdAlgorithm {
+public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+    NonDimStarIdAlgorithm(const float tolerance): tolerance(tolerance) { };
+private:
+    float tolerance;
 };
 
 }
