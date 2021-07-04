@@ -1,7 +1,7 @@
 #ifndef STAR_ID_H
 #define STAR_ID_H
 
-#include <set>
+#include <vector>
 
 #include "centroiders.hpp"
 #include "star-utils.hpp"

@@ -228,7 +228,6 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 StarIdentifier newStar1(i, *matched_triple);
                 StarIdentifier newStar2(j, *(matched_triple+1));
                 StarIdentifier newStar3(k, *(matched_triple+2));
-                // Set identified[i] to value of catalog index of star w most votesr
                 identified.push_back(newStar1);
                 identified.push_back(newStar2);
                 identified.push_back(newStar3);
