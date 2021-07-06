@@ -105,6 +105,74 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
     assert(buffer-bufferStart == SerializeLengthCatalog(catalog, inclMagnitude, inclName));
 }
 
+float minFocalPlaneAngle(const Stars &stars, int &arg, int i_index, int j_index, int k_index) {
+    Star i = stars[i_index];
+    Star j = stars[j_index];
+    Star k = stars[k_index];
+    float b1 = ((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
+    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2)));
+    float b2 = ((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
+    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2)));
+    float b3 = ((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
+    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2)));
+    if (b1 <= b2 && b1 <= b3) {
+        arg = i_index;
+    } else if (b2 <= b1 && b2 <= b3) {
+        arg = j_index;
+    } else {
+        arg = k_index;
+    }
+    return std::min(std::min(b1, b2), b3);
+}
+
+float maxFocalPlaneAngle(const Stars &stars, int &arg, int i_index, int j_index, int k_index) {
+    Star i = stars[i_index];
+    Star j = stars[j_index];
+    Star k = stars[k_index];
+    float b1 = ((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
+    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2)));
+    float b2 = ((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
+    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2)));
+    float b3 = ((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
+    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2)));
+    if (b1 >= b2 && b1 >= b3) {
+        arg = i_index;
+    } else if (b2 >= b1 && b2 >= b3) {
+        arg = j_index;
+    } else {
+        arg = k_index;
+    }
+    return std::max(std::max(b1, b2), b3);
+}
+
+float minInnerAngle(const Catalog &catalog, int &arg, int index1, int index2, int index3) {
+    float a1 = Angle(catalog[index2].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index1].spatial);
+    float a2 = Angle(catalog[index2].spatial-catalog[index3].spatial, catalog[index2].spatial-catalog[index1].spatial);
+    float a3 = Angle(catalog[index3].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index2].spatial);
+    if (a1 <= a2 && a1 <= a3) {
+        arg = index1;
+    } else if (a2 <= a1 && a2 <= a3) {
+        arg = index2;
+    } else {
+        arg = index3;
+    }
+    return std::min(std::min(a1, a2), a3);
+}
+
+float maxInnerAngle(const Catalog &catalog, int &arg, int index1, int index2, int index3) {
+    float a1 = Angle(catalog[index2].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index1].spatial);
+    float a2 = Angle(catalog[index2].spatial-catalog[index3].spatial, catalog[index2].spatial-catalog[index1].spatial);
+    float a3 = Angle(catalog[index3].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index2].spatial);
+    if (a1 >= a2 && a1 >= a3) {
+        arg = index1;
+    } else if (a2 >= a1 && a2 >= a3) {
+        arg = index2;
+    } else {
+        arg = index3;
+    }
+    return std::max(std::max(a1, a2), a3);
+}
+
 // TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so
 // we can just copy it to memory then cast
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn) {

@@ -176,15 +176,12 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                     continue;
                 }
                 // compute target small angle
-                float smallAngle = std::min(std::min(Angle(catalog[j].spatial-catalog[i].spatial, 
-            catalog[k].spatial-catalog[i].spatial), Angle(catalog[j].spatial-catalog[k].spatial, 
-            catalog[j].spatial-catalog[i].spatial)), Angle(catalog[k].spatial-catalog[i].spatial, 
-            catalog[k].spatial-catalog[j].spatial));
+                int mindex = i;
+                int middex = j;
+                int maxdex = k;
+                float smallAngle = minFocalPlaneAngle(stars, mindex, i, j, k);
                 // compute target large angle
-                float largeAngle = std::max(std::max(Angle(catalog[j].spatial-catalog[i].spatial, 
-            catalog[k].spatial-catalog[i].spatial), Angle(catalog[j].spatial-catalog[k].spatial, 
-            catalog[j].spatial-catalog[i].spatial)), Angle(catalog[k].spatial-catalog[i].spatial, 
-            catalog[k].spatial-catalog[j].spatial));
+                float largeAngle = maxFocalPlaneAngle(stars, maxdex, i, j, k);
                 // range of query
                 float lowerBoundRange = smallAngle - tolerance;
                 float upperBoundRange = smallAngle + tolerance;
@@ -194,7 +191,8 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 if (numReturnedTriples < 1) {
                     continue;
                 }
-                const int16_t* matched_triple = NULL;
+                // matched triple
+                const int16_t* mt = NULL;
                 bool unique = true;
                 /*
                  * basically if we make a query on small angle, all returned catalog triangles have small angle
@@ -202,32 +200,48 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                  * also within tolerance but if there is more than one than we skip this query
                 */
                 for (const int16_t *l = lowerBoundSearch; l < lowerBoundSearch + numReturnedTriples * 3; l += 3) {
-                    float actualLargeAngle = std::max(std::max(Angle(catalog[*(l+1)].spatial-catalog[*l].spatial,
-                catalog[*(l+2)].spatial-catalog[*l].spatial), Angle(catalog[*(l+1)].spatial-catalog[*(l+2)].spatial, 
-                catalog[*(l+1)].spatial-catalog[*l].spatial)), Angle(catalog[*(l+2)].spatial-catalog[*l].spatial, 
-                catalog[*(l+2)].spatial-catalog[*(l+1)].spatial));
+                    int actualMaxdex;
+                    float actualLargeAngle = maxInnerAngle(catalog, actualMaxdex, *l, *(l+1), *(l+2));
                     if (actualLargeAngle > largeAngle - tolerance && actualLargeAngle < largeAngle + tolerance) {
-                        if (matched_triple != NULL) {
+                        if (mt != NULL) {
                             unique = false;
                         }
-                        matched_triple = l;
+                        mt = l;
                     }
                 }
                 // if there was no unique match then find new target triangle
-                if (matched_triple == NULL || !unique) {
+                if (mt == NULL || !unique) {
                     continue;
                 }
-                // otherwise use random 4th and 5th stars to confirm same triangle
-                // TODO
+                // TODO: use random 4th and 5th stars to confirm same triangle
                 // ...
                 // we have a matching triple
                 identified_fast[i] = true;
                 identified_fast[j] = true;
                 identified_fast[k] = true;
-                // TODO figure out which one is which XDXDXDXD (compare angles small medium large)
-                StarIdentifier newStar1(i, *matched_triple);
-                StarIdentifier newStar2(j, *(matched_triple+1));
-                StarIdentifier newStar3(k, *(matched_triple+2));
+                // TODO figure out which one is which (compare angles small medium large)
+                if (i != mindex && i != maxdex) {
+                    middex = i;
+                } else if (j != mindex && j != maxdex) {
+                    middex = j;
+                } else {
+                    middex = k;
+                }
+                int actualMaxdex;
+                int actualMiddex;
+                int actualMindex;
+                maxInnerAngle(catalog, actualMaxdex, *mt, *(mt+1), *(mt+2));
+                minInnerAngle(catalog, actualMindex, *mt, *(mt+1), *(mt+2));
+                if (*mt != actualMindex && *mt != actualMaxdex) {
+                    actualMiddex = *mt;
+                } else if (*(mt+1) != actualMindex && *(mt+1) != actualMaxdex) {
+                    actualMiddex = *(mt+1);
+                } else {
+                    actualMiddex = *(mt+2);
+                }
+                StarIdentifier newStar1(mindex, actualMindex);
+                StarIdentifier newStar2(middex, actualMiddex);
+                StarIdentifier newStar3(maxdex, actualMaxdex);
                 identified.push_back(newStar1);
                 identified.push_back(newStar2);
                 identified.push_back(newStar3);

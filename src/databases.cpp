@@ -209,11 +209,8 @@ std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, floa
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t j = i+1; j < (int16_t)catalog.size(); j++) {
             for (int16_t k = j+1; k < (int16_t)catalog.size(); k++) {
-
-                KVectorTriple triple = { i, j, k, std::min(std::min(Angle(catalog[j].spatial-catalog[i].spatial, 
-                catalog[k].spatial-catalog[i].spatial), Angle(catalog[j].spatial-catalog[k].spatial, 
-                catalog[j].spatial-catalog[i].spatial)), Angle(catalog[k].spatial-catalog[i].spatial, 
-                catalog[k].spatial-catalog[j].spatial)) }; 
+                int mindex;
+                KVectorTriple triple = { i, j, k, minInnerAngle(catalog, mindex, i, j, k) };
                 assert(isfinite(triple.distance));
                 assert(triple.distance >= 0);
                 assert(triple.distance <= M_PI);
