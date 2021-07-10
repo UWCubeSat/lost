@@ -23,6 +23,8 @@ public:
 
     long NumValues() const { return numValues; };
     long NumBins() const { return numBins; };
+    float Max() const { return max; };
+    float Min() const { return min; };
 private:
     // return the lowest-indexed bin that contains the number of pairs with distance <= dist
     long BinFor(float dist) const;
@@ -54,6 +56,9 @@ public:
     // for debugging purposes. Return the distances from the given star to each other star it's
     // paired with in the database.
     std::vector<float> StarDistances(int16_t star, const Catalog &) const;
+
+    float MaxDistance() const { return index.Max(); };
+    float MinDistance() const { return index.Min(); };
 
     long NumPairs() const;
     const static unsigned long kMagicValue = 0x2536f009;

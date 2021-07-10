@@ -180,7 +180,7 @@ public:
     // }
 
     PairDistanceInvolvingIterator &operator++() {
-        assert(hasNext());
+        assert(hasValue());
         pairs += 2;
         forwardUntilInvolving();
         return *this;
@@ -190,7 +190,7 @@ public:
         return curValue;
     }
 
-    bool hasNext() {
+    bool hasValue() {
         return pairs != pastTheEnd;
     }
 
@@ -222,6 +222,70 @@ private:
         }
     }
 };
+
+// the probability of this match occurring if the stars were uniformly randomly distributed
+// throughout the celestial sphere
+// float PyramidAnalyticalMatchProbability(float tolerance, int n, )
+
+void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
+                                   const Stars &stars,
+                                   const Catalog &catalog,
+                                   const PairDistanceKVectorDatabase &db,
+                                   const Camera &camera,
+                                   float tolerance) {
+
+    assert(identifiers->size() == 4);
+    StarIdentifiers pyramidIdentifiers = *identifiers; // copy with only the pyramid's high confidence stars
+    Vec3 pyramidActualSpatials[4];
+    for (int l = 0; l < 4; l++) {
+        pyramidActualSpatials[l] = camera.CameraToSpatial(stars[pyramidIdentifiers[l].starIndex].position).Normalize();
+    }
+
+    for (int p = 0; p < stars.size(); p++) {
+        // ensure this star isn't in the pyramid
+        bool pInPyramid = false;
+        for (const StarIdentifier &id : pyramidIdentifiers) {
+            if (id.starIndex == p) {
+                pInPyramid = true;
+                break;
+            }
+        }
+        if (pInPyramid) {
+            continue;
+        }
+
+        Vec3 pSpatial = camera.CameraToSpatial(stars[p].position).Normalize();
+        float ipDist = AngleUnit(pyramidActualSpatials[0], pSpatial);
+        long ipNum;
+        const int16_t *ipPairs = db.FindPairsLiberal(ipDist - tolerance, ipDist + tolerance, &ipNum);
+        PairDistanceInvolvingIterator pIterator(ipPairs, ipNum, pyramidIdentifiers[0].catalogIndex);
+
+        std::vector<int16_t> pCandidates; // collect them all in the loop, at the end only identify
+                                          // the star if unique
+        while (pIterator.hasValue()) {
+            bool ok = true;
+            for (int l = 1; l < 4; l++) {
+                float actualDist = AngleUnit(pSpatial, pyramidActualSpatials[l]);
+                float expectedDist = AngleUnit(catalog[*pIterator].spatial,
+                                               catalog[pyramidIdentifiers[l].catalogIndex].spatial);
+                if (actualDist < expectedDist - tolerance || actualDist > expectedDist + tolerance) {
+                    ok = false;
+                }
+            }
+            if (ok) {
+                pCandidates.push_back(*pIterator);
+            }
+            ++pIterator;
+        }
+
+        if (pCandidates.size() == 1) {
+            identifiers->push_back(StarIdentifier(p, pCandidates[0]));
+        }
+        if (pCandidates.size() > 1) {
+            std::cerr << "duplicate other star??" << std::endl;
+        }
+    }
+}
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
@@ -293,8 +357,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         PairDistanceInvolvingIterator rIterator(irQuery, irNum, iCandidate);
                         // TODO: break fast if any of the iterators are empty, if it's any
                         // significant performance improvement.
-                        while (jIterator.hasNext()) {
-                            while (kIterator.hasNext()) {
+                        while (jIterator.hasValue()) {
+                            while (kIterator.hasValue()) {
 
                                 // small optimization: We can calculate jk before iterating through r, so we will!
                                 float jkCandidateDist = AngleUnit(catalog[*jIterator].spatial, catalog[*kIterator].spatial);
@@ -305,7 +369,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                 // TODO: if there are no jr matches, there's no reason to
                                 // continue iterating through all the other k-s. Possibly
                                 // enumarete all r matches, according to ir, before this loop
-                                while (rIterator.hasNext()) {
+                                while (rIterator.hasValue()) {
                                     float jrCandidateDist = AngleUnit(catalog[*jIterator].spatial, catalog[*rIterator].spatial);
                                     float krCandidateDist = AngleUnit(catalog[*kIterator].spatial, catalog[*rIterator].spatial);
                                     if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
@@ -316,13 +380,20 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                     }
 
                                     // if we made it this far, all 6 angles are confirmed!
+
                                     // TODO: analytically check confidence
+
+                                    // TODO: rather than immediately proceeding to identify the
+                                    // remaining stars, save the identified stars to variables and
+                                    // continue the loop to ensure they're unique?
                                     std::cerr << "Surprise muthafuckas" << std::endl;
                                     identified.push_back(StarIdentifier(i, iCandidate));
                                     identified.push_back(StarIdentifier(j, *jIterator));
                                     identified.push_back(StarIdentifier(k, *kIterator));
                                     identified.push_back(StarIdentifier(r, *rIterator));
+
                                     // TODO: attempt to identify other stars based on the successfully identified pyramid.
+                                    PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
                                     return identified;
 
                                 rContinue:
