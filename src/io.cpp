@@ -519,13 +519,15 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 Pipeline PromptPipeline() {
     enum class PipelineStage {
-        Centroid, Database, StarId, AttitudeEstimation, Done
+        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
     };
 
     Pipeline result;
     
     InteractiveChoice<PipelineStage> stageChoice;
     stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
+    // TODO: more flexible or sth
+    stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
     stageChoice.Register("database", "Database", PipelineStage::Database);
@@ -548,6 +550,11 @@ Pipeline PromptPipeline() {
 
             result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
                 (centroidChoice.Prompt("Choose centroid algo"))());
+            break;
+        }
+
+        case PipelineStage::CentroidMagnitudeFilter: {
+            result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
             break;
         }
 
@@ -621,10 +628,15 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
-        // TODO: don't copy the vector!
-        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(
-            centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height)));
-        inputStars = result.stars.get();
+        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
+        Stars *filteredStars = new std::vector<Star>();
+        for (const Star &star : unfilteredStars) {
+            if (star.magnitude >= centroidMinMagnitude) {
+                filteredStars->push_back(star);
+            }
+        }
+        result.stars = std::unique_ptr<Stars>(filteredStars);
+        inputStars = filteredStars;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
