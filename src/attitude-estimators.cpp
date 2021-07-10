@@ -15,7 +15,7 @@ Quaternion DavenportQAlgorithm::Go(const Camera &camera,
     B.setZero();
     for (const StarIdentifier &s: starIdentifiers) {
         Star bStar = stars[s.starIndex];
-        Vec3 bStarSpatial = camera.CameraToSpatial({bStar.x, bStar.y});
+        Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
         Eigen::Vector3f bi;
         bi << bStarSpatial.y, bStarSpatial.x, bStarSpatial.z;
 

@@ -30,6 +30,9 @@ long SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);
 Vec3 DeserializeVec3(const unsigned char *);
 
+float Distance(const Vec2 &, const Vec2 &);
+float Distance(const Vec3 &, const Vec3 &);
+
 class Quaternion {
 public:
     Quaternion() = default; // I guess this lets you call Attitude on an attitude object?

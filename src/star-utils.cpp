@@ -6,12 +6,6 @@
 
 namespace lost {
 
-float StarDistancePixels(Star one, Star two) {
-    float distX = one.x - two.x;
-    float distY = one.y - two.y;
-    return sqrt(distX*distX + distY*distY);
-}
-
 // brightest star first
 bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
