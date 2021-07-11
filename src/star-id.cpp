@@ -165,14 +165,17 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
     }
     TripleDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(TripleDistanceKVectorDatabase::kMagicValue));
 
-    // constant lookup to see if one of the stars in a triangle has already been identified
-    char identified_fast[(int)stars.size()] {0};
+    // lookup to see which image stars have been assigned to which catalog star
+    int16_t identified_fast[(int)stars.size()] {-1};
+    // lookup to see how many times an image star has been identified, -1 if ever misidentified
+    int16_t identified_count[(int)stars.size()] {0};
 
     // every possible triangle in the image
     for (int i = 0; i < (int)stars.size(); i++) {  
         for (int j = i + 1; j < (int)stars.size(); j++) {
             for (int k = j + 1; k < (int)stars.size(); k++) {
-                if (identified_fast[i] || identified_fast[j] || identified_fast[k]) {
+                // skip triangle if any of the three stars are misidentified previously
+                if (identified_count[i] == -1 || identified_count[j] == -1 || identified_count[k] == -1) {
                     continue;
                 }
                 // compute target small angle
@@ -213,12 +216,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 if (mt == NULL || !unique) {
                     continue;
                 }
-                // TODO: use random 4th and 5th stars to confirm same triangle
-                // ...
-                // we have a matching triple
-                identified_fast[i] = true;
-                identified_fast[j] = true;
-                identified_fast[k] = true;
+                
                 // figure out which one is which (compare angles small medium large)
                 if (i != mindex && i != maxdex) {
                     middex = i;
@@ -239,15 +237,35 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 } else {
                     actualMiddex = *(mt+2);
                 }
-                // push all stars in triangle to indentified
-                StarIdentifier newStar1(mindex, actualMindex);
-                StarIdentifier newStar2(middex, actualMiddex);
-                StarIdentifier newStar3(maxdex, actualMaxdex);
-                identified.push_back(newStar1);
-                identified.push_back(newStar2);
-                identified.push_back(newStar3);
-
+                // confirm stars do not get misidentified and identify these three stars 
+                if (identified_fast[mindex] != -1 && identified_fast[mindex] != actualMindex) {
+                    identified_count[mindex] = -1;
+                }
+                if (identified_fast[middex] != -1 && identified_fast[middex] != actualMiddex) {
+                    identified_count[middex] = -1;
+                }
+                if (identified_fast[maxdex] != -1 && identified_fast[maxdex] != actualMaxdex) {
+                    identified_count[maxdex] = -1;
+                }
+                // if each of the three stars has not been misidentified
+                if (identified_count[mindex] != -1 && identified_count[middex] != -1 && identified_count[maxdex] != -1) {
+                    // increment identification count, set their identification (may already be set)
+                    identified_count[mindex]++;
+                    identified_count[middex]++;
+                    identified_count[maxdex]++;
+                    identified_fast[mindex] = actualMindex;
+                    identified_fast[middex] = actualMiddex;
+                    identified_fast[maxdex] = actualMaxdex;
+                }
             }
+        }
+    }
+    // finalize identification of each image star that has been identified at least thrice
+    // without multiple identifications to different stars (misidentification)
+    for (int i = 0; i < (int)stars.size(); i++) {
+        if (identified_count[i] >= 3) {
+            StarIdentifier newStar(i, identified_fast[i]);
+            identified.push_back(newStar);
         }
     }
     return identified;
