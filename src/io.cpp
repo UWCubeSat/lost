@@ -315,8 +315,7 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
 
 void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     InteractiveChoice<DbBuilder> dbBuilderChoice;
-    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
-    dbBuilderChoice.Register("kvector", "K-Vector (non dimensional)", PromptKVectorDatabaseBuilder);
+    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting, pyramid, & nondimensional)", PromptKVectorDatabaseBuilder);
     dbBuilderChoice.Register("done", "Exit", NULL);
     while (true) {
         DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
