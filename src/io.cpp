@@ -270,6 +270,11 @@ StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
     return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
 }
 
+StarIdAlgorithm *NonDimStarIdAlgorithmPrompt() {
+    float tolerance = Prompt<float>("How much tolerance? (degrees)");
+    return new NonDimStarIdAlgorithm(DegToRad(tolerance));
+}
+
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
     return new PyramidStarIdAlgorithm();
 }
@@ -311,6 +316,7 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
 void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     InteractiveChoice<DbBuilder> dbBuilderChoice;
     dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
+    dbBuilderChoice.Register("kvector", "K-Vector (non dimensional)", PromptKVectorDatabaseBuilder);
     dbBuilderChoice.Register("done", "Exit", NULL);
     while (true) {
         DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
@@ -568,6 +574,7 @@ Pipeline PromptPipeline() {
             InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
             starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
             starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
+            starIdChoice.Register("nd", "Non Dimensional", NonDimStarIdAlgorithmPrompt);
             starIdChoice.Register("pyramid", "Pyramid codes", PyramidStarIdAlgorithmPrompt);
 
             result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(

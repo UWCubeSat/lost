@@ -219,7 +219,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 identified_fast[i] = true;
                 identified_fast[j] = true;
                 identified_fast[k] = true;
-                // TODO figure out which one is which (compare angles small medium large)
+                // figure out which one is which (compare angles small medium large)
                 if (i != mindex && i != maxdex) {
                     middex = i;
                 } else if (j != mindex && j != maxdex) {
@@ -239,6 +239,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 } else {
                     actualMiddex = *(mt+2);
                 }
+                // push all stars in triangle to indentified
                 StarIdentifier newStar1(mindex, actualMindex);
                 StarIdentifier newStar2(middex, actualMiddex);
                 StarIdentifier newStar3(maxdex, actualMaxdex);
