@@ -210,7 +210,6 @@ std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, floa
         for (int16_t j = i+1; j < (int16_t)catalog.size(); j++) {
             float d = AngleUnit(catalog[i].spatial, catalog[j].spatial);
             if (d >= minDistance && d <= maxDistance) {
-                // we'll sort later
                 sufficientlyClose[i].push_back(j);
             }
         }
