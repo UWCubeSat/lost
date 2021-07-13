@@ -223,10 +223,6 @@ private:
     }
 };
 
-// the probability of this match occurring if the stars were uniformly randomly distributed
-// throughout the celestial sphere
-// float PyramidAnalyticalMatchProbability(float tolerance, int n, )
-
 void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
                                    const Stars &stars,
                                    const Catalog &catalog,
@@ -241,7 +237,7 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
         pyramidActualSpatials[l] = camera.CameraToSpatial(stars[pyramidIdentifiers[l].starIndex].position).Normalize();
     }
 
-    for (int p = 0; p < stars.size(); p++) {
+    for (int p = 0; p < (int)stars.size(); p++) {
         // ensure this star isn't in the pyramid
         bool pInPyramid = false;
         for (const StarIdentifier &id : pyramidIdentifiers) {
@@ -290,8 +286,6 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
-    std::cout << catalog.size() << std::endl;
-
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
     const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
@@ -301,6 +295,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     }
     PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
 
+    // smallest normal single-precision float is around 10^-38 so we should be all good
+    float expectedMismatchesConstant = pow(catalog.size() * tolerance, 4) / M_PI;
+
     // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
     // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and k-th
     // from the j-th
@@ -308,7 +305,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     for (int dj = 1; dj < (int)stars.size()-1; dj++) {
         for (int dk = 1; dk < (int)stars.size()-dj-1; dk++) {
             for (int dr = 1; dr < (int)stars.size()-dk-dj-1; dr++) {
-                for (int i = 0; i < (int)stars.size()-dj-dk; i++) {
+                for (int i = 0; i < (int)stars.size()-dj-dk-dr; i++) {
 
                     // identification failure due to cutoff
                     if (++totalIterations > cutoff) {
@@ -332,6 +329,32 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     float jkDist = AngleUnit(jSpatial, kSpatial);
                     float jrDist = AngleUnit(jSpatial, rSpatial);
                     float krDist = AngleUnit(kSpatial, rSpatial);
+
+                    float iSinInner = sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
+                    float jSinInner = sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
+                    float kSinInner = sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
+
+                    // if we made it this far, all 6 angles are confirmed! Now check
+                    // that this match would not often occur due to chance.
+                    float expectedMismatches = expectedMismatchesConstant
+                        // area where j can be = 2*sin(ijDist)*sin(tolerance) ~= 2*ijDist*tolerance
+                        // and the 2 gets cancelled out by other means
+                        * sin(ijDist)
+                        // area where k can be = (2*tolerance)^2/sin(kInner), the 4 is cancelled out
+                        // by other means
+                        / kSinInner
+                        // area where r can be is the intersection of 3 rectangles, essentially, so
+                        // a hexagon. To simplify matters, we make a conservative estimate that it's
+                        // the minimum of the parallelograms when considering two of i, j, k at a
+                        // time. TODO: this seems to be a couple orders of magnitude more
+                        // conservative than the "cone" estimate that Mortari uses (which I think is
+                        // actually liberal??)
+                        / std::max(std::max(iSinInner, jSinInner), kSinInner);
+
+                    if (expectedMismatches > 1e-2) {
+                        continue;
+                    }
+
                     long ijNum, ikNum, irNum; //, jkNum, jrNum, krNum;
                     const int16_t *ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijNum);
                     const int16_t *ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikNum);
@@ -371,17 +394,17 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                 // enumarete all r matches, according to ir, before this loop
                                 while (rIterator.hasValue()) {
                                     float jrCandidateDist = AngleUnit(catalog[*jIterator].spatial, catalog[*rIterator].spatial);
-                                    float krCandidateDist = AngleUnit(catalog[*kIterator].spatial, catalog[*rIterator].spatial);
+                                    float krCandidateDist;
                                     if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
                                         goto rContinue;
                                     }
+                                    krCandidateDist = AngleUnit(catalog[*kIterator].spatial, catalog[*rIterator].spatial);
                                     if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
                                         goto rContinue;
                                     }
 
-                                    // if we made it this far, all 6 angles are confirmed!
-
-                                    // TODO: analytically check confidence
+                                    // we have a match!
+                                    printf("expected mismatches: %e\n", expectedMismatches);
 
                                     // TODO: rather than immediately proceeding to identify the
                                     // remaining stars, save the identified stars to variables and
@@ -392,7 +415,6 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                     identified.push_back(StarIdentifier(k, *kIterator));
                                     identified.push_back(StarIdentifier(r, *rIterator));
 
-                                    // TODO: attempt to identify other stars based on the successfully identified pyramid.
                                     PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
                                     return identified;
 
