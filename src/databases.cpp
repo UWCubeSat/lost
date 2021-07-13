@@ -218,7 +218,7 @@ std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, floa
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t closeIndexJ = 0; closeIndexJ < (int16_t) sufficientlyClose[i].size(); closeIndexJ++) {
             int16_t j = sufficientlyClose[i][closeIndexJ];
-            for (int16_t closeIndexK = 0; closeIndexK < (int16_t) sufficientlyClose[i].size(); closeIndexK++) {
+            for (int16_t closeIndexK = 0; closeIndexK < (int16_t) sufficientlyClose[j].size(); closeIndexK++) {
                 int16_t k = sufficientlyClose[j][closeIndexK];
                 float d = AngleUnit(catalog[i].spatial, catalog[k].spatial);
                 if (d < minDistance || d > maxDistance) {
