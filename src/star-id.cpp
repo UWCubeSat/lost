@@ -166,9 +166,9 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
     TripleDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(TripleDistanceKVectorDatabase::kMagicValue));
 
     // lookup to see which image stars have been assigned to which catalog star
-    int16_t identified_fast[(int)stars.size()] {-1};
+    std::vector<int16_t> identified_fast((int)stars.size(), -1);
     // lookup to see how many times an image star has been identified, -1 if ever misidentified
-    int16_t identified_count[(int)stars.size()] {0};
+    std::vector<int16_t> identified_count((int)stars.size(), 0);
 
     // every possible triangle in the image
     for (int i = 0; i < (int)stars.size(); i++) {  
