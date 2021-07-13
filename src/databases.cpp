@@ -249,7 +249,7 @@ long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistanc
 }
 
 long SerializeLengthTripleDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    return SerializeLengthTripleDistanceKVector(CatalogToTripleDistances(catalog, minDistance, maxDistance).size(), numBins);
+    return SerializeLengthTripleDistanceKVector(CatalogToTripleDistances(catalog, 0, M_PI).size(), numBins);
 }
 
 void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
