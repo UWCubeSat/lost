@@ -214,8 +214,12 @@ std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, floa
                 assert(isfinite(triple.distance));
                 assert(triple.distance >= 0);
                 assert(triple.distance <= M_PI);
-
-                if (triple.distance>= minDistance && triple.distance <= maxDistance) {
+                float d1 = AngleUnit(catalog[i].spatial, catalog[j].spatial);
+                float d2 = AngleUnit(catalog[i].spatial, catalog[k].spatial);
+                float d3 = AngleUnit(catalog[j].spatial, catalog[k].spatial);
+                float minTriangle = std::min(std::min(d1, d2), d3);
+                float maxTriangle = std::max(std::max(d1, d2), d3);
+                if (minTriangle >= minDistance && maxTriangle <= maxDistance) {
                     // we'll sort later
                     result.push_back(triple);
                 }
