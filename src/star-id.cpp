@@ -260,10 +260,10 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
             }
         }
     }
-    // finalize identification of each image star that has been identified at least thrice
+    // finalize identification of each image star that has been identified at least once plus number of verifications
     // without multiple identifications to different stars (misidentification)
     for (int i = 0; i < (int)stars.size(); i++) {
-        if (identified_count[i] >= 3) {
+        if (identified_count[i] >= 1 + num_verify) {
             StarIdentifier newStar(i, identified_fast[i]);
             identified.push_back(newStar);
         }

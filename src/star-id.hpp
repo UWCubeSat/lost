@@ -38,9 +38,10 @@ public:
 class NonDimStarIdAlgorithm : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
-    NonDimStarIdAlgorithm(const float tolerance): tolerance(tolerance) { };
+    NonDimStarIdAlgorithm(const float tolerance, const int num_verify): tolerance(tolerance), num_verify(num_verify) { };
 private:
     float tolerance;
+    int num_verify;
 };
 
 }

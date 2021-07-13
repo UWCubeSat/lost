@@ -272,7 +272,8 @@ StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
 
 StarIdAlgorithm *NonDimStarIdAlgorithmPrompt() {
     float tolerance = Prompt<float>("How much tolerance? (degrees)");
-    return new NonDimStarIdAlgorithm(DegToRad(tolerance));
+    int num_verify = Prompt<int>("How much times should each star be matched for identification? (rec. 2)");
+    return new NonDimStarIdAlgorithm(DegToRad(tolerance), num_verify);
 }
 
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
@@ -313,9 +314,27 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
     // TODO: also parse it and print out some stats before returning
 }
 
+void PromptKVectorDatabaseBuilderND(MultiDatabaseBuilder &builder, const Catalog &catalog) {
+    float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
+    float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
+    long numBins = Prompt<long>("Number of distance bins");
+
+    // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
+    // database generation
+    long length = SerializeLengthTripleDistanceKVector(catalog, minDistance, maxDistance, numBins);
+    unsigned char *buffer = builder.AddSubDatabase(TripleDistanceKVectorDatabase::kMagicValue, length);
+    if (buffer == NULL) {
+        std::cerr << "No room for another database." << std::endl;
+    }
+    SerializeTripleDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
+
+    // TODO: also parse it and print out some stats before returning
+}
+
 void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     InteractiveChoice<DbBuilder> dbBuilderChoice;
-    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting, pyramid, & nondimensional)", PromptKVectorDatabaseBuilder);
+    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting and pyramid)", PromptKVectorDatabaseBuilder);
+    dbBuilderChoice.Register("kvectornd", "K-Vector (nondimensional)", PromptKVectorDatabaseBuilderND);
     dbBuilderChoice.Register("done", "Exit", NULL);
     while (true) {
         DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
@@ -327,7 +346,6 @@ void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
 }
 
 // PIPELINE INPUT STUFF
-
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
