@@ -249,7 +249,7 @@ long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistanc
 }
 
 long SerializeLengthTripleDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    return SerializeLengthTripleDistanceKVector(CatalogToTripleDistances(catalog, 0, M_PI).size(), numBins);
+    return SerializeLengthTripleDistanceKVector(CatalogToTripleDistances(catalog, minDistance, maxDistance).size(), numBins);
 }
 
 void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
@@ -297,7 +297,7 @@ void SerializeTripleDistanceKVector(const Catalog &catalog, float minDistance, f
     unsigned char *bufferStart = buffer;
 
     // index field
-    SerializeKVectorIndex(distances, minDistance, maxDistance, numBins, buffer);
+    SerializeKVectorIndex(distances, 0, M_PI, numBins, buffer);
     buffer += SerializeLengthKVectorIndex(numBins);
 
     // bulk triples field
