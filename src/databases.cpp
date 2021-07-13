@@ -205,24 +205,32 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
      | 3*sizeof(int16)*numTriples   | triples      | Bulk triple data                                            |
  */
 std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, float minDistance, float maxDistance) {
-    std::vector<KVectorTriple> result;
+    std::vector<std::vector<int16_t>> sufficientlyClose((int16_t)catalog.size());
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t j = i+1; j < (int16_t)catalog.size(); j++) {
-            for (int16_t k = j+1; k < (int16_t)catalog.size(); k++) {
+            float d = AngleUnit(catalog[i].spatial, catalog[j].spatial);
+            if (d >= minDistance && d <= maxDistance) {
+                // we'll sort later
+                sufficientlyClose[i].push_back(j);
+            }
+        }
+    }
+    std::vector<KVectorTriple> result;
+    for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
+        for (int16_t closeIndexJ = 0; closeIndexJ < (int16_t) sufficientlyClose[i].size(); closeIndexJ++) {
+            int16_t j = sufficientlyClose[i][closeIndexJ];
+            for (int16_t closeIndexK = 0; closeIndexK < (int16_t) sufficientlyClose[i].size(); closeIndexK++) {
+                int16_t k = sufficientlyClose[j][closeIndexK];
+                float d = AngleUnit(catalog[i].spatial, catalog[k].spatial);
+                if (d < minDistance || d > maxDistance) {
+                    continue;
+                }
                 int mindex;
                 KVectorTriple triple = { i, j, k, minInnerAngle(catalog, mindex, i, j, k) };
                 assert(isfinite(triple.distance));
                 assert(triple.distance >= 0);
                 assert(triple.distance <= M_PI);
-                float d1 = AngleUnit(catalog[i].spatial, catalog[j].spatial);
-                float d2 = AngleUnit(catalog[i].spatial, catalog[k].spatial);
-                float d3 = AngleUnit(catalog[j].spatial, catalog[k].spatial);
-                float minTriangle = std::min(std::min(d1, d2), d3);
-                float maxTriangle = std::max(std::max(d1, d2), d3);
-                if (minTriangle >= minDistance && maxTriangle <= maxDistance) {
-                    // we'll sort later
-                    result.push_back(triple);
-                }
+                result.push_back(triple);
             }
         }
     }
