@@ -272,12 +272,14 @@ StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
 
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
     float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-    return new PyramidStarIdAlgorithm(DegToRad(tolerance), 0, 1000);
+    int numFalseStars = Prompt<int>("Estimated # of false stars (whole sphere)");
+    float maxMismatchProbability = Prompt<float>("Maximum mismatch probability");
+    return new PyramidStarIdAlgorithm(DegToRad(tolerance), numFalseStars, maxMismatchProbability, 1000);
 }
 
 AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
     return new DavenportQAlgorithm();
-};
+}
 
 Catalog PromptNarrowedCatalog(const Catalog &catalog) {
     float maxSomething = Prompt<float>("Max magnitude or # of stars");
@@ -767,9 +769,9 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
                                 const Stars *expectedStars, const Stars *actualStars) {
 
     StarIdComparison result = {
-        .numCorrect = 0,
-        .numIncorrect = 0,
-        .numTotal = (int)expected.size()
+        0, // correct
+        0, // incorrect
+        (int)expected.size() // total
     };
     StarIdentifiers expectedSorted = expected;
     StarIdentifiers actualSorted;

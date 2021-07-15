@@ -32,7 +32,7 @@ TEST_BIN := ./lost-test
 BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Wall --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Wall -pedantic --std=c++11
 
 all: $(BIN) $(BSC)
 

@@ -8,7 +8,7 @@
 
 namespace lost {
 
-const unsigned long kCatalogMagicValue = 0xF9A283BC;
+const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 // not an instantiable database on its own -- used in other databases
 class KVectorIndex {
@@ -61,7 +61,7 @@ public:
     float MinDistance() const { return index.Min(); };
 
     long NumPairs() const;
-    const static unsigned long kMagicValue = 0x2536f009;
+    const static int32_t kMagicValue = 0x2536f009;
 private:
     KVectorIndex index;
     // TODO: endianness

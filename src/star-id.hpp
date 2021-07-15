@@ -33,15 +33,21 @@ private:
 class PyramidStarIdAlgorithm : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
-    // tolerance is an angular distances for two angles to be considered the same, maxProbability is
-    // the maximum allowable likelihood for a match to have been found in a uniformly random star
-    // layout, and cutoff is the maximum number of pyramids to inspect before giving up (if there
-    // are dozens of stars in the field of view, inspecting all pyramids will be very slow)
-    PyramidStarIdAlgorithm(float tolerance, float maxProbability, long cutoff)
-        : tolerance(tolerance), maxProbability(maxProbability), cutoff(cutoff) { };
+    /**
+     * @param tolerance Angular tolerance in distances (measurement error)
+     * @param numFalseStars an estimate of the number of false stars in the whole celestial sphere
+     * (not just the field of view). Eg, if you estimate 10 dead pixels in a 40 degree FOV, you'd
+     * want to multiply that up to a hundred-something numFalseStars.
+     * @param maxMismatchProbability The maximum allowable probability for any star to be mis-id'd.
+     * @param cutoff Maximum number of pyramids to iterate through.
+     */
+    PyramidStarIdAlgorithm(float tolerance, int numFalseStars, float maxMismatchProbability, long cutoff)
+        : tolerance(tolerance), numFalseStars(numFalseStars),
+          maxMismatchProbability(maxMismatchProbability), cutoff(cutoff) { };
 private:
     float tolerance;
-    float maxProbability;
+    int numFalseStars;
+    float maxMismatchProbability;
     long cutoff;
 };
 
