@@ -297,10 +297,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     }
     PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
 
-    // smallest normal single-precision float is around 10^-38 so we should be all good
-    // TODO: double-check the constant. Compared to what's in the Pyramid paper, I added an extra
-    // /4PI, which I think is right to account for the final "hexagon" area.
-    float expectedMismatchesConstant = pow(numFalseStars * tolerance, 4) / 4 / pow(M_PI, 2);
+    // smallest normal single-precision float is around 10^-38 so we should be all good. See
+    // Analytic_Star_Pattern_Probability on the HSL wiki for details.
+    float expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
 
     // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
     // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and k-th
@@ -334,19 +333,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
                     // if we made it this far, all 6 angles are confirmed! Now check
                     // that this match would not often occur due to chance.
+                    // See Analytic_Star_Pattern_Probability on the HSL wiki for details
                     float expectedMismatches = expectedMismatchesConstant
-                        // area where j can be = 2*sin(ijDist)*sin(tolerance) ~= 2*ijDist*tolerance
-                        // and the 2 gets cancelled out by other means
                         * sin(ijDist)
-                        // area where k can be = (2*tolerance)^2/sin(kInner), the 4 is cancelled out
-                        // by other means
                         / kSinInner
-                        // area where r can be is the intersection of 3 rectangles, essentially, so
-                        // a hexagon. To simplify matters, we make a conservative estimate that it's
-                        // the minimum of the parallelograms when considering two of i, j, k at a
-                        // time. TODO: this seems to be a couple orders of magnitude more
-                        // conservative than the "cone" estimate that Mortari uses (which I think is
-                        // actually liberal??)
                         / std::max(std::max(iSinInner, jSinInner), kSinInner);
 
                     if (expectedMismatches > maxMismatchProbability) {
@@ -354,6 +344,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     }
 
                     Vec3 rSpatial = camera.CameraToSpatial(stars[r].position).Normalize();
+
+                    // sign of determinant, to detect flipped patterns
+                    bool spectralTorch = iSpatial.crossProduct(jSpatial)*kSpatial > 0;
 
                     float ikDist = AngleUnit(iSpatial, kSpatial);
                     float irDist = AngleUnit(iSpatial, rSpatial);
@@ -372,8 +365,6 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     std::vector<bool> kCandidates(catalog.size(), false);
                     std::vector<bool> rCandidates(catalog.size(), false);
 
-                    // TODO: spectral triangles
-
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     std::vector<bool> iSeen(catalog.size(), false);
                     for (int p = 0; p < ijNum*2; p++) {
@@ -382,16 +373,29 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             continue;
                         }
                         iSeen[iCandidate] = true;
+
+                        const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
+
                         PairDistanceInvolvingIterator jIterator(ijQuery, ijNum, iCandidate);
                         PairDistanceInvolvingIterator kIterator(ikQuery, ikNum, iCandidate);
                         PairDistanceInvolvingIterator rIterator(irQuery, irNum, iCandidate);
                         // TODO: break fast if any of the iterators are empty, if it's any
                         // significant performance improvement.
                         while (jIterator.hasValue()) {
+                            const Vec3 &jCandidateSpatial = catalog[*jIterator].spatial;
+                            Vec3 ijCandidateCross = iCandidateSpatial.crossProduct(jCandidateSpatial);
+
                             while (kIterator.hasValue()) {
+                                Vec3 kCandidateSpatial = catalog[*kIterator].spatial;
+                                bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
+                                float jkCandidateDist;
+                                // checking the spectral-ity early to fail fast
+                                if (candidateSpectralTorch != spectralTorch) {
+                                    goto kContinue;
+                                }
 
                                 // small optimization: We can calculate jk before iterating through r, so we will!
-                                float jkCandidateDist = AngleUnit(catalog[*jIterator].spatial, catalog[*kIterator].spatial);
+                                jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
                                 if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
                                     goto kContinue;
                                 }
@@ -400,12 +404,13 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                 // continue iterating through all the other k-s. Possibly
                                 // enumarete all r matches, according to ir, before this loop
                                 while (rIterator.hasValue()) {
-                                    float jrCandidateDist = AngleUnit(catalog[*jIterator].spatial, catalog[*rIterator].spatial);
+                                    const Vec3 &rCandidateSpatial = catalog[*rIterator].spatial;
+                                    float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
                                     float krCandidateDist;
                                     if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
                                         goto rContinue;
                                     }
-                                    krCandidateDist = AngleUnit(catalog[*kIterator].spatial, catalog[*rIterator].spatial);
+                                    krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
                                     if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
                                         goto rContinue;
                                     }
