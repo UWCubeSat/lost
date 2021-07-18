@@ -109,12 +109,12 @@ float minFocalPlaneAngle(const Stars &stars, int &arg, int i_index, int j_index,
     Star i = stars[i_index];
     Star j = stars[j_index];
     Star k = stars[k_index];
-    float b1 = ((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
-    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2)));
-    float b2 = ((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
-    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2)));
-    float b3 = ((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
-    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2)));
+    float b1 = std::acos(((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
+    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2))));
+    float b2 = std::acos(((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
+    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2))));
+    float b3 = std::acos(((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
+    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2))));
     if (b1 <= b2 && b1 <= b3) {
         arg = i_index;
     } else if (b2 <= b1 && b2 <= b3) {
@@ -129,12 +129,12 @@ float maxFocalPlaneAngle(const Stars &stars, int &arg, int i_index, int j_index,
     Star i = stars[i_index];
     Star j = stars[j_index];
     Star k = stars[k_index];
-    float b1 = ((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
-    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2)));
-    float b2 = ((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
-    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2)));
-    float b3 = ((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
-    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2)));
+    float b1 = std::acos(((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
+    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2))));
+    float b2 = std::acos(((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
+    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2))));
+    float b3 = std::acos(((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
+    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2))));
     if (b1 >= b2 && b1 >= b3) {
         arg = i_index;
     } else if (b2 >= b1 && b2 >= b3) {

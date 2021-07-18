@@ -169,7 +169,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
     std::vector<int16_t> identified_fast((int)stars.size(), -1);
     // lookup to see how many times an image star has been identified, -1 if ever misidentified
     std::vector<int16_t> identified_count((int)stars.size(), 0);
-
+    int16_t num_identified = 0;
     // every possible triangle in the image
     for (int i = 0; i < (int)stars.size(); i++) {  
         for (int j = i + 1; j < (int)stars.size(); j++) {
@@ -185,6 +185,9 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 float smallAngle = minFocalPlaneAngle(stars, mindex, i, j, k);
                 // compute target large angle
                 float largeAngle = maxFocalPlaneAngle(stars, maxdex, i, j, k);
+                if (std::isnan(smallAngle) || std::isnan(largeAngle)) {
+                    continue;
+                }
                 // range of query
                 float lowerBoundRange = smallAngle - tolerance;
                 float upperBoundRange = smallAngle + tolerance;
@@ -199,7 +202,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 bool unique = true;
                 /*
                  * basically if we make a query on small angle, all returned catalog triangles have small angle
-                 * within toleranceand we want to compare each resulting triangle to affirm the large angle is 
+                 * within tolerance and we want to compare each resulting triangle to affirm the large angle is 
                  * also within tolerance but if there is more than one than we skip this query
                 */
                 for (const int16_t *l = lowerBoundSearch; l < lowerBoundSearch + numReturnedTriples * 3; l += 3) {
@@ -253,6 +256,24 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                     identified_count[mindex]++;
                     identified_count[middex]++;
                     identified_count[maxdex]++;
+                    if (identified_count[mindex] == 1 + num_verify) {
+                        num_identified++;
+                    }
+                    if (identified_count[middex] == 1 + num_verify) {
+                        num_identified++;
+                    }
+                    if (identified_count[maxdex] == 1 + num_verify) {
+                        num_identified++;
+                    }
+                    if (num_identified >= 20) {
+                        for (int i = 0; i < (int)stars.size(); i++) {
+                            if (identified_count[i] >= 1 + num_verify) {
+                                StarIdentifier newStar(i, identified_fast[i]);
+                                identified.push_back(newStar);
+                            }
+                        }
+                        return identified;
+                    }
                     identified_fast[mindex] = actualMindex;
                     identified_fast[middex] = actualMiddex;
                     identified_fast[maxdex] = actualMaxdex;
