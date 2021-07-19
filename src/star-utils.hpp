@@ -58,13 +58,11 @@ Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeRetur
 
 float StarDistancePixels(Star one, Star two);
 
-float minFocalPlaneAngle(const Stars &stars, int &arg, int i, int j, int k);
+void focalPlaneAngles(const Stars &stars, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index);
 
-float maxFocalPlaneAngle(const Stars &stars, int &arg, int i, int j, int k);
+void innerAngles(const Catalog &catalog, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int index1, int index2, int index3);
 
 float minInnerAngle(const Catalog &catalog, int &arg, int index1, int index2, int index3);
-
-float maxInnerAngle(const Catalog &catalog, int &arg, int index1, int index2, int index3);
 
 
 // TODO: make maxStars work right, need to sort by magnitude before filter! maxMagnitude is 10^-2

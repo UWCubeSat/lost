@@ -178,14 +178,15 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 if (identified_count[i] == -1 || identified_count[j] == -1 || identified_count[k] == -1) {
                     continue;
                 }
-                // compute target small angle
                 int mindex = i;
                 int middex = j;
                 int maxdex = k;
-                float smallAngle = minFocalPlaneAngle(stars, mindex, i, j, k);
-                // compute target large angle
-                float largeAngle = maxFocalPlaneAngle(stars, maxdex, i, j, k);
-                if (std::isnan(smallAngle) || std::isnan(largeAngle)) {
+                // compute target angles
+                float smallAngle;
+                float midAngle;
+                float largeAngle;
+                focalPlaneAngles(stars, smallAngle, midAngle, largeAngle, mindex, middex, maxdex, i, j, k);
+                if (std::isnan(smallAngle) || std::isnan(midAngle) || std::isnan(largeAngle)) {
                     continue;
                 }
                 // range of query
@@ -206,9 +207,15 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                  * also within tolerance but if there is more than one than we skip this query
                 */
                 for (const int16_t *l = lowerBoundSearch; l < lowerBoundSearch + numReturnedTriples * 3; l += 3) {
+                    int actualMindex;
+                    int actualMiddex;
                     int actualMaxdex;
-                    float actualLargeAngle = maxInnerAngle(catalog, actualMaxdex, *l, *(l+1), *(l+2));
-                    if (actualLargeAngle > largeAngle - tolerance && actualLargeAngle < largeAngle + tolerance) {
+                    float actualSmallAngle;
+                    float actualMidAngle;
+                    float actualLargeAngle;
+                    innerAngles(catalog, actualSmallAngle, actualMidAngle, actualLargeAngle, actualMindex, actualMiddex, actualMaxdex, *l, *(l+1), *(l+2));
+                    if (actualLargeAngle > largeAngle - tolerance && actualLargeAngle < largeAngle + tolerance && actualMidAngle > midAngle - tolerance &&
+                    actualMidAngle < midAngle + tolerance) {
                         if (mt != NULL) {
                             unique = false;
                         }
@@ -220,26 +227,14 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                     continue;
                 }
                 
-                // figure out which one is which (compare angles small medium large)
-                if (i != mindex && i != maxdex) {
-                    middex = i;
-                } else if (j != mindex && j != maxdex) {
-                    middex = j;
-                } else {
-                    middex = k;
-                }
+                // figure out which index is which (compare angles small medium large)
                 int actualMaxdex;
                 int actualMiddex;
                 int actualMindex;
-                maxInnerAngle(catalog, actualMaxdex, *mt, *(mt+1), *(mt+2));
-                minInnerAngle(catalog, actualMindex, *mt, *(mt+1), *(mt+2));
-                if (*mt != actualMindex && *mt != actualMaxdex) {
-                    actualMiddex = *mt;
-                } else if (*(mt+1) != actualMindex && *(mt+1) != actualMaxdex) {
-                    actualMiddex = *(mt+1);
-                } else {
-                    actualMiddex = *(mt+2);
-                }
+                // garbage chute (AKA dont care)
+                float gc;
+                innerAngles(catalog, gc, gc, gc, actualMindex, actualMiddex, actualMaxdex, *mt, *(mt+1), *(mt+2));
+
                 // confirm stars do not get misidentified and identify these three stars 
                 if (identified_fast[mindex] != -1 && identified_fast[mindex] != actualMindex) {
                     identified_count[mindex] = -1;
