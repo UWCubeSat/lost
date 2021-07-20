@@ -12,6 +12,12 @@ namespace lost {
 struct Vec2 {
     float x;
     float y;
+
+    float Magnitude() const;
+    Vec2 Normalize() const;
+
+    float operator*(const Vec2 &) const;
+    Vec2 operator-(const Vec2 &) const;
 };
 
 class Vec3 {

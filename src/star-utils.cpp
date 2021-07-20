@@ -160,12 +160,9 @@ void focalPlaneAngles(const Stars &stars, float &min, float &mid, float &max, in
     Star i = stars[i_index];
     Star j = stars[j_index];
     Star k = stars[k_index];
-    float b1 = std::acos(((j.x - i.x) * (k.x - i.x) + (j.y - i.y) * (k.y - i.y)) /
-    (std::sqrt(std::pow(j.x - i.x, 2) + std::pow(j.y - i.y, 2)) * std::sqrt(std::pow(k.x - i.x, 2) + std::pow(k.y - i.y, 2))));
-    float b2 = std::acos(((i.x - j.x) * (k.x - j.x) + (i.y - j.y) * (k.y - j.y)) /
-    (std::sqrt(std::pow(i.x - j.x, 2) + std::pow(i.y - j.y, 2)) * std::sqrt(std::pow(k.x - j.x, 2) + std::pow(k.y - j.y, 2))));
-    float b3 = std::acos(((j.x - k.x) * (i.x - k.x) + (j.y - k.y) * (i.y - k.y)) /
-    (std::sqrt(std::pow(j.x - k.x, 2) + std::pow(j.y - k.y, 2)) * std::sqrt(std::pow(i.x - k.x, 2) + std::pow(i.y - k.y, 2))));
+    float b1 = acos((j.position-i.position).Normalize() * (k.position-i.position).Normalize());
+    float b2 = acos((i.position-j.position).Normalize() * (k.position-j.position).Normalize());
+    float b3 = acos((j.position-k.position).Normalize() * (i.position-k.position).Normalize());
     float vals[] = {b1, b2, b3};
     int indices[] = {i_index, j_index, k_index};
     tripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
