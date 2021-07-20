@@ -242,6 +242,7 @@ public:
     std::vector<PipelineOutput> Go(const PipelineInputList &);
 private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
+    int centroidMinMagnitude = 0;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     std::unique_ptr<unsigned char[]> database;

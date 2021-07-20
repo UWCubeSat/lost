@@ -21,14 +21,11 @@ public:
 class Star {
 public:
     Star(float x, float y, float radiusX, float radiusY, int magnitude) :
-        x(x), y(y), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) { };
+        position({x, y}), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) { };
     Star(float x, float y, float radiusX) : Star(x, y, radiusX, radiusX, 0) { };
     Star() : Star(0.0, 0.0, 0.0) { };
 
-    // TODO: store a Vec2 instead and then simply point to that Vec2 when passing Star to
-    // CameraToSpatial?
-    float x; // pixels
-    float y; // pixels
+    Vec2 position;
     float radiusX;
     float radiusY;  // if omitted, but x is present, assume circular.
     int   magnitude; // some relative number

@@ -187,15 +187,15 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
             // Rectangles should be entirely /outside/ the radius of the star, so the star is
             // fully visible.
             cairo_rectangle(cairoCtx,
-                            centroid.x - radiusX,
-                            centroid.y - radiusY,
+                            centroid.position.x - radiusX,
+                            centroid.position.y - radiusY,
                             radiusX * 2,
                             radiusY * 2);
             cairo_stroke(cairoCtx);
         } else {
             cairo_rectangle(cairoCtx,
-                            floor(centroid.x),
-                            floor(centroid.y),
+                            floor(centroid.position.x),
+                            floor(centroid.position.y),
                             1, 1);
             cairo_fill(cairoCtx);
         }
@@ -211,12 +211,12 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
             cairo_move_to(cairoCtx,
 
                           centroid.radiusX > 0.0f
-                          ? centroid.x + centroid.radiusX + 3
-                          : centroid.x + 8,
+                          ? centroid.position.x + centroid.radiusX + 3
+                          : centroid.position.x + 8,
 
                           centroid.radiusY > 0.0f
-                          ? centroid.y - centroid.radiusY + textHeight
-                          : centroid.y + 10);
+                          ? centroid.position.y - centroid.radiusY + textHeight
+                          : centroid.position.y + 10);
 
             cairo_show_text(cairoCtx, std::to_string((*catalog)[starId.catalogIndex].name).c_str());
         }
@@ -266,7 +266,7 @@ StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
 }
 
 StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
-    float tolerance = Prompt<float>("How much tolerance? (degrees)");
+    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
     return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
 }
 
@@ -277,7 +277,8 @@ StarIdAlgorithm *NonDimStarIdAlgorithmPrompt() {
 }
 
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
-    return new PyramidStarIdAlgorithm();
+    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
+    return new PyramidStarIdAlgorithm(DegToRad(tolerance), 0, 1000);
 }
 
 AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
@@ -449,9 +450,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
         // would integrate the intensity of the star over that pixel, but we can make do by sampling
         // the intensity of the star at the /center/ of the pixel, ie, star.x+.5 and star.y+.5
-        for(int j = star.x - star.radiusX; j >= 0 && j < star.x + star.radiusX && j < image.width; j++) {
-            for (int k = star.y - star.radiusX; k >= 0 && k < star.y + star.radiusX && k < image.height; k++) {
-                float distanceSquared = pow(k+.5-star.y, 2) + pow(j+.5-star.x, 2);
+        for(int j = star.position.x - star.radiusX; j >= 0 && j < star.position.x + star.radiusX && j < image.width; j++) {
+            for (int k = star.position.y - star.radiusX; k >= 0 && k < star.position.y + star.radiusX && k < image.height; k++) {
+                float distanceSquared = pow(k+.5-star.position.y, 2) + pow(j+.5-star.position.x, 2);
                 int pixelBrightness = totalBrightness / pow(brightnessDeviation, 2)
                     * exp(-distanceSquared/pow(brightnessDeviation, 2));
                 IncrementPixelXY(j, k, pixelBrightness);
@@ -541,13 +542,15 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 Pipeline PromptPipeline() {
     enum class PipelineStage {
-        Centroid, Database, StarId, AttitudeEstimation, Done
+        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
     };
 
     Pipeline result;
     
     InteractiveChoice<PipelineStage> stageChoice;
     stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
+    // TODO: more flexible or sth
+    stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
     stageChoice.Register("database", "Database", PipelineStage::Database);
@@ -573,6 +576,11 @@ Pipeline PromptPipeline() {
             break;
         }
 
+        case PipelineStage::CentroidMagnitudeFilter: {
+            result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
+            break;
+        }
+
         case PipelineStage::Database: {
             std::string path = Prompt<std::string>("Database file");
             std::fstream fs;
@@ -592,7 +600,7 @@ Pipeline PromptPipeline() {
             starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
             starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
             starIdChoice.Register("nd", "Non Dimensional", NonDimStarIdAlgorithmPrompt);
-            starIdChoice.Register("pyramid", "Pyramid codes", PyramidStarIdAlgorithmPrompt);
+            starIdChoice.Register("pyramid", "Pyramid scheme", PyramidStarIdAlgorithmPrompt);
 
             result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
                 (starIdChoice.Prompt("Choose Star-ID algo"))());
@@ -644,10 +652,15 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
-        // TODO: don't copy the vector!
-        result.stars = std::unique_ptr<Stars>(new std::vector<Star>(
-            centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height)));
-        inputStars = result.stars.get();
+        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
+        Stars *filteredStars = new std::vector<Star>();
+        for (const Star &star : unfilteredStars) {
+            if (star.magnitude >= centroidMinMagnitude) {
+                filteredStars->push_back(star);
+            }
+        }
+        result.stars = std::unique_ptr<Stars>(filteredStars);
+        inputStars = filteredStars;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
@@ -702,7 +715,7 @@ static std::vector<int> FindClosestCentroids(float threshold,
         int   closestIndex = -1;
 
         for (int k = 0; k < (int)two.size(); k++) {
-            float currDistance = StarDistancePixels(one[i], two[k]);
+            float currDistance = Distance(one[i].position, two[k].position);
             if (currDistance < threshold && currDistance < closestDistance) {
                 closestDistance = currDistance;
                 closestIndex = k;
@@ -732,7 +745,7 @@ CentroidComparison CentroidsCompare(float threshold,
             actualToExpected[expectedToActual[i]] != i) {
             result.numMissingStars++;
         } else {
-            result.meanError += StarDistancePixels(expected[i], actual[expectedToActual[i]]);
+            result.meanError += Distance(expected[i].position, actual[expectedToActual[i]].position);
         }
     }
     result.meanError /= (expected.size() - result.numMissingStars);
@@ -899,8 +912,8 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
     os << "num_centroids " << actual[0].stars->size() << std::endl;
     for (int i = 0; i < (int)actual[0].stars->size(); i++) {
         const Star &star = actual[0].stars->at(i);
-        os << "centroid_" << i << "_x " << star.x << std::endl;
-        os << "centroid_" << i << "_y " << star.y << std::endl;
+        os << "centroid_" << i << "_x " << star.position.x << std::endl;
+        os << "centroid_" << i << "_y " << star.position.y << std::endl;
         // TODO: print other stats too?
     }
 }
