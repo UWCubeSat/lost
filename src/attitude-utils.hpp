@@ -69,8 +69,10 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll);
 // returns unit vector
 Vec3 SphericalToSpatial(float ra, float de);
 // angle between two vectors, using dot product and magnitude division
+float Angle(const Vec2 &, const Vec2 &);
 float Angle(const Vec3 &, const Vec3 &);
 // angle between two vectors, /assuming/ that they are already unit length
+float AngleUnit(const Vec2 &, const Vec2 &);
 float AngleUnit(const Vec3 &, const Vec3 &);
 
 float RadToDeg(float);

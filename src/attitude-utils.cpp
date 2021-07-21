@@ -93,23 +93,15 @@ float Vec2::Magnitude() const {
     return sqrt(x*x+y*y);
 }
 
+float Vec3::Magnitude() const {
+    return sqrt(x*x+y*y+z*z);
+}
+
 Vec2 Vec2::Normalize() const {
     float mag = Magnitude();
     return {
         x/mag, y/mag,
     };
-}
-
-float Vec2::operator*(const Vec2 &other) const {
-    return x*other.x + y*other.y;
-}
-
-Vec2 Vec2::operator-(const Vec2 &other) const {
-    return { x - other.x, y - other.y };
-}
-
-float Vec3::Magnitude() const {
-    return sqrt(x*x+y*y+z*z);
 }
 
 Vec3 Vec3::Normalize() const {
@@ -119,16 +111,34 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
+float Vec2::operator*(const Vec2 &other) const {
+    return x*other.x + y*other.y;
+}
+
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
+}
+
+Vec2 Vec2::operator-(const Vec2 &other) const {
+    return { x - other.x, y - other.y };
 }
 
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
+long SerializeLengthVec2() {
+    return sizeof(float)*2;
+}
+
 long SerializeLengthVec3() {
     return sizeof(float)*3;
+}
+
+void SerializeVec2(const Vec2 &vec, unsigned char *buffer) {
+    float *fBuffer = (float *)buffer;
+    *fBuffer++ = vec.x;
+    *fBuffer = vec.y;
 }
 
 void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
@@ -136,6 +146,14 @@ void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
     *fBuffer++ = vec.x;
     *fBuffer++ = vec.y;
     *fBuffer = vec.z;
+}
+
+Vec2 DeserializeVec2(const unsigned char *buffer) {
+    Vec2 result;
+    const float *fBuffer = (float *)buffer;
+    result.x = *fBuffer++;
+    result.y = *fBuffer;
+    return result;
 }
 
 Vec3 DeserializeVec3(const unsigned char *buffer) {
@@ -147,8 +165,18 @@ Vec3 DeserializeVec3(const unsigned char *buffer) {
     return result;
 }
 
+float Angle(const Vec2 &vec1, const Vec2 &vec2) {
+    return AngleUnit(vec1.Normalize(), vec2.Normalize());
+}
+
 float Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
+}
+
+float AngleUnit(const Vec2 &vec1, const Vec2 &vec2) {
+    float dot = vec1*vec2;
+    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
+    return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }
 
 float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
@@ -159,6 +187,10 @@ float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 
 float Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
+}
+
+float Distance(const Vec3 &v1, const Vec3 &v2) {
+    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
 }
 
 }

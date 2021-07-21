@@ -160,9 +160,9 @@ void focalPlaneAngles(const Stars &stars, float &min, float &mid, float &max, in
     Star i = stars[i_index];
     Star j = stars[j_index];
     Star k = stars[k_index];
-    float b1 = acos((j.position-i.position).Normalize() * (k.position-i.position).Normalize());
-    float b2 = acos((i.position-j.position).Normalize() * (k.position-j.position).Normalize());
-    float b3 = acos((j.position-k.position).Normalize() * (i.position-k.position).Normalize());
+    float b1 = Angle(j.position-i.position, k.position-i.position);
+    float b2 = Angle(i.position-j.position, k.position-j.position);
+    float b3 = Angle(j.position-k.position, i.position-k.position);
     float vals[] = {b1, b2, b3};
     int indices[] = {i_index, j_index, k_index};
     tripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
