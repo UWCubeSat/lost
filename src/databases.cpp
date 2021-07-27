@@ -345,7 +345,7 @@ const int16_t *TripleDistanceKVectorDatabase::FindTriplesLiberal(
     float minQueryDistance, float maxQueryDistance, long *numReturnedTriples) const {
 
     long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, numReturnedTriples);
-    return &triples[lowerIndex * 2];
+    return &triples[lowerIndex * 3];
 }
 
 long PairDistanceKVectorDatabase::NumPairs() const {
