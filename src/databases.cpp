@@ -366,6 +366,7 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
     return result;
 }
 
+/*
 std::vector<float> TripleDistanceKVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
     std::vector<float> result;
     for (int i = 0; i < NumTriples(); i++) {
@@ -375,6 +376,7 @@ std::vector<float> TripleDistanceKVectorDatabase::StarDistances(int16_t star, co
     }
     return result;
 }
+*/
 
 /**
    MultiDatabase memory layout:
