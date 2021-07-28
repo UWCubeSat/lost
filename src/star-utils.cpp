@@ -1,4 +1,5 @@
 #include "star-utils.hpp"
+#include "camera.hpp"
 
 #include <math.h>
 #include <assert.h>
@@ -156,13 +157,16 @@ void innerAngles(const Catalog &catalog, float &min, float &mid, float &max, int
     tripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
 }
 
-void focalPlaneAngles(const Stars &stars, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index) {
+void focalPlaneAngles(const Stars &stars, const Camera &camera, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index) {
     Star i = stars[i_index];
     Star j = stars[j_index];
     Star k = stars[k_index];
-    float b1 = Angle(j.position-i.position, k.position-i.position);
-    float b2 = Angle(i.position-j.position, k.position-j.position);
-    float b3 = Angle(j.position-k.position, i.position-k.position);
+    Vec3 iSpatial = camera.CameraToSpatial(i.position).Normalize();
+    Vec3 jSpatial = camera.CameraToSpatial(j.position).Normalize();
+    Vec3 kSpatial = camera.CameraToSpatial(k.position).Normalize();
+    float b1 = Angle(jSpatial-iSpatial, kSpatial-iSpatial);
+    float b2 = Angle(iSpatial-jSpatial, kSpatial-jSpatial);
+    float b3 = Angle(iSpatial-kSpatial, jSpatial-kSpatial);
     float vals[] = {b1, b2, b3};
     int indices[] = {i_index, j_index, k_index};
     tripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);

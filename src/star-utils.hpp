@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "attitude-utils.hpp"
+#include "camera.hpp"
 
 namespace lost {
 
@@ -55,7 +56,7 @@ Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeRetur
 
 float StarDistancePixels(Star one, Star two);
 
-void focalPlaneAngles(const Stars &stars, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index);
+void focalPlaneAngles(const Stars &stars, const Camera &camera, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index);
 
 void innerAngles(const Catalog &catalog, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int index1, int index2, int index3);
 
