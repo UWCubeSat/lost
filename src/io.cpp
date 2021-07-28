@@ -364,9 +364,11 @@ private:
 };
 
 Camera PromptCameraPhysical(int xResolution, int yResolution) {
-    float focalLength = Prompt<float>("Focal Length (mm)");
-    float pixelSize = Prompt<float>("Pixel size (µm)");
-    float focalLengthPixels = focalLength * 1000 / pixelSize;
+    float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
+    float focalLengthOrFov = Prompt<float>("Focal Length (mm) or FOV (degrees)");
+    float focalLengthPixels = pixelSize == 0.0f
+        ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
+        : focalLengthOrFov * 1000 / pixelSize;
 
     return Camera(focalLengthPixels, xResolution, yResolution);
 }
