@@ -12,6 +12,8 @@ public:
     CatalogStar() = default;
     CatalogStar(float raj2000, float dej2000, int magnitude, int name) :
         spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), name(name) { }
+    CatalogStar(Vec3 spatial, int magnitude, int name) :
+        spatial(spatial), magnitude(magnitude), name(name) { }
 
     Vec3 spatial;
     int  magnitude;         // *10^-2

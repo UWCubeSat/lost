@@ -135,6 +135,8 @@ public:
     int height;
 };
 
+std::ostream &operator<<(std::ostream &, const Camera &);
+
 ////////////////////
 // PIPELINE INPUT //
 ////////////////////
@@ -187,6 +189,8 @@ private:
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList PromptPipelineInput();
+PipelineInputList PromptPngPipelineInput();
+PipelineInputList PromptGeneratedPipelineInput();
 
 class PngPipelineInput : public PipelineInput {
 public:
@@ -195,6 +199,8 @@ public:
     const Image *InputImage() const { return &image; };
     const Camera *InputCamera() const { return &camera; };
     const Catalog &GetCatalog() const { return catalog; };
+
+    void SetCamera(const Camera &camera) { this->camera = camera; };
 private:
     Image image;
     Camera camera;
@@ -210,6 +216,7 @@ struct PipelineOutput {
     std::unique_ptr<StarIdentifiers> starIds;
     std::unique_ptr<Quaternion> attitude;
     Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
+    bool nice;
 };
 
 struct StarIdComparison {
@@ -230,6 +237,12 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE //
 //////////////
 
+class Santa {
+public:
+    virtual bool Go(const PipelineOutput &) const = 0;
+    virtual ~Santa() { };
+};
+
 // a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
 
 class Pipeline {
@@ -245,6 +258,7 @@ private:
     int centroidMinMagnitude = 0;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+    std::unique_ptr<Santa> santa;
     std::unique_ptr<unsigned char[]> database;
 };
 

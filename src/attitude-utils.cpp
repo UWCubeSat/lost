@@ -104,6 +104,10 @@ float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
+Vec2 Vec2::operator-(const Vec2 &other) const {
+    return { x - other.x, y - other.y };
+}
+
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }

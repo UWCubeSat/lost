@@ -243,6 +243,9 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
 // ALGORITHM PROMPTERS
 
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
+typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
+typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
+typedef Santa *(*SantaFactory)();
 
 CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     int numStars = Prompt<int>("How many stars to generate");
@@ -256,10 +259,6 @@ CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
 CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
     return new IterativeWeightedCenterOfGravityAlgorithm();
 }
-
-typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
-
-typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
     return new DummyStarIdAlgorithm();
@@ -279,6 +278,26 @@ StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
 
 AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
     return new DavenportQAlgorithm();
+}
+
+class SantaStarId : public Santa {
+public:
+    SantaStarId(int minStars) : minStars(minStars) { };
+    bool Go(const PipelineOutput &output) const override {
+        if (output.starIds.get() == NULL) {
+            std::cerr << "Warning: Star-id santa in use but star-ids is null." << std::endl;
+            return false;
+        }
+
+        return (int)output.starIds->size() >= minStars;
+    };
+private:
+    int minStars;
+};
+
+Santa *SantaStarIdPrompt() {
+    int minStars = Prompt<int>("How many stars to count as nice?");
+    return new SantaStarId(minStars);
 }
 
 Catalog PromptNarrowedCatalog(const Catalog &catalog) {
@@ -324,6 +343,15 @@ void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     }
 }
 
+std::ostream &operator<<(std::ostream &os, const Camera &camera) {
+    os << "camera_focal_length " << camera.FocalLength() << std::endl
+       << "camera_fov " << camera.Fov() << std::endl
+       << "camera_resolution_x " << camera.XResolution() << std::endl
+       << "camera_resolution_y " << camera.YResolution() << std::endl;
+    // TODO: principal point
+    return os;
+}
+
 // PIPELINE INPUT STUFF
 
 cairo_surface_t *PipelineInput::InputImageSurface() const {
@@ -342,10 +370,12 @@ private:
     Quaternion attitude;
 };
 
-Camera PromptCameraPhysical(int xResolution, int yResolution) {
-    float focalLength = Prompt<float>("Focal Length (mm)");
-    float pixelSize = Prompt<float>("Pixel size (µm)");
-    float focalLengthPixels = focalLength * 1000 / pixelSize;
+Camera PromptCamera(int xResolution, int yResolution) {
+    float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
+    float focalLengthOrFov = Prompt<float>("Focal Length (mm) or horizontal FOV (degrees)");
+    float focalLengthPixels = pixelSize == 0.0f
+        ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
+        : focalLengthOrFov * 1000 / pixelSize;
 
     return Camera(focalLengthPixels, xResolution, yResolution);
 }
@@ -367,11 +397,12 @@ PipelineInputList PromptPngPipelineInput() {
 
     while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
         cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
+        std::cout << "Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
     }
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
     result.push_back(std::unique_ptr<PipelineInput>(
-                         new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution), CatalogRead())));
+                         new PngPipelineInput(cairoSurface, PromptCamera(xResolution, yResolution), CatalogRead())));
     return result;
 }
 
@@ -400,8 +431,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                float noiseDeviation)
     : camera(camera), attitude(attitude), catalog(catalog) {
 
-    image.width = camera.GetXResolution();
-    image.height = camera.GetYResolution();
+    image.width = camera.XResolution();
+    image.height = camera.YResolution();
     unsigned char *imageRaw = (unsigned char *)calloc(image.width * image.height, 1);
     imageData = std::unique_ptr<unsigned char[]>(imageRaw);
     image.image = imageData.get();
@@ -465,8 +496,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
     int numImages = Prompt<int>("Number of images to generate");
     int xResolution = Prompt<int>("Horizontal Resolution");
     int yResolution = Prompt<int>("Vertical Resolution");
-    float xFovDeg = Prompt<float>("Horizontal FOV (in degrees)");
-    float xFocalLength = FovToFocalLength(DegToRad(xFovDeg), xResolution);
+    Camera camera = PromptCamera(xResolution, yResolution);
     int referenceBrightness = Prompt<int>("Reference star brightness");
     float brightnessDeviation = Prompt<float>("Star spread stddev");
     float noiseDeviation = Prompt<float>("Noise stddev");
@@ -480,7 +510,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
-            Camera(xFocalLength, xResolution, yResolution),
+            camera,
             referenceBrightness, brightnessDeviation, noiseDeviation);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
@@ -521,7 +551,7 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 Pipeline PromptPipeline() {
     enum class PipelineStage {
-        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
+        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Santa, Done
     };
 
     Pipeline result;
@@ -535,6 +565,7 @@ Pipeline PromptPipeline() {
     stageChoice.Register("database", "Database", PipelineStage::Database);
     stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
+    stageChoice.Register("santa", "Santa (knows if the output is naughty or nice)", PipelineStage::Santa);
     stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
 
     while (true) {
@@ -593,6 +624,14 @@ Pipeline PromptPipeline() {
             break;
         }
 
+        case PipelineStage::Santa: {
+            InteractiveChoice<SantaFactory> santaChoice;
+            santaChoice.Register("star_id_count", "Number of stars identified", SantaStarIdPrompt);
+            result.santa = std::unique_ptr<Santa>(
+                (santaChoice.Prompt("Choose Santa"))());
+            break;
+        }
+
         case PipelineStage::Done: {
             // fuck style guides
             goto PipelineDone;
@@ -621,7 +660,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         if (catalogBuffer != NULL) {
             result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
         } else {
-            std::cerr << "Warning: That database does not include a catalog." << std::endl;
+            std::cerr << "Warning: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
             result.catalog = input.GetCatalog();
         }
     } else {
@@ -652,6 +691,10 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Quaternion>(
             new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
+    }
+
+    if (santa) {
+        result.nice = santa->Go(result);
     }
 
     return result;
@@ -809,6 +852,10 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
             if (actualCatalog[currActual->catalogIndex].name == expectedCatalog[currExpected.catalogIndex].name) {
                 result.numCorrect++;
             } else {
+#if LOST_DEBUG > 2
+                std::cout << "Expected: " << expectedCatalog[currExpected.catalogIndex].name
+                          << " Actual: " << actualCatalog[currActual->catalogIndex].name << std::endl;
+#endif
                 result.numIncorrect++;
             }
 
@@ -892,6 +939,13 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
         const Star &star = actual[0].stars->at(i);
         os << "centroid_" << i << "_x " << star.position.x << std::endl;
         os << "centroid_" << i << "_y " << star.position.y << std::endl;
+        if (actual[0].starIds) {
+            for (const StarIdentifier &starId : *actual[0].starIds) {
+                if (starId.starIndex == i) {
+                    os << "centroid_" << i << "_id " << actual[0].catalog[starId.catalogIndex].name << std::endl;
+                }
+            }
+        }
         // TODO: print other stats too?
     }
 }
@@ -993,6 +1047,22 @@ void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_fraction_correct " << fractionCorrect << std::endl;
 }
 
+void PipelineComparatorSanta(std::ostream &os,
+                             const PipelineInputList &expected,
+                             const std::vector<PipelineOutput> &actual) {
+    if (actual.size() == 1) {
+        os << "nice " << (actual[0].nice ? "true" : "false") << std::endl;
+    } else {
+        int numNice = 0;
+        for (const PipelineOutput &output : actual) {
+            if (output.nice) {
+                numNice++;
+            }
+        }
+        os << "num_nice " << numNice << std::endl;
+    }
+}
+
 void PromptPipelineComparison(const PipelineInputList &expected,
                               const std::vector<PipelineOutput> &actual) {
     assert(expected.size() == actual.size() && expected.size() > 0);
@@ -1044,6 +1114,9 @@ void PromptPipelineComparison(const PipelineInputList &expected,
                                       PipelineComparatorAttitude);
         }
     }
+
+    comparatorChoice.Register("print_nice", "Print if output is naughty or nice",
+                              PipelineComparatorSanta);
 
     comparatorChoice.Register("done", "No more comparisons", NULL);
 

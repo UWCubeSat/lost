@@ -50,6 +50,34 @@ static void PipelineBenchmark() {
     std::cout << "total_ms " << totalTime.count() << std::endl;
 }
 
+static void EstimateCamera() {
+    std::cerr << "Enter estimated camera details when prompted." << std::endl;
+    PipelineInputList inputs = PromptPngPipelineInput();
+    float baseFocalLength = inputs[0]->InputCamera()->FocalLength();
+    float deviationIncrement = Prompt<float>("Focal length increment (base: " + std::to_string(baseFocalLength) + ")");
+    float deviationMax = Prompt<float>("Maximum focal length deviation to attempt");
+    Pipeline pipeline = PromptPipeline();
+
+    while (inputs[0]->InputCamera()->FocalLength() - baseFocalLength <= deviationMax) {
+        std::cerr << "Attempt focal length " << inputs[0]->InputCamera()->FocalLength() << std::endl;
+        std::vector<PipelineOutput> outputs = pipeline.Go(inputs);
+        if (outputs[0].nice) {
+            std::cout << "camera_identified true" << std::endl << *inputs[0]->InputCamera();
+            return;
+        }
+
+        Camera camera(*inputs[0]->InputCamera());
+        if (camera.FocalLength() - baseFocalLength > 0) {
+            // yes i know this expression can be simplified shut up
+            camera.SetFocalLength(camera.FocalLength() - 2*(camera.FocalLength() - baseFocalLength));
+        } else {
+            camera.SetFocalLength(camera.FocalLength() + 2*(baseFocalLength - camera.FocalLength()) + deviationIncrement);
+        }
+        ((PngPipelineInput *)(inputs[0].get()))->SetCamera(camera);
+    }
+    std::cout << "camera_identified false" << std::endl;
+}
+
 }
 
 int main(int argc, char **argv) {
@@ -57,7 +85,8 @@ int main(int argc, char **argv) {
     std::cerr << "LOST: Open-source Star Tracker" << std::endl;
     lost::InteractiveChoice<void (*)()> mainChoices;
     mainChoices.Register("pipeline", "Run a pipeline", &lost::PipelineRun);
-    mainChoices.Register("benchmark", "Benchmark a pipeline", &lost::PipelineBenchmark);
     mainChoices.Register("build_database", "Build database from catalog", &lost::DatabaseBuild);
+    mainChoices.Register("benchmark", "Benchmark a pipeline", &lost::PipelineBenchmark);
+    mainChoices.Register("estimate_camera", "Estimate camera parameters", &lost::EstimateCamera);
     (*mainChoices.Prompt("Choose action"))();
 }
