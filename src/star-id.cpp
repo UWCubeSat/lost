@@ -2,6 +2,8 @@
 #include <math.h>
 #include <assert.h>
 #include <vector>
+#include <map>
+#include <algorithm>
 #include <set>
 
 #include "star-id.hpp"
@@ -433,18 +435,22 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
     TripleDistanceKVectorDatabase vectorDatabase(multiDatabase.SubDatabasePointer(TripleDistanceKVectorDatabase::kMagicValue));
 
     // lookup to see which image stars have been assigned to which catalog star
-    std::vector<int16_t> identified_fast((int)stars.size(), -1);
+    // std::vector<int16_t> identified_fast((int)stars.size(), -1);
     // lookup to see how many times an image star has been identified, -1 if ever misidentified
-    std::vector<int16_t> identified_count((int)stars.size(), 0);
+    // std::vector<int16_t> identified_count((int)stars.size(), 0);
+    std::cout << "catalog size: " << catalog.size() << std::endl;
+    std::vector<std::map<int16_t, int16_t>> vote((int) catalog.size());
     int16_t num_identified = 0;
     // every possible triangle in the image
     for (int i = 0; i < (int)stars.size(); i++) {  
         for (int j = i + 1; j < (int)stars.size(); j++) {
             for (int k = j + 1; k < (int)stars.size(); k++) {
+                /*
                 // skip triangle if any of the three stars are misidentified previously
                 if (identified_count[i] == -1 || identified_count[j] == -1 || identified_count[k] == -1) {
                     continue;
                 }
+                */
                 int mindex = i;
                 int middex = j;
                 int maxdex = k;
@@ -501,7 +507,22 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 // garbage chute (AKA dont care)
                 float gc;
                 innerAngles(catalog, gc, gc, gc, actualMindex, actualMiddex, actualMaxdex, *mt, *(mt+1), *(mt+2));
-
+                if (!vote[actualMindex].count(mindex)) {
+                    vote[actualMindex][mindex] = 1;
+                } else {
+                    vote[actualMindex][mindex]++;
+                }
+                if (!vote[actualMiddex].count(middex)) {
+                    vote[actualMiddex][middex] = 1;
+                } else {
+                    vote[actualMiddex][middex]++;
+                }
+                if (!vote[actualMaxdex].count(maxdex)) {
+                    vote[actualMaxdex][maxdex] = 1;
+                } else {
+                    vote[actualMaxdex][maxdex]++;
+                }
+                /*
                 // confirm stars do not get misidentified and identify these three stars 
                 if (identified_fast[mindex] != -1 && identified_fast[mindex] != actualMindex) {
                     identified_count[mindex] = -1;
@@ -540,17 +561,29 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                     identified_fast[middex] = actualMiddex;
                     identified_fast[maxdex] = actualMaxdex;
                 }
+                */
             }
+        }
+    }
+    for (int i = 0; i < (int) catalog.size(); i++) {
+        auto pr = std::max_element(std::begin(vote[i]), std::end(vote[i]),[] (const std::pair<int16_t,int16_t>& a, const std::pair<int16_t,int16_t>& b)->bool{ return a.second < b.second; } );
+        int16_t maxval = pr->second;
+        int16_t maxkey = pr->first;
+        if (maxval > 0 + num_verify) {
+            StarIdentifier newStar(maxkey, i);
+            identified.push_back(newStar);
         }
     }
     // finalize identification of each image star that has been identified at least once plus number of verifications
     // without multiple identifications to different stars (misidentification)
+    /*
     for (int i = 0; i < (int)stars.size(); i++) {
         if (identified_count[i] >= 1 + num_verify) {
             StarIdentifier newStar(i, identified_fast[i]);
             identified.push_back(newStar);
         }
     }
+    */
     return identified;
 }
 

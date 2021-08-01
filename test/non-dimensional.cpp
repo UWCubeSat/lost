@@ -28,9 +28,11 @@ TEST_CASE("inner angle test simple", "[gv] [fast]") {
     int middex;
     int maxdex;
     innerAngles(catalog, min, mid, max, mindex, middex, maxdex, 0, 1, 2);
+    /*
     std::cout << "mindex: " << mindex << " val: " << min << std::endl;
     std::cout << "middex: " << middex << " val: " << mid << std::endl;
     std::cout << "maxdex: " << maxdex << " val: " << max << std::endl;
+    */
     CHECK(min == Approx(DegToRad(45)));
     CHECK(max == Approx(DegToRad(90)));
     //REQUIRE(comparison.numTotal == catalog.size());
