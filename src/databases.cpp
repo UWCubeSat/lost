@@ -225,7 +225,7 @@ std::vector<KVectorTriple> CatalogToTripleDistances(const Catalog &catalog, floa
                     continue;
                 }
                 int mindex;
-                KVectorTriple triple = { i, j, k, minInnerAngle(catalog, mindex, i, j, k) };
+                KVectorTriple triple = { i, j, k, MinInnerAngle(catalog, mindex, i, j, k) };
                 assert(isfinite(triple.distance));
                 assert(triple.distance >= 0);
                 assert(triple.distance <= M_PI);

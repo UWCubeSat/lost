@@ -458,7 +458,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 float smallAngle;
                 float midAngle;
                 float largeAngle;
-                focalPlaneAngles(stars, camera, smallAngle, midAngle, largeAngle, mindex, middex, maxdex, i, j, k);
+                FocalPlaneAngles(stars, camera, smallAngle, midAngle, largeAngle, mindex, middex, maxdex, i, j, k);
                 if (std::isnan(smallAngle) || std::isnan(midAngle) || std::isnan(largeAngle)) {
                     continue;
                 }
@@ -486,7 +486,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                     float actualSmallAngle;
                     float actualMidAngle;
                     float actualLargeAngle;
-                    innerAngles(catalog, actualSmallAngle, actualMidAngle, actualLargeAngle, actualMindex, actualMiddex, actualMaxdex, *l, *(l+1), *(l+2));
+                    InnerAngles(catalog, actualSmallAngle, actualMidAngle, actualLargeAngle, actualMindex, actualMiddex, actualMaxdex, *l, *(l+1), *(l+2));
                     if (actualLargeAngle > largeAngle - tolerance && actualLargeAngle < largeAngle + tolerance && actualMidAngle > midAngle - tolerance &&
                     actualMidAngle < midAngle + tolerance) {
                         if (mt != NULL) {
@@ -506,7 +506,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 int actualMindex;
                 // garbage chute (AKA dont care)
                 float gc;
-                innerAngles(catalog, gc, gc, gc, actualMindex, actualMiddex, actualMaxdex, *mt, *(mt+1), *(mt+2));
+                InnerAngles(catalog, gc, gc, gc, actualMindex, actualMiddex, actualMaxdex, *mt, *(mt+1), *(mt+2));
                 if (!vote[actualMindex].count(mindex)) {
                     vote[actualMindex][mindex] = 1;
                 } else {
@@ -565,6 +565,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
             }
         }
     }
+    std::cout << "Made it here" << std::endl;
     for (int i = 0; i < (int) catalog.size(); i++) {
         auto pr = std::max_element(std::begin(vote[i]), std::end(vote[i]),[] (const std::pair<int16_t,int16_t>& a, const std::pair<int16_t,int16_t>& b)->bool{ return a.second < b.second; } );
         int16_t maxval = pr->second;

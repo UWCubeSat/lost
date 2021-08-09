@@ -102,7 +102,7 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
 
 // compute min mid max values and arguments
 // vals and args must be of length 3
-void tripleArgs(float &min, float &mid, float &max, int &argmin, int &argmid, int &argmax, float vals[], int args[]) {
+void TripleArgs(float &min, float &mid, float &max, int &argmin, int &argmid, int &argmax, float vals[], int args[]) {
     if (vals[0] <= vals[1] && vals[0] <= vals[2]) {
         min = vals[0];
         argmin = args[0];
@@ -148,16 +148,16 @@ void tripleArgs(float &min, float &mid, float &max, int &argmin, int &argmid, in
     }
 }
 
-void innerAngles(const Catalog &catalog, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int index1, int index2, int index3) {
+void InnerAngles(const Catalog &catalog, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int index1, int index2, int index3) {
     float a1 = Angle(catalog[index2].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index1].spatial);
     float a2 = Angle(catalog[index2].spatial-catalog[index3].spatial, catalog[index2].spatial-catalog[index1].spatial);
     float a3 = Angle(catalog[index3].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index2].spatial);
     float vals[] = {a1, a2, a3};
     int indices[] = {index1, index2, index3};
-    tripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
+    TripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
 }
 
-void focalPlaneAngles(const Stars &stars, const Camera &camera, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index) {
+void FocalPlaneAngles(const Stars &stars, const Camera &camera, float &min, float &mid, float &max, int &mindex, int &middex, int &maxdex, int i_index, int j_index, int k_index) {
     Star i = stars[i_index];
     Star j = stars[j_index];
     Star k = stars[k_index];
@@ -169,10 +169,10 @@ void focalPlaneAngles(const Stars &stars, const Camera &camera, float &min, floa
     float b3 = Angle(iSpatial-kSpatial, jSpatial-kSpatial);
     float vals[] = {b1, b2, b3};
     int indices[] = {i_index, j_index, k_index};
-    tripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
+    TripleArgs(min, mid, max, mindex, middex, maxdex, vals, indices);
 }
 
-float minInnerAngle(const Catalog &catalog, int &arg, int index1, int index2, int index3) {
+float MinInnerAngle(const Catalog &catalog, int &arg, int index1, int index2, int index3) {
     float a1 = Angle(catalog[index2].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index1].spatial);
     float a2 = Angle(catalog[index2].spatial-catalog[index3].spatial, catalog[index2].spatial-catalog[index1].spatial);
     float a3 = Angle(catalog[index3].spatial-catalog[index1].spatial, catalog[index3].spatial-catalog[index2].spatial);
