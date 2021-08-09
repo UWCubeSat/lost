@@ -273,7 +273,8 @@ StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
 StarIdAlgorithm *NonDimStarIdAlgorithmPrompt() {
     float tolerance = Prompt<float>("How much tolerance? (degrees)");
     int num_verify = Prompt<int>("How much times should each star be matched for identification? (rec. 2)");
-    return new NonDimStarIdAlgorithm(DegToRad(tolerance), num_verify);
+    float minAngle = Prompt<float>("What angle should each triangle have at least the value of in one of it's three angles?");
+    return new NonDimStarIdAlgorithm(DegToRad(tolerance), num_verify, minAngle);
 }
 
 StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {

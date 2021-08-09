@@ -459,7 +459,7 @@ StarIdentifiers NonDimStarIdAlgorithm::Go(
                 float midAngle;
                 float largeAngle;
                 FocalPlaneAngles(stars, camera, smallAngle, midAngle, largeAngle, mindex, middex, maxdex, i, j, k);
-                if (std::isnan(smallAngle) || std::isnan(midAngle) || std::isnan(largeAngle)) {
+                if (std::isnan(smallAngle) || std::isnan(midAngle) || std::isnan(largeAngle) || largeAngle < smallestAngle) {
                     continue;
                 }
                 // range of query

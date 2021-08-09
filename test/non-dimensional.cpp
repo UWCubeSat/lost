@@ -27,7 +27,7 @@ TEST_CASE("inner angle test simple", "[gv] [fast]") {
     int mindex;
     int middex;
     int maxdex;
-    innerAngles(catalog, min, mid, max, mindex, middex, maxdex, 0, 1, 2);
+    InnerAngles(catalog, min, mid, max, mindex, middex, maxdex, 0, 1, 2);
     /*
     std::cout << "mindex: " << mindex << " val: " << min << std::endl;
     std::cout << "middex: " << middex << " val: " << mid << std::endl;
@@ -53,7 +53,7 @@ TEST_CASE("focal plane angle test simple", "[gv] [fast]") {
     int mindex;
     int middex;
     int maxdex;
-    focalPlaneAngles(stars, min, mid, max, mindex, middex, maxdex, 0, 1, 2);
+    FocalPlaneAngles(stars, min, mid, max, mindex, middex, maxdex, 0, 1, 2);
     CHECK(max == Approx(DegToRad(90)));
     CHECK(mid == Approx(DegToRad(45)));
     CHECK(min == Approx(DegToRad(45)));
