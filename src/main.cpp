@@ -84,6 +84,9 @@ int main(int argc, char **argv) {
     lost::RegisterCliArgs(argc, argv);
     std::cerr << "LOST: Open-source Star Tracker" << std::endl;
     lost::InteractiveChoice<void (*)()> mainChoices;
+    if (lost::isDebug) {
+        mainChoices.Register("inspect_catalog", "Inspect star details", &lost::InspectCatalog);
+    }
     mainChoices.Register("pipeline", "Run a pipeline", &lost::PipelineRun);
     mainChoices.Register("build_database", "Build database from catalog", &lost::DatabaseBuild);
     mainChoices.Register("benchmark", "Benchmark a pipeline", &lost::PipelineBenchmark);

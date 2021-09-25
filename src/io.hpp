@@ -27,6 +27,8 @@
 
 namespace lost {
 
+extern bool isDebug;
+
 void RegisterCliArgs(int, char **);
 bool HasNextCliArg();
 std::string NextCliArg();
@@ -44,6 +46,8 @@ S Prompt(const std::string &prompt) {
     }
     return result;
 }
+
+std::string PromptLine(const std::string &prompt);
 
 template <typename S>
 class InteractiveChoiceOption {
@@ -277,6 +281,12 @@ Catalog PromptNarrowedCatalog(const Catalog &);
 // unlike the other algorithm prompters, db builders aren't a 
 typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
 void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
+
+/////////////////////
+// INSPECT CATALOG //
+/////////////////////
+
+void InspectCatalog();
 
 }
 
