@@ -73,6 +73,11 @@ Vec3 SphericalToSpatial(float ra, float de) {
     };
 }
 
+void SpatialToSpherical(const Vec3 &vec, float *ra, float *de) {
+    *ra = atan2(vec.y, vec.x);
+    *de = acos(vec.z);
+}
+
 float RadToDeg(float rad) {
     return rad*180.0/M_PI;
 }

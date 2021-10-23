@@ -1345,12 +1345,22 @@ void InspectFindStar(const Catalog &catalog) {
     }
 }
 
+void InspectPrintStar(const Catalog &catalog) {
+    auto stars = PromptCatalogStars(catalog, 1);
+    float ra, de;
+    SpatialToSpherical(stars[0]->spatial, &ra, &de);
+
+    std::cout << "star_ra " << ra << std::endl;
+    std::cout << "star_de " << de << std::endl;
+}
+
 void InspectCatalog() {
     InteractiveChoice<CatalogInspector> inspectorChoice;
     inspectorChoice.Register("pair_distance", "pair distance angle", InspectPairDistance);
     inspectorChoice.Register("pyramid_distances", "all pair distances in pyramid", InspectPyramidDistances);
     inspectorChoice.Register("triple_angle", "inner angle of a triangle", InspectTripleAngle);
     inspectorChoice.Register("find_star", "find a star name based on ra/de", InspectFindStar);
+    inspectorChoice.Register("print_star", "print coordinates of a star", InspectPrintStar);
     (*inspectorChoice.Prompt("Inspect the catalog"))(CatalogRead());
 }
 
