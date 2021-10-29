@@ -108,7 +108,7 @@ KVectorIndex::KVectorIndex(const unsigned char *buffer) {
     numBins = *(int32_t *)buffer;
     buffer += sizeof(int32_t);
 
-    assert(min > 0.0f);
+    assert(min >= 0.0f);
     assert(max > min);
     binWidth = (max - min) / numBins;
 
@@ -311,7 +311,7 @@ unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long len
 }
 
 MultiDatabaseBuilder::~MultiDatabaseBuilder() {
-    delete[] buffer;
+    free(buffer);
 }
 
 }
