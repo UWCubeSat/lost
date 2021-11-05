@@ -97,6 +97,21 @@ namespace lost
         return (((totalMag / (imageHeight * imageWidth)) + 1) * 15) / 10;
     }
 
+    int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+        unsigned long totalMag = 0;
+        float std = 0;
+        long totalPixels = imageHeight * imageWidth;
+        for (long i = 0; i < totalPixels; i++) {
+            totalMag += image[i];
+        }
+        float mean = totalMag / totalPixels;
+        for (long i = 0; i < totalPixels; i++) {
+            std += std::pow(image[i] - mean, 2);
+        }
+        std = std::sqrt(std / totalPixels);
+        return mean + (std * 5);
+    }
+
     std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const
     {
         CentroidParams p;
@@ -276,7 +291,6 @@ namespace lost
     {
         if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndices.count(i) == 0)
         {
-            //std::cout << i << "\n";
             checkedIndices.insert(i);
             starIndices.push_back(i);
             if (i % imageWidth != imageWidth - 1)
@@ -301,22 +315,13 @@ namespace lost
             float aParam = x(0);
             float y_bParam = x(1);
             float sdParam = x(2);
-            std::cout << "start\n";
+
             for (int j = 0; j < values(); j++)
             {
                 float yCoord = measuredValues(j, 0);
-                //std::cout << yCoord << "\n";
                 float magSum = measuredValues(j, 1);
-                //std::cout << yCoord << " " << magSum << "\n";
-                //std::cout << magSum << "\n";
                 fvec(j) = magSum - (aParam * (exp((-1.0 * pow(yCoord - y_bParam, 2.0)) / (2.0 * pow(sdParam, 2.0)))));
-                //std::cout << "fvec: " << fvec(j) << "right side : " << (aParam * (exp((-1.0 * pow(yCoord - y_bParam, 2.0)) / (2.0 * pow(sdParam, 2.0))))) << "\n";
-                //std::cout << fvec(1) << "\n";
             }
-            //std::cout << x(0) << " " << x(1) << " " << x(2) << "\n";
-            //std::cout << fvec(1) << "\n";
-            //std::cout << y_bParam;
-
             return 0;
         }
         // Compute jacobian of teh errors
@@ -342,7 +347,6 @@ namespace lost
                 fvecDiff = (fvecPlus - fvecMinus) / (2.0f * epsilon);
 
                 fjac.block(0, i, values(), 1) = fvecDiff;
-                //std::cout << x(0) << " " << x(1) << " " << x(2) << "\n";
             }
             return 0;
         }
@@ -362,7 +366,7 @@ namespace lost
     {
         std::vector<Star> result;
         std::unordered_set<int> checkedIndices;
-        int cutoff = DetermineCutoff(image, imageWidth, imageHeight);
+        int cutoff = BasicThreshold(image, imageWidth, imageHeight);
         for (int i = 0; i < imageHeight * imageWidth; i++)
         {
             //check if pixel is part of a "star" and has not been iterated over
@@ -401,14 +405,13 @@ namespace lost
                 float xMid = (maxXInd + minXInd) / 2.0;
                 float yMid = (maxYInd + minYInd) / 2.0;
 
-                //std::cout << "here 1 \n";
 
                 Eigen::MatrixXf xMeasuredValues(xRange, 2);
                 Eigen::MatrixXf yMeasuredValues(yRange, 2);
 
-                //std::cout << "here 1.1 \n";
 
-                int fwhm = 0;
+                float fwhm = 0.0;
+
                 int start = (minYInd * imageWidth) + minXInd;
                 int end = (maxYInd * imageWidth) + maxXInd;
 
@@ -427,32 +430,12 @@ namespace lost
                     }
                 }
 
-                // // need to redo this loop
-                // for (int j = 0; j < (int)starIndices.size(); j++)
-                // {
-                //     if (image[starIndices.at(j)] >= 128)
-                //     {
-                //         fwhm++;
-                //     }
-                //     int index = starIndices.at(j);
-                //     //xSums[(index % imageWidth) - minXInd] += image[index];
-                //     xMeasuredValues((index % imageWidth) - minXInd, 0) = index % imageWidth;
-                //     xMeasuredValues((index % imageWidth) - minXInd, 1) += image[index];
-                //     yMeasuredValues((index / imageWidth) - minYInd, 0) = index / imageWidth;
+                std::cout << "xMeasuredValues:\n" << xMeasuredValues << "\n";
+                std::cout << "yMeasuredValues:\n" << yMeasuredValues << "\n";
 
-                //     yMeasuredValues((index / imageWidth) - minYInd, 1) += image[index];
-
-                //     //std::cout <<  index / imageWidth << " : " <<  yMeasuredValues((index / imageWidth) - minYInd, 1) << "\n";
-                //     if (index % imageWidth >= maxXInd)
-                //     {
-                //         index = ((index / imageWidth) * imageWidth) + minXInd;
-                //     }
-                //     //std::cout << j << "\n";
-                // }
 
                 float initStd = fwhm / (2.0 * sqrt(2.0 * log(2.0)));
 
-                //std::cout << "here 2 \n";
                 // eigen stuff here:
 
                 Eigen::VectorXf x(3);
@@ -464,7 +447,6 @@ namespace lost
                 int n = 3; // num parameters
                 int xm = xRange;
 
-                //std::cout << "here 3 \n";
                 LMFunctor xFunctor;
                 xFunctor.measuredValues = xMeasuredValues;
                 xFunctor.m = xm;
@@ -479,9 +461,7 @@ namespace lost
                 x(0) = 255.0;
                 x(1) = yMid;
                 x(2) = initStd;
-                //std::cout << x(0) << " " << x(1) << " " << x(2) << "\n";
 
-                //std::cout << "here 5 \n";
                 LMFunctor yFunctor;
                 yFunctor.measuredValues = yMeasuredValues;
                 yFunctor.m = ym;
@@ -490,13 +470,8 @@ namespace lost
                 Eigen::LevenbergMarquardt<LMFunctor, float> ylm(yFunctor);
                 ylm.minimize(x);
 
-                //std::cout << x(0) << " " << x(1) << " " << x(2) << "\n";
-
                 float yCoord = x(1);
-                //std::cout << "here 6 \n";
-                //std::cout << yCoord << "\n";
-                //std::cout << xCoord << "\n";
-                //std::cout << "results " << xCoord << " " << x(1) << "\n";
+
                 result.push_back(Star(xCoord, yCoord, (float)xRange / 2.0, (float)yRange / 2, 0));
             }
         }
