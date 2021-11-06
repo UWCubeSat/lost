@@ -1,0 +1,20 @@
+.TH PIPELINE 3 "06 November 2021" 
+
+.SH NAME
+pipeline \- description
+
+.SH SYNOPSIS
+
+.SH DESCRIPTION
+
+.SH EXAMPLES
+
+.SH OPTIONS
+
+.SH EXIT VALUES
+
+.SH BUGS
+
+.SH AUTHOR
+
+.SH COPYRIGHT
