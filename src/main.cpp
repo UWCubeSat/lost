@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <stdio.h>
 
 #include "databases.hpp"
 #include "centroiders.hpp"
