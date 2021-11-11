@@ -47,9 +47,20 @@ float Quaternion::Angle() const {
 }
 
 void Quaternion::ToSpherical(float *ra, float *de, float *roll) const {
-    *ra = -atan((2*i*j+2*real*k)/(2*real*real+2*i*i-1));
-    *de = -atan((2*j*k+2*real*i)/(2*real*real+2*k*k-1));
-    *roll = -asin(-2*i*k+2*real*j);
+    // Working out these equations would be a pain in the ass. Thankfully, this wikipedia page:
+    // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
+    // uses almost exactly the same euler angle scheme that we do, so we copy their equations almost
+    // wholesale. The only differences are that 1, we use de and roll in the opposite directions,
+    // and 2, we store the conjugate of the quaternion (double check why?), which means we need to
+    // invert the final de and roll terms, as well as negate all the terms involving a mix between
+    // the real and imaginary parts.
+    *ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
+    if (*ra < 0)
+        *ra += 2*M_PI;
+    *de = -asin(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
+    *roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
+    if (*roll < 0)
+        *roll += 2*M_PI;
 }
 
 Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
@@ -59,10 +70,20 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
 
     // when we are modifying the coordinate axes, the quaternion multiplication works so that the
     // rotations are applied from left to right. This is the opposite as for modifying vectors.
+
+    // It is indeed correct that a positive rotation in our right-handed coordinate frame is in the
+    // clockwise direction when looking down/through the axis of rotation. Just like the right hand
+    // rule for magnetic field around a current-carrying conductor.
     Quaternion a = Quaternion({ 0, 0, 1 }, ra);
     Quaternion b = Quaternion({ 0, 1, 0 }, -dec);
     Quaternion c = Quaternion({ 1, 0, 0 }, -roll);
-    return (a*b*c).Conjugate();
+    Quaternion result = (a*b*c).Conjugate();
+    assert(result.IsUnit(0.00001));
+    return result;
+}
+
+bool Quaternion::IsUnit(float tolerance) const {
+    return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
 Vec3 SphericalToSpatial(float ra, float de) {
@@ -75,7 +96,9 @@ Vec3 SphericalToSpatial(float ra, float de) {
 
 void SpatialToSpherical(const Vec3 &vec, float *ra, float *de) {
     *ra = atan2(vec.y, vec.x);
-    *de = acos(vec.z);
+    if (*ra < 0)
+        *ra += M_PI*2;
+    *de = asin(vec.z);
 }
 
 float RadToDeg(float rad) {

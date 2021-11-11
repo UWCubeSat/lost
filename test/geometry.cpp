@@ -17,8 +17,8 @@ TEST_CASE("Convert coordinates: pixel -> spatial -> pixel", "[geometry]") {
     Vec3 spatial = camera.CameraToSpatial({expectedX, expectedY});
     Vec2 actualPixels = camera.SpatialToCamera(spatial);
 
-    CHECK((int)round(actualPixels.x) == expectedX);
-    CHECK((int)round(actualPixels.y) == expectedY);
+    CHECK(actualPixels.x == Approx(expectedX).margin(0.000001));
+    CHECK(actualPixels.y == Approx(expectedY).margin(0.000001));
 }
 
 TEST_CASE("Centered coordinates: pixel -> spatial", "[geometry]") {
@@ -63,4 +63,32 @@ TEST_CASE("Angle from camera, diagonal", "[geometry]") {
     Vec3 s2 = camera.CameraToSpatial({128, 128});
     // it's not as simple as this! TODO
     // CHECK(Angle(s1, s2) == Approx(acos(0.25)));
+}
+
+TEST_CASE("spherical -> quaternion -> spherical", "[geometry]") {
+    // 0.1 instead of 0, because at 0 it might sometimes return 2PI, which is fine for most
+    // circumstances. Also, at 0, the epsilon=0, so there's no tolerance in Approx by default!
+    float ra = DegToRad(GENERATE(28.9, 83.2, 14.0, 0.1, 329.8));
+    float de = DegToRad(GENERATE(7.82, 9.88, 88.8, 0.1, -72.0, -9.9));
+    float roll = DegToRad(GENERATE(9.38, 300.9, 37.8, 199.9));
+
+    Quaternion quat = SphericalToQuaternion(ra, de, roll);
+
+    float raOut, deOut, rollOut;
+    quat.ToSpherical(&raOut, &deOut, &rollOut);
+    // TODO: for small angles, the error is quite large as a fraction of the angle.
+    CHECK(raOut == Approx(ra).margin(0.00001));
+    CHECK(deOut == Approx(de).margin(0.00001));
+    CHECK(rollOut == Approx(roll).margin(0.00001));
+}
+
+TEST_CASE("spherical -> spatial -> spherical", "[geometry]") {
+    float ra = DegToRad(GENERATE(28.9, 83.2, 14.0, 0.1, 329.8));
+    float de = DegToRad(GENERATE(7.82, 9.88, 88.8, 0.1, -72.0, -9.9));
+
+    float raOut, deOut;
+    SpatialToSpherical(SphericalToSpatial(ra, de), &raOut, &deOut);
+
+    CHECK(ra == Approx(raOut));
+    CHECK(de == Approx(deOut));
 }

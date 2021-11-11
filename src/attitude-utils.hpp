@@ -55,6 +55,7 @@ public:
     Vec3 Rotate(const Vec3 &) const;
     float Angle() const;
     void ToSpherical(float *ra, float *dec, float *roll) const;
+    bool IsUnit(float tolerance) const;
 
     float real;
     float i;
