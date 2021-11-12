@@ -1,20 +1,165 @@
 .TH PIPELINE 3 "06 November 2021" 
 
 .SH NAME
-pipeline \- description
+
+pipeline \- builds a pipeline of the star identification process
 
 .SH SYNOPSIS
 
+\fBpipeline\fP --png \fIfilepath\fP --focal-length \fIlength\fP --pixel-size \fIsize\fP [--centroid [--centroid-dummy --num-stars \fInum\fP] [--cog] [--iwcog]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id [--id-dummy] [--gv --gv-tolerance \fIdegrees\fP] [--pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP]] [--attitude --dqm] [--plot \fIoutput-path\fB]
+.br
+\fBpipeline\fP --png \fIfilepath\fP --fov \fIdegrees\fP [--centroid [--centroid-dummy --num-stars \fInum\fP] [--cog] [--iwcog]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id [--id-dummy] [--gv --gv-tolerance \fIdegrees\fP] [--pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP]] [--attitude --dqm] [--plot \fIoutput-path\fB]
+.br
+\fBpipeline\fP --generate [--num-images \fInum\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
+[--centroid [--centroid-dummy --num-stars \fInum\fP] [--cog] [--iwcog]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id [--id-dummy] [--gv --gv-tolerance \fIdegrees\fP] [--pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP]] [--attitude --dqm] [--plot \fIoutput-path\fB]
+
+
 .SH DESCRIPTION
 
-.SH EXAMPLES
+\fBpipeline\fP is the command to set the different stages of the star identification pipeline. An image can be
+taken in as input from \fIfilepath\fP, or image(s) can be generated according to various parameters. There are five main stages to the pipeline:
+--centroid, --centroid-mag-filter, --id, --database, and --attitude. The --centroid option allows the user to
+choose which centroiding algorithm to use, while the --centroid-mag-filter option allows the user to filter out candidate
+centroids below a certain magnitude. The --database option allows the user to specificy which file to use as the database.
+The --id option runs the star identification algorithm, and the --attitude option determines the orientation of the
+cubesat in space.
 
-.SH OPTIONS
+.SS Options
 
-.SH EXIT VALUES
+.TP
+\fB--png\fP \fIfilepath\fP
+Runs analysis on the png image at the given \fIfilepath\fP.
 
-.SH BUGS
+.TP
+\fB--focal-length\fP \fIlength\fP
+The focal length of the camera that took the picture (in mm).
 
-.SH AUTHOR
+.TP
+\fB--pixel-size\fP \fIsize\fP
+The pixel size of the camera that took the picture (in \[*m]m).
 
-.SH COPYRIGHT
+.TP
+\fB--fov\fP \fIdegrees\fP
+The field of view of the camera that took the picture (in degrees).
+
+.TP
+\fB--generate\fP
+Generates an image to run pipeline on.
+
+.TP
+\fB--num-images\fP \fInum\fP
+Generates \fInum\fP amount of images.
+
+.TP
+\fB--horizontal-res\fP \fIres\fP
+Sets the horizontal resolution of the generated image(s) to \fIres\fP.
+
+.TP
+\fB--vertical-res\fP \fIres\fP
+Sets the vertical resolution of the generated image(s) to \fIres\fP.
+
+.TP
+\fB--horizontal-fov\fP \fIdegrees\fP
+Sets the horizontal field of view of the generated image(s) to \fIdegrees\fP (in degrees).
+
+.TP
+\fB--ref-brightness\fP \fImag\fP
+Sets the brightness of the reference star of the generated image(s) to \fImag\fP.
+
+.TP
+\fB--spread-stddev\fP \fIstddev\fP
+Sets the star spread standard deviation of the generated image(s) to \fIstddev\fP.
+
+.TP
+\fB--noise-stddev\fP \fIstddev\fP
+Sets the noise standard deviation of the generated image(s) to \fIstddev\fP.
+
+.TP
+\fB--boresight-right-asc\fP \fIascension\fP
+Sets the boresight right ascension of the generated image(s) to \fIascension\fP.
+
+.TP
+\fB--boresight-dec\fP \fIdeclination\fP
+Sets the boresight declination of the generated image(s) to \fIdeclination\fP.
+
+.TP
+\fB--boresight-roll\fP \fIroll\fP
+Sets the boresight roll of the generated image(s) to \fIroll\fP.
+
+.TP
+\fB--centroid\fP
+Tuns the centroid algorithm on the image.
+
+.TP
+\fB--centroid-dummy\fP
+Chooses the dummy centroiding algorithm (random centroid algorithm).
+
+.TP
+\fB--num-stars\fP \fInum\fP
+\fInum\fP is the number of stars the dummy algorithm should generate.
+
+.TP
+\fB--cog\fP
+Chooses the center of gravity centroid algorithm.
+
+.TP
+\fB--iwcog\fP
+Chooses the iterative weighted center of gravity centroid algorithm.
+
+.TP
+\fB--centroid-mag-filter\fP \fImin-mag\fP
+Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
+
+.TP
+\fB--database\fP \fIfilename\fP
+Chooses \fIfilename\fP as the database to compare stars against.
+
+.TP
+\fB--id\fP
+Runs the star identification algorithm on the image.
+
+.TP
+\fB--id-dummy\fP
+Chooses the dummy star identification algorithm.
+
+.TP
+\fB--gv\fP
+Chooses the geometric voting identification algorithm.
+
+.TP
+\fB--gv-tolerance\fP \fIdegrees\fP
+\fIdegrees\fP is the angular tolerance to be used for the geometric volting algorithm.
+
+.TP
+\fB--pyramid\fP
+Chooses the pyramid scheme star identification algorithm.
+
+.TP
+\fB--py-tolerance\fP \fIdegrees\fP
+\fIdegrees\fP is the angular tolerance to be used for the pyramid scheme algorithm.
+
+.TP
+\fB--false-stars\fP \fInum\fP
+\fInum\fP is the estimated number of false stars in the whole sphere.
+
+.TP
+\fB--max-mismatch-prob\fP \fIprobability\fP
+\fIprobability\fP is the maximum mismatch probability.
+
+.TP
+\fB--attitude\fP
+Runs the attitude stage of the pipeline.
+
+.TP
+\fB--dqm\fP
+Uses the Davenport Q Method algorithm for attitude.
+
+.TP
+\fB--plot\fP \fIoutput-path\fP
+Plots raw black and white input image to the png. Outputs the file to \fIoutput-path\fP. Use - for stdout.
+
+.SH SEE ALSO
+database(3)

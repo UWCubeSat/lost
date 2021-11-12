@@ -6,16 +6,16 @@ database \- builds a database
 
 .SH SYNOPSIS
 
-\fBdatabase\fP [--mag \fImax-magnitude\fP] [\fIbuilder\fP [--min \fImin-distance\fP --max \fImax-distance\fP --bin \fIdistance-bin-num\fP]] \fIoutput-path\fP
+\fBdatabase\fP [--mag \fImax-magnitude\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] \fIoutput-path\fP
 .br
-\fBdatabase\fP [--stars \fInum-stars\fP] [\fIbuilder\fP [--min \fImin-distance\fP --max \fImax-distance\fP --bin \fIdistance-bin-num\fP]] \fIoutput-path\fP
+\fBdatabase\fP [--stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] \fIoutput-path\fP
 
 
 .SH DESCRIPTION
 
 \fBdatabase\fP generates a database (a subset of the star catalog), which is used to compare unidentified stars against. The greater star catalog contains about 9000 stars, which
 can be limited in the database by filtering the stars out with a \fImax-magnitude\fP or by getting the \fInum-stars\fP brightest stars in the catalog. There are several different methods of
-constructing a database, given by \fIbuilder\fP. This database is then generated into the file \fIoutput-path\fP.
+constructing a database. This database is then generated into the file \fIoutput-path\fP.
 
 .SS Options
 
@@ -28,9 +28,20 @@ limits database to stars below \fImax-magnitude\fP
 limits database to the \fInum-stars\fP brightest stars in the catalog
 
 .TP
-\fIbuilder\fP [--min \fImin-distance\fP --max \fImax-distance\fP --bin \fIdistance-bin-num\fP]
-the type of database. For KVector, \fImin-distance\fP indicates the minimum distance, \fImax-distance\fP indicates the maximum distance, and \fIdistance-bin-num\fP indicates
-the number of distance bins.
+\fB--kvector\fP
+uses the kvector method of building a database
+
+.TP
+\fB--kvector-min-distance \fImin\fP
+sets the minimum distance bin in the kvector building method to \fImin\fP
+
+.TP
+\fB--kvector-max-distance\fP \fImax\fP
+sets the maximum distance bin in the kvector building method to \fImax\fP
+
+.TP
+\fB--kvector-distance-bins\fP \fInum-bins\fP
+sets the number of distance bins in the kvector building method to \fInum-bins\fP
 
 .TP
 \fIoutput-path\fP
