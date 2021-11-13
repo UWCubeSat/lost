@@ -6,10 +6,8 @@ database \- builds a database
 
 .SH SYNOPSIS
 
-\fBdatabase\fP [--mag \fImax-magnitude\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] \fIoutput-path\fP
+\fBdatabase\fP [--mag \fImax-magnitude\fP | --stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] \fIoutput-path\fP
 .br
-\fBdatabase\fP [--stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] \fIoutput-path\fP
-
 
 .SH DESCRIPTION
 
@@ -21,31 +19,31 @@ constructing a database. This database is then generated into the file \fIoutput
 
 .TP
 \fB--mag\fP \fImax-magnitude\fP
-limits database to stars below \fImax-magnitude\fP
+Limits database to stars below \fImax-magnitude\fP.
 
 .TP
 \fB\-\-stars\fP \fInum-stars\fP
-limits database to the \fInum-stars\fP brightest stars in the catalog
+Limits database to the \fInum-stars\fP brightest stars in the catalog.
 
 .TP
 \fB--kvector\fP
-uses the kvector method of building a database
+Uses the kvector method of building a database.
 
 .TP
 \fB--kvector-min-distance \fImin\fP
-sets the minimum distance bin in the kvector building method to \fImin\fP
+Sets the minimum distance bin in the kvector building method to \fImin\fP.
 
 .TP
 \fB--kvector-max-distance\fP \fImax\fP
-sets the maximum distance bin in the kvector building method to \fImax\fP
+Sets the maximum distance bin in the kvector building method to \fImax\fP.
 
 .TP
 \fB--kvector-distance-bins\fP \fInum-bins\fP
-sets the number of distance bins in the kvector building method to \fInum-bins\fP
+Sets the number of distance bins in the kvector building method to \fInum-bins\fP.
 
 .TP
 \fIoutput-path\fP
-the file to output the database to. Use - for stdout
+The file to output the database to. Use - for stdout.
 
 .SH SEE ALSO
 pipeline(3)
