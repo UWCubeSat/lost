@@ -155,12 +155,12 @@ public:
     // whether the input stars have identification information.
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
     // for tracking
-    virtual const Quaternion *InputAttitude() const { return NULL; };
+    virtual const Attitude *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
 
     virtual const Stars *ExpectedStars() const { return InputStars(); };
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
-    virtual const Quaternion *ExpectedAttitude() const { return InputAttitude(); };
+    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 
     cairo_surface_t *InputImageSurface() const;
 };
@@ -168,7 +168,7 @@ public:
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
-    GeneratedPipelineInput(const Catalog &, Quaternion, Camera,
+    GeneratedPipelineInput(const Catalog &, Attitude, Camera,
                            int referenceBrightness, float brightnessDeviation,
                            float noiseDeviation);
 
@@ -177,7 +177,7 @@ public:
     const Camera *InputCamera() const { return &camera; };
     const StarIdentifiers *InputStarIds() const { return &starIds; };
     bool InputStarsIdentified() const { return true; };
-    const Quaternion *InputAttitude() const { return &attitude; };
+    const Attitude *InputAttitude() const { return &attitude; };
     const Catalog &GetCatalog() const { return catalog; };
 private:
     // we don't use an Image here because we want to 
@@ -185,7 +185,7 @@ private:
     Image image;
     Stars stars;
     Camera camera;
-    Quaternion attitude;
+    Attitude attitude;
     const Catalog &catalog;
     StarIdentifiers starIds;
 };
@@ -218,7 +218,7 @@ private:
 struct PipelineOutput {
     std::unique_ptr<Stars> stars;
     std::unique_ptr<StarIdentifiers> starIds;
-    std::unique_ptr<Quaternion> attitude;
+    std::unique_ptr<Attitude> attitude;
     Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
     bool nice;
 };

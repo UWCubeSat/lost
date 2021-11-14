@@ -10,13 +10,18 @@ namespace lost {
 class AttitudeEstimationAlgorithm {
 public:
     // TODO: more detail in return type (eg, whether attitude estimation failed, measure of error)
-    virtual Quaternion Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &) = 0;
+    virtual Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &) = 0;
     virtual ~AttitudeEstimationAlgorithm() { };
 };
 
 class DavenportQAlgorithm : public AttitudeEstimationAlgorithm {
-    public:
-        Quaternion Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
+public:
+    Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
+};
+
+class TriadAlgorithm : public AttitudeEstimationAlgorithm {
+public:
+    Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
 };
 
 }

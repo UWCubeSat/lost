@@ -171,7 +171,7 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
                  const Stars &stars,
                  const StarIdentifiers *starIds,
                  const Catalog *catalog,
-                 const Quaternion *attitude,
+                 const Attitude *attitude,
                  double red,
                  double green,
                  double blue,
@@ -240,12 +240,11 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
     }
 
     if (attitude != NULL) {
-        float ra, de, roll;
-        attitude->ToSpherical(&ra, &de, &roll);
+        EulerAngles spherical = attitude->ToSpherical();
         metadata +=
-            "RA: " + std::to_string(RadToDeg(ra)) + "  " +
-            "DE: " + std::to_string(RadToDeg(de)) + "  " +
-            "Roll: " + std::to_string(RadToDeg(roll)) + "   ";
+            "RA: " + std::to_string(RadToDeg(spherical.ra)) + "  " +
+            "DE: " + std::to_string(RadToDeg(spherical.de)) + "  " +
+            "Roll: " + std::to_string(RadToDeg(spherical.roll)) + "   ";
     }
 
     // plot metadata
@@ -294,6 +293,10 @@ StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
 
 AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
     return new DavenportQAlgorithm();
+}
+
+AttitudeEstimationAlgorithm *TriadAlgorithmPrompt() {
+    return new TriadAlgorithm();
 }
 
 class SantaStarId : public Santa {
@@ -380,10 +383,10 @@ public:
     AstrometryPipelineInput(const std::string &path);
 
     const Image *InputImage() const { return &image; };
-    const Quaternion *InputAttitude() const { return &attitude; };
+    const Attitude *InputAttitude() const { return &attitude; };
 private:
     Image image;
-    Quaternion attitude;
+    Attitude attitude;
 };
 
 Camera PromptCamera(int xResolution, int yResolution) {
@@ -440,7 +443,7 @@ AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
 #define IncrementPixelI(i, amt) imageData[i] = std::max(0, std::min(255,imageData[i]+(amt)))
 
 GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
-                                               Quaternion attitude,
+                                               Attitude attitude,
                                                Camera camera,
                                                int referenceBrightness,
                                                float brightnessDeviation,
@@ -639,6 +642,7 @@ Pipeline PromptPipeline() {
         case PipelineStage::AttitudeEstimation: {
             InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
             attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
+            attitudeEstimationAlgorithmChoice.Register("triad", "Triad", TriadAlgorithmPrompt);
             result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
                 (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
             break;
@@ -709,8 +713,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
-        result.attitude = std::unique_ptr<Quaternion>(
-            new Quaternion(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
+        result.attitude = std::unique_ptr<Attitude>(
+            new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
     }
 
     if (santa) {
@@ -1055,15 +1059,14 @@ void PipelineComparatorPrintAttitude(std::ostream &os,
     assert(actual.size() == 1);
     assert(actual[0].attitude);
 
-    os << "attitude_real " << actual[0].attitude->real << std::endl;
-    os << "attitude_i " << actual[0].attitude->i << std::endl;
-    os << "attitude_j " << actual[0].attitude->j << std::endl;
-    os << "attitude_k " << actual[0].attitude->k << std::endl;
-    float ra, de, roll;
-    actual[0].attitude->ToSpherical(&ra, &de, &roll);
-    os << "attitude_ra " << ra << std::endl;
-    os << "attitude_de " << de << std::endl;
-    os << "attitude_roll " << roll << std::endl;
+    // os << "attitude_real " << actual[0].attitude->real << std::endl;
+    // os << "attitude_i " << actual[0].attitude->i << std::endl;
+    // os << "attitude_j " << actual[0].attitude->j << std::endl;
+    // os << "attitude_k " << actual[0].attitude->k << std::endl;
+    EulerAngles spherical = actual[0].attitude->ToSpherical();
+    os << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
+    os << "attitude_de " << RadToDeg(spherical.de) << std::endl;
+    os << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
 }
 
 void PipelineComparatorAttitude(std::ostream &os,
@@ -1079,7 +1082,9 @@ void PipelineComparatorAttitude(std::ostream &os,
     int numCorrect = 0;
 
     for (int i = 0; i < (int)expected.size(); i++) {
-        float attitudeError = (*expected[i]->ExpectedAttitude() * actual[0].attitude->Conjugate()).Angle();
+        Quaternion expectedQuaternion = expected[i]->ExpectedAttitude()->GetQuaternion();
+        Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
+        float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).Angle();
         assert(attitudeError >= 0);
         attitudeErrorSum += attitudeError;
         if (attitudeError <= angleThreshold) {
@@ -1357,8 +1362,8 @@ void InspectPrintStar(const Catalog &catalog) {
     float ra, de;
     SpatialToSpherical(stars[0]->spatial, &ra, &de);
 
-    std::cout << "star_ra " << ra << std::endl;
-    std::cout << "star_de " << de << std::endl;
+    std::cout << "star_ra " << RadToDeg(ra) << std::endl;
+    std::cout << "star_de " << RadToDeg(de) << std::endl;
 }
 
 void InspectCatalog() {

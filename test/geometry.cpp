@@ -74,12 +74,11 @@ TEST_CASE("spherical -> quaternion -> spherical", "[geometry]") {
 
     Quaternion quat = SphericalToQuaternion(ra, de, roll);
 
-    float raOut, deOut, rollOut;
-    quat.ToSpherical(&raOut, &deOut, &rollOut);
+    EulerAngles angles = quat.ToSpherical();
     // TODO: for small angles, the error is quite large as a fraction of the angle.
-    CHECK(raOut == Approx(ra).margin(0.00001));
-    CHECK(deOut == Approx(de).margin(0.00001));
-    CHECK(rollOut == Approx(roll).margin(0.00001));
+    CHECK(angles.ra == Approx(ra).margin(0.00001));
+    CHECK(angles.de == Approx(de).margin(0.00001));
+    CHECK(angles.roll == Approx(roll).margin(0.00001));
 }
 
 TEST_CASE("spherical -> spatial -> spherical", "[geometry]") {
@@ -91,6 +90,20 @@ TEST_CASE("spherical -> spatial -> spherical", "[geometry]") {
 
     CHECK(ra == Approx(raOut));
     CHECK(de == Approx(deOut));
+}
+
+TEST_CASE("quat -> dcm -> quat", "[geometry]") {
+    float ra = GENERATE(take(5, random(0.1, 3.14*2)));
+    float de = GENERATE(take(5, random(-3.14, 3.14)));
+    float roll = GENERATE(take(5, random(0.1, 3.14*2)));
+
+    Quaternion quat1 = SphericalToQuaternion(ra, de, roll).Canonicalize();
+    Mat3 dcm = QuaternionToDCM(quat1);
+    Quaternion quat2 = DCMToQuaternion(dcm).Canonicalize();
+    CHECK(quat1.real == Approx(quat2.real));
+    CHECK(quat1.i == Approx(quat2.i));
+    CHECK(quat1.j == Approx(quat2.j));
+    CHECK(quat1.k == Approx(quat2.k));
 }
 
 // I know cross product seems simple, perhaps even too simple to be worth testing...but I coded it
