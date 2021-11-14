@@ -108,6 +108,14 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
+Vec3 Vec3::crossProduct(const Vec3 &other) const {
+    return {
+        x*other.y - y*other.x,
+        -(x*other.z - z*other.x),
+        y*other.z - z*other.y,
+    };
+}
+
 long SerializeLengthVec3() {
     return sizeof(float)*3;
 }

@@ -47,6 +47,7 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "files.eol": "\n"
+        "files.eol": "\n",
+        "regex": "cpp"
     }
 }

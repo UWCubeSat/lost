@@ -92,6 +92,42 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
+// Local Basic Thresholding with divisions as parameter, returns a vector containing thresholds 
+// corresponding to different divisions.
+// Divisions are horizontally based
+// Uses the same statistical algorithm as BasicThresholding
+std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int divisions) { // 4 Divisions
+    // run Basic Threshold on all elements in certain subdivisions
+    int div = imageHeight / 4;
+    int totalPixels = imageWidth * imageHeight;
+    int totalMag = 0;
+    float std = 0;
+    float mean = 0;
+    std::vector<int> standardDeviations;
+    for(int i = 0; i <= divisions; i++) {
+        totalMag = 0;
+        std = 0;
+        if(i != divisions) {
+            for(int j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
+                totalMag += image[i];
+            }
+        } else {
+            for(int j = i * div * imageWidth; j < sizeof(image); j++) {
+                totalMag += image[i];
+            }
+        }
+        mean = totalMag / totalPixels;
+        for (long i = 0; i < totalPixels; i++) {
+            std += std::pow(image[i] - mean, 2);
+        }
+        std = std::sqrt(std / totalPixels);
+        standardDeviations.push_back(mean + (std * 5));
+    }
+    standardDeviations.push_back(mean + (std * 5));
+    // Return values of previous method as a vector
+    return standardDeviations;
+}
+
 // basic thresholding, but do it faster (trade off of some accuracy?)
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
@@ -117,6 +153,7 @@ struct CentroidParams {
     int yMin;
     int yMax;
     int cutoff;
+    std::vector<int> localCutoff;
     bool isValid;
     std::unordered_set<int> checkedIndices;
 };
@@ -162,6 +199,48 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+
+            //iterate over pixels that are part of the star
+            int xDiameter = 0; //radius of current star
+            int yDiameter = 0;
+            p.yCoordMagSum = 0; //y coordinate of current star
+            p.xCoordMagSum = 0; //x coordinate of current star
+            p.magSum = 0; //sum of magnitudes of current star
+
+            p.xMax = i % imageWidth;
+            p.xMin = i % imageWidth;
+            p.yMax = i / imageWidth;
+            p.yMin = i / imageWidth;
+            p.isValid = true;
+
+            int sizeBefore = p.checkedIndices.size();
+
+            CogHelper(p, i, image, imageWidth, imageHeight);
+            xDiameter = (p.xMax - p.xMin) + 1;
+            yDiameter = (p.yMax - p.yMin) + 1;
+
+            //use the sums to finish CoG equation and add stars to the result
+            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
+
+            if (p.isValid) {
+                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
+            }
+        }
+    }
+    return result;
+}
+
+//Copy of CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
+//Subdivisions refers to how many horizontal sections with different thresholds are present
+std::vector<Star> CenterOfGravityAlgorithm::GoLocal(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
+    CentroidParams p;
+    
+    std::vector<Star> result;
+
+    p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, subdivisions);
+    for (long i = 0; i < imageHeight * imageWidth; i++) {
+        if (image[i] >= p.localCutoff.at((i+1) * imageWidth * subdivisions) && p.checkedIndices.count(i) == 0) {
 
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
