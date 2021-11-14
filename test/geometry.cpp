@@ -92,3 +92,21 @@ TEST_CASE("spherical -> spatial -> spherical", "[geometry]") {
     CHECK(ra == Approx(raOut));
     CHECK(de == Approx(deOut));
 }
+
+// I know cross product seems simple, perhaps even too simple to be worth testing...but I coded it
+// wrong initially and missed the bug for months.
+TEST_CASE("cross product", "[geometry]") {
+    Vec3 x = { 1, 0, 0 };
+    Vec3 y = { 0, 1, 0 };
+    Vec3 z = x.crossProduct(y);
+    CHECK(z.x == 0);
+    CHECK(z.y == 0);
+    CHECK(z.z == Approx(1.0));
+
+    Vec3 a = { 5, 8, -2 };
+    Vec3 b = { -5.9, 92, 3 };
+    Vec3 c = a.crossProduct(b);
+    CHECK(c.x == 208);
+    CHECK(c.y == Approx(-3.2));
+    CHECK(c.z == Approx(507.2));
+}

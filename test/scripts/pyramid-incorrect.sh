@@ -18,7 +18,7 @@ function rand_int {
 # create database if not exists
 test -e pyramid-incorrect.dat || ./lost build_database 9999 kvector .5 10 10000 done pyramid-incorrect.dat
 
-for i in {1..10}
+for i in $(seq ${1:-10})
 do
     x_res=$(rand_int 100 1000)
     y_res=$(rand_int 100 1000)
@@ -26,7 +26,7 @@ do
     ra=$(rand_int 0 359)
     de=$(rand_int -89 89)
     roll=$(rand_int 0 359)
-    tolerance=$(awk "BEGIN{print $RANDOM%10/100}") # floating point numbers are hard, alright?
+    tolerance=$(awk "BEGIN{print $RANDOM%10/100+.002}") # floating point numbers are hard, alright?
     set -x
     lost_output=$(./lost pipeline generate 1 $x_res $y_res 0 $fov 0 0 0 $ra $de $roll database pyramid-incorrect.dat starid pyramid $tolerance 100 .001 done compare_stars - done)
     set +x

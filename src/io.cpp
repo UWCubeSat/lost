@@ -966,6 +966,13 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
                 }
             }
         }
+        if (expected[0]->ExpectedStarIds()) {
+            for (const StarIdentifier &starId : *expected[0]->ExpectedStarIds()) {
+                if (starId.starIndex == i) {
+                    os << "centroid_" << i << "_expected_id " << actual[0].catalog[starId.catalogIndex].name << std::endl;
+                }
+            }
+        }
         // TODO: print other stats too?
     }
 }

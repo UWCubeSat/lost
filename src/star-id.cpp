@@ -304,7 +304,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
     // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and
     // k-th from the j-th. In addition, we here add some other numbers so that the pyramids are not
-    // weird lines in wide FOV images.
+    // weird lines in wide FOV images. TODO: Select the starting points to ensure that the first pyramids are all within measurement tolerance.
     int numStars = (int)stars.size();
     // the idea is that the square root is about across the FOV horizontally
     int across = floor(sqrt(numStars))*2;
@@ -323,7 +323,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
             for (int rIter = 0; rIter < rMax; rIter++) {
                 int dr = 1+(rIter+halfwayAcross)%rMax;
 
-                for (int i = 0; i < (int)stars.size()-dj-dk-dr; i++) {
+                int iMax = numStars-dj-dk-dr-1;
+                for (int iIter = 0; iIter <= iMax; iIter++) {
+                    int i = (iIter + iMax/2)%(iMax+1); // start near the center of the photo
 
                     // identification failure due to cutoff
                     if (++totalIterations > cutoff) {
@@ -370,7 +372,21 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     float irDist = AngleUnit(iSpatial, rSpatial);
                     float jkDist = AngleUnit(jSpatial, kSpatial);
                     float jrDist = AngleUnit(jSpatial, rSpatial);
-                    float krDist = AngleUnit(kSpatial, rSpatial);
+                    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
+                                                                  // check krDist, if k has been
+                                                                  // verified by i and j it's fine.
+
+                    // we check the distances with the extra tolerance requirement to ensure that
+                    // there isn't some pyramid that's just outside the database's bounds, but
+                    // within measurement tolerance of the observed pyramid, since that would
+                    // possibly cause a non-unique pyramid to be identified as unique.
+#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
+                    _CHECK_DISTANCE(ikDist);
+                    _CHECK_DISTANCE(irDist);
+                    _CHECK_DISTANCE(jkDist);
+                    _CHECK_DISTANCE(jrDist);
+                    _CHECK_DISTANCE(krDist);
+#undef _CHECK_DISTANCE
 
                     long ijNum, ikNum, irNum; //, jkNum, jrNum, krNum;
                     const int16_t *ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijNum);
@@ -417,20 +433,18 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
                             Vec3 ijCandidateCross = iCandidateSpatial.crossProduct(jCandidateSpatial);
 
-                            kIterator = PairDistanceInvolvingIterator(ikQuery, ikNum, iCandidate);
                             for (int16_t kCandidate : kCandidates) {
                                 Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
                                 bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
-                                float jkCandidateDist;
                                 // checking the spectral-ity early to fail fast
                                 if (candidateSpectralTorch != spectralTorch) {
-                                    goto kContinue;
+                                    continue;
                                 }
 
                                 // small optimization: We can calculate jk before iterating through r, so we will!
-                                jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+                                float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
                                 if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
-                                    goto kContinue;
+                                    continue;
                                 }
 
                                 // TODO: if there are no jr matches, there's no reason to
@@ -441,11 +455,11 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                     float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
                                     float krCandidateDist;
                                     if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
-                                        goto rContinue;
+                                        continue;
                                     }
                                     krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
                                     if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
-                                        goto rContinue;
+                                        continue;
                                     }
 
                                     // we have a match!
@@ -463,15 +477,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                         std::cerr << "Pyramid not unique, skipping..." << std::endl;
                                         goto sensorContinue;
                                     }
-
-                                rContinue:;
                                 }
-
-                            kContinue:;
                             }
 
                         }
-
                     }
 
                     if (iMatch != -1) {
