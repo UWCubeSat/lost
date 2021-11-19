@@ -1,6 +1,7 @@
 #ifndef DATABASE_BUILDER_H
 #define DATABASE_BUILDER_H
 
+#include <stdlib.h>
 #include <inttypes.h>
 #include <vector>
 
@@ -105,7 +106,7 @@ class MultiDatabaseBuilder {
 public:
     MultiDatabaseBuilder()
         // the () after new ensures it's zero-initialized
-        : buffer(new unsigned char[kMultiDatabaseTocLength]()), bulkLength(0) { };
+        : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
     ~MultiDatabaseBuilder();
     // return pointer to the start of the space allocated for said database. Return null if full.
     unsigned char *AddSubDatabase(int32_t magicValue, long length);

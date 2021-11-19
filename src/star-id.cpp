@@ -302,13 +302,30 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     float expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
 
     // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
-    // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and k-th
-    // from the j-th
+    // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and
+    // k-th from the j-th. In addition, we here add some other numbers so that the pyramids are not
+    // weird lines in wide FOV images. TODO: Select the starting points to ensure that the first pyramids are all within measurement tolerance.
+    int numStars = (int)stars.size();
+    // the idea is that the square root is about across the FOV horizontally
+    int across = floor(sqrt(numStars))*2;
+    int halfwayAcross = floor(sqrt(numStars)/2);
     long totalIterations = 0;
-    for (int dj = 1; dj < (int)stars.size()-1; dj++) {
-        for (int dk = 1; dk < (int)stars.size()-dj-1; dk++) {
-            for (int dr = 1; dr < (int)stars.size()-dk-dj-1; dr++) {
-                for (int i = 0; i < (int)stars.size()-dj-dk-dr; i++) {
+
+    int jMax = numStars - 3;
+    for (int jIter = 0; jIter < jMax; jIter++) {
+        int dj = 1+(jIter+halfwayAcross)%jMax;
+
+        int kMax = numStars-dj-2;
+        for (int kIter = 0; kIter < kMax; kIter++) {
+            int dk = 1+(kIter+across)%kMax;
+
+            int rMax = numStars-dj-dk-1;
+            for (int rIter = 0; rIter < rMax; rIter++) {
+                int dr = 1+(rIter+halfwayAcross)%rMax;
+
+                int iMax = numStars-dj-dk-dr-1;
+                for (int iIter = 0; iIter <= iMax; iIter++) {
+                    int i = (iIter + iMax/2)%(iMax+1); // start near the center of the photo
 
                     // identification failure due to cutoff
                     if (++totalIterations > cutoff) {
@@ -319,6 +336,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     int j = i+dj;
                     int k = j+dk;
                     int r = k+dr;
+
+                    assert(i!=j && j!=k && k!=r && i!=k && i!=r && j!=r);
 
                     // TODO: move this out of the loop?
                     Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
@@ -340,6 +359,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         / std::max(std::max(iSinInner, jSinInner), kSinInner);
 
                     if (expectedMismatches > maxMismatchProbability) {
+                        std::cout << "skip: mismatch prob." << std::endl;
                         continue;
                     }
 
@@ -352,18 +372,27 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     float irDist = AngleUnit(iSpatial, rSpatial);
                     float jkDist = AngleUnit(jSpatial, kSpatial);
                     float jrDist = AngleUnit(jSpatial, rSpatial);
-                    float krDist = AngleUnit(kSpatial, rSpatial);
+                    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
+                                                                  // check krDist, if k has been
+                                                                  // verified by i and j it's fine.
+
+                    // we check the distances with the extra tolerance requirement to ensure that
+                    // there isn't some pyramid that's just outside the database's bounds, but
+                    // within measurement tolerance of the observed pyramid, since that would
+                    // possibly cause a non-unique pyramid to be identified as unique.
+#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
+                    _CHECK_DISTANCE(ikDist);
+                    _CHECK_DISTANCE(irDist);
+                    _CHECK_DISTANCE(jkDist);
+                    _CHECK_DISTANCE(jrDist);
+                    _CHECK_DISTANCE(krDist);
+#undef _CHECK_DISTANCE
 
                     long ijNum, ikNum, irNum; //, jkNum, jrNum, krNum;
                     const int16_t *ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijNum);
                     const int16_t *ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikNum);
                     const int16_t *irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irNum);
 
-                    PairDistanceInvolvingIterator involvingEnd;
-                    std::vector<bool> iCandidates(catalog.size(), false);
-                    std::vector<bool> jCandidates(catalog.size(), false);
-                    std::vector<bool> kCandidates(catalog.size(), false);
-                    std::vector<bool> rCandidates(catalog.size(), false);
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     std::vector<bool> iSeen(catalog.size(), false);
@@ -376,43 +405,61 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
                         const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
 
+                        // TODO: caching these iterator results into vectors can improve
+                        // performance, but at the cost of memory. It would be best to put some kind
+                        // of guarantee on the memory usage, and then switch to using the iterator
+                        // without caching if that memory limit is exceeded.
                         PairDistanceInvolvingIterator jIterator(ijQuery, ijNum, iCandidate);
                         PairDistanceInvolvingIterator kIterator(ikQuery, ikNum, iCandidate);
                         PairDistanceInvolvingIterator rIterator(irQuery, irNum, iCandidate);
+                        std::vector<int16_t> jCandidates;
+                        std::vector<int16_t> kCandidates;
+                        std::vector<int16_t> rCandidates;
+                        while (jIterator.hasValue()) {
+                            jCandidates.push_back(*jIterator);
+                            ++jIterator;
+                        }
+                        while (kIterator.hasValue()) {
+                            kCandidates.push_back(*kIterator);
+                            ++kIterator;
+                        }
+                        while (rIterator.hasValue()) {
+                            rCandidates.push_back(*rIterator);
+                            ++rIterator;
+                        }
                         // TODO: break fast if any of the iterators are empty, if it's any
                         // significant performance improvement.
-                        while (jIterator.hasValue()) {
-                            const Vec3 &jCandidateSpatial = catalog[*jIterator].spatial;
+                        for (int16_t jCandidate : jCandidates) {
+                            const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
                             Vec3 ijCandidateCross = iCandidateSpatial.crossProduct(jCandidateSpatial);
 
-                            while (kIterator.hasValue()) {
-                                Vec3 kCandidateSpatial = catalog[*kIterator].spatial;
+                            for (int16_t kCandidate : kCandidates) {
+                                Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
                                 bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
-                                float jkCandidateDist;
                                 // checking the spectral-ity early to fail fast
                                 if (candidateSpectralTorch != spectralTorch) {
-                                    goto kContinue;
+                                    continue;
                                 }
 
                                 // small optimization: We can calculate jk before iterating through r, so we will!
-                                jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+                                float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
                                 if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
-                                    goto kContinue;
+                                    continue;
                                 }
 
                                 // TODO: if there are no jr matches, there's no reason to
                                 // continue iterating through all the other k-s. Possibly
                                 // enumarete all r matches, according to ir, before this loop
-                                while (rIterator.hasValue()) {
-                                    const Vec3 &rCandidateSpatial = catalog[*rIterator].spatial;
+                                for (int16_t rCandidate : rCandidates) {
+                                    const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
                                     float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
                                     float krCandidateDist;
                                     if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
-                                        goto rContinue;
+                                        continue;
                                     }
                                     krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
                                     if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
-                                        goto rContinue;
+                                        continue;
                                     }
 
                                     // we have a match!
@@ -421,25 +468,18 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                     std::cerr << "Surprise muthafuckas" << std::endl;
                                     if (iMatch == -1) {
                                         iMatch = iCandidate;
-                                        jMatch = *jIterator;
-                                        kMatch = *kIterator;
-                                        rMatch = *rIterator;
+                                        jMatch = jCandidate;
+                                        kMatch = kCandidate;
+                                        rMatch = rCandidate;
                                     } else {
                                         // uh-oh, stinky!
                                         // TODO: test duplicate detection, it's hard to cause it in the real catalog...
                                         std::cerr << "Pyramid not unique, skipping..." << std::endl;
                                         goto sensorContinue;
                                     }
-
-                                rContinue:
-                                    ++rIterator;
                                 }
-
-                            kContinue:
-                                ++kIterator;
                             }
 
-                            ++jIterator;
                         }
                     }
 
