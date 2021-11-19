@@ -31,10 +31,13 @@ void RegisterCliArgs(int, char **);
 bool HasNextCliArg();
 std::string NextCliArg();
 
+// Templates are just like Java's Generics. They allow you to decide the type for a function's
+// parameters when it's getting compiled; ie you only have to define that function once and pass
+// in a generic type for its parameters.
 template <typename S>
 S Prompt(const std::string &prompt) {
     S result;
-    std::cerr << prompt << ": ";
+    std::cerr << prompt << ": "; // Similar to cout and unbuffered, but for getting err message out
     if (HasNextCliArg()) {
         std::string nextArg = NextCliArg();
         std::cerr << nextArg << std::endl;

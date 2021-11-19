@@ -4,6 +4,7 @@
 #include <math.h>
 #include <assert.h>
 
+// Ben Note: Vec2 and Vec3 are defined in attitude-utils.hpp.
 namespace lost {
 
 Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
@@ -21,6 +22,8 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
 }
 
 // we'll just place the points at 1 unit away from the pinhole (x=1)
+
+// Ben Note: A const func means that this func CANNOT change any of this class's member variables.
 Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     assert(InSensor(vector));
 

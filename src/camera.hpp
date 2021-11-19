@@ -3,7 +3,48 @@
 
 #include "attitude-utils.hpp"
 
+// Ben's Notes: Questions for Mark or Allen
+//      1. Is possible you could explain each argument for the Camera object in terms of where they come from?
+//      2. Wait, does my image down below actually represent the 3D space described in the class down below?
+
 namespace lost {
+
+    //Ben's Notes on Focal Length:
+
+        // Imagine that we had an x-axis and y-axis, where the y-axis was the convex lens and the x-axis
+        // ran straight through the middle:
+
+        //                                            (y-axis or convex lens of camera)
+    //   ---------------------------------------------o
+    //                                               ` `
+    //                                               ` `
+    //                                               ` `
+    //                                               ` `
+    //                                               ` `
+    //                                               ` `
+    //               (*)*****************************` `
+    // (image sensor) |   *         (Focal Length)   ` `    *
+    //                |       *   |------------------`|`          *     (Focal Point, where light ray hits the x-axis)
+    // (x-axis)  .....|..........(*).................`.`................(*)................................. (x-axis)
+    //              (Focal point,    *               `|`-----------------|    *                     |
+    //               where light ray     *           ` ` (Focal length)            *                |
+    //               hits the x-axis)        *       ` `                                 *          | (Object you're taking a picture of)
+    //                                           *   ` `                                       *    |
+    //                                               `*`:******************************************(*) (B)
+    //                                               . .           (Line above is a ray of light coming into
+    //                                               . .             the camera lens from the outside world into the camera
+    //                                               ` `               (right to left))
+    //                                               ` `
+    //                                                +
+    // -----------------------------------------------:
+    //                                               (y-axis or convex lens of camera)
+
+        // The focal length is the distance from the convex lens to the x
+
+        // Common terminology:
+        //    - Convex lens: a lens that is thin at the edges and gets thicker towards the center.
+        
+
 
 class Camera {
 public:
