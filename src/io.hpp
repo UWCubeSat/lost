@@ -103,7 +103,7 @@ S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
 
 class PromptedOutputStream {
 public:
-    PromptedOutputStream();
+    PromptedOutputStream(std::string filePath);
     ~PromptedOutputStream();
     std::ostream &Stream() { return *stream; };
 private:
@@ -261,8 +261,9 @@ void PromptPipelineComparison(const PipelineInputList &expected,
 Catalog PromptNarrowedCatalog(const Catalog &);
 
 // unlike the other algorithm prompters, db builders aren't a 
-typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
+// typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
+void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, std::map<std::string,std::string> values);
+// void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 }
 

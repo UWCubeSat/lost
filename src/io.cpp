@@ -45,8 +45,8 @@ std::string NextCliArg() {
     return std::string("You incompetent fool!");
 }
 
-PromptedOutputStream::PromptedOutputStream() {
-    std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
+PromptedOutputStream::PromptedOutputStream(std::string filePath) {
+    //std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
     if (filePath == "-") {
         stream = &std::cout;
         isFstream = false;
@@ -241,7 +241,6 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
 }
 
 // ALGORITHM PROMPTERS
-
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 
 CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
@@ -294,10 +293,25 @@ Catalog PromptNarrowedCatalog(const Catalog &catalog) {
     return NarrowCatalog(catalog, maxMagnitude, maxStars);
 }
 
-void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog) {
-    float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
-    float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
-    long numBins = Prompt<long>("Number of distance bins");
+    // float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
+    // float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
+    // long numBins = Prompt<long>("Number of distance bins");
+
+    // // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
+    // // database generation
+    // long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
+    // unsigned char *buffer = builder.AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
+    // if (buffer == NULL) {
+    //     std::cerr << "No room for another database." << std::endl;
+    // }
+    // SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
+
+    // // TODO: also parse it and print out some stats before returning
+
+void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+    // float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
+    // float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
+    // long numBins = Prompt<long>("Number of distance bins");
 
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
@@ -309,20 +323,38 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
     SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
 
     // TODO: also parse it and print out some stats before returning
+    
 }
 
-void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
-    InteractiveChoice<DbBuilder> dbBuilderChoice;
-    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
-    dbBuilderChoice.Register("done", "Exit", NULL);
-    while (true) {
-        DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
-        if (choice == NULL) {
-            break;
-        }
-        (*choice)(builder, catalog);
+
+void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, std::map<std::string,std::string> values) {
+
+    if (values["databaseBuilder"].compare("kvector") == 0) {
+        float minDistance = DegToRad(stof(values["kvector-min-distance"]));
+        float maxDistance = DegToRad(stof(values["kvector-max-distance"]));
+        long numBins = DegToRad(stof(values["kvector-distance-bins"]));
+        PromptKVectorDatabaseBuilder(builder, catalog, minDistance, maxDistance, numBins);
     }
+
 }
+
+// void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
+//     InteractiveChoice<DbBuilder> dbBuilderChoice;
+
+    // adds these as options
+
+//     dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
+//     dbBuilderChoice.Register("done", "Exit", NULL);
+    // gets the prompt and does (choice)(builder, catalog)
+
+//     while (true) {
+//         DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
+//         if (choice == NULL) {
+//             break;
+//         }
+//         (*choice)(builder, catalog);
+//     }
+// }
 
 // PIPELINE INPUT STUFF
 
@@ -1046,16 +1078,16 @@ void PromptPipelineComparison(const PipelineInputList &expected,
     }
 
     comparatorChoice.Register("done", "No more comparisons", NULL);
+    //TODO: fix
+    // while (true) {
+    //     PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
+    //     if (comparator == NULL) {
+    //         break;
+    //     }
 
-    while (true) {
-        PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
-        if (comparator == NULL) {
-            break;
-        }
-
-        PromptedOutputStream pos;
-        comparator(pos.Stream(), expected, actual);
-    }
+    //     PromptedOutputStream pos;
+    //     comparator(pos.Stream(), expected, actual);
+    // }
 }
 
 }
