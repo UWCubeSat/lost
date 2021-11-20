@@ -98,7 +98,7 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 // Uses the same statistical algorithm as BasicThresholding
 std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int divisions) { // 4 Divisions
     // run Basic Threshold on all elements in certain subdivisions
-    int div = imageHeight / 4;
+    int div = imageHeight / divisions;
     int totalPixels = imageWidth * imageHeight;
     int totalMag = 0;
     float std = 0;
