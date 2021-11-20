@@ -19,7 +19,7 @@ constructing a database. This database is then generated into the file \fIoutput
 
 .TP
 \fB--mag\fP \fImax-magnitude\fP
-Limits database to stars below \fImax-magnitude\fP.
+Limits database to stars below \fImax-magnitude\fP (brighter stars have lower magnitudes).
 
 .TP
 \fB\-\-stars\fP \fInum-stars\fP
