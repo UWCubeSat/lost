@@ -92,9 +92,9 @@ int main(int argc, char **argv) {
             {"maxMagnitude","1000"},
             {"maxStars","10000"},
             {"databaseBuilder",""},
-            {"kvector-min-distance","0"},
-            {"kvector-max-distance","0"},
-            {"kvector-distance-bins","0"},
+            {"kvector-min-distance",std::to_string(lost::DegToRad(0.5))},
+            {"kvector-max-distance",std::to_string(lost::DegToRad(15))},
+            {"kvector-distance-bins","10000"},
             {"path",""}
         };
 
