@@ -159,9 +159,9 @@ struct CentroidParams {
 };
 
 //recursive helper here
-void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) {
+void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at((i+1) * imageWidth * subdivisions) && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
@@ -181,16 +181,16 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
         p.xCoordMagSum += ((i % imageWidth)) * image[i];
         p.yCoordMagSum += ((i / imageWidth)) * image[i];
         if(i % imageWidth != imageWidth - 1) {
-            CogHelper(p, i + 1, image, imageWidth, imageHeight);
+            CogHelper(p, i + 1, image, imageWidth, imageHeight, subdivisions);
         }
         if (i % imageWidth != 0) {
-            CogHelper(p, i - 1, image, imageWidth, imageHeight);
+            CogHelper(p, i - 1, image, imageWidth, imageHeight, subdivisions);
         }
-        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
-        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
+        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight, subdivisions);
+        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight, subdivisions);
     }
 }
-
+/*
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
     
@@ -230,10 +230,10 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     }
     return result;
 }
-
+*/
 //Copy of CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
 //Subdivisions refers to how many horizontal sections with different thresholds are present
-std::vector<Star> CenterOfGravityAlgorithm::GoLocal(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
+std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) const {
     CentroidParams p;
     
     std::vector<Star> result;
@@ -257,7 +257,7 @@ std::vector<Star> CenterOfGravityAlgorithm::GoLocal(unsigned char *image, int im
 
             int sizeBefore = p.checkedIndices.size();
 
-            CogHelper(p, i, image, imageWidth, imageHeight);
+            CogHelper(p, i, image, imageWidth, imageHeight, subdivisions);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
 

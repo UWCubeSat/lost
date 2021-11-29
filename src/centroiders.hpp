@@ -11,6 +11,7 @@ namespace lost {
 class CentroidAlgorithm {
 public:
     virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight) const = 0;
+    virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) const = 0;
     virtual ~CentroidAlgorithm() { };
 };
 
@@ -25,8 +26,7 @@ private:
 class CenterOfGravityAlgorithm : public CentroidAlgorithm {
     public:
         CenterOfGravityAlgorithm() { };
-        Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
-        Stars GoLocal(unsigned char *image, int imageWidth, int imageHeight, int subdivisions);
+        Stars Go(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) const override;
 };
 
 class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
