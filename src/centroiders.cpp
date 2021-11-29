@@ -36,6 +36,8 @@ int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
 }
 
+
+
 // a more sophisticated thresholding algorithm, not tailored to star images
 int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     // code here, duh
@@ -91,6 +93,29 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     std = std::sqrt(std / totalPixels);
     return mean + (std * 5);
 }
+
+
+// breaks larger array into "vertical chunks" to pass into the basicThreshold algorithim 
+//    
+
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, int divisions, int acccess) {
+int div = imageWidth / divisons;
+// break image into divisions amount of divisions
+for(int j = access * div; j < access * div + div; j++) {
+    for(int i = 0; i < imageHeight; i++) {
+        array[i] = image[div * j + imageWidth*i]; //array[i] adjust so it doesn't override
+    }
+}
+
+// account for odd as well 
+
+// store each chunk in a new array - chunk
+// return chunk[access]
+
+} 
+
+
+
 
 // basic thresholding, but do it faster (trade off of some accuracy?)
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
