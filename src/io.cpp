@@ -609,6 +609,7 @@ Pipeline PromptPipeline() {
 
         case PipelineStage::CentroidMagnitudeFilter: {
             result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
+            result.centroidMaxMagnitude = Prompt<int>("Maximum magnitude");
             break;
         }
 
@@ -696,7 +697,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
         Stars *filteredStars = new std::vector<Star>();
         for (const Star &star : unfilteredStars) {
-            if (star.magnitude >= centroidMinMagnitude) {
+            if (star.magnitude >= centroidMinMagnitude && star.magnitude <= centroidMaxMagnitude) {
                 filteredStars->push_back(star);
             }
         }

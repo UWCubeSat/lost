@@ -260,6 +260,7 @@ public:
 private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
     int centroidMinMagnitude = 0;
+    int centroidMaxMagnitude = INFINITY;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     std::unique_ptr<Santa> santa;
