@@ -84,6 +84,7 @@ int main(int argc, char **argv) {
             {"kvector-min-distance", required_argument, 0, 'a'},
             {"kvector-max-distance",  required_argument, 0, 'z'},
             {"kvector-distance-bins",  required_argument, 0, 'b'},
+            {"help",  no_argument, 0, 'h'},
             {0, 0, 0, 0}
         };
 
@@ -101,7 +102,7 @@ int main(int argc, char **argv) {
         int index;
         int option;
         while (optind < argc) {
-            if ((option = getopt_long(argc, argv, "m:s:ka:z:b:", long_options, &index)) != -1) {
+            if ((option = getopt_long(argc, argv, "m:s:ka:z:b:h", long_options, &index)) != -1) {
                 switch (option) {
                     case 'm' :
                         std::cout << "You raised the maginude to " << optarg << std::endl;
@@ -126,6 +127,9 @@ int main(int argc, char **argv) {
                     case 'b' :
                         std::cout << "You set the number of bins to  " << optarg << std::endl;
                         parsedValues["kvector-distance-bins"] = optarg;
+                        break;
+                    case 'h' :
+                        system("man documentation/database.man");
                         break;
                     default :
                         std::cout << "Illegal flag" << std::endl;
