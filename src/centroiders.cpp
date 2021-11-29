@@ -287,22 +287,28 @@ namespace lost
         return result;
     }
 
-    void Gauss1DHelper(int i, int cutoff, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices, std::unordered_set<int> &checkedIndices)
+    int startingInd = 0;
+
+    void Gauss1DHelper(int i, int cutoff, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices, std::unordered_set<int> &checkedIndices, int &maxIntensity)
     {
         if (i >= 0 && i < imageWidth * imageHeight && image[i] >= cutoff && checkedIndices.count(i) == 0)
         {
+            if (image[i] > maxIntensity) {
+                maxIntensity = image[i];
+                startingInd = i;
+            }
             checkedIndices.insert(i);
             starIndices.push_back(i);
             if (i % imageWidth != imageWidth - 1)
             {
-                Gauss1DHelper(i + 1, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+                Gauss1DHelper(i + 1, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
             }
             if (i % imageWidth != 0)
             {
-                Gauss1DHelper(i - 1, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+                Gauss1DHelper(i - 1, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
             }
-            Gauss1DHelper(i + imageWidth, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
-            Gauss1DHelper(i - imageWidth, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+            Gauss1DHelper(i + imageWidth, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
+            Gauss1DHelper(i - imageWidth, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
         }
     }
 
@@ -373,7 +379,8 @@ namespace lost
             if (image[i] >= cutoff && checkedIndices.count(i) == 0)
             {
                 std::vector<int> starIndices; //vector of star coordinates
-                Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices);
+                int maxIntensity = 0;
+                Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
 
                 int maxXInd = 0;
                 int minXInd = 10000;
@@ -440,8 +447,8 @@ namespace lost
 
                 Eigen::VectorXf x(3);
 
-                x(0) = 255.0;
-                x(1) = xMid;
+                x(0) = maxIntensity;
+                x(1) = startingInd % imageWidth;
                 x(2) = initStd;
 
                 int n = 3; // num parameters
@@ -458,8 +465,8 @@ namespace lost
 
                 int ym = yRange; // row data points
 
-                x(0) = 255.0;
-                x(1) = yMid;
+                x(0) = maxIntensity;
+                x(1) = startingInd / imageWidth;
                 x(2) = initStd;
 
                 LMFunctor yFunctor;
@@ -471,6 +478,9 @@ namespace lost
                 ylm.minimize(x);
 
                 float yCoord = x(1);
+
+                std::cout << "yCoord: " << yCoord << "\n";
+                std::cout << "xCoord: " << xCoord << "\n";
 
                 result.push_back(Star(xCoord, yCoord, (float)xRange / 2.0, (float)yRange / 2, 0));
             }
