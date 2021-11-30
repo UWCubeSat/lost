@@ -145,6 +145,10 @@ int main(int argc, char **argv) {
 
         lost::DatabaseBuild(parsedValues);
         
+    } else if (strcmp(argv[1], "pipeline") == 0) {
+        system("man documentation/pipeline.man");
+    } else {
+        std::cout << "All commands besides ''database'' are currently unsupported" << std::endl;
     }
     return 0;
 }
