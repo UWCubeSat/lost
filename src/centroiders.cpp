@@ -422,15 +422,28 @@ namespace lost
                 int start = (minYInd * imageWidth) + minXInd;
                 int end = (maxYInd * imageWidth) + maxXInd;
 
+                int xMax = 0;
+                int xbStart = 0;
+                int ybStart = 0;
+                int yMax = 0;
+
                 for (int j = start; j <= end; j++) {
-                    if (image[j] >= 128) {
+                    if (image[j] >= (maxIntensity / 2)) {
                         fwhm++;
                     }
                     xMeasuredValues((j % imageWidth) - minXInd, 0) = (float) (j % imageWidth);
                     xMeasuredValues((j % imageWidth) - minXInd, 1) += (float) image[j];
+                    if (xMeasuredValues(j % imageWidth - minXInd, 1) > xMax) {
+                        xMax = xMeasuredValues(j % imageWidth - minXInd, 1);
+                        xbStart = j % imageWidth;
+                    }
 
                     yMeasuredValues((j / imageWidth) - minYInd, 0) = (float) (j / imageWidth);
                     yMeasuredValues((j / imageWidth) - minYInd, 1) += (float) image[j];
+                    if (yMeasuredValues((j / imageWidth) - minYInd, 1) > yMax) {
+                        yMax = yMeasuredValues((j / imageWidth) - minYInd, 1);
+                        ybStart = j /imageWidth;
+                    }
 
                     if (j % imageWidth >= maxXInd) {
                         j = j + imageWidth - xRange + 1;
@@ -440,16 +453,19 @@ namespace lost
                 std::cout << "xMeasuredValues:\n" << xMeasuredValues << "\n";
                 std::cout << "yMeasuredValues:\n" << yMeasuredValues << "\n";
 
-
-                float initStd = fwhm / (2.0 * sqrt(2.0 * log(2.0)));
+                float initStd = sqrt(fwhm) / (2.0 * sqrt(2.0 * log(2.0)));
 
                 // eigen stuff here:
 
                 Eigen::VectorXf x(3);
 
-                x(0) = maxIntensity;
-                x(1) = startingInd % imageWidth;
+                x(0) = xMax;
+                x(1) = xbStart;
                 x(2) = initStd;
+
+
+                std::cout << "x params before:\n" << x << "\n";
+
 
                 int n = 3; // num parameters
                 int xm = xRange;
@@ -463,11 +479,15 @@ namespace lost
                 xlm.minimize(x);
                 float xCoord = x(1);
 
+                std::cout << "x params after:\n" << x << "\n";
+
                 int ym = yRange; // row data points
 
-                x(0) = maxIntensity;
-                x(1) = startingInd / imageWidth;
+                x(0) = yMax;
+                x(1) = ybStart;
                 x(2) = initStd;
+
+                std::cout << "y params before:\n" << x << "\n";
 
                 LMFunctor yFunctor;
                 yFunctor.measuredValues = yMeasuredValues;
@@ -476,13 +496,13 @@ namespace lost
 
                 Eigen::LevenbergMarquardt<LMFunctor, float> ylm(yFunctor);
                 ylm.minimize(x);
-
                 float yCoord = x(1);
 
-                std::cout << "yCoord: " << yCoord << "\n";
-                std::cout << "xCoord: " << xCoord << "\n";
+                std::cout << "y params after:\n" << x << "\n";
 
                 result.push_back(Star(xCoord, yCoord, (float)xRange / 2.0, (float)yRange / 2, 0));
+
+                std::cout << "\n";
             }
         }
         return result;
