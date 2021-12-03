@@ -6,7 +6,7 @@ database \- builds a database
 
 .SH SYNOPSIS
 
-\fBdatabase\fP [--mag \fImax-magnitude\fP | --stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] \fIoutput-path\fP
+\fBdatabase\fP [--mag \fImax-magnitude\fP | --stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] [--path \fIoutput-path\fP]
 .br
 
 .SH DESCRIPTION
@@ -42,8 +42,8 @@ Sets the maximum distance bin in the kvector building method to \fImax\fP.
 Sets the number of distance bins in the kvector building method to \fInum-bins\fP.
 
 .TP
-\fIoutput-path\fP
-The file to output the database to. Use - for stdout.
+\fB--path\fP \fIoutput-path\fP
+The file to output the database to. Defaults to stdout.
 
 .SH SEE ALSO
 pipeline(3)

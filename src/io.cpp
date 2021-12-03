@@ -47,7 +47,7 @@ std::string NextCliArg() {
 
 PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     //std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
-    if (filePath == "-") {
+    if (filePath.compare("stdout") == 0) {
         stream = &std::cout;
         isFstream = false;
     } else {

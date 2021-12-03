@@ -28,7 +28,6 @@ static void DatabaseBuild(std::map<std::string,std::string> values) {
     pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 }
 
-
 // static void DatabaseBuild(int maxMagnitude, int maxStars) {
 //     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(),maxMagnitude,maxStars);
 //     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
@@ -85,6 +84,7 @@ int main(int argc, char **argv) {
             {"kvector-max-distance",  required_argument, 0, 'z'},
             {"kvector-distance-bins",  required_argument, 0, 'b'},
             {"help",  no_argument, 0, 'h'},
+            {"path", required_argument, 0, 'p'},
             {0, 0, 0, 0}
         };
 
@@ -96,13 +96,15 @@ int main(int argc, char **argv) {
             {"kvector-min-distance",std::to_string(lost::DegToRad(0.5))},
             {"kvector-max-distance",std::to_string(lost::DegToRad(15))},
             {"kvector-distance-bins","10000"},
-            {"path",""}
+            {"path","stdout"}
         };
 
         int index;
         int option;
+
+
         while (optind < argc) {
-            if ((option = getopt_long(argc, argv, "m:s:ka:z:b:h", long_options, &index)) != -1) {
+            if ((option = getopt_long(argc, argv, "m:s:ka:z:b:hp:", long_options, &index)) != -1) {
                 switch (option) {
                     case 'm' :
                         std::cout << "You raised the maginude to " << optarg << std::endl;
@@ -117,33 +119,34 @@ int main(int argc, char **argv) {
                         parsedValues["databaseBuilder"] = "kvector";
                         break;
                     case 'a' :
-                        std::cout << "You set the min distance to  " << optarg << std::endl;
+                        std::cout << "You set the min distance to " << optarg << std::endl;
                         parsedValues["kvector-min-distance"] = optarg;
                         break;
                     case 'z' :
-                        std::cout << "You set the max distance to  " << optarg << std::endl;
+                        std::cout << "You set the max distance to " << optarg << std::endl;
                         parsedValues["kvector-max-distance"] = optarg;
                         break;
                     case 'b' :
-                        std::cout << "You set the number of bins to  " << optarg << std::endl;
+                        std::cout << "You set the number of bins to " << optarg << std::endl;
                         parsedValues["kvector-distance-bins"] = optarg;
+                        break;
+                    case 'p' :
+                        std::cout << "You set the path to " << optarg << std::endl;
+                        parsedValues["path"] = optarg;
                         break;
                     case 'h' :
                         system("man documentation/database.man");
+                        return 0;
                         break;
                     default :
                         std::cout << "Illegal flag" << std::endl;
                         exit(1);
                 }
-            } else {
-                parsedValues["path"] = optarg;
-                std::cout << "You set the path to  " << optarg << std::endl;
-
-                optind++;
-            }
+            } 
         }
 
         lost::DatabaseBuild(parsedValues);
+
         
     } else if (strcmp(argv[1], "pipeline") == 0) {
         system("man documentation/pipeline.man");
