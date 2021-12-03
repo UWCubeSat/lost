@@ -102,7 +102,6 @@ int main(int argc, char **argv) {
         int index;
         int option;
 
-
         while (optind < argc) {
             if ((option = getopt_long(argc, argv, "m:s:ka:z:b:hp:", long_options, &index)) != -1) {
                 switch (option) {
@@ -149,7 +148,200 @@ int main(int argc, char **argv) {
 
         
     } else if (strcmp(argv[1], "pipeline") == 0) {
-        system("man documentation/pipeline.man");
+
+        static struct option long_options[] =
+        {
+            {"png",             required_argument, 0, 'a'},
+            {"focal-length",    required_argument, 0, 'b'},
+            {"pixel-size",      required_argument, 0, 'c'},
+            {"fov",             required_argument, 0, 'd'},
+            {"centroid-dummy",  optional_argument, 0, 'e'},
+            {"centroid-cog",    no_argument, 0, 'f'},
+            {"centroid-iwcog",  no_argument, 0, 'g'},
+            {"centroid-mag-filter",  required_argument, 0, 'h'},
+            {"database",        required_argument, 0, 'i'},
+            {"id-dummy",        no_argument, 0, 'j'},
+            {"id-gv",           required_argument, 0, 'k'},
+            {"id-pyramid",      no_argument, 0, 'l'},
+            {"py-tolerance",    required_argument, 0, 'm'},
+            {"false-stars",     required_argument, 0, 'n'},
+            {"max-mismatch-prob",  required_argument, 0, 'o'},
+            {"attitude-dqm",    no_argument, 0, 'p'},
+            {"plot",            required_argument, 0, 'q'},
+            {"generate",        optional_argument, 0, 'r'},
+            {"horizontal-res",  required_argument, 0, 's'},
+            {"vertical-res",  required_argument, 0, 't'},
+            {"horizontal-fov",  required_argument, 0, 'u'},
+            {"ref-brightness-mag",  no_argument, 0, 'v'},
+            {"spread-stddev",  required_argument, 0, 'w'},
+            {"noise-stddev",  required_argument, 0, 'x'},
+            {"boresight-right-asc",  required_argument, 0, 'y'},
+            {"boresight-dec",  required_argument, 0, 'z'},
+            {"boresight-roll",  required_argument, 0, '{'},
+            {"help",            no_argument, 0, '}'},
+
+            {0, 0, 0, 0}
+        };
+
+        // default values/flags
+        std::map<std::string,std::string> parsedValues = {
+            {"png",""},
+            {"focal-length", "defaultTBD"},
+            {"pixel-size","defaultTBD"},
+            {"fov", "defaultTBD"},
+            {"centroid-algo", "defaultTBD"},
+            {"centroid-mag-filter", "defaultTBD"},
+            {"database","defaultTBD"},
+            {"id-algo", "defaultTBD"},
+            {"attitude-dqm","defaultTBD"},
+            {"plot","defaultTBD"},
+            {"generate","1"},
+            {"horizontal-res","defaultTBD"},
+            {"vertical-res","defaultTBD"},
+            {"horizontal-fov","defaultTBD"},
+            {"ref-brightness-mag","defaultTBD"},
+            {"spread-stddev","defaultTBD"},
+            {"noise-stddev","defaultTBD"},
+            {"boresight-right-asc","defaultTBD"},
+            {"boresight-dec","defaultTBD"},
+            {"boresight-roll","defaultTBD"}
+        };
+
+        int index;
+        int option;
+
+        while (optind < argc) {
+            if ((option = getopt_long(argc, argv, "a:b:c:d:e::fgh:i:jk:lm:n:o:pq:r::s:t:u:vw:x:y:z:{:", long_options, &index)) != -1) {
+                switch (option) {
+                    case 'a' :
+                        std::cout << "You made the file path " << optarg << std::endl;
+                        parsedValues["png"] = optarg;
+                        break;
+                    case 'b' :
+                        std::cout << "You set the focal length to " << optarg << std::endl;
+                        parsedValues["focal-length"] = optarg;
+                        break;
+                    case 'c' :
+                        std::cout << "You set the pixel size to " << optarg << std::endl;
+                        parsedValues["pixel-size"] = optarg;
+                        break;
+                    case 'd' :
+                        std::cout << "You set the fov to " << optarg << std::endl;
+                        parsedValues["fov"] = optarg;
+                        break;
+                    case 'e' : 
+                    {
+                        std::string ns = "default";
+                        if (optarg != NULL) {
+                            ns = optarg;    // put default with the other defaults
+                        } 
+                        std::cout << "You set the centroid algo to dummy with " << ns << " stars." << std::endl;
+                        parsedValues["centroid-algo"] = "dummy," + ns;
+                        break; 
+                    }
+                    case 'f' :
+                        std::cout << "You set the centroid algo to cog " << std::endl;
+                        parsedValues["centroid-algo"] = "cog";
+                        break;
+                    case 'g' :
+                        std::cout << "You set the centroid algo to iwcog " << std::endl;
+                        parsedValues["centroid-algo"] = "iwcog";
+                        break;
+                    case 'h' :
+                        std::cout << "You set the centroid mag filter to to " << optarg << std::endl;
+                        parsedValues["centroid-mag-filter"] = optarg;
+                        break;
+                    case 'i' :
+                        std::cout << "You set the database to " << optarg << std::endl;
+                        parsedValues["database"] = optarg;
+                        break;
+                    case 'j' :
+                        std::cout << "You set the id algo to dummy" << std::endl;
+                        parsedValues["id-algo"] = "dummy";
+                        break;
+                    case 'k' :
+                        std::cout << "You set the id algo to geometric voting" << std::endl;
+                        parsedValues["id-algo"] = "gv";
+                        break;                    
+                    case 'l' :
+                        std::cout << "You set the id algo to pyramid" << std::endl;
+                        parsedValues["id-algo"] = "pyramid";
+                        break;
+                    case 'm' :
+                        std::cout << "You set the id algo pyramid tolerance to " << optarg << std::endl;
+                        parsedValues["id-algo"] += ",tol=";
+                        parsedValues["id-algo"] += optarg;
+                        break;
+                    case 'n' :
+                        std::cout << "You set the id algo false stars to " << optarg << std::endl;
+                        parsedValues["id-algo"] += ",fs=";
+                        parsedValues["id-algo"] += optarg;
+                        break;
+                    case 'o' :
+                        std::cout << "You set the id algo max mismatch probability to " << optarg << std::endl;
+                        parsedValues["id-algo"] += ",prob=";
+                        parsedValues["id-algo"] += optarg;
+                        break;
+                    case 'p' :
+                        parsedValues["attitude-dqm"] = "true";
+                        break;
+                    case 'q' :
+                        std::cout << "You set the plotted output path to " << optarg << std::endl;
+                        parsedValues["plot"] = optarg;
+                        break;
+                    case 'r' :
+                        std::cout << "Generating images! " << optarg << std::endl;
+                        if (optarg != NULL) parsedValues["generate"] = optarg;
+                        break;
+                    case 's' :
+                        std::cout << "You set the horizontal res to " << optarg << std::endl;
+                        parsedValues["horizontal-res"] = optarg;
+                        break;
+                    case 't' :
+                        std::cout << "You set the vertical res to " << optarg << std::endl;
+                        parsedValues["vertical-res"] = optarg;
+                        break;
+                    case 'u' :
+                        std::cout << "You set the horizontal fov to " << optarg << std::endl;
+                        parsedValues["horizontal-fov"] = optarg;
+                        break;
+                    case 'v' :
+                        std::cout << "You have a ref brightness magnitude " ;
+                        parsedValues["ref-brightness-mag"] = "true";                        
+                        break;
+                    case 'w' :
+                        std::cout << "You set the spread stddev to " << optarg << std::endl;
+                        parsedValues["spread-stddev"] = optarg;
+                        break;
+                    case 'x' :
+                        std::cout << "You set the noise stddev to " << optarg << std::endl;
+                        parsedValues["noise-stddev"] = optarg;
+                        break;
+                    case 'y' :
+                        std::cout << "You set the boresight right asc to " << optarg << std::endl;
+                        parsedValues["boresight-right-asc"] = optarg;
+                        break;
+                    case 'z' :
+                        std::cout << "You set the boresight declination to " << optarg << std::endl;
+                        parsedValues["boresight-dec"] = optarg;
+                        break;
+                    case '{' :
+                        std::cout << "You set the boresight roll to " << optarg << std::endl;
+                        parsedValues["boresight-roll"] = optarg;
+                        break;
+                    case '}': 
+                        system("man documentation/pipeline.man");
+                        return 0;
+                        break;
+                    default :
+                        std::cout << "Illegal flag" << std::endl;
+                        exit(1);
+                }
+            } 
+        }
+
+
+
     } else {
         std::cout << "All commands besides ''database'' are currently unsupported" << std::endl;
     }

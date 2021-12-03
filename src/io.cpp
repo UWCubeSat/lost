@@ -47,7 +47,7 @@ std::string NextCliArg() {
 
 PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     //std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
-    if (filePath.compare("stdout") == 0) {
+    if (filePath == "stdout") {
         stream = &std::cout;
         isFstream = false;
     } else {
@@ -329,7 +329,7 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
 
 void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, std::map<std::string,std::string> values) {
 
-    if (values["databaseBuilder"].compare("kvector") == 0) {
+    if (values["databaseBuilder"] == "kvector") {
         float minDistance = DegToRad(stof(values["kvector-min-distance"]));
         float maxDistance = DegToRad(stof(values["kvector-max-distance"]));
         long numBins = DegToRad(stof(values["kvector-distance-bins"]));

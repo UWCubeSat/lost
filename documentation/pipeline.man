@@ -6,11 +6,11 @@ pipeline \- builds a pipeline of the star identification process
 
 .SH SYNOPSIS
 
-\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-dummy [\fInum-stars\fP] | --centroid-cog | --centroid-iwcog] [--centroid-mag-filter \fImin-mag\fP] 
+\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-dummy[=\fInum-stars\fP] | --centroid-cog | --centroid-iwcog] [--centroid-mag-filter \fImin-mag\fP] 
 [--database \fIfilename\fP] [--id-dummy | --id-gv \fItolerance\fP | (--id-pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-dqm] [--plot \fIoutput-path\fB]
 .br
-\fBpipeline\fP --generate [\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
-[--centroid-dummy [\fInum-stars\fP] | --centroid-cog | --centroid-iwcog] [--centroid-mag-filter \fImin-mag\fP] 
+\fBpipeline\fP --generate[=\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
+[--centroid-dummy[=\fInum-stars\fP] | --centroid-cog | --centroid-iwcog] [--centroid-mag-filter \fImin-mag\fP] 
 [--database \fIfilename\fP] [--id-dummy | --id-gv \fItolerance\fP | (--id-pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-dqm] [--plot \fIoutput-path\fB]
 
 
@@ -43,7 +43,7 @@ The pixel size of the camera that took the picture (in \[*m]m).
 The field of view of the camera that took the picture (in degrees).
 
 .TP
-\fB--generate\fP [\fInum-images\fP]
+\fB--generate\fP[=\fInum-images\fP]
 Generates \fInum-images\fP amount of images. If \fInum-images\fP is not given, defaults to 1 image.
 
 .TP
@@ -83,7 +83,7 @@ Sets the boresight declination of the generated image(s) to \fIdeclination\fP.
 Sets the boresight roll of the generated image(s) to \fIroll\fP.
 
 .TP
-\fB--centroid-dummy\fP [\fInum-stars\fP]
+\fB--centroid-dummy\fP[=\fInum-stars\fP]
 Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-stars\fP stars centroided. Defaults to //TODO if \fInum-stars\fP is not given.
 
 .TP
