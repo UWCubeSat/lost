@@ -381,8 +381,8 @@ namespace lost
                 std::vector<int> starIndices; //vector of star coordinates
                 int maxIntensity = 0;
                 Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
-
-                int maxXInd = 0;
+                if (starIndices.size() > 1) {
+                    int maxXInd = 0;
                 int minXInd = 10000;
                 int maxYInd = 0;
                 int minYInd = 10000;
@@ -431,8 +431,8 @@ namespace lost
                     if (image[j] >= (maxIntensity / 2)) {
                         fwhm++;
                     }
-                    xMeasuredValues((j % imageWidth) - minXInd, 0) = (float) (j % imageWidth);
-                    xMeasuredValues((j % imageWidth) - minXInd, 1) += (float) image[j];
+                    xMeasuredValues((j % imageWidth) - minXInd, 0) = j % imageWidth;
+                    xMeasuredValues((j % imageWidth) - minXInd, 1) += image[j];
                     if (xMeasuredValues(j % imageWidth - minXInd, 1) > xMax) {
                         xMax = xMeasuredValues(j % imageWidth - minXInd, 1);
                         xbStart = j % imageWidth;
@@ -503,6 +503,9 @@ namespace lost
                 result.push_back(Star(xCoord, yCoord, (float)xRange / 2.0, (float)yRange / 2, 0));
 
                 std::cout << "\n";
+                }
+
+                
             }
         }
         return result;
