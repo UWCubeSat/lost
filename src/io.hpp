@@ -186,7 +186,7 @@ private:
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
-PipelineInputList PromptPipelineInput();
+PipelineInputList GetPipelineInput(std::map<std::string,std::string> values);
 
 class PngPipelineInput : public PipelineInput {
 public:

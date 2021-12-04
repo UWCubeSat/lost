@@ -374,13 +374,13 @@ private:
     Quaternion attitude;
 };
 
-Camera PromptCameraPhysical(int xResolution, int yResolution) {
-    float focalLength = Prompt<float>("Focal Length (mm)");
-    float pixelSize = Prompt<float>("Pixel size (µm)");
-    float focalLengthPixels = focalLength * 1000 / pixelSize;
+// Camera PromptCameraPhysical(int xResolution, int yResolution) {
+//     float focalLength = Prompt<float>("Focal Length (mm)");
+//     float pixelSize = Prompt<float>("Pixel size (µm)");
+//     float focalLengthPixels = focalLength * 1000 / pixelSize;
 
-    return Camera(focalLengthPixels, xResolution, yResolution);
-}
+//     return Camera(focalLengthPixels, xResolution, yResolution);
+// }
 
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
@@ -390,21 +390,41 @@ PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera,
     image.height = cairo_image_surface_get_height(cairoSurface);
 }
 
-PipelineInputList PromptPngPipelineInput() {
+PipelineInputList GetPngPipelineInput(std::map<std::string,std::string> values) {
     // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
     // with copying unique ptrs
     PipelineInputList result;
     cairo_surface_t *cairoSurface = NULL;
-    std::string pngPath;
-
+    std::string pngPath = values["png"];
+    
     while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
-        cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
+         cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
     }
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
-    result.push_back(std::unique_ptr<PipelineInput>(
-                         new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution), CatalogRead())));
+
+    float focalLength = stof(values["focal-length"]);
+    float pixelSize = stof(values["pixelSize"]);
+    float focalLengthPixels = focalLength * 1000 / pixelSize;
+    Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
+
+    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
     return result;
+    
+    // // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
+    // // with copying unique ptrs
+    // PipelineInputList result;
+    // cairo_surface_t *cairoSurface = NULL;
+    // std::string pngPath;
+
+    // while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
+    //     cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
+    // }
+    // int xResolution = cairo_image_surface_get_width(cairoSurface);
+    // int yResolution = cairo_image_surface_get_height(cairoSurface);
+    // result.push_back(std::unique_ptr<PipelineInput>(
+    //                      new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution), CatalogRead())));
+    // return result;
 }
 
 AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
@@ -485,26 +505,29 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     }  
 }
 
-Quaternion PromptSphericalAttitude() {
-    float ra = Prompt<float>("Boresight right ascension");
-    float dec = Prompt<float>("Boresight declination");
-    float roll = Prompt<float>("Boresight roll");
-    return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
-}
+// Quaternion PromptSphericalAttitude() {
+//     float ra = Prompt<float>("Boresight right ascension");
+//     float dec = Prompt<float>("Boresight declination");
+//     float roll = Prompt<float>("Boresight roll");
+//     return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
+// }
 
-PipelineInputList PromptGeneratedPipelineInput() {
+PipelineInputList GetGeneratedPipelineInput(std::map<std::string,std::string> values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
-    int numImages = Prompt<int>("Number of images to generate");
-    int xResolution = Prompt<int>("Horizontal Resolution");
-    int yResolution = Prompt<int>("Vertical Resolution");
-    float xFovDeg = Prompt<float>("Horizontal FOV (in degrees)");
+    int numImages = stoi(values["generate"]);
+    int xResolution = stoi(values["horizontal-res"]);
+    int yResolution = stoi(values["vertical-res"]);
+    float xFovDeg = stof(values["horizontal-fov"]);
     float xFocalLength = FovToFocalLength(DegToRad(xFovDeg), xResolution);
-    int referenceBrightness = Prompt<int>("Reference star brightness");
-    float brightnessDeviation = Prompt<float>("Star spread stddev");
-    float noiseDeviation = Prompt<float>("Noise stddev");
+    int referenceBrightness = stoi(values["ref-brightness-mag"]);
+    float brightnessDeviation = stof(values["spread-stddev"]);
+    float noiseDeviation = stof(values["noise-stddev"]);
+    float ra = stof(values["boresight-right-asc"]);
+    float dec = stof(values["boresight-dec"]);
+    float roll = stof(values["boresight-roll"]);
 
     // TODO: allow random angle generation?
-    Quaternion attitude = PromptSphericalAttitude();
+    Quaternion attitude = SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
 
     PipelineInputList result;
 
@@ -523,13 +546,20 @@ PipelineInputList PromptGeneratedPipelineInput() {
 
 typedef PipelineInputList (*PipelineInputFactory)();
 
-PipelineInputList PromptPipelineInput() {
-    InteractiveChoice<PipelineInputFactory> inputTypeChoice;
-    inputTypeChoice.Register("png", "PNG files", PromptPngPipelineInput);
-    inputTypeChoice.Register("generate", "Generated image", PromptGeneratedPipelineInput);
-    // inputTypeChoice.Register("astrometry", "Astrometry.net", PromptAstrometryPipelineInput);
+PipelineInputList GetPipelineInput(std::map<std::string,std::string> values) {
 
-    return (inputTypeChoice.Prompt("Input from"))();
+    if (values["png"] != "false") {
+        return GetPngPipelineInput(values);
+    } else {
+        return GetGeneratedPipelineInput(values);
+    }
+
+    // InteractiveChoice<PipelineInputFactory> inputTypeChoice;
+    // inputTypeChoice.Register("png", "PNG files", GetPngPipelineInput);
+    // inputTypeChoice.Register("generate", "Generated image", GetGeneratedPipelineInput);
+    // \/ was already commented out, I think
+    // inputTypeChoice.Register("astrometry", "Astrometry.net", PromptAstrometryPipelineInput);
+    // return (inputTypeChoice.Prompt("Input from"))();
 }
 
 Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,

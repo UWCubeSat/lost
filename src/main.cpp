@@ -45,12 +45,12 @@ static void DatabaseBuild(std::map<std::string,std::string> values) {
 //     pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 // }
 
-// static void PipelineRun() {
-//     PipelineInputList input = PromptPipelineInput();
-//     Pipeline pipeline = PromptPipeline();
-//     std::vector<PipelineOutput> outputs = pipeline.Go(input);
-//     PromptPipelineComparison(input, outputs);
-// }
+static void PipelineRun(std::map<std::string,std::string> values) {
+    PipelineInputList input = lost::GetPipelineInput(values);
+    Pipeline pipeline = PromptPipeline();
+    std::vector<PipelineOutput> outputs = pipeline.Go(input);
+    PromptPipelineComparison(input, outputs);
+}
 
 // static void PipelineBenchmark() {
 //     PipelineInputList input = PromptPipelineInput();
@@ -179,7 +179,6 @@ int main(int argc, char **argv) {
             {"boresight-dec",  required_argument, 0, 'z'},
             {"boresight-roll",  required_argument, 0, '{'},
             {"help",            no_argument, 0, '}'},
-
             {0, 0, 0, 0}
         };
 
@@ -340,10 +339,10 @@ int main(int argc, char **argv) {
             } 
         }
 
-
+        lost::PipelineRun(parsedValues);
 
     } else {
-        std::cout << "All commands besides ''database'' are currently unsupported" << std::endl;
+        std::cout << "Unrecognized command" << std::endl;
     }
     return 0;
 }
