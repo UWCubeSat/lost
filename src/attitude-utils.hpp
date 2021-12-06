@@ -14,10 +14,14 @@ struct Vec2 {
     float y;
 
     float Magnitude() const;
+    // squared magnitude
+    float MagnitudeSq() const;
     Vec2 Normalize() const;
 
     float operator*(const Vec2 &) const;
+    Vec2 operator*(const float &) const;
     Vec2 operator-(const Vec2 &) const;
+    Vec2 operator+(const Vec2 &) const;
 };
 
 class Vec3 {
@@ -27,9 +31,11 @@ public:
     float z;
 
     float Magnitude() const;
+    float MagnitudeSq() const;
     Vec3 Normalize() const;
 
     float operator*(const Vec3 &) const;
+    Vec3 operator*(const float &) const;
     Vec3 operator-(const Vec3 &) const;
     Vec3 crossProduct(const Vec3 &) const;
 };
@@ -74,8 +80,10 @@ public:
     Quaternion operator*(const Quaternion &other) const;
     Quaternion Conjugate() const;
     Vec3 Vector() const;
+    void SetVector(const Vec3 &);
     Vec3 Rotate(const Vec3 &) const;
     float Angle() const;
+    void SetAngle(float);
     EulerAngles ToSpherical() const;
     bool IsUnit(float tolerance) const;
     // A canonical rotation quaternion's first component should be positive. A quaternion and its

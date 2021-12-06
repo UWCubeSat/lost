@@ -113,6 +113,8 @@ public:
     unsigned char *Buffer() { return buffer; };
     long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
 private:
+    // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to
+    // use unique pointers. Here, however, we use realloc, so C-style memory management.
     unsigned char *buffer;
     // how many bytes are presently allocated for databases (excluding map)
     long bulkLength;

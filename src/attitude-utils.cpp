@@ -22,11 +22,15 @@ Vec3 Quaternion::Vector() const {
     return { i, j, k };
 }
 
+void Quaternion::SetVector(const Vec3 &vec) {
+    i = vec.x;
+    j = vec.y;
+    k = vec.z;
+}
+
 Quaternion::Quaternion(const Vec3 &input) {
     real = 0;
-    i = input.x;
-    j = input.y;
-    k = input.z;
+    SetVector(input);
 }
 
 Quaternion::Quaternion(const Vec3 &input, float theta) {
@@ -49,6 +53,11 @@ float Quaternion::Angle() const {
         return 0; // 180*2=360=0
     }
     return (real >= 1 ? 0 : acos(real))*2;
+}
+
+void Quaternion::SetAngle(float newAngle) {
+    real = cos(newAngle/2);
+    SetVector(Vector().Normalize() * sin(newAngle/2));
 }
 
 EulerAngles Quaternion::ToSpherical() const {
@@ -132,8 +141,20 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+float Vec3::MagnitudeSq() const {
+    return x*x+y*y+z*z;
+}
+
+float Vec2::MagnitudeSq() const {
+    return x*x+y*y;
+}
+
 float Vec3::Magnitude() const {
-    return sqrt(x*x+y*y+z*z);
+    return sqrt(MagnitudeSq());
+}
+
+float Vec2::Magnitude() const {
+    return sqrt(MagnitudeSq());
 }
 
 Vec3 Vec3::Normalize() const {
@@ -145,6 +166,18 @@ Vec3 Vec3::Normalize() const {
 
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
+}
+
+Vec2 Vec2::operator*(const float &other) const {
+    return { x*other, y*other };
+}
+
+Vec3 Vec3::operator*(const float &other) const {
+    return { x*other, y*other, z*other };
+}
+
+Vec2 Vec2::operator+(const Vec2 &other) const {
+    return {x + other.x, y + other.y };
 }
 
 Vec2 Vec2::operator-(const Vec2 &other) const {

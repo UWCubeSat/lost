@@ -169,8 +169,11 @@ class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
     GeneratedPipelineInput(const Catalog &, Attitude, Camera,
-                           int referenceBrightness, float brightnessDeviation,
-                           float noiseDeviation);
+                           float observedReferenceBrightness, float starSpreadStdDev,
+                           float sensitivity, float darkCurrent, float readNoiseStdDev,
+                           Attitude motionBlurDirection, float exposureTime, float readoutTime,
+                           bool shotNoise);
+                           
 
     const Image *InputImage() const { return &image; };
     const Stars *InputStars() const { return &stars; };
@@ -181,7 +184,7 @@ public:
     const Catalog &GetCatalog() const { return catalog; };
 private:
     // we don't use an Image here because we want to 
-    std::unique_ptr<unsigned char[]> imageData;
+    std::vector<unsigned char> imageData;
     Image image;
     Stars stars;
     Camera camera;
