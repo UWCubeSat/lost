@@ -83,7 +83,7 @@ Attitude TriadAlgorithm::Go(const Camera &camera,
                             const Stars &stars,
                             const Catalog &catalog,
                             const StarIdentifiers &starIds) {
-    if ((int)stars.size() < 2) {
+    if ((int)stars.size() < 2 || (int)starIds.size() < 2) {
         return Quaternion(1,0,0,0);
     }
 
