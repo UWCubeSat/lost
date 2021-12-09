@@ -15,6 +15,8 @@
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Core>
 
+// must run: make CXXFLAGS=-I/usr/include/eigen3
+// in order to compile with these libraries
 #include <eigen3/unsupported/Eigen/NonLinearOptimization>
 #include <eigen3/unsupported/Eigen/NumericalDiff>
 
@@ -378,7 +380,7 @@ namespace lost
             //check if pixel is part of a "star" and has not been iterated over
             if (image[i] >= cutoff && checkedIndices.count(i) == 0)
             {
-                std::vector<int> starIndices; //vector of star coordinates
+                std::vector<int> starIndices; // vector of star coordinates
                 int maxIntensity = 0;
                 Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
                 if (starIndices.size() > 1) {
@@ -388,6 +390,7 @@ namespace lost
                 int minYInd = 10000;
                 for (int j = 0; j < (int)starIndices.size(); j++)
                 {
+                    // do this in turnary operator
                     int temp = starIndices.at(j);
                     if (temp % imageWidth > maxXInd)
                     {
@@ -409,24 +412,46 @@ namespace lost
 
                 int xRange = 1 + maxXInd - minXInd;
                 int yRange = 1 + maxYInd - minYInd;
-                float xMid = (maxXInd + minXInd) / 2.0;
-                float yMid = (maxYInd + minYInd) / 2.0;
 
 
                 Eigen::MatrixXf xMeasuredValues(xRange, 2);
                 Eigen::MatrixXf yMeasuredValues(yRange, 2);
 
-
                 float fwhm = 0.0;
 
-                int start = (minYInd * imageWidth) + minXInd;
-                int end = (maxYInd * imageWidth) + maxXInd;
+                // int start = (minYInd * imageWidth) + minXInd;
+                // int end = (maxYInd * imageWidth) + maxXInd;
 
                 int xMax = 0;
                 int xbStart = 0;
                 int ybStart = 0;
                 int yMax = 0;
 
+                // for (int j = 0; j < (int)starIndices.size(); j++) {
+
+                //     int starPixelIndex = starIndices.at(j);
+
+                //     if (image[starPixelIndex] >= (maxIntensity / 2)) {
+                //         fwhm++;
+                //     }
+
+                //     xMeasuredValues((starPixelIndex % imageWidth) - minXInd, 0) = starPixelIndex % imageWidth;
+                //     xMeasuredValues((starPixelIndex % imageWidth) - minXInd, 1) += image[starPixelIndex];
+                //     if (xMeasuredValues(starPixelIndex % imageWidth - minXInd, 1) > xMax) {
+                //         xMax = xMeasuredValues(starPixelIndex % imageWidth - minXInd, 1);
+                //         xbStart = starPixelIndex % imageWidth;
+                //     }
+
+                //     yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 0) = (starPixelIndex / imageWidth);
+                //     yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 1) += image[starPixelIndex];
+                //     if (yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 1) > yMax) {
+                //         yMax = yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 1);
+                //         ybStart = starPixelIndex /imageWidth;
+                //     }
+
+                // }
+
+                //change this to just check starindices
                 for (int j = start; j <= end; j++) {
                     if (image[j] >= (maxIntensity / 2)) {
                         fwhm++;
@@ -438,8 +463,8 @@ namespace lost
                         xbStart = j % imageWidth;
                     }
 
-                    yMeasuredValues((j / imageWidth) - minYInd, 0) = (float) (j / imageWidth);
-                    yMeasuredValues((j / imageWidth) - minYInd, 1) += (float) image[j];
+                    yMeasuredValues((j / imageWidth) - minYInd, 0) = (j / imageWidth);
+                    yMeasuredValues((j / imageWidth) - minYInd, 1) += image[j];
                     if (yMeasuredValues((j / imageWidth) - minYInd, 1) > yMax) {
                         yMax = yMeasuredValues((j / imageWidth) - minYInd, 1);
                         ybStart = j /imageWidth;
@@ -449,6 +474,8 @@ namespace lost
                         j = j + imageWidth - xRange + 1;
                     }
                 }
+
+            
 
                 std::cout << "xMeasuredValues:\n" << xMeasuredValues << "\n";
                 std::cout << "yMeasuredValues:\n" << yMeasuredValues << "\n";
