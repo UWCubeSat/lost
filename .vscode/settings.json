@@ -48,13 +48,23 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "files.eol": "\n",
+        "numericaldiff": "cpp",
+        "nonlinearoptimization": "cpp",
+        "bitset": "cpp",
         "chrono": "cpp",
+        "complex": "cpp",
+        "condition_variable": "cpp",
         "cstring": "cpp",
         "ctime": "cpp",
+        "list": "cpp",
+        "set": "cpp",
         "ratio": "cpp",
-        "dense": "cpp",
-        "nonlinearoptimization": "cpp",
-        "complex": "cpp",
-        "list": "cpp"
+        "regex": "cpp",
+        "future": "cpp",
+        "iomanip": "cpp",
+        "mutex": "cpp",
+        "shared_mutex": "cpp",
+        "thread": "cpp",
+        "variant": "cpp"
     }
 }

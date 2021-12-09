@@ -249,6 +249,10 @@ CentroidAlgorithm *GaussianFit1DAlgorithmPrompt() {
     return new GaussianFit1DAlgorithm();
 }
 
+CentroidAlgorithm *GaussianFit2DAlgorithmPrompt() {
+    return new GaussianFit2DAlgorithm();
+}
+
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
@@ -498,8 +502,10 @@ Pipeline PromptPipeline() {
                                     CoGCentroidAlgorithmPrompt);
             centroidChoice.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm",
                                     IWCoGCentroidAlgorithmPrompt);
-            centroidChoice.Register("2dgf", "1D Gaussian Fit Algorithm",
+            centroidChoice.Register("1dgf", "1D Gaussian Fit Algorithm",
                                     GaussianFit1DAlgorithmPrompt);
+            centroidChoice.Register("2dgf", "2D Gaussian Fit Algorithm",
+                                    GaussianFit2DAlgorithmPrompt);
 
             result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
                 (centroidChoice.Prompt("Choose centroid algo"))());

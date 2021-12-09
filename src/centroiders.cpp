@@ -328,7 +328,7 @@ namespace lost
             {
                 float yCoord = measuredValues(j, 0);
                 float magSum = measuredValues(j, 1);
-                fvec(j) = magSum - (aParam * (exp((-1.0 * pow(yCoord - y_bParam, 2.0)) / (2.0 * pow(sdParam, 2.0)))));
+                fvec(j) = pow((magSum - (aParam * (exp((-1.0 * pow(yCoord - y_bParam, 2.0)) / (2.0 * pow(sdParam, 2.0)))))), 2.0);
             }
             return 0;
         }
@@ -382,91 +382,74 @@ namespace lost
             {
                 std::vector<int> starIndices; // vector of star coordinates
                 int maxIntensity = 0;
+                // get the pixels of the star
                 Gauss1DHelper(i, cutoff, image, imageWidth, imageHeight, starIndices, checkedIndices, maxIntensity);
+                // lets ignore stars of one pixel
                 if (starIndices.size() > 1) {
-                    int maxXInd = 0;
+
+                int maxXInd = 0;
                 int minXInd = 10000;
                 int maxYInd = 0;
                 int minYInd = 10000;
+
+                // find the max and minimum X and Y coordinate
                 for (int j = 0; j < (int)starIndices.size(); j++)
                 {
                     // do this in turnary operator
                     int temp = starIndices.at(j);
-                    if (temp % imageWidth > maxXInd)
-                    {
-                        maxXInd = temp % imageWidth;
-                    }
-                    if (temp % imageWidth < minXInd)
-                    {
-                        minXInd = temp % imageWidth;
-                    }
-                    if (temp / imageWidth > maxYInd)
-                    {
-                        maxYInd = temp / imageWidth;
-                    }
-                    if (temp / imageWidth < minYInd)
-                    {
-                        minYInd = temp / imageWidth;
-                    }
+
+                    maxXInd = temp % imageWidth > maxXInd ? temp % imageWidth : maxXInd;
+                    minXInd = temp % imageWidth < minXInd ? temp % imageWidth : minXInd;
+
+                    maxYInd = temp / imageWidth > maxYInd ? temp / imageWidth : maxYInd;
+                    minYInd = temp / imageWidth < minYInd ? temp / imageWidth : minYInd;
                 }
 
+                // determine the range for the window of the star
                 int xRange = 1 + maxXInd - minXInd;
                 int yRange = 1 + maxYInd - minYInd;
 
-
-                Eigen::MatrixXf xMeasuredValues(xRange, 2);
-                Eigen::MatrixXf yMeasuredValues(yRange, 2);
+                // the matricies that hold (coordinate, intensity sum) of pixels in the star window
+                Eigen::MatrixXf xMagSums(xRange, 2);
+                Eigen::MatrixXf yMagSums(yRange, 2);
 
                 float fwhm = 0.0;
 
-                // int start = (minYInd * imageWidth) + minXInd;
-                // int end = (maxYInd * imageWidth) + maxXInd;
+                // starting index of the star "window"
+                int start = (minYInd * imageWidth) + minXInd;
+                // ending index of the star "window"
+                int end = (maxYInd * imageWidth) + maxXInd;
 
-                int xMax = 0;
+                // guess x-coord
                 int xbStart = 0;
+                // max x value
+                int xMax = 0;
+
+                // guess y coord
                 int ybStart = 0;
+                // max y value
                 int yMax = 0;
 
-                // for (int j = 0; j < (int)starIndices.size(); j++) {
-
-                //     int starPixelIndex = starIndices.at(j);
-
-                //     if (image[starPixelIndex] >= (maxIntensity / 2)) {
-                //         fwhm++;
-                //     }
-
-                //     xMeasuredValues((starPixelIndex % imageWidth) - minXInd, 0) = starPixelIndex % imageWidth;
-                //     xMeasuredValues((starPixelIndex % imageWidth) - minXInd, 1) += image[starPixelIndex];
-                //     if (xMeasuredValues(starPixelIndex % imageWidth - minXInd, 1) > xMax) {
-                //         xMax = xMeasuredValues(starPixelIndex % imageWidth - minXInd, 1);
-                //         xbStart = starPixelIndex % imageWidth;
-                //     }
-
-                //     yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 0) = (starPixelIndex / imageWidth);
-                //     yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 1) += image[starPixelIndex];
-                //     if (yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 1) > yMax) {
-                //         yMax = yMeasuredValues((starPixelIndex / imageWidth) - minYInd, 1);
-                //         ybStart = starPixelIndex /imageWidth;
-                //     }
-
-                // }
-
-                //change this to just check starindices
+                // loop through the pixels in the star window, *worng: sum the pixel intensities
+                // into the respective place in measured values.
+                // determine the max intensity of both data sets
+                int matrixIndex = 0;
                 for (int j = start; j <= end; j++) {
                     if (image[j] >= (maxIntensity / 2)) {
                         fwhm++;
                     }
-                    xMeasuredValues((j % imageWidth) - minXInd, 0) = j % imageWidth;
-                    xMeasuredValues((j % imageWidth) - minXInd, 1) += image[j];
-                    if (xMeasuredValues(j % imageWidth - minXInd, 1) > xMax) {
-                        xMax = xMeasuredValues(j % imageWidth - minXInd, 1);
+
+                    xMagSums((j % imageWidth) - minXInd, 0) = j % imageWidth;
+                    xMagSums((j % imageWidth) - minXInd, 1) += image[j];
+                    if (xMagSums(j % imageWidth - minXInd, 1) > xMax) {
+                        xMax = xMagSums(j % imageWidth - minXInd, 1);
                         xbStart = j % imageWidth;
                     }
 
-                    yMeasuredValues((j / imageWidth) - minYInd, 0) = (j / imageWidth);
-                    yMeasuredValues((j / imageWidth) - minYInd, 1) += image[j];
-                    if (yMeasuredValues((j / imageWidth) - minYInd, 1) > yMax) {
-                        yMax = yMeasuredValues((j / imageWidth) - minYInd, 1);
+                    yMagSums((j / imageWidth) - minYInd, 0) = (j / imageWidth);
+                    yMagSums((j / imageWidth) - minYInd, 1) += image[j];
+                    if (yMagSums((j / imageWidth) - minYInd, 1) > yMax) {
+                        yMax = yMagSums((j / imageWidth) - minYInd, 1);
                         ybStart = j /imageWidth;
                     }
 
@@ -475,11 +458,10 @@ namespace lost
                     }
                 }
 
-            
+                std::cout << "xMagSums:\n" << xMagSums << "\n";
+                std::cout << "yMagSums:\n" << yMagSums << "\n";
 
-                std::cout << "xMeasuredValues:\n" << xMeasuredValues << "\n";
-                std::cout << "yMeasuredValues:\n" << yMeasuredValues << "\n";
-
+                // standard deviation
                 float initStd = sqrt(fwhm) / (2.0 * sqrt(2.0 * log(2.0)));
 
                 // eigen stuff here:
@@ -498,7 +480,7 @@ namespace lost
                 int xm = xRange;
 
                 LMFunctor xFunctor;
-                xFunctor.measuredValues = xMeasuredValues;
+                xFunctor.measuredValues = xMagSums;
                 xFunctor.m = xm;
                 xFunctor.n = n;
 
@@ -517,7 +499,7 @@ namespace lost
                 std::cout << "y params before:\n" << x << "\n";
 
                 LMFunctor yFunctor;
-                yFunctor.measuredValues = yMeasuredValues;
+                yFunctor.measuredValues = yMagSums;
                 yFunctor.m = ym;
                 yFunctor.n = n;
 
@@ -536,6 +518,10 @@ namespace lost
             }
         }
         return result;
+    }
+
+    Stars GaussianFit2DAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+        
     }
 
 }

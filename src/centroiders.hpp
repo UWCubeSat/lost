@@ -40,6 +40,12 @@ class GaussianFit1DAlgorithm : public CentroidAlgorithm {
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
+class GaussianFit2DAlgorithm : public CentroidAlgorithm {
+    public:
+        GaussianFit2DAlgorithm() { };
+        Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
+
 }
 
 #endif
