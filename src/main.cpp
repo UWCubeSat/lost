@@ -12,8 +12,8 @@
 
 namespace lost {
 
-static void DatabaseBuild(std::map<std::string,std::string> values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(),stoi(values["maxMagnitude"]),stoi(values["maxStars"]));
+static void DatabaseBuild(DatabaseOptions values) {
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(),values.maxMagnitude,values.maxStars);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
@@ -24,7 +24,7 @@ static void DatabaseBuild(std::map<std::string,std::string> values) {
     GenerateDatabases(builder, narrowedCatalog, values);
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
-    PromptedOutputStream pos = PromptedOutputStream(values["path"]);
+    PromptedOutputStream pos = PromptedOutputStream(values.path);
     pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 }
 
@@ -46,7 +46,7 @@ static void DatabaseBuild(std::map<std::string,std::string> values) {
 // }
 
 static void PipelineRun(std::map<std::string,std::string> values) {
-    PipelineInputList input = lost::GetPipelineInput(values);
+    PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = PromptPipeline();
     std::vector<PipelineOutput> outputs = pipeline.Go(input);
     PromptPipelineComparison(input, outputs);
@@ -88,17 +88,7 @@ int main(int argc, char **argv) {
             {0, 0, 0, 0}
         };
 
-        // default values/flags
-        std::map<std::string,std::string> parsedValues = {
-            {"maxMagnitude","1000"},
-            {"maxStars","10000"},
-            {"databaseBuilder",""},
-            {"kvector-min-distance",std::to_string(lost::DegToRad(0.5))},
-            {"kvector-max-distance",std::to_string(lost::DegToRad(15))},
-            {"kvector-distance-bins","10000"},
-            {"path","stdout"}
-        };
-
+        lost::DatabaseOptions databaseOptions;
         int index;
         int option;
 
@@ -107,31 +97,31 @@ int main(int argc, char **argv) {
                 switch (option) {
                     case 'm' :
                         std::cout << "You raised the maginude to " << optarg << std::endl;
-                        parsedValues["maxMagnitude"] = optarg;
+                        databaseOptions.maxMagnitude = atoi(optarg);
                         break;
                     case 's' :
                         std::cout << "You lowered the stars to " << optarg << std::endl;
-                        parsedValues["maxStars"] = optarg;
+                        databaseOptions.maxStars = atoi(optarg);
                         break;
                     case 'k' :
                         std::cout << "You picked the kvector version! " << std::endl;
-                        parsedValues["databaseBuilder"] = "kvector";
+                        databaseOptions.databaseBuilder = "kvector";
                         break;
                     case 'a' :
+                        databaseOptions.kvectorMinDistance = atof(optarg);
                         std::cout << "You set the min distance to " << optarg << std::endl;
-                        parsedValues["kvector-min-distance"] = optarg;
                         break;
                     case 'z' :
                         std::cout << "You set the max distance to " << optarg << std::endl;
-                        parsedValues["kvector-max-distance"] = optarg;
+                        databaseOptions.kvectorMaxDistance = atof(optarg);
                         break;
                     case 'b' :
                         std::cout << "You set the number of bins to " << optarg << std::endl;
-                        parsedValues["kvector-distance-bins"] = optarg;
+                        databaseOptions.kvectorDistanceBins = atol(optarg);
                         break;
                     case 'p' :
                         std::cout << "You set the path to " << optarg << std::endl;
-                        parsedValues["path"] = optarg;
+                        databaseOptions.path = optarg;
                         break;
                     case 'h' :
                         system("man documentation/database.man");
@@ -144,7 +134,7 @@ int main(int argc, char **argv) {
             } 
         }
 
-        lost::DatabaseBuild(parsedValues);
+        lost::DatabaseBuild(databaseOptions);
 
         
     } else if (strcmp(argv[1], "pipeline") == 0) {

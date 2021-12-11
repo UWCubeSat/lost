@@ -248,6 +248,30 @@ private:
     std::unique_ptr<unsigned char[]> database;
 };
 
+class PipelineOptions {
+    public:
+        std::string png = "";
+        float focalLength;
+        float pixelSize;
+        float fov = DegToRad(20); // ??? TODO also make sure that DegToRad doesn't happen twice
+        std::string centroidAlgo; // ??
+        int centroidMagFilter; //??
+        std::string database; //?? the file
+        std::string idAlgo; //??
+        bool attitudeDQM;
+        std::string plot;
+        int generate = 1;
+        int horizontalRes;
+        int verticalRes;
+        float horizontalFOV;
+        int referenceBrightness;
+        float brightnessDeviation;
+        float noiseDeviation;
+        float ra;
+        float dec;
+        float roll;
+};
+
 Pipeline PromptPipeline();
 
 // ask the user what to do with actual and expected outputs
@@ -260,9 +284,21 @@ void PromptPipelineComparison(const PipelineInputList &expected,
 
 Catalog PromptNarrowedCatalog(const Catalog &);
 
+// TODO: make not public?
+class DatabaseOptions{
+    public: 
+        int maxMagnitude = 1000;
+        int maxStars = 10000;
+        std::string databaseBuilder = "";
+        float kvectorMinDistance = 0.5; // DegToRad will be calculated in a later step (GenerateDatabases)
+        float kvectorMaxDistance = 15;  // DegToRad will be calculated in a later step (GenerateDatabases)
+        long kvectorDistanceBins = 10000;
+        std::string path = "stdout";
+};
+
 // unlike the other algorithm prompters, db builders aren't a 
 // typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, std::map<std::string,std::string> values);
+void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, DatabaseOptions values);
 // void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 }

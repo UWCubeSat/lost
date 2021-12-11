@@ -327,12 +327,12 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
 }
 
 
-void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, std::map<std::string,std::string> values) {
+void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, DatabaseOptions values) {
 
-    if (values["databaseBuilder"] == "kvector") {
-        float minDistance = DegToRad(stof(values["kvector-min-distance"]));
-        float maxDistance = DegToRad(stof(values["kvector-max-distance"]));
-        long numBins = DegToRad(stof(values["kvector-distance-bins"]));
+    if (values.databaseBuilder == "kvector") {
+        float minDistance = DegToRad(values.kvectorMinDistance);
+        float maxDistance = DegToRad(values.kvectorMaxDistance);
+        long numBins = values.kvectorDistanceBins;
         PromptKVectorDatabaseBuilder(builder, catalog, minDistance, maxDistance, numBins);
     }
 
