@@ -17,7 +17,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
         Star bStar = stars[s.starIndex];
         Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
         Eigen::Vector3f bi;
-        bi << bStarSpatial.y, bStarSpatial.x, bStarSpatial.z;
+        bi << bStarSpatial.x, bStarSpatial.y, bStarSpatial.z;
 
         CatalogStar rStar = catalog[s.catalogIndex];
         Eigen::Vector3f ri;
