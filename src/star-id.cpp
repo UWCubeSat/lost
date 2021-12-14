@@ -463,9 +463,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                     }
 
                                     // we have a match!
-                                    printf("expected mismatches: %e\n", expectedMismatches);
 
-                                    std::cerr << "Surprise muthafuckas" << std::endl;
                                     if (iMatch == -1) {
                                         iMatch = iCandidate;
                                         jMatch = jCandidate;
@@ -484,12 +482,14 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     }
 
                     if (iMatch != -1) {
+                        printf("Matched unique pyramid!\nExpected mismatches: %e\n", expectedMismatches);
                         identified.push_back(StarIdentifier(i, iMatch));
                         identified.push_back(StarIdentifier(j, jMatch));
                         identified.push_back(StarIdentifier(k, kMatch));
                         identified.push_back(StarIdentifier(r, rMatch));
 
                         PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
+                        printf("Identified an additional %d stars\n", (int)identified.size() - 4);
 
                         return identified;
                     }
