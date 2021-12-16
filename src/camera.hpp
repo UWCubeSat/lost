@@ -7,15 +7,16 @@ namespace lost {
 
 class Camera {
 public:
+    Camera(const Camera &) = default;
     // Takes focal lengths in pixels
-    Camera(float xFocalLength, float yFocalLength,
+    Camera(float focalLength,
            float xCenter, float yCenter,
            int xResolution, int yResolution)
-        : xFocalLength(xFocalLength), yFocalLength(yFocalLength),
+        : focalLength(focalLength),
           xCenter(xCenter), yCenter(yCenter),
           xResolution(xResolution), yResolution(yResolution) { };
-    Camera(float xFocalLength, int xResolution, int yResolution)
-        : Camera(xFocalLength, xFocalLength,
+    Camera(float focalLength, int xResolution, int yResolution)
+        : Camera(focalLength,
                  xResolution/(float)2.0, yResolution/(float)2.0,
                  xResolution, yResolution) { };
 
@@ -33,12 +34,15 @@ public:
     // returns whether a given pixel is actually in the camera's field of view
     bool InSensor(const Vec2 &vector) const;
 
-    int GetXResolution() const;
-    int GetYResolution() const;
+    int XResolution() const { return xResolution; };
+    int YResolution() const { return yResolution; };
+    float FocalLength() const { return focalLength; };
+    float Fov() const;
+    void SetFocalLength(float focalLength) { this->focalLength = focalLength; }
 
 private:
     // TODO: distortion
-    float xFocalLength; float yFocalLength;
+    float focalLength;
     float xCenter; float yCenter;
     int xResolution; int yResolution;
 };

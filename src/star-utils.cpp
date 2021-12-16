@@ -30,6 +30,15 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     return result;
 }
 
+const CatalogStar *findNamedStar(const Catalog &catalog, int name) {
+    for (const CatalogStar &catalogStar : catalog) {
+        if (catalogStar.name == name) {
+            return &catalogStar;
+        }
+    }
+    return NULL;
+}
+
 long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     long starSize = SerializeLengthVec3();
     if (inclMagnitude) {
