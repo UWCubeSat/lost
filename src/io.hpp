@@ -27,6 +27,8 @@
 
 namespace lost {
 
+extern bool isDebug;
+
 void RegisterCliArgs(int, char **);
 bool HasNextCliArg();
 std::string NextCliArg();
@@ -44,6 +46,8 @@ S Prompt(const std::string &prompt) {
     }
     return result;
 }
+
+std::string PromptLine(const std::string &prompt);
 
 template <typename S>
 class InteractiveChoiceOption {
@@ -135,6 +139,8 @@ public:
     int height;
 };
 
+std::ostream &operator<<(std::ostream &, const Camera &);
+
 ////////////////////
 // PIPELINE INPUT //
 ////////////////////
@@ -149,12 +155,12 @@ public:
     // whether the input stars have identification information.
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
     // for tracking
-    virtual const Quaternion *InputAttitude() const { return NULL; };
+    virtual const Attitude *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
 
     virtual const Stars *ExpectedStars() const { return InputStars(); };
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
-    virtual const Quaternion *ExpectedAttitude() const { return InputAttitude(); };
+    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 
     cairo_surface_t *InputImageSurface() const;
 };
@@ -162,7 +168,7 @@ public:
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
-    GeneratedPipelineInput(const Catalog &, Quaternion, Camera,
+    GeneratedPipelineInput(const Catalog &, Attitude, Camera,
                            int referenceBrightness, float brightnessDeviation,
                            float noiseDeviation);
 
@@ -171,7 +177,7 @@ public:
     const Camera *InputCamera() const { return &camera; };
     const StarIdentifiers *InputStarIds() const { return &starIds; };
     bool InputStarsIdentified() const { return true; };
-    const Quaternion *InputAttitude() const { return &attitude; };
+    const Attitude *InputAttitude() const { return &attitude; };
     const Catalog &GetCatalog() const { return catalog; };
 private:
     // we don't use an Image here because we want to 
@@ -179,7 +185,7 @@ private:
     Image image;
     Stars stars;
     Camera camera;
-    Quaternion attitude;
+    Attitude attitude;
     const Catalog &catalog;
     StarIdentifiers starIds;
 };
@@ -187,6 +193,8 @@ private:
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList PromptPipelineInput();
+PipelineInputList PromptPngPipelineInput();
+PipelineInputList PromptGeneratedPipelineInput();
 
 class PngPipelineInput : public PipelineInput {
 public:
@@ -195,6 +203,8 @@ public:
     const Image *InputImage() const { return &image; };
     const Camera *InputCamera() const { return &camera; };
     const Catalog &GetCatalog() const { return catalog; };
+
+    void SetCamera(const Camera &camera) { this->camera = camera; };
 private:
     Image image;
     Camera camera;
@@ -208,8 +218,9 @@ private:
 struct PipelineOutput {
     std::unique_ptr<Stars> stars;
     std::unique_ptr<StarIdentifiers> starIds;
-    std::unique_ptr<Quaternion> attitude;
+    std::unique_ptr<Attitude> attitude;
     Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
+    bool nice;
 };
 
 struct StarIdComparison {
@@ -230,6 +241,12 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE //
 //////////////
 
+class Santa {
+public:
+    virtual bool Go(const PipelineOutput &) const = 0;
+    virtual ~Santa() { };
+};
+
 // a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
 
 class Pipeline {
@@ -245,6 +262,7 @@ private:
     int centroidMinMagnitude = 0;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+    std::unique_ptr<Santa> santa;
     std::unique_ptr<unsigned char[]> database;
 };
 
@@ -263,6 +281,12 @@ Catalog PromptNarrowedCatalog(const Catalog &);
 // unlike the other algorithm prompters, db builders aren't a 
 typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
 void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
+
+/////////////////////
+// INSPECT CATALOG //
+/////////////////////
+
+void InspectCatalog();
 
 }
 
