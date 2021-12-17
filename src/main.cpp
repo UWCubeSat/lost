@@ -47,7 +47,7 @@ static void DatabaseBuild(DatabaseOptions values) {
 
 static void PipelineRun(PipelineOptions values) {
     PipelineInputList input = GetPipelineInput(values);
-    Pipeline pipeline = SetPipeline();
+    Pipeline pipeline = SetPipeline(values);
     std::vector<PipelineOutput> outputs = pipeline.Go(input);
     PromptPipelineComparison(input, outputs);
 }

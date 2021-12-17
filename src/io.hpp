@@ -146,15 +146,15 @@ class PipelineOptions {
         float focalLength;
         float pixelSize;
         float fov = DegToRad(20); // ??? TODO also make sure that DegToRad doesn't happen twice
-        std::string centroidAlgo; // ??
+        std::string centroidAlgo = "";
         int dummyCentroidNumStars; //??
         int centroidMagFilter; //??
         std::string database; //?? the file
         std::string idAlgo; //??
-        float gvTolerance; // is it float?
-        float pyTolerance; // is it float?
-        int pyFalseStars; // is it int?
-        float pyMismatchProb; // is it float?
+        float gvTolerance;
+        float pyTolerance;
+        int pyFalseStars;
+        float pyMismatchProb;
         bool attitudeDQM;
         std::string plot;
         int generate = 1;
@@ -265,7 +265,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
 
 class Pipeline {
-    friend Pipeline SetPipeline();
+    friend Pipeline SetPipeline(PipelineOptions value);
 public:
     // pointers just so they're nullable
     Pipeline() = default;
@@ -280,7 +280,7 @@ private:
     std::unique_ptr<unsigned char[]> database;
 };
 
-Pipeline SetPipeline();
+Pipeline SetPipeline(PipelineOptions values);
 
 // ask the user what to do with actual and expected outputs
 void PromptPipelineComparison(const PipelineInputList &expected,

@@ -243,42 +243,42 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
 // ALGORITHM PROMPTERS
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 
-CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
-    int numStars = Prompt<int>("How many stars to generate");
-    return new DummyCentroidAlgorithm(numStars);
-}
+// CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
+//     int numStars = Prompt<int>("How many stars to generate");
+//     return new DummyCentroidAlgorithm(numStars);
+// }
 
-CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
-    return new CenterOfGravityAlgorithm();
-}
+// CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
+//     return new CenterOfGravityAlgorithm();
+// }
 
-CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
-    return new IterativeWeightedCenterOfGravityAlgorithm();
-}
+// CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
+//     return new IterativeWeightedCenterOfGravityAlgorithm();
+// }
 
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
-    return new DummyStarIdAlgorithm();
-}
+// StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
+//     return new DummyStarIdAlgorithm();
+// }
 
-StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
-    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-    return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
-}
+// StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
+//     float tolerance = Prompt<float>("Angular tolerance? (degrees)");
+//     return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
+// }
 
-StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
-    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-    int numFalseStars = Prompt<int>("Estimated # of false stars (whole sphere)");
-    float maxMismatchProbability = Prompt<float>("Maximum mismatch probability");
-    return new PyramidStarIdAlgorithm(DegToRad(tolerance), numFalseStars, maxMismatchProbability, 1000);
-}
+// StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
+//     float tolerance = Prompt<float>("Angular tolerance? (degrees)");
+//     int numFalseStars = Prompt<int>("Estimated # of false stars (whole sphere)");
+//     float maxMismatchProbability = Prompt<float>("Maximum mismatch probability");
+//     return new PyramidStarIdAlgorithm(DegToRad(tolerance), numFalseStars, maxMismatchProbability, 1000);
+// }
 
-AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
-    return new DavenportQAlgorithm();
-}
+// AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
+//     return new DavenportQAlgorithm();
+// }
 
 Catalog PromptNarrowedCatalog(const Catalog &catalog) {
     float maxSomething = Prompt<float>("Max magnitude or # of stars");
@@ -583,7 +583,7 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 
 
-Pipeline SetPipeline() {
+Pipeline SetPipeline(PipelineOptions values) {
     enum class PipelineStage {
         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
     };
@@ -601,69 +601,74 @@ Pipeline SetPipeline() {
     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
     stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
 
-    while (true) {
-        PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
-        switch (nextStage) {
-
-        case PipelineStage::Centroid: {
-            InteractiveChoice<CentroidAlgorithmFactory> centroidChoice;
-            centroidChoice.Register("dummy", "Random Centroid Algorithm",
-                                    DummyCentroidAlgorithmPrompt);
-            centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm",
-                                    CoGCentroidAlgorithmPrompt);
-            centroidChoice.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm",
-                                    IWCoGCentroidAlgorithmPrompt);
-
-            result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
-                (centroidChoice.Prompt("Choose centroid algo"))());
-            break;
-        }
-
-        case PipelineStage::CentroidMagnitudeFilter: {
-            result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
-            break;
-        }
-
-        case PipelineStage::Database: {
-            std::string path = Prompt<std::string>("Database file");
-            std::fstream fs;
-            fs.open(path, std::fstream::in | std::fstream::binary);
-            fs.seekg(0, fs.end);
-            long length = fs.tellg();
-            fs.seekg(0, fs.beg);
-            std::cerr << "Reading " << length << " bytes of database" << std::endl;
-            result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
-            fs.read((char *)result.database.get(), length);
-            std::cerr << "Done" << std::endl;
-            break;
-        }
-
-        case PipelineStage::StarId: {
-            InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
-            starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
-            starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
-            starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
-
-            result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
-                (starIdChoice.Prompt("Choose Star-ID algo"))());
-            break;
-        }
-
-        case PipelineStage::AttitudeEstimation: {
-            InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
-            attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
-            result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
-                (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
-            break;
-        }
-
-        case PipelineStage::Done: {
-            // fuck style guides
-            goto PipelineDone;
-        }
-        }
+    // centroid algorithm stage
+    if (values.centroidAlgo == "dummy") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.dummyCentroidNumStars));
+    } else if (values.centroidAlgo == "cog") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo == "iwcog") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
     }
-    PipelineDone:
+
+    // centroid magnitude filter stage
+    result.centroidMinMagnitude = values.centroidMagFilter; //TODO make sure there's some check that this was selected
+
+    // database stage
+    if (values.png != "") {
+        std::fstream fs;
+        fs.open(values.png, std::fstream::in | std::fstream::binary);
+        fs.seekg(0, fs.end);
+        long length = fs.tellg();
+        fs.seekg(0, fs.beg);
+        std::cerr << "Reading " << length << " bytes of database" << std::endl;
+        result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
+        fs.read((char *)result.database.get(), length);
+        std::cerr << "Done" << std::endl;
+    }
+
+    if (values.idAlgo == "dummy") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
+    } else if (values.idAlgo == "gv") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.gvTolerance)));
+    } else if (values.idAlgo == "py") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.pyTolerance), values.pyFalseStars, values.pyMismatchProb, 1000));
+    }
+
+    if (values.attitudeDQM) {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
+    }
+
+    // while (true) {
+    //     PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
+    //     switch (nextStage) {
+
+
+    //     // case PipelineStage::StarId: {
+    //     //     InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
+    //     //     // starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
+    //     //     // starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
+    //     //     starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
+
+    //     //     result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
+    //     //         (starIdChoice.Prompt("Choose Star-ID algo"))());
+    //     //     break;
+    //     // }
+
+    //     case PipelineStage::AttitudeEstimation: {
+    //         InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
+    //         attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
+    //         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
+    //             (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
+    //         break;
+    //     }
+
+    //     case PipelineStage::Done: {
+    //         // fuck style guides
+    //         goto PipelineDone;
+    //     }
+    //     }
+    // }
+    // PipelineDone:
 
     return result;
 }
