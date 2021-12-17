@@ -45,9 +45,9 @@ static void DatabaseBuild(DatabaseOptions values) {
 //     pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 // }
 
-static void PipelineRun(std::map<std::string,std::string> values) {
+static void PipelineRun(PipelineOptions values) {
     PipelineInputList input = GetPipelineInput(values);
-    Pipeline pipeline = PromptPipeline();
+    Pipeline pipeline = SetPipeline();
     std::vector<PipelineOutput> outputs = pipeline.Go(input);
     PromptPipelineComparison(input, outputs);
 }
@@ -173,28 +173,29 @@ int main(int argc, char **argv) {
         };
 
         // default values/flags
-        std::map<std::string,std::string> parsedValues = {
-            {"png",""},
-            {"focal-length", "defaultTBD"},
-            {"pixel-size","defaultTBD"},
-            {"fov", "defaultTBD"},
-            {"centroid-algo", "defaultTBD"},
-            {"centroid-mag-filter", "defaultTBD"},
-            {"database","defaultTBD"},
-            {"id-algo", "defaultTBD"},
-            {"attitude-dqm","defaultTBD"},
-            {"plot","defaultTBD"},
-            {"generate","1"},
-            {"horizontal-res","defaultTBD"},
-            {"vertical-res","defaultTBD"},
-            {"horizontal-fov","defaultTBD"},
-            {"ref-brightness-mag","defaultTBD"},
-            {"spread-stddev","defaultTBD"},
-            {"noise-stddev","defaultTBD"},
-            {"boresight-right-asc","defaultTBD"},
-            {"boresight-dec","defaultTBD"},
-            {"boresight-roll","defaultTBD"}
-        };
+        lost::PipelineOptions pipelineOptions;
+        // std::map<std::string,std::string> parsedValues = {
+        //     {"png",""},
+        //     {"focal-length", "defaultTBD"},
+        //     {"pixel-size","defaultTBD"},
+        //     {"fov", "defaultTBD"},
+        //     {"centroid-algo", "defaultTBD"},
+        //     {"centroid-mag-filter", "defaultTBD"},
+        //     {"database","defaultTBD"},
+        //     {"id-algo", "defaultTBD"},
+        //     {"attitude-dqm","defaultTBD"},
+        //     {"plot","defaultTBD"},
+        //     {"generate","1"},
+        //     {"horizontal-res","defaultTBD"},
+        //     {"vertical-res","defaultTBD"},
+        //     {"horizontal-fov","defaultTBD"},
+        //     {"ref-brightness-mag","defaultTBD"},
+        //     {"spread-stddev","defaultTBD"},
+        //     {"noise-stddev","defaultTBD"},
+        //     {"boresight-right-asc","defaultTBD"},
+        //     {"boresight-dec","defaultTBD"},
+        //     {"boresight-roll","defaultTBD"}
+        // };
 
         int index;
         int option;
@@ -204,119 +205,116 @@ int main(int argc, char **argv) {
                 switch (option) {
                     case 'a' :
                         std::cout << "You made the file path " << optarg << std::endl;
-                        parsedValues["png"] = optarg;
+                        pipelineOptions.png = optarg;
                         break;
                     case 'b' :
                         std::cout << "You set the focal length to " << optarg << std::endl;
-                        parsedValues["focal-length"] = optarg;
+                        pipelineOptions.focalLength = atof(optarg);
                         break;
                     case 'c' :
                         std::cout << "You set the pixel size to " << optarg << std::endl;
-                        parsedValues["pixel-size"] = optarg;
+                        pipelineOptions.pixelSize = atof(optarg);
                         break;
                     case 'd' :
                         std::cout << "You set the fov to " << optarg << std::endl;
-                        parsedValues["fov"] = optarg;
+                        pipelineOptions.fov = atof(optarg);
                         break;
                     case 'e' : 
                     {
-                        std::string ns = "default";
+                        pipelineOptions.centroidAlgo = "dummy";
                         if (optarg != NULL) {
-                            ns = optarg;    // put default with the other defaults
+                            pipelineOptions.dummyCentroidNumStars = atoi(optarg);
                         } 
-                        std::cout << "You set the centroid algo to dummy with " << ns << " stars." << std::endl;
-                        parsedValues["centroid-algo"] = "dummy," + ns;
+                        std::cout << "You set the centroid algo to dummy with " << optarg << " stars." << std::endl;
                         break; 
                     }
                     case 'f' :
                         std::cout << "You set the centroid algo to cog " << std::endl;
-                        parsedValues["centroid-algo"] = "cog";
+                        pipelineOptions.centroidAlgo = "cog";
                         break;
                     case 'g' :
                         std::cout << "You set the centroid algo to iwcog " << std::endl;
-                        parsedValues["centroid-algo"] = "iwcog";
+                        pipelineOptions.centroidAlgo = "iwcog";
                         break;
                     case 'h' :
                         std::cout << "You set the centroid mag filter to to " << optarg << std::endl;
-                        parsedValues["centroid-mag-filter"] = optarg;
+                        pipelineOptions.centroidMagFilter = atoi(optarg);
                         break;
                     case 'i' :
                         std::cout << "You set the database to " << optarg << std::endl;
-                        parsedValues["database"] = optarg;
+                        pipelineOptions.database = optarg;
                         break;
                     case 'j' :
                         std::cout << "You set the id algo to dummy" << std::endl;
-                        parsedValues["id-algo"] = "dummy";
+                        pipelineOptions.idAlgo = "dummy";
                         break;
                     case 'k' :
                         std::cout << "You set the id algo to geometric voting" << std::endl;
-                        parsedValues["id-algo"] = "gv";
+                        pipelineOptions.idAlgo = "gv";
+                        pipelineOptions.gvTolerance = atof(optarg);
                         break;                    
                     case 'l' :
                         std::cout << "You set the id algo to pyramid" << std::endl;
-                        parsedValues["id-algo"] = "pyramid";
+                        pipelineOptions.idAlgo = "pyramid";
                         break;
                     case 'm' :
                         std::cout << "You set the id algo pyramid tolerance to " << optarg << std::endl;
-                        parsedValues["id-algo"] += ",tol=";
-                        parsedValues["id-algo"] += optarg;
+                        pipelineOptions.pyTolerance = atof(optarg);
                         break;
                     case 'n' :
                         std::cout << "You set the id algo false stars to " << optarg << std::endl;
-                        parsedValues["id-algo"] += ",fs=";
-                        parsedValues["id-algo"] += optarg;
+                        pipelineOptions.pyFalseStars = atoi(optarg);
                         break;
                     case 'o' :
                         std::cout << "You set the id algo max mismatch probability to " << optarg << std::endl;
-                        parsedValues["id-algo"] += ",prob=";
-                        parsedValues["id-algo"] += optarg;
+                        pipelineOptions.pyMismatchProb = atof(optarg);
                         break;
                     case 'p' :
-                        parsedValues["attitude-dqm"] = "true";
+                        pipelineOptions.attitudeDQM = true;
                         break;
                     case 'q' :
                         std::cout << "You set the plotted output path to " << optarg << std::endl;
-                        parsedValues["plot"] = optarg;
+                        pipelineOptions.plot = optarg;
                         break;
                     case 'r' :
                         std::cout << "Generating images! " << optarg << std::endl;
-                        if (optarg != NULL) parsedValues["generate"] = optarg;
+                        if (optarg != NULL) pipelineOptions.generate = atoi(optarg);
                         break;
                     case 's' :
                         std::cout << "You set the horizontal res to " << optarg << std::endl;
-                        parsedValues["horizontal-res"] = optarg;
+                        pipelineOptions.horizontalRes = atoi(optarg);
                         break;
                     case 't' :
                         std::cout << "You set the vertical res to " << optarg << std::endl;
-                        parsedValues["vertical-res"] = optarg;
+                        pipelineOptions.verticalRes = atoi(optarg);
                         break;
                     case 'u' :
                         std::cout << "You set the horizontal fov to " << optarg << std::endl;
-                        parsedValues["horizontal-fov"] = optarg;
+                        pipelineOptions.horizontalFOV = atof(optarg);
                         break;
                     case 'v' :
                         std::cout << "You have a ref brightness magnitude " ;
-                        parsedValues["ref-brightness-mag"] = "true";                        
+                        pipelineOptions.referenceBrightness = atoi(optarg);                        
                         break;
                     case 'w' :
                         std::cout << "You set the spread stddev to " << optarg << std::endl;
-                        parsedValues["spread-stddev"] = optarg;
+                        pipelineOptions.brightnessDeviation = atof(optarg);
                         break;
                     case 'x' :
                         std::cout << "You set the noise stddev to " << optarg << std::endl;
-                        parsedValues["noise-stddev"] = optarg;
+                        pipelineOptions.noiseDeviation = atof(optarg);
                         break;
                     case 'y' :
                         std::cout << "You set the boresight right asc to " << optarg << std::endl;
-                        parsedValues["boresight-right-asc"] = optarg;
+                        pipelineOptions.ra = atof(optarg);
                         break;
                     case 'z' :
                         std::cout << "You set the boresight declination to " << optarg << std::endl;
-                        parsedValues["boresight-dec"] = optarg;
+                        pipelineOptions.dec = atof(optarg);
                         break;
                     case '{' :
                         std::cout << "You set the boresight roll to " << optarg << std::endl;
-                        parsedValues["boresight-roll"] = optarg;
+                        pipelineOptions.roll = atof(optarg);
                         break;
                     case '}': 
                         system("man documentation/pipeline.man");
@@ -329,7 +327,7 @@ int main(int argc, char **argv) {
             } 
         }
 
-        lost::PipelineRun(parsedValues);
+        lost::PipelineRun(pipelineOptions);
 
     } else {
         std::cout << "Unrecognized command" << std::endl;

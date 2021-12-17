@@ -390,12 +390,12 @@ PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera,
     image.height = cairo_image_surface_get_height(cairoSurface);
 }
 
-PipelineInputList GetPngPipelineInput(std::map<std::string,std::string> values) {
+PipelineInputList GetPngPipelineInput(PipelineOptions values) {
     // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
     // with copying unique ptrs
     PipelineInputList result;
     cairo_surface_t *cairoSurface = NULL;
-    std::string pngPath = values["png"];
+    std::string pngPath = values.png;
     
     while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
          cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
@@ -403,8 +403,8 @@ PipelineInputList GetPngPipelineInput(std::map<std::string,std::string> values) 
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
 
-    float focalLength = stof(values["focal-length"]);
-    float pixelSize = stof(values["pixelSize"]);
+    float focalLength = values.focalLength;
+    float pixelSize = values.pixelSize;
     float focalLengthPixels = focalLength * 1000 / pixelSize;
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
@@ -512,19 +512,19 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 //     return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
 // }
 
-PipelineInputList GetGeneratedPipelineInput(std::map<std::string,std::string> values) {
+PipelineInputList GetGeneratedPipelineInput(PipelineOptions values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
-    int numImages = stoi(values["generate"]);
-    int xResolution = stoi(values["horizontal-res"]);
-    int yResolution = stoi(values["vertical-res"]);
-    float xFovDeg = stof(values["horizontal-fov"]);
+    int numImages = values.generate;
+    int xResolution = values.horizontalRes;
+    int yResolution = values.verticalRes;
+    float xFovDeg = values.horizontalFOV;
     float xFocalLength = FovToFocalLength(DegToRad(xFovDeg), xResolution);
-    int referenceBrightness = stoi(values["ref-brightness-mag"]);
-    float brightnessDeviation = stof(values["spread-stddev"]);
-    float noiseDeviation = stof(values["noise-stddev"]);
-    float ra = stof(values["boresight-right-asc"]);
-    float dec = stof(values["boresight-dec"]);
-    float roll = stof(values["boresight-roll"]);
+    int referenceBrightness = values.referenceBrightness;
+    float brightnessDeviation = values.brightnessDeviation;
+    float noiseDeviation = values.noiseDeviation;
+    float ra = values.ra;
+    float dec = values.dec;
+    float roll = values.roll;
 
     // TODO: allow random angle generation?
     Quaternion attitude = SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
@@ -546,9 +546,9 @@ PipelineInputList GetGeneratedPipelineInput(std::map<std::string,std::string> va
 
 typedef PipelineInputList (*PipelineInputFactory)();
 
-PipelineInputList GetPipelineInput(std::map<std::string,std::string> values) {
+PipelineInputList GetPipelineInput(PipelineOptions values) {
 
-    if (values["png"] != "false") {
+    if (values.png != "") {
         return GetPngPipelineInput(values);
     } else {
         return GetGeneratedPipelineInput(values);
@@ -581,7 +581,9 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
     }
 }
 
-Pipeline PromptPipeline() {
+
+
+Pipeline SetPipeline() {
     enum class PipelineStage {
         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
     };
@@ -665,6 +667,95 @@ Pipeline PromptPipeline() {
 
     return result;
 }
+
+
+
+
+
+// Pipeline PromptPipeline() {
+//     enum class PipelineStage {
+//         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
+//     };
+
+//     Pipeline result;
+    
+//     InteractiveChoice<PipelineStage> stageChoice;
+//     stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
+//     // TODO: more flexible or sth
+//     stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
+//     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
+//     // choices to those compatible with the database?
+//     stageChoice.Register("database", "Database", PipelineStage::Database);
+//     stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
+//     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
+//     stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
+
+//     while (true) {
+//         PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
+//         switch (nextStage) {
+
+//         case PipelineStage::Centroid: {
+//             InteractiveChoice<CentroidAlgorithmFactory> centroidChoice;
+//             centroidChoice.Register("dummy", "Random Centroid Algorithm",
+//                                     DummyCentroidAlgorithmPrompt);
+//             centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm",
+//                                     CoGCentroidAlgorithmPrompt);
+//             centroidChoice.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm",
+//                                     IWCoGCentroidAlgorithmPrompt);
+
+//             result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
+//                 (centroidChoice.Prompt("Choose centroid algo"))());
+//             break;
+//         }
+
+//         case PipelineStage::CentroidMagnitudeFilter: {
+//             result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
+//             break;
+//         }
+
+//         case PipelineStage::Database: {
+//             std::string path = Prompt<std::string>("Database file");
+//             std::fstream fs;
+//             fs.open(path, std::fstream::in | std::fstream::binary);
+//             fs.seekg(0, fs.end);
+//             long length = fs.tellg();
+//             fs.seekg(0, fs.beg);
+//             std::cerr << "Reading " << length << " bytes of database" << std::endl;
+//             result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
+//             fs.read((char *)result.database.get(), length);
+//             std::cerr << "Done" << std::endl;
+//             break;
+//         }
+
+//         case PipelineStage::StarId: {
+//             InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
+//             starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
+//             starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
+//             starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
+
+//             result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
+//                 (starIdChoice.Prompt("Choose Star-ID algo"))());
+//             break;
+//         }
+
+//         case PipelineStage::AttitudeEstimation: {
+//             InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
+//             attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
+//             result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
+//                 (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
+//             break;
+//         }
+
+//         case PipelineStage::Done: {
+//             // fuck style guides
+//             goto PipelineDone;
+//         }
+//         }
+//     }
+//     PipelineDone:
+
+//     return result;
+// }
 
 PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From

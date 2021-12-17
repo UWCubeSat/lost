@@ -139,6 +139,38 @@ public:
 // PIPELINE INPUT //
 ////////////////////
 
+// TODO maybe make a class also for the different options options
+class PipelineOptions {
+    public:
+        std::string png = "";
+        float focalLength;
+        float pixelSize;
+        float fov = DegToRad(20); // ??? TODO also make sure that DegToRad doesn't happen twice
+        std::string centroidAlgo; // ??
+        int dummyCentroidNumStars; //??
+        int centroidMagFilter; //??
+        std::string database; //?? the file
+        std::string idAlgo; //??
+        float gvTolerance; // is it float?
+        float pyTolerance; // is it float?
+        int pyFalseStars; // is it int?
+        float pyMismatchProb; // is it float?
+        bool attitudeDQM;
+        std::string plot;
+        int generate = 1;
+        int horizontalRes = 1024;
+        int verticalRes = 1024;
+        float horizontalFOV;
+        int referenceBrightness;
+        float brightnessDeviation;
+        float noiseDeviation;
+        float ra = 88; // degtorad will be calculated later in the pipeline
+        float dec = 7; // degtorad will be calculated later in the pipeline
+        float roll = 0;
+};
+
+
+
 // represents the input and expected outputs of a pipeline run.
 class PipelineInput {
 public:
@@ -186,7 +218,7 @@ private:
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
-PipelineInputList GetPipelineInput(std::map<std::string,std::string> values);
+PipelineInputList GetPipelineInput(PipelineOptions values);
 
 class PngPipelineInput : public PipelineInput {
 public:
@@ -233,7 +265,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
 
 class Pipeline {
-    friend Pipeline PromptPipeline();
+    friend Pipeline SetPipeline();
 public:
     // pointers just so they're nullable
     Pipeline() = default;
@@ -248,31 +280,7 @@ private:
     std::unique_ptr<unsigned char[]> database;
 };
 
-class PipelineOptions {
-    public:
-        std::string png = "";
-        float focalLength;
-        float pixelSize;
-        float fov = DegToRad(20); // ??? TODO also make sure that DegToRad doesn't happen twice
-        std::string centroidAlgo; // ??
-        int centroidMagFilter; //??
-        std::string database; //?? the file
-        std::string idAlgo; //??
-        bool attitudeDQM;
-        std::string plot;
-        int generate = 1;
-        int horizontalRes;
-        int verticalRes;
-        float horizontalFOV;
-        int referenceBrightness;
-        float brightnessDeviation;
-        float noiseDeviation;
-        float ra;
-        float dec;
-        float roll;
-};
-
-Pipeline PromptPipeline();
+Pipeline SetPipeline();
 
 // ask the user what to do with actual and expected outputs
 void PromptPipelineComparison(const PipelineInputList &expected,
