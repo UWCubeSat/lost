@@ -161,7 +161,7 @@ struct CentroidParams {
 //recursive helper here
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at((i+1) * imageWidth * subdivisions) && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at((i) / (imageWidth * subdivisions)) && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
@@ -240,7 +240,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
     p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, subdivisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at((i+1) * imageWidth * subdivisions) && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.localCutoff.at((i) / (imageWidth * subdivisions)) && p.checkedIndices.count(i) == 0) {
 
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
