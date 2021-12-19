@@ -474,7 +474,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Attitude motionBlurDirection, // applied on top of the attitude
                                                float exposureTime, // zero for no motion blur
                                                float readoutTime, // zero for no rolling shutter
-                                               bool shotNoise
+                                               bool shotNoise,
+                                               int oversampling
     ) : camera(camera), attitude(attitude), catalog(catalog) {
 
     // in photons
@@ -486,18 +487,16 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
     // TODO: oversample the photons buffer, then sum to find the actual number of photons for each
     // physical pixel.
+    assert(oversampling >= 1);
     std::vector<float> photonsBuffer(image.width*image.height, 0);
 
     bool motionBlurEnabled = exposureTime > 0;
+    // TODO: ensure works when motion blur disabled
     if (!motionBlurEnabled) {
         motionBlurDirection = Attitude(Quaternion(0, 1, 0, 0));
     }
-    // make a tiny rotation in the same direction.
     Quaternion motionBlurDirectionQ = motionBlurDirection.GetQuaternion();
-    float motionBlurDerivativeFraction = 1.0;
-    //motionBlurDirectionQ.SetAngle(motionBlurDirectionQ.Angle()*motionBlurDerivativeFraction);
     Quaternion midAttitude = attitude.GetQuaternion();
-    // these quaternions are reference frame rotations, so this is the correct order.
     Quaternion derivativeAttitude = motionBlurDirectionQ*midAttitude;
     std::vector<GeneratedStar> generatedStars;
 
@@ -511,11 +510,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
         if (camera.InSensor(camCoords)) {
             Vec3 rotatedBlurred = derivativeAttitude.Rotate(catalog[i].spatial);
-            Vec2 delta = ((camera.SpatialToCamera(rotatedBlurred)) - camCoords) * (1/motionBlurDerivativeFraction);
+            Vec2 delta = camera.SpatialToCamera(rotatedBlurred) - camCoords;
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
             float peakBrightness = referenceBrightness * pow(10.0, catalogStar.magnitude/-250.0);
             float interestingThreshold = 0.01; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
+            // inverse of the function defining the Gaussian distribution: Find out how far from the
+            // mean we'll have to go until the number of photons is less than interestingThreshold
             float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness/exposureTime)*2*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
@@ -534,24 +535,38 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         int yMin = std::max(0, (int)std::min(earliestPosition.y - star.radiusX, latestPosition.y - star.radiusX));
         int yMax = std::min(image.height-1, (int)std::max(earliestPosition.y + star.radiusX, latestPosition.y + star.radiusX));
 
+        // peak brightness is measured in photons per time unit per pixel, so if oversampling, we
+        // need to convert units to photons per time unit per sample
+        float peakBrightnessPerSample = star.peakBrightness / (oversampling*oversampling);
+
         // the star.x and star.y refer to the pixel whose top left corner the star should appear at
         // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
         // would integrate the intensity of the star over that pixel, but we can make do by sampling
         // the intensity of the star at the /center/ of the pixel, ie, star.x+.5 and star.y+.5
-        for(int x = xMin; x <= xMax; x++) {
-            for (int y = yMin; y <= yMax; y++) {
+        for(int xPixel = xMin; xPixel <= xMax; xPixel++) {
+            for (int yPixel = yMin; yPixel <= yMax; yPixel++) {
                 // offset of beginning & end of readout compared to beginning & end of readout for
                 // center row
-                float readoutOffset = readoutTime * (y - image.height/2.0) / image.height;
+                float readoutOffset = readoutTime * (yPixel - image.height/2.0) / image.height;
                 float tStart = -exposureTime/2.0 + readoutOffset;
                 float tEnd = exposureTime/2.0 + readoutOffset;
-                // TODO: handle when motion blur is disabled.
-                float curPhotons =
-                    // TODO: +.5?
-                    motionBlurredBrightness({(float)x, (float)y}, star.position, star.motionBlurDelta, tEnd, starSpreadStdDev, star.peakBrightness)
-                    - motionBlurredBrightness({(float)x, (float)y}, star.position, star.motionBlurDelta, tStart, starSpreadStdDev, star.peakBrightness);
-                assert(0.0 <= curPhotons);
-                photonsBuffer[x + y*image.width] += curPhotons;
+
+                // loop through all samples in the current pixel
+                for (int xSample = 0; xSample < oversampling; xSample++) {
+                    for (int ySample = 0; ySample < oversampling; ySample++) {
+                        float x = xPixel + (xSample+0.5)/oversampling;
+                        float y = yPixel + (ySample+0.5)/oversampling;
+
+                        // TODO: handle when motion blur is disabled.
+                        float curPhotons =
+                            // TODO: +.5?
+                            motionBlurredBrightness({x, y}, star.position, star.motionBlurDelta, tEnd, starSpreadStdDev, peakBrightnessPerSample)
+                            - motionBlurredBrightness({x, y}, star.position, star.motionBlurDelta, tStart, starSpreadStdDev, peakBrightnessPerSample);
+                        assert(0.0 <= curPhotons);
+
+                        photonsBuffer[xPixel + yPixel*image.width] += curPhotons;
+                    }
+                }
             }
         }
     }
@@ -617,6 +632,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
     float exposureTime = Prompt<float>("Exposure time");
     float readoutTime = Prompt<float>("Readout time");
     bool shotNoise = Prompt<bool>("Enable shot noise");
+    int oversampling = Prompt<int>("Oversampling");
 
     // TODO: allow random angle generation?
     Quaternion attitude = PromptSphericalAttitude("Boresight");
@@ -631,7 +647,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
             camera,
             observedReferenceBrightness, starSpreadStdDev,
             sensitivity, darkCurrent, readNoiseStdDev, motionBlurDirection,
-            exposureTime, readoutTime, shotNoise);
+            exposureTime, readoutTime, shotNoise, oversampling);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
     }
