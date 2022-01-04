@@ -109,21 +109,26 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
         std = 0;
         if(i != divisions) {
             for(int j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
-                totalMag += image[i];
+                totalMag += image[j];
             }
-        } else {
+            mean = totalMag / totalPixels;
+            for (long j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
+                std += std::pow(image[j] - mean, 2);
+            }
+        } else { // For the case that the end has more lines than the rest
             for(int j = i * div * imageWidth; j < sizeof(image); j++) {
-                totalMag += image[i];
+                totalMag += image[j];
             }
-        }
-        mean = totalMag / totalPixels;
-        for (long i = 0; i < totalPixels; i++) {
-            std += std::pow(image[i] - mean, 2);
+            mean = totalMag / totalPixels;
+            for (long j = i * div * imageWidth; j < sizeof(image); j++) {
+                std += std::pow(image[j] - mean, 2);
+            }
         }
         std = std::sqrt(std / totalPixels);
         standardDeviations.push_back(mean + (std * 5));
     }
     standardDeviations.push_back(mean + (std * 5));
+    std::cout << standardDeviations.size();
     // Return values of previous method as a vector
     return standardDeviations;
 }
@@ -161,7 +166,7 @@ struct CentroidParams {
 //recursive helper here
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at((i) / (imageWidth * subdivisions)) && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(i / (imageWidth * (imageHeight / subdivisions))) && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
@@ -240,7 +245,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
     p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, subdivisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at((i) / (imageWidth * subdivisions)) && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.localCutoff.at(i / (imageWidth * (imageHeight / subdivisions))) && p.checkedIndices.count(i) == 0) {
 
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
