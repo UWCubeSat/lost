@@ -106,7 +106,7 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
     std::vector<int> standardDeviations;
     for(int i = 0; i <= divisions; i++) {
         totalMag = 0;
-        std = 0;
+        std = 1;
         if(i != divisions) {
             for(int j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
                 totalMag += image[j];
