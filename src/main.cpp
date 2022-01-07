@@ -73,7 +73,16 @@ static void PipelineRun(PipelineOptions values) {
 
 int main(int argc, char **argv) {
 
+    if (argc == 1) {
+        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
+        return 0;
+    } else if (argc == 2) {
+        std::cout << "Use the --help flag to see usage" << std::endl;
+        return 0;
+    }
+    
     if (strcmp(argv[1], "database") == 0) {
+
 
         static struct option long_options[] =
         {
