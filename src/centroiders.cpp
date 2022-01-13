@@ -96,7 +96,7 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 // corresponding to different divisions.
 // Divisions are horizontally based
 // Uses the same statistical algorithm as BasicThresholding
-std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int divisions) { // 4 Divisions
+std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int divisions) {
     // run Basic Threshold on all elements in certain subdivisions
     int div = imageHeight / divisions;
     int totalPixels = imageWidth * imageHeight;
@@ -104,9 +104,10 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
     float std = 0;
     float mean = 0;
     std::vector<int> standardDeviations;
-    for(int i = 0; i <= divisions; i++) {
+    for(int i = 0; i < divisions; i++) {
         totalMag = 0;
-        std = 1;
+        std = 0;
+        mean = 0;
         if(i != divisions) {
             for(int j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
                 totalMag += image[j];
@@ -128,7 +129,6 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
         standardDeviations.push_back(mean + (std * 5));
     }
     standardDeviations.push_back(mean + (std * 5));
-    std::cout << standardDeviations.size();
     // Return values of previous method as a vector
     return standardDeviations;
 }
