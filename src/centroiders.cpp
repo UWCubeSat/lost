@@ -96,7 +96,7 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 
 
 // breaks larger array into "vertical chunks" to pass into the basicThreshold algorithim 
-//    
+// still needs to be tested in terms of the other methods   
 
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, int divisions, int acccess) {
 int div = imageWidth / divisons;
