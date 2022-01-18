@@ -504,4 +504,17 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+#define PI 3.1415926
+
+StarIdentifiers TetraStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    
+    StarIdentifiers identified;
+    // convert the centroids to camera vectors
+    double fov_factor = (tan(camera.Fov()*PI/360)*2)/camera.XResolution();
+
+
+    return identified;
+}
+
 }

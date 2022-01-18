@@ -51,6 +51,14 @@ private:
     long cutoff;
 };
 
+class TetraStarIdAlgorithm : public StarIdAlgorithm {
+public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+    TetraStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
+private:
+    float tolerance;
+};
+
 }
 
 #endif
