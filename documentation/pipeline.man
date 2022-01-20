@@ -6,12 +6,12 @@ pipeline \- builds a pipeline of the star identification process
 
 .SH SYNOPSIS
 
-\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-dummy[=\fInum-stars\fP] | --centroid-cog | --centroid-iwcog] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--id-dummy | --id-gv \fItolerance\fP | (--id-pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-dqm] [--plot \fIoutput-path\fB]
+\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 .br
 \fBpipeline\fP --generate[=\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
-[--centroid-dummy[=\fInum-stars\fP] | --centroid-cog | --centroid-iwcog] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--id-dummy | --id-gv \fItolerance\fP | (--id-pyramid --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-dqm] [--plot \fIoutput-path\fB]
+[--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 
 
 .SH DESCRIPTION
@@ -83,16 +83,12 @@ Sets the boresight declination of the generated image(s) to \fIdeclination\fP.
 Sets the boresight roll of the generated image(s) to \fIroll\fP.
 
 .TP
-\fB--centroid-dummy\fP[=\fInum-stars\fP]
+\fB--centroid-algo\fP \fIalgo\fP
+Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random centroid algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity).
+
+.TP
+\fB--centroid-dummy-stars\fP \fInum-stars\fP
 Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-stars\fP stars centroided. Defaults to //TODO if \fInum-stars\fP is not given.
-
-.TP
-\fB--centroid-cog\fP
-Runs the center of gravity centroid algorithm.
-
-.TP
-\fB--centroid-iwcog\fP
-Runs the iterative weighted center of gravity centroid algorithm.
 
 .TP
 \fB--centroid-mag-filter\fP \fImin-mag\fP
@@ -103,16 +99,16 @@ Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
 Chooses \fIfilename\fP as the database to compare stars against.
 
 .TP
-\fB--id-dummy\fP
-Runs the dummy star identification algorithm.
+\fB--id-algo\fP \fIalgo\fP
+Runs the \fIalgo\fP star identification algorithm.
 
 .TP
-\fB--id-gv\fP [\fItolerance\fP]
-Runs the geometric voting identification algorithm with a tolerance of \fItolerance\fP degrees. Defaults to //TODO degrees if \fItolerance\fP is not given.
+\fB--gv-tolerance\fP [\fItolerance\fP]
+Sets the tolerance for the geometric voting identification algorithm to \fItolerance\fP degrees. Defaults to //TODO degrees if \fItolerance\fP is not given.
 
 .TP
-\fB--id-pyramid\fP [\fItolerance\fP]
-Runs the pyramid scheme star identification algorithm with a tolerance of \fItolerance\fP degrees. Defaults to //TODO degrees if \fItolerance\fP is not given.
+\fB--py-tolerance\fP [\fItolerance\fP]
+Sets the tolerance for the pyramid identification algorithm to \fItolerance\fP degrees. Defaults to //TODO degrees if \fItolerance\fP is not given.
 
 .TP
 \fB--false-stars\fP \fInum\fP
@@ -123,8 +119,8 @@ Runs the pyramid scheme star identification algorithm with a tolerance of \fItol
 \fIprobability\fP is the maximum mismatch probability for the pyramid scheme star identification algorithm.
 
 .TP
-\fB--attitude-dqm\fP
-Runs the Davenport Q Method algorithm for the attitude stage of the pipeline.
+\fB--attitude-algo\fP \fIalgo\fP
+Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline.
 
 .TP
 \fB--plot\fP \fIoutput-path\fP

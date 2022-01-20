@@ -24,8 +24,13 @@ static void DatabaseBuild(DatabaseOptions values) {
     GenerateDatabases(builder, narrowedCatalog, values);
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
-    PromptedOutputStream pos = PromptedOutputStream(values.path);
-    pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
+    if (values.path == "stdout") { //TODO make sure I understand this correctly? maybe use isatty function or something?
+        std::cout << "Warning: output contains binary contents. Not printed to terminal." << std::endl;
+    } else {
+        PromptedOutputStream pos = PromptedOutputStream(values.path);
+        pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
+    }
+    
 }
 
 // static void DatabaseBuild(int maxMagnitude, int maxStars) {
@@ -73,27 +78,27 @@ static void PipelineRun(PipelineOptions values) {
 
 int main(int argc, char **argv) {
 
-    if (argc == 1) {
+    if (argc == 1 || argc == 2) {
         std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
         return 0;
-    } else if (argc == 2) {
-        std::cout << "Use the --help flag to see usage" << std::endl;
-        return 0;
-    }
-    
-    if (strcmp(argv[1], "database") == 0) {
+    } 
 
+    std::string command (argv[1]);
+    if (command == "database") {
+
+        enum DatabaseEnum {mag, stars, kvector, kvectorMinDistance, kvectorMaxDistance, 
+            kvectorDistanceBins, help, output};
 
         static struct option long_options[] =
         {
-            {"mag",     required_argument, 0, 'm'},
-            {"stars",   required_argument, 0, 's'},
-            {"kvector", no_argument,       0, 'k'},
-            {"kvector-min-distance", required_argument, 0, 'a'},
-            {"kvector-max-distance",  required_argument, 0, 'z'},
-            {"kvector-distance-bins",  required_argument, 0, 'b'},
-            {"help",  no_argument, 0, 'h'},
-            {"path", required_argument, 0, 'p'},
+            {"mag",     required_argument, 0, mag},
+            {"stars",   required_argument, 0, stars},
+            {"kvector", no_argument,       0, kvector},
+            {"kvector-min-distance", required_argument, 0, kvectorMinDistance},
+            {"kvector-max-distance",  required_argument, 0, kvectorMaxDistance},
+            {"kvector-distance-bins",  required_argument, 0, kvectorDistanceBins},
+            {"help",  no_argument, 0, help},
+            {"output", required_argument, 0, output},
             {0, 0, 0, 0}
         };
 
@@ -102,37 +107,37 @@ int main(int argc, char **argv) {
         int option;
 
         while (optind < argc) {
-            if ((option = getopt_long(argc, argv, "m:s:ka:z:b:hp:", long_options, &index)) != -1) {
+            if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
-                    case 'm' :
+                    case mag :
                         std::cout << "You raised the maginude to " << optarg << std::endl;
                         databaseOptions.maxMagnitude = atoi(optarg);
                         break;
-                    case 's' :
+                    case stars :
                         std::cout << "You lowered the stars to " << optarg << std::endl;
                         databaseOptions.maxStars = atoi(optarg);
                         break;
-                    case 'k' :
+                    case kvector :
                         std::cout << "You picked the kvector version! " << std::endl;
                         databaseOptions.databaseBuilder = "kvector";
                         break;
-                    case 'a' :
+                    case kvectorMinDistance :
                         databaseOptions.kvectorMinDistance = atof(optarg);
                         std::cout << "You set the min distance to " << optarg << std::endl;
                         break;
-                    case 'z' :
+                    case kvectorMaxDistance :
                         std::cout << "You set the max distance to " << optarg << std::endl;
                         databaseOptions.kvectorMaxDistance = atof(optarg);
                         break;
-                    case 'b' :
+                    case kvectorDistanceBins :
                         std::cout << "You set the number of bins to " << optarg << std::endl;
                         databaseOptions.kvectorDistanceBins = atol(optarg);
                         break;
-                    case 'p' :
+                    case output :
                         std::cout << "You set the path to " << optarg << std::endl;
                         databaseOptions.path = optarg;
                         break;
-                    case 'h' :
+                    case help :
                         system("man documentation/database.man");
                         return 0;
                         break;
@@ -145,187 +150,165 @@ int main(int argc, char **argv) {
 
         lost::DatabaseBuild(databaseOptions);
 
-        
-    } else if (strcmp(argv[1], "pipeline") == 0) {
+    } else if (command == "pipeline") {
+
+        enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
+            gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
+            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help};
 
         static struct option long_options[] =
         {
-            {"png",             required_argument, 0, 'a'},
-            {"focal-length",    required_argument, 0, 'b'},
-            {"pixel-size",      required_argument, 0, 'c'},
-            {"fov",             required_argument, 0, 'd'},
-            {"centroid-dummy",  optional_argument, 0, 'e'},
-            {"centroid-cog",    no_argument, 0, 'f'},
-            {"centroid-iwcog",  no_argument, 0, 'g'},
-            {"centroid-mag-filter",  required_argument, 0, 'h'},
-            {"database",        required_argument, 0, 'i'},
-            {"id-dummy",        no_argument, 0, 'j'},
-            {"id-gv",           required_argument, 0, 'k'},
-            {"id-pyramid",      no_argument, 0, 'l'},
-            {"py-tolerance",    required_argument, 0, 'm'},
-            {"false-stars",     required_argument, 0, 'n'},
-            {"max-mismatch-prob",  required_argument, 0, 'o'},
-            {"attitude-dqm",    no_argument, 0, 'p'},
-            {"plot",            required_argument, 0, 'q'},
-            {"generate",        optional_argument, 0, 'r'},
-            {"horizontal-res",  required_argument, 0, 's'},
-            {"vertical-res",  required_argument, 0, 't'},
-            {"horizontal-fov",  required_argument, 0, 'u'},
-            {"ref-brightness-mag",  no_argument, 0, 'v'},
-            {"spread-stddev",  required_argument, 0, 'w'},
-            {"noise-stddev",  required_argument, 0, 'x'},
-            {"boresight-right-asc",  required_argument, 0, 'y'},
-            {"boresight-dec",  required_argument, 0, 'z'},
-            {"boresight-roll",  required_argument, 0, '{'},
-            {"help",            no_argument, 0, '}'},
+            {"png",             required_argument, 0, png},
+            {"focal-length",    required_argument, 0, focalLength},
+            {"pixel-size",      required_argument, 0, pixelSize},
+            {"fov",             required_argument, 0, fov},
+            {"centroid-algo", required_argument, 0, centroidAlgo},
+            {"centroid-dummy-stars", required_argument, 0, centroidDummyStars},
+            {"centroid-mag-filter",  required_argument, 0, centroidMagFilter},
+            {"database",        required_argument, 0, database},
+            {"id-algo",        required_argument, 0, idAlgo},
+            {"gv-tolerance",    required_argument, 0, gvTolerance},
+            {"py-tolerance",    required_argument, 0, pyTolerance},
+            {"false-stars",     required_argument, 0, falseStars},
+            {"max-mismatch-prob",  required_argument, 0, maxMismatchProb},
+            {"attitude-algo",    required_argument, 0, attitudeAlgo},
+            {"plot",            required_argument, 0, plot},
+            {"generate",        optional_argument, 0, generate},
+            {"horizontal-res",  required_argument, 0, horizontalRes},
+            {"vertical-res",  required_argument, 0, verticalRes},
+            {"ref-brightness-mag",  no_argument, 0, refBrightnessMag},
+            {"spread-stddev",  required_argument, 0, spreadStddev},
+            {"noise-stddev",  required_argument, 0, noiseStddev},
+            {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
+            {"boresight-dec",  required_argument, 0, boresightDec},
+            {"boresight-roll",  required_argument, 0, boresightRoll},
+            {"help",            no_argument, 0, 25},
             {0, 0, 0, 0}
         };
 
-        // default values/flags
         lost::PipelineOptions pipelineOptions;
-        // std::map<std::string,std::string> parsedValues = {
-        //     {"png",""},
-        //     {"focal-length", "defaultTBD"},
-        //     {"pixel-size","defaultTBD"},
-        //     {"fov", "defaultTBD"},
-        //     {"centroid-algo", "defaultTBD"},
-        //     {"centroid-mag-filter", "defaultTBD"},
-        //     {"database","defaultTBD"},
-        //     {"id-algo", "defaultTBD"},
-        //     {"attitude-dqm","defaultTBD"},
-        //     {"plot","defaultTBD"},
-        //     {"generate","1"},
-        //     {"horizontal-res","defaultTBD"},
-        //     {"vertical-res","defaultTBD"},
-        //     {"horizontal-fov","defaultTBD"},
-        //     {"ref-brightness-mag","defaultTBD"},
-        //     {"spread-stddev","defaultTBD"},
-        //     {"noise-stddev","defaultTBD"},
-        //     {"boresight-right-asc","defaultTBD"},
-        //     {"boresight-dec","defaultTBD"},
-        //     {"boresight-roll","defaultTBD"}
-        // };
-
         int index;
         int option;
-
+        
         while (optind < argc) {
-            if ((option = getopt_long(argc, argv, "a:b:c:d:e::fgh:i:jk:lm:n:o:pq:r::s:t:u:vw:x:y:z:{:", long_options, &index)) != -1) {
+            if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
-                    case 'a' :
+                    case png :
                         std::cout << "You made the file path " << optarg << std::endl;
                         pipelineOptions.png = optarg;
                         break;
-                    case 'b' :
+                    case focalLength :
                         std::cout << "You set the focal length to " << optarg << std::endl;
                         pipelineOptions.focalLength = atof(optarg);
                         break;
-                    case 'c' :
+                    case pixelSize :
                         std::cout << "You set the pixel size to " << optarg << std::endl;
                         pipelineOptions.pixelSize = atof(optarg);
                         break;
-                    case 'd' :
+                    case fov :
                         std::cout << "You set the fov to " << optarg << std::endl;
                         pipelineOptions.fov = atof(optarg);
                         break;
-                    case 'e' : 
+                    case centroidAlgo :
                     {
-                        pipelineOptions.centroidAlgo = "dummy";
-                        if (optarg != NULL) {
-                            pipelineOptions.dummyCentroidNumStars = atoi(optarg);
-                        } 
-                        std::cout << "You set the centroid algo to dummy with " << optarg << " stars." << std::endl;
-                        break; 
+                        std::string algo (optarg);
+                        if (algo != "dummy" && algo != "cog" && algo != "iwcog") {
+                            std::cout << "Unrecognized centroid algorithm!" << std::endl;
+                        } else {
+                            std::cout << algo << "!" << std::endl;
+                            pipelineOptions.centroidAlgo = algo;
+                        }                        
+                        break;
                     }
-                    case 'f' :
-                        std::cout << "You set the centroid algo to cog " << std::endl;
-                        pipelineOptions.centroidAlgo = "cog";
+                    case centroidDummyStars : 
+                        pipelineOptions.dummyCentroidNumStars = atoi(optarg);
                         break;
-                    case 'g' :
-                        std::cout << "You set the centroid algo to iwcog " << std::endl;
-                        pipelineOptions.centroidAlgo = "iwcog";
-                        break;
-                    case 'h' :
+                    case centroidMagFilter :
                         std::cout << "You set the centroid mag filter to to " << optarg << std::endl;
                         pipelineOptions.centroidMagFilter = atoi(optarg);
                         break;
-                    case 'i' :
+                    case database :
                         std::cout << "You set the database to " << optarg << std::endl;
                         pipelineOptions.database = optarg;
                         break;
-                    case 'j' :
-                        std::cout << "You set the id algo to dummy" << std::endl;
-                        pipelineOptions.idAlgo = "dummy";
+                    case idAlgo :
+                    {
+                        std::string algo (optarg);
+                        if (algo != "dummy" && algo != "gv" && algo != "pyramid") {
+                            std::cout << "Unrecognized id algorithm!" << std::endl;
+                        } else {
+                            std::cout << algo << "!" << std::endl;
+                            pipelineOptions.idAlgo = algo;
+                        }                        
                         break;
-                    case 'k' :
-                        std::cout << "You set the id algo to geometric voting" << std::endl;
-                        pipelineOptions.idAlgo = "gv";
+                    }
+                    case gvTolerance :
                         pipelineOptions.gvTolerance = atof(optarg);
-                        break;                    
-                    case 'l' :
-                        std::cout << "You set the id algo to pyramid" << std::endl;
-                        pipelineOptions.idAlgo = "pyramid";
                         break;
-                    case 'm' :
+                    case pyTolerance :
                         std::cout << "You set the id algo pyramid tolerance to " << optarg << std::endl;
                         pipelineOptions.pyTolerance = atof(optarg);
                         break;
-                    case 'n' :
+                    case falseStars :
                         std::cout << "You set the id algo false stars to " << optarg << std::endl;
                         pipelineOptions.pyFalseStars = atoi(optarg);
                         break;
-                    case 'o' :
+                    case maxMismatchProb :
                         std::cout << "You set the id algo max mismatch probability to " << optarg << std::endl;
                         pipelineOptions.pyMismatchProb = atof(optarg);
                         break;
-                    case 'p' :
-                        pipelineOptions.attitudeDQM = true;
-                        break;
-                    case 'q' :
+                    case attitudeAlgo :
+                    {
+                        std::string algo (optarg);
+                        if (algo != "dqm") {
+                            std::cout << "Unrecognized id algorithm!" << std::endl;
+                        } else {
+                            std::cout << algo << "!" << std::endl;
+                            pipelineOptions.attitudeAlgo = algo;
+                        }                        
+                        break; 
+                    }
+                    case plot :
                         std::cout << "You set the plotted output path to " << optarg << std::endl;
                         pipelineOptions.plot = optarg;
                         break;
-                    case 'r' :
+                    case generate :
                         std::cout << "Generating images! " << optarg << std::endl;
                         if (optarg != NULL) pipelineOptions.generate = atoi(optarg);
                         break;
-                    case 's' :
+                    case horizontalRes :
                         std::cout << "You set the horizontal res to " << optarg << std::endl;
                         pipelineOptions.horizontalRes = atoi(optarg);
                         break;
-                    case 't' :
+                    case verticalRes :
                         std::cout << "You set the vertical res to " << optarg << std::endl;
                         pipelineOptions.verticalRes = atoi(optarg);
                         break;
-                    case 'u' :
-                        std::cout << "You set the horizontal fov to " << optarg << std::endl;
-                        pipelineOptions.horizontalFOV = atof(optarg);
-                        break;
-                    case 'v' :
+                    case refBrightnessMag :
                         std::cout << "You have a ref brightness magnitude " ;
                         pipelineOptions.referenceBrightness = atoi(optarg);                        
                         break;
-                    case 'w' :
+                    case spreadStddev :
                         std::cout << "You set the spread stddev to " << optarg << std::endl;
                         pipelineOptions.brightnessDeviation = atof(optarg);
                         break;
-                    case 'x' :
+                    case noiseStddev :
                         std::cout << "You set the noise stddev to " << optarg << std::endl;
                         pipelineOptions.noiseDeviation = atof(optarg);
                         break;
-                    case 'y' :
+                    case boresightRightAsc :
                         std::cout << "You set the boresight right asc to " << optarg << std::endl;
                         pipelineOptions.ra = atof(optarg);
                         break;
-                    case 'z' :
+                    case boresightDec :
                         std::cout << "You set the boresight declination to " << optarg << std::endl;
                         pipelineOptions.dec = atof(optarg);
                         break;
-                    case '{' :
+                    case boresightRoll :
                         std::cout << "You set the boresight roll to " << optarg << std::endl;
                         pipelineOptions.roll = atof(optarg);
                         break;
-                    case '}': 
+                    case help : 
                         system("man documentation/pipeline.man");
                         return 0;
                         break;

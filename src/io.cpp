@@ -280,18 +280,18 @@ typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 //     return new DavenportQAlgorithm();
 // }
 
-Catalog PromptNarrowedCatalog(const Catalog &catalog) {
-    float maxSomething = Prompt<float>("Max magnitude or # of stars");
-    int maxMagnitude = 1000;
-    int maxStars = 10000;
-    assert(maxSomething > 0);
-    if (maxSomething < 10) {
-        maxMagnitude = 100 * (int)floor(maxSomething);
-    } else {
-        maxStars = (int)floor(maxSomething);
-    }
-    return NarrowCatalog(catalog, maxMagnitude, maxStars);
-}
+// Catalog PromptNarrowedCatalog(const Catalog &catalog) {
+//     float maxSomething = Prompt<float>("Max magnitude or # of stars");
+//     int maxMagnitude = 1000;
+//     int maxStars = 10000;
+//     assert(maxSomething > 0);
+//     if (maxSomething < 10) {
+//         maxMagnitude = 100 * (int)floor(maxSomething);
+//     } else {
+//         maxStars = (int)floor(maxSomething);
+//     }
+//     return NarrowCatalog(catalog, maxMagnitude, maxStars);
+// }
 
     // float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
     // float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
@@ -517,7 +517,7 @@ PipelineInputList GetGeneratedPipelineInput(PipelineOptions values) {
     int numImages = values.generate;
     int xResolution = values.horizontalRes;
     int yResolution = values.verticalRes;
-    float xFovDeg = values.horizontalFOV;
+    float xFovDeg = values.fov;
     float xFocalLength = FovToFocalLength(DegToRad(xFovDeg), xResolution);
     int referenceBrightness = values.referenceBrightness;
     float brightnessDeviation = values.brightnessDeviation;
@@ -634,7 +634,7 @@ Pipeline SetPipeline(PipelineOptions values) {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.pyTolerance), values.pyFalseStars, values.pyMismatchProb, 1000));
     }
 
-    if (values.attitudeDQM) {
+    if (values.attitudeAlgo == "dqm") {
         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
     }
 
