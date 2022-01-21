@@ -504,17 +504,51 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
-#define PI 3.1415926
+#define NUM_STARS_IN_PATTERN 4
 
 StarIdentifiers TetraStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
     
     StarIdentifiers identified;
-    // convert the centroids to camera vectors
-    double fov_factor = (tan(camera.Fov()*PI/360)*2)/camera.XResolution();
+
+    // Tetra.c to TetraStarIdAlgo:
+    // pattern_catalog --is-- catalog
+    // matches         --is-- identified
+
+    // create vector of spacial vectors of every centroided star:
+    std::vector<Vec3> image_stars; // vector of spatial star vectors
+    for (int i = 0; i < stars.size(); i++) {
+        image_stars.push_back(camera.CameraToSpatial(stars[i].position).Normalize());
+    }
 
 
     return identified;
+}
+
+bool IdentifyImage(std::vector<Vec3> image_stars, const Catalog &catalog, int num_image_stars, StarIdentifiers &identified, int num_stars_selected) {
+    // array of star ID's for a given pattern
+    static int image_star_ids[NUM_STARS_IN_PATTERN];
+    // recursively select all the image pattern stars:
+    if (num_stars_selected < NUM_STARS_IN_PATTERN) {
+        for (image_star_ids[num_stars_selected] = NUM_STARS_IN_PATTERN-num_stars_selected-1; 
+             image_star_ids[num_stars_selected] < num_image_stars;
+             image_star_ids[num_stars_selected]++) {
+            
+            if (IdentifyImage(image_stars, catalog, image_star_ids[num_stars_selected], identified, num_stars_selected+1)) {
+                return true;
+            }
+        }
+    } else {
+        /* need to implement IdentifyStars() */
+        if (IdentifyStars()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool IdentifyStars() {
+    
 }
 
 }

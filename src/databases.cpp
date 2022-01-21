@@ -314,6 +314,20 @@ MultiDatabaseBuilder::~MultiDatabaseBuilder() {
     free(buffer);
 }
 
+HashTableDatabase::HashTableDatabase() {
+    //Maximum scaliong of image caused by FOV error
+    float max_scale_factor = fmax(tan(max_fov * (1 + max_fov_error) / 2.0)/tan(max_fov/2.0), 
+        1 - tan(max_fov * (1 - max_fov_error)/2.0)/tan(max_fov/2.0));
+
+    /* Largest edge error is proportional to the largest edge ratio by the image scale. */
+    /* For example, doubling the largest edge length doubles the scaling error. */
+    #define le_error_slope (max_scale_factor-1)
+    /* Largest edge error has a constant factor determined by the centroiding error. */
+    /* This value is the worst case of maximum FOV and centroid error.  It corresponds to */
+    /* The FOV taking on its minimum value and both centroids having maximal error inwards. */
+    #define le_error_offset (2*max_centroid_error/(2-max_scale_factor))
+    /* Largest possible largest_edge_length given the maximum FOV. */
+    #define max_le_length (2*sin(max_fov*(1+max_fov_error)/2.0))
 }
 
 // TODO: after creating the database, print more statistics, such as average number of pairs per
