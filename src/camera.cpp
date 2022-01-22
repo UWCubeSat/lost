@@ -12,9 +12,9 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     assert(vector.x > 0);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
 
-    float focalFactor = focalLength/vector.x;
+    float focalFactor = focalLength/vector.x; // x is the axis we are looking down after "rotating the camera."
 
-    float yPixel = vector.y*focalFactor;
+    float yPixel = vector.y*focalFactor; // Scaling factor that actually puts these into the right units.
     float zPixel = vector.z*focalFactor;
 
     return { -yPixel + xCenter, -zPixel + yCenter };

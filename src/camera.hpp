@@ -14,9 +14,9 @@ namespace lost {
         // Imagine that we had an x-axis and y-axis, where the y-axis was the convex lens and the x-axis
         // ran straight through the middle:
 
-        //                                            (y-axis or convex lens of camera)
-    //   ---------------------------------------------o
-    //                                               ` `
+        //          (This below is the camera itself)      (y-axis or convex lens of camera)
+    //   _____________________________________________o
+    //   --------------------------------------------` `
     //                                               ` `
     //                                               ` `
     //                                               ` `
@@ -31,22 +31,24 @@ namespace lost {
     //               hits the x-axis)        *       ` `                                 *          | (Object you're taking a picture of)
     //                                           *   ` `                                       *    |
     //                                               `*`:******************************************(*) (B)
-    //                                               . .           (Line above is a ray of light coming into
-    //                                               . .             the camera lens from the outside world into the camera
+    //                                               ` `           (Line above is a ray of light coming into
+    //                                               ` `             the camera lens from the outside world into the camera
     //                                               ` `               (right to left))
     //                                               ` `
-    //                                                +
-    // -----------------------------------------------:
+    // ______________________________________________. .
+    // -----------------------------------------------o
     //                                               (y-axis or convex lens of camera)
 
         // The focal length is the distance from the convex lens to the x
 
         // Common terminology:
         //    - Convex lens: a lens that is thin at the edges and gets thicker towards the center.
+        //                   It focuses light that comes in at a straight perpendicualr angle to the lens
+        //                   (like the bottom beam of light shown
         
 
 
-class Camera {
+class Camera { // TODO: Ben | Put the intrinic parameters AND the dist coeffs for the camera here
 public:
     Camera(const Camera &) = default;
     // Takes focal lengths in pixels
@@ -83,9 +85,23 @@ public:
 
 private:
     // TODO: distortion
+    // Variables to add:
+    //      Camera Parameters:
+    //      Distortion Coefficient:
+    //
     float focalLength;
     float xCenter; float yCenter;
     int xResolution; int yResolution;
+
+    //TODO: Figure out how many distortion coeffs we need (k1 - k6) and if we want to include p1 and p2 (radial distortion coeffs).
+    /**
+     * <p> Our undistortion function works with up to six radial distortion coefficents. </p>
+     * <p> These radial distortion coefficents are found here: TODO: put link to coeff finder here <p>
+     * <p> Hardcode these into our distCoeffs enum down below.
+     */
+
+    enum distCoeffs {k1 = 0, k2 = 0, k3 = 0, k4 = 0, k5 = 0, k6 = 0, p1 = 0, p2 = 0};
+
 };
 
 float FovToFocalLength(float xFov, float xResolution);

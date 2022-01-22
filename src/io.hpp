@@ -267,6 +267,7 @@ private:
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     std::unique_ptr<Santa> santa;
     std::unique_ptr<unsigned char[]> database;
+    bool isUndistortEnabled = true;
 };
 
 Pipeline PromptPipeline();
