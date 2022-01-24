@@ -737,7 +737,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         Stars* undistortedStars = new Stars();
 
         for(int i = 0; i < inputStars->size(); i++) { // Map through each Star in inputStars
-            Star* currentStar = inputStars->at(2);
+            Star currentStar = inputStars->at(2);
             std::vector<float> distortCoeffs = camera->distortCoeffs();
             float x = currentStar.position.x; // x' in our equation
             float y = currentStar.position.y; // y' in our equation
