@@ -391,7 +391,8 @@ private:
     Attitude attitude;
 };
 
-// TODO: Ben | Make sure that you only include the part where you get your map and then apply it to our potential stars. Make sure to skip the part where we interpolate the new pixel positions from fractional to whole, as we don't have to worry about that.
+// TODO: Ben | Ask if it's ok to just ask for undistort parameters whenever,
+//  like without first asking if they want to undistort first.
 Camera PromptCamera(int xResolution, int yResolution) { // You can add the extra parameters you want to ask the user for to get into your Camera object here.
     float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
     float focalLengthOrFov = Prompt<float>("Focal Length (mm) or horizontal FOV (degrees)");
@@ -399,7 +400,19 @@ Camera PromptCamera(int xResolution, int yResolution) { // You can add the extra
         ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
         : focalLengthOrFov * 1000 / pixelSize;
 
-    return Camera(focalLengthPixels, xResolution, yResolution);
+    float k1 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k1):");
+    float k2 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k2):");
+    float k3 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k3):");
+    float k4 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k4):");
+    float k5 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k5):");
+    float k6 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k6):");
+    float p1 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p1):");
+    float p2 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p2):");
+
+
+    return Camera(focalLengthPixels, xResolution, yResolution,
+                  k1, k2, k3, k4, k5, k6,
+                  p1, p2);
 }
 
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
@@ -720,24 +733,29 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if(isUndistortEnabled) {
 
+        Camera* camera = input.InputCamera();
         Stars* undistortedStars = new Stars();
 
-        for(int i = 0; i < inputStars.size(); i++) { // Map through each Star in inputStars
-            Star currentStar = inputStars[i];
-            float x = currentStar.position->x; // x' in our equation
-            float y = currentStar.position->y; // y' in our equation
+        for(int i = 0; i < inputStars->size(); i++) { // Map through each Star in inputStars
+            Star* currentStar = inputStars->at(2);
+            std::vector<float> distortCoeffs = camera->distortCoeffs();
+            float x = currentStar.position.x; // x' in our equation
+            float y = currentStar.position.y; // y' in our equation
             float r = sqrt(pow(x,2) + pow(y, 2)); // r^2 = (x')^2 + (y')^2
 
             float undistortedX;
             float undistortedY;
 
-            float radialUndistortion = (1 + k1 * pow(r, 2) + k2 * pow(r, 4) + k3 * pow(r, 6)) /
-                    (1 + k4 * pow(r, 2) + k5 * pow(r, 4) + k6 * pow(r, 6));
+            float radialUndistortion = (1 + distortCoeffs.k1 * pow(r, 2) + distortCoeffs.k2 * pow(r, 4)
+                    + distortCoeffs.k3 * pow(r, 6)) / (1 + distortCoeffs.k4 * pow(r, 2)
+                            + distortCoeffs.k5 * pow(r, 4) + distortCoeffs.k6 * pow(r, 6));
 
-            float tangentialUndistortionX  = (2 * p1 * x * y) + (p2 * (pow(r, 2) + 2 * pow(x, 2)));
+            float tangentialUndistortionX  = (2 * distortCoeffs.p1 * x * y) + (distortCoeffs.p2 * (pow(r, 2)
+                    + 2 * pow(x, 2)));
 
 
-            float tangentialUndistortionY  = (2 * p1 * x * y) + (p2 * (pow(r, 2) + 2 * pow(y, 2)));
+            float tangentialUndistortionY  = (2 * distortCoeffs.p1 * x * y) + (distortCoeffs.p2 * (pow(r, 2)
+                    + 2 * pow(y, 2)));
 
             undistortedX = x * radialUndistortion + tangentialUndistortion;
             undistortedY = y * radialUndistortionY + tangentialUndistortionY;

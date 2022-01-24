@@ -48,20 +48,41 @@ namespace lost {
         
 
 
-class Camera { // TODO: Ben | Put the intrinic parameters AND the dist coeffs for the camera here
+class Camera { // TODO: Ben | Put the distortCoeffs into some kind of global struct???
 public:
+    // Our undistortion function works with up to six radial distortion coefficents (k1 through k6)
+    // and 2 tangental coeffs (p1 and p2)
+//    struct DistortCoeffs {
+//        float k1 = 0;
+//        float k2 = 0;
+//        float k3 = 0;
+//        float k4 = 0;
+//        float k5 = 0;
+//        float k6 = 0;
+//        float p1 = 0;
+//        float p2 = 0;
+//    };
+
     Camera(const Camera &) = default;
     // Takes focal lengths in pixels
     Camera(float focalLength,
            float xCenter, float yCenter,
-           int xResolution, int yResolution)
+           int xResolution, int yResolution,
+           float k1, float k2, float k3, float k4, float k5, float k6,
+           float p1, float p2)
         : focalLength(focalLength),
           xCenter(xCenter), yCenter(yCenter),
-          xResolution(xResolution), yResolution(yResolution) { };
-    Camera(float focalLength, int xResolution, int yResolution)
+          xResolution(xResolution), yResolution(yResolution),
+          k1(k1), k2(k2), k3(k3), k4(k4), k5(k5), k6(k6),
+          p1(p1), p2(p2) { };
+    Camera(float focalLength, int xResolution, int yResolution,
+           float k1, float k2, float k3, float k4, float k5, float k6,
+           float p1, float p2)
         : Camera(focalLength,
                  xResolution/(float)2.0, yResolution/(float)2.0,
-                 xResolution, yResolution) { };
+                 xResolution, yResolution,
+                 k1, k2, k3, k4, k5, k6,
+                 p1, p2) { };
 
     // Converts from a 3D point in space to a 2D point on the camera sensor. Assumes that X is the
     // depth direction and that it points away from the center of the sensor, i.e., any vector (x,
@@ -82,25 +103,26 @@ public:
     float FocalLength() const { return focalLength; };
     float Fov() const;
     void SetFocalLength(float focalLength) { this->focalLength = focalLength; }
+    float K1() const { return this.k1 };
+    float K2() const { return this.k2 };
+    float K3() const { return this.k3 };
+    float K4() const { return this.k4 };
+    float K5() const { return this.k5 };
+    float K6() const { return this.k6 };
+    float P1() const { return this.p1 };
+    float P2() const { return this.p2 };
+
+//    DistortCoeffs* distortCoeffs() const { return this.distortCoeffs; } // TODO | Ben Kosa | Take care of this.
 
 private:
-    // TODO: distortion
-    // Variables to add:
-    //      Camera Parameters:
-    //      Distortion Coefficient:
+    // TODO | Ben Kosa
+    //  Find out if the distortion coeffs are integers or floats!
     //
     float focalLength;
     float xCenter; float yCenter;
     int xResolution; int yResolution;
-
-    //TODO: Figure out how many distortion coeffs we need (k1 - k6) and if we want to include p1 and p2 (radial distortion coeffs).
-    /**
-     * <p> Our undistortion function works with up to six radial distortion coefficents. </p>
-     * <p> These radial distortion coefficents are found here: TODO: put link to coeff finder here <p>
-     * <p> Hardcode these into our distCoeffs enum down below.
-     */
-
-    enum distCoeffs {k1 = 0, k2 = 0, k3 = 0, k4 = 0, k5 = 0, k6 = 0, p1 = 0, p2 = 0};
+    float k1, k2, k3, k4, k5, k6, p1, p2;
+//    struct DistortCoeffs distortCoeffs; // TODO | Ben Kosa | Take care of this.
 
 };
 
