@@ -103,14 +103,14 @@ public:
     float FocalLength() const { return focalLength; };
     float Fov() const;
     void SetFocalLength(float focalLength) { this->focalLength = focalLength; }
-    float K1() const { return this.k1 };
-    float K2() const { return this.k2 };
-    float K3() const { return this.k3 };
-    float K4() const { return this.k4 };
-    float K5() const { return this.k5 };
-    float K6() const { return this.k6 };
-    float P1() const { return this.p1 };
-    float P2() const { return this.p2 };
+    float K1() const { return this->k1; };
+    float K2() const { return this->k2; };
+    float K3() const { return this->k3; };
+    float K4() const { return this->k4; };
+    float K5() const { return this->k5; };
+    float K6() const { return this->k6; };
+    float P1() const { return this->p1; };
+    float P2() const { return this->p2; };
 
 //    DistortCoeffs* distortCoeffs() const { return this.distortCoeffs; } // TODO | Ben Kosa | Take care of this.
 
