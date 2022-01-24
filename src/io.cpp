@@ -733,12 +733,12 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if(isUndistortEnabled) {
 
-        Camera* camera = input.InputCamera();
+        const Camera* camera = input.InputCamera();
         Stars* undistortedStars = new Stars();
 
         for(int i = 0; i < inputStars->size(); i++) { // Map through each Star in inputStars
-            Star currentStar = inputStars->at(2);
-            std::vector<float> distortCoeffs = camera->distortCoeffs();
+            Star currentStar = inputStars->at(i);
+//            std::vector<float> distortCoeffs = camera->distortCoeffs(); // TODO | Ben Kosa | Take care of this.
             float x = currentStar.position.x; // x' in our equation
             float y = currentStar.position.y; // y' in our equation
             float r = sqrt(pow(x,2) + pow(y, 2)); // r^2 = (x')^2 + (y')^2
@@ -746,22 +746,22 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             float undistortedX;
             float undistortedY;
 
-            float radialUndistortion = (1 + distortCoeffs.k1 * pow(r, 2) + distortCoeffs.k2 * pow(r, 4)
-                    + distortCoeffs.k3 * pow(r, 6)) / (1 + distortCoeffs.k4 * pow(r, 2)
-                            + distortCoeffs.k5 * pow(r, 4) + distortCoeffs.k6 * pow(r, 6));
+            float radialUndistortion = (1 + camera->K1() * pow(r, 2) + camera->K2() * pow(r, 4)
+                    + camera.K3() * pow(r, 6)) / (1 + camera->K4() * pow(r, 2)
+                            + camera->K5() * pow(r, 4) + camera->K6() * pow(r, 6));
 
-            float tangentialUndistortionX  = (2 * distortCoeffs.p1 * x * y) + (distortCoeffs.p2 * (pow(r, 2)
+            float tangentialUndistortionX  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
                     + 2 * pow(x, 2)));
 
 
-            float tangentialUndistortionY  = (2 * distortCoeffs.p1 * x * y) + (distortCoeffs.p2 * (pow(r, 2)
+            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
                     + 2 * pow(y, 2)));
 
-            undistortedX = x * radialUndistortion + tangentialUndistortion;
-            undistortedY = y * radialUndistortionY + tangentialUndistortionY;
+            undistortedX = x * radialUndistortion + tangentialUndistortionX;
+            undistortedY = y * radialUndistortion + tangentialUndistortionY;
 
             Star undistortedStar(undistortedX, undistortedY, currentStar.radiusX, currentStar.radiusY, currentStar.magnitude);
-            undistortedStars[i] = undistortedStar;
+            undistortedStars->at(i) = undistortedStar;
         }
 
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
