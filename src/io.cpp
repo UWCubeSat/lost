@@ -631,7 +631,7 @@ Pipeline PromptPipeline() {
             break;
         }
 
-        case PipelineStage::Undistort {
+        case PipelineStage::Undistort: {
             result.isUndistortEnabled = Prompt<bool>("Undistort Image");
             break;
         }
@@ -720,7 +720,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if(isUndistortEnabled) {
 
-        Stars undistortedStars = new Stars();
+        Stars* undistortedStars = new Stars();
 
         for(int i = 0; i < inputStars.size(); i++) { // Map through each Star in inputStars
             Star currentStar = inputStars[i];
