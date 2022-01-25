@@ -734,7 +734,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if(isUndistortEnabled) {
 
         const Camera* camera = input.InputCamera();
-        Stars* undistortedStars = new Stars();
+        const Stars* undistortedStars = new Stars();
 
         for(int i = 0; i < inputStars->size(); i++) { // Map through each Star in inputStars
             Star currentStar = inputStars->at(i);
@@ -747,7 +747,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             float undistortedY;
 
             float radialUndistortion = (1 + camera->K1() * pow(r, 2) + camera->K2() * pow(r, 4)
-                    + camera.K3() * pow(r, 6)) / (1 + camera->K4() * pow(r, 2)
+                    + camera->K3() * pow(r, 6)) / (1 + camera->K4() * pow(r, 2)
                             + camera->K5() * pow(r, 4) + camera->K6() * pow(r, 6));
 
             float tangentialUndistortionX  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
@@ -766,7 +766,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
         result.stars = std::unique_ptr<Stars>(undistortedStars); // You're telling the compiler that this is the only ptr / class / object using our undistortedStars vector.
-        inputStars = &undistortedStars;
+        inputStars = undistortedStars;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
