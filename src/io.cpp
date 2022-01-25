@@ -805,6 +805,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         }
         result.stars = std::unique_ptr<Stars>(filteredStars);
         inputStars = filteredStars;
+
+        // any starid set up to this point needs to be discarded, because it's based on input
+        // centroids instead of our new centroids.
+        inputStarIds = NULL;
+        result.starIds = NULL;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
