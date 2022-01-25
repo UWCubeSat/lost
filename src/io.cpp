@@ -734,7 +734,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if(isUndistortEnabled) {
 
         const Camera* camera = input.InputCamera();
-        const Stars* undistortedStars = new Stars();
+        Stars* undistortedStars = new Stars();
 
         for(int i = 0; i < inputStars->size(); i++) { // Map through each Star in inputStars
             Star currentStar = inputStars->at(i);
@@ -766,7 +766,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
         result.stars = std::unique_ptr<Stars>(undistortedStars); // You're telling the compiler that this is the only ptr / class / object using our undistortedStars vector.
-        inputStars = undistortedStars;
+        inputStars = (const) undistortedStars;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
