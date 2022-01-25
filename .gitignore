@@ -6,7 +6,7 @@
 *.d
 *.png
 
-/database/man-*.h
+/documentation/man-*.h
 
 /lost
 *.jpg
