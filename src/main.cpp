@@ -82,7 +82,7 @@ static void PipelineRun(PipelineOptions values) {
 
 int main(int argc, char **argv) {
 
-    if (argc == 1 || argc == 2) {
+    if (argc == 1) {
         std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
         return 0;
     } 
@@ -110,11 +110,11 @@ int main(int argc, char **argv) {
         int index;
         int option;
 
-        while (optind < argc) {
+        while (optind < argc && argc != 2) {
             if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
                     case mag :
-                        std::cout << "You raised the maginude to " << optarg << std::endl;
+                        std::cout << "You raised the magmitude to " << optarg << std::endl;
                         databaseOptions.maxMagnitude = atoi(optarg);
                         break;
                     case stars :
@@ -157,6 +157,11 @@ int main(int argc, char **argv) {
 
     } else if (command == "pipeline") {
 
+        if (argc == 2) {
+            std::cout << "Run pipeline --help for further help" << std::endl; 
+            return 0;
+        }
+
         enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
             gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
             spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help};
@@ -170,14 +175,14 @@ int main(int argc, char **argv) {
             {"centroid-algo", required_argument, 0, centroidAlgo},
             {"centroid-dummy-stars", required_argument, 0, centroidDummyStars},
             {"centroid-mag-filter",  required_argument, 0, centroidMagFilter},
-            {"database",        required_argument, 0, database},
+            // {"database",        required_argument, 0, database},
             {"id-algo",        required_argument, 0, idAlgo},
             {"gv-tolerance",    required_argument, 0, gvTolerance},
             {"py-tolerance",    required_argument, 0, pyTolerance},
             {"false-stars",     required_argument, 0, falseStars},
             {"max-mismatch-prob",  required_argument, 0, maxMismatchProb},
             {"attitude-algo",    required_argument, 0, attitudeAlgo},
-            {"plot",            required_argument, 0, plot},
+            // {"plot",            required_argument, 0, plot},
             {"generate",        optional_argument, 0, generate},
             {"horizontal-res",  required_argument, 0, horizontalRes},
             {"vertical-res",  required_argument, 0, verticalRes},
@@ -229,13 +234,13 @@ int main(int argc, char **argv) {
                         pipelineOptions.dummyCentroidNumStars = atoi(optarg);
                         break;
                     case centroidMagFilter :
-                        std::cout << "You set the centroid mag filter to to " << optarg << std::endl;
+                        std::cout << "You set the centroid mag filter to " << optarg << std::endl;
                         pipelineOptions.centroidMagFilter = atoi(optarg);
                         break;
-                    case database :
-                        std::cout << "You set the database to " << optarg << std::endl;
-                        pipelineOptions.database = optarg;
-                        break;
+                    // case database :
+                    //     std::cout << "You set the database to " << optarg << std::endl;
+                    //     pipelineOptions.database = optarg;
+                    //     break;
                     case idAlgo :
                     {
                         std::string algo (optarg);
@@ -273,13 +278,18 @@ int main(int argc, char **argv) {
                         }                        
                         break; 
                     }
-                    case plot :
-                        std::cout << "You set the plotted output path to " << optarg << std::endl;
-                        pipelineOptions.plot = optarg;
-                        break;
+                    // case plot :
+                    //     std::cout << "You set the plotted output path to " << optarg << std::endl;
+                    //     pipelineOptions.plot = optarg;
+                    //     break;
                     case generate :
-                        std::cout << "Generating images! " << optarg << std::endl;
-                        if (optarg != NULL) pipelineOptions.generate = atoi(optarg);
+                        if (optarg) {
+                            pipelineOptions.generate = atoi(optarg);
+                            std::cout << "Generating images! " << optarg << std::endl;
+                        } else {
+                            std::cout <<"If this hangs, make sure you are using --generate=[number] for setting a number" << std::endl;
+                            std::cout << "Generating images! " << std::endl;
+                        }
                         break;
                     case horizontalRes :
                         std::cout << "You set the horizontal res to " << optarg << std::endl;

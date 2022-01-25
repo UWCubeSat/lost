@@ -334,6 +334,9 @@ void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, Da
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorDistanceBins;
         PromptKVectorDatabaseBuilder(builder, catalog, minDistance, maxDistance, numBins);
+    } else {
+        std::cerr << "No database builder selected -- no database generated." << std::endl;
+        exit(1);
     }
 
 }
@@ -402,6 +405,11 @@ PipelineInputList GetPngPipelineInput(PipelineOptions values) {
     }
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
+
+    if (!values.focalLength || !values.pixelSize) {
+        std::cerr << "Error: No focal length/pixel size given." << std::endl;
+        exit(1);
+    } 
 
     float focalLength = values.focalLength;
     float pixelSize = values.pixelSize;
@@ -611,7 +619,7 @@ Pipeline SetPipeline(PipelineOptions values) {
     }
 
     // centroid magnitude filter stage
-    result.centroidMinMagnitude = values.centroidMagFilter; //TODO make sure there's some check that this was selected
+    if (values.centroidMagFilter != -1) result.centroidMinMagnitude = values.centroidMagFilter;
 
     // database stage
     if (values.png != "") {
@@ -624,7 +632,7 @@ Pipeline SetPipeline(PipelineOptions values) {
         result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
         fs.read((char *)result.database.get(), length);
         std::cerr << "Done" << std::endl;
-    }
+    } 
 
     if (values.idAlgo == "dummy") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
@@ -818,10 +826,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
     
+
     for (const std::unique_ptr<PipelineInput> &input : inputs) {
         result.push_back(Go(*input));
     }
-
+    
     return result;
 }
 

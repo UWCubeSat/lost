@@ -159,7 +159,7 @@ namespace lost
     // PIPELINE INPUT //
     ////////////////////
 
-    // TODO maybe make a class also for the different options options
+    // TODO maybe make a class/enum also for the different options options
     class PipelineOptions
     {
     public:
@@ -168,16 +168,16 @@ namespace lost
         float pixelSize;
         float fov = 20; // degtorad will be calculated later in the pipeline
         std::string centroidAlgo = "dummy";
-        int dummyCentroidNumStars = 5; //??
-        int centroidMagFilter = 3;
-        std::string database;      //?? the file
+        int dummyCentroidNumStars = 5;
+        int centroidMagFilter = -1;  // value that should not be used, to tell whether this was selected or not
+        // std::string database;      // was never used
         std::string idAlgo = "dummy"; 
         float gvTolerance = 0.04;
         float pyTolerance = 0.04;
         int pyFalseStars = 500;
         float pyMismatchProb = 0.001;
         std::string attitudeAlgo = "dqm";
-        std::string plot;
+        // std::string plot;        // also was never used
         int generate = 1;
         int horizontalRes = 1024;
         int verticalRes = 1024;
