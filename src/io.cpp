@@ -766,7 +766,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
         result.stars = std::unique_ptr<Stars>(undistortedStars); // You're telling the compiler that this is the only ptr / class / object using our undistortedStars vector.
-        inputStars = (const) undistortedStars;
+        inputStars = undistortedStars;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
