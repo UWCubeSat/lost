@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include <cstring>
 #include <map>
+#include <unistd.h>
 
 #include "databases.hpp"
 #include "centroiders.hpp"
@@ -26,8 +27,9 @@ static void DatabaseBuild(DatabaseOptions values) {
     GenerateDatabases(builder, narrowedCatalog, values);
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
-    if (values.path == "stdout") { //TODO make sure I understand this correctly? maybe use isatty function or something?
-        std::cout << "Warning: output contains binary contents. Not printed to terminal." << std::endl;
+
+    if (isatty(fileno(stdout)) && values.path == "stdout") {
+       std::cout << "Warning: output contains binary contents. Not printed to terminal." << std::endl;
     } else {
         PromptedOutputStream pos = PromptedOutputStream(values.path);
         pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
