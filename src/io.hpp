@@ -169,21 +169,21 @@ namespace lost
         float fov = 20; // degtorad will be calculated later in the pipeline
         std::string centroidAlgo = "dummy";
         int dummyCentroidNumStars = 5; //??
-        int centroidMagFilter;     //??
+        int centroidMagFilter = 3;
         std::string database;      //?? the file
         std::string idAlgo = "dummy"; 
-        float gvTolerance;
-        float pyTolerance;
-        int pyFalseStars;
-        float pyMismatchProb;
-        std::string attitudeAlgo;
+        float gvTolerance = 0.04;
+        float pyTolerance = 0.04;
+        int pyFalseStars = 500;
+        float pyMismatchProb = 0.001;
+        std::string attitudeAlgo = "dqm";
         std::string plot;
         int generate = 1;
         int horizontalRes = 1024;
         int verticalRes = 1024;
-        int referenceBrightness;
-        float brightnessDeviation;
-        float noiseDeviation;
+        int referenceBrightness = 8000;
+        float brightnessDeviation = 0.7;
+        float noiseDeviation = 10;
         float ra = 88; // degtorad will be calculated later in the pipeline
         float dec = 7; // degtorad will be calculated later in the pipeline
         float roll = 0;

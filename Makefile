@@ -23,6 +23,8 @@
 
 SRCS := $(wildcard src/*.cpp)
 TESTS := $(wildcard test/*.cpp)
+DOCUMENTATION := $(wildcard documentation/*.man)
+DOCUMENTATION_FILES := $(patsubst documentation/man-%.h, documentation/%.man,$(DOCUMENTATION))
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS)) # includes tests
@@ -32,7 +34,7 @@ TEST_BIN := ./lost-test
 BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Wall -pedantic --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -pedantic --std=c++11
 
 all: $(BIN) $(BSC)
 
@@ -41,6 +43,11 @@ $(BSC): download-bsc.sh
 
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
+
+documentation/man-%.h: documentation/%.man
+	xxd -i $< > $@
+
+src/main.o: $(DOCUMENTATION_FILES)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@

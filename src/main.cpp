@@ -9,6 +9,8 @@
 #include "databases.hpp"
 #include "centroiders.hpp"
 #include "io.hpp"
+#include "man-database.h"
+#include "man-pipeline.h"
 
 namespace lost {
 
@@ -138,7 +140,8 @@ int main(int argc, char **argv) {
                         databaseOptions.path = optarg;
                         break;
                     case help :
-                        system("man documentation/database.man");
+                        // system("man documentation/database.man");
+                        std::cout << documentation_database_man << std::endl;
                         return 0;
                         break;
                     default :
@@ -182,7 +185,7 @@ int main(int argc, char **argv) {
             {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
             {"boresight-dec",  required_argument, 0, boresightDec},
             {"boresight-roll",  required_argument, 0, boresightRoll},
-            {"help",            no_argument, 0, 25},
+            {"help",            no_argument, 0, help},
             {0, 0, 0, 0}
         };
 
@@ -309,7 +312,8 @@ int main(int argc, char **argv) {
                         pipelineOptions.roll = atof(optarg);
                         break;
                     case help : 
-                        system("man documentation/pipeline.man");
+                        //system("man documentation/pipeline.man");
+                        std::cout << documentation_pipeline_man << std::endl;
                         return 0;
                         break;
                     default :
