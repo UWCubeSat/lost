@@ -25,7 +25,6 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
 
 // we'll just place the points at 1 unit away from the pinhole (x=1).
 // Note: Other functions rely on the fact that vectors are placed one unit away. Don't change this behavior!
->>>>>>> 454ef55c12bee4e558ca36026d2d05745b7df005
 Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     assert(InSensor(vector));
 
