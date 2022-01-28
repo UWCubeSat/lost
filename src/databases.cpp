@@ -332,3 +332,4 @@ HashTableDatabase::HashTableDatabase() {
 
 // TODO: after creating the database, print more statistics, such as average number of pairs per
 // star, stars per bin, space distribution between array and index.
+}

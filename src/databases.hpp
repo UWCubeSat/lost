@@ -118,10 +118,74 @@ private:
     long bulkLength;
 };
 
+// MARK: rename these to be tetra-specific
+
+/* Feature struct */
+/* Data format of what's stored in a given feature of a catalog Pattern. */
+/* A coordinate system is constructed by centering the largest edge along the x axis, */
+/* where edges are straight lines between stars in the pattern. */
+/* The x and y coordinates of every star are divided by the length of the largest edge. */
+/* This places two stars at the (x,y) coordinates (-.5,0) and (.5,0) and the remaining */
+/* stars in one of two places due to a 180 degree rotational ambiguity. */
+/* Each Feature encodes each of the remaining stars' bins, coordinates, and id. */
+struct Feature {
+    /* Implicitly encoded doubles are used to store the coordinates. */
+    /* This cuts down on disc usage by instead using integers with an */
+    /* implicit division factor, as all coordinates are between -1 and 1. */
+    int x : 15;
+    /* Bins are identifying values for the Pattern's catalog position.  */
+    /* They discretize Pattern data values, allowing them to be hashed. */
+    /* A bin offset is the offset of this Pattern's bin from the */
+    /* lowest bin the Pattern can occupy.  With a bin_size_ratio */
+    /* greater than 1.0, bin offsets can be stored in a single bit. */
+    unsigned int x_bin_offset : 1;
+    int y : 15;
+    unsigned int y_bin_offset : 1;
+    /* ID of the Feature's star.  Unsigned 15 bit integers support 32768 unique stars. */
+    unsigned int star_id : 15;
+    /* Extra, unused bit. */
+    unsigned int pad : 1;
+};
+
+/* Pattern struct */
+/* Data format of what's stored in a given catalog position for a given star pattern. */
+/* The rotation that results in the largest x bin (y bin as tie-breaker) */
+/* is chosen to deal with the pattern's 180 degree rotational ambiguity. */
+/* The largest edge length is also stored to allow for sanity-checking of FOV/image scale. */
+class Pattern {
+    public:
+        /* Features are stored in order of increasing x bin, with increasing y bin */
+        /* as a tie breaker.  Two Features cannot contain the same bin pair, as this */
+        /* would cause ambiguities while matching image stars to catalog stars. */
+        std::vector<Feature> features;
+        /* Length of the largest edge in the star pattern.  Used to recompute the FOV as well as */
+        /* sanity check matches.  Also stored as an implicitly encoded double between 0 and 1, */
+        /* as edge lengths must be between 0 and max_le_length, the maximum largest edge length. */
+        uint16_t largest_edge;
+        /* As the largest edge length is always greater than zero, it is also used as */
+        /* a boolean to indicate whether the hash table slot contains a star pattern. */
+        /* Note that this is therefore not explicitly set during catalog creation. */
+        #define has_pattern largest_edge
+        unsigned int le_bin_offset : 1;
+        unsigned int fixed_star_id_1 : 15;
+        unsigned int fixed_star_id_2 : 15;
+        /* Boolean value indicating whether this catalog position contains the last */
+        /* matching pattern in the catalog.  This avoids having to probe to the next slot. */
+        unsigned int is_last : 1;
+
+        Pattern();
+};
+
 //Hash table database storing patterns in buckets to reduce number + time of database calls 
 class HashTableDatabase {
 public: 
+    // MARK: the constructor should take a const unsigned char * and parse from it. Then, there should be another function
+    // which takes whatever db generation parameters are needed and creates the unsigned char * buffer.
     HashTableDatabase();
+    void PopulateCatalog(FILE *pattern_catalog_file,
+                             uint64_t catalog_size_in_patterns,
+                             Star stars[],
+                             int num_stars);
 private: 
     /* Number of stars in star pattern. */
     /* Must be at least 3.  Recommended number is 4. */
@@ -174,67 +238,8 @@ private:
     /* pieces during catalog generation and the number of extra catalog positions */
     /* needed at the end of the catalog due to the catalog hash table being non-cyclic. */
     int max_probe_depth; 
-    /* Number of entries in the Hipparchos catalog. */
-    int STARN; 
-    /* The current calendar year. */
-    int current_year;  
 
-    /* Feature struct */
-    /* Data format of what's stored in a given feature of a catalog Pattern. */
-    /* A coordinate system is constructed by centering the largest edge along the x axis, */
-    /* where edges are straight lines between stars in the pattern. */
-    /* The x and y coordinates of every star are divided by the length of the largest edge. */
-    /* This places two stars at the (x,y) coordinates (-.5,0) and (.5,0) and the remaining */
-    /* stars in one of two places due to a 180 degree rotational ambiguity. */
-    /* Each Feature encodes each of the remaining stars' bins, coordinates, and id. */
-    struct Feature {
-        /* Implicitly encoded doubles are used to store the coordinates. */
-        /* This cuts down on disc usage by instead using integers with an */
-        /* implicit division factor, as all coordinates are between -1 and 1. */
-        int x : 15;
-        /* Bins are identifying values for the Pattern's catalog position.  */
-        /* They discretize Pattern data values, allowing them to be hashed. */
-        /* A bin offset is the offset of this Pattern's bin from the */
-        /* lowest bin the Pattern can occupy.  With a bin_size_ratio */
-        /* greater than 1.0, bin offsets can be stored in a single bit. */
-        unsigned int x_bin_offset : 1;
-        int y : 15;
-        unsigned int y_bin_offset : 1;
-        /* ID of the Feature's star.  Unsigned 15 bit integers support 32768 unique stars. */
-        unsigned int star_id : 15;
-        /* Extra, unused bit. */
-        unsigned int pad : 1;
-    };
-
-    /* Pattern struct */
-    /* Data format of what's stored in a given catalog position for a given star pattern. */
-    /* The rotation that results in the largest x bin (y bin as tie-breaker) */
-    /* is chosen to deal with the pattern's 180 degree rotational ambiguity. */
-    /* The largest edge length is also stored to allow for sanity-checking of FOV/image scale. */
-    class Pattern {
-        public:
-            /* Features are stored in order of increasing x bin, with increasing y bin */
-            /* as a tie breaker.  Two Features cannot contain the same bin pair, as this */
-            /* would cause ambiguities while matching image stars to catalog stars. */
-            std::vector<Feature> features;
-            /* Length of the largest edge in the star pattern.  Used to recompute the FOV as well as */
-            /* sanity check matches.  Also stored as an implicitly encoded double between 0 and 1, */
-            /* as edge lengths must be between 0 and max_le_length, the maximum largest edge length. */
-            uint16_t largest_edge;
-            /* As the largest edge length is always greater than zero, it is also used as */
-            /* a boolean to indicate whether the hash table slot contains a star pattern. */
-            /* Note that this is therefore not explicitly set during catalog creation. */
-            #define has_pattern largest_edge
-            unsigned int le_bin_offset : 1;
-            unsigned int fixed_star_id_1 : 15;
-            unsigned int fixed_star_id_2 : 15;
-            /* Boolean value indicating whether this catalog position contains the last */
-            /* matching pattern in the catalog.  This avoids having to probe to the next slot. */
-            unsigned int is_last : 1;
-
-            Pattern();
-    };
-
+    // MARK: replace this with our Star class.
     /* Star struct */
     /* Data format of what's stored in the stars array for a given star. */
     struct Star {
@@ -246,6 +251,7 @@ private:
         unsigned int star_id;
     };
 
+    // MARK: replace this with our CatalogStar
     struct CatalogEntry {
         double RA; 
         double DEC;
@@ -253,6 +259,63 @@ private:
         char IS; 
         int mag; 
     };
+
+    double GetBase(double error_slope, double error_offset);
+    int LogBin(double input, double error_slope, double error_offset);
+    double LogUnbin(int bin, double error_slope, double error_offset);
+    int BinLargestEdge(unsigned int largest_edge, int error_ratio);
+    int BinY(int y, unsigned int le_bin, int error_ration);
+    double UnbinY(int bin, unsigned int le_bin);
+    int BinX(int x, unsigned int le_bin, int y_bin, int error_ratio);
+    uint64_t HashInt(uint64_t old_hash, uint64_t key);
+    uint64_t HashPattern(Pattern pattern_instance, uint64_t catalog_size_in_patterns);
+    int HashSame(Pattern new_pattern, Pattern cat_pattern);
+    int IncementOffset(uint64_t *cache_offset, int *probe_step);
+    void InsertPattern(int just_count,
+                        uint64_t *num_patterns,
+                        Pattern pattern_catalog_cache[],
+                        uint64_t *catalog_size_in_patterns, 
+                        int *cache_index, 
+                        Pattern new_pattern);
+    void DisambiguateFeatureOrder(int just_count,
+                                       uint64_t *num_patterns,
+                                       Pattern pattern_catalog_cache[],
+                                       uint64_t *catalog_size_in_patterns,
+                                       int *cache_index,
+                                       Pattern new_pattern,
+                                       int feature_index);
+    void DisambiguateRotation(int just_count,
+                                  uint64_t *num_patterns,
+                                  Pattern pattern_catalog_cache[],
+                                  uint64_t *catalog_size_in_patterns,
+                                  int *cache_index,
+                                  Pattern new_pattern);
+    int BinDiff(int min_bin,
+                    int max_bin);
+    void DisambiguateBins(int just_count,
+                              uint64_t *num_patterns,
+                              Pattern pattern_catalog_cache[],
+                              uint64_t *catalog_size_in_patterns,
+                              int *cache_index,
+                              Pattern new_pattern,
+                              int feature_index);
+    void DisambiguateLargestEdge(Star stars[],
+                                      int star_indices[],
+                                      int just_count,
+                                      uint64_t *num_patterns,
+                                      Pattern pattern_catalog_cache[],
+                                      uint64_t *catalog_size_in_patterns,
+                                      int *cache_index);
+    void IteratePatterns(Star stars[],
+                             int num_stars,
+                             int just_count,
+                             uint64_t *num_patterns,
+                             Pattern pattern_catalog_cache[],
+                             uint64_t *catalog_size_in_patterns,
+                             int *cache_index,
+                             int star_indices_index);
+    uint64_t CountPatterns(Star stars[],
+                               int num_stars);
 };
 
 }

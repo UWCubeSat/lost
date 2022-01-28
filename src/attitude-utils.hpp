@@ -27,6 +27,7 @@ public:
     float z;
 
     float Magnitude() const;
+    static double EucDist(const Vec3, const Vec3);
     Vec3 Normalize() const;
 
     float operator*(const Vec3 &) const;

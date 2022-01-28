@@ -324,4 +324,8 @@ float Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
 }
 
+static double EucDist(const Vec3 vec1, const Vec3 vec2) {
+    return (vec1.operator-(vec2)).Magnitude();
+}
+
 }
