@@ -754,7 +754,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
                     + 2 * pow(x, 2)));
 
 
-            float tangentialUndbreistortionY  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
+            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
                     + 2 * pow(y, 2)));
 
             undistortedX = x * radialUndistortion + tangentialUndistortionX;
