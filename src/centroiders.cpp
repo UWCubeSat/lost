@@ -96,39 +96,73 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 // corresponding to different divisions.
 // Divisions are horizontally based
 // Uses the same statistical algorithm as BasicThresholding
-std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int divisions) {
+std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     // run Basic Threshold on all elements in certain subdivisions
-    int div = imageHeight / divisions;
+    int div = imageHeight / subdivisions; // Minimum number of lines for each division
+    int leftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
     int totalPixels = imageWidth * imageHeight;
     int totalMag = 0;
     float std = 0;
     float mean = 0;
     std::vector<int> standardDeviations;
-    for(int i = 0; i < divisions; i++) {
+    // Sets threshold for the first few subdivisions that have 1 more line than the rest
+    for(int i = 0; i < leftover; i++) {
         totalMag = 0;
         std = 0;
         mean = 0;
-        if(i != divisions) {
+        for(int j = i * (div + 1) * imageWidth; j < (i+1) * (div + 1) * imageWidth; j++) {
+            totalMag += image[j];
+        }
+        mean = totalMag / ((div + 1) * imageWidth);
+        for (long j = i * (div + 1) * imageWidth; j < (i+1) * (div + 1) * imageWidth; j++) {
+                std += std::pow(image[j] - mean, 2);
+            }
+        std = std::sqrt(std / (div * imageWidth));
+        standardDeviations.push_back(mean + (std * 5));
+    }
+    // Sets thresholds for remaining subdivisions, which have one less line than before
+    for(int i = leftover; i < subdivisions; i++) {
+        totalMag = 0;
+        std = 0;
+        mean = 0;
+        for(int j = i * (div) * imageWidth; j < (i+1) * (div) * imageWidth; j++) {
+            totalMag += image[j];
+        }
+        mean = totalMag / ((div + 1) * imageWidth);
+        for (long j = i * (div) * imageWidth; j < (i+1) * (div) * imageWidth; j++) {
+                std += std::pow(image[j] - mean, 2);
+            }
+        std = std::sqrt(std / (div * imageWidth));
+        standardDeviations.push_back(mean + (std * 5));
+    }
+    /*
+    for(int i = 0; i < subdivisions; i++) {
+        totalMag = 0;
+        std = 0;
+        mean = 0;
+        if(i != subdivisions - 1) {
             for(int j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
                 totalMag += image[j];
             }
-            mean = totalMag / totalPixels;
+            mean = totalMag / (div * imageWidth);
             for (long j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
                 std += std::pow(image[j] - mean, 2);
             }
+            std = std::sqrt(std / (div * imageWidth));
         } else { // For the case that the end has more lines than the rest
             for(int j = i * div * imageWidth; j < sizeof(image); j++) {
                 totalMag += image[j];
             }
-            mean = totalMag / totalPixels;
+            mean = totalMag / (sizeof(image) - i * div * imageWidth + 1);
             for (long j = i * div * imageWidth; j < sizeof(image); j++) {
                 std += std::pow(image[j] - mean, 2);
             }
+            std = std::sqrt(std / (sizeof(image) - i * div * imageWidth + 1));
         }
-        std = std::sqrt(std / totalPixels);
         standardDeviations.push_back(mean + (std * 5));
     }
     standardDeviations.push_back(mean + (std * 5));
+    */
     // Return values of previous method as a vector
     return standardDeviations;
 }
@@ -163,10 +197,22 @@ struct CentroidParams {
     std::unordered_set<int> checkedIndices;
 };
 
+// For a given i and picture, determines which subdivision i is in (Zero Based)
+int subdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
+    int div = imageHeight / subdivisions;
+    int leftover = imageHeight % subdivisions;
+    if(i < (div + 1) * leftover * imageWidth) {
+        return i / ((div + 1) * imageWidth);
+    } else {
+        return leftover + (i - (div + 1) * leftover * imageWidth) / (div * imageWidth);
+    }
+    return 0;
+}
+
 //recursive helper here
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(i / (imageWidth * (imageHeight / subdivisions))) && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(subdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
@@ -245,8 +291,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
     p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, subdivisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at(i / (imageWidth * (imageHeight / subdivisions))) && p.checkedIndices.count(i) == 0) {
-
+        if (image[i] >= p.localCutoff.at(subdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
