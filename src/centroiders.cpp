@@ -117,7 +117,7 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
         for (long j = i * (div + 1) * imageWidth; j < (i+1) * (div + 1) * imageWidth; j++) {
                 std += std::pow(image[j] - mean, 2);
             }
-        std = std::sqrt(std / (div * imageWidth));
+        std = std::sqrt(std / ((div + 1) * imageWidth));
         standardDeviations.push_back(mean + (std * 5));
     }
     // Sets thresholds for remaining subdivisions, which have one less line than before
@@ -128,7 +128,7 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
         for(int j = i * (div) * imageWidth; j < (i+1) * (div) * imageWidth; j++) {
             totalMag += image[j];
         }
-        mean = totalMag / ((div + 1) * imageWidth);
+        mean = totalMag / (div * imageWidth); // Currently divides by 0 at 1000 subdivisions for 7qPnoi1.png
         for (long j = i * (div) * imageWidth; j < (i+1) * (div) * imageWidth; j++) {
                 std += std::pow(image[j] - mean, 2);
             }

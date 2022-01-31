@@ -693,7 +693,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
-        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height, 75);
+        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height, 1000);
         Stars *filteredStars = new std::vector<Star>();
         for (const Star &star : unfilteredStars) {
             if (star.magnitude >= centroidMinMagnitude) {
