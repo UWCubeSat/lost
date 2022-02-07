@@ -646,7 +646,7 @@ Pipeline PromptPipeline() {
 
         case PipelineStage::Undistort: {
             result.isUndistortEnabled = Prompt<std::string>("Do you want to undistort the image? (y or n)")
-                    .compare("y") == 0 ? true : false;e
+                    .compare("y") == 0 ? true : false;
             break;
         }
 
