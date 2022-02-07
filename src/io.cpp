@@ -646,7 +646,7 @@ Pipeline PromptPipeline() {
 
         case PipelineStage::Undistort: {
             result.isUndistortEnabled = Prompt<std::string>("Do you want to undistort the image? (y or n)")
-                    .compare("y") == 0 ? true : false;
+                    .compare("y") == 0 ? true : false;e
             break;
         }
 
@@ -762,7 +762,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             undistortedY = y * radialUndistortion + tangentialUndistortionY;
 
             Star undistortedStar(undistortedX, undistortedY, currentStar.radiusX, currentStar.radiusY, currentStar.magnitude);
-            undistortedStars->at(i) = undistortedStar;
+            undistortedStars.push_back(undistortedStar);
         }
 
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
