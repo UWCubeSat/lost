@@ -762,7 +762,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             undistortedY = y * radialUndistortion + tangentialUndistortionY;
 
             Star undistortedStar(undistortedX, undistortedY, currentStar.radiusX, currentStar.radiusY, currentStar.magnitude);
-            undistortedStars.push_back(undistortedStar);
+            undistortedStars->push_back(undistortedStar);
         }
 
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
