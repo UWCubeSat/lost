@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
 
         enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
             gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
-            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help};
+            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, threshold};
 
         static struct option long_options[] =
         {
@@ -192,6 +192,7 @@ int main(int argc, char **argv) {
             {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
             {"boresight-dec",  required_argument, 0, boresightDec},
             {"boresight-roll",  required_argument, 0, boresightRoll},
+            {"threshold",       required_argument, 0, threshold},
             {"help",            no_argument, 0, help},
             {0, 0, 0, 0}
         };
@@ -322,6 +323,10 @@ int main(int argc, char **argv) {
                     case boresightRoll :
                         std::cout << "You set the boresight roll to " << optarg << std::endl;
                         pipelineOptions.roll = atof(optarg);
+                        break;
+                    case threshold : 
+                        std::cout << "You set the threshold to " << optarg << std::endl;
+                        pipelineOptions.threshold = atof(optarg);
                         break;
                     case help : 
                         //system("man documentation/pipeline.man");

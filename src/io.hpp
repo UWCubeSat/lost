@@ -28,95 +28,95 @@
 namespace lost
 {
 
-    void RegisterCliArgs(int, char **);
-    bool HasNextCliArg();
-    std::string NextCliArg();
+    // void RegisterCliArgs(int, char **);
+    // bool HasNextCliArg();
+    // std::string NextCliArg();
 
-    template <typename S>
-    S Prompt(const std::string &prompt)
-    {
-        S result;
-        std::cerr << prompt << ": ";
-        if (HasNextCliArg())
-        {
-            std::string nextArg = NextCliArg();
-            std::cerr << nextArg << std::endl;
-            std::stringstream(nextArg) >> result;
-        }
-        else
-        {
-            std::cin >> result;
-        }
-        return result;
-    }
+    // template <typename S>
+    // S Prompt(const std::string &prompt)
+    // {
+    //     S result;
+    //     std::cerr << prompt << ": ";
+    //     if (HasNextCliArg())
+    //     {
+    //         std::string nextArg = NextCliArg();
+    //         std::cerr << nextArg << std::endl;
+    //         std::stringstream(nextArg) >> result;
+    //     }
+    //     else
+    //     {
+    //         std::cin >> result;
+    //     }
+    //     return result;
+    // }
 
-    template <typename S>
-    class InteractiveChoiceOption
-    {
-    public:
-        InteractiveChoiceOption(std::string shortName, std::string longName, S value)
-            : shortName(shortName), longName(longName), value(value){};
+    // template <typename S>
+    // class InteractiveChoiceOption
+    // {
+    // public:
+    //     InteractiveChoiceOption(std::string shortName, std::string longName, S value)
+    //         : shortName(shortName), longName(longName), value(value){};
 
-        std::string shortName;
-        std::string longName;
-        S value;
-    };
+    //     std::string shortName;
+    //     std::string longName;
+    //     S value;
+    // };
 
-    // can prompt the user between multiple options.
-    template <typename S>
-    class InteractiveChoice
-    {
-    public:
-        // prompt the user until they enter a valid option
-        S Prompt(const std::string &) const;
-        void Register(std::string, std::string, S);
+    // // can prompt the user between multiple options.
+    // template <typename S>
+    // class InteractiveChoice
+    // {
+    // public:
+    //     // prompt the user until they enter a valid option
+    //     S Prompt(const std::string &) const;
+    //     void Register(std::string, std::string, S);
 
-    private:
-        std::vector<InteractiveChoiceOption<S>> options;
-    };
+    // private:
+    //     std::vector<InteractiveChoiceOption<S>> options;
+    // };
 
-    template <typename S>
-    void InteractiveChoice<S>::Register(std::string shortKey, std::string longKey, S value)
-    {
-        options.push_back(InteractiveChoiceOption<S>(shortKey, longKey, value));
-    }
+    // template <typename S>
+    // void InteractiveChoice<S>::Register(std::string shortKey, std::string longKey, S value)
+    // {
+    //     options.push_back(InteractiveChoiceOption<S>(shortKey, longKey, value));
+    // }
 
-    template <typename S>
-    S InteractiveChoice<S>::Prompt(const std::string &prompt) const
-    {
-        std::string userChoice;
-        bool useCli = HasNextCliArg();
-        while (1)
-        {
-            if (!useCli)
-            {
-                for (const auto &option : options)
-                {
-                    std::cerr << "(" << option.shortName << ") " << option.longName << std::endl;
-                }
-            }
-            userChoice = lost::Prompt<std::string>(prompt);
+    // template <typename S>
+    // S InteractiveChoice<S>::Prompt(const std::string &prompt) const
+    // {
+    //     std::string userChoice;
+    //     bool useCli = HasNextCliArg();
+    //     while (1)
+    //     {
+    //         if (!useCli)
+    //         {
+    //             for (const auto &option : options)
+    //             {
+    //                 std::cerr << "(" << option.shortName << ") " << option.longName << std::endl;
+    //             }
+    //         }
+    //         userChoice = lost::Prompt<std::string>(prompt);
 
-            auto found = options.begin();
-            while (found != options.end() && found->shortName != userChoice)
-            {
-                found++;
-            }
+    //         auto found = options.begin();
+    //         while (found != options.end() && found->shortName != userChoice)
+    //         {
+    //             found++;
+    //         }
 
-            if (found == options.end())
-            {
-                std::cerr << "Peace was never an option." << std::endl;
-                if (useCli)
-                {
-                    exit(1);
-                }
-            }
-            else
-            {
-                return found->value;
-            }
-        }
-    }
+    //         if (found == options.end())
+    //         {
+    //             std::cerr << "Peace was never an option." << std::endl;
+    //             if (useCli)
+    //             {
+    //                 exit(1);
+    //             }
+    //         }
+    //         else
+    //         {
+    //             return found->value;
+    //         }
+    //     }
+    // }
 
     class PromptedOutputStream
     {
@@ -188,6 +188,7 @@ namespace lost
         float dec = 7; // degtorad will be calculated later in the pipeline
         float roll = 0;
         std::string output = "stdout";
+        float threshold; // TODO add to man page
     };
 
     // represents the input and expected outputs of a pipeline run.

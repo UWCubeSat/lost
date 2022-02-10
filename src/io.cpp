@@ -598,16 +598,16 @@ Pipeline SetPipeline(PipelineOptions values) {
 
     Pipeline result;
     
-    InteractiveChoice<PipelineStage> stageChoice;
-    stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
-    // TODO: more flexible or sth
-    stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
-    // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
-    // choices to those compatible with the database?
-    stageChoice.Register("database", "Database", PipelineStage::Database);
-    stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
-    stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
-    stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
+    // InteractiveChoice<PipelineStage> stageChoice;
+    // stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
+    // // TODO: more flexible or sth
+    // stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
+    // // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
+    // // choices to those compatible with the database?
+    // stageChoice.Register("database", "Database", PipelineStage::Database);
+    // stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
+    // stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
+    // stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
@@ -1000,7 +1000,8 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
 typedef void (*PipelineComparator)(std::ostream &os,
                                    const PipelineInputList &,
-                                   const std::vector<PipelineOutput> &);
+                                   const std::vector<PipelineOutput> &,
+                                   PipelineOptions options);
 
 cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned int length) {
     std::ostream *os = (std::ostream *)closure;
@@ -1010,7 +1011,8 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
 
 void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
-                                    const std::vector<PipelineOutput> &actual) {
+                                    const std::vector<PipelineOutput> &actual,
+                                    PipelineOptions values) {
     
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
@@ -1019,7 +1021,8 @@ void PipelineComparatorPlotRawInput(std::ostream &os,
 
 void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &actual) {
+                                 const std::vector<PipelineOutput> &actual,
+                                 PipelineOptions values) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->InputStars() != NULL);
     SurfacePlot(cairoSurface,
@@ -1035,10 +1038,12 @@ void PipelineComparatorPlotInput(std::ostream &os,
 
 void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &actual) {
+                                 const std::vector<PipelineOutput> &actual,
+                                 PipelineOptions values) {
     int size = (int)expected.size();
 
-    float threshold = Prompt<float>("Threshold to count as the same star (pixels, float)");
+    float threshold = values.threshold;
+    // float threshold = Prompt<float>("Threshold to count as the same star (pixels, float)");
 
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
@@ -1055,7 +1060,8 @@ void PipelineComparatorCentroids(std::ostream &os,
 
 void PipelineComparatorPrintCentroids(std::ostream &os,
                                       const PipelineInputList &expected,
-                                      const std::vector<PipelineOutput> &actual) {
+                                      const std::vector<PipelineOutput> &actual,
+                                      PipelineOptions values) {
     assert(actual.size() == 1);
     assert(actual[0].stars);
 
@@ -1070,7 +1076,8 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
 
 void PipelineComparatorPlotOutput(std::ostream &os,
                                      const PipelineInputList &expected,
-                                     const std::vector<PipelineOutput> &actual) {
+                                     const std::vector<PipelineOutput> &actual,
+                                     PipelineOptions values) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
@@ -1086,9 +1093,11 @@ void PipelineComparatorPlotOutput(std::ostream &os,
 
 void PipelineComparatorStars(std::ostream &os,
                              const PipelineInputList &expected,
-                             const std::vector<PipelineOutput> &actual) {
+                             const std::vector<PipelineOutput> &actual,
+                             PipelineOptions values) {
     float centroidThreshold = actual[0].stars
-        ? Prompt<float>("Threshold to count centroids as the same star (pixels)")
+        // ? Prompt<float>("Threshold to count centroids as the same star (pixels)")
+        ? values.threshold
         : 0.0f;
 
     std::vector<StarIdComparison> comparisons;
@@ -1121,7 +1130,8 @@ void PipelineComparatorStars(std::ostream &os,
 
 void PipelineComparatorPrintAttitude(std::ostream &os,
                                      const PipelineInputList &expected,
-                                     const std::vector<PipelineOutput> &actual) {
+                                     const std::vector<PipelineOutput> &actual,
+                                     PipelineOptions values) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
 
@@ -1138,12 +1148,14 @@ void PipelineComparatorPrintAttitude(std::ostream &os,
 
 void PipelineComparatorAttitude(std::ostream &os,
                                 const PipelineInputList &expected,
-                                const std::vector<PipelineOutput> &actual) {
+                                const std::vector<PipelineOutput> &actual,
+                                PipelineOptions values) {
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
-    float angleThreshold = DegToRad(
-        Prompt<float>("Threshold to count two attitudes as the same (deg)"));
+    float angleThreshold = DegToRad(values.threshold);
+    // float angleThreshold = DegToRad(
+    //     Prompt<float>("Threshold to count two attitudes as the same (deg)"));
 
     float attitudeErrorSum = 0.0f;
     int numCorrect = 0;
@@ -1184,23 +1196,23 @@ void PipelineComparison(const PipelineInputList &expected,
         assert(actual[0].stars && actual.size() == 1);
         comparator = PipelineComparatorPrintCentroids;
     } else if (values.plot == "compare_centroids") {
-        assert(actual[0].stars && expected[0]->ExpectedStars());
+        assert(actual[0].stars && expected[0]->ExpectedStars() && values.threshold);
         comparator = PipelineComparatorCentroids;
     } else if (values.plot == "compare_stars") {
-        assert(expected[0]->ExpectedStars() && actual[0].starIds);
+        assert(expected[0]->ExpectedStars() && actual[0].starIds && values.threshold);
         comparator = PipelineComparatorStars;
     } else if (values.plot == "print_attitude") {
         assert(actual[0].attitude && actual.size() == 1);
         comparator = PipelineComparatorPrintAttitude;
     } else if (values.plot == "compare_attitude") {
-        assert(actual[0].attitude && expected[0]->ExpectedAttitude());
+        assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.threshold);
         comparator = PipelineComparatorAttitude;
     } else {
         return;
     }
 
     PromptedOutputStream pos(values.output);
-    comparator(pos.Stream(), expected, actual);
+    comparator(pos.Stream(), expected, actual, values);
 }
 
 
