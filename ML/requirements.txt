@@ -1,0 +1,2 @@
+numpy
+p_tqdm
