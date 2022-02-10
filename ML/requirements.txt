@@ -1,2 +1,5 @@
 numpy
 p_tqdm
+torch
+torchvision
+torchaudio

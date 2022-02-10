@@ -22,7 +22,7 @@ print(os.path.exists(DATA_PATH))
 if not os.path.isdir(DATA_PATH):
     os.system(f'mkdir {DATA_PATH}')
 # %%
-os.system(f'cd {PATH_TO_LOST} && make clean && CXXFLAGS=-O3 make -j{len(os.sched_getaffinity(0))}')
+os.system(f'cd {PATH_TO_LOST} && yes | make clean && CXXFLAGS=-O3 make -j{len(os.sched_getaffinity(0))}')
 
 # %% 
 def generateImage(num):
