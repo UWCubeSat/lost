@@ -4,6 +4,7 @@ import random
 import time
 import numpy as np
 from p_tqdm import p_umap
+import csv
 # %%
 def random_distribution_over_sphere(lower, upper):
     """
@@ -60,16 +61,17 @@ def generateImage(num):
     # Move the data to the data folder.
     os.system(f'cd {PATH_TO_LOST} && mv {FILE_NAME}.png {DATA_PATH} >/dev/null 2>&1')
 
-    f = open('data.txt', 'a')
-    f.write(f'{FILE_NAME}.png, ({BORESIGHT_RIGHT_ASCENSION},{BORESIGHT_DECLINATION},{BORESIGHT_ROLL})\n')
-    f.close()
+    with open('data.csv', 'a') as f:
+        csv_writer = csv.writer(f)
+        csv_writer.writerow([f'{FILE_NAME}.png', 
+        (BORESIGHT_RIGHT_ASCENSION, BORESIGHT_DECLINATION, BORESIGHT_ROLL)])
 
 
 
 # %%
 def main():
     num_images = int(input("How many images do you want to generate? "))
-    f = open('data.txt', 'w')
+    f = open('data.csv', 'w')
     generated = p_umap(generateImage, range(num_images))
 
   # %%  
