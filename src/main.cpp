@@ -58,7 +58,7 @@ static void PipelineRun(PipelineOptions values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
     std::vector<PipelineOutput> outputs = pipeline.Go(input);
-    PromptPipelineComparison(input, outputs);
+    PipelineComparison(input, outputs, values);
 }
 
 // static void PipelineBenchmark() {
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
             {"false-stars",     required_argument, 0, falseStars},
             {"max-mismatch-prob",  required_argument, 0, maxMismatchProb},
             {"attitude-algo",    required_argument, 0, attitudeAlgo},
-            // {"plot",            required_argument, 0, plot},
+            {"plot",            required_argument, 0, plot},
             {"generate",        optional_argument, 0, generate},
             {"horizontal-res",  required_argument, 0, horizontalRes},
             {"vertical-res",  required_argument, 0, verticalRes},
@@ -278,10 +278,10 @@ int main(int argc, char **argv) {
                         }                        
                         break; 
                     }
-                    // case plot :
-                    //     std::cout << "You set the plotted output path to " << optarg << std::endl;
-                    //     pipelineOptions.plot = optarg;
-                    //     break;
+                    case plot :
+                        std::cout << "You set the plotted output path to " << optarg << std::endl;
+                        pipelineOptions.plot = optarg;
+                        break;
                     case generate :
                         if (optarg) {
                             pipelineOptions.generate = atoi(optarg);

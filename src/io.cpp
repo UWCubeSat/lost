@@ -1165,69 +1165,108 @@ void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_fraction_correct " << fractionCorrect << std::endl;
 }
 
-void PromptPipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual) {
+void PipelineComparison(const PipelineInputList &expected,
+                              const std::vector<PipelineOutput> &actual, PipelineOptions values) {
     assert(expected.size() == actual.size() && expected.size() > 0);
 
-    InteractiveChoice<PipelineComparator> comparatorChoice;
+    PipelineComparator comparator;
 
-    if (expected[0]->InputImage() && expected.size() == 1) {
-        comparatorChoice.Register("plot_raw_input", "Plot raw BW input image to PNG",
-                                  PipelineComparatorPlotRawInput);
-
-        if (expected[0]->InputStars()) {
-            comparatorChoice.Register("plot_input", "Plot annotated input image to PNG",
-                                      PipelineComparatorPlotInput);
-        }
+    if (values.plot == "plot_raw_input") {
+        assert(expected[0]->InputImage() && expected.size() == 1);
+        comparator = PipelineComparatorPlotRawInput;
+    } else if (values.plot == "plot_input") {
+        assert(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars());
+        comparator = PipelineComparatorPlotInput;
+    } else if (values.plot == "plot_output") {
+        assert(actual.size() == 1 && (actual[0].stars || actual[0].starIds));
+        comparator = PipelineComparatorPlotOutput;
+    } else if (values.plot == "print_centroids") {
+        assert(actual[0].stars && actual.size() == 1);
+        comparator = PipelineComparatorPrintCentroids;
+    } else if (values.plot == "compare_centroids") {
+        assert(actual[0].stars && expected[0]->ExpectedStars());
+        comparator = PipelineComparatorCentroids;
+    } else if (values.plot == "compare_stars") {
+        assert(expected[0]->ExpectedStars() && actual[0].starIds);
+        comparator = PipelineComparatorStars;
+    } else if (values.plot == "print_attitude") {
+        assert(actual[0].attitude && actual.size() == 1);
+        comparator = PipelineComparatorPrintAttitude;
+    } else if (values.plot == "compare_attitude") {
+        assert(actual[0].attitude && expected[0]->ExpectedAttitude());
+        comparator = PipelineComparatorAttitude;
+    } else {
+        return;
     }
 
-    if (actual.size() == 1 && (actual[0].stars || actual[0].starIds)) {
-            comparatorChoice.Register("plot_output", "Plot output to PNG",
-                                      PipelineComparatorPlotOutput);
-    }
-
-    // Centroids
-    if (actual[0].stars) {
-        if (actual.size() == 1) {
-            comparatorChoice.Register("print_centroids", "Print list of centroids",
-                                      PipelineComparatorPrintCentroids);
-        }
-
-        if (expected[0]->ExpectedStars()) {
-            comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
-                                      PipelineComparatorCentroids);
-        }
-    }
-
-    // Star-IDs
-    if (expected[0]->ExpectedStars() && actual[0].starIds) {
-                comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
-                                          PipelineComparatorStars);
-    }
-
-    if (actual[0].attitude) {
-        if (actual.size() == 1) {
-            comparatorChoice.Register("print_attitude", "Print the determined ra, de, and roll",
-                                      PipelineComparatorPrintAttitude);
-        }
-
-        if (expected[0]->ExpectedAttitude()) {
-            comparatorChoice.Register("compare_attitude", "Compare expected to actual attitude",
-                                      PipelineComparatorAttitude);
-        }
-    }
-
-    comparatorChoice.Register("done", "No more comparisons", NULL);
-    //TODO: fix
-    // while (true) {
-    //     PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
-    //     if (comparator == NULL) {
-    //         break;
-    //     }
-
-    //     PromptedOutputStream pos;
-    //     comparator(pos.Stream(), expected, actual);
-    // }
+    PromptedOutputStream pos(values.output);
+    comparator(pos.Stream(), expected, actual);
 }
+
+
+// void PromptPipelineComparison(const PipelineInputList &expected,
+//                               const std::vector<PipelineOutput> &actual) {
+//     assert(expected.size() == actual.size() && expected.size() > 0);
+
+//     InteractiveChoice<PipelineComparator> comparatorChoice;
+
+//     if (expected[0]->InputImage() && expected.size() == 1) {
+//         comparatorChoice.Register("plot_raw_input", "Plot raw BW input image to PNG",
+//                                   PipelineComparatorPlotRawInput);
+
+//         if (expected[0]->InputStars()) {
+//             comparatorChoice.Register("plot_input", "Plot annotated input image to PNG",
+//                                       PipelineComparatorPlotInput);
+//         }
+//     }
+
+//     if (actual.size() == 1 && (actual[0].stars || actual[0].starIds)) {
+//             comparatorChoice.Register("plot_output", "Plot output to PNG",
+//                                       PipelineComparatorPlotOutput);
+//     }
+
+//     // Centroids
+//     if (actual[0].stars) {
+//         if (actual.size() == 1) {
+//             comparatorChoice.Register("print_centroids", "Print list of centroids",
+//                                       PipelineComparatorPrintCentroids);
+//         }
+
+//         if (expected[0]->ExpectedStars()) {
+//             comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
+//                                       PipelineComparatorCentroids);
+//         }
+//     }
+
+//     // Star-IDs
+//     if (expected[0]->ExpectedStars() && actual[0].starIds) {
+//                 comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
+//                                           PipelineComparatorStars);
+//     }
+
+//     if (actual[0].attitude) {
+//         if (actual.size() == 1) {
+//             comparatorChoice.Register("print_attitude", "Print the determined ra, de, and roll",
+//                                       PipelineComparatorPrintAttitude);
+//         }
+
+//         if (expected[0]->ExpectedAttitude()) {
+//             comparatorChoice.Register("compare_attitude", "Compare expected to actual attitude",
+//                                       PipelineComparatorAttitude);
+//         }
+//     }
+
+//     comparatorChoice.Register("done", "No more comparisons", NULL);
+//     //TODO: fix
+//     // while (true) {
+//     //     PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
+//     //     if (comparator == NULL) {
+//     //         break;
+//     //     }
+
+//     //     PromptedOutputStream pos;
+//     //     comparator(pos.Stream(), expected, actual);
+//     // }
+// }
 
 }

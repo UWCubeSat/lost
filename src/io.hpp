@@ -177,7 +177,7 @@ namespace lost
         int pyFalseStars = 500;
         float pyMismatchProb = 0.001;
         std::string attitudeAlgo = "dqm";
-        // std::string plot;        // also was never used
+        std::string plot;
         int generate = 1;
         int horizontalRes = 1024;
         int verticalRes = 1024;
@@ -187,6 +187,7 @@ namespace lost
         float ra = 88; // degtorad will be calculated later in the pipeline
         float dec = 7; // degtorad will be calculated later in the pipeline
         float roll = 0;
+        std::string output = "stdout";
     };
 
     // represents the input and expected outputs of a pipeline run.
@@ -311,8 +312,9 @@ namespace lost
     Pipeline SetPipeline(PipelineOptions values);
 
     // ask the user what to do with actual and expected outputs
-    void PromptPipelineComparison(const PipelineInputList &expected,
-                                  const std::vector<PipelineOutput> &actual);
+    void PipelineComparison(const PipelineInputList &expected,
+                                  const std::vector<PipelineOutput> &actual,
+                                  PipelineOptions values);
 
     ////////////////
     // DB BUILDER //
