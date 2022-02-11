@@ -197,7 +197,7 @@ struct CentroidParams {
     std::unordered_set<int> checkedIndices;
 };
 
-// For a given i and picture, determines which subdivision i is in (Zero Based)
+// For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
 int subdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
     int div = imageHeight / subdivisions;
     int leftover = imageHeight % subdivisions;
@@ -286,6 +286,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 //Subdivisions refers to how many horizontal sections with different thresholds are present
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
+    // Program will use divisions to represent the subdivisions
     int divisions = subdivisions;
     if(subdivisions > imageHeight) {
         divisions = imageHeight;
