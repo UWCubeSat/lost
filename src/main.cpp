@@ -15,7 +15,7 @@
 
 namespace lost {
 
-static void DatabaseBuild(DatabaseOptions values) {
+static void DatabaseBuild(const DatabaseOptions &values) {
     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(),values.maxMagnitude,values.maxStars);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
@@ -54,13 +54,14 @@ static void DatabaseBuild(DatabaseOptions values) {
 //     pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 // }
 
-static void PipelineRun(PipelineOptions values) {
+static void PipelineRun(const PipelineOptions &values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
     std::vector<PipelineOutput> outputs = pipeline.Go(input);
     PipelineComparison(input, outputs, values);
 }
 
+// DO NOT DELETE
 // static void PipelineBenchmark() {
 //     PipelineInputList input = PromptPipelineInput();
 //     Pipeline pipeline = PromptPipeline();

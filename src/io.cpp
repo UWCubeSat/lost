@@ -327,7 +327,7 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
 }
 
 
-void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, DatabaseOptions values) {
+void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) {
 
     if (values.databaseBuilder == "kvector") {
         float minDistance = DegToRad(values.kvectorMinDistance);
@@ -393,7 +393,7 @@ PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera,
     image.height = cairo_image_surface_get_height(cairoSurface);
 }
 
-PipelineInputList GetPngPipelineInput(PipelineOptions values) {
+PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
     // with copying unique ptrs
     PipelineInputList result;
@@ -520,7 +520,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 //     return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
 // }
 
-PipelineInputList GetGeneratedPipelineInput(PipelineOptions values) {
+PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
     int numImages = values.generate;
     int xResolution = values.horizontalRes;
@@ -554,7 +554,7 @@ PipelineInputList GetGeneratedPipelineInput(PipelineOptions values) {
 
 typedef PipelineInputList (*PipelineInputFactory)();
 
-PipelineInputList GetPipelineInput(PipelineOptions values) {
+PipelineInputList GetPipelineInput(const PipelineOptions &values) {
 
     if (values.png != "") {
         return GetPngPipelineInput(values);
@@ -591,7 +591,7 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 
 
-Pipeline SetPipeline(PipelineOptions values) {
+Pipeline SetPipeline(const PipelineOptions &values) {
     enum class PipelineStage {
         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
     };
@@ -1001,7 +1001,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 typedef void (*PipelineComparator)(std::ostream &os,
                                    const PipelineInputList &,
                                    const std::vector<PipelineOutput> &,
-                                   PipelineOptions options);
+                                   const PipelineOptions &);
 
 cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned int length) {
     std::ostream *os = (std::ostream *)closure;
@@ -1012,7 +1012,7 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
 void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
                                     const std::vector<PipelineOutput> &actual,
-                                    PipelineOptions values) {
+                                    const PipelineOptions &values) {
     
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
@@ -1022,7 +1022,7 @@ void PipelineComparatorPlotRawInput(std::ostream &os,
 void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
                                  const std::vector<PipelineOutput> &actual,
-                                 PipelineOptions values) {
+                                 const PipelineOptions &values) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->InputStars() != NULL);
     SurfacePlot(cairoSurface,
@@ -1039,7 +1039,7 @@ void PipelineComparatorPlotInput(std::ostream &os,
 void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineInputList &expected,
                                  const std::vector<PipelineOutput> &actual,
-                                 PipelineOptions values) {
+                                 const PipelineOptions &values) {
     int size = (int)expected.size();
 
     float threshold = values.threshold;
@@ -1061,7 +1061,7 @@ void PipelineComparatorCentroids(std::ostream &os,
 void PipelineComparatorPrintCentroids(std::ostream &os,
                                       const PipelineInputList &expected,
                                       const std::vector<PipelineOutput> &actual,
-                                      PipelineOptions values) {
+                                      const PipelineOptions &values) {
     assert(actual.size() == 1);
     assert(actual[0].stars);
 
@@ -1077,7 +1077,7 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
 void PipelineComparatorPlotOutput(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual,
-                                     PipelineOptions values) {
+                                     const PipelineOptions &values) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
@@ -1094,7 +1094,7 @@ void PipelineComparatorPlotOutput(std::ostream &os,
 void PipelineComparatorStars(std::ostream &os,
                              const PipelineInputList &expected,
                              const std::vector<PipelineOutput> &actual,
-                             PipelineOptions values) {
+                             const PipelineOptions &values) {
     float centroidThreshold = actual[0].stars
         // ? Prompt<float>("Threshold to count centroids as the same star (pixels)")
         ? values.threshold
@@ -1131,7 +1131,7 @@ void PipelineComparatorStars(std::ostream &os,
 void PipelineComparatorPrintAttitude(std::ostream &os,
                                      const PipelineInputList &expected,
                                      const std::vector<PipelineOutput> &actual,
-                                     PipelineOptions values) {
+                                     const PipelineOptions &values) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
 
@@ -1149,7 +1149,7 @@ void PipelineComparatorPrintAttitude(std::ostream &os,
 void PipelineComparatorAttitude(std::ostream &os,
                                 const PipelineInputList &expected,
                                 const std::vector<PipelineOutput> &actual,
-                                PipelineOptions values) {
+                                const PipelineOptions &values) {
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
@@ -1178,7 +1178,8 @@ void PipelineComparatorAttitude(std::ostream &os,
 }
 
 void PipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual, PipelineOptions values) {
+                              const std::vector<PipelineOutput> &actual, 
+                              const PipelineOptions &values) {
     assert(expected.size() == actual.size() && expected.size() > 0);
 
     PipelineComparator comparator;

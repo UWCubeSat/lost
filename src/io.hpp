@@ -293,7 +293,7 @@ namespace lost
 
     class Pipeline
     {
-        friend Pipeline SetPipeline(PipelineOptions value);
+        friend Pipeline SetPipeline(const PipelineOptions &values);
 
     public:
         // pointers just so they're nullable
@@ -310,12 +310,12 @@ namespace lost
         std::unique_ptr<unsigned char[]> database;
     };
 
-    Pipeline SetPipeline(PipelineOptions values);
+    Pipeline SetPipeline(const PipelineOptions &values);
 
     // ask the user what to do with actual and expected outputs
     void PipelineComparison(const PipelineInputList &expected,
                                   const std::vector<PipelineOutput> &actual,
-                                  PipelineOptions values);
+                                  const PipelineOptions &values);
 
     ////////////////
     // DB BUILDER //
