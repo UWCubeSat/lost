@@ -268,7 +268,8 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
 }
 
 CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
-    return new CenterOfGravityAlgorithm();
+    int subdivisions = Prompt<int>("How many subdivisions to use");
+    return new CenterOfGravityAlgorithm(subdivisions);
 }
 
 CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
@@ -693,7 +694,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (centroidAlgorithm && inputImage) {
         // TODO: we should probably modify Go to just take an image argument
-        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height, 1000);
+        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
         Stars *filteredStars = new std::vector<Star>();
         for (const Star &star : unfilteredStars) {
             if (star.magnitude >= centroidMinMagnitude) {

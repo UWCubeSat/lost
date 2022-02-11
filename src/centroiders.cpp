@@ -16,7 +16,7 @@ namespace lost {
 
 // DUMMYS
 
-std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) const {
+std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
     for (int i = 0; i < numStars; i++) {
@@ -284,14 +284,16 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 */
 //Copy of CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
 //Subdivisions refers to how many horizontal sections with different thresholds are present
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) const {
+std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    
+    int divisions = subdivisions;
+    if(subdivisions > imageHeight) {
+        divisions = imageHeight;
+    }
     std::vector<Star> result;
-
-    p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, subdivisions);
+    p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, divisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at(subdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.localCutoff.at(subdivision(i, imageWidth, imageHeight, divisions)) && p.checkedIndices.count(i) == 0) {
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
@@ -307,7 +309,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
             int sizeBefore = p.checkedIndices.size();
 
-            CogHelper(p, i, image, imageWidth, imageHeight, subdivisions);
+            CogHelper(p, i, image, imageWidth, imageHeight, divisions);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
 
@@ -372,7 +374,7 @@ void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, i
     }
 }
 
-Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) const {
+Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
