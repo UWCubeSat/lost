@@ -51,6 +51,29 @@ private:
     long cutoff;
 };
 
+class BayesianStarIdAlgorithm final : public StarIdAlgorithm {
+public:
+    StarIdentifiers Go(unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+
+    /**
+     * @param tolerance: Angular tolerance in degrees (centroid/measurement error)
+     * @param numFalseStars: expected number of false stars throughout the celestial sphere
+     * @param softConfidenceThreshold: If the confidence is below this threshold after considering every star in the image, then try to consider negative evidence.
+     * @param hardConfidenceThreshold: Do not return the match if below this threshold of confidence.
+     * @param admissibleIgnoredProbability: At each step, allow the algorithm to throw out possibilities as long as the probability measure of the discarded possibilities sums to less than admissibleIgnoredProbability
+     */
+    BayesianStarIdAlgorithm(float tolerance, int numFalseStars,
+                            float softConfidenceThreshold, float hardConfidenceThreshold,
+                            float admissableIgnoredProbability);
+
+private:
+    float tolerance;
+    int numFalseStars;
+    float softConfidenceThreshold;
+    float hardConfidenceThreshold;
+    float admissibleIgnoredProbability;
+};
+
 }
 
 #endif

@@ -505,4 +505,284 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+BayesianStarIdAlgorithm::BayesianStarIdAlgorithm(
+    float tolerance, int numFalseStars,
+    float softConfidenceThreshold, float hardConfidenceThreshold,
+    float admissibleIgnoredProbability):
+    tolerance(tolerance), numFalseStars(numFalseStars),
+    softConfidenceThreshold(softConfidenceThreshold), hardConfidenceThreshold(hardConfidenceThreshold),
+    admissibleIgnoredProbability(admissibleIgnoredProbability) {
+
+    assert(0.5 <= hardConfidenceThreshold); // some of our algorithm uses this
+    assert(hardConfidenceThreshold <= softConfidenceThreshold);
+    assert(softConfidenceThreshold <= 1.0);
+}
+
+// typedef int16_t BayesPossibilityCatalogStarsOne;
+
+// // TODO: rework the kvector functions to return iterator stuff.
+// class BayesPossibilityCatalogStarsTwo {
+// public:
+//     const int16_t *start;
+//     const int16_t *end;
+// };
+
+// typedef std::unique_ptr<std::vector<int16_t>> BayesPossibilityCatalogStarsMany;
+
+// union BayesPossibilityCatalogStars {
+//     BayesPossibilityCatalogStarsOne one;
+//     BayesPossibilityCatalogStarsTwo two;
+//     BayesPossibilityCatalogStarsMany many;
+// }
+
+class BayesPossibility {
+public:
+    BayesPossibility(float probability)
+        : probability(probability) { };
+    BayesPossibility(float probability, int16_t centroidIndex)
+        : probability(probability) {
+        centroidIndices.push_back(centroidIndex);
+    };
+    BayesPossibility(float probability, int16_t centroidIndex1, int16_t centroidIndex2,
+                     const int16_t *queryBegin, const int16_t *queryEnd)
+        : probability(probability) {
+        centroidIndices.push_back(centroidIndex1);
+        centroidIndices.push_back(centroidIndex2);
+        catalogIndicesBegin = queryBegin;
+        catalogIndicesEnd = queryEnd;
+    }
+    BayesPossibility() = default;
+
+    // the number of subconfigurations stored in this possibility (subconfigurations are really just
+    // more possibilities)
+    int NumConfigurations(const Catalog &catalog) const {
+        if (catalogIndicesBegin != NULL) {
+            assert(centroidIndices.size() == 2);
+            // 2* to account for flipping
+            return 2*(catalogIndicesEnd - catalogIndicesBegin) / centroidIndices.size();
+        } else if (catalogIndices.size() == 1) {
+            return catalog.size();
+        } else {
+            return catalogIndices.size() / centroidIndices.size();
+        }
+    }
+
+    float TotalProbability(const Catalog &catalog) const {
+        return probability * NumConfigurations(catalog);
+    }
+
+    // convert this possibility to an identifier if appropriate
+    StarIdentifiers ToStarIdentifiers() const {
+        assert(centroidIndices.size() > 2);
+        assert(centroidIndices.size() == catalogIndices.size());
+        StarIdentifiers result;
+        for (int i = 0; i < centroidIndices.size(); i++) {
+            result.push_back(StarIdentifier(centroidIndices[i], catalogIndices[i]));
+        }
+        return result;
+    };
+
+    float probability; // Probability of each possible configuration inside
+    std::vector<int16_t> centroidIndices;
+    const int16_t *catalogIndicesBegin = NULL;
+    const int16_t *catalogIndicesEnd;
+    std::vector<int16_t> catalogIndices;
+};
+
+// can iterate over either manually passed in int16_t*s, or vector iterators. When iterating over
+// int16_t*s, also goes over them in reverse
+class BayesPossibilityIterator {
+public:
+    BayesPossibilityIterator(BayesPossibility possibility)
+        : queryStart(possibility.catalogIndicesBegin), queryCur(possibility.catalogIndicesBegin), queryEnd(possibility.catalogIndicesEnd),
+          vecCur(possibility.catalogIndices.cbegin()), vecEnd(possibility.catalogIndices.cend())
+        { };
+
+    bool hasValue() const {
+        if (queryCur != NULL) {
+            return !(queryCur == queryStart && reverse == true);
+        } else {
+            return vecCur != vecEnd;
+        }
+    }
+    void operator++() {
+        assert(hasValue());
+        if (queryCur != NULL) {
+            if (!reverse) {
+                queryCur++;
+                if (queryCur == queryEnd) {
+                    queryCur--;
+                    reverse = true;
+                }
+            } else {
+                queryCur--;
+            }
+        } else {
+            vecCur++;
+        }
+    };
+    int16_t operator*() {
+        assert(hasValue());
+        if (queryCur != NULL) {
+            return *queryCur;
+        } else {
+            return *vecCur;
+        }
+    };
+
+private:
+    const int16_t *queryStart;
+    const int16_t *queryCur = NULL;
+    const int16_t *queryEnd;
+    bool reverse = false;
+    std::vector<int16_t>::const_iterator vecCur;
+    std::vector<int16_t>::const_iterator vecEnd;
+};
+
+typedef std::vector<BayesPossibility> BayesPrior;
+
+// return the mode of the distribution. If nothing promising, return empty and negative probability
+StarIdentifiers Mode(const BayesPrior &prior, const Catalog &catalog, float *modeProbability) {
+    float sum = 0.0;
+    float max = -1.0;
+    BayesPossibility maxPossibility;
+    for (const BayesPossibility &possibility : prior) {
+        sum += possibility.TotalProbability(catalog);
+        // TODO: check that numconfigurations always storable in 16 bits? Hopefully should be, but
+        // maybe just assert?
+        int numConfigurations = possibility.NumConfigurations(catalog);
+        if (numConfigurations == 1 && possibility.probability > max) {
+            max = possibility.probability;
+            maxPossibility = possibility;
+        }
+    }
+    if (max < 0) {
+        *modeProbability = -1.0;
+        return StarIdentifiers();
+    } else {
+        *modeProbability = max/sum;
+        return maxPossibility.ToStarIdentifiers();
+    }
+}
+
+StarIdentifiers BayesianStarIdAlgorithm::Go(unsigned char *database, const Stars &stars,
+                                            const Catalog &catalog, const Camera &camera) const {
+    // load database
+    MultiDatabase multiDatabase(database);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
+    if (databaseBuffer == NULL) {
+        std::cerr << "Database missing" << std::endl;
+        return StarIdentifiers();
+    }
+    PairDistanceKVectorDatabase kvector(databaseBuffer);
+
+    std::vector<Vec3> starSpatials;
+    for (const Star &star : stars) {
+        starSpatials.push_back(camera.CameraToSpatial(star.position).Normalize());
+    }
+
+    // Probability of a false star at any given point in space, within tolerance. sigma^2/4 comes
+    // from area of a circle with radius sigma divided by surface area of a sphere.
+    float specificStarHereLikelihood = tolerance*tolerance/4;
+    float falseStarHereLikelihood = numFalseStars * specificStarHereLikelihood;
+
+    // initialize the prior
+    BayesPrior prior;
+    BayesPossibility noTrueStars(1.0);
+    prior.push_back(noTrueStars);
+
+    int firstCentroid = stars.size() / 2; // always strictly <stars.size()
+    for (int exploredCentroids = 0; exploredCentroids < stars.size(); exploredCentroids++) {
+        int curCentroid = (firstCentroid + exploredCentroids) % stars.size();
+
+        BayesPrior posterior;
+
+        float priorSum = 0.0;
+        float posteriorSum = 0.0;
+
+        for (const BayesPossibility &possibility : prior) {
+            // a more theoretically accurate way would not include possibilities where the current
+            // star must be true. Ie, any configuration that indicates a true star at the current
+            // location certainly shouldn't be included. TODO wouldn't be hard to improve
+            priorSum += possibility.TotalProbability(catalog);
+            BayesPossibility newPossibility(-1.0);
+
+            switch (possibility.centroidIndices.size()) {
+            case 0: {
+                // P(D_new|D) is the probability of this specific star being in this specific spot. 
+                newPossibility = BayesPossibility(possibility.probability * specificStarHereLikelihood, curCentroid);
+                break;
+            }
+
+            case 1: {
+                float distance = AngleUnit(starSpatials[possibility.centroidIndices[0]],
+                                           starSpatials[curCentroid]);
+                const int16_t *end;
+                const int16_t *begin = kvector.FindPairsLiberal(distance-tolerance, distance+tolerance, &end);
+                if (begin != end) {
+                    // area of circle with radius sigma divided by surface area of (spherical)
+                    // annulus
+                    float pairPrior = tolerance/(2*sin(distance));
+                    newPossibility = BayesPossibility(possibility.probability * pairPrior,
+                                                      possibility.centroidIndices[0],
+                                                      curCentroid,
+                                                      begin, end);
+                }
+                break;
+            }
+
+            default: { // >= 2
+                // first, choose two identified stars in the pattern that are close enough to the given centroid
+                // TODO: what to do if this property isn't satisfied?
+                BayesPossibilityIterator catalogIndexIt(possibility);
+                int16_t firstCentroid = -1;
+                while (catalogIndexIt.hasValue()) {
+                    for (int16_t centroidIndex : possibility.centroidIndices) {
+                        float angle = AngleUnit(starSpatials[centroidIndex], starSpatials[curCentroid]);
+                        if (angle > kvector.MinDistance()+tolerance && angle < kvector.MaxDistance()-tolerance) {
+                            if (firstCentroid < 0) {
+                                firstCentroid = centroidIndex;
+                            } else {
+                                // we have two centroids. Do the thing.
+                                // TODO: maybe be pickier about which centroid to pick when there are more than two options
+                                const int16_t *candidatesEnd;
+                                const int16_t *candidates = kvector.FindPairsLiberal(angle-tolerance, angle+tolerance, &candidatesEnd);
+                                PairDistanceInvolvingIterator subCandidates(candidates, candidatesEnd, firstCentroid);
+                            }
+                        }
+                        ++catalogIndexIt;
+                    }
+                }
+            }
+            }
+
+            if (newPossibility.probability >= 0.0) {
+                posterior.push_back(newPossibility);
+                posteriorSum += newPossibility.TotalProbability(catalog);
+            }
+        }
+
+        // decide whether we need to consider the current star being false
+        if (priorSum*falseStarHereLikelihood / (posteriorSum + priorSum*falseStarHereLikelihood) > admissibleIgnoredProbability) {
+            // all the possibilities from the prior must continue to be considered
+            std::cerr << "False star considered";
+            posterior.insert(posterior.end(), prior.cbegin(), prior.cend());
+        }
+
+        // the ol' switcheroo
+        prior = std::move(posterior);
+    }
+
+    float modeProbability;
+    StarIdentifiers result = Mode(prior, catalog, &modeProbability);
+    if (modeProbability >= hardConfidenceThreshold) {
+        return result;
+    } else {
+        std::cerr << "Didn't meet confidence threshold: " << modeProbability << std::endl;
+        return StarIdentifiers();
+    }
+
+    // TODO: use the soft threshold
+}
+
 }
