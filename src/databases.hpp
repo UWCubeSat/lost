@@ -19,7 +19,7 @@ public:
 
     // finds at least all the entries containing the given range. Returns the index (starting from
     // zero) of the first value matching the query
-    long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *numReturned) const;
+    long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
     // TODO: QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints
 
     long NumValues() const { return numValues; };
@@ -38,9 +38,6 @@ private:
     const int32_t *bins;
 };
 
-unsigned char *BuildPairDistanceKVectorDatabase(const Catalog &catalog, long *length,
-                                    float minDistance, float maxDistance, long numBins);
-
 long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
 void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 
@@ -50,8 +47,7 @@ public:
     PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     // return at least all the stars between min and max
-    const int16_t *FindPairsLiberal(
-        float min, float max, long *numReturnedPairs) const;
+    const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
     // TODO: trapezoidal interpolation
 
     // for debugging purposes. Return the distances from the given star to each other star it's
@@ -79,7 +75,7 @@ public:
 
     // return at least all the triples with inner angle in the given range. The numReturnedTriples*3
     // ints from the returned pointer are valid to read.
-    int16_t *FindTriplesLiberal(float min, float max, long *numReturnedTriples) const;
+    void FindTriplesLiberal(float min, float max, long **begin, long **end) const;
     // TODO: trapezoidal interpolation
 private:
     KVectorIndex index;
