@@ -4,6 +4,7 @@
 #include <math.h>
 #include <assert.h>
 
+// Ben Note: Vec2 and Vec3 are defined in attitude-utils.hpp.
 namespace lost {
 
 Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
@@ -11,13 +12,16 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     assert(vector.x > 0);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
 
-    float focalFactor = focalLength/vector.x;
+    float focalFactor = focalLength/vector.x; // x is the axis we are looking down after "rotating the camera."
 
-    float yPixel = vector.y*focalFactor;
+    float yPixel = vector.y*focalFactor; // Scaling factor that actually puts these into the right units.
     float zPixel = vector.z*focalFactor;
 
     return { -yPixel + xCenter, -zPixel + yCenter };
 }
+
+
+// Ben Note: A const func means that this func CANNOT change any of this class's member variables.
 
 // we'll just place the points at 1 unit away from the pinhole (x=1).
 // Note: Other functions rely on the fact that vectors are placed one unit away. Don't change this behavior!

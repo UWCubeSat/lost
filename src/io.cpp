@@ -257,10 +257,12 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
 
 // ALGORITHM PROMPTERS
 
+// TODO: Ben | Questions | Ask about what these pointer / functions even mean.
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 typedef Santa *(*SantaFactory)();
+// TODO: Ben | Add an undistortEnabled prompter here
 
 CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
     int numStars = Prompt<int>("How many stars to generate");
@@ -389,14 +391,28 @@ private:
     Attitude attitude;
 };
 
-Camera PromptCamera(int xResolution, int yResolution) {
+// TODO: Ben | Ask if it's ok to just ask for undistort parameters whenever,
+//  like without first asking if they want to undistort first.
+Camera PromptCamera(int xResolution, int yResolution) { // You can add the extra parameters you want to ask the user for to get into your Camera object here.
     float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
     float focalLengthOrFov = Prompt<float>("Focal Length (mm) or horizontal FOV (degrees)");
     float focalLengthPixels = pixelSize == 0.0f
         ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
         : focalLengthOrFov * 1000 / pixelSize;
 
-    return Camera(focalLengthPixels, xResolution, yResolution);
+    float k1 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k1):");
+    float k2 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k2):");
+    float k3 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k3):");
+    float k4 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k4):");
+    float k5 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k5):");
+    float k6 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k6):");
+    float p1 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p1):");
+    float p2 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p2):");
+
+
+    return Camera(focalLengthPixels, xResolution, yResolution,
+                  k1, k2, k3, k4, k5, k6,
+                  p1, p2);
 }
 
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
@@ -569,8 +585,8 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 }
 
 Pipeline PromptPipeline() {
-    enum class PipelineStage {
-        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Santa, Done
+    enum class PipelineStage { // This is just an enum but in class / object form. There are enum types but enum classes have an advantage?
+        Centroid, CentroidMagnitudeFilter, Database, Undistort, StarId, AttitudeEstimation, Santa, Done
     };
 
     Pipeline result;
@@ -582,10 +598,12 @@ Pipeline PromptPipeline() {
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
     stageChoice.Register("database", "Database", PipelineStage::Database);
+    stageChoice.Register("undistort", "Undistorts the image", PipelineStage::Undistort);
     stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
     stageChoice.Register("santa", "Santa (knows if the output is naughty or nice)", PipelineStage::Santa);
     stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
+    // TODO: Ben | CLI stuff for undistortion: just add stageChoice.Register... for undistortion.
 
     while (true) {
         PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
@@ -623,6 +641,12 @@ Pipeline PromptPipeline() {
             result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
             fs.read((char *)result.database.get(), length);
             std::cerr << "Done" << std::endl;
+            break;
+        }
+
+        case PipelineStage::Undistort: {
+            result.isUndistortEnabled = Prompt<std::string>("Do you want to undistort the image? (y or n)")
+                    .compare("y") == 0 ? true : false;
             break;
         }
 
@@ -702,6 +726,48 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         }
         result.stars = std::unique_ptr<Stars>(filteredStars);
         inputStars = filteredStars;
+    }
+
+    // Put the undistortion here if(undistortEnabled)
+    // Make sure to finish the algo by altering inputStars
+    // TODO: Ben | Ask Mark if this syntax is fine or if we need to use typedef.
+
+    if(isUndistortEnabled) {
+
+        const Camera* camera = input.InputCamera();
+        Stars* undistortedStars = new Stars();
+
+        for(int i = 0; i < inputStars->size(); i++) { // Map through each Star in inputStars
+            Star currentStar = inputStars->at(i);
+//            std::vector<float> distortCoeffs = camera->distortCoeffs(); // TODO | Ben Kosa | Take care of this.
+            float x = currentStar.position.x; // x' in our equation
+            float y = currentStar.position.y; // y' in our equation
+            float r = sqrt(pow(x,2) + pow(y, 2)); // r^2 = (x')^2 + (y')^2
+
+            float undistortedX;
+            float undistortedY;
+
+            float radialUndistortion = (1 + camera->K1() * pow(r, 2) + camera->K2() * pow(r, 4)
+                    + camera->K3() * pow(r, 6)) / (1 + camera->K4() * pow(r, 2)
+                            + camera->K5() * pow(r, 4) + camera->K6() * pow(r, 6));
+
+            float tangentialUndistortionX  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
+                    + 2 * pow(x, 2)));
+
+
+            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
+                    + 2 * pow(y, 2)));
+
+            undistortedX = x * radialUndistortion + tangentialUndistortionX;
+            undistortedY = y * radialUndistortion + tangentialUndistortionY;
+
+            Star undistortedStar(undistortedX, undistortedY, currentStar.radiusX, currentStar.radiusY, currentStar.magnitude);
+            undistortedStars->push_back(undistortedStar);
+        }
+
+        // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
+        result.stars = std::unique_ptr<Stars>(undistortedStars); // You're telling the compiler that this is the only ptr / class / object using our undistortedStars vector.
+        inputStars = undistortedStars;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {

@@ -29,8 +29,8 @@ public:
     float Magnitude() const;
     Vec3 Normalize() const;
 
-    float operator*(const Vec3 &) const;
-    Vec3 operator-(const Vec3 &) const;
+    float operator*(const Vec3 &) const; // This is called Operator Overloading.
+    Vec3 operator-(const Vec3 &) const; // It allows us to define multiplication and subtraction for our custom data type Vec3.
     Vec3 crossProduct(const Vec3 &) const;
 };
 
