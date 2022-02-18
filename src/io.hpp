@@ -172,7 +172,8 @@ public:
                            float observedReferenceBrightness, float starSpreadStdDev,
                            float sensitivity, float darkCurrent, float readNoiseStdDev,
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,
-                           bool shotNoise, int oversampling);
+                           bool shotNoise, int oversampling,
+                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude);
                            
 
     const Image *InputImage() const { return &image; };

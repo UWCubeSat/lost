@@ -490,8 +490,14 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                float exposureTime, // zero for no motion blur
                                                float readoutTime, // zero for no rolling shutter
                                                bool shotNoise,
-                                               int oversampling
+                                               int oversampling,
+                                               int numFalseStars,
+                                               int falseStarMinMagnitude,
+                                               int falseStarMaxMagnitude
     ) : camera(camera), attitude(attitude), catalog(catalog) {
+
+    assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
+    std::default_random_engine rng; // TODO: seed
 
     // in photons
     float referenceBrightness = observedReferenceBrightness / sensitivity;
@@ -521,16 +527,31 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
     std::vector<GeneratedStar> generatedStars;
 
-    for (int i = 0; i < (int)catalog.size(); i++) {
-        const CatalogStar &catalogStar = catalog[i];
-        Vec3 rotated = attitude.Rotate(catalog[i].spatial);
+    Catalog catalogWithFalse = catalog;
+
+    std::uniform_real_distribution<float> uniformDistribution(0.0, 1.0);
+    std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
+    for (int i = 0; i < numFalseStars; i++) {
+        float ra = uniformDistribution(rng) * 2*M_PI;
+        // to be uniform around sphere. Borel-Kolmogorov paradox is calling
+        float de = asin(uniformDistribution(rng)*2 - 1);
+        float magnitude = magnitudeDistribution(rng);
+
+        catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
+    }
+
+    for (int i = 0; i < (int)catalogWithFalse.size(); i++) {
+        bool isTrueStar = i < (int)catalog.size();
+
+        const CatalogStar &catalogStar = catalogWithFalse[i];
+        Vec3 rotated = attitude.Rotate(catalogWithFalse[i].spatial);
         if (rotated.x <= 0) {
             continue;
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
         if (camera.InSensor(camCoords)) {
-            Vec3 futureSpatial = futureAttitude.Rotate(catalog[i].spatial);
+            Vec3 futureSpatial = futureAttitude.Rotate(catalogWithFalse[i].spatial);
             Vec2 delta = camera.SpatialToCamera(futureSpatial) - camCoords;
             if (!motionBlurEnabled) {
                 delta = {0, 0}; // avoid floating point funny business
@@ -545,9 +566,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
                              catalogStar.magnitude);
-            stars.push_back(star);
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
-            starIds.push_back(StarIdentifier(stars.size() - 1, i));
+
+            // don't add false stars to centroids or star ids
+            if (isTrueStar) {
+                starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                stars.push_back(star);
+            }
         }
     }
 
@@ -600,7 +625,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
     }
 
-    std::default_random_engine rng;
     std::normal_distribution<float> readNoiseDist(0.0, readNoiseStdDev);
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
@@ -662,6 +686,9 @@ PipelineInputList PromptGeneratedPipelineInput() {
     float readoutTime = Prompt<float>("Readout time");
     bool shotNoise = Prompt<bool>("Enable shot noise");
     int oversampling = Prompt<int>("Oversampling");
+    int numFalseStars = Prompt<int>("Number of false stars");
+    int falseMinMagnitude = round(Prompt<float>("False star minimum magnitude") * 100);
+    int falseMaxMagnitude = round(Prompt<float>("False star maximum magnitude") * 100);
 
     // TODO: allow random angle generation?
     Quaternion attitude = PromptSphericalAttitude("Boresight");
@@ -679,7 +706,8 @@ PipelineInputList PromptGeneratedPipelineInput() {
             camera,
             observedReferenceBrightness, starSpreadStdDev,
             sensitivity, darkCurrent, readNoiseStdDev, motionBlurDirection,
-            exposureTime, readoutTime, shotNoise, oversampling);
+            exposureTime, readoutTime, shotNoise, oversampling,
+            numFalseStars, falseMinMagnitude, falseMaxMagnitude);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
     }
