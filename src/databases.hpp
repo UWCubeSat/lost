@@ -56,6 +56,9 @@ public:
 
     float MaxDistance() const { return index.Max(); };
     float MinDistance() const { return index.Min(); };
+    bool DistanceInRange(float distance, float tolerance) {
+        return MinDistance() <= distance-tolerance && MaxDistance() >= distance+tolerance;
+    }
 
     long NumPairs() const;
     const static int32_t kMagicValue = 0x2536f009;

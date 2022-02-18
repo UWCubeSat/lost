@@ -132,8 +132,20 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+float Vec2::MagnitudeSq() const {
+    return x*x+y*y;
+}
+
+float Vec2::Magnitude() const {
+    return sqrt(MagnitudeSq());
+}
+
+float Vec3::MagnitudeSq() const {
+    return x*x+y*y+z*z;
+}
+
 float Vec3::Magnitude() const {
-    return sqrt(x*x+y*y+z*z);
+    return sqrt(MagnitudeSq());
 }
 
 Vec3 Vec3::Normalize() const {

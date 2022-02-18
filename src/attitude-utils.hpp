@@ -14,6 +14,7 @@ struct Vec2 {
     float y;
 
     float Magnitude() const;
+    float MagnitudeSq() const;
     Vec2 Normalize() const;
 
     float operator*(const Vec2 &) const;
@@ -27,6 +28,7 @@ public:
     float z;
 
     float Magnitude() const;
+    float MagnitudeSq() const;
     Vec3 Normalize() const;
 
     float operator*(const Vec3 &) const;
