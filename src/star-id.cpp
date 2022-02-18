@@ -504,6 +504,26 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+/* Ratio of bin size to error range, where bins are the discretization of */
+/* Pattern data values to allow them to be hashed and where the error range covers */
+/* a range of twice the data value's maximum error.  When a data value's error range */
+/* overlaps two bins, it's replicated into both.  By linearity of expectation, */
+/* the expected number of replicas of a given Pattern is: */
+/* (1+1/bin_size_ratio)^num_dims, where num_dims is the number of data values */
+/* stored in Patterns.  The expected ratio of Patterns with matching bins to */
+/* Patterns with matching values is: (1 + bin_size_ratio)^num_dims. */
+/* The bin_size_ratio represents a tradeoff between catalog size and */
+/* runtime, as more replicas means a larger catalog and more mismatching results */
+/* means more time spent checking for a match.  In most cases, Patterns with */
+/* matching values are rare, so a larger bin_size_ratio is better.  Must be */
+/* greater than 1.0 without changes to Pattern struct, recommended value of 2.0. */
+#define bin_size_ratio 3.0
+
+/* Maximum star coordinate centroiding error as fraction of maximum FOV. */
+/* .001 is .1% of the max FOV or 1.414 pixels in a 1000x1000 image. */
+// 1 / (1024*sqrt(2)) < .00069054
+#define max_centroid_error .00069054
+
 /* Maximum Field of View for catalog in radians.  Must exactly */
 /* match the max_fov used to generate the catalog . */
 #define max_fov .247
@@ -514,6 +534,21 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 /* Should be less than or equal to the max_fov_error used to generate the catalog. */
 /* .01 for a 10 degree FOV imager covers estimates from 9.9 to 10.1 degrees. */
 #define max_fov_error 0.01
+
+/* The following values are not user defined constants and should not be changed. */
+/* Maximum scaling of image caused by FOV error. */
+float max_scale_factor = fmax(tan(max_fov*(1+max_fov_error)/2.0)/tan(max_fov/2.0),
+                              1-tan(max_fov*(1-max_fov_error)/2.0)/tan(max_fov/2.0));
+
+/* Largest edge error is proportional to the largest edge ratio by the image scale. */
+/* For example, doubling the largest edge length doubles the scaling error. */
+#define le_error_slope (max_scale_factor-1)
+
+/* Largest edge error has a constant factor determined by the centroiding error. */
+/* This value is the worst case of maximum FOV and centroid error.  It corresponds to */
+/* The FOV taking on its minimum value and both centroids having maximal error inwards. */
+#define le_error_offset (2*max_centroid_error/(2-max_scale_factor))
+
 
 #define NUM_STARS_IN_PATTERN 4
 #define max_le_length (2*sin(max_fov*(1+max_fov_error)/2.0))
@@ -535,6 +570,130 @@ StarIdentifiers TetraStarIdAlgorithm::Go(
 
 
     return identified;
+}
+
+/* Calculate the exponent base for logarithmic binning. */
+/* Also bounds check error values. */
+static double GetBase(double error_slope,
+                      double error_offset){
+  /* If the fixed error is non-positive, return error and exit. */
+  if(error_offset <= 0){
+    printf("\nNon-positive error value detected: increase error values.\n");
+    exit(EXIT_FAILURE);
+  }
+  /* Calculate and return base of logarithmic binning function. */
+  double base = (1+error_slope)/fmax(1-error_slope, 0);
+  return base;
+}
+
+/* Retrieve minimum possible pre-binned value from a logarithmically binned value. */
+static double LogUnbin(int bin,
+                       double error_slope,
+                       double error_offset){
+  /* If either of the error values is infinite, 0 is the minimum value. */
+  if(!isfinite(error_slope) || !isfinite(error_offset)){
+    return 0;
+  }
+  /* Calculate base of logarithmic binning function. */
+  double base = GetBase(error_slope, error_offset);
+  double min_input;
+  /* Slopes much smaller than the offset result in linear binning. */
+  if(base <= 1+error_offset*bin_size_ratio/10.){
+    min_input = bin*2*(error_slope+error_offset)*bin_size_ratio;
+  }
+  /* Otherwise, calculate minimum possible logarithmic pre-binned value. */
+  else{
+    min_input = (pow(base, bin*bin_size_ratio)-1)*error_offset/error_slope;
+  }
+  return min_input;
+}
+
+/* Evenly bin largest edge length values using the fact that the maximum error is linear */
+/* with respect to length.  Logarithmic functions satisfy this bin size constraint. */
+static int BinLargestEdge(unsigned int largest_edge,
+                            int error_ratio){
+  /* Convert largest edge length back to double between 0 and 1 from implicitly divided double. */
+  /* Resulting value is a ratio of max_le_length, the maximum largest edge length. */
+  double le_ratio = largest_edge/((1<<16)-1.0);
+  /* Adjust error in le_ratio based on error_ratio between -1 and 1. */
+  /* An error_ratio of -1 will give the lower bin, +1 will give the upper bin. */
+  le_ratio += error_ratio*(le_ratio*le_error_slope+le_error_offset);
+  /* Find and return largest edge bin using logarithmic binning function. */
+  return LogUnbin(le_ratio, le_error_slope, le_error_offset);
+}
+
+/* Retrieves catalog pattern matching image Pattern.  Returns 1 if a unique */
+/* match is found.  Returns 0 if multiple matches or no matches are found. */
+static int get_matching_pattern(Pattern image_pattern,
+                                Pattern *catalog_pattern,
+                                FILE *pattern_catalog){
+	/* Cache of Pattern instances from catalog. */
+  static Pattern catalog_pattern_cache[pattern_cache_size];
+  /* Initialize offset of the Pattern's probing sequence in the pattern cache. */
+  int cache_offset = 0;
+  /* Spacing between Patterns in the same probing sequence.  Grows linearly, */
+  /* resulting in quadratic probing. (i.e. 0,1,3,6,10,15...) */
+  int probe_step = 1;
+  /* Boolean representing whether or not a catalog match has been found yet. */
+  /* A match is a catalog Pattern within max_coord_error of the given image Pattern. */
+  int found_match = 0;
+  /* Initialize offset of the beginning of the Pattern cache in the pattern catalog. */
+  uint64_t offset = hash_pattern(image_pattern);
+  /* Initialize cache of catalog Patterns. */
+  _fseeki64(pattern_catalog, offset*sizeof(Pattern), SEEK_SET);
+  fread(catalog_pattern_cache, sizeof(Pattern), pattern_cache_size, pattern_catalog);
+  /* Iterate over catalog locations in the image Pattern's probing sequence until */
+  /* a catalog location without a Pattern is found, which means no matches exist. */
+  /* If the probing sequence contains Patterns with the same sub-bins, iterate up */
+  /* to the last one, returning success if a single matching Pattern is found, */
+  /* and returning failure if no matching Patterns are found before the last one. */
+  /* If two or more matching catalog Patterns are found, exit early and */
+  /* return failure, as a unique identification cannot be made. */
+  while(catalog_pattern_cache[cache_offset].has_pattern){
+    /* Only examine catalog Patterns with the same sub-bins as the image Pattern, */
+    /* as all matches will also have the same sub-bins as the image Pattern. */
+    if(hash_same(image_pattern, catalog_pattern_cache[cache_offset])){
+      /* Check whether the image and catalog Patterns are a match by checking if */
+      /* their corresponding Features' coordinates are all within max_coord_error. */
+      if(is_match(image_pattern, catalog_pattern_cache[cache_offset])){
+        /* If a match has already been found previously, this must be the second */
+        /* matching catalog Pattern found.  Return failure, as a unique */
+        /* identification cannot be made without checking other stars. */
+        /* Note that it may be worth checking all possible matches if */
+        /* verifying a match is less costly than another catalog access. */
+        if(found_match){
+          /* Multiple matching Patterns were found.  Return failure. */
+          return 0;
+        }
+        /* This must be the first matching catalog Pattern found.  Store it as the */
+        /* output Pattern so it will be output once its uniqueness has been verified. */
+        *catalog_pattern = catalog_pattern_cache[cache_offset];
+        /* Set the flag indicating a matching Pattern has already been found. */
+        found_match = 1;
+      }
+      /* If this is the last Pattern with the same sub-bins, there is no need to */
+      /* keep searching until an empty catalog location is found, as any Patterns */
+      /* beyond this point cannot be matches.  Exit early to save time. */
+      if(catalog_pattern_cache[cache_offset].is_last){
+        break;
+      }
+    }
+    /* Advance to the next catalog location given by quadratic probing. */
+    /* If cache_offset indexes beyond pattern_cache_size, return failure. */
+    if(!increment_offset(pattern_catalog,
+                         catalog_pattern_cache,
+                         &offset,
+                         &cache_offset,
+                         &probe_step)){
+      return 0;
+    }
+  }
+  /* Exactly one matching Pattern was found.  Return success. */
+  if(found_match){
+    return 1;
+  }
+  /* No matching Patterns were found.  Return failure. */
+  return 0;
 }
 
 
@@ -561,115 +720,116 @@ bool IdentifyStars(std::vector<Vec3> &imageStars, int imageStarIds[NUM_STARS_IN_
     new_pattern.largest_edge = (largest_edge_length / max_le_length) * ((1 << 16) - 1);
     /* Calculate vector along x axis of Pattern's coordinate system. */
     /* The vector points from the first fixed Pattern star to the second. */
-    Vec3 x_axis_vector = imageStars[new_pattern.fixed_star_id_2].operator-(imageStars[new_pattern.fixed_star_id_1]);
+    Vec3 x_axis_vector = imageStars[new_pattern.fixed_star_id_2] - imageStars[new_pattern.fixed_star_id_1];
     /* Calculate vector along y axis of Pattern's coordinate system. */
     Vec3 y_axis_vector = imageStars[new_pattern.fixed_star_id_2].crossProduct(imageStars[new_pattern.fixed_star_id_1]);
     /* Normalize axis vectors to unit length by dividing by their magnitudes. */
-    normalize(x_axis_vector); 
-    normalize(y_axis_vector);
+    x_axis_vector.Normalize(); 
+    y_axis_vector.Normalize();
     /* Use the remaining stars to initialize the Pattern's Features. */
     int feature_index = 0;
-    // for (i = 0; i < num_stars_in_pattern; i++)
-    // {
-    //     /* Skip the fixed star ids, as they don't have their own Features. */
-    //     if (imageStarIds[i] != new_pattern.fixed_star_id_1 &&
-    //         imageStarIds[i] != new_pattern.fixed_star_id_2)
-    //     {
-    //         /* Set the Feature's star id to match its corresponding star. */
-    //         new_pattern.features[feature_index].star_id = imageStarIds[i];
-    //         /* Calculate the normalized x and y coordinates using vector projection. */
-    //         double x = dot_prod(x_axis_vector, imageStars[imageStarIds[i]]) / largest_edge_length;
-    //         double y = dot_prod(y_axis_vector, imageStars[imageStarIds[i]]) / largest_edge_length;
-    //         /* Set Feature's coordinates by converting to implicitly divided integers. */
-    //         new_pattern.features[feature_index].x = x * ((1 << 14) - 1);
-    //         new_pattern.features[feature_index].y = y * ((1 << 14) - 1);
-    //         /* Disallow 0, as rotational ambiguity correction would fail. */
-    //         if (new_pattern.features[feature_index].x == 0)
-    //         {
-    //             new_pattern.features[feature_index].x = 1;
-    //         }
-    //         if (new_pattern.features[feature_index].y == 0)
-    //         {
-    //             new_pattern.features[feature_index].y = 1;
-    //         }
-    //         feature_index++;
-    //     }
-    // }
-    // /* Variable encoding which 180 degree rotation will be inserted into the catalog. */
-    // /* A negative value means the current rotation will be inserted. */
-    // /* A positive value means the opposite rotation will be inserted. */
-    // /* A value of zero means both rotations will be inserted into the catalog. */
-    // int pattern_rotation;
-    // /* Compute largest edge bin for use in sorting Features based on x and y bins. */
-    // unsigned int le_bin = BinLargestEdge(new_pattern.largest_edge, 0);
-    // /* Helper function for sorting Features.  Sorts by x bin, then by y bin. */
-    // /* Returns a positive number if the first Feature has larger bin values, */
-    // /* returns a negative number if the second Feature has larger bin values, */
-    // /* and raises an error if both Features have the same bin values. */
-    // int compare_bins(const void *p, const void *q) {
-    //     /* Compare the Features' x bins first, then their y bins. */
-    //     int p_y_bin = BinY(((Feature *)p)->y, le_bin, 0);
-    //     int q_y_bin = BinY(((Feature *)q)->y, le_bin, 0);
-    //     int p_x_bin = BinX(((Feature *)p)->x, le_bin, p_y_bin, 0);
-    //     int q_x_bin = BinX(((Feature *)q)->x, le_bin, q_y_bin, 0);
-    //     /* If the x bins have different values, the y bins don't need to be computed. */
-    //     if (p_x_bin != q_x_bin) {
-    //         return p_x_bin - q_x_bin;
-    //     }
-    //     return p_y_bin - q_y_bin;
-    // }
-    // /* Sort Pattern's Features based on coordinate bins to give a unique ordering. */
-    // qsort(new_pattern.features, num_stars_in_pattern - 2, sizeof(Feature), compare_bins);
-    // /* Create a copy of the first Feature of the Pattern. */
-    // Feature first_feature = new_pattern.features[0];
-    // /* Rotate the copy by 180 degrees by taking complements of its coordinates. */
-    // first_feature.x = -first_feature.x;
-    // first_feature.y = -first_feature.y;
-    // /* Compare with the last Feature's bins to determine which has the largest */
-    // /* x bin (with y bin as a tie breaker).  This will determine the */
-    // /* 180 degree rotation of the Pattern's coordinate system.  The orientation */
-    // /* which gives the larger Feature a positive x bin value is chosen. */
-    // /* Put another way, the Feature furthest from the y-axis is placed on the right. */
-    // /* In the case that the first and last Features' bins are ambiguous after */
-    // /* rotating the first Feature by 180 degrees, both orientations are inserted. */
-    // pattern_rotation = compare_bins((void *)&first_feature,
-    //                                 (void *)&(new_pattern.features[num_stars_in_pattern - 3]));
-    // /* If the current rotation is incorrect, rotate the Pattern by 180 degrees by taking */
-    // /* the complement of its Features' bin offsets and coordinates, reversing the order */
-    // /* of its Features, and swapping its fixed stars before inserting it into the catalog. */
-    // if (pattern_rotation >= 0) {
-    //     for (i = 0; i < num_stars_in_pattern - 2; i++) {
-    //         /* Take the complement of each Feature's coordinates. */
-    //         new_pattern.features[i].x = -new_pattern.features[i].x;
-    //         new_pattern.features[i].y = -new_pattern.features[i].y;
-    //     }
-    //     /* Reverse the order of the Pattern's Features by swapping across the middle. */
-    //     for (i = 0; i < (num_stars_in_pattern - 2) / 2; i++) {
-    //         Feature feature_swap = new_pattern.features[i];
-    //         new_pattern.features[i] = new_pattern.features[num_stars_in_pattern - 3 - i];
-    //         new_pattern.features[num_stars_in_pattern - 3 - i] = feature_swap;
-    //     }
-    //     /* Swap the order of the Pattern's fixed star ids and magnitudes. */
-    //     unsigned int fixed_star_id_swap = new_pattern.fixed_star_id_1;
-    //     new_pattern.fixed_star_id_1 = new_pattern.fixed_star_id_2;
-    //     new_pattern.fixed_star_id_2 = fixed_star_id_swap;
-    // }
+    for (i = 0; i < NUM_STARS_IN_PATTERN; i++)
+    {
+        /* Skip the fixed star ids, as they don't have their own Features. */
+        if (imageStarIds[i] != new_pattern.fixed_star_id_1 &&
+            imageStarIds[i] != new_pattern.fixed_star_id_2)
+        {
+            /* Set the Feature's star id to match its corresponding star. */
+            new_pattern.features[feature_index].star_id = imageStarIds[i];
+            /* Calculate the normalized x and y coordinates using vector projection. */
+            double x = x_axis_vector * imageStars[imageStarIds[i]] / largest_edge_length;
+            double y = y_axis_vector * imageStars[imageStarIds[i]] / largest_edge_length;
+            /* Set Feature's coordinates by converting to implicitly divided integers. */
+            new_pattern.features[feature_index].x = x * ((1 << 14) - 1);
+            new_pattern.features[feature_index].y = y * ((1 << 14) - 1);
+            /* Disallow 0, as rotational ambiguity correction would fail. */
+            if (new_pattern.features[feature_index].x == 0)
+            {
+                new_pattern.features[feature_index].x = 1;
+            }
+            if (new_pattern.features[feature_index].y == 0)
+            {
+                new_pattern.features[feature_index].y = 1;
+            }
+            feature_index++;
+        }
+    }
+    /* Variable encoding which 180 degree rotation will be inserted into the catalog. */
+    /* A negative value means the current rotation will be inserted. */
+    /* A positive value means the opposite rotation will be inserted. */
+    /* A value of zero means both rotations will be inserted into the catalog. */
+    int pattern_rotation;
+    /* Compute largest edge bin for use in sorting Features based on x and y bins. */
+    unsigned int le_bin = BinLargestEdge(new_pattern.largest_edge, 0);
+    /* Helper function for sorting Features.  Sorts by x bin, then by y bin. */
+    /* Returns a positive number if the first Feature has larger bin values, */
+    /* returns a negative number if the second Feature has larger bin values, */
+    /* and raises an error if both Features have the same bin values. */
+    int CompareBins(const void *p, const void *q) {
+        /* Compare the Features' x bins first, then their y bins. */
+        int p_y_bin = BinY(((Feature *)p)->y, le_bin, 0);
+        int q_y_bin = BinY(((Feature *)q)->y, le_bin, 0);
+        int p_x_bin = BinX(((Feature *)p)->x, le_bin, p_y_bin, 0);
+        int q_x_bin = BinX(((Feature *)q)->x, le_bin, q_y_bin, 0);
+        /* If the x bins have different values, the y bins don't need to be computed. */
+        if (p_x_bin != q_x_bin) {
+            return p_x_bin - q_x_bin;
+        }
+        return p_y_bin - q_y_bin;
+    }
+    /* Sort Pattern's Features based on coordinate bins to give a unique ordering. */
+    qsort(new_pattern.features, num_stars_in_pattern - 2, sizeof(Feature), compare_bins);
+    /* Create a copy of the first Feature of the Pattern. */
+    Feature first_feature = new_pattern.features[0];
+    /* Rotate the copy by 180 degrees by taking complements of its coordinates. */
+    first_feature.x = -first_feature.x;
+    first_feature.y = -first_feature.y;
+    /* Compare with the last Feature's bins to determine which has the largest */
+    /* x bin (with y bin as a tie breaker).  This will determine the */
+    /* 180 degree rotation of the Pattern's coordinate system.  The orientation */
+    /* which gives the larger Feature a positive x bin value is chosen. */
+    /* Put another way, the Feature furthest from the y-axis is placed on the right. */
+    /* In the case that the first and last Features' bins are ambiguous after */
+    /* rotating the first Feature by 180 degrees, both orientations are inserted. */
+    pattern_rotation = CompareBins((void *)&first_feature,
+                                    (void *)&(new_pattern.features[NUM_STARS_IN_PATTERN - 3]));
+    /* If the current rotation is incorrect, rotate the Pattern by 180 degrees by taking */
+    /* the complement of its Features' bin offsets and coordinates, reversing the order */
+    /* of its Features, and swapping its fixed stars before inserting it into the catalog. */
+    if (pattern_rotation >= 0) {
+        for (i = 0; i < NUM_STARS_IN_PATTERN - 2; i++) {
+            /* Take the complement of each Feature's coordinates. */
+            new_pattern.features[i].x = -new_pattern.features[i].x;
+            new_pattern.features[i].y = -new_pattern.features[i].y;
+        }
+        /* Reverse the order of the Pattern's Features by swapping across the middle. */
+        for (i = 0; i < (NUM_STARS_IN_PATTERN - 2) / 2; i++) {
+            Feature feature_swap = new_pattern.features[i];
+            new_pattern.features[i] = new_pattern.features[NUM_STARS_IN_PATTERN - 3 - i];
+            new_pattern.features[NUM_STARS_IN_PATTERN - 3 - i] = feature_swap;
+        }
+        /* Swap the order of the Pattern's fixed star ids and magnitudes. */
+        unsigned int fixed_star_id_swap = new_pattern.fixed_star_id_1;
+        new_pattern.fixed_star_id_1 = new_pattern.fixed_star_id_2;
+        new_pattern.fixed_star_id_2 = fixed_star_id_swap;
+    }
 
-    // /* Check cached section of catalog for Patterns matching image Pattern. */
-    // if (!get_matching_pattern(new_pattern, &catalog_pattern, pattern_catalog)) {
-    //     return 0;
-    // }
-    // /* Create matching pairs of stars by corresponding fixed_star_ids and */
-    // /* Feature star ids between the image Pattern and catalog Pattern.  */
+    /* Check cached section of catalog for Patterns matching image Pattern. */
+    if (!get_matching_pattern(new_pattern, &catalog_pattern, pattern_catalog)) {
+        return 0;
+    }
+    /* Create matching pairs of stars by corresponding fixed_star_ids and */
+    /* Feature star ids between the image Pattern and catalog Pattern.  */
     // matches[0][0] = new_pattern.fixed_star_id_1;
     // matches[1][0] = new_pattern.fixed_star_id_2;
     // matches[0][1] = catalog_pattern.fixed_star_id_1;
     // matches[1][1] = catalog_pattern.fixed_star_id_2;
-    // for (i = 0; i < num_stars_in_pattern - 2; i++) {
-    //     matches[i + 2][0] = new_pattern.features[i].star_id;
-    //     matches[i + 2][1] = catalog_pattern.features[i].star_id;
-    // }
-    // return 1;
+    for (i = 0; i < NUM_STARS_IN_PATTERN; i++) {
+        // matches[i + 2][0] = new_pattern.features[i].star_id;
+        // matches[i + 2][1] = catalog_pattern.features[i].star_id;
+        identified.push_back(StarIdentifier(new_pattern.features[i].star_id, catalog_pattern.features[i].star_id));
+    }
+    return 1;
 }
 
 bool IdentifyImage(std::vector<Vec3> imageStars, const Catalog &catalog, int num_image_stars, StarIdentifiers &identified, int num_stars_selected) {
