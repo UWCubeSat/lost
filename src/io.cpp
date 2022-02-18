@@ -508,7 +508,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     }
     std::vector<float> photonsBuffer(image.width*image.height, 0);
 
-    bool motionBlurEnabled = exposureTime > 0;
+    bool motionBlurEnabled = exposureTime > 0 && abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
     // TODO: ensure works when motion blur disabled
     if (!motionBlurEnabled) {
         exposureTime = 1.0;
@@ -524,7 +524,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     for (int i = 0; i < (int)catalog.size(); i++) {
         const CatalogStar &catalogStar = catalog[i];
         Vec3 rotated = attitude.Rotate(catalog[i].spatial);
-        if (rotated.x < 0) {
+        if (rotated.x <= 0) {
             continue;
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
