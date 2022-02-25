@@ -177,7 +177,7 @@ namespace lost
         int pyFalseStars = 500;
         float pyMismatchProb = 0.001;
         std::string attitudeAlgo = "dqm";
-        std::string plot;
+        // std::string plot;
         int generate = 1;
         int horizontalRes = 1024;
         int verticalRes = 1024;
@@ -187,8 +187,16 @@ namespace lost
         float ra = 88; // degtorad will be calculated later in the pipeline
         float dec = 7; // degtorad will be calculated later in the pipeline
         float roll = 0;
-        std::string output = "stdout";
-        float threshold; // TODO add to man page
+        // std::string output = "stdout";
+        float threshold; // TODO add to man page (and the below stuff)
+        std::string plotRawInput = "";
+        std::string plotInput = "";
+        std::string plotOutput = "";
+        std::string printCentroids = "";
+        std::string compareCentroids = "";
+        std::string compareStars = "";
+        std::string printAttitude = "";
+        std::string compareAttitude = "";
     };
 
     // represents the input and expected outputs of a pipeline run.
@@ -241,7 +249,7 @@ namespace lost
 
     typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
-    PipelineInputList GetPipelineInput(PipelineOptions values);
+    PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
     class PngPipelineInput : public PipelineInput
     {
@@ -338,7 +346,7 @@ namespace lost
 
     // unlike the other algorithm prompters, db builders aren't a
     // typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-    void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, DatabaseOptions values);
+    void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, const DatabaseOptions &values);
     // void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 }

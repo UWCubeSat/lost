@@ -34,7 +34,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         PromptedOutputStream pos = PromptedOutputStream(values.path);
         pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
     }
-    
+
 }
 
 // static void DatabaseBuild(int maxMagnitude, int maxStars) {
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
     } 
 
     std::string command (argv[1]);
-    if (command == "database") {
+    if (command == "--database") {
 
         enum DatabaseEnum {mag, stars, kvector, kvectorMinDistance, kvectorMaxDistance, 
             kvectorDistanceBins, help, output};
@@ -112,6 +112,8 @@ int main(int argc, char **argv) {
         int option;
 
         while (optind < argc && argc != 2) {
+            if (optind < 2) optind++;
+
             if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
                     case mag :
@@ -156,7 +158,7 @@ int main(int argc, char **argv) {
 
         lost::DatabaseBuild(databaseOptions);
 
-    } else if (command == "pipeline") {
+    } else if (command == "--pipeline") {
 
         if (argc == 2) {
             std::cout << "Run pipeline --help for further help" << std::endl; 
@@ -165,7 +167,8 @@ int main(int argc, char **argv) {
 
         enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
             gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
-            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, threshold};
+            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, threshold, plotRawInput, plotInput, plotOutput, 
+            printCentroids, compareCentroids, compareStars, printAttitude, compareAttitude};
 
         static struct option long_options[] =
         {
@@ -183,7 +186,7 @@ int main(int argc, char **argv) {
             {"false-stars",     required_argument, 0, falseStars},
             {"max-mismatch-prob",  required_argument, 0, maxMismatchProb},
             {"attitude-algo",    required_argument, 0, attitudeAlgo},
-            {"plot",            required_argument, 0, plot},
+            // {"plot",            required_argument, 0, plot},
             {"generate",        optional_argument, 0, generate},
             {"horizontal-res",  required_argument, 0, horizontalRes},
             {"vertical-res",  required_argument, 0, verticalRes},
@@ -194,6 +197,14 @@ int main(int argc, char **argv) {
             {"boresight-dec",  required_argument, 0, boresightDec},
             {"boresight-roll",  required_argument, 0, boresightRoll},
             {"threshold",       required_argument, 0, threshold},
+            {"plot-raw-input", optional_argument, 0, plotRawInput},
+            {"plot-input", optional_argument, 0, plotInput},
+            {"plot-output", optional_argument, 0, plotOutput},
+            {"print-centroids", optional_argument, 0, printCentroids},
+            {"compare-centroids", optional_argument, 0, compareCentroids},
+            {"compare-stars", optional_argument, 0, compareStars},
+            {"print-attitude", optional_argument, 0, printAttitude},
+            {"compareAttitude", optional_argument, 0, compareAttitude},
             {"help",            no_argument, 0, help},
             {0, 0, 0, 0}
         };
@@ -203,6 +214,8 @@ int main(int argc, char **argv) {
         int option;
         
         while (optind < argc) {
+            if (optind < 2) optind++;
+
             if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
                     case png :
@@ -280,10 +293,10 @@ int main(int argc, char **argv) {
                         }                        
                         break; 
                     }
-                    case plot :
-                        std::cout << "You set the plotted output path to " << optarg << std::endl;
-                        pipelineOptions.plot = optarg;
-                        break;
+                    // case plot :
+                    //     std::cout << "You set the plotted output path to " << optarg << std::endl;
+                    //     pipelineOptions.plot = optarg;
+                    //     break;
                     case generate :
                         if (optarg) {
                             pipelineOptions.generate = atoi(optarg);
@@ -328,6 +341,71 @@ int main(int argc, char **argv) {
                     case threshold : 
                         std::cout << "You set the threshold to " << optarg << std::endl;
                         pipelineOptions.threshold = atof(optarg);
+                        break;
+                    case plotRawInput :
+                        if (optarg) {
+                            pipelineOptions.plotRawInput = optarg;
+                            std::cout <<"If this hangs, make sure you are using --plot-raw-input=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.plotRawInput = "stdout";
+                        }
+                        break;
+                    case plotInput :
+                        if (optarg) {
+                            pipelineOptions.plotInput = optarg;
+                            std::cout << optarg << std::endl;
+                            std::cout <<"If this hangs, make sure you are using --plot-input=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.plotInput = "stdout";
+                        }
+                        break;
+                    case plotOutput :
+                        if (optarg) {
+                            pipelineOptions.plotOutput = optarg;
+                            std::cout <<"If this hangs, make sure you are using --plot-output=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.plotOutput = "stdout";
+                        }
+                        break;
+                    case printCentroids :
+                        if (optarg) {
+                            pipelineOptions.printCentroids = optarg;
+                            std::cout <<"If this hangs, make sure you are using --printCentroids=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.printCentroids = "stdout";
+                        }
+                        break;
+                    case compareCentroids :
+                        if (optarg) {
+                            pipelineOptions.compareCentroids = optarg;
+                            std::cout <<"If this hangs, make sure you are using --compare-centroids=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.compareCentroids = "stdout";
+                        }
+                        break;
+                    case compareStars :
+                        if (optarg) {
+                            pipelineOptions.compareStars = optarg;
+                            std::cout <<"If this hangs, make sure you are using --compare-stars=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.compareStars = "stdout";
+                        }
+                        break;
+                    case printAttitude :
+                        if (optarg) {
+                            pipelineOptions.printAttitude = optarg;
+                            std::cout <<"If this hangs, make sure you are using --print-attitude=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.printAttitude = "stdout";
+                        }
+                        break;
+                    case compareAttitude :
+                        if (optarg) {
+                            pipelineOptions.compareAttitude = optarg;
+                            std::cout <<"If this hangs, make sure you are using --compare-attitude=[string] for setting a path" << std::endl;
+                        } else {
+                            pipelineOptions.compareAttitude = "stdout";
+                        }
                         break;
                     case help : 
                         //system("man documentation/pipeline.man");

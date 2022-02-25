@@ -1183,36 +1183,47 @@ void PipelineComparison(const PipelineInputList &expected,
     assert(expected.size() == actual.size() && expected.size() > 0);
 
     PipelineComparator comparator;
+    std::string path;
 
-    if (values.plot == "plot_raw_input") {
+    std::cout << values.plotInput << std::endl;
+
+    if (values.plotRawInput != "") {
         assert(expected[0]->InputImage() && expected.size() == 1);
         comparator = PipelineComparatorPlotRawInput;
-    } else if (values.plot == "plot_input") {
+        path = values.plotRawInput;
+    } else if (values.plotInput != "") {
         assert(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars());
         comparator = PipelineComparatorPlotInput;
-    } else if (values.plot == "plot_output") {
+        path = values.plotInput;
+    } else if (values.plotOutput != "") {
         assert(actual.size() == 1 && (actual[0].stars || actual[0].starIds));
         comparator = PipelineComparatorPlotOutput;
-    } else if (values.plot == "print_centroids") {
+        path = values.plotOutput;
+    } else if (values.printCentroids != "") {
         assert(actual[0].stars && actual.size() == 1);
         comparator = PipelineComparatorPrintCentroids;
-    } else if (values.plot == "compare_centroids") {
+        path = values.printCentroids;
+    } else if (values.compareCentroids != "") {
         assert(actual[0].stars && expected[0]->ExpectedStars() && values.threshold);
         comparator = PipelineComparatorCentroids;
-    } else if (values.plot == "compare_stars") {
+        path = values.compareCentroids;
+    } else if (values.compareStars != "") {
         assert(expected[0]->ExpectedStars() && actual[0].starIds && values.threshold);
         comparator = PipelineComparatorStars;
-    } else if (values.plot == "print_attitude") {
+        path = values.compareStars;
+    } else if (values.printAttitude != "") {
         assert(actual[0].attitude && actual.size() == 1);
         comparator = PipelineComparatorPrintAttitude;
-    } else if (values.plot == "compare_attitude") {
+        path = values.printAttitude;
+    } else if (values.compareAttitude != "") {
         assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.threshold);
         comparator = PipelineComparatorAttitude;
+        path = values.compareAttitude;
     } else {
         return;
     }
 
-    PromptedOutputStream pos(values.output);
+    PromptedOutputStream pos(path);
     comparator(pos.Stream(), expected, actual, values);
 }
 
