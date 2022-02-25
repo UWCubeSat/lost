@@ -243,76 +243,11 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
 // ALGORITHM PROMPTERS
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 
-// CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
-//     int numStars = Prompt<int>("How many stars to generate");
-//     return new DummyCentroidAlgorithm(numStars);
-// }
-
-// CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
-//     return new CenterOfGravityAlgorithm();
-// }
-
-// CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
-//     return new IterativeWeightedCenterOfGravityAlgorithm();
-// }
-
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-// StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
-//     return new DummyStarIdAlgorithm();
-// }
-
-// StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
-//     float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-//     return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
-// }
-
-// StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
-//     float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-//     int numFalseStars = Prompt<int>("Estimated # of false stars (whole sphere)");
-//     float maxMismatchProbability = Prompt<float>("Maximum mismatch probability");
-//     return new PyramidStarIdAlgorithm(DegToRad(tolerance), numFalseStars, maxMismatchProbability, 1000);
-// }
-
-// AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
-//     return new DavenportQAlgorithm();
-// }
-
-// Catalog PromptNarrowedCatalog(const Catalog &catalog) {
-//     float maxSomething = Prompt<float>("Max magnitude or # of stars");
-//     int maxMagnitude = 1000;
-//     int maxStars = 10000;
-//     assert(maxSomething > 0);
-//     if (maxSomething < 10) {
-//         maxMagnitude = 100 * (int)floor(maxSomething);
-//     } else {
-//         maxStars = (int)floor(maxSomething);
-//     }
-//     return NarrowCatalog(catalog, maxMagnitude, maxStars);
-// }
-
-    // float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
-    // float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
-    // long numBins = Prompt<long>("Number of distance bins");
-
-    // // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
-    // // database generation
-    // long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
-    // unsigned char *buffer = builder.AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
-    // if (buffer == NULL) {
-    //     std::cerr << "No room for another database." << std::endl;
-    // }
-    // SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
-
-    // // TODO: also parse it and print out some stats before returning
-
 void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    // float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
-    // float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
-    // long numBins = Prompt<long>("Number of distance bins");
-
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
     long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
@@ -341,24 +276,6 @@ void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, co
 
 }
 
-// void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
-//     InteractiveChoice<DbBuilder> dbBuilderChoice;
-
-    // adds these as options
-
-//     dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
-//     dbBuilderChoice.Register("done", "Exit", NULL);
-    // gets the prompt and does (choice)(builder, catalog)
-
-//     while (true) {
-//         DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
-//         if (choice == NULL) {
-//             break;
-//         }
-//         (*choice)(builder, catalog);
-//     }
-// }
-
 // PIPELINE INPUT STUFF
 
 cairo_surface_t *PipelineInput::InputImageSurface() const {
@@ -376,14 +293,6 @@ private:
     Image image;
     Quaternion attitude;
 };
-
-// Camera PromptCameraPhysical(int xResolution, int yResolution) {
-//     float focalLength = Prompt<float>("Focal Length (mm)");
-//     float pixelSize = Prompt<float>("Pixel size (µm)");
-//     float focalLengthPixels = focalLength * 1000 / pixelSize;
-
-//     return Camera(focalLengthPixels, xResolution, yResolution);
-// }
 
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
@@ -418,34 +327,11 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
 
     result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
     return result;
-    
-    // // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
-    // // with copying unique ptrs
-    // PipelineInputList result;
-    // cairo_surface_t *cairoSurface = NULL;
-    // std::string pngPath;
-
-    // while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
-    //     cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
-    // }
-    // int xResolution = cairo_image_surface_get_width(cairoSurface);
-    // int yResolution = cairo_image_surface_get_height(cairoSurface);
-    // result.push_back(std::unique_ptr<PipelineInput>(
-    //                      new PngPipelineInput(cairoSurface, PromptCameraPhysical(xResolution, yResolution), CatalogRead())));
-    // return result;
 }
 
 AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
-
-// PipelineInputList PromptAstrometryPipelineInput() {
-//     // TODO: why does it let us do a reference to an ephemeral return value?
-//     std::string path = Prompt<std::string>("Astrometry download directory");
-//     PipelineInputList result;
-//     result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
-//     return result;
-// }
 
 // does NOT protect against multiple evaluation of arguments
 #define IncrementPixelXY(x, y, amt) imageData[(y)*image.width+(x)] = \
@@ -513,13 +399,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     }  
 }
 
-// Quaternion PromptSphericalAttitude() {
-//     float ra = Prompt<float>("Boresight right ascension");
-//     float dec = Prompt<float>("Boresight declination");
-//     float roll = Prompt<float>("Boresight roll");
-//     return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
-// }
-
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
     int numImages = values.generate;
@@ -561,13 +440,6 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values) {
     } else {
         return GetGeneratedPipelineInput(values);
     }
-
-    // InteractiveChoice<PipelineInputFactory> inputTypeChoice;
-    // inputTypeChoice.Register("png", "PNG files", GetPngPipelineInput);
-    // inputTypeChoice.Register("generate", "Generated image", GetGeneratedPipelineInput);
-    // \/ was already commented out, I think
-    // inputTypeChoice.Register("astrometry", "Astrometry.net", PromptAstrometryPipelineInput);
-    // return (inputTypeChoice.Prompt("Input from"))();
 }
 
 Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
@@ -598,16 +470,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
     Pipeline result;
     
-    // InteractiveChoice<PipelineStage> stageChoice;
-    // stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
-    // // TODO: more flexible or sth
-    // stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
-    // // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
-    // // choices to those compatible with the database?
-    // stageChoice.Register("database", "Database", PipelineStage::Database);
-    // stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
-    // stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
-    // stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
+    // TODO: more flexible or sth
+    // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
+    // choices to those compatible with the database?
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
@@ -645,130 +510,8 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     if (values.attitudeAlgo == "dqm") {
         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
     }
-
-    // while (true) {
-    //     PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
-    //     switch (nextStage) {
-
-
-    //     // case PipelineStage::StarId: {
-    //     //     InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
-    //     //     // starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
-    //     //     // starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
-    //     //     starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
-
-    //     //     result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
-    //     //         (starIdChoice.Prompt("Choose Star-ID algo"))());
-    //     //     break;
-    //     // }
-
-    //     case PipelineStage::AttitudeEstimation: {
-    //         InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
-    //         attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
-    //         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
-    //             (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
-    //         break;
-    //     }
-
-    //     case PipelineStage::Done: {
-    //         // fuck style guides
-    //         goto PipelineDone;
-    //     }
-    //     }
-    // }
-    // PipelineDone:
-
     return result;
 }
-
-
-
-
-
-// Pipeline PromptPipeline() {
-//     enum class PipelineStage {
-//         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
-//     };
-
-//     Pipeline result;
-    
-//     InteractiveChoice<PipelineStage> stageChoice;
-//     stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
-//     // TODO: more flexible or sth
-//     stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
-//     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
-//     // choices to those compatible with the database?
-//     stageChoice.Register("database", "Database", PipelineStage::Database);
-//     stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
-//     stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
-//     stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
-
-//     while (true) {
-//         PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
-//         switch (nextStage) {
-
-//         case PipelineStage::Centroid: {
-//             InteractiveChoice<CentroidAlgorithmFactory> centroidChoice;
-//             centroidChoice.Register("dummy", "Random Centroid Algorithm",
-//                                     DummyCentroidAlgorithmPrompt);
-//             centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm",
-//                                     CoGCentroidAlgorithmPrompt);
-//             centroidChoice.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm",
-//                                     IWCoGCentroidAlgorithmPrompt);
-
-//             result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
-//                 (centroidChoice.Prompt("Choose centroid algo"))());
-//             break;
-//         }
-
-//         case PipelineStage::CentroidMagnitudeFilter: {
-//             result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
-//             break;
-//         }
-
-//         case PipelineStage::Database: {
-//             std::string path = Prompt<std::string>("Database file");
-//             std::fstream fs;
-//             fs.open(path, std::fstream::in | std::fstream::binary);
-//             fs.seekg(0, fs.end);
-//             long length = fs.tellg();
-//             fs.seekg(0, fs.beg);
-//             std::cerr << "Reading " << length << " bytes of database" << std::endl;
-//             result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
-//             fs.read((char *)result.database.get(), length);
-//             std::cerr << "Done" << std::endl;
-//             break;
-//         }
-
-//         case PipelineStage::StarId: {
-//             InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
-//             starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
-//             starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
-//             starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
-
-//             result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
-//                 (starIdChoice.Prompt("Choose Star-ID algo"))());
-//             break;
-//         }
-
-//         case PipelineStage::AttitudeEstimation: {
-//             InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
-//             attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
-//             result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
-//                 (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
-//             break;
-//         }
-
-//         case PipelineStage::Done: {
-//             // fuck style guides
-//             goto PipelineDone;
-//         }
-//         }
-//     }
-//     PipelineDone:
-
-//     return result;
-// }
 
 PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From
@@ -1043,7 +786,6 @@ void PipelineComparatorCentroids(std::ostream &os,
     int size = (int)expected.size();
 
     float threshold = values.threshold;
-    // float threshold = Prompt<float>("Threshold to count as the same star (pixels, float)");
 
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
@@ -1096,7 +838,6 @@ void PipelineComparatorStars(std::ostream &os,
                              const std::vector<PipelineOutput> &actual,
                              const PipelineOptions &values) {
     float centroidThreshold = actual[0].stars
-        // ? Prompt<float>("Threshold to count centroids as the same star (pixels)")
         ? values.threshold
         : 0.0f;
 
@@ -1154,8 +895,6 @@ void PipelineComparatorAttitude(std::ostream &os,
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
     float angleThreshold = DegToRad(values.threshold);
-    // float angleThreshold = DegToRad(
-    //     Prompt<float>("Threshold to count two attitudes as the same (deg)"));
 
     float attitudeErrorSum = 0.0f;
     int numCorrect = 0;
@@ -1244,71 +983,5 @@ void PipelineComparison(const PipelineInputList &expected,
         return;
     }
 }
-
-
-// void PromptPipelineComparison(const PipelineInputList &expected,
-//                               const std::vector<PipelineOutput> &actual) {
-//     assert(expected.size() == actual.size() && expected.size() > 0);
-
-//     InteractiveChoice<PipelineComparator> comparatorChoice;
-
-//     if (expected[0]->InputImage() && expected.size() == 1) {
-//         comparatorChoice.Register("plot_raw_input", "Plot raw BW input image to PNG",
-//                                   PipelineComparatorPlotRawInput);
-
-//         if (expected[0]->InputStars()) {
-//             comparatorChoice.Register("plot_input", "Plot annotated input image to PNG",
-//                                       PipelineComparatorPlotInput);
-//         }
-//     }
-
-//     if (actual.size() == 1 && (actual[0].stars || actual[0].starIds)) {
-//             comparatorChoice.Register("plot_output", "Plot output to PNG",
-//                                       PipelineComparatorPlotOutput);
-//     }
-
-//     // Centroids
-//     if (actual[0].stars) {
-//         if (actual.size() == 1) {
-//             comparatorChoice.Register("print_centroids", "Print list of centroids",
-//                                       PipelineComparatorPrintCentroids);
-//         }
-
-//         if (expected[0]->ExpectedStars()) {
-//             comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
-//                                       PipelineComparatorCentroids);
-//         }
-//     }
-
-//     // Star-IDs
-//     if (expected[0]->ExpectedStars() && actual[0].starIds) {
-//                 comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
-//                                           PipelineComparatorStars);
-//     }
-
-//     if (actual[0].attitude) {
-//         if (actual.size() == 1) {
-//             comparatorChoice.Register("print_attitude", "Print the determined ra, de, and roll",
-//                                       PipelineComparatorPrintAttitude);
-//         }
-
-//         if (expected[0]->ExpectedAttitude()) {
-//             comparatorChoice.Register("compare_attitude", "Compare expected to actual attitude",
-//                                       PipelineComparatorAttitude);
-//         }
-//     }
-
-//     comparatorChoice.Register("done", "No more comparisons", NULL);
-//     //TODO: fix
-//     // while (true) {
-//     //     PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
-//     //     if (comparator == NULL) {
-//     //         break;
-//     //     }
-
-//     //     PromptedOutputStream pos;
-//     //     comparator(pos.Stream(), expected, actual);
-//     // }
-// }
 
 }

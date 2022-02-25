@@ -37,23 +37,6 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
 }
 
-// static void DatabaseBuild(int maxMagnitude, int maxStars) {
-//     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(),maxMagnitude,maxStars);
-//     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
-
-//     MultiDatabaseBuilder builder;
-//     unsigned char *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue,
-//                                                           // TODO: allow magnitude and weird
-//                                                           SerializeLengthCatalog(narrowedCatalog, false, true));
-//     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
-
-//     PromptDatabases(builder, narrowedCatalog);
-
-//     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
-//     PromptedOutputStream pos;
-//     pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
-// }
-
 static void PipelineRun(const PipelineOptions &values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
@@ -179,14 +162,12 @@ int main(int argc, char **argv) {
             {"centroid-algo", required_argument, 0, centroidAlgo},
             {"centroid-dummy-stars", required_argument, 0, centroidDummyStars},
             {"centroid-mag-filter",  required_argument, 0, centroidMagFilter},
-            // {"database",        required_argument, 0, database},
             {"id-algo",        required_argument, 0, idAlgo},
             {"gv-tolerance",    required_argument, 0, gvTolerance},
             {"py-tolerance",    required_argument, 0, pyTolerance},
             {"false-stars",     required_argument, 0, falseStars},
             {"max-mismatch-prob",  required_argument, 0, maxMismatchProb},
             {"attitude-algo",    required_argument, 0, attitudeAlgo},
-            // {"plot",            required_argument, 0, plot},
             {"generate",        optional_argument, 0, generate},
             {"horizontal-res",  required_argument, 0, horizontalRes},
             {"vertical-res",  required_argument, 0, verticalRes},
@@ -252,10 +233,6 @@ int main(int argc, char **argv) {
                         std::cout << "You set the centroid mag filter to " << optarg << std::endl;
                         pipelineOptions.centroidMagFilter = atoi(optarg);
                         break;
-                    // case database :
-                    //     std::cout << "You set the database to " << optarg << std::endl;
-                    //     pipelineOptions.database = optarg;
-                    //     break;
                     case idAlgo :
                     {
                         std::string algo (optarg);
@@ -293,10 +270,6 @@ int main(int argc, char **argv) {
                         }                        
                         break; 
                     }
-                    // case plot :
-                    //     std::cout << "You set the plotted output path to " << optarg << std::endl;
-                    //     pipelineOptions.plot = optarg;
-                    //     break;
                     case generate :
                         if (optarg) {
                             pipelineOptions.generate = atoi(optarg);
@@ -426,11 +399,3 @@ int main(int argc, char **argv) {
     }
     return 0;
 }
-
-    // lost::RegisterCliArgs(argc, argv);
-    // std::cerr << "LOST: Open-source Star Tracker" << std::endl;
-    // lost::InteractiveChoice<void (*)()> mainChoices;
-    // mainChoices.Register("pipeline", "Run a pipeline", &lost::PipelineRun);
-    // mainChoices.Register("benchmark", "Benchmark a pipeline", &lost::PipelineBenchmark);
-    // mainChoices.Register("build_database", "Build database from catalog", &lost::DatabaseBuild);
-    // (*mainChoices.Prompt("Choose action"))();
