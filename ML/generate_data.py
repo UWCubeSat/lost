@@ -4,7 +4,9 @@ import random
 import time
 import numpy as np
 from p_tqdm import p_umap
+from tqdm import tqdm
 import csv
+from constants import *
 # %%
 def random_distribution_over_sphere(lower, upper):
     """
@@ -14,16 +16,6 @@ def random_distribution_over_sphere(lower, upper):
     v = random.uniform(-1, 1)
     
     return np.arcsin(v)
-
-# %%
-PATH_TO_LOST = '/home/sathvikc/lost'
-DATA_PATH = '/home/sathvikc/lost/ML/data/'
-print(os.path.exists(DATA_PATH))
-
-if not os.path.isdir(DATA_PATH):
-    os.system(f'mkdir {DATA_PATH}')
-# %%
-os.system(f'cd {PATH_TO_LOST} && yes | make clean && CXXFLAGS=-O3 make -j{len(os.sched_getaffinity(0))}')
 
 # %% 
 def generateImage(num):
@@ -40,12 +32,12 @@ def generateImage(num):
     READOUT_TIME = 0 
     ENABLE_SHOT_NOISE = random.randint(0, 1)
     OVERSAMPLING = 4
-    BORESIGHT_RIGHT_ASCENSION = random.randint(0, 360)
+    BORESIGHT_RIGHT_ASCENSION = random.randint(0, 359)
     BORESIGHT_DECLINATION = random_distribution_over_sphere(-180, 180)
-    BORESIGHT_ROLL = random.randint(0, 360)
-    MOTION_BLUR_DIRECTION_RIGHT_ASCENSION = random.randint(0, 1)
-    MOTION_BLUR_DIRECTION_DECLINATION = random.randint(0, 1)
-    MOTION_BLUR_DIRECTION_ROLL = random.randint(0, 1)
+    BORESIGHT_ROLL = random.randint(0, 359)
+    MOTION_BLUR_DIRECTION_RIGHT_ASCENSION = random.uniform(0.001, 1)
+    MOTION_BLUR_DIRECTION_DECLINATION = random.uniform(0.001, 1)
+    MOTION_BLUR_DIRECTION_ROLL = random.uniform(0.001, 5)
     FILE_NAME = str(num) + str(time.time()).replace('.', '')
 
     # Run the command to generate the data.
@@ -59,14 +51,12 @@ def generateImage(num):
     f'{FILE_NAME}.png done >/dev/null 2>&1')
 
     # Move the data to the data folder.
-    os.system(f'cd {PATH_TO_LOST} && mv {FILE_NAME}.png {DATA_PATH} >/dev/null 2>&1')
+    os.system(f'cd {PATH_TO_LOST} && mv {FILE_NAME}.png {DATA_PATH} >/dev/null 2>&1')    
 
     with open('data.csv', 'a') as f:
         csv_writer = csv.writer(f)
         csv_writer.writerow([f'{FILE_NAME}.png', 
         (BORESIGHT_RIGHT_ASCENSION, BORESIGHT_DECLINATION, BORESIGHT_ROLL)])
-
-
 
 # %%
 def main():
@@ -76,4 +66,8 @@ def main():
 
   # %%  
 if __name__ == "__main__":
+    os.system(f'cd {PATH_TO_LOST} && yes | make clean && CXXFLAGS=-O3 make -j{len(os.sched_getaffinity(0))}')
+    if not os.path.isdir(DATA_PATH):
+        os.system(f'mkdir {DATA_PATH}')
     main()
+    os.system(f'mv data.csv {DATA_PATH}')

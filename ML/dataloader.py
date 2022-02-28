@@ -1,4 +1,5 @@
 # %%
+import torch
 from torch.utils.data import Dataset
 from torchvision.io import read_image
 import matplotlib.pyplot as plt
@@ -20,8 +21,11 @@ class StarImageDataset(Dataset):
         img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
         image = read_image(img_path)
         label = self.img_labels.iloc[idx, 1]
+        label = tuple(float(num) for num in label.replace('(', '').replace(')', '').replace('...', '').split(', '))
+        label = torch.tensor(label)
         if self.transform: 
             image = self.transform(image)
         if self.target_transform:
             label = self.target_transform(label)
-        return image, label 
+        return image.float(), label 
+        
