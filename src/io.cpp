@@ -291,6 +291,15 @@ StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
     return new PyramidStarIdAlgorithm(DegToRad(tolerance), numFalseStars, maxMismatchProbability, 1000);
 }
 
+StarIdAlgorithm *BayesianStarIdAlgorithmPrompt() {
+    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
+    int numFalseStars = Prompt<int>("Estimated # of false stars (whole sphere)");
+    float hardConfidenceThreshold = Prompt<float>("Hard confidence threshold");
+    float softConfidenceThreshold = Prompt<float>("Soft confidence threshold");
+    float admissibleIgnoredProbability = Prompt<float>("Admissible ignored probability at each step");
+    return new BayesianStarIdAlgorithm(tolerance, numFalseStars, softConfidenceThreshold, hardConfidenceThreshold, admissibleIgnoredProbability);
+}
+
 AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
     return new DavenportQAlgorithm();
 }
@@ -633,6 +642,7 @@ Pipeline PromptPipeline() {
             }
             starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
             starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
+            starIdChoice.Register("bayes", "Bayesian method", BayesianStarIdAlgorithmPrompt);
 
             result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
                 (starIdChoice.Prompt("Choose Star-ID algo"))());
