@@ -297,7 +297,7 @@ StarIdAlgorithm *BayesianStarIdAlgorithmPrompt() {
     float hardConfidenceThreshold = Prompt<float>("Hard confidence threshold");
     float softConfidenceThreshold = Prompt<float>("Soft confidence threshold");
     float admissibleIgnoredProbability = Prompt<float>("Admissible ignored probability at each step");
-    return new BayesianStarIdAlgorithm(tolerance, numFalseStars, softConfidenceThreshold, hardConfidenceThreshold, admissibleIgnoredProbability);
+    return new BayesianStarIdAlgorithm(DegToRad(tolerance), numFalseStars, softConfidenceThreshold, hardConfidenceThreshold, admissibleIgnoredProbability);
 }
 
 AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {

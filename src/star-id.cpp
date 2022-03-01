@@ -529,27 +529,25 @@ public:
         centroidIndices.push_back(centroidIndex);
     };
     BayesPossibility(float probability, int16_t centroidIndex1, int16_t centroidIndex2,
-                     const int16_t *queryBegin, const int16_t *queryEnd)
-        : probability(probability) {
+                     int numPairs)
+        : probability(probability), numPairs(numPairs) {
         centroidIndices.push_back(centroidIndex1);
         centroidIndices.push_back(centroidIndex2);
-        catalogIndicesBegin = queryBegin;
-        catalogIndicesEnd = queryEnd;
     }
     BayesPossibility() = default;
 
     // the number of subconfigurations stored in this possibility (subconfigurations are really just
     // more possibilities)
     int NumConfigurations(const Catalog &catalog) const {
-        if (catalogIndicesBegin != NULL) {
-            assert(NumTrueStars() == 2);
-            // 2* to account for flipping
-            return 2*(catalogIndicesEnd - catalogIndicesBegin) / NumTrueStars();
-        } else if (NumTrueStars() == 1) {
+        switch (NumTrueStars()) {
+        case 2:
+            return numPairs;
+        case 1:
             return catalog.size();
-        } else if (NumTrueStars() == 0) {
+        case 0:
             return 1;
-        } else {
+        default:
+            assert(!catalogIndices.empty());
             return catalogIndices.size() / NumTrueStars();
         }
     }
@@ -576,8 +574,7 @@ public:
 
     float probability; // Probability of each possible configuration inside
     std::vector<int16_t> centroidIndices;
-    const int16_t *catalogIndicesBegin = NULL;
-    const int16_t *catalogIndicesEnd;
+    int numPairs; // used when NumTrueStars()==2
     std::vector<int16_t> catalogIndices;
 };
 
@@ -798,11 +795,11 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
         }
 
         searchMode = CentroidSearchMode::Found;
-        exploredCentroids.push_back(curCentroid);
 
         int origPriorLength = prior.size();
         for (int priorI = 0; priorI < origPriorLength; priorI++) {
-            BayesPossibility &possibility = prior[priorI];
+            // safer to copy than make a reference, because prior.push_back can reallocate it
+            const BayesPossibility possibility = prior[priorI];
             // // a more theoretically accurate way would not include possibilities where the current
             // // star must be true. Ie, any configuration that indicates a true star at the current
             // // location certainly shouldn't be included. TODO wouldn't be hard to improve
@@ -827,56 +824,72 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 }
                 const int16_t *end;
                 const int16_t *begin = kvector.FindPairsLiberal(distance-tolerance, distance+tolerance, &end);
+                // The number of pairs, in the order returned, is (end-begin)/2. But we want the
+                // number of pairs considering both possible orientations, so just end-begin
+                int numPairs = end-begin;
                 if (begin != end) {
                     // area of spherical annulus with radius sigma
                     const float annulusArea = 2*M_PI*tolerance*sin(distance);
                     const float trueProb = possibility.probability/annulusArea * probScale;
                     prior.push_back(
-                        BayesPossibility(
-                            trueProb, possibility.centroidIndices[0], curCentroid, begin, end));
+                        BayesPossibility(trueProb, possibility.centroidIndices[0], curCentroid, numPairs));
                 }
                 break;
             }
 
             default: { // >= 2
+                ///// STEP 1: Find the closest centroidIndices in the possibility /////
+                // unfortunately, this means storing indexes into an indexes array...
+                std::vector<int> closestCentroidIndicesIndices;
+                // can also do this with std::iota
+                for (int i = 0; i < (int)possibility.NumTrueStars(); i++) {
+                    closestCentroidIndicesIndices.push_back(i);
+                }
                 // find the closest numNeighbors neighbors. Closest will make the rest of this
                 // faster and tend to be well distributed around different sides of the new
                 // centroid, which keeps the annulus intersection area small.
                 // nth_element sorts the array up to the given mid iterator.
                 // brrt brrt style guideline violation: no lambdas
-                std::nth_element(exploredCentroids.begin(), exploredCentroids.begin() + numNeighbors - 1, exploredCentroids.end(),
-                                 [curCentroid, &stars](int s1, int s2) -> bool {
-                                     const float s1Dist = (stars[curCentroid].position - stars[s1].position).MagnitudeSq();
-                                     const float s2Dist = (stars[curCentroid].position - stars[s2].position).MagnitudeSq();
+                std::nth_element(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + numNeighbors - 1, closestCentroidIndicesIndices.end(),
+                                 [curCentroid, &stars, &possibility](int s1, int s2) -> bool {
+                                     const Vec2 &p = stars[curCentroid].position;
+                                     const Vec2 &p1 = stars[possibility.centroidIndices[s1]].position;
+                                     const Vec2 &p2 = stars[possibility.centroidIndices[s2]].position;
+                                     const float s1Dist = (p-p1).MagnitudeSq();
+                                     const float s2Dist = (p-p2).MagnitudeSq();
+                                     return s1Dist < s2Dist;
+                                 });
+                // TODO: deduplicate
+                std::sort(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + numNeighbors,
+                                 [curCentroid, &stars, &possibility](int s1, int s2) -> bool {
+                                     const Vec2 &p = stars[curCentroid].position;
+                                     const Vec2 &p1 = stars[possibility.centroidIndices[s1]].position;
+                                     const Vec2 &p2 = stars[possibility.centroidIndices[s2]].position;
+                                     const float s1Dist = (p-p1).MagnitudeSq();
+                                     const float s2Dist = (p-p2).MagnitudeSq();
                                      return s1Dist < s2Dist;
                                  });
 
-                // TODO: what to do if there aren't enough stars in range? Just because we
-                // ensure there are minNumNeighbors total doesn't mean that there are enough
-                // close to this particular possibility
-
-                auto firstNeighbor = exploredCentroids.end();
-                auto lastNeighbor = exploredCentroids.end();
-                for (auto exploredIt = exploredCentroids.begin(); exploredIt != exploredCentroids.end(); exploredIt++) {
-                    float dist = (stars[curCentroid].position - stars[*exploredIt].position).Magnitude();
+                auto firstNeighborIndexIndex = closestCentroidIndicesIndices.end();
+                auto lastNeighborIndexIndex = closestCentroidIndicesIndices.end();
+                for (auto centroidIndexIt = closestCentroidIndicesIndices.begin(); centroidIndexIt != closestCentroidIndicesIndices.end(); centroidIndexIt++) {
+                    float dist = Angle(starSpatials[curCentroid], starSpatials[possibility.centroidIndices[*centroidIndexIt]]);
 
                     if (dist > kvector.MaxDistance()) {
                         break;
                     }
 
                     if (dist >= kvector.MinDistance()) {
-                        if (firstNeighbor == exploredCentroids.end()) {
-                            firstNeighbor = exploredIt;
+                        if (firstNeighborIndexIndex == closestCentroidIndicesIndices.end()) {
+                            firstNeighborIndexIndex = centroidIndexIt;
                         }
                         if (dist <= kvector.MaxDistance()) {
-                            lastNeighbor = exploredIt;
+                            lastNeighborIndexIndex = centroidIndexIt;
                         }
                     }
-
-                    exploredIt++;
                 }
                 // number of neighbors in this possibility specifically
-                int numNeighborsPossibility = lastNeighbor-firstNeighbor+1;
+                int numNeighborsPossibility = lastNeighborIndexIndex-firstNeighborIndexIndex+1;
 
                 if (numNeighborsPossibility < 2) {
                     // TODO: is this a big deal?
@@ -892,10 +905,13 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 // new star is constrained to as the smallest intersection of annuluses around
                 // two of the neighbors.
                 float smallestArea = INFINITY;
-                for (auto neighbor1It = firstNeighbor; neighbor1It <= lastNeighbor-1; neighbor1It++) {
-                    for (auto neighbor2It = firstNeighbor+1; neighbor2It <= lastNeighbor; neighbor2It++) {
+                for (auto neighbor1It = firstNeighborIndexIndex; neighbor1It <= lastNeighborIndexIndex-1; neighbor1It++) {
+                    for (auto neighbor2It = firstNeighborIndexIndex+1; neighbor2It <= lastNeighborIndexIndex; neighbor2It++) {
                         float curArea = AnnulusIntersectionArea(
-                            tolerance, starSpatials[*neighbor1It], starSpatials[*neighbor2It], starSpatials[curCentroid]);
+                            tolerance,
+                            starSpatials[possibility.centroidIndices[*neighbor1It]],
+                            starSpatials[possibility.centroidIndices[*neighbor2It]],
+                            starSpatials[curCentroid]);
                         smallestArea = std::min(smallestArea, curArea);
                     }
                 }
@@ -903,9 +919,12 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
 
                 if (possibility.NumTrueStars() == 2) {
                     // i is the new star, j and k are the existing stars.
-                    const float ijDist = AngleUnit(starSpatials[curCentroid], starSpatials[*firstNeighbor]);
-                    const float ikDist = AngleUnit(starSpatials[curCentroid], starSpatials[*lastNeighbor]);
-                    const float jkDist = AngleUnit(starSpatials[*firstNeighbor], starSpatials[*lastNeighbor]);
+                    const float ijDist = AngleUnit(starSpatials[curCentroid],
+                                                   starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]]);
+                    const float ikDist = AngleUnit(starSpatials[curCentroid],
+                                                   starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]]);
+                    const float jkDist = AngleUnit(starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]],
+                                                   starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]]);
                     const int16_t *ijEnd, *ikEnd;
                     const int16_t *const ijQuery = kvector.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
                     const int16_t *const ikQuery = kvector.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
@@ -949,24 +968,34 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                     // >2
                     assert(possibility.NumTrueStars() > 2);
 
-                    const float ijDist = AngleUnit(starSpatials[curCentroid], starSpatials[*firstNeighbor]);
+                    const float ijDist = AngleUnit(starSpatials[curCentroid],
+                                                   starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]]);
                     const int16_t *ijEnd;
                     const int16_t *const ijQuery = kvector.FindPairsLiberal(ijDist-tolerance, ijDist+tolerance, &ijEnd);
 
                     for (int conf = 0; conf < possibility.NumConfigurations(catalog); conf++) {
                         // first, narrow down to stars that are compatible with the first star
                         // in the configuration. Should only be a handful.
-                        auto catalogIndexIt = possibility.catalogIndices.begin() + conf*possibility.NumConfigurations(catalog);
-                        PairDistanceInvolvingIterator iIterator(ijQuery, ijEnd, *catalogIndexIt);
+                        auto catalogIndexIt = possibility.catalogIndices.begin() + conf*possibility.NumTrueStars();
+                        PairDistanceInvolvingIterator iIterator(ijQuery, ijEnd, catalogIndexIt[*firstNeighborIndexIndex]);
                         while (iIterator.hasValue()) {
                             int iCandidate = *iIterator;
                             ++iIterator;
 
                             // verify its distance against all other stars in the configuration
                             // TODO: spectral check too
-                            for (int whichStar = 1; whichStar < possibility.NumTrueStars(); whichStar++) {
-                                float centroidDist = AngleUnit(starSpatials[curCentroid], starSpatials[possibility.centroidIndices[whichStar]]);
-                                float catalogDist = AngleUnit(catalog[iCandidate].spatial, catalog[catalogIndexIt[whichStar]].spatial);
+
+                            // TODO IMPORTANT: (not related to this): We don't really need 4 stars
+                            // in range if we only use kvector on the first one. So really, we just
+                            // need two stars in range so that the other case works. To summarize,
+                            // in the two-star possibility case, we already know what the two
+                            // closest are, just use them. In the >2 star possibility case, we only
+                            // need the nearest one.
+                            for (int whichStar = 0; whichStar < possibility.NumTrueStars(); whichStar++) {
+                                float centroidDist = AngleUnit(starSpatials[curCentroid],
+                                                               starSpatials[possibility.centroidIndices[whichStar]]);
+                                float catalogDist = AngleUnit(catalog[iCandidate].spatial,
+                                                              catalog[catalogIndexIt[whichStar]].spatial);
 
                                 // if any star in the configuration is incompatible, the
                                 // configuration is incompatible.
@@ -977,7 +1006,8 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
 
                             // all star distances verified, add the new configuration!
                             // add all the stars from the old possibility
-                            std::copy(catalogIndexIt, catalogIndexIt + possibility.NumTrueStars(), newPossibility.catalogIndices.end());
+                            newPossibility.catalogIndices.insert(newPossibility.catalogIndices.end(),
+                                                                 catalogIndexIt, catalogIndexIt + possibility.NumTrueStars());
                             // plus the new star
                             newPossibility.catalogIndices.push_back(iCandidate);
 
@@ -986,32 +1016,16 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                     }
                 }
 
-                // BayesPossibilityIterator catalogIndexIt(possibility);
-                // int16_t firstCentroid = -1;
-                // while (catalogIndexIt.hasValue()) {
-                //     for (int16_t centroidIndex : possibility.centroidIndices) {
-                //         float angle = AngleUnit(starSpatials[centroidIndex], starSpatials[curCentroid]);
-                //         if (angle > kvector.MinDistance()+tolerance && angle < kvector.MaxDistance()-tolerance) {
-                //             if (firstCentroid < 0) {
-                //                 firstCentroid = centroidIndex;
-                //             } else {
-                //                 // we have two centroids. Do the thing.
-                //                 // TODO: maybe be pickier about which centroid to pick when there are more than two options
-                //                 const int16_t *candidatesEnd;
-                //                 const int16_t *candidates = kvector.FindPairsLiberal(angle-tolerance, angle+tolerance, &candidatesEnd);
-                //                 PairDistanceInvolvingIterator subCandidates(candidates, candidatesEnd, firstCentroid);
-                //             }
-                //         }
-                //         ++catalogIndexIt;
-                //     }
-                // }
+                if (!newPossibility.catalogIndices.empty()) {
+                    prior.push_back(newPossibility);
+                }
 
                 break;
             }
             }
 
             // Possibility of new star being false.
-            possibility.probability *= numFalseStars/kUnitSphereArea*probScale;
+            prior[priorI].probability *= numFalseStars/kUnitSphereArea*probScale;
             // TODO: if there really is a false star, then all possibilities after that point
             // are going to have really small probabilities. Maybe we do need to play around
             // with probscale...
@@ -1028,6 +1042,8 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                   });
         assert(!prior.empty()); // TODO: can this happen?
 
+        std::cerr << "Debug before trim:" << std::endl;
+        DebugPrintBayesPriorSummary(DebugCalculateBayesPriorSummary(prior, catalog));
         // remove the least likely possibilities, ensuring that the probability of all the
         // removed possibilities doesn't sum to more than admissibleIgnoredProbability
         float discardedSum = 0;
@@ -1039,6 +1055,9 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
             backProbability = prior.back().TotalProbability(catalog);
         }
         std::cerr << "Trimmed from " << originalNumPossibilities << " to " << prior.size() << " possibilities." << std::endl;
+        DebugPrintBayesPriorSummary(DebugCalculateBayesPriorSummary(prior, catalog));
+
+        exploredCentroids.push_back(curCentroid);
     }
 
     // TODO: it's possible for the mode probability to be below the hard confidence threshold even
