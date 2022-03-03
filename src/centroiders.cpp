@@ -100,69 +100,32 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
     // run Basic Threshold on all elements in certain subdivisions
     int div = imageHeight / subdivisions; // Minimum number of lines for each division
     int leftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
-    int totalPixels = imageWidth * imageHeight;
-    int totalMag = 0;
-    float std = 0;
-    float mean = 0;
+    long totalPixels = imageWidth * imageHeight;
     std::vector<int> standardDeviations;
     // Sets threshold for the first few subdivisions that have 1 more line than the rest
-    for(int i = 0; i < leftover; i++) {
-        totalMag = 0;
-        std = 0;
-        mean = 0;
-        for(int j = i * (div + 1) * imageWidth; j < (i+1) * (div + 1) * imageWidth; j++) {
+    for(int i = 0; i < subdivisions; i++) {
+        int totalMag = 0;
+        int std = 0;
+        int mean = 0;
+        int max;
+        int start;
+        if(i < leftover) {
+            start = i * (div + 1) * imageWidth;
+            max = (i+1) * (div + 1) * imageWidth;
+        } else {
+            start = i * (div) * imageWidth + leftover;
+            max = (i+1) * (div) * imageWidth;
+        }
+        for(int j = start; j < max; j++) {
             totalMag += image[j];
         }
         mean = totalMag / ((div + 1) * imageWidth);
-        for (long j = i * (div + 1) * imageWidth; j < (i+1) * (div + 1) * imageWidth; j++) {
+        for (long j = start; j < max; j++) {
                 std += std::pow(image[j] - mean, 2);
             }
         std = std::sqrt(std / ((div + 1) * imageWidth));
         standardDeviations.push_back(mean + (std * 5));
     }
-    // Sets thresholds for remaining subdivisions, which have one less line than before
-    for(int i = leftover; i < subdivisions; i++) {
-        totalMag = 0;
-        std = 0;
-        mean = 0;
-        for(int j = i * (div) * imageWidth; j < (i+1) * (div) * imageWidth; j++) {
-            totalMag += image[j];
-        }
-        mean = totalMag / (div * imageWidth); // Currently divides by 0 at 1000 subdivisions for 7qPnoi1.png
-        for (long j = i * (div) * imageWidth; j < (i+1) * (div) * imageWidth; j++) {
-                std += std::pow(image[j] - mean, 2);
-            }
-        std = std::sqrt(std / (div * imageWidth));
-        standardDeviations.push_back(mean + (std * 5));
-    }
-    /*
-    for(int i = 0; i < subdivisions; i++) {
-        totalMag = 0;
-        std = 0;
-        mean = 0;
-        if(i != subdivisions - 1) {
-            for(int j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
-                totalMag += image[j];
-            }
-            mean = totalMag / (div * imageWidth);
-            for (long j = i * div * imageWidth; j < (i+1) * div * imageWidth; j++) {
-                std += std::pow(image[j] - mean, 2);
-            }
-            std = std::sqrt(std / (div * imageWidth));
-        } else { // For the case that the end has more lines than the rest
-            for(int j = i * div * imageWidth; j < sizeof(image); j++) {
-                totalMag += image[j];
-            }
-            mean = totalMag / (sizeof(image) - i * div * imageWidth + 1);
-            for (long j = i * div * imageWidth; j < sizeof(image); j++) {
-                std += std::pow(image[j] - mean, 2);
-            }
-            std = std::sqrt(std / (sizeof(image) - i * div * imageWidth + 1));
-        }
-        standardDeviations.push_back(mean + (std * 5));
-    }
-    standardDeviations.push_back(mean + (std * 5));
-    */
     // Return values of previous method as a vector
     return standardDeviations;
 }
