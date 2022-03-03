@@ -17,7 +17,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
         Star bStar = stars[s.starIndex];
         Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
         Eigen::Vector3f bi;
-        bi << bStarSpatial.y, bStarSpatial.x, bStarSpatial.z;
+        bi << bStarSpatial.x, bStarSpatial.y, bStarSpatial.z;
 
         CatalogStar rStar = catalog[s.catalogIndex];
         Eigen::Vector3f ri;
@@ -83,7 +83,7 @@ Attitude TriadAlgorithm::Go(const Camera &camera,
                             const Stars &stars,
                             const Catalog &catalog,
                             const StarIdentifiers &starIds) {
-    if ((int)stars.size() < 2) {
+    if ((int)stars.size() < 2 || (int)starIds.size() < 2) {
         return Quaternion(1,0,0,0);
     }
 
