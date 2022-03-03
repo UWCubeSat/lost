@@ -14,7 +14,7 @@
 
 namespace lost {
 
-// DUMMY
+// DUMMYS
 
 std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
@@ -92,6 +92,44 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
+// Local Basic Thresholding with divisions as parameter, returns a vector containing thresholds 
+// corresponding to different divisions.
+// Divisions are horizontally based
+// Uses the same statistical algorithm as BasicThresholding
+std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
+    // run Basic Threshold on all elements in certain subdivisions
+    int div = imageHeight / subdivisions; // Minimum number of lines for each division
+    int leftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
+    long totalPixels = imageWidth * imageHeight;
+    std::vector<int> standardDeviations;
+    // Sets threshold for the first few subdivisions that have 1 more line than the rest
+    for(int i = 0; i < subdivisions; i++) {
+        int totalMag = 0;
+        int std = 0;
+        int mean = 0;
+        int max;
+        int start;
+        if(i < leftover) {
+            start = i * (div + 1) * imageWidth;
+            max = (i+1) * (div + 1) * imageWidth;
+        } else {
+            start = i * (div) * imageWidth + leftover;
+            max = (i+1) * (div) * imageWidth;
+        }
+        for(int j = start; j < max; j++) {
+            totalMag += image[j];
+        }
+        mean = totalMag / ((div + 1) * imageWidth);
+        for (long j = start; j < max; j++) {
+                std += std::pow(image[j] - mean, 2);
+            }
+        std = std::sqrt(std / ((div + 1) * imageWidth));
+        standardDeviations.push_back(mean + (std * 5));
+    }
+    // Return values of previous method as a vector
+    return standardDeviations;
+}
+
 // basic thresholding, but do it faster (trade off of some accuracy?)
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
@@ -117,14 +155,27 @@ struct CentroidParams {
     int yMin;
     int yMax;
     int cutoff;
+    std::vector<int> localCutoff;
     bool isValid;
     std::unordered_set<int> checkedIndices;
 };
 
+// For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
+int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
+    int div = imageHeight / subdivisions;
+    int leftover = imageHeight % subdivisions;
+    if(i < (div + 1) * leftover * imageWidth) {
+        return i / ((div + 1) * imageWidth);
+    } else {
+        return leftover + (i - (div + 1) * leftover * imageWidth) / (div * imageWidth);
+    }
+    return 0;
+}
+
 //recursive helper here
-void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) {
+void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
@@ -144,25 +195,29 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
         p.xCoordMagSum += ((i % imageWidth)) * image[i];
         p.yCoordMagSum += ((i / imageWidth)) * image[i];
         if(i % imageWidth != imageWidth - 1) {
-            CogHelper(p, i + 1, image, imageWidth, imageHeight);
+            CogHelper(p, i + 1, image, imageWidth, imageHeight, subdivisions);
         }
         if (i % imageWidth != 0) {
-            CogHelper(p, i - 1, image, imageWidth, imageHeight);
+            CogHelper(p, i - 1, image, imageWidth, imageHeight, subdivisions);
         }
-        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
-        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
+        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight, subdivisions);
+        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight, subdivisions);
     }
 }
 
+//CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
+//Subdivisions refers to how many horizontal sections with different thresholds are present
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    
+    // Program will use divisions to represent the subdivisions
+    int divisions = subdivisions;
+    if(subdivisions > imageHeight) {
+        divisions = imageHeight;
+    }
     std::vector<Star> result;
-
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, divisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
-
+        if (image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions)) && p.checkedIndices.count(i) == 0) {
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
@@ -178,7 +233,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
             int sizeBefore = p.checkedIndices.size();
 
-            CogHelper(p, i, image, imageWidth, imageHeight);
+            CogHelper(p, i, image, imageWidth, imageHeight, divisions);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
 

@@ -1,0 +1,3 @@
+All tests conducted using form:
+./lost pipeline png <IMG Location> 0 30 centroid cog centroid_magnitude_filter 
+4 database kvector.dat starid pyramid .05 100 .0001 attitude dqm done plot_output output.png done

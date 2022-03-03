@@ -24,8 +24,10 @@ private:
 
 class CenterOfGravityAlgorithm : public CentroidAlgorithm {
     public:
-        CenterOfGravityAlgorithm() { };
+        CenterOfGravityAlgorithm(int subdivisions) : subdivisions(subdivisions) { };
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+    private:
+        int subdivisions;
 };
 
 class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {

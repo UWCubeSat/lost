@@ -268,7 +268,8 @@ CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
 }
 
 CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
-    return new CenterOfGravityAlgorithm();
+    int subdivisions = Prompt<int>("How many subdivisions to use");
+    return new CenterOfGravityAlgorithm(subdivisions);
 }
 
 CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
