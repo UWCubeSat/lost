@@ -161,7 +161,7 @@ struct CentroidParams {
 };
 
 // For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
-int subdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
+int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
     int div = imageHeight / subdivisions;
     int leftover = imageHeight % subdivisions;
     if(i < (div + 1) * leftover * imageWidth) {
@@ -175,7 +175,7 @@ int subdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
 //recursive helper here
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(subdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
@@ -204,48 +204,8 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
         CogHelper(p, i - imageWidth, image, imageWidth, imageHeight, subdivisions);
     }
 }
-/*
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
-    CentroidParams p;
-    
-    std::vector<Star> result;
 
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
-    for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
-
-            //iterate over pixels that are part of the star
-            int xDiameter = 0; //radius of current star
-            int yDiameter = 0;
-            p.yCoordMagSum = 0; //y coordinate of current star
-            p.xCoordMagSum = 0; //x coordinate of current star
-            p.magSum = 0; //sum of magnitudes of current star
-
-            p.xMax = i % imageWidth;
-            p.xMin = i % imageWidth;
-            p.yMax = i / imageWidth;
-            p.yMin = i / imageWidth;
-            p.isValid = true;
-
-            int sizeBefore = p.checkedIndices.size();
-
-            CogHelper(p, i, image, imageWidth, imageHeight);
-            xDiameter = (p.xMax - p.xMin) + 1;
-            yDiameter = (p.yMax - p.yMin) + 1;
-
-            //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
-            float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
-
-            if (p.isValid) {
-                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
-            }
-        }
-    }
-    return result;
-}
-*/
-//Copy of CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
+//CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
 //Subdivisions refers to how many horizontal sections with different thresholds are present
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
@@ -257,7 +217,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     std::vector<Star> result;
     p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, divisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at(subdivision(i, imageWidth, imageHeight, divisions)) && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions)) && p.checkedIndices.count(i) == 0) {
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
