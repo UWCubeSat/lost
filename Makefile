@@ -23,8 +23,8 @@
 
 SRCS := $(wildcard src/*.cpp)
 TESTS := $(wildcard test/*.cpp)
-DOCUMENTATION := $(wildcard documentation/*.man)
-DOCUMENTATION_FILES := $(patsubst documentation/man-%.h, documentation/%.man,$(DOCUMENTATION))
+MANS := $(wildcard documentation/*.man)
+MAN_HS := $(patsubst documentation/%.man, documentation/man-%.h, $(MANS))
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS)) # includes tests
@@ -47,7 +47,7 @@ $(BIN): $(OBJS)
 documentation/man-%.h: documentation/%.man
 	xxd -i $< > $@
 
-src/main.o: $(DOCUMENTATION_FILES)
+src/main.o: $(MAN_HS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
@@ -61,7 +61,7 @@ $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
 clean:
-	rm -f $(OBJS) $(DEPS) $(TEST_OBJS)
+	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
 	rm -i $(BSC)
 
 .PHONY: all clean test
