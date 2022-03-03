@@ -170,8 +170,6 @@ int main(int argc, char **argv) {
             {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
             {"boresight-dec",  required_argument, 0, boresightDec},
             {"boresight-roll",  required_argument, 0, boresightRoll},
-            {"centroid-compare-threshold",       required_argument, 0, centroidCompareThreshold},
-            {"attitude-compare-threshold",       required_argument, 0, attitudeCompareThreshold},
             {"plot-raw-input", optional_argument, 0, plotRawInput},
             {"plot-input", optional_argument, 0, plotInput},
             {"plot-output", optional_argument, 0, plotOutput},
@@ -180,6 +178,8 @@ int main(int argc, char **argv) {
             {"compare-stars", optional_argument, 0, compareStars},
             {"print-attitude", optional_argument, 0, printAttitude},
             {"compareAttitude", optional_argument, 0, compareAttitude},
+            {"centroid-compare-threshold",       required_argument, 0, centroidCompareThreshold},
+            {"attitude-compare-threshold",       required_argument, 0, attitudeCompareThreshold},
             {"database", required_argument, 0, database},
             {"help",            no_argument, 0, help},
             {0, 0, 0, 0}

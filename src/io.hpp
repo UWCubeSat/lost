@@ -94,7 +94,7 @@ namespace lost {
         float ra = 88; // degtorad will be calculated later in the pipeline
         float dec = 7; // degtorad will be calculated later in the pipeline
         float roll = 0;
-        float centroidCompareThreshold; // TODO add to man page (and the below stuff)
+        float centroidCompareThreshold;
         float attitudeCompareThreshold;
         std::string plotRawInput = "";
         std::string plotInput = "";
