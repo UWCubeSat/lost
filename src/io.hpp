@@ -25,9 +25,9 @@
 #include "attitude-estimators.hpp"
 #include "databases.hpp"
 
-namespace lost
-{
-    class PromptedOutputStream
+namespace lost {
+    
+    class PromptedOutputStream 
     {
     public:
         PromptedOutputStream(std::string filePath);
@@ -74,7 +74,7 @@ namespace lost
     public:
         std::string png = "";
         float focalLength;
-        float pixelSize;
+        float pixelSize = -1;
         float fov = 20; // degtorad will be calculated later in the pipeline
         std::string centroidAlgo = "dummy";
         int dummyCentroidNumStars = 5;
@@ -94,7 +94,8 @@ namespace lost
         float ra = 88; // degtorad will be calculated later in the pipeline
         float dec = 7; // degtorad will be calculated later in the pipeline
         float roll = 0;
-        float threshold; // TODO add to man page (and the below stuff)
+        float centroidCompareThreshold; // TODO add to man page (and the below stuff)
+        float attitudeCompareThreshold;
         std::string plotRawInput = "";
         std::string plotInput = "";
         std::string plotOutput = "";
@@ -103,6 +104,7 @@ namespace lost
         std::string compareStars = "";
         std::string printAttitude = "";
         std::string compareAttitude = "";
+        std::string database = "";
     };
 
     // represents the input and expected outputs of a pipeline run.

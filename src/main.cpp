@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     } 
 
     std::string command (argv[1]);
-    if (command == "--database") {
+    if (command == "database") {
 
         enum DatabaseEnum {mag, stars, kvector, kvectorMinDistance, kvectorMaxDistance, 
             kvectorDistanceBins, help, output};
@@ -100,31 +100,24 @@ int main(int argc, char **argv) {
             if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
                     case mag :
-                        std::cout << "You raised the magmitude to " << optarg << std::endl;
                         databaseOptions.maxMagnitude = atoi(optarg);
                         break;
                     case stars :
-                        std::cout << "You lowered the stars to " << optarg << std::endl;
                         databaseOptions.maxStars = atoi(optarg);
                         break;
                     case kvector :
-                        std::cout << "You picked the kvector version! " << std::endl;
                         databaseOptions.databaseBuilder = "kvector";
                         break;
                     case kvectorMinDistance :
                         databaseOptions.kvectorMinDistance = atof(optarg);
-                        std::cout << "You set the min distance to " << optarg << std::endl;
                         break;
                     case kvectorMaxDistance :
-                        std::cout << "You set the max distance to " << optarg << std::endl;
                         databaseOptions.kvectorMaxDistance = atof(optarg);
                         break;
                     case kvectorDistanceBins :
-                        std::cout << "You set the number of bins to " << optarg << std::endl;
                         databaseOptions.kvectorDistanceBins = atol(optarg);
                         break;
                     case output :
-                        std::cout << "You set the path to " << optarg << std::endl;
                         databaseOptions.path = optarg;
                         break;
                     case help :
@@ -141,7 +134,7 @@ int main(int argc, char **argv) {
 
         lost::DatabaseBuild(databaseOptions);
 
-    } else if (command == "--pipeline") {
+    } else if (command == "pipeline") {
 
         if (argc == 2) {
             std::cout << "Run pipeline --help for further help" << std::endl; 
@@ -150,8 +143,8 @@ int main(int argc, char **argv) {
 
         enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
             gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
-            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, threshold, plotRawInput, plotInput, plotOutput, 
-            printCentroids, compareCentroids, compareStars, printAttitude, compareAttitude};
+            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, centroidCompareThreshold, attitudeCompareThreshold, 
+            plotRawInput, plotInput, plotOutput, printCentroids, compareCentroids, compareStars, printAttitude, compareAttitude};
 
         static struct option long_options[] =
         {
@@ -177,7 +170,8 @@ int main(int argc, char **argv) {
             {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
             {"boresight-dec",  required_argument, 0, boresightDec},
             {"boresight-roll",  required_argument, 0, boresightRoll},
-            {"threshold",       required_argument, 0, threshold},
+            {"centroid-compare-threshold",       required_argument, 0, centroidCompareThreshold},
+            {"attitude-compare-threshold",       required_argument, 0, attitudeCompareThreshold},
             {"plot-raw-input", optional_argument, 0, plotRawInput},
             {"plot-input", optional_argument, 0, plotInput},
             {"plot-output", optional_argument, 0, plotOutput},
@@ -186,6 +180,7 @@ int main(int argc, char **argv) {
             {"compare-stars", optional_argument, 0, compareStars},
             {"print-attitude", optional_argument, 0, printAttitude},
             {"compareAttitude", optional_argument, 0, compareAttitude},
+            {"database", required_argument, 0, database},
             {"help",            no_argument, 0, help},
             {0, 0, 0, 0}
         };
@@ -200,19 +195,15 @@ int main(int argc, char **argv) {
             if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
                     case png :
-                        std::cout << "You made the file path " << optarg << std::endl;
                         pipelineOptions.png = optarg;
                         break;
                     case focalLength :
-                        std::cout << "You set the focal length to " << optarg << std::endl;
                         pipelineOptions.focalLength = atof(optarg);
                         break;
                     case pixelSize :
-                        std::cout << "You set the pixel size to " << optarg << std::endl;
                         pipelineOptions.pixelSize = atof(optarg);
                         break;
                     case fov :
-                        std::cout << "You set the fov to " << optarg << std::endl;
                         pipelineOptions.fov = atof(optarg);
                         break;
                     case centroidAlgo :
@@ -230,7 +221,6 @@ int main(int argc, char **argv) {
                         pipelineOptions.dummyCentroidNumStars = atoi(optarg);
                         break;
                     case centroidMagFilter :
-                        std::cout << "You set the centroid mag filter to " << optarg << std::endl;
                         pipelineOptions.centroidMagFilter = atoi(optarg);
                         break;
                     case idAlgo :
@@ -248,15 +238,12 @@ int main(int argc, char **argv) {
                         pipelineOptions.gvTolerance = atof(optarg);
                         break;
                     case pyTolerance :
-                        std::cout << "You set the id algo pyramid tolerance to " << optarg << std::endl;
                         pipelineOptions.pyTolerance = atof(optarg);
                         break;
                     case falseStars :
-                        std::cout << "You set the id algo false stars to " << optarg << std::endl;
                         pipelineOptions.pyFalseStars = atoi(optarg);
                         break;
                     case maxMismatchProb :
-                        std::cout << "You set the id algo max mismatch probability to " << optarg << std::endl;
                         pipelineOptions.pyMismatchProb = atof(optarg);
                         break;
                     case attitudeAlgo :
@@ -273,47 +260,39 @@ int main(int argc, char **argv) {
                     case generate :
                         if (optarg) {
                             pipelineOptions.generate = atoi(optarg);
-                            std::cout << "Generating images! " << optarg << std::endl;
                         } else {
                             std::cout <<"If this hangs, make sure you are using --generate=[number] for setting a number" << std::endl;
-                            std::cout << "Generating images! " << std::endl;
                         }
                         break;
                     case horizontalRes :
-                        std::cout << "You set the horizontal res to " << optarg << std::endl;
                         pipelineOptions.horizontalRes = atoi(optarg);
                         break;
                     case verticalRes :
-                        std::cout << "You set the vertical res to " << optarg << std::endl;
                         pipelineOptions.verticalRes = atoi(optarg);
                         break;
                     case refBrightnessMag :
-                        std::cout << "You have a ref brightness magnitude " ;
                         pipelineOptions.referenceBrightness = atoi(optarg);                        
                         break;
                     case spreadStddev :
-                        std::cout << "You set the spread stddev to " << optarg << std::endl;
                         pipelineOptions.brightnessDeviation = atof(optarg);
                         break;
                     case noiseStddev :
-                        std::cout << "You set the noise stddev to " << optarg << std::endl;
                         pipelineOptions.noiseDeviation = atof(optarg);
                         break;
                     case boresightRightAsc :
-                        std::cout << "You set the boresight right asc to " << optarg << std::endl;
                         pipelineOptions.ra = atof(optarg);
                         break;
                     case boresightDec :
-                        std::cout << "You set the boresight declination to " << optarg << std::endl;
                         pipelineOptions.dec = atof(optarg);
                         break;
                     case boresightRoll :
-                        std::cout << "You set the boresight roll to " << optarg << std::endl;
                         pipelineOptions.roll = atof(optarg);
                         break;
-                    case threshold : 
-                        std::cout << "You set the threshold to " << optarg << std::endl;
-                        pipelineOptions.threshold = atof(optarg);
+                    case attitudeCompareThreshold : 
+                        pipelineOptions.attitudeCompareThreshold = atof(optarg);
+                        break;
+                    case centroidCompareThreshold:
+                        pipelineOptions.centroidCompareThreshold = atof(optarg);
                         break;
                     case plotRawInput :
                         if (optarg) {
@@ -379,6 +358,9 @@ int main(int argc, char **argv) {
                         } else {
                             pipelineOptions.compareAttitude = "stdout";
                         }
+                        break;
+                    case database: 
+                        pipelineOptions.database = optarg;
                         break;
                     case help : 
                         //system("man documentation/pipeline.man");

@@ -247,7 +247,7 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
     long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
@@ -268,7 +268,7 @@ void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, co
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorDistanceBins;
-        PromptKVectorDatabaseBuilder(builder, catalog, minDistance, maxDistance, numBins);
+        BuildKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
@@ -277,6 +277,14 @@ void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, co
 }
 
 // PIPELINE INPUT STUFF
+
+float FocalLengthFromOptions(const PipelineOptions &values) {
+    if (values.pixelSize == -1) {
+        return FovToFocalLength(values.fov, values.horizontalRes);
+    } else {
+        return values.focalLength * 1000 / values.pixelSize;
+    }
+}
 
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
@@ -309,20 +317,12 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     cairo_surface_t *cairoSurface = NULL;
     std::string pngPath = values.png;
     
-    while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
-         cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
-    }
+    cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
+    if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) exit(1);
+
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
-
-    if (!values.focalLength || !values.pixelSize) {
-        std::cerr << "Error: No focal length/pixel size given." << std::endl;
-        exit(1);
-    } 
-
-    float focalLength = values.focalLength;
-    float pixelSize = values.pixelSize;
-    float focalLengthPixels = focalLength * 1000 / pixelSize;
+    float focalLengthPixels = FocalLengthFromOptions(values);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
     result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
@@ -404,8 +404,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     int numImages = values.generate;
     int xResolution = values.horizontalRes;
     int yResolution = values.verticalRes;
-    float xFovDeg = values.fov;
-    float xFocalLength = FovToFocalLength(DegToRad(xFovDeg), xResolution);
+    float focalLengthPixels = FocalLengthFromOptions(values);
     int referenceBrightness = values.referenceBrightness;
     float brightnessDeviation = values.brightnessDeviation;
     float noiseDeviation = values.noiseDeviation;
@@ -422,7 +421,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
-            Camera(xFocalLength, xResolution, yResolution),
+            Camera(focalLengthPixels, xResolution, yResolution),
             referenceBrightness, brightnessDeviation, noiseDeviation);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
@@ -487,9 +486,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     if (values.centroidMagFilter != -1) result.centroidMinMagnitude = values.centroidMagFilter;
 
     // database stage
-    if (values.png != "") {
+    if (values.database != "") {
         std::fstream fs;
-        fs.open(values.png, std::fstream::in | std::fstream::binary);
+        fs.open(values.database, std::fstream::in | std::fstream::binary);
         fs.seekg(0, fs.end);
         long length = fs.tellg();
         fs.seekg(0, fs.beg);
@@ -785,7 +784,7 @@ void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineOptions &values) {
     int size = (int)expected.size();
 
-    float threshold = values.threshold;
+    float threshold = values.centroidCompareThreshold;
 
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
@@ -838,7 +837,7 @@ void PipelineComparatorStars(std::ostream &os,
                              const std::vector<PipelineOutput> &actual,
                              const PipelineOptions &values) {
     float centroidThreshold = actual[0].stars
-        ? values.threshold
+        ? values.centroidCompareThreshold
         : 0.0f;
 
     std::vector<StarIdComparison> comparisons;
@@ -894,7 +893,7 @@ void PipelineComparatorAttitude(std::ostream &os,
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
-    float angleThreshold = DegToRad(values.threshold);
+    float angleThreshold = DegToRad(values.attitudeCompareThreshold);
 
     float attitudeErrorSum = 0.0f;
     int numCorrect = 0;
@@ -953,14 +952,14 @@ void PipelineComparison(const PipelineInputList &expected,
         comparator(pos.Stream(), expected, actual, values);
     } 
     if (values.compareCentroids != "") {
-        assert(actual[0].stars && expected[0]->ExpectedStars() && values.threshold);
+        assert(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold);
         comparator = PipelineComparatorCentroids;
         path = values.compareCentroids;
         PromptedOutputStream pos(path);
         comparator(pos.Stream(), expected, actual, values);
     } 
     if (values.compareStars != "") {
-        assert(expected[0]->ExpectedStars() && actual[0].starIds && values.threshold);
+        assert(expected[0]->ExpectedStars() && actual[0].starIds && values.centroidCompareThreshold);
         comparator = PipelineComparatorStars;
         path = values.compareStars;
         PromptedOutputStream pos(path);
@@ -974,13 +973,11 @@ void PipelineComparison(const PipelineInputList &expected,
         comparator(pos.Stream(), expected, actual, values);
     } 
     if (values.compareAttitude != "") {
-        assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.threshold);
+        assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold);
         comparator = PipelineComparatorAttitude;
         path = values.compareAttitude;
         PromptedOutputStream pos(path);
         comparator(pos.Stream(), expected, actual, values);
-    } else {
-        return;
     }
 }
 
