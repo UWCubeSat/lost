@@ -68,7 +68,6 @@ namespace lost {
     // PIPELINE INPUT //
     ////////////////////
 
-    // TODO maybe make a class/enum also for the different options options
     class PipelineOptions
     {
     public:
@@ -239,7 +238,6 @@ namespace lost {
 
     Catalog PromptNarrowedCatalog(const Catalog &);
 
-    // TODO: make not public?
     class DatabaseOptions
     {
     public:

@@ -111,7 +111,7 @@ Argument is optional. Print list of centroids. Defaults to stdout if no path is 
 --compare-stars=[path]
 Argument is optional. Compare lists of identified stars. Defaults to stdout if no path is given.
 
--print-attitude=[path]
+--print-attitude=[path]
 Argument is optional. Print the determined ra, de, and roll. Defaults to stdout if no path is given.
 
 --compare-attitude=[path]

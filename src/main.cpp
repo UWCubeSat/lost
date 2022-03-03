@@ -207,16 +207,8 @@ int main(int argc, char **argv) {
                         pipelineOptions.fov = atof(optarg);
                         break;
                     case centroidAlgo :
-                    {
-                        std::string algo (optarg);
-                        if (algo != "dummy" && algo != "cog" && algo != "iwcog") {
-                            std::cout << "Unrecognized centroid algorithm!" << std::endl;
-                        } else {
-                            std::cout << algo << "!" << std::endl;
-                            pipelineOptions.centroidAlgo = algo;
-                        }                        
+                        pipelineOptions.centroidAlgo = std::string (optarg);                     
                         break;
-                    }
                     case centroidDummyStars : 
                         pipelineOptions.dummyCentroidNumStars = atoi(optarg);
                         break;
@@ -224,16 +216,8 @@ int main(int argc, char **argv) {
                         pipelineOptions.centroidMagFilter = atoi(optarg);
                         break;
                     case idAlgo :
-                    {
-                        std::string algo (optarg);
-                        if (algo != "dummy" && algo != "gv" && algo != "pyramid") {
-                            std::cout << "Unrecognized id algorithm!" << std::endl;
-                        } else {
-                            std::cout << algo << "!" << std::endl;
-                            pipelineOptions.idAlgo = algo;
-                        }                        
+                        pipelineOptions.idAlgo = std::string (optarg);                      
                         break;
-                    }
                     case gvTolerance :
                         pipelineOptions.gvTolerance = atof(optarg);
                         break;
@@ -247,16 +231,8 @@ int main(int argc, char **argv) {
                         pipelineOptions.pyMismatchProb = atof(optarg);
                         break;
                     case attitudeAlgo :
-                    {
-                        std::string algo (optarg);
-                        if (algo != "dqm") {
-                            std::cout << "Unrecognized id algorithm!" << std::endl;
-                        } else {
-                            std::cout << algo << "!" << std::endl;
-                            pipelineOptions.attitudeAlgo = algo;
-                        }                        
+                        pipelineOptions.attitudeAlgo = std::string (optarg);                    
                         break; 
-                    }
                     case generate :
                         if (optarg) {
                             pipelineOptions.generate = atoi(optarg);

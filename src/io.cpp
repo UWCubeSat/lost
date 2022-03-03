@@ -480,6 +480,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "iwcog") {
         result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+    } else {
+        std::cout << "Illegal centroid algorithm." << std::endl;
+        exit(1);
     }
 
     // centroid magnitude filter stage
@@ -504,11 +507,18 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.gvTolerance)));
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.pyTolerance), values.pyFalseStars, values.pyMismatchProb, 1000));
+    } else {
+        std::cout << "Illegal id algorithm." << std::endl;
+        exit(1);
     }
 
     if (values.attitudeAlgo == "dqm") {
         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
+    } else {
+        std::cout << "Illegal attitude algorithm." << std::endl;
+        exit(1);
     }
+    
     return result;
 }
 
