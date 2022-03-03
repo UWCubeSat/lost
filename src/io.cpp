@@ -769,14 +769,13 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         result.stars = std::unique_ptr<Stars>(undistortedStars); // You're telling the compiler that this is the only ptr / class / object using our undistortedStars vector.
         std::cerr << "inputStars before: " << "\n";
         for(int i = 0; i < inputStars->size(); i++) {
-            std::cerr << "\t" << "(" << inputStars->at(i).position.x << "," << inputStars->at(i).position.y << ")" << ", ";
+            std::cerr << "\t" << "(" << inputStars->at(i).position.x << ", " << inputStars->at(i).position.y << ")" << ", \n";
         }
         inputStars = undistortedStars;
 
-        std::cout << "inputStars after: " << "\n";
-        int a = 5;
+        std::cout << "\n\ninputStars after: " << "\n";
         for(int i = 0; i < inputStars->size(); i++) {
-            std::cerr << "\t" << "(" << inputStars->at(i).position.x << "," << inputStars->at(i).position.y << ")" << ", ";
+            std::cerr << "\t" << "(" << inputStars->at(i).position.x << ", " << inputStars->at(i).position.y << ")" << ", \n";
         }
     }
 
