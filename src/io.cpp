@@ -776,7 +776,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         std::cout << "inputStars after: " << "\n";
         int a = 5;
         for(int i = 0; i < inputStars->size(); i++) {
-            std::cout << "\t" << inputStars[i] << ", ";
+            std::cerr << "\t" << "(" << inputStars[i].x << "," << inputStars[i].y << ")" << ", ";
         }
     }
 
