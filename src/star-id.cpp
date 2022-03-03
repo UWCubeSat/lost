@@ -659,7 +659,7 @@ StarIdentifiers Mode(const BayesPrior &prior, const Catalog &catalog, float *mod
             maxPossibility = possibility;
         }
     }
-    if (max < 0) {
+    if (max < 0 || maxPossibility.NumTrueStars() <= 2) {
         *modeProbability = -1.0;
         return StarIdentifiers();
     } else {
@@ -708,7 +708,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
     // all of them by an arbitrary constant without functionally changing anything. This variable is
     // picked just to keep probabilities in a reasonable range. Towards this end, we set constant
     // approximately so that multiplying by 
-    const float probScale = tolerance*tolerance*3*M_PI;
+    float probScale = tolerance*tolerance*3*M_PI;
 
     // // Probability of a given star occurring at a given point in space, within tolerance. sigma^2/4
     // // comes from area of a circle with radius sigma divided by surface area of a sphere.
@@ -776,10 +776,6 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 float distance = AngleUnit(starSpatials[exploredCentroid], starSpatials[curCentroid]);
                 if (kvector.DistanceInRange(distance, tolerance)) {
                     numNeighbors++;
-                    assert(numNeighbors <= minNumNeighbors);
-                    if (numNeighbors == minNumNeighbors) {
-                        break;
-                    }
                 }
             }
             if (alreadyExplored || numNeighbors < minNumNeighbors) {
@@ -850,7 +846,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 // centroid, which keeps the annulus intersection area small.
                 // nth_element sorts the array up to the given mid iterator.
                 // brrt brrt style guideline violation: no lambdas
-                std::nth_element(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + numNeighbors - 1, closestCentroidIndicesIndices.end(),
+                std::nth_element(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + minNumNeighbors - 1, closestCentroidIndicesIndices.end(),
                                  [curCentroid, &stars, &possibility](int s1, int s2) -> bool {
                                      const Vec2 &p = stars[curCentroid].position;
                                      const Vec2 &p1 = stars[possibility.centroidIndices[s1]].position;
@@ -860,7 +856,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                                      return s1Dist < s2Dist;
                                  });
                 // TODO: deduplicate
-                std::sort(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + numNeighbors,
+                std::sort(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + minNumNeighbors,
                                  [curCentroid, &stars, &possibility](int s1, int s2) -> bool {
                                      const Vec2 &p = stars[curCentroid].position;
                                      const Vec2 &p1 = stars[possibility.centroidIndices[s1]].position;
@@ -1034,6 +1030,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
         const int originalNumPossibilities = prior.size();
         const float posteriorSum = BayesPriorTotalProbability(prior, catalog);
         std::cerr << "Unnormalized posterior sum: " << posteriorSum << std::endl;
+        probScale *= 1e5/posteriorSum; // TODO: it's probably stable enough, but it's not great:
         std::sort(prior.begin(), prior.end(),
                   // brrt brrt style violation
                   [&catalog](const BayesPossibility &p1, const BayesPossibility &p2) -> bool {

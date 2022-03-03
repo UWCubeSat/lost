@@ -94,12 +94,10 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                          &raj2000, &dej2000,
                          &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
-        if (weird == ' ') {
-            result.push_back(CatalogStar(DegToRad(raj2000),
-                                         DegToRad(dej2000),
-                                         magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
-                                         name));
-        }
+        result.push_back(CatalogStar(DegToRad(raj2000),
+                                     DegToRad(dej2000),
+                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
+                                     name));
     }
 
     fclose(file);
@@ -338,7 +336,8 @@ Catalog PromptNarrowedCatalog(const Catalog &catalog) {
     } else {
         maxStars = (int)floor(maxSomething);
     }
-    return NarrowCatalog(catalog, maxMagnitude, maxStars);
+    // TODO: don't use a fixed DegToRad(0.2) here, probably allow customization
+    return NarrowCatalog(catalog, maxMagnitude, maxStars, DegToRad(0.2));
 }
 
 void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog) {

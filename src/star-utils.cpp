@@ -11,17 +11,37 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
 }
 
-// TODO: this function is about to cause a horribly difficult to debug error, because the catalog
-// used in the database may not equal the catalog used by star id or something.
-
-// TODO: the maxStars is worthless, it doesn't get the brightest stars
-Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
+Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, float minDistance) {
     Catalog result;
+
+    // filter out by hard magnitude cutoff
     for (int i = 0; i < (int)catalog.size(); i++) {
         if (catalog[i].magnitude <= maxMagnitude) {
             result.push_back(catalog[i]);
         }
     }
+
+    std::vector<int> tooCloseIndices;
+    // filter out stars that are too close together
+    // easy enough to n^2 brute force, the catalog isn't that big
+    // TODO: don't remove the too-close-together stars entirely, just mark them.
+    for (int i = 0; i < (int)result.size(); i++) {
+        for (int j = i+1; j < (int)result.size(); j++) {
+            if (AngleUnit(result[i].spatial, result[j].spatial) < minDistance) {
+                tooCloseIndices.push_back(i);
+                tooCloseIndices.push_back(j);
+            }
+        }
+    }
+
+    // loop through tooCloseIndices from largest to smallest. That way, removals 
+    std::sort(tooCloseIndices.begin(), tooCloseIndices.end(), std::greater<int>());
+    auto uniqueEnd = std::unique(tooCloseIndices.begin(), tooCloseIndices.end());
+    for (auto it = tooCloseIndices.begin(); it != uniqueEnd; it++) {
+        result.erase(result.begin() + *it);
+    }
+
+    // and finally limit to n brightest stars
     if (maxStars < (int)result.size()) {
         std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
         result.resize(maxStars);

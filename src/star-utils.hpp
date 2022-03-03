@@ -56,9 +56,7 @@ void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName, unsign
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn);
 const CatalogStar *findNamedStar(const Catalog &, int name);
 
-// TODO: make maxStars work right, need to sort by magnitude before filter! maxMagnitude is 10^-2
-// (so 523 = 5.23)
-Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
+Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, float minDistance);
 
 }
 
