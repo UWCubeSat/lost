@@ -113,8 +113,8 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
             start = i * (div + 1) * imageWidth;
             max = (i+1) * (div + 1) * imageWidth;
         } else {
-            start = i * (div) * imageWidth + leftover;
-            max = (i+1) * (div) * imageWidth;
+            start = leftover * (div + 1) * imageWidth + (i - leftover) * (div) * imageWidth;
+            max = leftover * (div + 1) * imageWidth + (i + 1 - leftover) * (div) * imageWidth;
         }
         for(int j = start; j < max; j++) {
             totalMag += image[j];
@@ -213,6 +213,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     int divisions = subdivisions;
     if(subdivisions > imageHeight) {
         divisions = imageHeight;
+    } else if(subdivisions < 1) {
+        divisions = 1;
     }
     std::vector<Star> result;
     p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, divisions);
