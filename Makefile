@@ -24,6 +24,7 @@
 SRCS := $(wildcard src/*.cpp)
 TESTS := $(wildcard test/*.cpp)
 MANS := $(wildcard documentation/*.man)
+MAN_TXTS := $(patsubst documentation/%.man, documentation/%.txt, $(MANS))
 MAN_HS := $(patsubst documentation/%.man, documentation/man-%.h, $(MANS))
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
@@ -44,7 +45,10 @@ $(BSC): download-bsc.sh
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
 
-documentation/man-%.h: documentation/%.man
+documentation/%.txt: documentation/%.man
+	groff -mandoc -Tascii $< > $@
+
+documentation/man-%.h: documentation/%.txt
 	xxd -i $< > $@
 
 src/main.o: $(MAN_HS)

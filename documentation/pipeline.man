@@ -1,133 +1,166 @@
-PIPELINE
-06 November 2021
+.TH PIPELINE 3 "06 November 2021" 
 
-NAME
+.SH NAME
 
-pipeline - builds a pipeline of the star identification process
+pipeline \- builds a pipeline of the star identification process
 
-SYNOPSIS
+.SH SYNOPSIS
 
---png filepath (--focal-length length --pixel-size size) | --fov degrees [--centroid-algo algorithm [--centroid-dummy-stars num-stars]] [--centroid-mag-filter min-mag] 
-[--database filename] [--id-algo algo (--gv-tolerance degrees | --py-tolerance degrees --false-stars num --max-mismatch-prob probability)] [--attitude-algo algo] [--plot output-path]
+\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 .br
-pipeline --generate[=num-images] [--horizontal-res res] [--vertical-res res] [--horizontal-fov degrees] [--ref-brightness mag] [--spread-stddev stddev] [--noise-stddev stddev] [--boresight-right-asc ascension] [--boresight-dec declination] [--boresight-roll roll] 
-[--centroid-algo algorithm [--centroid-dummy-stars num-stars]] [--centroid-mag-filter min-mag] 
-[--database filename] [--id-algo algo (--gv-tolerance degrees | --py-tolerance degrees --false-stars num --max-mismatch-prob probability)] [--attitude-algo algo] [--plot output-path]
+\fBpipeline\fP --generate[=\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
+[--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
+[--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 
 
-DESCRIPTION
+.SH DESCRIPTION
 
-pipeline is the command to set the different stages of the star identification pipeline. An image can be
-taken in as input from filepath, or image(s) can be generated according to various parameters. There are five main stages to the pipeline:
+\fBpipeline\fP is the command to set the different stages of the star identification pipeline. An image can be
+taken in as input from \fIfilepath\fP, or image(s) can be generated according to various parameters. There are five main stages to the pipeline:
 --centroid, --centroid-mag-filter, --id, --database, and --attitude. The --centroid option allows the user to
 choose which centroiding algorithm to use, while the --centroid-mag-filter option allows the user to filter out candidate
 centroids below a certain magnitude. The --database option allows the user to specificy which file to use as the database.
 The --id option runs the star identification algorithm, and the --attitude option determines the orientation of the
 cubesat in space.
 
-OPTIONS
+.SS Options
 
---png filepath
-Runs analysis on the png image at the given filepath.
+.TP
+\fB--png\fP \fIfilepath\fP
+Runs analysis on the png image at the given \fIfilepath\fP.
 
---focal-length length
+.TP
+\fB--focal-length\fP \fIlength\fP
 The focal length of the camera that took the picture (in mm).
 
---pixel-size size
+.TP
+\fB--pixel-size\fP \fIsize\fP
 The pixel size of the camera that took the picture (in \[*m]m).
 
---fov degrees
+.TP
+\fB--fov\fP \fIdegrees\fP
 The field of view of the camera that took the picture (in degrees). Defaults to 20 deg if option is not selected.
 
---centroid-algo algo
-Runs the algo centroiding algorithm. Recognized options are: dummy (random centroid algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity). Defaults to dummy if option is not selected.
+.TP
+\fB--centroid-algo\fP \fIalgo\fP
+Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random centroid algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity).  Defaults to dummy if option is not selected.
 
---centroid-dummy-stars num-stars
-Runs the dummy centroiding algorithm (random centroid algorithm) with num-stars stars centroided. Defaults to 5 if option is not selected.
+.TP
+\fB--centroid-dummy-stars\fP \fInum-stars\fP
+Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-stars\fP stars centroided. Defaults to 5 if option is not selected.
 
---centroid-mag-filter min-mag
-Will not consider candidate as centroid if its magnitude is below min-mag.
+.TP
+\fB--centroid-mag-filter\fP \fImin-mag\fP
+Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
 
---id-algo algo
-Runs the algo star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
+.TP
+\fB--id-algo\fP \fIalgo\fP
+Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
 
---gv-tolerance tolerance
-Sets the tolerance for the geometric voting identification algorithm to tolerance degrees. Defaults to 0.04 degrees if option is not selected.
+.TP
+\fB--gv-tolerance\fP [\fItolerance\fP]
+Sets the tolerance for the geometric voting identification algorithm to \fItolerance\fP degrees. Defaults to 0.04 degrees if option is not selected.
 
---py-tolerance tolerance
-Sets the tolerance for the pyramid identification algorithm to tolerance degrees. Defaults to 0.04 degrees if option is not selected.
+.TP
+\fB--py-tolerance\fP [\fItolerance\fP]
+Sets the tolerance for the pyramid identification algorithm to \fItolerance\fP degrees. Defaults to 0.04 degrees if option is not selected.
 
---false-stars num
-num is the estimated number of false stars in the whole sphere for the pyramid scheme star identification algorithm. Defaults to 500 if option is not selected.
+.TP
+\fB--false-stars\fP \fInum\fP
+\fInum\fP is the estimated number of false stars in the whole sphere for the pyramid scheme star identification algorithm. Defaults to 500 if option is not selected.
 
---max-mismatch-prob probability
-probability is the maximum mismatch probability for the pyramid scheme star identification algorithm. Defaults to 0.001 if option is not selected.
+.TP
+\fB--max-mismatch-prob\fP \fIprobability\fP
+\fIprobability\fP is the maximum mismatch probability for the pyramid scheme star identification algorithm. Defaults to 0.001 if option is not selected.
 
---attitude-algo algo
-Runs the algo algorithm for the attitude stage of the pipeline. Current options are "dqm". Defaults to dqm if option is not selected.
+.TP
+\fB--attitude-algo\fP \fIalgo\fP
+Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm". Defaults to dqm if option is not selected.
 
---generate[=num-images]
-Argument is optional. Generates num-images amount of images. If num-images is not given, defaults to 1 image.
+.TP
+\fB--generate\fP[=\fInum-images\fP]
+Generates \fInum-images\fP amount of images. If \fInum-images\fP is not given, defaults to 1 image.
 
---horizontal-res res
-Sets the horizontal resolution of the generated image(s) to res. Defaults to 1024 if option is not selected.
+.TP
+\fB--horizontal-res\fP \fIres\fP
+Sets the horizontal resolution of the generated image(s) to \fIres\fP. Defaults to 1024 if option is not selected.
 
---vertical-res res
-Sets the vertical resolution of the generated image(s) to res. Defaults to 1024 if option is not selected.
+.TP
+\fB--vertical-res\fP \fIres\fP
+Sets the vertical resolution of the generated image(s) to \fIres\fP. Defaults to 1024 if option is not selected.
 
---ref-brightness mag
-Sets the brightness of the reference star of the generated image(s) to mag. Defaults to 8000 if option is not selected.
+.TP
+\fB--ref-brightness\fP \fImag\fP
+Sets the brightness of the reference star of the generated image(s) to \fImag\fP.  Defaults to 8000 if option is not selected.
 
---spread-stddev stddev
-Sets the star spread standard deviation of the generated image(s) to stddev. Defailts to 0.7 if option is not selected.
+.TP
+\fB--spread-stddev\fP \fIstddev\fP
+Sets the star spread standard deviation of the generated image(s) to \fIstddev\fP. Defailts to 0.7 if option is not selected.
 
---noise-stddev stddev
-Sets the noise standard deviation of the generated image(s) to stddev. Defaults to 10 if option is not selected.
+.TP
+\fB--noise-stddev\fP \fIstddev\fP
+Sets the noise standard deviation of the generated image(s) to \fIstddev\fP. Defaults to 10 if option is not selected.
 
---boresight-right-asc ascension
-Sets the boresight right ascension of the generated image(s) to ascension (degrees). Defaults to 88 if option is not selected.
+.TP
+\fB--boresight-right-asc\fP \fIascension\fP
+Sets the boresight right ascension of the generated image(s) to \fIascension\fP. Defaults to 88 if option is not selected.
 
---boresight-dec declination
-Sets the boresight declination of the generated image(s) to declination (degrees). Defaults to 7 if option is not selected.
+.TP
+\fB--boresight-dec\fP \fIdeclination\fP
+Sets the boresight declination of the generated image(s) to \fIdeclination\fP. Defaults to 7 if option is not selected.
 
---boresight-roll roll
-Sets the boresight roll of the generated image(s) to roll. Defaults to 0 if option is not selected.
+.TP
+\fB--boresight-roll\fP \fIroll\fP
+Sets the boresight roll of the generated image(s) to \fIroll\fP. Defaults to 0 if option is not selected.
 
---plot-raw-input=[path]
-Argument is optional. Plots raw BW input image to PNG. Defaults to stdout if no path is given.
+.TP
+\fB--plot-raw-input\fP=[\fIpath\fP]
+Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Defaults to stdout if if \fIpath\fP is not given.
 
---plot-input=[path]
-Argument is optional. Plots annotated input image to PNG. Defaults to stdout if no path is given.
+.TP
+\fB--plot-input\fP=[\fIpath\fP]
+Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---plot-output=[path]
-Argument is optional. Plot output to PNG. Defaults to stdout if no path is given.
+.TP
+\fB--plot-output\fP=[\fIpath\fP]
+Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---print-centroids=[path]
-Argument is optional. Plot output to PNG. Defaults to stdout if no path is given.
+.TP
+\fB--print-centroids\fP=[\fIpath\fP]
+Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---compare-centroids=[path]
-Argument is optional. Print list of centroids. Defaults to stdout if no path is given.
+.TP
+\fB--compare-centroids\fP=[\fIpath\fP]
+Argument is optional. Print list of centroids to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---compare-stars=[path]
-Argument is optional. Compare lists of identified stars. Defaults to stdout if no path is given.
+.TP
+\fB--compare-stars\fP=[\fIpath\fP]
+Argument is optional. Compare lists of identified stars. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---print-attitude=[path]
-Argument is optional. Print the determined ra, de, and roll. Defaults to stdout if no path is given.
+.TP
+\fB--print-attitude\fP=[\fIpath\fP]
+Argument is optional. Print the determined ra, de, and roll to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---compare-attitude=[path]
-Argument is optional. Compare expected to actual attitude. Defaults to stdout if no path is given.
+.TP
+\fB--compare-attitude\fP=[\fIpath\fP]
+Argument is optional. Compare expected to actual attitude. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
---centroid-compare-threshold threshold
+.TP
+\fB--centroid-compare-threshold\fP \fIthreshold\fP
 Sets the threshold for the centroid comparing algorithms
 
---attitude-compare-threshold threshold
+.TP
+\fB--attitude-compare-threshold\fP \fIthreshold\fP
 Sets the threshold for the attitude comparing algorithms
 
---database filename
-Chooses filename as the database to compare stars against.
+.TP
+\fB--database\fP \fIfilename\fP
+Chooses \fIfilename\fP as the database to compare stars against.
 
---help
+.TP
+\fB--help\fI
 Prints the contents of the manual entry for the command to the terminal.
 
-SEE ALSO
-database
+.SH SEE ALSO
+database(3)

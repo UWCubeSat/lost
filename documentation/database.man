@@ -1,45 +1,53 @@
-DATABASE
-06 November 2021
+.TH DATABASE 3 "06 November 2021" 
 
-NAME
+.SH NAME
 
-database - builds a database
+database \- builds a database
 
-SYNOPSIS
+.SH SYNOPSIS
 
-database [--mag max-magnitude | --stars num-stars] [--kvector --kvector-min-distance min --kvector-max-distance max --kvector-distance-bins num-bins] [--output output-path]
+\fBdatabase\fP [--mag \fImax-magnitude\fP | --stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] [--output \fIoutput-path\fP]
+.br
 
-DESCRIPTION
+.SH DESCRIPTION
 
-database generates a database (a subset of the star catalog), which is used to compare unidentified stars against. The greater star catalog contains about 9000 stars, which
-can be limited in the database by filtering the stars out with a max-magnitude or by getting the num-stars brightest stars in the catalog. There are several different methods of
-constructing a database. This database is then generated into the file output-path.
+\fBdatabase\fP generates a database (a subset of the star catalog), which is used to compare unidentified stars against. The greater star catalog contains about 9000 stars, which
+can be limited in the database by filtering the stars out with a \fImax-magnitude\fP or by getting the \fInum-stars\fP brightest stars in the catalog. There are several different methods of
+constructing a database. This database is then generated into the file \fIoutput-path\fP.
 
-Options
+.SS Options
 
---mag max-magnitude
-Limits database to stars below max-magnitude (brighter stars have lower magnitudes). Defaults to 1000 if option is not selected.
+.TP
+\fB--mag\fP \fImax-magnitude\fP
+Limits database to stars below \fImax-magnitude\fP (brighter stars have lower magnitudes). Defaults to 1000 if option is not selected.
 
---stars num-stars
-Limits database to the num-stars brightest stars in the catalog. Defaults to 10000 if option is not selected.
+.TP
+\fB--stars\fP \fInum-stars\fP
+Limits database to the \fInum-stars\fP brightest stars in the catalog. Defaults to 10000 if option is not selected.
 
---kvector
+.TP
+\fB--kvector\fP
 Uses the kvector method of building a database.
 
---kvector-min-distance min
-Sets the minimum distance bin in the kvector building method to min (degrees). Defaults to 0.5 if option is not selected.
+.TP
+\fB--kvector-min-distance \fImin\fP
+Sets the minimum distance bin in the kvector building method to \fImin\fP (degrees). Defaults to 0.5 if option is not selected.
 
---kvector-max-distance max
-Sets the maximum distance bin in the kvector building method to max (degrees). Defaults to 15 if option is not selected.
+.TP
+\fB--kvector-max-distance\fP \fImax\fP
+Sets the maximum distance bin in the kvector building method to \fImax\fP (degrees). Defaults to 15 if option is not selected.
 
---kvector-distance-bins num-bins
-Sets the number of distance bins in the kvector building method to num-bins. Defaults to 10000 if option is not selected.
+.TP
+\fB--kvector-distance-bins\fP \fInum-bins\fP
+Sets the number of distance bins in the kvector building method to \fInum-bins\fP.  Defaults to 10000 if option is not selected.
 
---output output-path
+.TP
+\fB--output\fP \fIoutput-path\fP
 The file to output the database to. Defaults to stdout.
 
---help
+.TP
+\fB--help\fP
 Prints the contents of the manual entry for the command to the terminal.
 
-SEE ALSO
-pipeline
+.SH SEE ALSO
+pipeline(3)

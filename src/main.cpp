@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
                         break;
                     case help :
                         // system("man documentation/database.man");
-                        std::cout << documentation_database_man << std::endl;
+                        std::cout << documentation_database_txt << std::endl;
                         return 0;
                         break;
                     default :
@@ -340,7 +340,7 @@ int main(int argc, char **argv) {
                         break;
                     case help : 
                         //system("man documentation/pipeline.man");
-                        std::cout << documentation_pipeline_man << std::endl;
+                        std::cout << documentation_pipeline_txt << std::endl;
                         return 0;
                         break;
                     default :
