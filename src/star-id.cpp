@@ -644,28 +644,75 @@ typedef std::vector<DebugBayesPossibilitiesSummary> DebugBayesPriorSummary;
 static DebugBayesPriorSummary DebugCalculateBayesPriorSummary(const BayesPrior &prior, const Catalog &catalog);
 static void DebugPrintBayesPriorSummary(const DebugBayesPriorSummary &summary);
 
-// return the mode of the distribution. If nothing promising, return empty and negative probability
-StarIdentifiers Mode(const BayesPrior &prior, const Catalog &catalog, float *modeProbability) {
-    float sum = 0.0;
-    float max = -1.0;
-    BayesPossibility maxPossibility;
-    for (const BayesPossibility &possibility : prior) {
-        sum += possibility.TotalProbability(catalog);
-        // TODO: check that numconfigurations always storable in 16 bits? Hopefully should be, but
-        // maybe just assert?
-        int numConfigurations = possibility.NumConfigurations(catalog);
-        if (numConfigurations == 1 && possibility.probability > max) {
-            max = possibility.probability;
-            maxPossibility = possibility;
+// sorts possibilities by /per-configuration/ probability decreasing
+static bool PossibilityProbabilityComparator(const BayesPossibility &p1, const BayesPossibility &p2) {
+    return p1.probability > p2.probability;
+}
+
+// return a set of star identfiers that has confidence above the given threshold for all stars. Will
+// sort the prior in-place
+static StarIdentifiers Mode(BayesPrior *prior, const Catalog &catalog, float hardConfidenceThreshold, int numCentroids) {
+    std::sort(prior->begin(), prior->end(), &PossibilityProbabilityComparator);
+    // this could be passed in as an argument, since it's already calculated, but putting it here
+    // avoids bugs.
+    float totalProbability = BayesPriorTotalProbability(*prior, catalog);
+
+    // TODO: a lot of stuff in bayes should be moved to int16_t to save memory
+    std::vector<int16_t> centroidIds(numCentroids, -1);
+    std::vector<float> centroidProbs(numCentroids, 0.0);
+    for (const BayesPossibility &possibility : *prior) {
+        // for now, assume that only possibilities with >= 3 stars are going to help us.
+        // TODO: think about this assumption. Can 2-star possibilities really help us?
+        if (possibility.NumTrueStars() < 3) {
+            continue;
+        }
+
+        for (auto catalogIndexIt = possibility.catalogIndices.begin();
+             catalogIndexIt != possibility.catalogIndices.end();) {
+
+            for (int i = 0; i < possibility.NumTrueStars(); i++, catalogIndexIt++) {
+                int centroidIndex = possibility.centroidIndices[i];
+                if (centroidIds[centroidIndex] == -1
+                    && possibility.probability/totalProbability >= (1-hardConfidenceThreshold)) {
+
+                    centroidIds[centroidIndex] = *catalogIndexIt;
+                }
+
+                if (*catalogIndexIt == centroidIds[centroidIndex]) {
+                    centroidProbs[centroidIndex] += possibility.probability/totalProbability;
+                }
+            }
         }
     }
-    if (max < 0 || maxPossibility.NumTrueStars() <= 2) {
-        *modeProbability = -1.0;
-        return StarIdentifiers();
-    } else {
-        *modeProbability = max/sum;
-        return maxPossibility.ToStarIdentifiers();
+
+    StarIdentifiers result;
+    for (int i = 0; i < (int)centroidIds.size(); i++) {
+        if (centroidIds[i] != -1 && centroidProbs[i] >= hardConfidenceThreshold) {
+            result.push_back(StarIdentifier(i, centroidIds[i]));
+        }
     }
+    return result;
+
+    // float sum = 0.0;
+    // float max = -1.0;
+    // BayesPossibility maxPossibility;
+    // for (const BayesPossibility &possibility : prior) {
+    //     sum += possibility.TotalProbability(catalog);
+    //     // TODO: check that numconfigurations always storable in 16 bits? Hopefully should be, but
+    //     // maybe just assert?
+    //     int numConfigurations = possibility.NumConfigurations(catalog);
+    //     if (numConfigurations == 1 && possibility.probability > max) {
+    //         max = possibility.probability;
+    //         maxPossibility = possibility;
+    //     }
+    // }
+    // if (max < 0 || maxPossibility.NumTrueStars() <= 2) {
+    //     *modeProbability = -1.0;
+    //     return StarIdentifiers();
+    // } else {
+    //     *modeProbability = max/sum;
+    //     return maxPossibility.ToStarIdentifiers();
+    // }
 }
 
 // find approximate area of intersection between 
@@ -1059,14 +1106,9 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
 
     // TODO: it's possible for the mode probability to be below the hard confidence threshold even
     // though we are extremely confident about most stars!
-    float modeProbability;
-    StarIdentifiers result = Mode(prior, catalog, &modeProbability);
-    if (modeProbability >= hardConfidenceThreshold) {
-        return result;
-    } else {
-        std::cerr << "Didn't meet confidence threshold: " << modeProbability << std::endl;
-        return StarIdentifiers();
-    }
+    StarIdentifiers result = Mode(&prior, catalog, hardConfidenceThreshold, stars.size());
+    std::cerr << "Idenified " << result.size() << " many stars." << std::endl;
+    return result;
 
     // TODO: use the soft threshold
 }
