@@ -280,7 +280,7 @@ void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, co
 
 float FocalLengthFromOptions(const PipelineOptions &values) {
     if (values.pixelSize == -1) {
-        return FovToFocalLength(values.fov, values.horizontalRes);
+        return FovToFocalLength(DegToRad(values.fov), values.horizontalRes);
     } else {
         return values.focalLength * 1000 / values.pixelSize;
     }
