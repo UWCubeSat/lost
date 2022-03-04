@@ -13,7 +13,6 @@ pipeline \- builds a pipeline of the star identification process
 [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
 [--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 
-
 .SH DESCRIPTION
 
 \fBpipeline\fP is the command to set the different stages of the star identification pipeline. An image can be
