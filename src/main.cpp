@@ -121,7 +121,6 @@ int main(int argc, char **argv) {
                         databaseOptions.path = optarg;
                         break;
                     case help :
-                        // system("man documentation/database.man");
                         std::cout << documentation_database_txt << std::endl;
                         return 0;
                         break;
@@ -129,7 +128,10 @@ int main(int argc, char **argv) {
                         std::cout << "Illegal flag" << std::endl;
                         exit(1);
                 }
-            } 
+            } else {
+                std::cout << "Error: Run database --help for further help" << std::endl;
+                break;
+            }
         }
 
         lost::DatabaseBuild(databaseOptions);
@@ -177,7 +179,7 @@ int main(int argc, char **argv) {
             {"compare-centroids", optional_argument, 0, compareCentroids},
             {"compare-stars", optional_argument, 0, compareStars},
             {"print-attitude", optional_argument, 0, printAttitude},
-            {"compareAttitude", optional_argument, 0, compareAttitude},
+            {"compare-attitude", optional_argument, 0, compareAttitude},
             {"centroid-compare-threshold",       required_argument, 0, centroidCompareThreshold},
             {"attitude-compare-threshold",       required_argument, 0, attitudeCompareThreshold},
             {"database", required_argument, 0, database},
@@ -236,9 +238,7 @@ int main(int argc, char **argv) {
                     case generate :
                         if (optarg) {
                             pipelineOptions.generate = atoi(optarg);
-                        } else {
-                            std::cout <<"If this hangs, make sure you are using --generate=[number] for setting a number" << std::endl;
-                        }
+                        } 
                         break;
                     case horizontalRes :
                         pipelineOptions.horizontalRes = atoi(optarg);
@@ -273,7 +273,6 @@ int main(int argc, char **argv) {
                     case plotRawInput :
                         if (optarg) {
                             pipelineOptions.plotRawInput = optarg;
-                            std::cout <<"If this hangs, make sure you are using --plot-raw-input=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.plotRawInput = "stdout";
                         }
@@ -281,8 +280,6 @@ int main(int argc, char **argv) {
                     case plotInput :
                         if (optarg) {
                             pipelineOptions.plotInput = optarg;
-                            std::cout << optarg << std::endl;
-                            std::cout <<"If this hangs, make sure you are using --plot-input=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.plotInput = "stdout";
                         }
@@ -290,7 +287,6 @@ int main(int argc, char **argv) {
                     case plotOutput :
                         if (optarg) {
                             pipelineOptions.plotOutput = optarg;
-                            std::cout <<"If this hangs, make sure you are using --plot-output=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.plotOutput = "stdout";
                         }
@@ -298,7 +294,6 @@ int main(int argc, char **argv) {
                     case printCentroids :
                         if (optarg) {
                             pipelineOptions.printCentroids = optarg;
-                            std::cout <<"If this hangs, make sure you are using --printCentroids=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.printCentroids = "stdout";
                         }
@@ -306,7 +301,6 @@ int main(int argc, char **argv) {
                     case compareCentroids :
                         if (optarg) {
                             pipelineOptions.compareCentroids = optarg;
-                            std::cout <<"If this hangs, make sure you are using --compare-centroids=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.compareCentroids = "stdout";
                         }
@@ -314,7 +308,6 @@ int main(int argc, char **argv) {
                     case compareStars :
                         if (optarg) {
                             pipelineOptions.compareStars = optarg;
-                            std::cout <<"If this hangs, make sure you are using --compare-stars=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.compareStars = "stdout";
                         }
@@ -322,7 +315,6 @@ int main(int argc, char **argv) {
                     case printAttitude :
                         if (optarg) {
                             pipelineOptions.printAttitude = optarg;
-                            std::cout <<"If this hangs, make sure you are using --print-attitude=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.printAttitude = "stdout";
                         }
@@ -330,7 +322,6 @@ int main(int argc, char **argv) {
                     case compareAttitude :
                         if (optarg) {
                             pipelineOptions.compareAttitude = optarg;
-                            std::cout <<"If this hangs, make sure you are using --compare-attitude=[string] for setting a path" << std::endl;
                         } else {
                             pipelineOptions.compareAttitude = "stdout";
                         }
@@ -339,7 +330,6 @@ int main(int argc, char **argv) {
                         pipelineOptions.database = optarg;
                         break;
                     case help : 
-                        //system("man documentation/pipeline.man");
                         std::cout << documentation_pipeline_txt << std::endl;
                         return 0;
                         break;
@@ -347,13 +337,16 @@ int main(int argc, char **argv) {
                         std::cout << "Illegal flag" << std::endl;
                         exit(1);
                 }
-            } 
+            } else {
+                std::cout << "Error: Run database --help for further help" << std::endl;
+                break;
+            }
         }
 
         lost::PipelineRun(pipelineOptions);
 
     } else {
-        std::cout << "Unrecognized command" << std::endl;
+        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
     }
     return 0;
 }
