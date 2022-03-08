@@ -27,96 +27,16 @@
 
 namespace lost {
 
-extern bool isDebug;
-
-void RegisterCliArgs(int, char **);
-bool HasNextCliArg();
-std::string NextCliArg();
-
-template <typename S>
-S Prompt(const std::string &prompt) {
-    S result;
-    std::cerr << prompt << ": ";
-    if (HasNextCliArg()) {
-        std::string nextArg = NextCliArg();
-        std::cerr << nextArg << std::endl;
-        std::stringstream(nextArg) >> result;
-    } else {
-        std::cin >> result;
-    }
-    return result;
-}
-
-std::string PromptLine(const std::string &prompt);
-
-template <typename S>
-class InteractiveChoiceOption {
-public:
-    InteractiveChoiceOption(std::string shortName, std::string longName, S value)
-        : shortName(shortName), longName(longName), value(value) { };
-
-    std::string shortName;
-    std::string longName;
-    S value;
-};
-
-// can prompt the user between multiple options.
-template <typename S>
-class InteractiveChoice {
-public:
-    // prompt the user until they enter a valid option
-    S Prompt(const std::string &) const;
-    void Register(std::string, std::string, S);
-private:
-    std::vector<InteractiveChoiceOption<S>> options;
-};
-
-template <typename S>
-void InteractiveChoice<S>::Register(std::string shortKey, std::string longKey, S value) {
-    options.push_back(InteractiveChoiceOption<S>(shortKey, longKey, value));
-}
-
-template <typename S>
-S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
-    std::string userChoice;
-    bool useCli = HasNextCliArg();
-    while (1) {
-        if (!useCli) {
-            for (const auto &option : options) {
-                std::cerr << "(" << option.shortName << ") " << option.longName << std::endl;
-            }
-        }
-        userChoice = lost::Prompt<std::string>(prompt);
-
-        auto found = options.begin();
-        while (found != options.end() && found->shortName != userChoice) {
-            found++;
-        }
-
-        if (found == options.end()) {
-            std::cerr << "Peace was never an option." << std::endl;
-            if (useCli) {
-                exit(1);
-            }
-        } else {
-            return found->value;
-        }
-    }
-
-}
-
 class PromptedOutputStream {
 public:
-    PromptedOutputStream();
+    PromptedOutputStream(std::string filePath);
     ~PromptedOutputStream();
     std::ostream &Stream() { return *stream; };
+
 private:
     bool isFstream;
     std::ostream *stream;
 };
-
-// prompts for an output stream, then calls the given function with it.
-void WithOutputStream(void (*)(std::ostream *));
 
 // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
 std::vector<CatalogStar> &CatalogRead();
@@ -125,7 +45,7 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
 
 // take an astrometry download from the bash script, and parse it into stuff.
-// void v_astrometry_parse(std::string 
+// void v_astrometry_parse(std::string
 //                         cairo_surface_t **pcairoSurface,   // image data
 //                         Star      **ppx_centroids, // centroids according to astrometry
 //                         int             *pi_centroids_length); // TODO: fov, actual angle, etc
@@ -139,16 +59,51 @@ public:
     int height;
 };
 
-std::ostream &operator<<(std::ostream &, const Camera &);
-
 ////////////////////
 // PIPELINE INPUT //
 ////////////////////
 
+class PipelineOptions {
+public:
+    std::string png = "";
+    float focalLength;
+    float pixelSize = -1;
+    float fov = 20; // degtorad will be calculated later in the pipeline
+    std::string centroidAlgo = "";
+    int dummyCentroidNumStars = 5;
+    int centroidMagFilter = -1;  // value that should not be used, to tell whether this was selected or not
+    std::string idAlgo = ""; 
+    float gvTolerance = 0.04;
+    float pyTolerance = 0.04;
+    int pyFalseStars = 500;
+    float pyMismatchProb = 0.001;
+    std::string attitudeAlgo = "";
+    int generate = 1;
+    int horizontalRes = 1024;
+    int verticalRes = 1024;
+    int referenceBrightness = 8000;
+    float brightnessDeviation = 0.7;
+    float noiseDeviation = 10;
+    float ra = 88; // degtorad will be calculated later in the pipeline
+    float dec = 7; // degtorad will be calculated later in the pipeline
+    float roll = 0;
+    float centroidCompareThreshold;
+    float attitudeCompareThreshold;
+    std::string plotRawInput = "";
+    std::string plotInput = "";
+    std::string plotOutput = "";
+    std::string printCentroids = "";
+    std::string compareCentroids = "";
+    std::string compareStars = "";
+    std::string printAttitude = "";
+    std::string compareAttitude = "";
+    std::string database = "";
+};
+
 // represents the input and expected outputs of a pipeline run.
 class PipelineInput {
 public:
-    virtual ~PipelineInput() { };
+    virtual ~PipelineInput(){};
     virtual const Image *InputImage() const { return NULL; };
     virtual const Catalog &GetCatalog() const = 0;
     virtual const Stars *InputStars() const { return NULL; };
@@ -179,8 +134,9 @@ public:
     bool InputStarsIdentified() const { return true; };
     const Attitude *InputAttitude() const { return &attitude; };
     const Catalog &GetCatalog() const { return catalog; };
+
 private:
-    // we don't use an Image here because we want to 
+    // we don't use an Image here because we want to
     std::unique_ptr<unsigned char[]> imageData;
     Image image;
     Stars stars;
@@ -192,9 +148,7 @@ private:
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
-PipelineInputList PromptPipelineInput();
-PipelineInputList PromptPngPipelineInput();
-PipelineInputList PromptGeneratedPipelineInput();
+PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
 class PngPipelineInput : public PipelineInput {
 public:
@@ -204,7 +158,6 @@ public:
     const Camera *InputCamera() const { return &camera; };
     const Catalog &GetCatalog() const { return catalog; };
 
-    void SetCamera(const Camera &camera) { this->camera = camera; };
 private:
     Image image;
     Camera camera;
@@ -220,7 +173,6 @@ struct PipelineOutput {
     std::unique_ptr<StarIdentifiers> starIds;
     std::unique_ptr<Attitude> attitude;
     Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
-    bool nice;
 };
 
 struct StarIdComparison {
@@ -230,6 +182,8 @@ struct StarIdComparison {
     float fractionCorrect;
     float fractionIncorrect;
 };
+
+std::ostream &operator<<(std::ostream &, const Camera &);
 
 // actualStars is optional, in which case it's assumed that expectedStars was passed to the star-id
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
@@ -241,46 +195,55 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE //
 //////////////
 
-class Santa {
-public:
-    virtual bool Go(const PipelineOutput &) const = 0;
-    virtual ~Santa() { };
-};
-
 // a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
 
 class Pipeline {
-    friend Pipeline PromptPipeline();
+    friend Pipeline SetPipeline(const PipelineOptions &values);
+
 public:
     // pointers just so they're nullable
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
     std::vector<PipelineOutput> Go(const PipelineInputList &);
+
 private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
     int centroidMinMagnitude = 0;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
-    std::unique_ptr<Santa> santa;
     std::unique_ptr<unsigned char[]> database;
 };
 
-Pipeline PromptPipeline();
+Pipeline SetPipeline(const PipelineOptions &values);
 
-// ask the user what to do with actual and expected outputs
-void PromptPipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual);
+// TODO: rename. Do something with the output
+void PipelineComparison(const PipelineInputList &expected,
+                        const std::vector<PipelineOutput> &actual,
+                        const PipelineOptions &values);
 
 ////////////////
 // DB BUILDER //
 ////////////////
 
+// TODO: rename
 Catalog PromptNarrowedCatalog(const Catalog &);
 
-// unlike the other algorithm prompters, db builders aren't a 
-typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
+class DatabaseOptions {
+public:
+    float maxMagnitude = 1000;
+    int maxStars = 10000;
+    bool kVectorEnabled = false;
+    float kVectorMinDistance = 0.5; // DegToRad will be calculated in a later step (GenerateDatabases)
+    float kVectorMaxDistance = 15;  // DegToRad will be calculated in a later step (GenerateDatabases)
+    long kVectorDistanceBins = 10000;
+    std::string path = "stdout";
+};
+
+// unlike the other algorithm prompters, db builders aren't a
+// typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
+void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, const DatabaseOptions &values);
+// void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 /////////////////////
 // INSPECT CATALOG //

@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <vector>
 #include <string>
@@ -25,42 +26,13 @@
 
 namespace lost {
 
-char **argv = NULL;
-int argc = 0;
-bool isDebug;
-
-void RegisterCliArgs(int newArgc, char **newArgv) {
-    argv = newArgv + 1;
-    argc = newArgc - 1;
-    // any value of the environment variable LOST_DEBUG enters debug mode
-    isDebug = getenv("LOST_DEBUG") != NULL;
-}
-
-bool HasNextCliArg() {
-    return argc > 0;
-}
-
-std::string NextCliArg() {
-    if (HasNextCliArg()) {
-        argc--;
-        return std::string(*argv++);
+PromptedOutputStream::PromptedOutputStream(std::string filePath) {
+    if (isatty(fileno(stdout)) && filePath == "stdout") {
+        std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
+        filePath = "/dev/null";
     }
-    return std::string("You incompetent fool!");
-}
 
-std::string PromptLine(const std::string &prompt) {
-    std::cerr << prompt << ": ";
-    if (HasNextCliArg()) {
-        return NextCliArg();
-    }
-    std::string result;
-    std::getline(std::cin, result);
-    return result;
-}
-
-PromptedOutputStream::PromptedOutputStream() {
-    std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
-    if (filePath == "-") {
+    if (filePath == "stdout") {
         stream = &std::cout;
         isFstream = false;
     } else {
@@ -256,87 +228,15 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
 }
 
 // ALGORITHM PROMPTERS
-
 typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
 typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
-typedef Santa *(*SantaFactory)();
 
-CentroidAlgorithm *DummyCentroidAlgorithmPrompt() {
-    int numStars = Prompt<int>("How many stars to generate");
-    return new DummyCentroidAlgorithm(numStars);
-}
+typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
-CentroidAlgorithm *CoGCentroidAlgorithmPrompt() {
-    return new CenterOfGravityAlgorithm();
-}
+typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-CentroidAlgorithm *IWCoGCentroidAlgorithmPrompt() {
-    return new IterativeWeightedCenterOfGravityAlgorithm();
-}
-
-StarIdAlgorithm *DummyStarIdAlgorithmPrompt() {
-    return new DummyStarIdAlgorithm();
-}
-
-StarIdAlgorithm *GeometricVotingStarIdAlgorithmPrompt() {
-    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-    return new GeometricVotingStarIdAlgorithm(DegToRad(tolerance));
-}
-
-StarIdAlgorithm *PyramidStarIdAlgorithmPrompt() {
-    float tolerance = Prompt<float>("Angular tolerance? (degrees)");
-    int numFalseStars = Prompt<int>("Estimated # of false stars (whole sphere)");
-    float maxMismatchProbability = Prompt<float>("Maximum mismatch probability");
-    return new PyramidStarIdAlgorithm(DegToRad(tolerance), numFalseStars, maxMismatchProbability, 1000);
-}
-
-AttitudeEstimationAlgorithm *DavenportQAlgorithmPrompt() {
-    return new DavenportQAlgorithm();
-}
-
-AttitudeEstimationAlgorithm *TriadAlgorithmPrompt() {
-    return new TriadAlgorithm();
-}
-
-class SantaStarId : public Santa {
-public:
-    SantaStarId(int minStars) : minStars(minStars) { };
-    bool Go(const PipelineOutput &output) const override {
-        if (output.starIds.get() == NULL) {
-            std::cerr << "Warning: Star-id santa in use but star-ids is null." << std::endl;
-            return false;
-        }
-
-        return (int)output.starIds->size() >= minStars;
-    };
-private:
-    int minStars;
-};
-
-Santa *SantaStarIdPrompt() {
-    int minStars = Prompt<int>("How many stars to count as nice?");
-    return new SantaStarId(minStars);
-}
-
-Catalog PromptNarrowedCatalog(const Catalog &catalog) {
-    float maxSomething = Prompt<float>("Max magnitude or # of stars");
-    int maxMagnitude = 1000;
-    int maxStars = 10000;
-    assert(maxSomething > 0);
-    if (maxSomething < 10) {
-        maxMagnitude = 100 * (int)floor(maxSomething);
-    } else {
-        maxStars = (int)floor(maxSomething);
-    }
-    return NarrowCatalog(catalog, maxMagnitude, maxStars);
-}
-
-void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &catalog) {
-    float minDistance = DegToRad(Prompt<float>("Min distance (deg)"));
-    float maxDistance = DegToRad(Prompt<float>("Max distance (deg)"));
-    long numBins = Prompt<long>("Number of distance bins");
-
+void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
     long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
@@ -347,19 +247,22 @@ void PromptKVectorDatabaseBuilder(MultiDatabaseBuilder &builder, const Catalog &
     SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
 
     // TODO: also parse it and print out some stats before returning
+    
 }
 
-void PromptDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog) {
-    InteractiveChoice<DbBuilder> dbBuilderChoice;
-    dbBuilderChoice.Register("kvector", "K-Vector (geometric voting & pyramid)", PromptKVectorDatabaseBuilder);
-    dbBuilderChoice.Register("done", "Exit", NULL);
-    while (true) {
-        DbBuilder choice = dbBuilderChoice.Prompt("Choose database builder");
-        if (choice == NULL) {
-            break;
-        }
-        (*choice)(builder, catalog);
+
+void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) {
+
+    if (values.kVectorEnabled) {
+        float minDistance = DegToRad(values.kVectorMinDistance);
+        float maxDistance = DegToRad(values.kVectorMaxDistance);
+        long numBins = values.kVectorDistanceBins;
+        BuildKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+    } else {
+        std::cerr << "No database builder selected -- no database generated." << std::endl;
+        exit(1);
     }
+
 }
 
 std::ostream &operator<<(std::ostream &os, const Camera &camera) {
@@ -372,6 +275,14 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
 }
 
 // PIPELINE INPUT STUFF
+
+float FocalLengthFromOptions(const PipelineOptions &values) {
+    if (values.pixelSize == -1) {
+        return FovToFocalLength(DegToRad(values.fov), values.horizontalRes);
+    } else {
+        return values.focalLength * 1000 / values.pixelSize;
+    }
+}
 
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
@@ -389,16 +300,6 @@ private:
     Attitude attitude;
 };
 
-Camera PromptCamera(int xResolution, int yResolution) {
-    float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
-    float focalLengthOrFov = Prompt<float>("Focal Length (mm) or horizontal FOV (degrees)");
-    float focalLengthPixels = pixelSize == 0.0f
-        ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
-        : focalLengthOrFov * 1000 / pixelSize;
-
-    return Camera(focalLengthPixels, xResolution, yResolution);
-}
-
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
 
@@ -407,35 +308,31 @@ PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera,
     image.height = cairo_image_surface_get_height(cairoSurface);
 }
 
-PipelineInputList PromptPngPipelineInput() {
+PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
     // with copying unique ptrs
     PipelineInputList result;
     cairo_surface_t *cairoSurface = NULL;
-    std::string pngPath;
-
-    while (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
-        cairoSurface = cairo_image_surface_create_from_png(Prompt<std::string>("PNG Path").c_str());
-        std::cout << "Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
+    std::string pngPath = values.png;
+    
+    cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
+    std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
+    if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
+        exit(1);
     }
+
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
-    result.push_back(std::unique_ptr<PipelineInput>(
-                         new PngPipelineInput(cairoSurface, PromptCamera(xResolution, yResolution), CatalogRead())));
+    float focalLengthPixels = FocalLengthFromOptions(values);
+    Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
+
+    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
     return result;
 }
 
 AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
-
-// PipelineInputList PromptAstrometryPipelineInput() {
-//     // TODO: why does it let us do a reference to an ephemeral return value?
-//     std::string path = Prompt<std::string>("Astrometry download directory");
-//     PipelineInputList result;
-//     result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
-//     return result;
-// }
 
 // does NOT protect against multiple evaluation of arguments
 #define IncrementPixelXY(x, y, amt) imageData[(y)*image.width+(x)] = \
@@ -503,25 +400,21 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     }  
 }
 
-Quaternion PromptSphericalAttitude() {
-    float ra = Prompt<float>("Boresight right ascension");
-    float dec = Prompt<float>("Boresight declination");
-    float roll = Prompt<float>("Boresight roll");
-    return SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
-}
-
-PipelineInputList PromptGeneratedPipelineInput() {
+PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
-    int numImages = Prompt<int>("Number of images to generate");
-    int xResolution = Prompt<int>("Horizontal Resolution");
-    int yResolution = Prompt<int>("Vertical Resolution");
-    Camera camera = PromptCamera(xResolution, yResolution);
-    int referenceBrightness = Prompt<int>("Reference star brightness");
-    float brightnessDeviation = Prompt<float>("Star spread stddev");
-    float noiseDeviation = Prompt<float>("Noise stddev");
+    int numImages = values.generate;
+    int xResolution = values.horizontalRes;
+    int yResolution = values.verticalRes;
+    float focalLengthPixels = FocalLengthFromOptions(values);
+    int referenceBrightness = values.referenceBrightness;
+    float brightnessDeviation = values.brightnessDeviation;
+    float noiseDeviation = values.noiseDeviation;
+    float ra = values.ra;
+    float dec = values.dec;
+    float roll = values.roll;
 
     // TODO: allow random angle generation?
-    Quaternion attitude = PromptSphericalAttitude();
+    Quaternion attitude = SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
 
     PipelineInputList result;
 
@@ -529,7 +422,7 @@ PipelineInputList PromptGeneratedPipelineInput() {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
-            camera,
+            Camera(focalLengthPixels, xResolution, yResolution),
             referenceBrightness, brightnessDeviation, noiseDeviation);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
@@ -540,13 +433,13 @@ PipelineInputList PromptGeneratedPipelineInput() {
 
 typedef PipelineInputList (*PipelineInputFactory)();
 
-PipelineInputList PromptPipelineInput() {
-    InteractiveChoice<PipelineInputFactory> inputTypeChoice;
-    inputTypeChoice.Register("png", "PNG files", PromptPngPipelineInput);
-    inputTypeChoice.Register("generate", "Generated image", PromptGeneratedPipelineInput);
-    // inputTypeChoice.Register("astrometry", "Astrometry.net", PromptAstrometryPipelineInput);
+PipelineInputList GetPipelineInput(const PipelineOptions &values) {
 
-    return (inputTypeChoice.Prompt("Input from"))();
+    if (values.png != "") {
+        return GetPngPipelineInput(values);
+    } else {
+        return GetGeneratedPipelineInput(values);
+    }
 }
 
 Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
@@ -568,102 +461,66 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
     }
 }
 
-Pipeline PromptPipeline() {
+
+Pipeline SetPipeline(const PipelineOptions &values) {
     enum class PipelineStage {
-        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Santa, Done
+        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
     };
 
     Pipeline result;
     
-    InteractiveChoice<PipelineStage> stageChoice;
-    stageChoice.Register("centroid", "Centroid", PipelineStage::Centroid);
     // TODO: more flexible or sth
-    stageChoice.Register("centroid_magnitude_filter", "Centroid Magnitude Filter", PipelineStage::CentroidMagnitudeFilter);
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
-    stageChoice.Register("database", "Database", PipelineStage::Database);
-    stageChoice.Register("starid", "Star-ID", PipelineStage::StarId);
-    stageChoice.Register("attitude", "Attitude Estimation", PipelineStage::AttitudeEstimation);
-    stageChoice.Register("santa", "Santa (knows if the output is naughty or nice)", PipelineStage::Santa);
-    stageChoice.Register("done", "Done setting up pipeline", PipelineStage::Done);
 
-    while (true) {
-        PipelineStage nextStage = stageChoice.Prompt("Which pipeline stage to set");
-        switch (nextStage) {
-
-        case PipelineStage::Centroid: {
-            InteractiveChoice<CentroidAlgorithmFactory> centroidChoice;
-            centroidChoice.Register("cog", "Center of Gravity Centroid Algorithm",
-                                    CoGCentroidAlgorithmPrompt);
-            centroidChoice.Register("iwcog", "Iterative Weighted Center of Gravity Algorithm",
-                                    IWCoGCentroidAlgorithmPrompt);
-            if (isDebug) {
-                centroidChoice.Register("dummy", "Random Centroid Algorithm",
-                                        DummyCentroidAlgorithmPrompt);
-            }
-
-            result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
-                (centroidChoice.Prompt("Choose centroid algo"))());
-            break;
-        }
-
-        case PipelineStage::CentroidMagnitudeFilter: {
-            result.centroidMinMagnitude = Prompt<int>("Minimum magnitude");
-            break;
-        }
-
-        case PipelineStage::Database: {
-            std::string path = Prompt<std::string>("Database file");
-            std::fstream fs;
-            fs.open(path, std::fstream::in | std::fstream::binary);
-            fs.seekg(0, fs.end);
-            long length = fs.tellg();
-            fs.seekg(0, fs.beg);
-            std::cerr << "Reading " << length << " bytes of database" << std::endl;
-            result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
-            fs.read((char *)result.database.get(), length);
-            std::cerr << "Done" << std::endl;
-            break;
-        }
-
-        case PipelineStage::StarId: {
-            InteractiveChoice<StarIdAlgorithmFactory> starIdChoice;
-            if (isDebug) {
-                starIdChoice.Register("dummy", "Random", DummyStarIdAlgorithmPrompt);
-            }
-            starIdChoice.Register("gv", "Geometric Voting", GeometricVotingStarIdAlgorithmPrompt);
-            starIdChoice.Register("pyramid", "Pyramid Scheme", PyramidStarIdAlgorithmPrompt);
-
-            result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
-                (starIdChoice.Prompt("Choose Star-ID algo"))());
-            break;
-        }
-
-        case PipelineStage::AttitudeEstimation: {
-            InteractiveChoice<AttitudeEstimationAlgorithmFactory> attitudeEstimationAlgorithmChoice;
-            attitudeEstimationAlgorithmChoice.Register("dqm", "Davenport Q Method", DavenportQAlgorithmPrompt);
-            attitudeEstimationAlgorithmChoice.Register("triad", "Triad", TriadAlgorithmPrompt);
-            result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(
-                (attitudeEstimationAlgorithmChoice.Prompt("Choose Attitude algo"))());
-            break;
-        }
-
-        case PipelineStage::Santa: {
-            InteractiveChoice<SantaFactory> santaChoice;
-            santaChoice.Register("star_id_count", "Number of stars identified", SantaStarIdPrompt);
-            result.santa = std::unique_ptr<Santa>(
-                (santaChoice.Prompt("Choose Santa"))());
-            break;
-        }
-
-        case PipelineStage::Done: {
-            // fuck style guides
-            goto PipelineDone;
-        }
-        }
+    // centroid algorithm stage
+    if (values.centroidAlgo == "dummy") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.dummyCentroidNumStars));
+    } else if (values.centroidAlgo == "cog") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo == "iwcog") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo != "") {
+        std::cout << "Illegal centroid algorithm." << std::endl;
+        exit(1);
     }
-    PipelineDone:
 
+    // centroid magnitude filter stage
+    if (values.centroidMagFilter != -1) result.centroidMinMagnitude = values.centroidMagFilter;
+
+    // database stage
+    if (values.database != "") {
+        std::fstream fs;
+        fs.open(values.database, std::fstream::in | std::fstream::binary);
+        fs.seekg(0, fs.end);
+        long length = fs.tellg();
+        fs.seekg(0, fs.beg);
+        std::cerr << "Reading " << length << " bytes of database" << std::endl;
+        result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
+        fs.read((char *)result.database.get(), length);
+        std::cerr << "Done" << std::endl;
+    } 
+
+    if (values.idAlgo == "dummy") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
+    } else if (values.idAlgo == "gv") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.gvTolerance)));
+    } else if (values.idAlgo == "py") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.pyTolerance), values.pyFalseStars, values.pyMismatchProb, 1000));
+    } else if (values.idAlgo != "") {
+        std::cout << "Illegal id algorithm." << std::endl;
+        exit(1);
+    }
+
+    if (values.attitudeAlgo == "dqm") {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
+    } else if (values.attitudeAlgo == "triad") {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
+    } else if (values.attitudeAlgo != "") {
+        std::cout << "Illegal attitude algorithm." << std::endl;
+        exit(1);
+    }
+    
     return result;
 }
 
@@ -702,6 +559,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         }
         result.stars = std::unique_ptr<Stars>(filteredStars);
         inputStars = filteredStars;
+
+        // any starid set up to this point needs to be discarded, because it's based on input
+        // centroids instead of our new centroids.
+        inputStarIds = NULL;
+        result.starIds = NULL;
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
@@ -717,20 +579,17 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
     }
 
-    if (santa) {
-        result.nice = santa->Go(result);
-    }
-
     return result;
 }
 
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
     
+
     for (const std::unique_ptr<PipelineInput> &input : inputs) {
         result.push_back(Go(*input));
     }
-
+    
     return result;
 }
 
@@ -899,7 +758,8 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
 typedef void (*PipelineComparator)(std::ostream &os,
                                    const PipelineInputList &,
-                                   const std::vector<PipelineOutput> &);
+                                   const std::vector<PipelineOutput> &,
+                                   const PipelineOptions &);
 
 cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned int length) {
     std::ostream *os = (std::ostream *)closure;
@@ -909,7 +769,8 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
 
 void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
-                                    const std::vector<PipelineOutput> &actual) {
+                                    const std::vector<PipelineOutput> &actual,
+                                    const PipelineOptions &values) {
     
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
@@ -918,7 +779,8 @@ void PipelineComparatorPlotRawInput(std::ostream &os,
 
 void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &actual) {
+                                 const std::vector<PipelineOutput> &actual,
+                                 const PipelineOptions &values) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->InputStars() != NULL);
     SurfacePlot(cairoSurface,
@@ -934,10 +796,11 @@ void PipelineComparatorPlotInput(std::ostream &os,
 
 void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &actual) {
+                                 const std::vector<PipelineOutput> &actual,
+                                 const PipelineOptions &values) {
     int size = (int)expected.size();
 
-    float threshold = Prompt<float>("Threshold to count as the same star (pixels, float)");
+    float threshold = values.centroidCompareThreshold;
 
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
@@ -954,7 +817,8 @@ void PipelineComparatorCentroids(std::ostream &os,
 
 void PipelineComparatorPrintCentroids(std::ostream &os,
                                       const PipelineInputList &expected,
-                                      const std::vector<PipelineOutput> &actual) {
+                                      const std::vector<PipelineOutput> &actual,
+                                      const PipelineOptions &values) {
     assert(actual.size() == 1);
     assert(actual[0].stars);
 
@@ -981,6 +845,7 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
     }
 }
 
+// TODO: add a CLI option to use this!
 void PipelineComparatorPlotIndexes(std::ostream &os,
                                    const PipelineInputList &expected,
                                    const std::vector<PipelineOutput> &actual) {
@@ -1004,7 +869,8 @@ void PipelineComparatorPlotIndexes(std::ostream &os,
 
 void PipelineComparatorPlotOutput(std::ostream &os,
                                   const PipelineInputList &expected,
-                                  const std::vector<PipelineOutput> &actual) {
+                                  const std::vector<PipelineOutput> &actual,
+                                  const PipelineOptions &values) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
@@ -1020,9 +886,10 @@ void PipelineComparatorPlotOutput(std::ostream &os,
 
 void PipelineComparatorStars(std::ostream &os,
                              const PipelineInputList &expected,
-                             const std::vector<PipelineOutput> &actual) {
+                             const std::vector<PipelineOutput> &actual,
+                             const PipelineOptions &values) {
     float centroidThreshold = actual[0].stars
-        ? Prompt<float>("Threshold to count centroids as the same star (pixels)")
+        ? values.centroidCompareThreshold
         : 0.0f;
 
     std::vector<StarIdComparison> comparisons;
@@ -1055,7 +922,8 @@ void PipelineComparatorStars(std::ostream &os,
 
 void PipelineComparatorPrintAttitude(std::ostream &os,
                                      const PipelineInputList &expected,
-                                     const std::vector<PipelineOutput> &actual) {
+                                     const std::vector<PipelineOutput> &actual,
+                                     const PipelineOptions &values) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
 
@@ -1071,12 +939,12 @@ void PipelineComparatorPrintAttitude(std::ostream &os,
 
 void PipelineComparatorAttitude(std::ostream &os,
                                 const PipelineInputList &expected,
-                                const std::vector<PipelineOutput> &actual) {
+                                const std::vector<PipelineOutput> &actual,
+                                const PipelineOptions &values) {
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
-    float angleThreshold = DegToRad(
-        Prompt<float>("Threshold to count two attitudes as the same (deg)"));
+    float angleThreshold = DegToRad(values.attitudeCompareThreshold);
 
     float attitudeErrorSum = 0.0f;
     int numCorrect = 0;
@@ -1100,280 +968,230 @@ void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_fraction_correct " << fractionCorrect << std::endl;
 }
 
-void PipelineComparatorSanta(std::ostream &os,
-                             const PipelineInputList &expected,
-                             const std::vector<PipelineOutput> &actual) {
-    if (actual.size() == 1) {
-        os << "nice " << (actual[0].nice ? "true" : "false") << std::endl;
-    } else {
-        int numNice = 0;
-        for (const PipelineOutput &output : actual) {
-            if (output.nice) {
-                numNice++;
-            }
-        }
-        os << "num_nice " << numNice << std::endl;
-    }
-}
+// TODO: add these debug comparators back in!
+// void PipelineComparatorPrintPairDistance(std::ostream &os,
+//                                          const PipelineInputList &expected,
+//                                          const std::vector<PipelineOutput> &actual) {
+//     int index1 = Prompt<int>("Index of first star");
+//     int index2 = Prompt<int>("Index of second star");
 
-void PipelineComparatorPrintPairDistance(std::ostream &os,
-                                         const PipelineInputList &expected,
-                                         const std::vector<PipelineOutput> &actual) {
-    int index1 = Prompt<int>("Index of first star");
-    int index2 = Prompt<int>("Index of second star");
+//     const Camera &camera = *expected[0]->InputCamera();
+//     const Stars &stars = *actual[0].stars;
 
-    const Camera &camera = *expected[0]->InputCamera();
-    const Stars &stars = *actual[0].stars;
+//     assert(index1 >= 0 && index2 >= 0 && index1 < (int)stars.size() && index2 < (int)stars.size());
+//     os << "pair_distance " << Angle(camera.CameraToSpatial(stars[index1].position),
+//                                     camera.CameraToSpatial(stars[index2].position))
+//        << std::endl;
+// }
 
-    assert(index1 >= 0 && index2 >= 0 && index1 < (int)stars.size() && index2 < (int)stars.size());
-    os << "pair_distance " << Angle(camera.CameraToSpatial(stars[index1].position),
-                                    camera.CameraToSpatial(stars[index2].position))
-       << std::endl;
-}
+// void PipelineComparatorPrintPyramidDistances(std::ostream &os,
+//                                              const PipelineInputList &expected,
+//                                              const std::vector<PipelineOutput> &actual) {
+//     int index1 = Prompt<int>("Catalog name/index of first star");
+//     int index2 = Prompt<int>("Catalog name/index of second star");
+//     int index3 = Prompt<int>("Catalog name/index of third star");
+//     int index4 = Prompt<int>("Catalog name/index of four star");
 
-void PipelineComparatorPrintPyramidDistances(std::ostream &os,
-                                             const PipelineInputList &expected,
-                                             const std::vector<PipelineOutput> &actual) {
-    int index1 = Prompt<int>("Catalog name/index of first star");
-    int index2 = Prompt<int>("Catalog name/index of second star");
-    int index3 = Prompt<int>("Catalog name/index of third star");
-    int index4 = Prompt<int>("Catalog name/index of four star");
+//     const Camera &camera = *expected[0]->InputCamera();
+//     const Stars &stars = *actual[0].stars;
 
-    const Camera &camera = *expected[0]->InputCamera();
-    const Stars &stars = *actual[0].stars;
+//     Vec3 spatial1 = camera.CameraToSpatial(stars[index1].position);
+//     Vec3 spatial2 = camera.CameraToSpatial(stars[index2].position);
+//     Vec3 spatial3 = camera.CameraToSpatial(stars[index3].position);
+//     Vec3 spatial4 = camera.CameraToSpatial(stars[index4].position);
 
-    Vec3 spatial1 = camera.CameraToSpatial(stars[index1].position);
-    Vec3 spatial2 = camera.CameraToSpatial(stars[index2].position);
-    Vec3 spatial3 = camera.CameraToSpatial(stars[index3].position);
-    Vec3 spatial4 = camera.CameraToSpatial(stars[index4].position);
+//     std::cout << "pair_distance_12 " << Angle(spatial1, spatial2) << std::endl;
+//     std::cout << "pair_distance_13 " << Angle(spatial1, spatial3) << std::endl;
+//     std::cout << "pair_distance_14 " << Angle(spatial1, spatial4) << std::endl;
+//     std::cout << "pair_distance_23 " << Angle(spatial2, spatial3) << std::endl;
+//     std::cout << "pair_distance_24 " << Angle(spatial2, spatial4) << std::endl;
+//     std::cout << "pair_distance_34 " << Angle(spatial3, spatial4) << std::endl;
+// }
 
-    std::cout << "pair_distance_12 " << Angle(spatial1, spatial2) << std::endl;
-    std::cout << "pair_distance_13 " << Angle(spatial1, spatial3) << std::endl;
-    std::cout << "pair_distance_14 " << Angle(spatial1, spatial4) << std::endl;
-    std::cout << "pair_distance_23 " << Angle(spatial2, spatial3) << std::endl;
-    std::cout << "pair_distance_24 " << Angle(spatial2, spatial4) << std::endl;
-    std::cout << "pair_distance_34 " << Angle(spatial3, spatial4) << std::endl;
-}
+// void PipelineComparatorPrintTripleAngle(std::ostream &os,
+//                                         const PipelineInputList &expected,
+//                                         const std::vector<PipelineOutput> &actual) {
+//     int index1 = Prompt<int>("Index of first star");
+//     int index2 = Prompt<int>("Index of second star");
+//     int index3 = Prompt<int>("Index of third star");
 
-void PipelineComparatorPrintTripleAngle(std::ostream &os,
-                                        const PipelineInputList &expected,
-                                        const std::vector<PipelineOutput> &actual) {
-    int index1 = Prompt<int>("Index of first star");
-    int index2 = Prompt<int>("Index of second star");
-    int index3 = Prompt<int>("Index of third star");
+//     const Camera &camera = *expected[0]->InputCamera();
+//     const Stars &stars = *actual[0].stars;
 
-    const Camera &camera = *expected[0]->InputCamera();
-    const Stars &stars = *actual[0].stars;
+//     assert(index1 >= 0 && index1 < (int)stars.size());
+//     assert(index2 >= 0 && index2 < (int)stars.size());
+//     assert(index3 >= 0 && index3 < (int)stars.size());
 
-    assert(index1 >= 0 && index1 < (int)stars.size());
-    assert(index2 >= 0 && index2 < (int)stars.size());
-    assert(index3 >= 0 && index3 < (int)stars.size());
+//     // TODO, when merging with nondimensional branch
+// }
 
-    // TODO, when merging with nondimensional branch
-}
-
-void PromptPipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual) {
+void PipelineComparison(const PipelineInputList &expected,
+                              const std::vector<PipelineOutput> &actual, 
+                              const PipelineOptions &values) {
     assert(expected.size() == actual.size() && expected.size() > 0);
 
-    InteractiveChoice<PipelineComparator> comparatorChoice;
+    // TODO: Remove the asserts and print out more reasonable error messages.
 
-    if (isDebug) {
-        if (actual[0].stars && expected[0]->InputCamera() != NULL) {
-            comparatorChoice.Register("print_pair_distance", "Angular distance between two stars",
-                                      PipelineComparatorPrintPairDistance);
+#define LOST_PIPELINE_COMPARE(comparator, path) do {            \
+        PromptedOutputStream pos(path);                         \
+        comparator(pos.Stream(), expected, actual, values);     \
+    } while (0)
 
-            comparatorChoice.Register("print_pyramid_distances", "Distances between all pairs in a pyramid",
-                                      PipelineComparatorPrintPyramidDistances);
-
-            comparatorChoice.Register("print_triple_angle", "Inner angle of a star triangle",
-                                      PipelineComparatorPrintTripleAngle);
-        }
+    if (values.plotRawInput != "") {
+        assert(expected[0]->InputImage() && expected.size() == 1);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotRawInput, values.plotRawInput);
     }
 
-    if (expected[0]->InputImage() && expected.size() == 1) {
-        comparatorChoice.Register("plot_raw_input", "Plot raw BW input image to PNG",
-                                  PipelineComparatorPlotRawInput);
-
-        if (expected[0]->InputStars()) {
-            comparatorChoice.Register("plot_input", "Plot annotated input image to PNG",
-                                      PipelineComparatorPlotInput);
-        }
+    if (values.plotInput != "") {
+        assert(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars());
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotInput, values.plotInput);
+    }
+    if (values.plotOutput != "") {
+        assert(actual.size() == 1 && (actual[0].stars || actual[0].starIds));
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotOutput, values.plotOutput);
+    }
+    if (values.printCentroids != "") {
+        assert(actual[0].stars && actual.size() == 1);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPrintCentroids, values.printCentroids);
+    }
+    if (values.compareCentroids != "") {
+        assert(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold);
+        LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids);
+    }
+    if (values.compareStars != "") {
+        assert(expected[0]->ExpectedStars() && actual[0].starIds && values.centroidCompareThreshold);
+        LOST_PIPELINE_COMPARE(PipelineComparatorStars, values.compareStars);
+    }
+    if (values.printAttitude != "") {
+        assert(actual[0].attitude && actual.size() == 1);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPrintAttitude, values.printAttitude);
+    }
+    if (values.compareAttitude != "") {
+        assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold);
+        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitude);
     }
 
-    if (isDebug && actual.size() == 1 && actual[0].stars) {
-        comparatorChoice.Register("plot_indexes", "Plot centroid indexes",
-                                  PipelineComparatorPlotIndexes);
-    }
-
-    if (actual.size() == 1 && (actual[0].stars || actual[0].starIds)) {
-        comparatorChoice.Register("plot_output", "Plot output to PNG",
-                                  PipelineComparatorPlotOutput);
-    }
-
-    // Centroids
-    if (actual[0].stars) {
-        if (actual.size() == 1) {
-            comparatorChoice.Register("print_centroids", "Print list of centroids",
-                                      PipelineComparatorPrintCentroids);
-        }
-
-        if (expected[0]->ExpectedStars()) {
-            comparatorChoice.Register("compare_centroids", "Compare lists of centroids",
-                                      PipelineComparatorCentroids);
-        }
-    }
-
-    // Star-IDs
-    if (expected[0]->ExpectedStars() && actual[0].starIds) {
-                comparatorChoice.Register("compare_stars", "Compare lists of identified stars",
-                                          PipelineComparatorStars);
-    }
-
-    if (actual[0].attitude) {
-        if (actual.size() == 1) {
-            comparatorChoice.Register("print_attitude", "Print the determined ra, de, and roll",
-                                      PipelineComparatorPrintAttitude);
-        }
-
-        if (expected[0]->ExpectedAttitude()) {
-            comparatorChoice.Register("compare_attitude", "Compare expected to actual attitude",
-                                      PipelineComparatorAttitude);
-        }
-    }
-
-    comparatorChoice.Register("print_nice", "Print if output is naughty or nice",
-                              PipelineComparatorSanta);
-
-    comparatorChoice.Register("done", "No more comparisons", NULL);
-
-    while (true) {
-        PipelineComparator comparator = comparatorChoice.Prompt("What to do with output");
-        if (comparator == NULL) {
-            break;
-        }
-
-        PromptedOutputStream pos;
-        comparator(pos.Stream(), expected, actual);
-    }
+#undef LOST_PIPELINE_COMPARE
 }
 
-typedef void (*CatalogInspector)(const Catalog &);
+// TODO: Add CLI options for all the inspectors!
 
-static std::vector<const CatalogStar *> PromptCatalogStars(const Catalog &catalog, int howMany) {
-    std::vector<const CatalogStar *> result;
-    for (int i = 0; i < howMany; i++) {
-        int name = Prompt<int>("Catalog name of " + std::to_string(i) + "-th star");
-        const CatalogStar *star = findNamedStar(catalog, name);
-        if (star == NULL) {
-            std::cerr << "Star not found!" << std::endl;
-            exit(1);
-        }
-        result.push_back(star);
-    }
-    return result;
-}
+// typedef void (*CatalogInspector)(const Catalog &);
 
-void InspectPairDistance(const Catalog &catalog) {
-    auto stars = PromptCatalogStars(catalog, 2);
+// static std::vector<const CatalogStar *> PromptCatalogStars(const Catalog &catalog, int howMany) {
+//     std::vector<const CatalogStar *> result;
+//     for (int i = 0; i < howMany; i++) {
+//         int name = Prompt<int>("Catalog name of " + std::to_string(i) + "-th star");
+//         const CatalogStar *star = findNamedStar(catalog, name);
+//         if (star == NULL) {
+//             std::cerr << "Star not found!" << std::endl;
+//             exit(1);
+//         }
+//         result.push_back(star);
+//     }
+//     return result;
+// }
 
-    // TODO: not cout, prompt for an ostream in inspect and pass argument
-    std::cout << Angle(stars[0]->spatial, stars[1]->spatial) << std::endl;
-}
+// void InspectPairDistance(const Catalog &catalog) {
+//     auto stars = PromptCatalogStars(catalog, 2);
 
-void InspectPyramidDistances(const Catalog &catalog) {
-    auto stars = PromptCatalogStars(catalog, 4);
+//     // TODO: not cout, prompt for an ostream in inspect and pass argument
+//     std::cout << Angle(stars[0]->spatial, stars[1]->spatial) << std::endl;
+// }
 
-    std::cout << "pair_distance_01 " << Angle(stars[0]->spatial, stars[1]->spatial) << std::endl;
-    std::cout << "pair_distance_02 " << Angle(stars[0]->spatial, stars[2]->spatial) << std::endl;
-    std::cout << "pair_distance_03 " << Angle(stars[0]->spatial, stars[3]->spatial) << std::endl;
-    std::cout << "pair_distance_12 " << Angle(stars[1]->spatial, stars[2]->spatial) << std::endl;
-    std::cout << "pair_distance_13 " << Angle(stars[1]->spatial, stars[3]->spatial) << std::endl;
-    std::cout << "pair_distance_23 " << Angle(stars[2]->spatial, stars[3]->spatial) << std::endl;
-}
+// void InspectPyramidDistances(const Catalog &catalog) {
+//     auto stars = PromptCatalogStars(catalog, 4);
 
-void InspectTripleAngle(const Catalog &catalog) {
-    auto stars = PromptCatalogStars(catalog, 3);
+//     std::cout << "pair_distance_01 " << Angle(stars[0]->spatial, stars[1]->spatial) << std::endl;
+//     std::cout << "pair_distance_02 " << Angle(stars[0]->spatial, stars[2]->spatial) << std::endl;
+//     std::cout << "pair_distance_03 " << Angle(stars[0]->spatial, stars[3]->spatial) << std::endl;
+//     std::cout << "pair_distance_12 " << Angle(stars[1]->spatial, stars[2]->spatial) << std::endl;
+//     std::cout << "pair_distance_13 " << Angle(stars[1]->spatial, stars[3]->spatial) << std::endl;
+//     std::cout << "pair_distance_23 " << Angle(stars[2]->spatial, stars[3]->spatial) << std::endl;
+// }
 
-    // TODO
-}
+// void InspectTripleAngle(const Catalog &catalog) {
+//     auto stars = PromptCatalogStars(catalog, 3);
 
-void InspectFindStar(const Catalog &catalog) {
-    std::string raStr = PromptLine("Right Ascension");
+//     // TODO
+// }
 
-    float raRadians;
+// void InspectFindStar(const Catalog &catalog) {
+//     std::string raStr = PromptLine("Right Ascension");
 
-    int raHours, raMinutes;
-    float raSeconds;
-    int raFormatTime = sscanf(raStr.c_str(), "%dh %dm %fs", &raHours, &raMinutes, &raSeconds);
+//     float raRadians;
+
+//     int raHours, raMinutes;
+//     float raSeconds;
+//     int raFormatTime = sscanf(raStr.c_str(), "%dh %dm %fs", &raHours, &raMinutes, &raSeconds);
     
-    float raDeg;
-    int raFormatDeg = sscanf(raStr.c_str(), "%f", &raDeg);
+//     float raDeg;
+//     int raFormatDeg = sscanf(raStr.c_str(), "%f", &raDeg);
 
-    if (raFormatTime == 3) {
-        raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);
-    } else if (raFormatDeg == 1) {
-        raRadians = DegToRad(raFormatDeg);
-    } else {
-        std::cerr << "Invalid right ascension format. Do \"09h 38m 29.8754s\" or a number of degrees." << std::endl;
-        exit(1);
-    }
+//     if (raFormatTime == 3) {
+//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);
+//     } else if (raFormatDeg == 1) {
+//         raRadians = DegToRad(raFormatDeg);
+//     } else {
+//         std::cerr << "Invalid right ascension format. Do \"09h 38m 29.8754s\" or a number of degrees." << std::endl;
+//         exit(1);
+//     }
 
-    std::string deStr = PromptLine("Declination");
+//     std::string deStr = PromptLine("Declination");
 
-    float deRadians;
+//     float deRadians;
 
-    int deDegPart, deMinPart;
-    float deSecPart;
-    char dummy[8];
-    int deFormatParts = sscanf(deStr.c_str(), "%d%s %d%s %f%s", &deDegPart, dummy, &deMinPart, dummy, &deSecPart, dummy);
+//     int deDegPart, deMinPart;
+//     float deSecPart;
+//     char dummy[8];
+//     int deFormatParts = sscanf(deStr.c_str(), "%d%s %d%s %f%s", &deDegPart, dummy, &deMinPart, dummy, &deSecPart, dummy);
 
-    float deDeg;
-    int deFormatDeg = sscanf(deStr.c_str(), "%f", &deDeg);
+//     float deDeg;
+//     int deFormatDeg = sscanf(deStr.c_str(), "%f", &deDeg);
 
-    if (deFormatParts == 6) {
-        deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);
-    } else if (deFormatDeg == 1) {
-        deRadians = DegToRad(deFormatDeg);
-    } else {
-        std::cerr << "Invalid declination format." << std::endl;
-        exit(1);
-    }
+//     if (deFormatParts == 6) {
+//         deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);
+//     } else if (deFormatDeg == 1) {
+//         deRadians = DegToRad(deFormatDeg);
+//     } else {
+//         std::cerr << "Invalid declination format." << std::endl;
+//         exit(1);
+//     }
 
-    // find the star
+//     // find the star
 
-    float tolerance = 0.001;
-    Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);
-    int i = 0;
-    for (const CatalogStar &curStar : catalog) {
-        if ((curStar.spatial - userSpatial).Magnitude() < tolerance) {
-            std::cout << "found_star_" << i << " "  << curStar.name << std::endl;
-            std::cout << "fonud_star_magnitude_" << i << " " << curStar.magnitude << std::endl;
-            i++;
-        }
-    }
-    if (i == 0) {
-        std::cerr << "No stars found" << std::endl;
-    }
-}
+//     float tolerance = 0.001;
+//     Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);
+//     int i = 0;
+//     for (const CatalogStar &curStar : catalog) {
+//         if ((curStar.spatial - userSpatial).Magnitude() < tolerance) {
+//             std::cout << "found_star_" << i << " "  << curStar.name << std::endl;
+//             std::cout << "fonud_star_magnitude_" << i << " " << curStar.magnitude << std::endl;
+//             i++;
+//         }
+//     }
+//     if (i == 0) {
+//         std::cerr << "No stars found" << std::endl;
+//     }
+// }
 
-void InspectPrintStar(const Catalog &catalog) {
-    auto stars = PromptCatalogStars(catalog, 1);
-    float ra, de;
-    SpatialToSpherical(stars[0]->spatial, &ra, &de);
+// void InspectPrintStar(const Catalog &catalog) {
+//     auto stars = PromptCatalogStars(catalog, 1);
+//     float ra, de;
+//     SpatialToSpherical(stars[0]->spatial, &ra, &de);
 
-    std::cout << "star_ra " << RadToDeg(ra) << std::endl;
-    std::cout << "star_de " << RadToDeg(de) << std::endl;
-}
+//     std::cout << "star_ra " << RadToDeg(ra) << std::endl;
+//     std::cout << "star_de " << RadToDeg(de) << std::endl;
+// }
 
-void InspectCatalog() {
-    InteractiveChoice<CatalogInspector> inspectorChoice;
-    inspectorChoice.Register("pair_distance", "pair distance angle", InspectPairDistance);
-    inspectorChoice.Register("pyramid_distances", "all pair distances in pyramid", InspectPyramidDistances);
-    inspectorChoice.Register("triple_angle", "inner angle of a triangle", InspectTripleAngle);
-    inspectorChoice.Register("find_star", "find a star name based on ra/de", InspectFindStar);
-    inspectorChoice.Register("print_star", "print coordinates of a star", InspectPrintStar);
-    (*inspectorChoice.Prompt("Inspect the catalog"))(CatalogRead());
-}
+// void InspectCatalog() {
+//     InteractiveChoice<CatalogInspector> inspectorChoice;
+//     inspectorChoice.Register("pair_distance", "pair distance angle", InspectPairDistance);
+//     inspectorChoice.Register("pyramid_distances", "all pair distances in pyramid", InspectPyramidDistances);
+//     inspectorChoice.Register("triple_angle", "inner angle of a triangle", InspectTripleAngle);
+//     inspectorChoice.Register("find_star", "find a star name based on ra/de", InspectFindStar);
+//     inspectorChoice.Register("print_star", "print coordinates of a star", InspectPrintStar);
+//     (*inspectorChoice.Prompt("Inspect the catalog"))(CatalogRead());
+// }
 
 } // namespace lost

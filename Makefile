@@ -23,6 +23,9 @@
 
 SRCS := $(wildcard src/*.cpp)
 TESTS := $(wildcard test/*.cpp)
+MANS := $(wildcard documentation/*.man)
+MAN_TXTS := $(patsubst documentation/%.man, documentation/%.txt, $(MANS))
+MAN_HS := $(patsubst documentation/%.man, documentation/man-%.h, $(MANS))
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS)) # includes tests
@@ -32,7 +35,7 @@ TEST_BIN := ./lost-test
 BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Wall -pedantic --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -pedantic --std=c++11
 
 all: $(BIN) $(BSC)
 
@@ -41,6 +44,14 @@ $(BSC): download-bsc.sh
 
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
+
+documentation/%.txt: documentation/%.man
+	groff -mandoc -Tascii $< > $@
+
+documentation/man-%.h: documentation/%.txt
+	xxd -i $< > $@
+
+src/main.o: $(MAN_HS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
@@ -54,7 +65,7 @@ $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
 clean:
-	rm -f $(OBJS) $(DEPS) $(TEST_OBJS)
+	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
 	rm -i $(BSC)
 
 .PHONY: all clean test
