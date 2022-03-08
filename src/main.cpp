@@ -64,6 +64,12 @@ static void PipelineRun(const PipelineOptions &values) {
 
 }
 
+// https://stackoverflow.com/a/69177115
+#define LOST_OPTIONAL_OPTARG()                                   \
+    ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
+     ? (bool) (optarg = argv[optind++])                          \
+     : (optarg != NULL))
+
 int main(int argc, char **argv) {
 
     if (argc == 1) {
@@ -236,9 +242,11 @@ int main(int argc, char **argv) {
                         pipelineOptions.attitudeAlgo = std::string (optarg);                    
                         break; 
                     case generate :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.generate = atoi(optarg);
-                        } 
+                        } else {
+                            pipelineOptions.generate = 1;
+                        }
                         break;
                     case horizontalRes :
                         pipelineOptions.horizontalRes = atoi(optarg);
@@ -271,56 +279,56 @@ int main(int argc, char **argv) {
                         pipelineOptions.centroidCompareThreshold = atof(optarg);
                         break;
                     case plotRawInput :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.plotRawInput = optarg;
                         } else {
                             pipelineOptions.plotRawInput = "stdout";
                         }
                         break;
                     case plotInput :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.plotInput = optarg;
                         } else {
                             pipelineOptions.plotInput = "stdout";
                         }
                         break;
                     case plotOutput :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.plotOutput = optarg;
                         } else {
                             pipelineOptions.plotOutput = "stdout";
                         }
                         break;
                     case printCentroids :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.printCentroids = optarg;
                         } else {
                             pipelineOptions.printCentroids = "stdout";
                         }
                         break;
                     case compareCentroids :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.compareCentroids = optarg;
                         } else {
                             pipelineOptions.compareCentroids = "stdout";
                         }
                         break;
                     case compareStars :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.compareStars = optarg;
                         } else {
                             pipelineOptions.compareStars = "stdout";
                         }
                         break;
                     case printAttitude :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.printAttitude = optarg;
                         } else {
                             pipelineOptions.printAttitude = "stdout";
                         }
                         break;
                     case compareAttitude :
-                        if (optarg) {
+                        if (LOST_OPTIONAL_OPTARG()) {
                             pipelineOptions.compareAttitude = optarg;
                         } else {
                             pipelineOptions.compareAttitude = "stdout";

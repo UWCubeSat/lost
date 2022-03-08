@@ -929,65 +929,47 @@ void PipelineComparison(const PipelineInputList &expected,
                               const PipelineOptions &values) {
     assert(expected.size() == actual.size() && expected.size() > 0);
 
-    PipelineComparator comparator;
-    std::string path;
+    // TODO: Remove the asserts and print out more reasonable error messages.
+
+#define LOST_PIPELINE_COMPARE(comparator, path) do {            \
+        PromptedOutputStream pos(path);                         \
+        comparator(pos.Stream(), expected, actual, values);     \
+    } while (0)
 
     if (values.plotRawInput != "") {
         assert(expected[0]->InputImage() && expected.size() == 1);
-        comparator = PipelineComparatorPlotRawInput;
-        path = values.plotRawInput;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotRawInput, values.plotRawInput);
+    }
     if (values.plotInput != "") {
         assert(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars());
-        comparator = PipelineComparatorPlotInput;
-        path = values.plotInput;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotInput, values.plotInput);
+    }
     if (values.plotOutput != "") {
         assert(actual.size() == 1 && (actual[0].stars || actual[0].starIds));
-        comparator = PipelineComparatorPlotOutput;
-        path = values.plotOutput;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotOutput, values.plotOutput);
+    }
     if (values.printCentroids != "") {
         assert(actual[0].stars && actual.size() == 1);
-        comparator = PipelineComparatorPrintCentroids;
-        path = values.printCentroids;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorPrintCentroids, values.printCentroids);
+    }
     if (values.compareCentroids != "") {
         assert(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold);
-        comparator = PipelineComparatorCentroids;
-        path = values.compareCentroids;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids);
+    }
     if (values.compareStars != "") {
         assert(expected[0]->ExpectedStars() && actual[0].starIds && values.centroidCompareThreshold);
-        comparator = PipelineComparatorStars;
-        path = values.compareStars;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorStars, values.compareStars);
+    }
     if (values.printAttitude != "") {
         assert(actual[0].attitude && actual.size() == 1);
-        comparator = PipelineComparatorPrintAttitude;
-        path = values.printAttitude;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
-    } 
+        LOST_PIPELINE_COMPARE(PipelineComparatorPrintAttitude, values.printAttitude);
+    }
     if (values.compareAttitude != "") {
         assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold);
-        comparator = PipelineComparatorAttitude;
-        path = values.compareAttitude;
-        PromptedOutputStream pos(path);
-        comparator(pos.Stream(), expected, actual, values);
+        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitude);
     }
+
+#undef LOST_PIPELINE_COMPARE
 }
 
 }
