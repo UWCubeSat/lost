@@ -9,4 +9,5 @@
   (indent-tabs-mode . nil)
   (fill-column . 100))
  (nil
+  (projectile-project-compilation-cmd . "CXXFLAGS=-g make -j4")
   (compile-command . "CXXFLAGS=-g make -j4")))
