@@ -480,6 +480,11 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
+        // TODO: Ask mark if here is the right place to distort our coordinates while generating Stars.
+
+        camCoords.x = (camCoords.x - 2 * camera.P1() * cameraCoo)
+
+
         float radiusX = ceil(brightnessDeviation*2);
         if (camera.InSensor(camCoords)) {
             stars.push_back(Star(camCoords.x, camCoords.y, radiusX, radiusX, catalogStar.magnitude));
@@ -751,12 +756,12 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
                     + camera->K3() * pow(r, 6)) / (1 + camera->K4() * pow(r, 2)
                             + camera->K5() * pow(r, 4) + camera->K6() * pow(r, 6));
 
-            float tangentialUndistortionX  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
-                    + 2 * pow(x, 2)));
+            float tangentialUndistortionX  = (2 * camera->P1() * x * y) + camera->P2() * (pow(r, 2)
+                    + 2 * pow(x, 2));
 
 
-            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + (camera->P2() * (pow(r, 2)
-                    + 2 * pow(y, 2)));
+            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + camera.P2() * (pow(r, 2)
+                    + 2 * pow(y, 2));
 
             undistortedX = x * radialUndistortion + tangentialUndistortionX;
             undistortedY = y * radialUndistortion + tangentialUndistortionY;
