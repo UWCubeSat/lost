@@ -480,7 +480,11 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
+        float x = camCoords.x; // x' in our equation
+        float y = camCoords.y; // y' in our equation
         float r = sqrt(pow(x,2) + pow(y, 2)); // r^2 = (x')^2 + (y')^2
+
+        // TODO: Ask mark if here is the right place to distort our coordinates while generating Stars.
 
         // Check to see if the camera object being used here is one that has its undistortion coeffs set by the user
         // or the pipeline. Needs to be the same camera that's from input.
