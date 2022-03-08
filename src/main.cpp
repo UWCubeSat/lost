@@ -16,12 +16,12 @@
 namespace lost {
 
 static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(),values.maxMagnitude,values.maxStars);
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.maxMagnitude*100), values.maxStars);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
-    unsigned char *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue,SerializeLengthCatalog(narrowedCatalog, false, true));
+    unsigned char *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
     GenerateDatabases(builder, narrowedCatalog, values);
@@ -29,7 +29,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
     if (isatty(fileno(stdout)) && values.path == "stdout") {
-       std::cout << "Warning: output contains binary contents. Not printed to terminal." << std::endl;
+       std::cerr << "Warning: output contains binary contents. Not printed to terminal." << std::endl;
     } else {
         PromptedOutputStream pos = PromptedOutputStream(values.path);
         pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
@@ -106,22 +106,22 @@ int main(int argc, char **argv) {
             if ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
                 switch (option) {
                     case mag :
-                        databaseOptions.maxMagnitude = atoi(optarg);
+                        databaseOptions.maxMagnitude = atof(optarg);
                         break;
                     case stars :
                         databaseOptions.maxStars = atoi(optarg);
                         break;
                     case kvector :
-                        databaseOptions.databaseBuilder = "kvector";
+                        databaseOptions.kVectorEnabled = true;
                         break;
                     case kvectorMinDistance :
-                        databaseOptions.kvectorMinDistance = atof(optarg);
+                        databaseOptions.kVectorMinDistance = atof(optarg);
                         break;
                     case kvectorMaxDistance :
-                        databaseOptions.kvectorMaxDistance = atof(optarg);
+                        databaseOptions.kVectorMaxDistance = atof(optarg);
                         break;
                     case kvectorDistanceBins :
-                        databaseOptions.kvectorDistanceBins = atol(optarg);
+                        databaseOptions.kVectorDistanceBins = atol(optarg);
                         break;
                     case output :
                         databaseOptions.path = optarg;
@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
             {"generate",        optional_argument, 0, generate},
             {"horizontal-res",  required_argument, 0, horizontalRes},
             {"vertical-res",  required_argument, 0, verticalRes},
-            {"ref-brightness-mag",  no_argument, 0, refBrightnessMag},
+            {"ref-brightness-mag",  required_argument, 0, refBrightnessMag},
             {"spread-stddev",  required_argument, 0, spreadStddev},
             {"noise-stddev",  required_argument, 0, noiseStddev},
             {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
@@ -346,7 +346,7 @@ int main(int argc, char **argv) {
                         exit(1);
                 }
             } else {
-                std::cout << "Error: Run database --help for further help" << std::endl;
+                std::cout << "Error: Run pipeline --help for further help" << std::endl;
                 break;
             }
         }

@@ -39,9 +39,6 @@ namespace lost {
         std::ostream *stream;
     };
 
-    // prompts for an output stream, then calls the given function with it.
-    void WithOutputStream(void (*)(std::ostream *));
-
     // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
     std::vector<CatalogStar> &CatalogRead();
     // Convert a cairo surface to array of grayscale bytes
@@ -75,15 +72,15 @@ namespace lost {
         float focalLength;
         float pixelSize = -1;
         float fov = 20; // degtorad will be calculated later in the pipeline
-        std::string centroidAlgo = "dummy";
+        std::string centroidAlgo = "";
         int dummyCentroidNumStars = 5;
         int centroidMagFilter = -1;  // value that should not be used, to tell whether this was selected or not
-        std::string idAlgo = "dummy"; 
+        std::string idAlgo = ""; 
         float gvTolerance = 0.04;
         float pyTolerance = 0.04;
         int pyFalseStars = 500;
         float pyMismatchProb = 0.001;
-        std::string attitudeAlgo = "dqm";
+        std::string attitudeAlgo = "";
         int generate = 1;
         int horizontalRes = 1024;
         int verticalRes = 1024;
@@ -241,12 +238,12 @@ namespace lost {
     class DatabaseOptions
     {
     public:
-        int maxMagnitude = 1000;
+        float maxMagnitude = 1000;
         int maxStars = 10000;
-        std::string databaseBuilder = "";
-        float kvectorMinDistance = 0.5; // DegToRad will be calculated in a later step (GenerateDatabases)
-        float kvectorMaxDistance = 15;  // DegToRad will be calculated in a later step (GenerateDatabases)
-        long kvectorDistanceBins = 10000;
+        bool kVectorEnabled = false;
+        float kVectorMinDistance = 0.5; // DegToRad will be calculated in a later step (GenerateDatabases)
+        float kVectorMaxDistance = 15;  // DegToRad will be calculated in a later step (GenerateDatabases)
+        long kVectorDistanceBins = 10000;
         std::string path = "stdout";
     };
 

@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <vector>
 #include <string>
@@ -46,7 +47,11 @@ std::string NextCliArg() {
 }
 
 PromptedOutputStream::PromptedOutputStream(std::string filePath) {
-    //std::string filePath = Prompt<std::string>("Output file (or - for stdout)");
+    if (isatty(fileno(stdout)) && filePath == "stdout") {
+        std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
+        filePath = "/dev/null";
+    }
+
     if (filePath == "stdout") {
         stream = &std::cout;
         isFstream = false;
@@ -264,10 +269,10 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
 
 void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) {
 
-    if (values.databaseBuilder == "kvector") {
-        float minDistance = DegToRad(values.kvectorMinDistance);
-        float maxDistance = DegToRad(values.kvectorMaxDistance);
-        long numBins = values.kvectorDistanceBins;
+    if (values.kVectorEnabled) {
+        float minDistance = DegToRad(values.kVectorMinDistance);
+        float maxDistance = DegToRad(values.kVectorMaxDistance);
+        long numBins = values.kVectorDistanceBins;
         BuildKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
