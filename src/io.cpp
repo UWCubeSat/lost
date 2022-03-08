@@ -482,7 +482,14 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
         // TODO: Ask mark if here is the right place to distort our coordinates while generating Stars.
 
-        camCoords.x = (camCoords.x - 2 * camera.P1() * cameraCoo)
+        // Check to see if the camera object being used here is one that has its undistortion coeffs set by the user
+        // or the pipeline. Needs to be the same camera that's from input.
+        float radialDistortion = (1 + camera.K4() * pow(r, 2) + camera.K5() * pow(r, 4)
+                                                        + camera.K6() * pow(r, 6)) / (1 + camera.K1() * pow(r, 2)
+                                                        + camera.K2() * pow(r, 4) + camera.K3() * pow(r, 6));
+
+        camCoords.x = camCoords.x * radialDistortion;
+        camCoords.y = camCoords.y * radialDistortion;
 
 
         float radiusX = ceil(brightnessDeviation*2);
@@ -756,15 +763,24 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
                     + camera->K3() * pow(r, 6)) / (1 + camera->K4() * pow(r, 2)
                             + camera->K5() * pow(r, 4) + camera->K6() * pow(r, 6));
 
-            float tangentialUndistortionX  = (2 * camera->P1() * x * y) + camera->P2() * (pow(r, 2)
-                    + 2 * pow(x, 2));
+
+            // TODO: When undistorting the 2D points x and y, we have the option to undistort radially with constants
+            // k_1 through k_6 and undistort tangentially with constants p_1 and p_2. To make the math for finding the
+            // distortion algorithm that we use up above in image generation up above easy, I'm going to leave
+            // p_1 and p_2 out of our undistortion algorithm for now.
+
+//            float tangentialUndistortionX  = (2 * camera->P1() * x * y) + camera->P2() * (pow(r, 2)
+//                    + 2 * pow(x, 2));
 
 
-            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + camera.P2() * (pow(r, 2)
-                    + 2 * pow(y, 2));
+//            float tangentialUndistortionY  = (2 * camera->P1() * x * y) + camera.P2() * (pow(r, 2)
+//                    + 2 * pow(y, 2));
 
-            undistortedX = x * radialUndistortion + tangentialUndistortionX;
-            undistortedY = y * radialUndistortion + tangentialUndistortionY;
+//            undistortedX = x * radialUndistortion + tangentialUndistortionX;
+//            undistortedY = y * radialUndistortion + tangentialUndistortionY;
+
+            undistortedX = x * radialUndistortion;
+            undistortedY = y * radialUndistortion;
 
             Star undistortedStar(undistortedX, undistortedY, currentStar.radiusX, currentStar.radiusY, currentStar.magnitude);
             undistortedStars->push_back(undistortedStar);
