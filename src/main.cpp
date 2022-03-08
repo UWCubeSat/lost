@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
             {"centroid-algo", required_argument, 0, centroidAlgo},
             {"centroid-dummy-stars", required_argument, 0, centroidDummyStars},
             {"centroid-mag-filter",  required_argument, 0, centroidMagFilter},
-            {"id-algo",        required_argument, 0, idAlgo},
+            {"star-id-algo",        required_argument, 0, idAlgo},
             {"gv-tolerance",    required_argument, 0, gvTolerance},
             {"py-tolerance",    required_argument, 0, pyTolerance},
             {"false-stars",     required_argument, 0, falseStars},

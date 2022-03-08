@@ -7,11 +7,11 @@ pipeline \- builds a pipeline of the star identification process
 .SH SYNOPSIS
 
 \fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
+[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 .br
 \fBpipeline\fP --generate[=\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
 [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
+[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 
 .SH DESCRIPTION
 
@@ -54,7 +54,7 @@ Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-sta
 Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
 
 .TP
-\fB--id-algo\fP \fIalgo\fP
+\fB--star-id-algo\fP \fIalgo\fP
 Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
 
 .TP
@@ -75,7 +75,7 @@ Sets the tolerance for the pyramid identification algorithm to \fItolerance\fP d
 
 .TP
 \fB--attitude-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm". Defaults to dqm if option is not selected.
+Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" and "triad". Defaults to dqm if option is not selected.
 
 .TP
 \fB--generate\fP[=\fInum-images\fP]
