@@ -15,9 +15,7 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
     StarIdentifiers result;
 
     for (int i = 0; i < (int)stars.size(); i++) {
-        if (rand() > RAND_MAX/5) {
-            result.push_back(StarIdentifier(i, rand() % 2000));
-        }
+        result.push_back(StarIdentifier(i, rand() % catalog.size()));
     }
 
     return result;

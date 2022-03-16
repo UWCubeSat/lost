@@ -39,7 +39,7 @@ TEST_CASE("Center of Gravity: Basic generated input comparison", "[centroid]") {
         outputs.push_back(std::move(result));
     }
 
-    PromptPipelineComparison(resultList, outputs);
+    // PromptPipelineComparison(resultList, outputs);
     // assert centroider found some kind of stars, output shouldn't be empty
     // assert not found more centroids than present
     float centroidThreshold = 0.0f;
