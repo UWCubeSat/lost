@@ -298,27 +298,29 @@ private:
     Attitude attitude;
 };
 
-Camera PromptCamera(int xResolution, int yResolution) { // You can add the extra parameters you want to ask the user for to get into your Camera object here.
-    float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
-    float focalLengthOrFov = Prompt<float>("Focal Length (mm) or horizontal FOV (degrees)");
-    float focalLengthPixels = pixelSize == 0.0f
-        ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
-        : focalLengthOrFov * 1000 / pixelSize;
 
-    float k1 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k1):");
-    float k2 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k2):");
-    float k3 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k3):");
-    float k4 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k4):");
-    float k5 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k5):");
-    float k6 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k6):");
-    float p1 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p1):");
-    float p2 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p2):");
-
-
-    return Camera(focalLengthPixels, xResolution, yResolution,
-                  k1, k2, k3, k4, k5, k6,
-                  p1, p2);
-}
+// TODO | BEN: Remove this.
+//Camera PromptCamera(int xResolution, int yResolution) { // You can add the extra parameters you want to ask the user for to get into your Camera object here.
+//    float pixelSize = Prompt<float>("Pixel size (µm) for focal length or zero for FOV");
+//    float focalLengthOrFov = Prompt<float>("Focal Length (mm) or horizontal FOV (degrees)");
+//    float focalLengthPixels = pixelSize == 0.0f
+//        ? FovToFocalLength(DegToRad(focalLengthOrFov), xResolution)
+//        : focalLengthOrFov * 1000 / pixelSize;
+//
+//    float k1 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k1):");
+//    float k2 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k2):");
+//    float k3 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k3):");
+//    float k4 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k4):");
+//    float k5 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k5):");
+//    float k6 = Prompt<float>("Undistortion Coefficients for Radial Undistortion (k6):");
+//    float p1 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p1):");
+//    float p2 = Prompt<float>("Undistortion Coefficients for Tangental Undistortion (p2):");
+//
+//
+//    return Camera(focalLengthPixels, xResolution, yResolution,
+//                  k1, k2, k3, k4, k5, k6,
+//                  p1, p2);
+//}
 
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {

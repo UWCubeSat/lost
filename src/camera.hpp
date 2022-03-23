@@ -45,24 +45,9 @@ namespace lost {
         //    - Convex lens: a lens that is thin at the edges and gets thicker towards the center.
         //                   It focuses light that comes in at a straight perpendicualr angle to the lens
         //                   (like the bottom beam of light shown
-        
-
 
 class Camera { // TODO: Ben | Put the distortCoeffs into some kind of global struct???
 public:
-    // Our undistortion function works with up to six radial distortion coefficents (k1 through k6)
-    // and 2 tangental coeffs (p1 and p2)
-//    struct DistortCoeffs {
-//        float k1 = 0;
-//        float k2 = 0;
-//        float k3 = 0;
-//        float k4 = 0;
-//        float k5 = 0;
-//        float k6 = 0;
-//        float p1 = 0;
-//        float p2 = 0;
-//    };
-
     Camera(const Camera &) = default;
     // Takes focal lengths in pixels
     Camera(float focalLength,
@@ -127,6 +112,20 @@ private:
 };
 
 float FovToFocalLength(float xFov, float xResolution);
+
+// Our undistortion function works with up to six radial distortion coefficents (k1 through k6)
+// and 2 tangental coeffs (p1 and p2)
+// TODO | Ben: Check if this is
+struct DistortCoeffs {
+    float k1;
+    float k2;
+    float k3;
+    float k4;
+    float k5;
+    float k6;
+//        float p1;
+//        float p2;
+};
 
 }
 
