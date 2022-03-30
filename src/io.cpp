@@ -383,6 +383,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
+        // TODO: Make distortion an option and not something that just happens
+
         float x = camCoords.x; // x' in our equation
         float y = camCoords.y; // y' in our equation
         float r = sqrt(pow(x,2) + pow(y, 2)); // r^2 = (x')^2 + (y')^2
