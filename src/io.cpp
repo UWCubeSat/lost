@@ -540,6 +540,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         std::cerr << "Done" << std::endl;
     } 
 
+    // Checks if user enabled undistortion:
+    if(values.undistort == true) {
+        result.isUndistortEnabled = true;
+    }
+
     if (values.idAlgo == "dummy") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
     } else if (values.idAlgo == "gv") {

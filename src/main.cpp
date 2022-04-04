@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
         enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
             gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
             spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, centroidCompareThreshold, attitudeCompareThreshold, 
-            plotRawInput, plotInput, plotOutput, printCentroids, compareCentroids, compareStars, printAttitude, compareAttitude};
+            plotRawInput, plotInput, plotOutput, printCentroids, compareCentroids, compareStars, printAttitude, compareAttitude, undistort};
 
         static struct option long_options[] =
         {
@@ -207,6 +207,7 @@ int main(int argc, char **argv) {
             {"compare-attitude", optional_argument, 0, compareAttitude},
             {"centroid-compare-threshold",       required_argument, 0, centroidCompareThreshold},
             {"attitude-compare-threshold",       required_argument, 0, attitudeCompareThreshold},
+            {"undistort", optional_argument, 0, undistort}, // TODO: Ben | I added undistort arg here
             {"database", required_argument, 0, database},
             {"help",            no_argument, 0, help},
             {0, 0, 0, 0}
@@ -262,6 +263,13 @@ int main(int argc, char **argv) {
                     pipelineOptions.generate = atoi(optarg);
                 } else {
                     pipelineOptions.generate = 1;
+                }
+                break;
+            case undistort : // TODO | BEN: Check if this is right.
+                if (LOST_OPTIONAL_OPTARG()) {
+                    pipelineOptions.undistort = atoi(optarg);
+                } else {
+                    pipelineOptions.generate = 0;
                 }
                 break;
             case horizontalRes :

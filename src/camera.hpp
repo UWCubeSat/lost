@@ -52,22 +52,34 @@ public:
     // Takes focal lengths in pixels
     Camera(float focalLength,
            float xCenter, float yCenter,
-           int xResolution, int yResolution,
-           float k1, float k2, float k3, float k4, float k5, float k6,
-           float p1, float p2)
+           int xResolution, int yResolution)
         : focalLength(focalLength),
           xCenter(xCenter), yCenter(yCenter),
-          xResolution(xResolution), yResolution(yResolution),
-          k1(k1), k2(k2), k3(k3), k4(k4), k5(k5), k6(k6),
-          p1(p1), p2(p2) { };
-    Camera(float focalLength, int xResolution, int yResolution,
-           float k1, float k2, float k3, float k4, float k5, float k6,
-           float p1, float p2)
+          xResolution(xResolution), yResolution(yResolution) { };
+    Camera(float focalLength, int xResolution, int yResolution)
         : Camera(focalLength,
                  xResolution/(float)2.0, yResolution/(float)2.0,
-                 xResolution, yResolution,
-                 k1, k2, k3, k4, k5, k6,
-                 p1, p2) { };
+                 xResolution, yResolution) { };
+
+    // These are the declarations for if we want to have the distortion coeffs as arguments.
+    // Camera(float focalLength,
+    //        float xCenter, float yCenter,
+    //        int xResolution, int yResolution,
+    //        float k1, float k2, float k3, float k4, float k5, float k6,
+    //        float p1, float p2)
+    //     : focalLength(focalLength),
+    //       xCenter(xCenter), yCenter(yCenter),
+    //       xResolution(xResolution), yResolution(yResolution),
+    //       k1(k1), k2(k2), k3(k3), k4(k4), k5(k5), k6(k6),
+    //       p1(p1), p2(p2) { };
+    // Camera(float focalLength, int xResolution, int yResolution,
+    //        float k1, float k2, float k3, float k4, float k5, float k6,
+    //        float p1, float p2)
+    //     : Camera(focalLength,
+    //              xResolution/(float)2.0, yResolution/(float)2.0,
+    //              xResolution, yResolution,
+    //              k1, k2, k3, k4, k5, k6,
+    //              p1, p2) { };
 
     // Converts from a 3D point in space to a 2D point on the camera sensor. Assumes that X is the
     // depth direction and that it points away from the center of the sensor, i.e., any vector (x,

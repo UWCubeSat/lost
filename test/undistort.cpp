@@ -47,7 +47,7 @@ int main() {
     cv::Mat frame, gray;
 
     //Vector to store the pixel coordinates of detected checkerboard corners
-    std:vector<cv::Point2f> corner_pts;
+    std::vector<cv::Point2f> corner_pts;
     bool success;
 
     // Looping over all the images in the directory

@@ -79,6 +79,7 @@ public:
     float pyMismatchProb = 0.001;
     std::string attitudeAlgo = "";
     int generate = 1;
+    int undistort = 0; // TODO: Ben made a change here. Check if int is really the best option for this arg.
     int horizontalRes = 1024;
     int verticalRes = 1024;
     int referenceBrightness = 8000;
@@ -213,7 +214,7 @@ private:
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     std::unique_ptr<unsigned char[]> database;
-    bool isUndistortEnabled = false;
+    bool isUndistortEnabled = false; // TODO | Ben - A change I made for undistortion
 };
 
 Pipeline SetPipeline(const PipelineOptions &values);
