@@ -20,6 +20,7 @@ public:
                  xResolution/(float)2.0, yResolution/(float)2.0,
                  xResolution, yResolution) { };
 
+
     // Converts from a 3D point in space to a 2D point on the camera sensor. Assumes that X is the
     // depth direction and that it points away from the center of the sensor, i.e., any vector (x,
     // 0, 0) will be at (xResolution/2, yResolution/2) on the sensor.
@@ -43,6 +44,7 @@ public:
 private:
     // TODO: distortion
     float focalLength;
+    float focalLengthX; float focalLengthY;
     float xCenter; float yCenter;
     int xResolution; int yResolution;
 };

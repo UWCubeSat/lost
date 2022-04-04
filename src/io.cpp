@@ -102,7 +102,7 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
         puts("Can't convert weird image formats to grayscale.");
         return NULL;
     }
-    
+
     width  = cairo_image_surface_get_width(cairoSurface);
     height = cairo_image_surface_get_height(cairoSurface);
 
@@ -245,7 +245,7 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
     SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
 
     // TODO: also parse it and print out some stats before returning
-    
+
 }
 
 
@@ -312,7 +312,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     PipelineInputList result;
     cairo_surface_t *cairoSurface = NULL;
     std::string pngPath = values.png;
-    
+
     cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
     std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
     if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
@@ -395,7 +395,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
         // read noise
         IncrementPixelI(i, (int)readNoiseDist(generator));
-    }  
+    }
 }
 
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
@@ -466,7 +466,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     };
 
     Pipeline result;
-    
+
     // TODO: more flexible or sth
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
@@ -497,7 +497,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
         fs.read((char *)result.database.get(), length);
         std::cerr << "Done" << std::endl;
-    } 
+    }
 
     if (values.idAlgo == "dummy") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
@@ -518,7 +518,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         std::cout << "Illegal attitude algorithm." << std::endl;
         exit(1);
     }
-    
+
     return result;
 }
 
@@ -564,6 +564,54 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         result.starIds = NULL;
     }
 
+    if(isUndistortEnabled){
+        const Camera* cam = input.InputCamera();
+        Stars* undistortedStars = new Stars();
+
+        for(int i = 0; i < inputStars->size(); i++){
+            Star currStar = inputStars->at(i);
+
+            float u = currStar.position.x;
+            float v = currStar.position.y;
+
+            float x = (u - cam->XCenter()) / cam->FocalLengthX();
+            float y = (v - cam->YCenter()) / cam->FocalLengthY();
+
+            float x0 = x;
+            float y0 = y;
+
+            for(int j = 0; j < iters; j++){
+                float rSq = x*x + y*y;
+                float divBy = 1 + cam->K1()*rSq + cam->K2()*pow(rSq, 2) + cam->K3()*pow(rSq, 3);
+                float deltaX = 2*cam->P1()*x*y + cam->P2()*(rSq + 2*pow(x,2));
+                float deltaY = cam->P1() * (rSq + 2*pow(y, 2)) + 2*cam->P2()*x*y;
+
+                x = (x0 - deltaX) / divBy;
+                y = (y0 - deltaY) / divBy;
+            }
+            float xAns = x * cam->FocalLengthX() + cam->XCenter();
+            float yAns = y * cam->FocalLengthY() + cam->YCenter();
+
+            Star undistortedStar(xAns, yAns, currStar.radiusX, currStar.radiusY, currStar.magnitude);
+            undistortedStars->push_back(undistortedStar);
+
+        }
+
+        // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
+        result.stars = std::unique_ptr<Stars>(undistortedStars);
+        std::cerr << "inputStars before: " << "\n";
+        for(int i = 0; i < inputStars->size(); i++) {
+            std::cerr << "\t" << "(" << inputStars->at(i).position.x << ", " << inputStars->at(i).position.y << ")" << ", \n";
+        }
+
+        inputStars = undistortedStars;
+        std::cout << "\n\ninputStars after: " << "\n";
+        for(int i = 0; i < inputStars->size(); i++) {
+            std::cerr << "\t" << "(" << inputStars->at(i).position.x << ", " << inputStars->at(i).position.y << ")" << ", \n";
+        }
+
+    }
+
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
@@ -582,12 +630,12 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
-    
+
 
     for (const std::unique_ptr<PipelineInput> &input : inputs) {
         result.push_back(Go(*input));
     }
-    
+
     return result;
 }
 
@@ -623,7 +671,7 @@ static std::vector<int> FindClosestCentroids(float threshold,
                 closestIndex = k;
             }
         }
-        
+
         result.push_back(closestIndex);
     }
 
@@ -667,7 +715,7 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     assert(comparisons.size() > 0);
 
     CentroidComparison result;
-    
+
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
         result.numExtraStars += comparison.numExtraStars;
@@ -677,7 +725,7 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     result.meanError /= comparisons.size();
     result.numExtraStars /= comparisons.size();
     result.numMissingStars /= comparisons.size();
-    
+
     return result;
 }
 
@@ -769,7 +817,7 @@ void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
                                     const std::vector<PipelineOutput> &actual,
                                     const PipelineOptions &values) {
-    
+
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
     cairo_surface_destroy(cairoSurface);
@@ -903,7 +951,7 @@ void PipelineComparatorStars(std::ostream &os,
         os << "starid_num_incorrect " << comparisons[0].numIncorrect << std::endl;
         os << "starid_num_total " << comparisons[0].numTotal << std::endl;
     }
- 
+
     float fractionIncorrectSum = 0;
     float fractionCorrectSum = 0;
     for (const StarIdComparison &comparison : comparisons) {
@@ -1024,7 +1072,7 @@ void PipelineComparatorAttitude(std::ostream &os,
 // }
 
 void PipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual, 
+                              const std::vector<PipelineOutput> &actual,
                               const PipelineOptions &values) {
     assert(expected.size() == actual.size() && expected.size() > 0);
 
@@ -1122,7 +1170,7 @@ void PipelineComparison(const PipelineInputList &expected,
 //     int raHours, raMinutes;
 //     float raSeconds;
 //     int raFormatTime = sscanf(raStr.c_str(), "%dh %dm %fs", &raHours, &raMinutes, &raSeconds);
-    
+
 //     float raDeg;
 //     int raFormatDeg = sscanf(raStr.c_str(), "%f", &raDeg);
 
