@@ -4,7 +4,6 @@ import random
 import time
 import numpy as np
 from p_tqdm import p_umap
-from tqdm import tqdm
 import csv
 from constants import *
 # %%
@@ -54,14 +53,15 @@ def generateImage(num):
     os.system(f'cd {PATH_TO_LOST} && mv {FILE_NAME}.png {DATA_PATH} >/dev/null 2>&1')    
 
     with open('data.csv', 'a') as f:
-        csv_writer = csv.writer(f)
-        csv_writer.writerow([f'{FILE_NAME}.png', 
-        (BORESIGHT_RIGHT_ASCENSION, BORESIGHT_DECLINATION, BORESIGHT_ROLL)])
+        csv_writer = csv.writer(f, delimiter = ',')
+        csv_writer.writerow([f'{FILE_NAME}.png', BORESIGHT_RIGHT_ASCENSION, BORESIGHT_DECLINATION, BORESIGHT_ROLL])
 
 # %%
 def main():
     num_images = int(input("How many images do you want to generate? "))
     f = open('data.csv', 'w')
+    with open('data.csv', 'a') as f:
+        f.write('image_path,ra,de,roll\n')
     generated = p_umap(generateImage, range(num_images))
 
   # %%  

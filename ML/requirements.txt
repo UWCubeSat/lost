@@ -1,6 +1,6 @@
 numpy
 p_tqdm
-torch
-torchvision
-torchaudio
+tensorflow
 pandas
+scipy
+wandb
