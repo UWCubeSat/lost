@@ -16,7 +16,7 @@ public:
     virtual ~StarIdAlgorithm() { };
 };
 
-class DummyStarIdAlgorithm : public StarIdAlgorithm {
+class DummyStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
 };
@@ -30,7 +30,7 @@ private:
 };
 
 
-class PyramidStarIdAlgorithm : public StarIdAlgorithm {
+class PyramidStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
     /**

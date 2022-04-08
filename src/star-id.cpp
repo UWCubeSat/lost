@@ -15,9 +15,7 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
     StarIdentifiers result;
 
     for (int i = 0; i < (int)stars.size(); i++) {
-        if (rand() > RAND_MAX/5) {
-            result.push_back(StarIdentifier(i, rand() % 2000));
-        }
+        result.push_back(StarIdentifier(i, rand() % catalog.size()));
     }
 
     return result;
@@ -46,11 +44,11 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
                 float lowerBoundRange = greatCircleDistance - tolerance;
                 float upperBoundRange = greatCircleDistance + tolerance;
-                long numReturnedPairs;
+                const int16_t *upperBoundSearch;
                 const int16_t *lowerBoundSearch = vectorDatabase.FindPairsLiberal(
-                    lowerBoundRange, upperBoundRange, &numReturnedPairs);
+                    lowerBoundRange, upperBoundRange, &upperBoundSearch);
                 //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
-                for (const int16_t *k = lowerBoundSearch; k < lowerBoundSearch + numReturnedPairs * 2; k++) {
+                for (const int16_t *k = lowerBoundSearch; k != upperBoundSearch; k++) {
                     if ((k - lowerBoundSearch) % 2 == 0) {
                         float actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
                         assert(actualAngle <= greatCircleDistance + tolerance * 2);
@@ -164,11 +162,12 @@ class PairDistanceInvolvingIterator {
 public:
     // unqualified constructor makes a "past-the-end" iterator
     PairDistanceInvolvingIterator()
-        : pairs(NULL), pastTheEnd(NULL) { };
+        : pairs(NULL), end(NULL) { };
 
-    PairDistanceInvolvingIterator(const int16_t *pairs, long numPairs, int16_t involving)
-        : pairs(pairs), pastTheEnd(pairs + numPairs*2), involving(involving) {
+    PairDistanceInvolvingIterator(const int16_t *pairs, const int16_t *end, int16_t involving)
+        : pairs(pairs), end(end), involving(involving) {
 
+        assert((end-pairs)%2 == 0);
         forwardUntilInvolving();
     };
 
@@ -190,7 +189,7 @@ public:
     }
 
     bool hasValue() {
-        return pairs != pastTheEnd;
+        return pairs != end;
     }
 
     // bool operator==(const PairDistanceInvolvingIterator &other) const {
@@ -202,13 +201,13 @@ public:
     // }
 private:
     const int16_t *pairs;
-    const int16_t *pastTheEnd;
+    const int16_t *end;
     int16_t involving;
     int16_t curValue;
 
     // like postfix++, except it's a no-op if already on a valid spot.
     void forwardUntilInvolving() {
-        while (pairs != pastTheEnd) {
+        while (pairs != end) {
             if (pairs[0] == involving) {
                 curValue = pairs[1];
                 return;
@@ -251,9 +250,9 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
 
         Vec3 pSpatial = camera.CameraToSpatial(stars[p].position).Normalize();
         float ipDist = AngleUnit(pyramidActualSpatials[0], pSpatial);
-        long ipNum;
-        const int16_t *ipPairs = db.FindPairsLiberal(ipDist - tolerance, ipDist + tolerance, &ipNum);
-        PairDistanceInvolvingIterator pIterator(ipPairs, ipNum, pyramidIdentifiers[0].catalogIndex);
+        const int16_t *ipEnd;
+        const int16_t *ipPairs = db.FindPairsLiberal(ipDist - tolerance, ipDist + tolerance, &ipEnd);
+        PairDistanceInvolvingIterator pIterator(ipPairs, ipEnd, pyramidIdentifiers[0].catalogIndex);
 
         std::vector<int16_t> pCandidates; // collect them all in the loop, at the end only identify
                                           // the star if unique
@@ -388,16 +387,16 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     _CHECK_DISTANCE(krDist);
 #undef _CHECK_DISTANCE
 
-                    long ijNum, ikNum, irNum; //, jkNum, jrNum, krNum;
-                    const int16_t *ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijNum);
-                    const int16_t *ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikNum);
-                    const int16_t *irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irNum);
+                    const int16_t *ijEnd, *ikEnd, *irEnd;
+                    const int16_t *const ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
+                    const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
+                    const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     std::vector<bool> iSeen(catalog.size(), false);
-                    for (int p = 0; p < ijNum*2; p++) {
-                        int iCandidate = ijQuery[p];
+                    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+                        int iCandidate = *iCandidateQuery;
                         if (iSeen[iCandidate]) {
                             continue;
                         }
@@ -409,9 +408,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         // performance, but at the cost of memory. It would be best to put some kind
                         // of guarantee on the memory usage, and then switch to using the iterator
                         // without caching if that memory limit is exceeded.
-                        PairDistanceInvolvingIterator jIterator(ijQuery, ijNum, iCandidate);
-                        PairDistanceInvolvingIterator kIterator(ikQuery, ikNum, iCandidate);
-                        PairDistanceInvolvingIterator rIterator(irQuery, irNum, iCandidate);
+                        PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd, iCandidate);
+                        PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd, iCandidate);
+                        PairDistanceInvolvingIterator rIterator(irQuery, irEnd, iCandidate);
                         std::vector<int16_t> jCandidates;
                         std::vector<int16_t> kCandidates;
                         std::vector<int16_t> rCandidates;
@@ -463,9 +462,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                     }
 
                                     // we have a match!
-                                    printf("expected mismatches: %e\n", expectedMismatches);
 
-                                    std::cerr << "Surprise muthafuckas" << std::endl;
                                     if (iMatch == -1) {
                                         iMatch = iCandidate;
                                         jMatch = jCandidate;
@@ -484,12 +481,14 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     }
 
                     if (iMatch != -1) {
+                        printf("Matched unique pyramid!\nExpected mismatches: %e\n", expectedMismatches);
                         identified.push_back(StarIdentifier(i, iMatch));
                         identified.push_back(StarIdentifier(j, jMatch));
                         identified.push_back(StarIdentifier(k, kMatch));
                         identified.push_back(StarIdentifier(r, rMatch));
 
                         PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
+                        printf("Identified an additional %d stars\n", (int)identified.size() - 4);
 
                         return identified;
                     }
