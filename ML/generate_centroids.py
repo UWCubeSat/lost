@@ -63,7 +63,7 @@ def generateCentroid(num):
     f'{STAR_SPREAD_STDDEV} {CAMERA_SENSITIVITY} {DARK_CURRENT} {NOISE_STDDEV} {EXPOSURE_TIME} '+ 
     f'{READOUT_TIME} {ENABLE_SHOT_NOISE} {OVERSAMPLING} {BORESIGHT_RIGHT_ASCENSION} '+ 
     f'{BORESIGHT_DECLINATION} {BORESIGHT_ROLL} '+
-    f'centroid {CENTROID_ALGO} done print_centroids'+ 
+    f'centroid {CENTROID_ALGO} done print_centroids '+ 
     f'{num}.txt done')
 
     # Move the data to the data folder.
