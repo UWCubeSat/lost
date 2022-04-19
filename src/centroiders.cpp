@@ -92,39 +92,47 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
+int Limit(bool test, int i, int leftover, int div) {
+    if(test) {
+        return i * (div + 1);
+    } else {
+        return leftover * (div + 1) + (i - leftover) * div;
+    }
+}
+// pixel * divisions/ size floor
+// subdivisionsize * size / divisions ceil
+
+int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subdivisions, int horizontalLeftover, int horizontalDiv, int verticalLeftover, int verticalDiv) {
+    int row = box / subdivisions;
+    int col = box % subdivisions;
+    double average;
+    double squareSum;
+    int count = 0;
+    for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
+        for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
+            average += image[i * imageHeight + j];
+            squareSum += image[i * imageHeight + j] * image[i * imageHeight + j];
+            count++;
+        }
+    }
+    average /= count;
+    return average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1)));
+}
+
 // Local Basic Thresholding with divisions as parameter, returns a vector containing thresholds 
 // corresponding to different divisions.
 // Divisions are horizontally based
 // Uses the same statistical algorithm as BasicThresholding
 std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
     // run Basic Threshold on all elements in certain subdivisions
-    int div = imageHeight / subdivisions; // Minimum number of lines for each division
-    int leftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
-    long totalPixels = imageWidth * imageHeight;
+    int horizontalDiv = imageHeight / subdivisions; // Minimum number of lines for each division
+    int verticalDiv = imageWidth / subdivisions;
+    int horizontalLeftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
+    int verticalLeftover = imageWidth % subdivisions;
     std::vector<int> standardDeviations;
     // Sets threshold for the first few subdivisions that have 1 more line than the rest
-    for(int i = 0; i < subdivisions; i++) {
-        int totalMag = 0;
-        int std = 0;
-        int mean = 0;
-        int max;
-        int start;
-        if(i < leftover) {
-            start = i * (div + 1) * imageWidth;
-            max = (i+1) * (div + 1) * imageWidth;
-        } else {
-            start = leftover * (div + 1) * imageWidth + (i - leftover) * (div) * imageWidth;
-            max = leftover * (div + 1) * imageWidth + (i + 1 - leftover) * (div) * imageWidth;
-        }
-        for(int j = start; j < max; j++) {
-            totalMag += image[j];
-        }
-        mean = totalMag / ((div + 1) * imageWidth);
-        for (long j = start; j < max; j++) {
-                std += std::pow(image[j] - mean, 2);
-            }
-        std = std::sqrt(std / ((div + (1 - i/leftover)) * imageWidth)); 
-        standardDeviations.push_back(mean + (std * 5));
+    for(int i = 0; i < subdivisions * subdivisions; i++) {
+        standardDeviations.push_back(Box(i, image, imageWidth, imageHeight, subdivisions, horizontalLeftover, horizontalDiv, verticalLeftover, verticalDiv));
     }
     // Return values of previous method as a vector
     return standardDeviations;
@@ -160,16 +168,23 @@ struct CentroidParams {
     std::unordered_set<int> checkedIndices;
 };
 
+// int iToDivision
+
+// int Row(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
+// int Column(i, imageHeight, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
+int RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
+    if(i < (div + 1) * leftover * size) {
+        return i / ((div + 1) * size);
+    } else {
+        return leftover + (i - (div + 1) * leftover * size) / (div * size);
+    }
+}
+
+
 // For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
 int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
-    int div = imageHeight / subdivisions;
-    int leftover = imageHeight % subdivisions;
-    if(i < (div + 1) * leftover * imageWidth) {
-        return i / ((div + 1) * imageWidth);
-    } else {
-        return leftover + (i - (div + 1) * leftover * imageWidth) / (div * imageWidth);
-    }
-    return 0;
+    return RowOrColumn(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions) * subdivisions + 
+    RowOrColumn(i, imageHeight, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions);
 }
 
 //recursive helper here
