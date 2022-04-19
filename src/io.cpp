@@ -564,11 +564,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         result.starIds = NULL;
     }
 
-    if(isUndistortEnabled){
+    if(true){
         const Camera* cam = input.InputCamera();
         Stars* undistortedStars = new Stars();
 
-        for(int i = 0; i < inputStars->size(); i++){
+        for(long unsigned i = 0; i < inputStars->size(); i++){
             Star currStar = inputStars->at(i);
 
             float u = currStar.position.x;
@@ -580,7 +580,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             float x0 = x;
             float y0 = y;
 
-            for(int j = 0; j < iters; j++){
+            for(int j = 0; j < cam->ITERS(); j++){
                 float rSq = x*x + y*y;
                 float divBy = 1 + cam->K1()*rSq + cam->K2()*pow(rSq, 2) + cam->K3()*pow(rSq, 3);
                 float deltaX = 2*cam->P1()*x*y + cam->P2()*(rSq + 2*pow(x,2));
@@ -600,13 +600,13 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
         result.stars = std::unique_ptr<Stars>(undistortedStars);
         std::cerr << "inputStars before: " << "\n";
-        for(int i = 0; i < inputStars->size(); i++) {
+        for(long unsigned i = 0; i < inputStars->size(); i++) {
             std::cerr << "\t" << "(" << inputStars->at(i).position.x << ", " << inputStars->at(i).position.y << ")" << ", \n";
         }
 
         inputStars = undistortedStars;
         std::cout << "\n\ninputStars after: " << "\n";
-        for(int i = 0; i < inputStars->size(); i++) {
+        for(long unsigned i = 0; i < inputStars->size(); i++) {
             std::cerr << "\t" << "(" << inputStars->at(i).position.x << ", " << inputStars->at(i).position.y << ")" << ", \n";
         }
 

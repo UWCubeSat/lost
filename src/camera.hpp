@@ -9,15 +9,18 @@ class Camera {
 public:
     Camera(const Camera &) = default;
     // Takes focal lengths in pixels
-    Camera(float focalLength,
+    Camera(float focalLength, float fX, float fY,
            float xCenter, float yCenter,
+           float k1, float k2, float k3, float p1, float p2, int iters,
            int xResolution, int yResolution)
-        : focalLength(focalLength),
+        : focalLength(focalLength), focalLengthX(fX), focalLengthY(fY), // just syntax to say this.focalLengthX = fX;
           xCenter(xCenter), yCenter(yCenter),
+          k1(k1), k2(k2), k3(k3), p1(p1), p2(p2),
           xResolution(xResolution), yResolution(yResolution) { };
     Camera(float focalLength, int xResolution, int yResolution)
-        : Camera(focalLength,
+        : Camera(focalLength, focalLength, focalLength,
                  xResolution/(float)2.0, yResolution/(float)2.0,
+                 0, 0, 0, 0, 0, 3,
                  xResolution, yResolution) { };
 
 
@@ -38,14 +41,31 @@ public:
     int XResolution() const { return xResolution; };
     int YResolution() const { return yResolution; };
     float FocalLength() const { return focalLength; };
+
+    float FocalLengthX() const {return focalLengthX; };
+    float FocalLengthY() const {return focalLengthY; };
+
+    float XCenter() const {return xCenter; };
+    float YCenter() const {return yCenter; };
+
+    float K1() const {return k1; };
+    float K2() const {return k2; };
+    float K3() const {return k3; };
+    float P1() const {return p1; };
+    float P2() const {return p2; };
+
+    int ITERS() const{return iters; };
+
+
     float Fov() const;
     void SetFocalLength(float focalLength) { this->focalLength = focalLength; }
 
 private:
-    // TODO: distortion
     float focalLength;
     float focalLengthX; float focalLengthY;
     float xCenter; float yCenter;
+    float k1, k2, k3, p1, p2;
+    float iters;
     int xResolution; int yResolution;
 };
 
