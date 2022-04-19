@@ -123,7 +123,7 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
         for (long j = start; j < max; j++) {
                 std += std::pow(image[j] - mean, 2);
             }
-        std = std::sqrt(std / ((div + 1) * imageWidth));
+        std = std::sqrt(std / ((div + (1 - i/leftover)) * imageWidth)); 
         standardDeviations.push_back(mean + (std * 5));
     }
     // Return values of previous method as a vector
