@@ -147,18 +147,21 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     return verified;
 }
 
-    /**
-     * Strategies:
-     * 
-     * 1. For each star, enumerate all stars which have the same combination of distances to some
-     *  other stars, getting down to a hopefully small (<10) list of candidates for each star, then
-     *  do a quad-nested loop to correlate them.
-     *
-     * 2. Loop through all possible stars in the catalog for star i. Then look at edge ij, using
-     * this to select possible j-th stars. If ever there is not a possible j-th star, continue the
-     * i-loop. When a possible ij combination is found, loop through k stars according to ik. IF
-     * none are found, continue the outer i loop. If some are found, check jk for each one. For each possible ijk triangle, 
-     */
+/**
+ * Strategies:
+ * 
+ * 1. For each star, enumerate all stars which have the same combination of distances to some other
+ *  stars, getting down to a hopefully small (<10) list of candidates for each star, then do a
+ *  quad-nested loop to correlate them.
+ *
+ * 2. Loop through all possible stars in the catalog for star i. Then look at edge ij, using this to
+ * select possible j-th stars. If ever there is not a possible j-th star, continue the i-loop. When
+ * a possible ij combination is found, loop through k stars according to ik. IF none are found,
+ * continue the outer i loop. If some are found, check jk for each one. For each possible ijk
+ * triangle,
+ */
+
+	
 
 class PairDistanceInvolvingIterator {
 public:
@@ -888,12 +891,15 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 for (int i = 0; i < (int)possibility.NumTrueStars(); i++) {
                     closestCentroidIndicesIndices.push_back(i);
                 }
+
+                int possibilityNumNeighbors = std::min(minNumNeighbors, possibility.NumTrueStars());
+
                 // find the closest numNeighbors neighbors. Closest will make the rest of this
                 // faster and tend to be well distributed around different sides of the new
                 // centroid, which keeps the annulus intersection area small.
-                // nth_element sorts the array up to the given mid iterator.
+                // nth_element partitions the array up to the given mid iterator. Still need to sort afterward
                 // brrt brrt style guideline violation: no lambdas
-                std::nth_element(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + minNumNeighbors - 1, closestCentroidIndicesIndices.end(),
+                std::nth_element(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + possibilityNumNeighbors - 1, closestCentroidIndicesIndices.end(),
                                  [curCentroid, &stars, &possibility](int s1, int s2) -> bool {
                                      const Vec2 &p = stars[curCentroid].position;
                                      const Vec2 &p1 = stars[possibility.centroidIndices[s1]].position;
@@ -903,7 +909,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                                      return s1Dist < s2Dist;
                                  });
                 // TODO: deduplicate
-                std::sort(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + minNumNeighbors,
+                std::sort(closestCentroidIndicesIndices.begin(), closestCentroidIndicesIndices.begin() + possibilityNumNeighbors,
                                  [curCentroid, &stars, &possibility](int s1, int s2) -> bool {
                                      const Vec2 &p = stars[curCentroid].position;
                                      const Vec2 &p1 = stars[possibility.centroidIndices[s1]].position;
