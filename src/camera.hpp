@@ -20,7 +20,7 @@ public:
     Camera(float focalLength, int xResolution, int yResolution)
         : Camera(focalLength, focalLength, focalLength,
                  xResolution/(float)2.0, yResolution/(float)2.0,
-                 0, 0, 0, 0, 0, 3,
+                 0, 0, 0, 0, 0, 0,
                  xResolution, yResolution) { };
 
 

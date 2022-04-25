@@ -597,7 +597,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         }
 
-        // Smart ptr. unique_ptr is a simple implementation of a smart ptr.
+        // Printing star coordinates for test
         result.stars = std::unique_ptr<Stars>(undistortedStars);
         std::cerr << "inputStars before: " << "\n";
         for(long unsigned i = 0; i < inputStars->size(); i++) {
