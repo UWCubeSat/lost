@@ -6,6 +6,8 @@
 *.d
 *.png
 
+/documentation/man-*.h
+
 /lost
 *.jpg
 

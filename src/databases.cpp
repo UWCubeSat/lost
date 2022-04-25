@@ -115,7 +115,7 @@ KVectorIndex::KVectorIndex(const unsigned char *buffer) {
     bins = (const int32_t *)buffer;
 }
 
-long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, long *numReturned) const {
+long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const {
     assert(maxQueryDistance > minQueryDistance);
     if (maxQueryDistance >= max) {
         maxQueryDistance = max - 0.00001; // TODO: better way to avoid hitting the bottom bin
@@ -124,7 +124,7 @@ long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, 
         minQueryDistance = min + 0.00001;
     }
     if (minQueryDistance > max || maxQueryDistance < min) {
-        *numReturned = 0;
+        *upperIndex = 0;
         return 0;
     }
     long lowerBin = BinFor(minQueryDistance);
@@ -140,9 +140,7 @@ long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, 
         return 0;
     }
     // bins[upperBin]=number of pairs <= r >= query distance
-    int upperIndex = bins[upperBin] - 1;
-    *numReturned = upperIndex - lowerIndex + 1;
-    assert(*numReturned >= 0);
+    *upperIndex = bins[upperBin];
     return lowerIndex;
 }
 
@@ -232,9 +230,11 @@ float Clamp(float num, float low, float high) {
 }
 
 const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
-    float minQueryDistance, float maxQueryDistance, long *numReturnedPairs) const {
+    float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
 
-    long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, numReturnedPairs);
+    long upperIndex;
+    long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
+    *end = &pairs[upperIndex * 2];
     return &pairs[lowerIndex * 2];
 }
 
