@@ -396,11 +396,12 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int oversampling,
                                                int numFalseStars,
                                                int falseStarMinMagnitude,
-                                               int falseStarMaxMagnitude
+                                               int falseStarMaxMagnitude,
+                                               int seed
     ) : camera(camera), attitude(attitude), catalog(catalog) {
 
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
-    std::default_random_engine rng; // TODO: seed
+    std::default_random_engine rng(seed);
 
     // in photons
     float referenceBrightness = observedReferenceBrightness / sensitivity;
@@ -418,7 +419,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     std::vector<float> photonsBuffer(image.width*image.height, 0);
 
     bool motionBlurEnabled = exposureTime > 0 && abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
-    // TODO: ensure works when motion blur disabled
     if (!motionBlurEnabled) {
         exposureTime = 1.0;
         motionBlurDirection = Attitude(Quaternion(0, 1, 0, 0));
@@ -599,7 +599,8 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
             values.generateOversampling,
             values.generateNumFalseStars,
             values.generateFalseMinMag,
-            values.generateFalseMaxMag);
+            values.generateFalseMaxMag,
+            values.generateSeed);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
     }

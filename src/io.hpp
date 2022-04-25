@@ -101,7 +101,8 @@ public:
                            float sensitivity, float darkCurrent, float readNoiseStdDev,
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,
                            bool shotNoise, int oversampling,
-                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude);
+                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
+                           int seed);
                            
 
     const Image *InputImage() const { return &image; };

@@ -27,7 +27,7 @@ cubesat in space.
 
 .TP
 \fB--png\fP \fIfilepath\fP
-Runs analysis on the png image at the given \fIfilepath\fP.
+Identify the png image at the given \fIfilepath\fP.
 
 .TP
 \fB--focal-length\fP \fIlength\fP
@@ -58,12 +58,8 @@ Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
 Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
 
 .TP
-\fB--gv-tolerance\fP [\fItolerance\fP]
-Sets the tolerance for the geometric voting identification algorithm to \fItolerance\fP degrees. Defaults to 0.04 degrees if option is not selected.
-
-.TP
-\fB--py-tolerance\fP [\fItolerance\fP]
-Sets the tolerance for the pyramid identification algorithm to \fItolerance\fP degrees. Defaults to 0.04 degrees if option is not selected.
+\fB--angular-tolerance\fP [\fItolerance\fP] Sets the estimated angular centroiding error tolerance,
+used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 degrees.
 
 .TP
 \fB--false-stars\fP \fInum\fP
@@ -71,47 +67,83 @@ Sets the tolerance for the pyramid identification algorithm to \fItolerance\fP d
 
 .TP
 \fB--max-mismatch-prob\fP \fIprobability\fP
-\fIprobability\fP is the maximum mismatch probability for the pyramid scheme star identification algorithm. Defaults to 0.001 if option is not selected.
+\fIprobability\fP is the maximum allowable probability of an incorrect star identification, for star id algorithms which support it. Defaults to 0.001.
 
 .TP
 \fB--attitude-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" and "triad". Defaults to dqm if option is not selected.
+Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" (Davenport Q) and "triad". Defaults to dqm.
 
 .TP
 \fB--generate\fP[=\fInum-images\fP]
-Generates \fInum-images\fP amount of images. If \fInum-images\fP is not given, defaults to 1 image.
+Generates \fInum-images\fP many images. Mutually exclusive with \fB--png\fP.
 
 .TP
-\fB--horizontal-res\fP \fIres\fP
-Sets the horizontal resolution of the generated image(s) to \fIres\fP. Defaults to 1024 if option is not selected.
+\fB--generate-x-resolution\fP \fIpixels\fP
+Sets the horizontal resolution of the generated image(s) to \fIpixels\fP. Defaults to 1024.
 
 .TP
-\fB--vertical-res\fP \fIres\fP
-Sets the vertical resolution of the generated image(s) to \fIres\fP. Defaults to 1024 if option is not selected.
+\fB--generate-y-resolution\fP \fIpixels\fP
+Sets the vertical resolution of the generated image(s) to \fIpixels\fP. Defaults to 1024.
 
 .TP
-\fB--ref-brightness\fP \fImag\fP
-Sets the brightness of the reference star of the generated image(s) to \fImag\fP.  Defaults to 8000 if option is not selected.
+\fB--generate-reference-brightness\fP \fIobserved-brightness\fP
+A star with magnitude 0 in the generated image will have have brightness \fIobserved-brightness\fP. An observed brightness of 1 fully saturates the pixel at the center of the star (completely white). Defaults to 100.
 
 .TP
-\fB--spread-stddev\fP \fIstddev\fP
-Sets the star spread standard deviation of the generated image(s) to \fIstddev\fP. Defailts to 0.7 if option is not selected.
+\fB--generate-spread-stddev\fP \fIstddev\fP
+Sets the standard deviation of the Gaussian distribution we use to approximate the distribution of photons received from each star. Defaults to 1.0.
 
 .TP
-\fB--noise-stddev\fP \fIstddev\fP
-Sets the noise standard deviation of the generated image(s) to \fIstddev\fP. Defaults to 10 if option is not selected.
+\fB--generate-shot-noise\fP \fItrue|false\fP
+Enables or disables shot noise simulation in generated images. Defaults to true.
 
 .TP
-\fB--boresight-right-asc\fP \fIascension\fP
-Sets the boresight right ascension of the generated image(s) to \fIascension\fP. Defaults to 88 if option is not selected.
+\fB--generate-dark-current\fP \fInoise-level\fP
+Set observed brightness of dark current in the image, from 0 (no dark noise) to 1 (whole image pure white). Defaults to 0.1. cf \fB--generate-sensitivity\fP to control shot noise intensity.
 
 .TP
-\fB--boresight-dec\fP \fIdeclination\fP
-Sets the boresight declination of the generated image(s) to \fIdeclination\fP. Defaults to 7 if option is not selected.
+\fB--generate-sensitivity\fP \fIsensitivity\fP
+Controls the simulated camera sensitivity for generated images. This only has an observable effect when shot noise is enabled (cf \fB--generate-shot-noise\fP). A higher sensitivity means that fewer photons can cause the same observed brightness on the sensor, so variation in number of photons causes more shot noise. Brightness is normalized according to \fB--generate-reference-brightness\fP so that adjusting sensitivity does not change observed brightness.
 
 .TP
-\fB--boresight-roll\fP \fIroll\fP
-Sets the boresight roll of the generated image(s) to \fIroll\fP. Defaults to 0 if option is not selected.
+\fB--generate-read-noise-stddev\fP \fIstddev\fP
+Sets the standard deviation of Gaussian noise in the generated image(s) to \fIstddev\fP. Noise is measured in observed brightness, where 1 is the difference between pure white and pure black. Defaults to 0.05.
+
+.TP
+\fB--generate-ra\fP, \fB--generate-de\fP, \fB--generate-roll\fP \fIdegrees\fP
+Set the right ascension, declination, and roll of the generated image.
+
+.TP
+\fB--generate-exposure\fP \fIexposure-time\fP
+Controls the exposure time of generated images. Only useful wrt motion blur. Default is 0 (motion blur disabled).
+
+.TP
+\fB--generate-blur-ra\fP, \fB--generate-blur-de\fP, \fB--generate-blur-roll\fP \fIdegrees\fP
+When motion blur is enabled, this is the change in attitude per unit time.
+
+.TP
+\fB--generate-readout-time\fP \fIreadout-time\fP
+Rolling shutter readout time for generated images. This is the time it takes from starting to capture the first row until finishing capturing the last row. Defaults to 0 (rolling shutter simulation disabled).
+
+.TP
+\fB--generate-false-stars\fP \fInum-false-stars\fP
+The number of false stars generated. All are placed uniformly randomly around the celestial sphere. Defaults to 0 (no false stars generated)
+
+.TP
+\fB--generate-false-min-mag\fP \fIminimum-magnitude\fP
+The minimum (weakest) magnitude that generated false stars should have. Defaults to 8.0.
+
+.TP
+\fB--generate-false-max-mag\fP \fImaximum-magnitude\fP
+The maximum (strongest) magnitude that generated false stars should have. Defaults to 1.0.
+
+.TP
+\fB--generate-oversampling\fP \fInum-samples\fP
+Peform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
+
+.TP
+\fB--generate-seed\fP \fIseed\fP
+An integer seed to pass to the random number generator used during image generation.
 
 .TP
 \fB--plot-raw-input\fP=[\fIpath\fP]
