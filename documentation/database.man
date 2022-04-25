@@ -18,16 +18,16 @@ constructing a database. This database is then generated into the file \fIoutput
 .SS Options
 
 .TP
-\fB--mag\fP \fImax-magnitude\fP
-Limits database to stars below \fImax-magnitude\fP (brighter stars have lower magnitudes). Defaults to 1000 if option is not selected.
+\fB--min-mag\fP \fIminimum-magnitude\fP
+Limits database to stars with magnitude less than \minimum-magnitude\fP (brighter stars have lower magnitudes).
 
 .TP
-\fB--stars\fP \fInum-stars\fP
-Limits database to the \fInum-stars\fP brightest stars in the catalog. Defaults to 10000 if option is not selected.
+\fB--max-stars\fP \fInum-stars\fP
+Limits database to the \fInum-stars\fP brightest stars in the catalog.
 
 .TP
 \fB--kvector\fP
-Uses the kvector method of building a database.
+Generate a KVector database
 
 .TP
 \fB--kvector-min-distance \fImin\fP

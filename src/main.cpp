@@ -6,6 +6,7 @@
 #include <cstring>
 #include <map>
 #include <unistd.h>
+#include <assert.h>
 
 #include "databases.hpp"
 #include "centroiders.hpp"
@@ -16,7 +17,7 @@
 namespace lost {
 
 static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.maxMagnitude*100), values.maxStars);
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag*100), values.maxStars);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
@@ -28,12 +29,8 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
-    if (isatty(fileno(stdout)) && values.path == "stdout") {
-       std::cerr << "Warning: output contains binary contents. Not printed to terminal." << std::endl;
-    } else {
-        PromptedOutputStream pos = PromptedOutputStream(values.path);
-        pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
-    }
+    PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
+    pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
 
 }
 
@@ -90,6 +87,16 @@ static void PipelineRun(const PipelineOptions &values) {
 //     std::cout << "camera_identified false" << std::endl;
 // }
 
+bool atobool(const char *cstr) {
+    std::string str(cstr);
+    if (str == "1" || str == "true") {
+        return true;
+    }
+    if (str == "0" || str == "false") {
+        return false;
+    }
+    assert(false);
+    return false;
 }
 
 // https://stackoverflow.com/a/69177115
@@ -98,7 +105,8 @@ static void PipelineRun(const PipelineOptions &values) {
      ? (bool) (optarg = argv[optind++])                          \
      : (optarg != NULL))
 
-int main(int argc, char **argv) {
+// Wrapped so that we are in lost namespace.
+static int LostMain(int argc, char **argv) {
 
     if (argc == 1) {
         std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
@@ -110,50 +118,47 @@ int main(int argc, char **argv) {
 
     if (command == "database") {
 
-        enum DatabaseEnum {mag, stars, kvector, kvectorMinDistance, kvectorMaxDistance, 
-            kvectorDistanceBins, help, output};
+        enum class DatabaseCliOption {
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
+#include "database-options.hpp"
+#undef LOST_CLI_OPTION
+            help
+        };
 
         static struct option long_options[] =
         {
-            {"mag",     required_argument, 0, mag},
-            {"stars",   required_argument, 0, stars},
-            {"kvector", no_argument,       0, kvector},
-            {"kvector-min-distance", required_argument, 0, kvectorMinDistance},
-            {"kvector-max-distance",  required_argument, 0, kvectorMaxDistance},
-            {"kvector-distance-bins",  required_argument, 0, kvectorDistanceBins},
-            {"help",  no_argument, 0, help},
-            {"output", required_argument, 0, output},
-            {0, 0, 0, 0}
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+            {name,                                                      \
+             defaultArg == 0 ? required_argument : optional_argument, \
+             0,                                                         \
+             (int)DatabaseCliOption::prop},
+#include "database-options.hpp"
+#undef LOST_CLI_OPTION
+            {"help",  no_argument, 0, (int)DatabaseCliOption::help},
+            {0}
         };
 
-        lost::DatabaseOptions databaseOptions;
+        DatabaseOptions databaseOptions;
         int index;
         int option;
 
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
-            case mag :
-                databaseOptions.maxMagnitude = atof(optarg);
-                break;
-            case stars :
-                databaseOptions.maxStars = atoi(optarg);
-                break;
-            case kvector :
-                databaseOptions.kVectorEnabled = true;
-                break;
-            case kvectorMinDistance :
-                databaseOptions.kVectorMinDistance = atof(optarg);
-                break;
-            case kvectorMaxDistance :
-                databaseOptions.kVectorMaxDistance = atof(optarg);
-                break;
-            case kvectorDistanceBins :
-                databaseOptions.kVectorDistanceBins = atol(optarg);
-                break;
-            case output :
-                databaseOptions.path = optarg;
-                break;
-            case help :
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+                case (int)DatabaseCliOption::prop :                     \
+                    if (defaultArg == 0) {     \
+                        databaseOptions.prop = converter;       \
+                    } else {                                    \
+                        if (LOST_OPTIONAL_OPTARG()) {           \
+                            databaseOptions.prop = converter;   \
+                        } else {                                \
+                            databaseOptions.prop = defaultArg;  \
+                        }                                       \
+                    }                                           \
+            break;
+#include "database-options.hpp"
+#undef LOST_CLI_OPTION
+            case (int)DatabaseCliOption::help :
                 std::cout << documentation_database_txt << std::endl;
                 return 0;
                 break;
@@ -168,47 +173,25 @@ int main(int argc, char **argv) {
 
     } else if (command == "pipeline") {
 
-        enum PipelineEnum {png, focalLength, pixelSize, fov, centroidAlgo, centroidDummyStars, centroidMagFilter, database, idAlgo,
-            gvTolerance, pyTolerance, falseStars, maxMismatchProb, attitudeAlgo, plot, generate, horizontalRes, verticalRes, refBrightnessMag,
-            spreadStddev, noiseStddev, boresightRightAsc, boresightDec,boresightRoll, help, centroidCompareThreshold, attitudeCompareThreshold, 
-            plotRawInput, plotInput, plotOutput, printCentroids, compareCentroids, compareStars, printAttitude, compareAttitude};
+        enum class PipelineCliOption {
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
+#include "pipeline-options.hpp"
+#undef LOST_CLI_OPTION
+            help
+        };
 
         static struct option long_options[] =
         {
-            {"png",             required_argument, 0, png},
-            {"focal-length",    required_argument, 0, focalLength},
-            {"pixel-size",      required_argument, 0, pixelSize},
-            {"fov",             required_argument, 0, fov},
-            {"centroid-algo", required_argument, 0, centroidAlgo},
-            {"centroid-dummy-stars", required_argument, 0, centroidDummyStars},
-            {"centroid-mag-filter",  required_argument, 0, centroidMagFilter},
-            {"star-id-algo",        required_argument, 0, idAlgo},
-            {"gv-tolerance",    required_argument, 0, gvTolerance},
-            {"py-tolerance",    required_argument, 0, pyTolerance},
-            {"false-stars",     required_argument, 0, falseStars},
-            {"max-mismatch-prob",  required_argument, 0, maxMismatchProb},
-            {"attitude-algo",    required_argument, 0, attitudeAlgo},
-            {"generate",        optional_argument, 0, generate},
-            {"horizontal-res",  required_argument, 0, horizontalRes},
-            {"vertical-res",  required_argument, 0, verticalRes},
-            {"ref-brightness-mag",  required_argument, 0, refBrightnessMag},
-            {"spread-stddev",  required_argument, 0, spreadStddev},
-            {"noise-stddev",  required_argument, 0, noiseStddev},
-            {"boresight-right-asc",  required_argument, 0, boresightRightAsc},
-            {"boresight-dec",  required_argument, 0, boresightDec},
-            {"boresight-roll",  required_argument, 0, boresightRoll},
-            {"plot-raw-input", optional_argument, 0, plotRawInput},
-            {"plot-input", optional_argument, 0, plotInput},
-            {"plot-output", optional_argument, 0, plotOutput},
-            {"print-centroids", optional_argument, 0, printCentroids},
-            {"compare-centroids", optional_argument, 0, compareCentroids},
-            {"compare-stars", optional_argument, 0, compareStars},
-            {"print-attitude", optional_argument, 0, printAttitude},
-            {"compare-attitude", optional_argument, 0, compareAttitude},
-            {"centroid-compare-threshold",       required_argument, 0, centroidCompareThreshold},
-            {"attitude-compare-threshold",       required_argument, 0, attitudeCompareThreshold},
-            {"database", required_argument, 0, database},
-            {"help",            no_argument, 0, help},
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+            {name,                                                      \
+             defaultArg == 0 ? required_argument : optional_argument, \
+             0,                                                         \
+             (int)PipelineCliOption::prop},
+#include "pipeline-options.hpp"
+#undef LOST_CLI_OPTION
+
+            // DATABASES
+            {"help",            no_argument, 0, (int)PipelineCliOption::help},
             {0, 0, 0, 0}
         };
 
@@ -218,142 +201,21 @@ int main(int argc, char **argv) {
         
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
-            case png :
-                pipelineOptions.png = optarg;
-                break;
-            case focalLength :
-                pipelineOptions.focalLength = atof(optarg);
-                break;
-            case pixelSize :
-                pipelineOptions.pixelSize = atof(optarg);
-                break;
-            case fov :
-                pipelineOptions.fov = atof(optarg);
-                break;
-            case centroidAlgo :
-                pipelineOptions.centroidAlgo = std::string (optarg);                     
-                break;
-            case centroidDummyStars : 
-                pipelineOptions.dummyCentroidNumStars = atoi(optarg);
-                break;
-            case centroidMagFilter :
-                pipelineOptions.centroidMagFilter = atoi(optarg);
-                break;
-            case idAlgo :
-                pipelineOptions.idAlgo = std::string (optarg);                      
-                break;
-            case gvTolerance :
-                pipelineOptions.gvTolerance = atof(optarg);
-                break;
-            case pyTolerance :
-                pipelineOptions.pyTolerance = atof(optarg);
-                break;
-            case falseStars :
-                pipelineOptions.pyFalseStars = atoi(optarg);
-                break;
-            case maxMismatchProb :
-                pipelineOptions.pyMismatchProb = atof(optarg);
-                break;
-            case attitudeAlgo :
-                pipelineOptions.attitudeAlgo = std::string (optarg);                    
-                break; 
-            case generate :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.generate = atoi(optarg);
-                } else {
-                    pipelineOptions.generate = 1;
-                }
-                break;
-            case horizontalRes :
-                pipelineOptions.horizontalRes = atoi(optarg);
-                break;
-            case verticalRes :
-                pipelineOptions.verticalRes = atoi(optarg);
-                break;
-            case refBrightnessMag :
-                pipelineOptions.referenceBrightness = atoi(optarg);                        
-                break;
-            case spreadStddev :
-                pipelineOptions.brightnessDeviation = atof(optarg);
-                break;
-            case noiseStddev :
-                pipelineOptions.noiseDeviation = atof(optarg);
-                break;
-            case boresightRightAsc :
-                pipelineOptions.ra = atof(optarg);
-                break;
-            case boresightDec :
-                pipelineOptions.dec = atof(optarg);
-                break;
-            case boresightRoll :
-                pipelineOptions.roll = atof(optarg);
-                break;
-            case attitudeCompareThreshold : 
-                pipelineOptions.attitudeCompareThreshold = atof(optarg);
-                break;
-            case centroidCompareThreshold:
-                pipelineOptions.centroidCompareThreshold = atof(optarg);
-                break;
-            case plotRawInput :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.plotRawInput = optarg;
-                } else {
-                    pipelineOptions.plotRawInput = "stdout";
-                }
-                break;
-            case plotInput :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.plotInput = optarg;
-                } else {
-                    pipelineOptions.plotInput = "stdout";
-                }
-                break;
-            case plotOutput :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.plotOutput = optarg;
-                } else {
-                    pipelineOptions.plotOutput = "stdout";
-                }
-                break;
-            case printCentroids :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.printCentroids = optarg;
-                } else {
-                    pipelineOptions.printCentroids = "stdout";
-                }
-                break;
-            case compareCentroids :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.compareCentroids = optarg;
-                } else {
-                    pipelineOptions.compareCentroids = "stdout";
-                }
-                break;
-            case compareStars :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.compareStars = optarg;
-                } else {
-                    pipelineOptions.compareStars = "stdout";
-                }
-                break;
-            case printAttitude :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.printAttitude = optarg;
-                } else {
-                    pipelineOptions.printAttitude = "stdout";
-                }
-                break;
-            case compareAttitude :
-                if (LOST_OPTIONAL_OPTARG()) {
-                    pipelineOptions.compareAttitude = optarg;
-                } else {
-                    pipelineOptions.compareAttitude = "stdout";
-                }
-                break;
-            case database: 
-                pipelineOptions.database = optarg;
-                break;
-            case help : 
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+                case (int)PipelineCliOption::prop :                         \
+                    if (defaultArg == 0) {    \
+                        pipelineOptions.prop = converter;       \
+                    } else {                                    \
+                        if (LOST_OPTIONAL_OPTARG()) {           \
+                            pipelineOptions.prop = converter;   \
+                        } else {                                \
+                            pipelineOptions.prop = defaultArg;  \
+                        }                                       \
+                    }                                           \
+            break;
+#include "pipeline-options.hpp"
+#undef LOST_CLI_OPTION
+            case (int)PipelineCliOption::help : 
                 std::cout << documentation_pipeline_txt << std::endl;
                 return 0;
                 break;
@@ -370,4 +232,10 @@ int main(int argc, char **argv) {
         std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
     }
     return 0;
+}
+
+}
+
+int main(int argc, char **argv) {
+    return lost::LostMain(argc, argv);
 }

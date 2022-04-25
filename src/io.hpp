@@ -27,6 +27,8 @@
 
 namespace lost {
 
+const char kNoDefaultArgument = 0;
+
 class PromptedOutputStream {
 public:
     PromptedOutputStream(std::string filePath);
@@ -65,39 +67,10 @@ public:
 
 class PipelineOptions {
 public:
-    std::string png = "";
-    float focalLength;
-    float pixelSize = -1;
-    float fov = 20; // degtorad will be calculated later in the pipeline
-    std::string centroidAlgo = "";
-    int dummyCentroidNumStars = 5;
-    int centroidMagFilter = -1;  // value that should not be used, to tell whether this was selected or not
-    std::string idAlgo = ""; 
-    float gvTolerance = 0.04;
-    float pyTolerance = 0.04;
-    int pyFalseStars = 500;
-    float pyMismatchProb = 0.001;
-    std::string attitudeAlgo = "";
-    int generate = 1;
-    int horizontalRes = 1024;
-    int verticalRes = 1024;
-    int referenceBrightness = 8000;
-    float brightnessDeviation = 0.7;
-    float noiseDeviation = 10;
-    float ra = 88; // degtorad will be calculated later in the pipeline
-    float dec = 7; // degtorad will be calculated later in the pipeline
-    float roll = 0;
-    float centroidCompareThreshold;
-    float attitudeCompareThreshold;
-    std::string plotRawInput = "";
-    std::string plotInput = "";
-    std::string plotOutput = "";
-    std::string printCentroids = "";
-    std::string compareCentroids = "";
-    std::string compareStars = "";
-    std::string printAttitude = "";
-    std::string compareAttitude = "";
-    std::string database = "";
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+    type prop = defaultVal;
+#include "./pipeline-options.hpp"
+#undef LOST_CLI_OPTION
 };
 
 // represents the input and expected outputs of a pipeline run.
@@ -124,8 +97,13 @@ class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
     GeneratedPipelineInput(const Catalog &, Attitude, Camera,
-                           int referenceBrightness, float brightnessDeviation,
-                           float noiseDeviation);
+                           float observedReferenceBrightness, float starSpreadStdDev,
+                           float sensitivity, float darkCurrent, float readNoiseStdDev,
+                           Attitude motionBlurDirection, float exposureTime, float readoutTime,
+                           bool shotNoise, int oversampling,
+                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
+                           int seed);
+                           
 
     const Image *InputImage() const { return &image; };
     const Stars *InputStars() const { return &stars; };
@@ -136,8 +114,8 @@ public:
     const Catalog &GetCatalog() const { return catalog; };
 
 private:
-    // we don't use an Image here because we want to
-    std::unique_ptr<unsigned char[]> imageData;
+    // we don't use an Image here because we want to 
+    std::vector<unsigned char> imageData;
     Image image;
     Stars stars;
     Camera camera;
@@ -231,13 +209,10 @@ Catalog PromptNarrowedCatalog(const Catalog &);
 
 class DatabaseOptions {
 public:
-    float maxMagnitude = 1000;
-    int maxStars = 10000;
-    bool kVectorEnabled = false;
-    float kVectorMinDistance = 0.5; // DegToRad will be calculated in a later step (GenerateDatabases)
-    float kVectorMaxDistance = 15;  // DegToRad will be calculated in a later step (GenerateDatabases)
-    long kVectorDistanceBins = 10000;
-    std::string path = "stdout";
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+    type prop = defaultVal;
+#include "database-options.hpp"
+#undef LOST_CLI_OPTION   
 };
 
 // unlike the other algorithm prompters, db builders aren't a

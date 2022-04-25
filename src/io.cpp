@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 
 #include <vector>
@@ -27,12 +28,12 @@
 namespace lost {
 
 PromptedOutputStream::PromptedOutputStream(std::string filePath) {
-    if (isatty(fileno(stdout)) && filePath == "stdout") {
+    if (isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
         std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
         filePath = "/dev/null";
     }
 
-    if (filePath == "stdout") {
+    if (filePath == "stdout" || filePath == "-") {
         stream = &std::cout;
         isFstream = false;
     } else {
@@ -106,7 +107,7 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
     width  = cairo_image_surface_get_width(cairoSurface);
     height = cairo_image_surface_get_height(cairoSurface);
 
-    result = (unsigned char *)malloc(width * height);
+    result = new unsigned char[width*height];
     cairoImage = (uint32_t *)cairo_image_surface_get_data(cairoSurface);
 
     for (int i = 0; i < height * width; i++) {
@@ -251,10 +252,10 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
 
 void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) {
 
-    if (values.kVectorEnabled) {
-        float minDistance = DegToRad(values.kVectorMinDistance);
-        float maxDistance = DegToRad(values.kVectorMaxDistance);
-        long numBins = values.kVectorDistanceBins;
+    if (values.kvector) {
+        float minDistance = DegToRad(values.kvectorMinDistance);
+        float maxDistance = DegToRad(values.kvectorMaxDistance);
+        long numBins = values.kvectorNumDistanceBins;
         BuildKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
@@ -276,7 +277,7 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
 
 float FocalLengthFromOptions(const PipelineOptions &values) {
     if (values.pixelSize == -1) {
-        return FovToFocalLength(DegToRad(values.fov), values.horizontalRes);
+        return FovToFocalLength(DegToRad(values.fov), values.generateXRes);
     } else {
         return values.focalLength * 1000 / values.pixelSize;
     }
@@ -332,96 +333,274 @@ AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
 
-// does NOT protect against multiple evaluation of arguments
-#define IncrementPixelXY(x, y, amt) imageData[(y)*image.width+(x)] = \
-        std::max(0, std::min(255,imageData[(y)*image.width+(x)]+(amt)))
-#define IncrementPixelI(i, amt) imageData[i] = std::max(0, std::min(255,imageData[i]+(amt)))
+// PipelineInputList PromptAstrometryPipelineInput() {
+//     // TODO: why does it let us do a reference to an ephemeral return value?
+//     std::string path = Prompt<std::string>("Astrometry download directory");
+//     PipelineInputList result;
+//     result.push_back(std::unique_ptr<PipelineInput>(new AstrometryPipelineInput(path)));
+//     return result;
+// }
+
+class GeneratedStar : public Star {
+public:
+    GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
+        : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
+    
+    float peakBrightness;
+    // vector points to where the star will be visibly after one time unit.
+    Vec2 delta;
+};
+
+// In the equations for pixel brightness both with motion blur enabled and disabled, we don't need
+// any constant scaling factor outside the integral because when d0=0, the brightness at the center
+// will be zero without any scaling. The scaling factor you usually see on a Normal distribution is
+// so that the Normal distribution integrates to one over the real line, making it a probability
+// distribution. But we want the /peak/ to be one, not the integral. motion blur enabled
+
+// pixel is the pixel we want the brightness of, p0 is "center" star position, delta is how star
+// moves after one time unit. Call with final t and initial t value to get the integral. Brightness may not be the same as star's brightness because of oversampling. See
+// https://wiki.huskysat.org/wiki/index.php/Motion_Blur_and_Rolling_Shutter#Motion_Blur_Math
+// for details.
+static float motionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+                                          float t, float stddev, float brightness) {
+    const Vec2 &p0 = generatedStar.position;
+    const Vec2 &delta = generatedStar.delta;
+    const Vec2 d0 = p0 - pixel;
+    return brightness
+        * stddev*sqrt(M_PI) / (sqrt(2)*delta.Magnitude())
+        * exp(pow(d0.x*delta.x + d0.y*delta.y, 2) / (2*stddev*stddev*delta.MagnitudeSq())
+              - d0.MagnitudeSq() / (2*stddev*stddev))
+        * erf((t*delta.MagnitudeSq() + d0.x*delta.x + d0.y*delta.y) / (stddev*sqrt(2)*delta.Magnitude()));
+}
+
+static float staticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+                                   float stddev, float brightness) {
+    const Vec2 d0 = generatedStar.position - pixel;
+    return brightness * exp(-d0.MagnitudeSq() / (2*stddev*stddev));
+}
+
+const int kMaxBrightness = 255;
 
 GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Attitude attitude,
                                                Camera camera,
-                                               int referenceBrightness,
-                                               float brightnessDeviation,
-                                               float noiseDeviation)
-    : camera(camera), attitude(attitude), catalog(catalog) {
+                                               float observedReferenceBrightness,
+                                               float starSpreadStdDev,
+                                               float sensitivity,
+                                               float darkCurrent,
+                                               float readNoiseStdDev,
+                                               Attitude motionBlurDirection, // applied on top of the attitude
+                                               float exposureTime, // zero for no motion blur
+                                               float readoutTime, // zero for no rolling shutter
+                                               bool shotNoise,
+                                               int oversampling,
+                                               int numFalseStars,
+                                               int falseStarMinMagnitude,
+                                               int falseStarMaxMagnitude,
+                                               int seed
+    ) : camera(camera), attitude(attitude), catalog(catalog) {
+
+    assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
+    std::default_random_engine rng(seed);
+
+    // in photons
+    float referenceBrightness = observedReferenceBrightness / sensitivity;
 
     image.width = camera.XResolution();
     image.height = camera.YResolution();
-    unsigned char *imageRaw = (unsigned char *)calloc(image.width * image.height, 1);
-    imageData = std::unique_ptr<unsigned char[]>(imageRaw);
-    image.image = imageData.get();
+    // number of true photons each pixel receives.
 
-    for (int i = 0; i < (int)catalog.size(); i++) {
-        const CatalogStar &catalogStar = catalog[i];
-        Vec3 rotated = attitude.Rotate(catalog[i].spatial);
-        if (rotated.x < 0) {
+    assert(oversampling >= 1);
+    int oversamplingPerAxis = ceil(sqrt(oversampling));
+    if (oversamplingPerAxis*oversamplingPerAxis != oversampling) {
+        std::cerr << "WARNING: oversampling was not a perfect square. Rounding up to "
+                  << oversamplingPerAxis*oversamplingPerAxis << "." << std::endl;
+    }
+    std::vector<float> photonsBuffer(image.width*image.height, 0);
+
+    bool motionBlurEnabled = exposureTime > 0 && abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
+    if (!motionBlurEnabled) {
+        exposureTime = 1.0;
+        motionBlurDirection = Attitude(Quaternion(0, 1, 0, 0));
+    }
+    Quaternion motionBlurDirectionQ = motionBlurDirection.GetQuaternion();
+    // attitude at the middle of exposure time
+    Quaternion currentAttitude = attitude.GetQuaternion();
+    // attitude 1 time unit after middle of exposure
+    Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
+    std::vector<GeneratedStar> generatedStars;
+
+    Catalog catalogWithFalse = catalog;
+
+    std::uniform_real_distribution<float> uniformDistribution(0.0, 1.0);
+    std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
+    for (int i = 0; i < numFalseStars; i++) {
+        float ra = uniformDistribution(rng) * 2*M_PI;
+        // to be uniform around sphere. Borel-Kolmogorov paradox is calling
+        float de = asin(uniformDistribution(rng)*2 - 1);
+        float magnitude = magnitudeDistribution(rng);
+
+        catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
+    }
+
+    for (int i = 0; i < (int)catalogWithFalse.size(); i++) {
+        bool isTrueStar = i < (int)catalog.size();
+
+        const CatalogStar &catalogStar = catalogWithFalse[i];
+        Vec3 rotated = attitude.Rotate(catalogWithFalse[i].spatial);
+        if (rotated.x <= 0) {
             continue;
         }
         Vec2 camCoords = camera.SpatialToCamera(rotated);
 
-        float radiusX = ceil(brightnessDeviation*2);
         if (camera.InSensor(camCoords)) {
-            stars.push_back(Star(camCoords.x, camCoords.y, radiusX, radiusX, catalogStar.magnitude));
-            starIds.push_back(StarIdentifier(stars.size() - 1, i));
+            Vec3 futureSpatial = futureAttitude.Rotate(catalogWithFalse[i].spatial);
+            Vec2 delta = camera.SpatialToCamera(futureSpatial) - camCoords;
+            if (!motionBlurEnabled) {
+                delta = {0, 0}; // avoid floating point funny business
+            }
+            // radiant intensity, in photons per time unit per pixel, at the center of the star.
+            float peakBrightness = referenceBrightness * pow(10.0, catalogStar.magnitude/-250.0);
+            float interestingThreshold = 0.01; // we don't need to check pixels that are expected to
+                                               // receive this many photons or fewer.
+            // inverse of the function defining the Gaussian distribution: Find out how far from the
+            // mean we'll have to go until the number of photons is less than interestingThreshold
+            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness/exposureTime)*2*starSpreadStdDev*starSpreadStdDev));
+            Star star = Star(camCoords.x, camCoords.y,
+                             radius, radius,
+                             catalogStar.magnitude);
+            generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
+
+            // don't add false stars to centroids or star ids
+            if (isTrueStar) {
+                starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                stars.push_back(star);
+            }
         }
     }
 
-    for (const Star &star : stars) {
-        // "brightness" = number of photons received, for eg
-        int totalBrightness = referenceBrightness * pow(100.0f, -star.magnitude/500.0f);
+    for (const GeneratedStar &star : generatedStars) {
+        // delta will be exactly (0,0) when motion blur disabled
+        Vec2 earliestPosition = star.position - star.delta*(exposureTime/2.0 + readoutTime/2.0);
+        Vec2 latestPosition = star.position + star.delta*(exposureTime/2.0 + readoutTime/2.0);
+        int xMin = std::max(0, (int)std::min(earliestPosition.x - star.radiusX, latestPosition.x - star.radiusX));
+        int xMax = std::min(image.width-1, (int)std::max(earliestPosition.x + star.radiusX, latestPosition.x + star.radiusX));
+        int yMin = std::max(0, (int)std::min(earliestPosition.y - star.radiusX, latestPosition.y - star.radiusX));
+        int yMax = std::min(image.height-1, (int)std::max(earliestPosition.y + star.radiusX, latestPosition.y + star.radiusX));
+
+        // peak brightness is measured in photons per time unit per pixel, so if oversampling, we
+        // need to convert units to photons per time unit per sample
+        float peakBrightnessPerSample = star.peakBrightness / (oversamplingPerAxis*oversamplingPerAxis);
 
         // the star.x and star.y refer to the pixel whose top left corner the star should appear at
         // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
         // would integrate the intensity of the star over that pixel, but we can make do by sampling
         // the intensity of the star at the /center/ of the pixel, ie, star.x+.5 and star.y+.5
-        for(int j = star.position.x - star.radiusX; j >= 0 && j < star.position.x + star.radiusX && j < image.width; j++) {
-            for (int k = star.position.y - star.radiusX; k >= 0 && k < star.position.y + star.radiusX && k < image.height; k++) {
-                float distanceSquared = pow(k+.5-star.position.y, 2) + pow(j+.5-star.position.x, 2);
-                int pixelBrightness = totalBrightness / pow(brightnessDeviation, 2)
-                    * exp(-distanceSquared/pow(brightnessDeviation, 2));
-                IncrementPixelXY(j, k, pixelBrightness);
+        for(int xPixel = xMin; xPixel <= xMax; xPixel++) {
+            for (int yPixel = yMin; yPixel <= yMax; yPixel++) {
+                // offset of beginning & end of readout compared to beginning & end of readout for
+                // center row
+                float readoutOffset = readoutTime * (yPixel - image.height/2.0) / image.height;
+                float tStart = -exposureTime/2.0 + readoutOffset;
+                float tEnd = exposureTime/2.0 + readoutOffset;
+
+                // loop through all samples in the current pixel
+                for (int xSample = 0; xSample < oversamplingPerAxis; xSample++) {
+                    for (int ySample = 0; ySample < oversamplingPerAxis; ySample++) {
+                        float x = xPixel + (xSample+0.5)/oversamplingPerAxis;
+                        float y = yPixel + (ySample+0.5)/oversamplingPerAxis;
+
+                        float curPhotons;
+                        if (motionBlurEnabled) {
+                            curPhotons =
+                                motionBlurredPixelBrightness({x, y}, star, tEnd, starSpreadStdDev, peakBrightnessPerSample)
+                                - motionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev, peakBrightnessPerSample);
+                        } else {
+                            curPhotons = staticPixelBrightness({x, y}, star, starSpreadStdDev, peakBrightnessPerSample);
+                        }
+
+                        assert(0.0 <= curPhotons);
+
+                        photonsBuffer[xPixel + yPixel*image.width] += curPhotons;
+                    }
+                }
             }
         }
     }
 
-    std::normal_distribution<float> readNoiseDist(0.0, noiseDeviation);
-    std::default_random_engine generator;
+    std::normal_distribution<float> readNoiseDist(0.0, readNoiseStdDev);
+
+    // convert from photon counts to observed pixel brightnesses, applying noise and such.
+    imageData = std::vector<unsigned char>(image.width*image.height);
+    image.image = imageData.data();
     for (int i = 0; i < image.width * image.height; i++) {
-        // dark current
+        float curBrightness = 0;
 
-        // shot noise
-        std::poisson_distribution<char> shotNoiseDist(imageData[i]);
-        // TODO: prompt for sensitivity so we can accurately apply shot noise.
+        // dark current (Constant)
+        curBrightness += darkCurrent;
 
-        // read noise
-        IncrementPixelI(i, (int)readNoiseDist(generator));
-    }  
+        // read noise (Gaussian)
+        curBrightness += readNoiseDist(rng);
+
+        // shot noise (Poisson), and quantize
+        long quantizedPhotons;
+        if (shotNoise) {
+            // with GNU libstdc++, it keeps sampling from the distribution until it's within the min-max
+            // range. This is problematic if the mean is far above the max long value, because then it
+            // might have to sample many many times (and furthermore, the results won't be useful
+            // anyway)
+            float photons = photonsBuffer[i];
+            if (photons > (float)LONG_MAX - 3.0*sqrt(LONG_MAX)) {
+                std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
+                exit(1);
+            }
+            std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
+            quantizedPhotons = shotNoiseDist(rng);
+        } else {
+            quantizedPhotons = round(photonsBuffer[i]);
+        }
+        curBrightness += quantizedPhotons * sensitivity;
+        
+        // std::clamp not introduced until C++17, so we avoid it.
+        float clampedBrightness = std::max(std::min(curBrightness, (float)1.0), (float)0.0);
+        imageData[i] = floor(clampedBrightness * kMaxBrightness); // TODO: off-by-one, 256?
+    }
 }
 
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
-    int numImages = values.generate;
-    int xResolution = values.horizontalRes;
-    int yResolution = values.verticalRes;
-    float focalLengthPixels = FocalLengthFromOptions(values);
-    int referenceBrightness = values.referenceBrightness;
-    float brightnessDeviation = values.brightnessDeviation;
-    float noiseDeviation = values.noiseDeviation;
-    float ra = values.ra;
-    float dec = values.dec;
-    float roll = values.roll;
 
     // TODO: allow random angle generation?
-    Quaternion attitude = SphericalToQuaternion(DegToRad(ra), DegToRad(dec), DegToRad(roll));
+    Quaternion attitude = SphericalToQuaternion(DegToRad(values.generateRa),
+                                                DegToRad(values.generateDe),
+                                                DegToRad(values.generateRoll));
+    Quaternion motionBlurDirection = SphericalToQuaternion(DegToRad(values.generateBlurRa),
+                                                           DegToRad(values.generateBlurDe),
+                                                           DegToRad(values.generateBlurRoll));
 
     PipelineInputList result;
 
-    for (int i = 0; i < numImages; i++) {
+    float focalLength = FocalLengthFromOptions(values);
+
+    for (int i = 0; i < values.generate; i++) {
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
-            Camera(focalLengthPixels, xResolution, yResolution),
-            referenceBrightness, brightnessDeviation, noiseDeviation);
+            Camera(focalLength, values.generateXRes, values.generateYRes),
+            values.generateRefBrightness,
+            values.generateSpreadStdDev,
+            values.generateSensitivity,
+            values.generateDarkCurrent,
+            values.generateReadNoiseStdDev,
+            motionBlurDirection,
+            values.generateExposure,
+            values.generateReadoutTime,
+            values.generateShotNoise,
+            values.generateOversampling,
+            values.generateNumFalseStars,
+            values.generateFalseMinMag,
+            values.generateFalseMaxMag,
+            values.generateSeed);
 
         result.push_back(std::unique_ptr<PipelineInput>(curr));
     }
@@ -473,7 +652,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.dummyCentroidNumStars));
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.centroidDummyNumStars));
     } else if (values.centroidAlgo == "cog") {
         result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "iwcog") {
@@ -487,9 +666,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     if (values.centroidMagFilter != -1) result.centroidMinMagnitude = values.centroidMagFilter;
 
     // database stage
-    if (values.database != "") {
+    if (values.databasePath != "") {
         std::fstream fs;
-        fs.open(values.database, std::fstream::in | std::fstream::binary);
+        fs.open(values.databasePath, std::fstream::in | std::fstream::binary);
         fs.seekg(0, fs.end);
         long length = fs.tellg();
         fs.seekg(0, fs.beg);
@@ -502,9 +681,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     if (values.idAlgo == "dummy") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
     } else if (values.idAlgo == "gv") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.gvTolerance)));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.pyTolerance), values.pyFalseStars, values.pyMismatchProb, 1000));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
@@ -1056,17 +1235,17 @@ void PipelineComparison(const PipelineInputList &expected,
         assert(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold);
         LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids);
     }
-    if (values.compareStars != "") {
+    if (values.compareStarIds != "") {
         assert(expected[0]->ExpectedStars() && actual[0].starIds && values.centroidCompareThreshold);
-        LOST_PIPELINE_COMPARE(PipelineComparatorStars, values.compareStars);
+        LOST_PIPELINE_COMPARE(PipelineComparatorStars, values.compareStarIds);
     }
     if (values.printAttitude != "") {
         assert(actual[0].attitude && actual.size() == 1);
         LOST_PIPELINE_COMPARE(PipelineComparatorPrintAttitude, values.printAttitude);
     }
-    if (values.compareAttitude != "") {
+    if (values.compareAttitudes != "") {
         assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold);
-        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitude);
+        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitudes);
     }
 
 #undef LOST_PIPELINE_COMPARE
