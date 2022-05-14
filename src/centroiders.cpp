@@ -171,20 +171,19 @@ struct CentroidParams {
 // int iToDivision
 
 // int Row(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
-// int Column(i, imageHeight, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
+// int Column(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions)
 int RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
     if(i < (div + 1) * leftover * size) {
         return i / ((div + 1) * size);
     } else {
-        return leftover + (i - (div + 1) * leftover * size) / (div * size);
+        return leftover + (i - (div + 1) * leftover * size) / (div * size) - 1;
     }
 }
-
 
 // For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
 int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
     return RowOrColumn(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions) * subdivisions + 
-    RowOrColumn(i, imageHeight, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions);
+    RowOrColumn(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
 }
 
 //recursive helper here

@@ -3,7 +3,14 @@
 #include <math.h>
 #include <iostream>
 
-
+int RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
+    if(i < (div + 1) * leftover * size) {
+        return i / ((div + 1) * size);
+    } else {
+        return leftover + (i - (div + 1) * leftover * size) / (div * size) - 1;
+    }
+}
+int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions);
 int start(int imageWidth, int imageHeight, int subdivisions, int i) {
     int leftover = imageHeight % subdivisions;
     int div = imageHeight / subdivisions;
@@ -30,4 +37,14 @@ TEST_CASE("Start: 3rd Element") {
 
 TEST_CASE("Start: 27th Element") {
     CHECK(start(1024,1024,100, 26) == (11*24+10*2)*1024);
+}
+
+// int Row(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
+// int Column(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions)
+TEST_CASE("Correct Row: 4th Row") {
+    CHECK(RowOrColumn(33795, 1024, 100, 1024 / 100, 1024 % 100) == 3);
+}
+
+TEST_CASE("Correct Row: 27th Row") {
+    CHECK(RowOrColumn(24 * 1024 * 11 + 10 * 3 * 1024 + 20, 1024, 100, 1024 / 100, 1024 % 100) == 26);
 }
