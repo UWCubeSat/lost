@@ -105,17 +105,28 @@ int Limit(bool test, int i, int leftover, int div) {
 int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subdivisions, int horizontalLeftover, int horizontalDiv, int verticalLeftover, int verticalDiv) {
     int row = box / subdivisions;
     int col = box % subdivisions;
-    double average;
-    double squareSum;
-    int count = 0;
+    double average = 0;
+    double squareSum = 0;
+    long count = 0;
     for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
         for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
-            average += image[i * imageHeight + j];
-            squareSum += image[i * imageHeight + j] * image[i * imageHeight + j];
+            average += image[i * imageWidth + j];
+            squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
             count++;
         }
     }
+    double varianceNaive = 0;
+    for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
+        for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
+            varianceNaive += std::pow(image[i*imageWidth+j]-(average/count),2);
+        }
+    }
+    std::cout << std::sqrt(varianceNaive/(count-1)) << " ";
     average /= count;
+    std::cout << squareSum << " "; 
+    std::cout << average << " ";
+    std::cout << sqrt((squareSum - count * average * average)/(count-1));
+    std::cout << "\n";
     return average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1)));
 }
 
@@ -151,7 +162,7 @@ int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight)
     float mean = totalMag / totalPixels;
     float variance = (sq_totalMag / totalPixels) - (mean * mean);
     std = std::sqrt(variance);
-    return mean + (std * 5);
+    return (int) (mean + (std * 5));
 }
 
 struct CentroidParams {
@@ -176,7 +187,7 @@ int RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
     if(i < (div + 1) * leftover * size) {
         return i / ((div + 1) * size);
     } else {
-        return leftover + (i - (div + 1) * leftover * size) / (div * size) - 1;
+        return leftover + (i - (div + 1) * leftover * size) / (div * size);
     }
 }
 
@@ -225,10 +236,14 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     CentroidParams p;
     // Program will use divisions to represent the subdivisions
     int divisions = subdivisions;
-    if(subdivisions > imageHeight) {
-        divisions = imageHeight;
-    } else if(subdivisions < 1) {
-        divisions = 1;
+    int min = 0;
+    if(imageWidth > imageHeight) {
+        min = imageWidth;
+    } else {
+        min = imageHeight;
+    }
+    if(min / subdivisions < 10) {
+        divisions = min / 10;
     }
     std::vector<Star> result;
     p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, divisions);
