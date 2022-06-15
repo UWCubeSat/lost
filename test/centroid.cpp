@@ -3,50 +3,60 @@
 #include <math.h>
 #include <iostream>
 
-int start(int imageWidth, int imageHeight, int subdivisions, int i) {
-    int leftover = imageHeight % subdivisions;
-    int div = imageHeight / subdivisions;
-    // int i = 1;
-    // int start = 0;
-    // int max = 0;
-    if(i < leftover) {
-        return i * (div + 1) * imageWidth;
-        // max = (i+1) * (div + 1) * imageWidth;
-    } else {
-        return leftover * (div + 1) * imageWidth + (i - leftover) * (div) * imageWidth;
-        // max = leftover * (div + 1) * imageWidth + (i + 1 - leftover) * (div) * imageWidth;
-    }
+namespace lost {
+    int RowOrColumn(long i, int size, int subdivisions, int div, int leftover);
+    int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions);
+    int Limit(bool test, int i, int leftover, int div);
 }
 
 
-TEST_CASE("Sanity Check") {
-    CHECK(start(1024, 1024, 100, 0) == 0);
+TEST_CASE("Testing Start and End Rows") {
+    int row = 0;
+    int horizontalLeftover = 5;
+    int horizontalDiv = 10;
+    CHECK(lost::Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv) == 0);
+    CHECK(lost::Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv) == 11);
 }
 
-TEST_CASE("Start: 3rd Element") {
-    CHECK(start(1024,1024,100, 2) == 22*1024);
-}
-
-TEST_CASE("Start: 27th Element") {
-    CHECK(start(1024,1024,100, 26) == (11*24+10*2)*1024);
+TEST_CASE("Testing Start and End Columns") {
+    int col = 0;
+    int verticalLeftover = 5;
+    int verticalDiv = 10;
+    CHECK(lost::Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv) == 0);
+    CHECK(lost::Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv) == 11);
 }
 
 // int Row(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
 // int Column(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions)
 TEST_CASE("Correct Row: 4th Row") {
-    CHECK(RowOrColumn(33795, 1024, 100, 1024 / 100, 1024 % 100) == 3);
+    CHECK(lost::RowOrColumn(33795, 1024, 100, 1024 / 100, 1024 % 100) == 3);
 }
 
 TEST_CASE("Correct Row: 27th Row") {
-    CHECK(RowOrColumn(24 * 1024 * 11 + 10 * 2 * 1024 + 20, 1024, 100, 1024 / 100, 1024 % 100) == 26);
+    CHECK(lost::RowOrColumn(24 * 1024 * 11 + 10 * 2 * 1024 + 20, 1024, 100, 1024 / 100, 1024 % 100) == 26);
 }
 
+TEST_CASE("Everything is in the Box") {
+    int row = 0;
+    int horizontalLeftover = 5;
+    int horizontalDiv = 10;
+    int col = 0;
+    int verticalLeftover = 5;
+    int verticalDiv = 10;
+    
+    for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
+        for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
+            if(lost::FindSubdivision(i * ))
+        }
+    }
+}
 
 TEST_CASE("Correct Row: Last Row 1") {
-    CHECK(RowOrColumn(1024 * 1024 - 1, 1024, 100, 1024 / 100, 1024 % 100) == 99);
+    CHECK(lost::RowOrColumn(1024 * 1024 - 1, 1024, 100, 1024 / 100, 1024 % 100) == 99);
 }
 
-TEST_CASE("Correct Row: Last Subdivision") {
-    CHECK(FindSubdivision(1024 * 1024 - 1, 1024, 1024, 1024) == 1024 * 1024 - 1);
+TEST_CASE("Correct Box: Last Subdivision") {
+    CHECK(lost::FindSubdivision(1024 * 1024 - 1, 1024, 1024, 1024) == 1024 * 1024 - 1);
 }
+
 

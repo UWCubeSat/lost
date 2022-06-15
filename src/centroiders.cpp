@@ -16,6 +16,8 @@ namespace lost {
 
 // DUMMYS
 
+long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions);
+
 std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
@@ -102,31 +104,45 @@ int Limit(bool test, int i, int leftover, int div) {
 // pixel * divisions/ size floor
 // subdivisionsize * size / divisions ceil
 
+// Box is which subdivision
 int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subdivisions, int horizontalLeftover, int horizontalDiv, int verticalLeftover, int verticalDiv) {
-    int row = box / subdivisions;
-    int col = box % subdivisions;
+    int row = box / subdivisions; // Finds which row on the subdivisions we're in
+    int col = box % subdivisions; // Finds the column on the subdivisions we're in
     double average = 0;
     double squareSum = 0;
     long count = 0;
+    // std::cout << "Box " << box << "\n";
+    // std::cout << Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv) << " " << Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv) << "\n";
+    // std::cout << Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv) << " " << Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv) << "\n";
+    // std::cout << "\n";
+    int secondCount = 0;
+    int number;
     for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
         for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
             average += image[i * imageWidth + j];
             squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
             count++;
+            if(FindSubdivision(i * imageWidth + j, imageWidth, imageHeight, subdivisions) != box) {
+                secondCount++;
+                number = FindSubdivision(i * imageWidth + j, imageWidth, imageHeight, subdivisions);
+            }
         }
     }
-    double varianceNaive = 0;
-    for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
-        for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
-            varianceNaive += std::pow(image[i*imageWidth+j]-(average/count),2);
-        }
+    if(secondCount != 0) {
+        std::cout << "Box: " << box << " Number: " << number << " Count: "<< count - secondCount << "\n";
     }
-    std::cout << std::sqrt(varianceNaive/(count-1)) << " ";
+    // double varianceNaive = 0;
+    // for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
+    //    for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
+    //        varianceNaive += std::pow(image[i*imageWidth+j]-(average/count),2);
+    //    }
+    // }
+    // std::cout << std::sqrt(varianceNaive/(count-1)) << " ";
     average /= count;
-    std::cout << squareSum << " "; 
-    std::cout << average << " ";
-    std::cout << sqrt((squareSum - count * average * average)/(count-1));
-    std::cout << "\n";
+    // std::cout << squareSum << " "; 
+    // std::cout << average << " ";
+    // std::cout << sqrt((squareSum - count * average * average)/(count-1));
+    // std::cout << "\n";
     return average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1)));
 }
 
@@ -183,18 +199,18 @@ struct CentroidParams {
 
 // int Row(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
 // int Column(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions)
-int RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
-    if(i < (div + 1) * leftover * size) {
-        return i / ((div + 1) * size);
+long RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
+    if(i < (div + 1) * leftover) {
+        return i / (div + 1);
     } else {
-        return leftover + (i - (div + 1) * leftover * size) / (div * size);
+        return leftover + (i - (div + 1) * leftover) / (div);
     }
 }
 
 // For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
-int FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
-    return RowOrColumn(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions) * subdivisions + 
-    RowOrColumn(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
+long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
+    return RowOrColumn(i / imageWidth, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions) * subdivisions + 
+    RowOrColumn(i % imageHeight, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
 }
 
 //recursive helper here
