@@ -249,6 +249,16 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
     
 }
 
+void BuildTrackingDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog) {
+    long length = SerializeLengthTrackingCatalog(catalog);
+    unsigned char *buffer = builder.AddSubDatabase(TrackingSortedDatabase::magicValue, length);
+    if (buffer == NULL) {
+        std::cerr << "No room for another database." << std::endl;
+    }
+    // TODO fix this line, because it returns something and I don't think it's quite analogous to the SerializePairDistanceKVector above
+    SortTrackingCatalog(catalog);
+}
+
 
 void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) {
 

@@ -314,6 +314,26 @@ MultiDatabaseBuilder::~MultiDatabaseBuilder() {
     free(buffer);
 }
 
+
+/*** for tracking mode ***/
+
+long SerializeLengthTrackingCatalog(const Catalog &catalog) {
+    return catalog.size() * sizeof(CatalogStar);
+}
+
+
+bool CompareCatalogStars(const CatalogStar &s1, const CatalogStar &s2) {
+    return s1.spatial.x < s2.spatial.y;
+}
+
+// sort by x coordinate of stars
+std::vector<CatalogStar> SortTrackingCatalog(const Catalog &catalog) {
+    std::sort(catalog.begin(), catalog.end(), CompareCatalogStars);
+    return catalog;
+}
+
+
+
 }
 
 // TODO: after creating the database, print more statistics, such as average number of pairs per
