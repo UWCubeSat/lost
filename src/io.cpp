@@ -267,6 +267,8 @@ void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, co
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
         BuildKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+    } else if (values.tracking) {
+        BuildTrackingDatabase(builder, catalog);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
