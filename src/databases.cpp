@@ -327,12 +327,11 @@ bool CompareCatalogStars(const CatalogStar &s1, const CatalogStar &s2) {
 }
 
 // sort by x coordinate of stars
-std::vector<CatalogStar> SortTrackingCatalog(const Catalog &catalog) {
-    std::sort(catalog.begin(), catalog.end(), CompareCatalogStars);
-    return catalog;
+Catalog SortTrackingCatalog(const Catalog &catalog) {
+    std::vector<CatalogStar> stars = catalog;
+    std::sort(stars.begin(), stars.end(), CompareCatalogStars);
+    return stars;
 }
-
-
 
 }
 
