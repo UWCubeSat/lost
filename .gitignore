@@ -92,4 +92,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # Generated Documentation
-/documentation/doc
+/documentation/doxygen
