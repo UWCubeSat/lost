@@ -66,6 +66,6 @@ $(TEST_BIN): $(TEST_OBJS)
 
 clean:
 	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
-	rm -i $(BSC)
+	#rm -i $(BSC)
 
 .PHONY: all clean test
