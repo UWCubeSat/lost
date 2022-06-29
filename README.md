@@ -43,15 +43,12 @@ catalog to `input.png`:
 ```shell
 ./lost pipeline \
   --generate 1 \
-  --generate-ra 88 \
-  --generate-de 7 \
-  --generate-roll 0 \
   --plot-raw-input raw-input.png \
   --plot-input input.png
 ```
 
 We name the image outputs of this command as `input.png` because they will be used as image inputs to the star
-identification pipeline.The above command utilizes many of the default values for the parameters. All of these
+identification pipeline. The above command utilizes many of the default values for the parameters. All of these
 parameters can be explicitly set by using the appropriate flags:
 
 ```shell
