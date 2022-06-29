@@ -5,11 +5,13 @@ satellites. It is being developed in the Husky Satellite Lab, a cubesat team at 
 Washington.
 
 # Building LOST
+
 When making an actual, physical star tracker, you will most likely need to pick out the specific
 parts of LOST you want and make lots of changes. However, there's a LOST binary you can use to
 test and benchmark things quickly.
 
 **Requirements:**
+
 - Linux or Mac. If you have Windows, I recommend installing the Windows Subsystem for Linux.
 - A C compiler, such as GCC. On Debian, `apt install gcc`
 - GNU Make. On Debian, `apt install make`
@@ -28,44 +30,84 @@ Then, clone this repository (`git clone https://github.com/uwcubesat/lost`), the
 If you're developing LOST, you need to re-run `make` every time you edit any of the source code
 before running `./lost`.
 
-# Usage (OUTDATED: Will be updated soon)
-We are currently in the process of rewriting our command-line interface, which will have more
-thorough documentation. The current command-line interface prompts for parameters as needed.
-Parameters can also be specified on the command line for non-interactive use.
+# Usage
+
+Run LOST via the `./lost` executable followed by the appropriate arguments. Executing`./lost` with no arguments will
+bring up a usage guide and options to see possible arguments.
 
 ## Generating a false image
-Here's an example command line to generate a false image, plot that image to `raw-input.png`, and
-all the stars in the catalog to `input.png`:
+
+Here's an example command line to generate a false image, plot that image to `raw-input.png`, and all the stars in the
+catalog to `input.png`:
 
 ```shell
-./lost pipeline generate 1 1024 1024 30 8000 1 35 88 7 0 done plot_raw_input raw-input.png plot_input annotated-input.png done
+./lost pipeline \
+  --generate=1 \
+  --generate-ra 88 \
+  --generate-de 7 \
+  --generate-roll 0 \
+  --plot-raw-input raw-input.png \
+  --plot-input input.png
 ```
 
-You can also just run `./lost` and enter the parameters one at a time, to learn what they are all
-for.
+We name the image outputs of this command as `input.png` because they will be used as image inputs to the star
+identification pipeline.The above command utilizes many of the default values for the parameters. All of these
+parameters can be explicitly set by using the appropriate flags:
+
+```shell
+./lost pipeline \
+  --generate=1 \
+  --generate-x-resolution 1024 \
+  --generate-y-resolution 1024 \
+  --fov 30 \
+  --generate-reference-brightness 100 \
+  --generate-spread-stddev 1 \
+  --generate-read-noise-stddev 0.05 \
+  --generate-ra 88 \
+  --generate-de 7 \
+  --generate-roll 0 \
+  --plot-raw-input raw-input.png \
+  --plot-input annotated-input.png
+```
 
 ## Identifying a real image
+
 Here's how to identify a real image:
+
 1. Download https://markasoftware.com/img_7660.png
-2. Generate a /database/ by running:
+2. Generate a *database* named `my-database.dat` by running:
+
 ```shell
-./lost build_database 5000 kvector 0.2 15 10000 done my-database.dat
-```
-3. we can actually identify the image by running:
-```shell
-./lost pipeline png img_7660.png 22.2 49 \
-       centroid cog \
-       centroid_magnitude_filter 5 \
-       database my-database.dat \
-       starid pyramid .05 1000 .0001 \
-       attitude dqm \
-       done \
-       print_attitude - \
-       plot_output annotated-7660.png
+./lost database \
+  --max-stars 5000 \
+  --kvector \
+  --kvector-min-distance 0.2 \
+  --kvector-max-distance 15 \
+  --kvector-distance-bins 10000 \
+  --output my-database.dat
 ```
 
-This will print the attitude (right ascension, declination, roll) to standard output, and write an
-annotated image to `annotated-7660.png`.
+3. Identify the image by running:
+
+```shell
+./lost pipeline \
+  --png img_7600.png \
+  --focal-length 49 \
+  --pixel-size 22.2 \
+  --centroid-algo cog \
+  --centroid-mag-filter 5 \
+  --database my-database.dat \
+  --star-id-algo py \
+  --angular-tolerance 0.05 \
+  --false-stars 1000 \
+  --max-mismatch-prob 0.0001 \
+  --attitude-algo dqm \
+  --print-attitude attitude.txt \
+  --plot-output annotated-7660.png
+```
+
+This will print the attitude (right ascension, declination, roll) to the file `attitude.txt`, and write an annotated
+image to `annotated-7660.png`.
 
 When identifying a different image, some parameters must be changed. Most important is the
 camera's pixel size and focal length, which quantify how "zoomed-in" the camera is. The pixel size
@@ -81,8 +123,8 @@ noisy-ness of your images. If the output file has many centroids (red boxes) whe
 visible stars, then the filter should be increased. If there are many stars without centroids, the
 filter should be decreased.
 
-
 # Parts of a Star Tracking System
+
 - **Undistortion or cropping:** It's critical for captured images to be "flat". Unfortunately, real
   world lenses make things look a little less than flat. Algorithms can undistort images or simply
   crop out the edges to remove the areas where distortion is the worst.
@@ -132,7 +174,9 @@ filter should be decreased.
     - [ ] ESOQ
 
 ## Other things LOST can do
-  Other parts of our framework that are not essential parts of a star-tracking system:
+
+Other parts of our framework that are not essential parts of a star-tracking system:
+
 - [X] Centroiding and Star-ID Results Visualization
 - [X] Simulated image generation
 - [ ] Re-projection of stars after fix visualization
