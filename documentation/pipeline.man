@@ -6,12 +6,12 @@ pipeline \- builds a pipeline of the star identification process
 
 .SH SYNOPSIS
 
-\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
+\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-algo \fIalgo\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP]
+[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--angular-tolerance \fI[tolerance]\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--print-attitude \fI[path]\fB] [--plot-output \fI[path]\fB]
 .br
-\fBpipeline\fP --generate[=\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
-[--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
+\fBpipeline\fP --generate \fInum-images\fP [--generate-x-resolution \fIpixels\fP] [--generate-y-resolution \fIpixels\fP] [--fov \fIdegrees\fP] [--generate-reference-brightness \fImag\fP] [--generate-spread-stddev \fIstddev\fP] [--generate-read-noise-stddev \fIstddev\fP] [--generate-ra \fIdegrees\fP] [--generate-de \fIdegrees\fP] [--generate-roll \fIdegrees\fP]
+[--centroid-algo \fIalgo\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP]
+[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--angular-tolerance \fI[tolerance]\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot-raw-input \fI[path]\fB] [--plot-input \fI[path]\fB]
 
 .SH DESCRIPTION
 
@@ -74,7 +74,7 @@ used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 de
 Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" (Davenport Q) and "triad". Defaults to dqm.
 
 .TP
-\fB--generate\fP[=\fInum-images\fP]
+\fB--generate\fP \fInum-images\fP
 Generates \fInum-images\fP many images. Mutually exclusive with \fB--png\fP.
 
 .TP
@@ -146,35 +146,35 @@ Peform \fInum-samples\fP many samples per pixel when generating images. Effectiv
 An integer seed to pass to the random number generator used during image generation.
 
 .TP
-\fB--plot-raw-input\fP=[\fIpath\fP]
+\fB--plot-raw-input\fP [\fIpath\fP]
 Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Defaults to stdout if if \fIpath\fP is not given.
 
 .TP
-\fB--plot-input\fP=[\fIpath\fP]
+\fB--plot-input\fP [\fIpath\fP]
 Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP
-\fB--plot-output\fP=[\fIpath\fP]
+\fB--plot-output\fP [\fIpath\fP]
 Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP
-\fB--print-centroids\fP=[\fIpath\fP]
+\fB--print-centroids\fP [\fIpath\fP]
 Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP
-\fB--compare-centroids\fP=[\fIpath\fP]
+\fB--compare-centroids\fP [\fIpath\fP]
 Argument is optional. Print list of centroids to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP
-\fB--compare-stars\fP=[\fIpath\fP]
+\fB--compare-stars\fP [\fIpath\fP]
 Argument is optional. Compare lists of identified stars. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP
-\fB--print-attitude\fP=[\fIpath\fP]
+\fB--print-attitude\fP [\fIpath\fP]
 Argument is optional. Print the determined ra, de, and roll to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP
-\fB--compare-attitude\fP=[\fIpath\fP]
+\fB--compare-attitude\fP [\fIpath\fP]
 Argument is optional. Compare expected to actual attitude. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
 
 .TP

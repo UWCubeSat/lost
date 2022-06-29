@@ -42,7 +42,7 @@ catalog to `input.png`:
 
 ```shell
 ./lost pipeline \
-  --generate=1 \
+  --generate 1 \
   --generate-ra 88 \
   --generate-de 7 \
   --generate-roll 0 \
@@ -56,7 +56,7 @@ parameters can be explicitly set by using the appropriate flags:
 
 ```shell
 ./lost pipeline \
-  --generate=1 \
+  --generate 1 \
   --generate-x-resolution 1024 \
   --generate-y-resolution 1024 \
   --fov 30 \
