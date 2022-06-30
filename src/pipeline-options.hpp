@@ -13,7 +13,7 @@
 // Inside of the current Paragraph to comma.
 
 // CAMERA
-LOST_CLI_OPTION("png"          , std::string, png         , "" , atof(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("png"          , std::string, png         , "" , optarg, kNoDefaultArgument)
 LOST_CLI_OPTION("focal-length" , float      , focalLength , 0  , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("pixel-size"   , float      , pixelSize   , -1 , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("fov"          , float      , fov         , 20 , atof(optarg) , kNoDefaultArgument)
