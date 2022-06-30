@@ -255,8 +255,7 @@ void BuildTrackingDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog
     if (buffer == NULL) {
         std::cerr << "No room for another database." << std::endl;
     }
-    // TODO fix this line, because it returns something and I don't think it's quite analogous to the SerializePairDistanceKVector above
-    SortTrackingCatalog(catalog);
+    SerializeTrackingCatalog(catalog, buffer);
 }
 
 

@@ -317,20 +317,43 @@ MultiDatabaseBuilder::~MultiDatabaseBuilder() {
 
 /*** for tracking mode ***/
 
+struct TrackingStar {
+    int16_t index;
+    CatalogStar star;
+};
+
 long SerializeLengthTrackingCatalog(const Catalog &catalog) {
-    return catalog.size() * sizeof(CatalogStar);
+    return catalog.size() * sizeof(int16_t);
 }
 
-
-bool CompareCatalogStars(const CatalogStar &s1, const CatalogStar &s2) {
-    return s1.spatial.x < s2.spatial.y;
+bool CompareTrackingStars(const TrackingStar &s1, const TrackingStar &s2) {
+    return s1.star.spatial.x < s2.star.spatial.x;
 }
 
 // sort by x coordinate of stars
-Catalog SortTrackingCatalog(const Catalog &catalog) {
-    std::vector<CatalogStar> stars = catalog;
-    std::sort(stars.begin(), stars.end());
-    return stars;
+void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer) {
+    std::vector<TrackingStar> stars;
+
+    for (long unsigned int i = 0; i < catalog.size(); i++) {
+        TrackingStar s;
+        s.index = i;
+        s.star = catalog.at(i);
+        stars.push_back(s);
+    }
+
+    std::sort(stars.begin(), stars.end(), CompareTrackingStars);
+    
+    // store the sorted list of indices into the buffer
+    unsigned char *bufferStart = buffer;
+
+    // bulk pairs field
+    for (const TrackingStar &star : stars) {
+        *(int16_t *)buffer = star.index;
+        buffer += sizeof(int16_t);
+    }
+
+    // verify length
+    assert(buffer - bufferStart == SerializeLengthTrackingCatalog(catalog));
 }
 
 }

@@ -88,13 +88,11 @@ private:
 class TrackingSortedDatabase {
 public:
     TrackingSortedDatabase(const unsigned char *databaseBytes);
-
     const static int32_t magicValue = 0x2536f0A9;
-private:
 };
 
 long SerializeLengthTrackingCatalog(const Catalog &catalog);
-std::vector<CatalogStar> SortTrackingCatalog(const Catalog &catalog);
+void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer);
 
 // maximum number of databases in a MultiDatabase
 const int kMultiDatabaseMaxDatabases = 64;

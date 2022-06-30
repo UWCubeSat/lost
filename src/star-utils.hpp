@@ -18,11 +18,6 @@ public:
     Vec3 spatial;
     int  magnitude;         // *10^-2
     int  name;
-
-    // for sorting
-    bool operator < (const CatalogStar& s1) {
-        return spatial.x < s1.spatial.x;
-    }
 };
 
 class Star {
