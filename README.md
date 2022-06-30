@@ -88,7 +88,7 @@ Here's how to identify a real image:
 
 ```shell
 ./lost pipeline \
-  --png img_7600.png \
+  --png img_7660.png \
   --focal-length 49 \
   --pixel-size 22.2 \
   --centroid-algo cog \
