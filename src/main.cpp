@@ -37,21 +37,22 @@ namespace lost {
  * - lost::PromptedOutputStream
  */
 static void DatabaseBuild(const DatabaseOptions &values) {
-  Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars);
-  std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars);
+    std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
-  MultiDatabaseBuilder builder;
-  // TODO: allow magnitude and weird
-  unsigned char
-      *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
-  SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
+    MultiDatabaseBuilder builder;
+    // TODO: allow magnitude and weird
+    unsigned char
+        *catalogBuffer =
+        builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
+    SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-  GenerateDatabases(builder, narrowedCatalog, values);
+    GenerateDatabases(builder, narrowedCatalog, values);
 
-  std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
+    std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
-  PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
-  pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
+    PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
+    pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
 
 }
 
@@ -60,10 +61,10 @@ static void DatabaseBuild(const DatabaseOptions &values) {
  * @param [in] values Parameters for starting this pipeline
  */
 static void PipelineRun(const PipelineOptions &values) {
-  PipelineInputList input = GetPipelineInput(values);
-  Pipeline pipeline = SetPipeline(values);
-  std::vector<PipelineOutput> outputs = pipeline.Go(input);
-  PipelineComparison(input, outputs, values);
+    PipelineInputList input = GetPipelineInput(values);
+    Pipeline pipeline = SetPipeline(values);
+    std::vector<PipelineOutput> outputs = pipeline.Go(input);
+    PipelineComparison(input, outputs, values);
 }
 
 // DO NOT DELETE
@@ -121,14 +122,14 @@ static void PipelineRun(const PipelineOptions &values) {
  * - Asserts `false` otherwise
  */
 bool atobool(const char *cstr) {
-  std::string str(cstr);
-  if (str == "1" || str == "true") {
-    return true;
-  }
-  if (str == "0" || str == "false") {
-    return false;
-  }
-  assert(false);
+    std::string str(cstr);
+    if (str == "1" || str == "true") {
+        return true;
+    }
+    if (str == "0" || str == "false") {
+        return false;
+    }
+    assert(false);
 }
 
 /**
@@ -153,29 +154,29 @@ bool atobool(const char *cstr) {
  */
 static int LostMain(int argc, char **argv) {
 
-  if (argc == 1) {
-    std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
-              << "Use --help flag on those commands for further help" << std::endl;
-    return 0;
-  }
+    if (argc == 1) {
+        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
+                  << "Use --help flag on those commands for further help" << std::endl;
+        return 0;
+    }
 
-  std::string command(argv[1]);
-  optind = 2;
+    std::string command(argv[1]);
+    optind = 2;
 
-  if (command == "database") {
+    if (command == "database") {
 
-    /**
-     * Database CLI options
-     */
-    enum class DatabaseCliOption {
+        /**
+         * Database CLI options
+         */
+        enum class DatabaseCliOption {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "database-options.hpp"
 #undef LOST_CLI_OPTION
-      help
-    };
+            help
+        };
 
-    static struct option long_options[] =
-        {
+        static struct option long_options[] =
+            {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
@@ -183,16 +184,16 @@ static int LostMain(int argc, char **argv) {
              (int)DatabaseCliOption::prop},
 #include "database-options.hpp"
 #undef LOST_CLI_OPTION
-            {"help", no_argument, 0, (int) DatabaseCliOption::help},
-            {0}
-        };
+                {"help", no_argument, 0, (int) DatabaseCliOption::help},
+                {0}
+            };
 
-    DatabaseOptions databaseOptions;
-    int index;
-    int option;
+        DatabaseOptions databaseOptions;
+        int index;
+        int option;
 
-    while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
-      switch (option) {
+        while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
+            switch (option) {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
                 case (int)DatabaseCliOption::prop :                     \
                     if (defaultArg == 0) {     \
@@ -207,27 +208,27 @@ static int LostMain(int argc, char **argv) {
             break;
 #include "database-options.hpp"
 #undef LOST_CLI_OPTION
-        case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
-          return 0;
-          break;
-        default :std::cout << "Illegal flag" << std::endl;
-          exit(1);
-      }
-    }
+                case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
+                    return 0;
+                    break;
+                default :std::cout << "Illegal flag" << std::endl;
+                    exit(1);
+            }
+        }
 
-    lost::DatabaseBuild(databaseOptions);
+        lost::DatabaseBuild(databaseOptions);
 
-  } else if (command == "pipeline") {
+    } else if (command == "pipeline") {
 
-    enum class PipelineCliOption {
+        enum class PipelineCliOption {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "pipeline-options.hpp"
 #undef LOST_CLI_OPTION
-      help
-    };
+            help
+        };
 
-    static struct option long_options[] =
-        {
+        static struct option long_options[] =
+            {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
@@ -236,17 +237,17 @@ static int LostMain(int argc, char **argv) {
 #include "pipeline-options.hpp"
 #undef LOST_CLI_OPTION
 
-            // DATABASES
-            {"help", no_argument, 0, (int) PipelineCliOption::help},
-            {0, 0, 0, 0}
-        };
+                // DATABASES
+                {"help", no_argument, 0, (int) PipelineCliOption::help},
+                {0, 0, 0, 0}
+            };
 
-    lost::PipelineOptions pipelineOptions;
-    int index;
-    int option;
+        lost::PipelineOptions pipelineOptions;
+        int index;
+        int option;
 
-    while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
-      switch (option) {
+        while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
+            switch (option) {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
                 case (int)PipelineCliOption::prop :                         \
                     if (defaultArg == 0) {    \
@@ -261,21 +262,21 @@ static int LostMain(int argc, char **argv) {
             break;
 #include "pipeline-options.hpp"
 #undef LOST_CLI_OPTION
-        case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
-          return 0;
-          break;
-        default :std::cout << "Illegal flag" << std::endl;
-          exit(1);
-      }
+                case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
+                    return 0;
+                    break;
+                default :std::cout << "Illegal flag" << std::endl;
+                    exit(1);
+            }
+        }
+
+        lost::PipelineRun(pipelineOptions);
+
+    } else {
+        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
+                  << "Use --help flag on those commands for further help" << std::endl;
     }
-
-    lost::PipelineRun(pipelineOptions);
-
-  } else {
-    std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
-              << "Use --help flag on those commands for further help" << std::endl;
-  }
-  return 0;
+    return 0;
 }
 
 }
@@ -290,5 +291,5 @@ static int LostMain(int argc, char **argv) {
  * @sa lost::LostMain
  */
 int main(int argc, char **argv) {
-  return lost::LostMain(argc, argv);
+    return lost::LostMain(argc, argv);
 }

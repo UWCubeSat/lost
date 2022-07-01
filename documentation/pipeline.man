@@ -35,7 +35,7 @@ The focal length of the camera that took the picture (in mm).
 
 .TP
 \fB--pixel-size\fP \fIsize\fP
-The pixel size of the camera that took the picture (in \[*m]m).
+The pixel size of the camera that took the picture (in micrometers).
 
 .TP
 \fB--fov\fP \fIdegrees\fP

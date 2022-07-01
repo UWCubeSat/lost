@@ -1,8 +1,8 @@
 # Downloading a Star Catalog
 
 # Automatically
-Run `./download-bright-star-database` from the base directory of LOST to generate
-`bright-star-database.tsv`.
+Run `make bright-star-catalog.tsv` from the base directory of LOST to generate
+`bright-star-database.tsv`. Simply running `make` will do this as well.
 
 # Manually
 I recommend using http://vizier.cfa.harvard.edu/viz-bin/VizieR-3?-source=I/50. VizieR is a web
