@@ -53,6 +53,9 @@ documentation/man-%.h: documentation/%.txt
 
 src/main.o: $(MAN_HS)
 
+docs:
+	doxygen
+
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
@@ -66,6 +69,8 @@ $(TEST_BIN): $(TEST_OBJS)
 
 clean:
 	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
-	rm -i $(BSC)
+
+clean_all: clean
+	rm -f $(BSC)
 
 .PHONY: all clean test
