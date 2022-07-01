@@ -53,6 +53,13 @@ documentation/man-%.h: documentation/%.txt
 
 src/main.o: $(MAN_HS)
 
+docs:
+	groff -mandoc -Tascii documentation/database.man > documentation/database.txt
+	xxd -i documentation/database.txt > documentation/man-database.h
+	groff -mandoc -Tascii documentation/pipeline.man > documentation/pipeline.txt
+	xxd -i documentation/pipeline.txt > documentation/man-pipeline.h
+	rm -f $(MAN_TXTS)
+
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
