@@ -89,6 +89,10 @@ class TrackingSortedDatabase {
 public:
     TrackingSortedDatabase(const unsigned char *databaseBytes);
     const static int32_t magicValue = 0x2536f0A9;
+
+private:
+    int16_t length;                     // length of catalog
+    std::vector<int16_t> indices;       // sorted list of catalog indices
 };
 
 long SerializeLengthTrackingCatalog(const Catalog &catalog);

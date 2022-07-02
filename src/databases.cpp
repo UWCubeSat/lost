@@ -323,7 +323,7 @@ struct TrackingStar {
 };
 
 long SerializeLengthTrackingCatalog(const Catalog &catalog) {
-    return catalog.size() * sizeof(int16_t);
+    return (catalog.size()+1) * sizeof(int16_t);
 }
 
 bool CompareTrackingStars(const TrackingStar &s1, const TrackingStar &s2) {
@@ -343,10 +343,14 @@ void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer) {
 
     std::sort(stars.begin(), stars.end(), CompareTrackingStars);
     
-    // store the sorted list of indices into the buffer
+    // serialize into buffer
     unsigned char *bufferStart = buffer;
 
-    // bulk pairs field
+    // store length of catalog into the buffer
+    *(int16_t *)buffer = catalog.size();
+    buffer += sizeof(int16_t);
+
+    // store the sorted list of indices into the buffer
     for (const TrackingStar &star : stars) {
         *(int16_t *)buffer = star.index;
         buffer += sizeof(int16_t);
@@ -355,6 +359,20 @@ void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer) {
     // verify length
     assert(buffer - bufferStart == SerializeLengthTrackingCatalog(catalog));
 }
+
+
+TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
+
+    length = *(int16_t *)buffer;
+    buffer += sizeof(int16_t);
+
+    for (int i = 0; i < length; i++) {
+        int16_t index = *(int16_t *)buffer;
+        buffer += sizeof(int16_t);
+        indices.push_back(index);
+    }
+}
+
 
 }
 
