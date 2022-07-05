@@ -129,7 +129,7 @@ int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subd
         }
     }
     if(secondCount != 0) {
-        std::cout << "Box: " << box << " Number: " << number << " Count: "<< count - secondCount << "\n";
+        std::cout << "Box: " << box << " Number: " << number << " Count: "<< count << " Wrong: " <<  secondCount << "\n";
     }
     // double varianceNaive = 0;
     // for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
@@ -139,6 +139,8 @@ int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subd
     // }
     // std::cout << std::sqrt(varianceNaive/(count-1)) << " ";
     average /= count;
+    // std::cout << average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1))) << "\n";
+    
     // std::cout << squareSum << " "; 
     // std::cout << average << " ";
     // std::cout << sqrt((squareSum - count * average * average)/(count-1));
@@ -157,6 +159,7 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
     int horizontalLeftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
     int verticalLeftover = imageWidth % subdivisions;
     std::vector<int> standardDeviations;
+    std::cout << subdivisions << "\n";
     // Sets threshold for the first few subdivisions that have 1 more line than the rest
     for(int i = 0; i < subdivisions * subdivisions; i++) {
         standardDeviations.push_back(Box(i, image, imageWidth, imageHeight, subdivisions, horizontalLeftover, horizontalDiv, verticalLeftover, verticalDiv));
@@ -210,7 +213,7 @@ long RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
 // For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
 long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
     return RowOrColumn(i / imageWidth, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions) * subdivisions + 
-    RowOrColumn(i % imageHeight, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
+    RowOrColumn(i % imageWidth, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
 }
 
 //recursive helper here
