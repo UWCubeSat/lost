@@ -204,7 +204,7 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
         -(x*other.z - z*other.x),
         x*other.y - y*other.x,
     };
-
+}
 
 
 float Mat3::At(int i, int j) const {
