@@ -93,3 +93,7 @@ fabric.properties
 
 # Generated Documentation
 /documentation/doxygen
+
+# Generated files in testing
+/test/scripts/compare_stars
+/test/scripts/pyramid-incorrect.dat
