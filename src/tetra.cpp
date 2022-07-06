@@ -486,7 +486,8 @@ int incrementOffset(FILE *pattCatalog, Pattern catCache[pattCacheSize],
         *cacheOffset = 0;
         // Moves file pointer {offset} bytes from {origin}
         // SEEK_SET = 0 = beginning of file
-        _fseeki64(pattCatalog, *offset * sizeof(Pattern), SEEK_SET);
+        // TODO: _fseeki64 not working?
+        fseeko64(pattCatalog, *offset * sizeof(Pattern), SEEK_SET);
         // TODO: right now, sizeof(Pattern) = 60
         // Reads an array of {pattCacheSize=16} Patterns from catalog
         // and stores them in our cache
@@ -521,28 +522,28 @@ int getMatchingPattern(Pattern imgPattern, Pattern *catalogPattern, FILE *pattCa
     // Initialize beginning of cache in catalog to hash of our imgPattern
     uint64_t offset = hashPattern(imgPattern);
     // Start our catalog pointer at offset * sizeof(Pattern)
-    _fseeki64(pattCatalog, offset * sizeof(Pattern), SEEK_SET);
+    fseeko64(pattCatalog, offset * sizeof(Pattern), SEEK_SET);
     // Fill our cache
     fread(catCache, sizeof(Pattern), pattCacheSize, pattCatalog);
 
     // Perform quadratic probing through the catalog
-    while(hasPattern(catCache[cacheOffset]){
-        Pattern catPattern = catCache[cacheOffset];
+    // while(hasPattern(catCache[cacheOffset]){
+    //     Pattern catPattern = catCache[cacheOffset];
 
         
         
 
-    }
+    // }
     return 2;
 }
 
 
 
 
-int main(){
-    Pattern p;
-    Pattern q;
-    cout << sizeof(Pattern) << endl; // 60 bytes
+// int main(){
+//     Pattern p;
+//     Pattern q;
+//     cout << sizeof(Pattern) << endl; // 60 bytes
 
-    return 0;
-}
+//     return 0;
+// }
