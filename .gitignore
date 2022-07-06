@@ -97,3 +97,4 @@ fabric.properties
 # Generated files in testing
 /test/scripts/compare_stars
 /test/scripts/pyramid-incorrect.dat
+/lost-test
