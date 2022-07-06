@@ -22,7 +22,7 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 }
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+        const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);

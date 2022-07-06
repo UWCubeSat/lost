@@ -7,6 +7,12 @@
 #include "star-utils.hpp"
 #include "camera.hpp"
 
+// TODO: advisable to do this?
+// ezhang8- constants for Tetra
+#define num_stars 5904
+#define pattern_cache_size 16
+
+
 namespace lost {
 
 class StarIdAlgorithm {
@@ -50,6 +56,7 @@ private:
     float maxMismatchProbability;
     long cutoff;
 };
+
 
 }
 

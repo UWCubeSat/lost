@@ -2,8 +2,8 @@
 #define STAR_UTILS_H
 
 #include <vector>
-
 #include "attitude-utils.hpp"
+
 
 namespace lost {
 
@@ -40,7 +40,6 @@ public:
         : starIndex(starIndex), catalogIndex(catalogIndex), weight(weight) { };
     StarIdentifier(int starIndex, int catalogIndex)
         : StarIdentifier(starIndex, catalogIndex, 1.0f) { };
-
     int starIndex;
     int catalogIndex;
     float weight;

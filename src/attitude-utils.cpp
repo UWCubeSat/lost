@@ -164,6 +164,11 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
+/**
+ * Computes dot product of two 3D vectors
+ * @param other
+ * @return
+ */
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
@@ -184,6 +189,11 @@ Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
 
+/**
+ * Outputs a 3D vector going from tail of this to tail of other
+ * @param other
+ * @return
+ */
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
@@ -194,7 +204,8 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
         -(x*other.z - z*other.x),
         x*other.y - y*other.x,
     };
-}
+
+
 
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
@@ -358,3 +369,4 @@ float Distance(const Vec2 &v1, const Vec2 &v2) {
 }
 
 }
+
