@@ -67,6 +67,9 @@ test: $(TEST_BIN)
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
+script-tests:
+	./test/scripts/pyramid-incorrect.sh
+
 clean:
 	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
 

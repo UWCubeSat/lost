@@ -95,6 +95,5 @@ fabric.properties
 /documentation/doxygen
 
 # Generated files in testing
-/test/scripts/compare_stars
-/test/scripts/pyramid-incorrect.dat
+pyramid-incorrect.dat
 /lost-test
