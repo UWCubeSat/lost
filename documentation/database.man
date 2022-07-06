@@ -6,7 +6,7 @@ database \- builds a database
 
 .SH SYNOPSIS
 
-\fBdatabase\fP [--mag \fImax-magnitude\fP | --stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] [--output \fIoutput-path\fP]
+\fBdatabase\fP [--min-mag \fIminimum-magnitude\fP | --max-stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] [--output \fIoutput-path\fP]
 .br
 
 .SH DESCRIPTION
