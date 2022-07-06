@@ -382,7 +382,8 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
 
     for (int i = 0; i < indices.size(); i++) {
         CatalogStar s = c[i];
-        if (square(s.spatial.x - point.x) + square(s.spatial.y - point.y) + square(s.spatial.z - point.z) <= square(radius)) {
+        Vec3 diff = s.spatial - point;
+        if (diff.MagnitudeSq() <= square(radius)) {
             query_ind.push_back(i);
         }
     }
