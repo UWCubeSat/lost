@@ -380,7 +380,7 @@ int16_t square(int16_t base) {
 std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, const Vec3 point, int16_t radius) {
     std::vector<int16_t> query_ind;
 
-    for (int i = 0; i < indices.size(); i++) {
+    for (long unsigned int i = 0; i < indices.size(); i++) {
         CatalogStar s = c[i];
         Vec3 diff = s.spatial - point;
         if (diff.MagnitudeSq() <= square(radius)) {
