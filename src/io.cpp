@@ -742,6 +742,8 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
     } else if (values.attitudeAlgo == "triad") {
         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
+    } else if (values.attitudeAlgo == "quest") {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new QuestAlgorithm());
     } else if (values.attitudeAlgo != "") {
         std::cout << "Illegal attitude algorithm." << std::endl;
         exit(1);

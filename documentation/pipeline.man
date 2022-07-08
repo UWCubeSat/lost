@@ -71,7 +71,7 @@ used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 de
 
 .TP
 \fB--attitude-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" (Davenport Q) and "triad". Defaults to dqm.
+Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" (Davenport Q), "triad", and "quest". Defaults to dqm.
 
 .TP
 \fB--generate\fP \fInum-images\fP

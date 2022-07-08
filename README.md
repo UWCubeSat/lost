@@ -188,7 +188,7 @@ filter should be decreased.
   **Our framework does...**
   - [X] Davenport Q method
   - [X] TRIAD
-  - [ ] QUEST
+  - [X] QUEST
   - [ ] ESOQ
 
 ## Other things LOST can do
