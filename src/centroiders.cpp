@@ -105,16 +105,16 @@ int Limit(bool test, int i, int leftover, int div) {
 // subdivisionsize * size / divisions ceil
 
 // Box is which subdivision
-int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subdivisions, int horizontalLeftover, int horizontalDiv, int verticalLeftover, int verticalDiv) {
+int Box(int box, unsigned char *image, int imageWidth, int imageHeight, int subdivisions, int horizontalLeftover, int horizontalDiv, int verticalLeftover, int verticalDiv) {
     int row = box / subdivisions; // Finds which row on the subdivisions we're in
     int col = box % subdivisions; // Finds the column on the subdivisions we're in
     double average = 0;
     double squareSum = 0;
     long count = 0;
-    // std::cout << "Box " << box << "\n";
-    // std::cout << Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv) << " " << Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv) << "\n";
-    // std::cout << Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv) << " " << Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv) << "\n";
-    // std::cout << "\n";
+    //std::cout << "Box " << box << "\n";
+    //std::cout << Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv) << " " << Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv) << "\n";
+    //std::cout << Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv) << " " << Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv) << "\n";
+    //std::cout << "\n";
     int secondCount = 0;
     int number;
     for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
@@ -122,14 +122,18 @@ int Box(int box, unsigned char *image, int imageHeight, int imageWidth, int subd
             average += image[i * imageWidth + j];
             squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
             count++;
+
+            // Checks for Error
             if(FindSubdivision(i * imageWidth + j, imageWidth, imageHeight, subdivisions) != box) {
                 secondCount++;
                 number = FindSubdivision(i * imageWidth + j, imageWidth, imageHeight, subdivisions);
             }
         }
     }
+
+    // Checks for Error
     if(secondCount != 0) {
-        std::cout << "Box: " << box << " Number: " << number << " Count: "<< count << " Wrong: " <<  secondCount << "\n";
+        std::cout << "ERROR, Index-Subdivision Mismatching - " << "Box: " << box << " Number: " << number << " Count: "<< count << " Wrong: " <<  secondCount << "\n";
     }
     // double varianceNaive = 0;
     // for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
@@ -159,7 +163,7 @@ std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, in
     int horizontalLeftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
     int verticalLeftover = imageWidth % subdivisions;
     std::vector<int> standardDeviations;
-    std::cout << subdivisions << "\n";
+    // std::cout << subdivisions << "\n";
     // Sets threshold for the first few subdivisions that have 1 more line than the rest
     for(int i = 0; i < subdivisions * subdivisions; i++) {
         standardDeviations.push_back(Box(i, image, imageWidth, imageHeight, subdivisions, horizontalLeftover, horizontalDiv, verticalLeftover, verticalDiv));
