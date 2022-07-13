@@ -74,6 +74,10 @@ public:
 // PIPELINE INPUT //
 ////////////////////
 
+/**
+ * @brief
+ * @details
+ */
 class PipelineOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
@@ -200,11 +204,25 @@ private:
 // PIPELINE OUTPUT //
 /////////////////////
 
+/**
+ * @brief
+ * @details
+ */
 struct PipelineOutput {
+    /// @brief
     std::unique_ptr<Stars> stars;
+
+    /// @brief
     std::unique_ptr<StarIdentifiers> starIds;
+
+    /// @brief
     std::unique_ptr<Attitude> attitude;
-    Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
+
+    /**
+     * @brief The catalog that the indices in starIds refer to
+     * @todo Don't store it here
+     */
+    Catalog catalog;
 };
 
 struct StarIdComparison {
