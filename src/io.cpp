@@ -648,6 +648,13 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values) {
     }
 }
 
+/**
+ * @brief
+ * @param centroidAlgorithm
+ * @param starIdAlgorithm
+ * @param attitudeEstimationAlgorithm
+ * @param database
+ */
 Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
                    StarIdAlgorithm *starIdAlgorithm,
                    AttitudeEstimationAlgorithm *attitudeEstimationAlgorithm,
@@ -668,6 +675,11 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 }
 
 
+/**
+ * @brief
+ * @param values
+ * @return
+ */
 Pipeline SetPipeline(const PipelineOptions &values) {
     enum class PipelineStage {
         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
@@ -730,6 +742,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     return result;
 }
 
+/**
+ * @brief
+ * @param input
+ * @return
+ */
 PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From
     // there, execute each successive stage of the pipeline using the output of the last stage
@@ -788,6 +805,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     return result;
 }
 
+/**
+ * @brief
+ * @param inputs
+ * @return
+ */
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
     

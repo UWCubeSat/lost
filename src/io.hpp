@@ -182,13 +182,18 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE //
 //////////////
 
-// a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
-
+/**
+ * @brief A pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
+ * @details
+ */
 class Pipeline {
     friend Pipeline SetPipeline(const PipelineOptions &values);
 
 public:
-    // pointers just so they're nullable
+    /**
+     * @brief
+     * @note Pointers just so they're nullable
+     */
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
