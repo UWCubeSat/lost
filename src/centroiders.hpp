@@ -22,10 +22,15 @@ private:
     int numStars;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class CenterOfGravityAlgorithm : public CentroidAlgorithm {
-    public:
-        CenterOfGravityAlgorithm() { };
-        Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+public:
+    /// @brief
+    CenterOfGravityAlgorithm() { };
+    Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
 class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {

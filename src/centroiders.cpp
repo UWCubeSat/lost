@@ -154,9 +154,16 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
     }
 }
 
+/**
+ * @brief
+ * @param image
+ * @param imageWidth
+ * @param imageHeight
+ * @return
+ */
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    
+
     std::vector<Star> result;
 
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
@@ -183,7 +190,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             yDiameter = (p.yMax - p.yMin) + 1;
 
             //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
             if (p.isValid) {
