@@ -125,8 +125,8 @@ class Attitude {
 public:
     /// @brief
     Attitude() = default;
-    explicit Attitude(const Quaternion &);
-    explicit Attitude(const Mat3 &dcm);
+    Attitude(const Quaternion &);
+    Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
     Mat3 GetDCM() const;

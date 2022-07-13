@@ -25,9 +25,18 @@ public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+
+    /**
+     * @brief
+     * @param tolerance
+     */
     GeometricVotingStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
 private:
     float tolerance;

@@ -29,6 +29,14 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
     return result;
 }
 
+/**
+ * @brief
+ * @param database
+ * @param stars
+ * @param catalog
+ * @param camera
+ * @return
+ */
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
