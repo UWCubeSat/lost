@@ -27,6 +27,10 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @param filePath
+ */
 PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     if (isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
         std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
@@ -44,6 +48,9 @@ PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     }
 }
 
+/**
+ * @brief
+ */
 PromptedOutputStream::~PromptedOutputStream() {
     if (isFstream) {
         delete stream;
@@ -283,22 +290,45 @@ float FocalLengthFromOptions(const PipelineOptions &values) {
     }
 }
 
+/**
+ * @brief
+ * @return
+ */
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
 }
 
+/**
+ * @brief
+ * @details
+ */
 class AstrometryPipelineInput : public PipelineInput {
 public:
     AstrometryPipelineInput(const std::string &path);
 
+    /**
+     * @brief
+     * @return
+     */
     const Image *InputImage() const { return &image; };
+
+    /**
+     * @brief
+     * @return
+     */
     const Attitude *InputAttitude() const { return &attitude; };
 private:
     Image image;
     Attitude attitude;
 };
 
+/**
+ * @brief
+ * @param cairoSurface
+ * @param camera
+ * @param catalog
+ */
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
 
@@ -329,6 +359,10 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     return result;
 }
 
+/**
+ * @brief
+ * @param path
+ */
 AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
@@ -341,13 +375,25 @@ AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
 //     return result;
 // }
 
+/**
+ * @brief
+ * @details
+ */
 class GeneratedStar : public Star {
 public:
+    /**
+     * @brief
+     * @param star
+     * @param peakBrightness
+     * @param motionBlurDelta
+     */
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
-    
+
+    /// @brief
     float peakBrightness;
-    // vector points to where the star will be visibly after one time unit.
+
+    /// @brief Points to where the star will be visible after one time unit.
     Vec2 delta;
 };
 
@@ -619,6 +665,13 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values) {
     }
 }
 
+/**
+ * @brief
+ * @param centroidAlgorithm
+ * @param starIdAlgorithm
+ * @param attitudeEstimationAlgorithm
+ * @param database
+ */
 Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
                    StarIdAlgorithm *starIdAlgorithm,
                    AttitudeEstimationAlgorithm *attitudeEstimationAlgorithm,
@@ -639,6 +692,11 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 }
 
 
+/**
+ * @brief
+ * @param values
+ * @return
+ */
 Pipeline SetPipeline(const PipelineOptions &values) {
     enum class PipelineStage {
         Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
@@ -701,6 +759,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     return result;
 }
 
+/**
+ * @brief
+ * @param input
+ * @return
+ */
 PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From
     // there, execute each successive stage of the pipeline using the output of the last stage
@@ -759,6 +822,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     return result;
 }
 
+/**
+ * @brief
+ * @param inputs
+ * @return
+ */
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
     
@@ -774,15 +842,30 @@ std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
 // COMPARISON //
 ////////////////
 
+/**
+ * @brief
+ * @details
+ */
 class CentroidComparison {
 public:
-    CentroidComparison() : meanError(0.0f), numExtraStars(0.0), numMissingStars(0.0) { };
-    float meanError;       // average distance from actual to expected star
-    // both these are floats because we may average multiple centroid comparisons together:
-    float numExtraStars;    // stars in actual but not expected. Ideally 0
-    float numMissingStars;  // stars is expected but not actual. Ideally 0
-    // I would add 99th percentile or something, but the really far away stars should really just
-    // count in extra_num
+    /// @brief
+    CentroidComparison() : meanError(0.0f), numExtraStars(0.0), numMissingStars(0.0) {};
+    /// @brief Average distance from actual to expected star
+    float meanError;
+
+    /**
+     * @brief Stars in actual but not expected. Ideally 0
+     * @note This is a float because we may average multiple centroid comparisons together.
+     */
+    float numExtraStars;
+
+    /**
+     * @brief Stars in expected but not actual. Ideally 0
+     * @note This is a float because we may average multiple centroid comparisons together.
+     * @note Mark P. says "I would add 99th percentile or something, but the really far away stars should really just
+     * count in extra_num"
+     */
+    float numMissingStars;
 };
 
 // helper for StarCentroidsCompare

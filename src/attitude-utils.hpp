@@ -9,25 +9,50 @@ namespace lost {
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
 // make everything more annoying, because you need vectors of pointers...ugh!
 
+/**
+ * @brief
+ * @details
+ */
 struct Vec2 {
+    /// @brief
     float x;
+
+    /// @brief
     float y;
 
     float Magnitude() const;
-    // squared magnitude
     float MagnitudeSq() const;
+
+    /**
+     * @brief
+     * @return
+     */
     Vec2 Normalize() const;
 
+    /**
+     * @brief
+     * @param vec2
+     * @return
+     */
     float operator*(const Vec2 &) const;
     Vec2 operator*(const float &) const;
     Vec2 operator-(const Vec2 &) const;
     Vec2 operator+(const Vec2 &) const;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Vec3 {
 public:
+    /// @brief
     float x;
+
+    /// @brief
     float y;
+
+    /// @brief
     float z;
 
     float Magnitude() const;
@@ -40,8 +65,13 @@ public:
     Vec3 crossProduct(const Vec3 &) const;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Mat3 {
 public:
+    /// @brief
     float x[9];
 
     float At(int i, int j) const;
@@ -59,21 +89,52 @@ Vec3 DeserializeVec3(const unsigned char *);
 float Distance(const Vec2 &, const Vec2 &);
 float Distance(const Vec3 &, const Vec3 &);
 
+/**
+ * @brief
+ * @details
+ */
 class EulerAngles {
 public:
+    /**
+     * @brief
+     * @param ra
+     * @param de
+     * @param roll
+     */
     EulerAngles(float ra, float de, float roll)
         : ra(ra), de(de), roll(roll) { };
 
+    /// @brief
     float ra;
+
+    /// @brief
     float de;
+
+    /// @brief
     float roll;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Quaternion {
 public:
-    Quaternion() = default; // I guess this lets you call Attitude on an attitude object?
-    Quaternion(const Vec3 &); // Pure quaternion
+    /**
+     * @brief
+     * @note I guess this lets you call Attitude on an attitude object?
+     */
+    Quaternion() = default;
+    Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, float);
+
+    /**
+     * @brief
+     * @param real
+     * @param i
+     * @param j
+     * @param k
+     */
     Quaternion(float real, float i, float j, float k)
         : real(real), i(i), j(j), k(k) { };
 
@@ -86,8 +147,6 @@ public:
     void SetAngle(float);
     EulerAngles ToSpherical() const;
     bool IsUnit(float tolerance) const;
-    // A canonical rotation quaternion's first component should be positive. A quaternion and its
-    // negative represent the same rotation.
     Quaternion Canonicalize() const;
 
     float real;
@@ -96,13 +155,19 @@ public:
     float k;
 };
 
-// When porting to a embedded device, you'll probalby want to get rid of this class and adapt to
-// either quaternions or DCMs exclusively, depending on the natural output format of whatever
-// attitude estimation algorithm you're using. This Attitude class stores either quaternion or DCM,
-// depending on what's the natural output of the attitude estimation algorithm, then converts to the
-// requested format on-demand.
+//
+/**
+ * @brief
+ * @details
+ * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt to
+ * either quaternions or DCMs exclusively, depending on the natural output format of whatever
+ * attitude estimation algorithm you're using. This Attitude class stores either quaternion or DCM,
+ * depending on what's the natural output of the attitude estimation algorithm, then converts to the
+ * requested format on-demand.
+ */
 class Attitude {
 public:
+    /// @brief
     Attitude() = default;
     Attitude(const Quaternion &);
     Attitude(const Mat3 &dcm);
@@ -111,7 +176,7 @@ public:
     Mat3 GetDCM() const;
     EulerAngles ToSpherical() const;
     Vec3 Rotate(const Vec3 &) const;
-    
+
 private:
     enum AttitudeType {
         NullType,

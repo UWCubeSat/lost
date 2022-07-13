@@ -11,20 +11,40 @@ namespace lost {
 
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
-// not an instantiable database on its own -- used in other databases
+/**
+ * @brief
+ * @details
+ * @note Not an instantiable database on its own -- used in other databases
+ * @todo QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints
+ */
 class KVectorIndex {
 public:
-    // construct from serialized
     KVectorIndex(const unsigned char *);
 
-    // finds at least all the entries containing the given range. Returns the index (starting from
-    // zero) of the first value matching the query
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
-    // TODO: QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints
 
+    /**
+     * @brief
+     * @return
+     */
     long NumValues() const { return numValues; };
+
+    /**
+     * @brief
+     * @return
+     */
     long NumBins() const { return numBins; };
+
+    /**
+     * @brief
+     * @return
+     */
     float Max() const { return max; };
+
+    /**
+     * @brief
+     * @return
+     */
     float Min() const { return min; };
 private:
     // return the lowest-indexed bin that contains the number of pairs with distance <= dist
@@ -41,23 +61,39 @@ private:
 long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
 void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 
-// stores angular distance between pairs of stars. Sensitive to uncalibrated camera parameters
+/**
+ * @brief Stores angular distance between pairs of stars
+ * @details
+ * @warning Sensitive to uncalibrated camera parameters
+ * @todo Trapezoidal interpolation
+ */
 class PairDistanceKVectorDatabase {
 public:
     PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
-    // return at least all the stars between min and max
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
-    // TODO: trapezoidal interpolation
 
-    // for debugging purposes. Return the distances from the given star to each other star it's
-    // paired with in the database.
     std::vector<float> StarDistances(int16_t star, const Catalog &) const;
 
+    /**
+     * @brief
+     * @return
+     */
     float MaxDistance() const { return index.Max(); };
+
+    /**
+     * @brief
+     * @return
+     */
     float MinDistance() const { return index.Min(); };
 
+    /**
+     * @brief
+     * @return
+     */
     long NumPairs() const;
+
+    /// @brief
     const static int32_t kMagicValue = 0x2536f009;
 private:
     KVectorIndex index;
@@ -65,18 +101,31 @@ private:
     const int16_t *pairs;
 };
 
-// stores "inner angles" between star triples. Unsensitive to first-order error in basic camera
-// parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg,
-// camera distortion, which may cause the effective FOV or principal point to be different in
-// different parts of the image). Used for Mortari's Non-Dimensional Star-ID
+/**
+ * @brief Stores "inner angles" between star triples
+ * @details Unsensitive to first-order error in basic camera
+ * parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg,
+ * camera distortion, which may cause the effective FOV or principal point to be different in
+ * different parts of the image). Used for Mortari's Non-Dimensional Star-ID
+ */
 class TripleInnerKVectorDatabase {
 public:
+    /**
+     * @brief
+     * @param databaseBytes
+     */
     TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
 
-    // return at least all the triples with inner angle in the given range. The numReturnedTriples*3
-    // ints from the returned pointer are valid to read.
+    /**
+     * @brief Return at least all the triples with inner angle in the given range
+     * @details The numReturnedTriples*3 ints from the returned pointer are valid to read.
+     * @todo Trapezoidal interpolation
+     * @param min
+     * @param max
+     * @param begin
+     * @param end
+     */
     void FindTriplesLiberal(float min, float max, long **begin, long **end) const;
-    // TODO: trapezoidal interpolation
 private:
     KVectorIndex index;
     int16_t *triples;
@@ -86,27 +135,49 @@ private:
 const int kMultiDatabaseMaxDatabases = 64;
 const long kMultiDatabaseTocLength = 8*kMultiDatabaseMaxDatabases;
 
-// represents a database that contains multiple databases, which is almost always what will be used
-// in the real world, since you'll want to store at least the catalog plus one specific database.
+// ,
+/**
+ * @brief Represents a database that contains multiple databases
+ * @details This is almost always what will be used in the real world,
+ * since you'll want to store at least the catalog plus one specific database.
+ */
 class MultiDatabase {
 public:
+    /**
+     * @brief
+     * @param buffer
+     */
     MultiDatabase(const unsigned char *buffer) : buffer(buffer) { };
-    // return a pointer to the start of the database type indicated by the magic value, if such a
-    // sub-database is present in the database. Return null if not found.
     const unsigned char *SubDatabasePointer(int32_t magicValue) const;
 private:
     const unsigned char *buffer;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class MultiDatabaseBuilder {
 public:
+    /**
+     * @brief
+     * @note the () after new ensures it's zero-initialized
+     */
     MultiDatabaseBuilder()
-        // the () after new ensures it's zero-initialized
         : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
     ~MultiDatabaseBuilder();
-    // return pointer to the start of the space allocated for said database. Return null if full.
     unsigned char *AddSubDatabase(int32_t magicValue, long length);
+
+    /**
+     * @brief
+     * @return
+     */
     unsigned char *Buffer() { return buffer; };
+
+    /**
+     * @brief
+     * @return
+     */
     long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
 private:
     // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to

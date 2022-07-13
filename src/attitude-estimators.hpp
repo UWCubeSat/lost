@@ -7,18 +7,36 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 class AttitudeEstimationAlgorithm {
 public:
-    // TODO: more detail in return type (eg, whether attitude estimation failed, measure of error)
+    /**
+     * @brief
+     * @todo More detail in return type (eg, whether attitude estimation failed, measure of error)
+     * @return
+     */
     virtual Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &) = 0;
-    virtual ~AttitudeEstimationAlgorithm() { };
+
+    /// @brief
+    virtual ~AttitudeEstimationAlgorithm() {};
 };
 
+/**
+ * @brief
+ * @details
+ */
 class DavenportQAlgorithm : public AttitudeEstimationAlgorithm {
 public:
     Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
 };
 
+/**
+ * @brief
+ * @details
+ */
 class TriadAlgorithm : public AttitudeEstimationAlgorithm {
 public:
     Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);

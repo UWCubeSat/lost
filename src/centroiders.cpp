@@ -16,6 +16,13 @@ namespace lost {
 
 // DUMMY
 
+/**
+ * @brief
+ * @param image
+ * @param imageWidth
+ * @param imageHeight
+ * @return
+ */
 std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
@@ -108,16 +115,39 @@ int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight)
     return mean + (std * 5);
 }
 
+/**
+ * @brief
+ * @details
+ */
 struct CentroidParams {
-    float yCoordMagSum; 
+    /// @brief
+    float yCoordMagSum;
+
+    /// @brief
     float xCoordMagSum;
+
+    /// @brief
     long magSum;
+
+    /// @brief
     int xMin;
+
+    /// @brief
     int xMax;
+
+    /// @brief
     int yMin;
+
+    /// @brief
     int yMax;
+
+    /// @brief
     int cutoff;
+
+    /// @brief
     bool isValid;
+
+    /// @brief
     std::unordered_set<int> checkedIndices;
 };
 
@@ -154,9 +184,16 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
     }
 }
 
+/**
+ * @brief
+ * @param image
+ * @param imageWidth
+ * @param imageHeight
+ * @return
+ */
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
-    
+
     std::vector<Star> result;
 
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
@@ -183,7 +220,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             yDiameter = (p.yMax - p.yMin) + 1;
 
             //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
             if (p.isValid) {
@@ -198,15 +235,36 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 //smaller means more accurate and more iterations.
 float iWCoGMinChange = 0.0002;
 
+/**
+ * @brief
+ * @details
+ */
 struct IWCoGParams {
+    /// @brief
     int xMin;
+
+    /// @brief
     int xMax;
+
+    /// @brief
     int yMin;
+
+    /// @brief
     int yMax;
+
+    /// @brief
     int cutoff;
+
+    /// @brief
     int maxIntensity;
+
+    /// @brief
     int guess;
+
+    /// @brief
     bool isValid;
+
+    /// @brief
     std::unordered_set<int> checkedIndices;
 };
 
@@ -243,6 +301,13 @@ void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, i
     }
 }
 
+/**
+ * @brief
+ * @param image
+ * @param imageWidth
+ * @param imageHeight
+ * @return
+ */
 Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;

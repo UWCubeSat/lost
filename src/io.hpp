@@ -29,10 +29,19 @@ namespace lost {
 
 const char kNoDefaultArgument = 0;
 
+/**
+ * @brief
+ * @details
+ */
 class PromptedOutputStream {
 public:
     PromptedOutputStream(std::string filePath);
     ~PromptedOutputStream();
+
+    /**
+     * @brief
+     * @return
+     */
     std::ostream &Stream() { return *stream; };
 
 private:
@@ -54,10 +63,19 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width,
 
 // type for functions that create a centroid algorithm (by prompting the user usually)
 
+/**
+ * @brief
+ * @details
+ */
 class Image {
 public:
+    /// @brief
     unsigned char *image;
+
+    /// @brief
     int width;
+
+    /// @brief
     int height;
 };
 
@@ -65,6 +83,10 @@ public:
 // PIPELINE INPUT //
 ////////////////////
 
+/**
+ * @brief
+ * @details
+ */
 class PipelineOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
@@ -73,21 +95,66 @@ public:
 #undef LOST_CLI_OPTION
 };
 
-// represents the input and expected outputs of a pipeline run.
+/**
+ * @brief Represents the input and expected outputs of a pipeline run.
+ * @details
+ */
 class PipelineInput {
 public:
+    /// @brief
     virtual ~PipelineInput(){};
+    /**
+     * @brief
+     * @return
+     */
     virtual const Image *InputImage() const { return NULL; };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Catalog &GetCatalog() const = 0;
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Stars *InputStars() const { return NULL; };
-    // whether the input stars have identification information.
+
+    /**
+     * @brief Whether the input stars have identification information.
+     * @return
+     */
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
-    // for tracking
+
+    /**
+     * @brief For tracking
+     * @return
+     */
     virtual const Attitude *InputAttitude() const { return NULL; };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Camera *InputCamera() const { return NULL; };
 
+    /**
+     * @brief
+     * @return
+     */
     virtual const Stars *ExpectedStars() const { return InputStars(); };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 
     cairo_surface_t *InputImageSurface() const;
@@ -128,12 +195,30 @@ typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
+/**
+ * @brief
+ * @details
+ */
 class PngPipelineInput : public PipelineInput {
 public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
 
+    /**
+     * @brief
+     * @return
+     */
     const Image *InputImage() const { return &image; };
+
+    /**
+     * @brief
+     * @return
+     */
     const Camera *InputCamera() const { return &camera; };
+
+    /**
+     * @brief
+     * @return
+     */
     const Catalog &GetCatalog() const { return catalog; };
 
 private:
@@ -146,18 +231,45 @@ private:
 // PIPELINE OUTPUT //
 /////////////////////
 
+/**
+ * @brief
+ * @details
+ */
 struct PipelineOutput {
+    /// @brief
     std::unique_ptr<Stars> stars;
+
+    /// @brief
     std::unique_ptr<StarIdentifiers> starIds;
+
+    /// @brief
     std::unique_ptr<Attitude> attitude;
-    Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
+
+    /**
+     * @brief The catalog that the indices in starIds refer to
+     * @todo Don't store it here
+     */
+    Catalog catalog;
 };
 
+/**
+ * @brief
+ * @details
+ */
 struct StarIdComparison {
+    /// @brief
     int numCorrect;
+
+    /// @brief
     int numIncorrect;
+
+    /// @brief
     int numTotal;
+
+    /// @brief
     float fractionCorrect;
+
+    /// @brief
     float fractionIncorrect;
 };
 
@@ -173,13 +285,18 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE //
 //////////////
 
-// a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
-
+/**
+ * @brief A pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
+ * @details
+ */
 class Pipeline {
     friend Pipeline SetPipeline(const PipelineOptions &values);
 
 public:
-    // pointers just so they're nullable
+    /**
+     * @brief
+     * @note Pointers just so they're nullable
+     */
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
@@ -207,6 +324,10 @@ void PipelineComparison(const PipelineInputList &expected,
 // TODO: rename
 Catalog PromptNarrowedCatalog(const Catalog &);
 
+/**
+ * @brief
+ * @details
+ */
 class DatabaseOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \

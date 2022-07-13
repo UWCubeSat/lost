@@ -9,31 +9,62 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 class StarIdAlgorithm {
 public:
+    /**
+     * @brief
+     * @param database
+     * @param stars
+     * @param camera
+     * @return
+     */
     virtual StarIdentifiers Go(
         const unsigned char *database, const Stars &, const Catalog &, const Camera &) const = 0;
+
+    /// @brief
     virtual ~StarIdAlgorithm() { };
 };
 
+/**
+ * @brief
+ * @details
+ */
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+
+    /**
+     * @brief
+     * @param tolerance
+     */
     GeometricVotingStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
 private:
     float tolerance;
 };
 
 
+/**
+ * @brief
+ * @details
+ */
 class PyramidStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
     /**
+     * @brief
      * @param tolerance Angular tolerance in distances (measurement error)
      * @param numFalseStars an estimate of the number of false stars in the whole celestial sphere
      * (not just the field of view). Eg, if you estimate 10 dead pixels in a 40 degree FOV, you'd

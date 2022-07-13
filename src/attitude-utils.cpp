@@ -6,6 +6,11 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Quaternion Quaternion::operator*(const Quaternion &other) const {
     return Quaternion(
         real*other.real - i*other.i - j*other.j - k*other.k,
@@ -14,25 +19,47 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
+/**
+ * @brief
+ * @return
+ */
 Quaternion Quaternion::Conjugate() const {
     return Quaternion(real, -i, -j, -k);
 }
 
+/**
+ * @brief
+ * @return
+ */
 Vec3 Quaternion::Vector() const {
     return { i, j, k };
 }
 
+/**
+ * @brief
+ * @param vec
+ */
 void Quaternion::SetVector(const Vec3 &vec) {
     i = vec.x;
     j = vec.y;
     k = vec.z;
 }
 
+/**
+ * @brief
+ * @note Pure quaternion
+ * @param input
+ */
 Quaternion::Quaternion(const Vec3 &input) {
     real = 0;
     SetVector(input);
 }
 
+/**
+ * @brief
+ * @param input
+ * @param theta
+ */
 Quaternion::Quaternion(const Vec3 &input, float theta) {
     real = cos(theta/2);
     // the compiler will optimize it. Right?
@@ -41,25 +68,42 @@ Quaternion::Quaternion(const Vec3 &input, float theta) {
     k = input.z * sin(theta/2);
 }
 
+/**
+ * @brief
+ * @param input
+ * @return
+ */
 Vec3 Quaternion::Rotate(const Vec3 &input) const {
     // TODO: optimize
     return ((*this)*Quaternion(input)*Conjugate()).Vector();
 }
 
+/**
+ * @brief
+ * @todo we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
+ * @return
+ */
 float Quaternion::Angle() const {
-    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in
-    // AngleUnit)
+    // TODO:
     if (real <= -1) {
         return 0; // 180*2=360=0
     }
     return (real >= 1 ? 0 : acos(real))*2;
 }
 
+/**
+ * @brief
+ * @param newAngle
+ */
 void Quaternion::SetAngle(float newAngle) {
     real = cos(newAngle/2);
     SetVector(Vector().Normalize() * sin(newAngle/2));
 }
 
+/**
+ * @brief
+ * @return
+ */
 EulerAngles Quaternion::ToSpherical() const {
     // Working out these equations would be a pain in the ass. Thankfully, this wikipedia page:
     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
@@ -98,10 +142,21 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     return result;
 }
 
+/**
+ * @brief
+ * @param tolerance
+ * @return
+ */
 bool Quaternion::IsUnit(float tolerance) const {
     return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
+/**
+ * @brief
+ * @note A canonical rotation quaternion's first component should be positive. A quaternion and
+ * its negative represent the same rotation.
+ * @return
+ */
 Quaternion Quaternion::Canonicalize() const {
     if (real >= 0) {
         return *this;
@@ -141,22 +196,42 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+/**
+ * @brief
+ * @return
+ */
 float Vec3::MagnitudeSq() const {
     return x*x+y*y+z*z;
 }
 
+/**
+ * @brief Squared magnitude
+ * @return
+ */
 float Vec2::MagnitudeSq() const {
     return x*x+y*y;
 }
 
+/**
+ * @brief
+ * @return
+ */
 float Vec3::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
+/**
+ * @brief
+ * @return
+ */
 float Vec2::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
+/**
+ * @brief
+ * @return
+ */
 Vec3 Vec3::Normalize() const {
     float mag = Magnitude();
     return {
@@ -164,30 +239,65 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec2 Vec2::operator*(const float &other) const {
     return { x*other, y*other };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec3 Vec3::operator*(const float &other) const {
     return { x*other, y*other, z*other };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec2 Vec2::operator+(const Vec2 &other) const {
     return {x + other.x, y + other.y };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec3 Vec3::crossProduct(const Vec3 &other) const {
     return {
         y*other.z - z*other.y,
@@ -196,18 +306,39 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
+/**
+ * @brief
+ * @param i
+ * @param j
+ * @return
+ */
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
+/**
+ * @brief
+ * @param j
+ * @return
+ */
 Vec3 Mat3::Column(int j) const {
     return {At(0,j), At(1,j), At(2,j)};
 }
 
+/**
+ * @brief
+ * @param i
+ * @return
+ */
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Mat3 Mat3::operator*(const Mat3 &other) const {
 #define _MATMUL_ENTRY(row, col) At(row,0)*other.At(0,col) + At(row,1)*other.At(1,col) + At(row,2)*other.At(2,col)
     return {
@@ -218,6 +349,11 @@ Mat3 Mat3::operator*(const Mat3 &other) const {
 #undef _MATMUL_ENTRY
 }
 
+/**
+ * @brief
+ * @param vec
+ * @return
+ */
 Vec3 Mat3::operator*(const Vec3 &vec) const {
     return {
         vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2),
@@ -226,6 +362,10 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     };
 }
 
+/**
+ * @brief
+ * @return
+ */
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
@@ -234,11 +374,19 @@ Mat3 Mat3::Transpose() const {
     };
 }
 
+/**
+ * @brief
+ * @param quat
+ */
 Attitude::Attitude(const Quaternion &quat)
-    : quaternion(quat), type(QuaternionType) { }
+    : quaternion(quat), type(QuaternionType) {}
 
+/**
+ * @brief
+ * @param matrix
+ */
 Attitude::Attitude(const Mat3 &matrix)
-    : dcm(matrix), type(DCMType) { }
+    : dcm(matrix), type(DCMType) {}
 
 Mat3 QuaternionToDCM(const Quaternion &quat) {
     Vec3 x = quat.Rotate({1, 0, 0});
@@ -279,47 +427,52 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     return xAlign*yAlign;
 }
 
+/**
+ * @brief
+ * @return
+ */
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
-    case QuaternionType:
-        return quaternion;
-    case DCMType:
-        return DCMToQuaternion(dcm);
-    default:
-        assert(false);
+        case QuaternionType:return quaternion;
+        case DCMType:return DCMToQuaternion(dcm);
+        default:assert(false);
     }
 }
 
+/**
+ * @brief
+ * @return
+ */
 Mat3 Attitude::GetDCM() const {
     switch (type) {
-    case DCMType:
-        return dcm;
-    case QuaternionType:
-        return QuaternionToDCM(quaternion);
-    default:
-        assert(false);
+        case DCMType:return dcm;
+        case QuaternionType:return QuaternionToDCM(quaternion);
+        default:assert(false);
     }
 }
 
+/**
+ * @brief
+ * @param vec
+ * @return
+ */
 Vec3 Attitude::Rotate(const Vec3 &vec) const {
     switch (type) {
-    case DCMType:
-        return dcm*vec;
-    case QuaternionType:
-        return quaternion.Rotate(vec);
-    default:
-        assert(false);
+        case DCMType:return dcm*vec;
+        case QuaternionType:return quaternion.Rotate(vec);
+        default:assert(false);
     }
 }
 
+/**
+ * @brief
+ * @return
+ */
 EulerAngles Attitude::ToSpherical() const {
     switch (type) {
-    case DCMType:
-        return GetQuaternion().ToSpherical();
-    case QuaternionType:
-        return quaternion.ToSpherical();
-    default:
-        assert(false);
+        case DCMType:return GetQuaternion().ToSpherical();
+        case QuaternionType:return quaternion.ToSpherical();
+        default:assert(false);
     }
 }
 

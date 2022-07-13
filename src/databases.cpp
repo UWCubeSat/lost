@@ -11,9 +11,18 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 struct KVectorPair {
+    /// @brief
     int16_t index1;
+
+    /// @brief
     int16_t index2;
+
+    /// @brief
     float distance;
 };
 
@@ -98,6 +107,10 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
     assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
 }
 
+/**
+ * @brief Construct from serialized
+ * @param buffer
+ */
 KVectorIndex::KVectorIndex(const unsigned char *buffer) {
     numValues = *(int32_t *)buffer;
     buffer += sizeof(int32_t);
@@ -115,6 +128,13 @@ KVectorIndex::KVectorIndex(const unsigned char *buffer) {
     bins = (const int32_t *)buffer;
 }
 
+/**
+ * @brief Finds at least all the entries containing the given range
+ * @param minQueryDistance
+ * @param maxQueryDistance
+ * @param upperIndex
+ * @return the index (starting from zero) of the first value matching the query
+ */
 long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const {
     assert(maxQueryDistance > minQueryDistance);
     if (maxQueryDistance >= max) {
@@ -217,6 +237,10 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
+/**
+ * @brief
+ * @param buffer
+ */
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
     
@@ -229,6 +253,13 @@ float Clamp(float num, float low, float high) {
     return num < low ? low : num > high ? high : num;
 }
 
+/**
+ * @brief Return at least all the stars between min and max
+ * @param minQueryDistance
+ * @param maxQueryDistance
+ * @param end
+ * @return
+ */
 const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
 
@@ -242,6 +273,13 @@ long PairDistanceKVectorDatabase::NumPairs() const {
     return index.NumValues();
 }
 
+/**
+ * @brief For debugging purposes. Return the distances from the given star to each other star it's
+ * paired with in the database.
+ * @param star
+ * @param catalog
+ * @return
+ */
 std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
     std::vector<float> result;
     for (int i = 0; i < NumPairs(); i++) {
@@ -262,6 +300,12 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
    | Large          | databases         | the database contents                                   |
  */
 
+/**
+ * @brief return a pointer to the start of the database type indicated by the magic value, if such
+ * a sub-database is present in the database
+ * @param magicValue
+ * @return Returns a pointer to the start of the database type indicated by the magic value, null if not found
+ */
 const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const {
     long databaseIndex = -1;
     int32_t *toc = (int32_t *)buffer;
@@ -282,6 +326,12 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
     return buffer+kMultiDatabaseTocLength+databaseIndex;
 }
 
+/**
+ * @brief Return pointer to the start of the space allocated for said database.
+ * @param magicValue
+ * @param length
+ * @return Pointer to the start of the space allocated for said database. Return null if full.
+ */
 unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long length) {
     // find unused spot in toc and take it!
     int32_t *toc = (int32_t *)buffer;
@@ -310,6 +360,7 @@ unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long len
     return result;
 }
 
+/// @brief
 MultiDatabaseBuilder::~MultiDatabaseBuilder() {
     free(buffer);
 }
