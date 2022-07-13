@@ -8,9 +8,22 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 class CentroidAlgorithm {
 public:
+    /**
+     * @brief
+     * @param image
+     * @param imageWidth
+     * @param imageHeight
+     * @return
+     */
     virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight) const = 0;
+
+    /// @brief
     virtual ~CentroidAlgorithm() { };
 };
 
