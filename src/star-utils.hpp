@@ -7,17 +7,44 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 class CatalogStar {
 public:
+    /// @brief
     CatalogStar() = default;
-    CatalogStar(float raj2000, float dej2000, int magnitude, int name) :
-        spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), name(name) { }
-    CatalogStar(Vec3 spatial, int magnitude, int name) :
-        spatial(spatial), magnitude(magnitude), name(name) { }
 
+    /**
+     * @brief
+     * @param raj2000
+     * @param dej2000
+     * @param magnitude
+     * @param name
+     */
+    CatalogStar(float raj2000, float dej2000, int magnitude, int name) :
+        spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), name(name) {}
+
+    /**
+     * @brief
+     * @param spatial
+     * @param magnitude
+     * @param name
+     */
+    CatalogStar(Vec3 spatial, int magnitude, int name) :
+        spatial(spatial), magnitude(magnitude), name(name) {}
+
+    /// @brief
     Vec3 spatial;
-    int  magnitude;         // *10^-2
-    int  name;
+    /**
+     * @brief
+     * @note *10^-2
+     */
+    int magnitude;
+
+    /// @brief
+    int name;
 };
 
 class Star {
