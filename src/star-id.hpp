@@ -9,10 +9,23 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 class StarIdAlgorithm {
 public:
+    /**
+     * @brief
+     * @param database
+     * @param stars
+     * @param camera
+     * @return
+     */
     virtual StarIdentifiers Go(
         const unsigned char *database, const Stars &, const Catalog &, const Camera &) const = 0;
+
+    /// @brief
     virtual ~StarIdAlgorithm() { };
 };
 
