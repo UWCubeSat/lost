@@ -59,13 +59,28 @@ Vec3 DeserializeVec3(const unsigned char *);
 float Distance(const Vec2 &, const Vec2 &);
 float Distance(const Vec3 &, const Vec3 &);
 
+/**
+ * @brief
+ * @details
+ */
 class EulerAngles {
 public:
+    /**
+     * @brief
+     * @param ra
+     * @param de
+     * @param roll
+     */
     EulerAngles(float ra, float de, float roll)
         : ra(ra), de(de), roll(roll) { };
 
+    /// @brief
     float ra;
+
+    /// @brief
     float de;
+
+    /// @brief
     float roll;
 };
 
