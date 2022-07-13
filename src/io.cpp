@@ -791,15 +791,30 @@ std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
 // COMPARISON //
 ////////////////
 
+/**
+ * @brief
+ * @details
+ */
 class CentroidComparison {
 public:
-    CentroidComparison() : meanError(0.0f), numExtraStars(0.0), numMissingStars(0.0) { };
-    float meanError;       // average distance from actual to expected star
-    // both these are floats because we may average multiple centroid comparisons together:
-    float numExtraStars;    // stars in actual but not expected. Ideally 0
-    float numMissingStars;  // stars is expected but not actual. Ideally 0
-    // I would add 99th percentile or something, but the really far away stars should really just
-    // count in extra_num
+    /// @brief
+    CentroidComparison() : meanError(0.0f), numExtraStars(0.0), numMissingStars(0.0) {};
+    /// @brief Average distance from actual to expected star
+    float meanError;
+
+    /**
+     * @brief Stars in actual but not expected. Ideally 0
+     * @note This is a float because we may average multiple centroid comparisons together.
+     */
+    float numExtraStars;
+
+    /**
+     * @brief Stars in expected but not actual. Ideally 0
+     * @note This is a float because we may average multiple centroid comparisons together.
+     * @note Mark P. says "I would add 99th percentile or something, but the really far away stars should really just
+     * count in extra_num"
+     */
+    float numMissingStars;
 };
 
 // helper for StarCentroidsCompare
