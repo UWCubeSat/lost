@@ -97,15 +97,36 @@ public:
     // eccentricity?
 };
 
+/**
+ * @brief
+ * @details
+ */
 class StarIdentifier {
 public:
+    /**
+     * @brief
+     * @param starIndex
+     * @param catalogIndex
+     * @param weight
+     */
     StarIdentifier(int starIndex, int catalogIndex, int weight)
         : starIndex(starIndex), catalogIndex(catalogIndex), weight(weight) { };
+
+    /**
+     * @brief
+     * @param starIndex
+     * @param catalogIndex
+     */
     StarIdentifier(int starIndex, int catalogIndex)
         : StarIdentifier(starIndex, catalogIndex, 1.0f) { };
 
+    /// @brief
     int starIndex;
+
+    /// @brief
     int catalogIndex;
+
+    /// @brief
     float weight;
 };
 
