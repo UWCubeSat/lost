@@ -43,10 +43,15 @@ private:
 };
 
 
+/**
+ * @brief
+ * @details
+ */
 class PyramidStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
     /**
+     * @brief
      * @param tolerance Angular tolerance in distances (measurement error)
      * @param numFalseStars an estimate of the number of false stars in the whole celestial sphere
      * (not just the field of view). Eg, if you estimate 10 dead pixels in a 40 degree FOV, you'd
