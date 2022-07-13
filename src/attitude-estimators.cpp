@@ -87,6 +87,14 @@ static Mat3 TriadCoordinateFrame(Vec3 v1, Vec3 v2) {
     };
 }
 
+/**
+ * @brief
+ * @param camera
+ * @param stars
+ * @param catalog
+ * @param starIds
+ * @return
+ */
 Attitude TriadAlgorithm::Go(const Camera &camera,
                             const Stars &stars,
                             const Catalog &catalog,

@@ -30,6 +30,10 @@ public:
     Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
 };
 
+/**
+ * @brief
+ * @details
+ */
 class TriadAlgorithm : public AttitudeEstimationAlgorithm {
 public:
     Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
