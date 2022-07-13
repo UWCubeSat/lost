@@ -252,11 +252,24 @@ struct PipelineOutput {
     Catalog catalog;
 };
 
+/**
+ * @brief
+ * @details
+ */
 struct StarIdComparison {
+    /// @brief
     int numCorrect;
+
+    /// @brief
     int numIncorrect;
+
+    /// @brief
     int numTotal;
+
+    /// @brief
     float fractionCorrect;
+
+    /// @brief
     float fractionIncorrect;
 };
 
