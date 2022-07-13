@@ -161,25 +161,33 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     return verified;
 }
 
-    /**
-     * Strategies:
-     * 
-     * 1. For each star, enumerate all stars which have the same combination of distances to some
-     *  other stars, getting down to a hopefully small (<10) list of candidates for each star, then
-     *  do a quad-nested loop to correlate them.
-     *
-     * 2. Loop through all possible stars in the catalog for star i. Then look at edge ij, using
-     * this to select possible j-th stars. If ever there is not a possible j-th star, continue the
-     * i-loop. When a possible ij combination is found, loop through k stars according to ik. IF
-     * none are found, continue the outer i loop. If some are found, check jk for each one. For each possible ijk triangle, 
-     */
-
+/**
+ * @brief
+ * @details
+ * @note Strategies:
+ * 1. For each star, enumerate all stars which have the same combination of distances to some
+ *  other stars, getting down to a hopefully small (<10) list of candidates for each star, then
+ *  do a quad-nested loop to correlate them.
+ * 2. Loop through all possible stars in the catalog for star i. Then look at edge ij, using
+ * this to select possible j-th stars. If ever there is not a possible j-th star, continue the
+ * i-loop. When a possible ij combination is found, loop through k stars according to ik. IF
+ * none are found, continue the outer i loop. If some are found, check jk for each one. For each possible ijk triangle,
+ */
 class PairDistanceInvolvingIterator {
 public:
-    // unqualified constructor makes a "past-the-end" iterator
+    /**
+     * @brief
+     * @note Unqualified constructor makes a "past-the-end" iterator
+     */
     PairDistanceInvolvingIterator()
         : pairs(NULL), end(NULL) { };
 
+    /**
+     * @brief
+     * @param pairs
+     * @param end
+     * @param involving
+     */
     PairDistanceInvolvingIterator(const int16_t *pairs, const int16_t *end, int16_t involving)
         : pairs(pairs), end(end), involving(involving) {
 
@@ -193,6 +201,10 @@ public:
     //     return result;
     // }
 
+    /**
+     * @brief
+     * @return
+     */
     PairDistanceInvolvingIterator &operator++() {
         assert(hasValue());
         pairs += 2;
@@ -200,10 +212,18 @@ public:
         return *this;
     }
 
+    /**
+     * @brief
+     * @return
+     */
     int16_t operator*() const {
         return curValue;
     }
 
+    /**
+     * @brief
+     * @return
+     */
     bool hasValue() {
         return pairs != end;
     }
