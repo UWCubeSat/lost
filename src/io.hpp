@@ -29,10 +29,19 @@ namespace lost {
 
 const char kNoDefaultArgument = 0;
 
+/**
+ * @brief
+ * @details
+ */
 class PromptedOutputStream {
 public:
     PromptedOutputStream(std::string filePath);
     ~PromptedOutputStream();
+
+    /**
+     * @brief
+     * @return
+     */
     std::ostream &Stream() { return *stream; };
 
 private:

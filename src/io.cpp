@@ -27,6 +27,10 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @param filePath
+ */
 PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     if (isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
         std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
@@ -44,6 +48,9 @@ PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     }
 }
 
+/**
+ * @brief
+ */
 PromptedOutputStream::~PromptedOutputStream() {
     if (isFstream) {
         delete stream;
