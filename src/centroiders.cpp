@@ -280,6 +280,13 @@ void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, i
     }
 }
 
+/**
+ * @brief
+ * @param image
+ * @param imageWidth
+ * @param imageHeight
+ * @return
+ */
 Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;

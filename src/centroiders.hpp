@@ -54,8 +54,13 @@ public:
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
     public:
+        /// @brief
         IterativeWeightedCenterOfGravityAlgorithm() { };
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
