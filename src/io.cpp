@@ -358,13 +358,25 @@ AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
 //     return result;
 // }
 
+/**
+ * @brief
+ * @details
+ */
 class GeneratedStar : public Star {
 public:
+    /**
+     * @brief
+     * @param star
+     * @param peakBrightness
+     * @param motionBlurDelta
+     */
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
-    
+
+    /// @brief
     float peakBrightness;
-    // vector points to where the star will be visibly after one time unit.
+
+    /// @brief Points to where the star will be visible after one time unit.
     Vec2 delta;
 };
 
