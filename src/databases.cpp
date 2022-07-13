@@ -237,6 +237,10 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
+/**
+ * @brief
+ * @param buffer
+ */
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
     
@@ -249,6 +253,13 @@ float Clamp(float num, float low, float high) {
     return num < low ? low : num > high ? high : num;
 }
 
+/**
+ * @brief Return at least all the stars between min and max
+ * @param minQueryDistance
+ * @param maxQueryDistance
+ * @param end
+ * @return
+ */
 const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
 
@@ -262,6 +273,13 @@ long PairDistanceKVectorDatabase::NumPairs() const {
     return index.NumValues();
 }
 
+/**
+ * @brief For debugging purposes. Return the distances from the given star to each other star it's
+ * paired with in the database.
+ * @param star
+ * @param catalog
+ * @return
+ */
 std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
     std::vector<float> result;
     for (int i = 0; i < NumPairs(); i++) {

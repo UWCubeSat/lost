@@ -61,23 +61,39 @@ private:
 long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
 void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 
-// stores angular distance between pairs of stars. Sensitive to uncalibrated camera parameters
+/**
+ * @brief Stores angular distance between pairs of stars
+ * @details
+ * @warning Sensitive to uncalibrated camera parameters
+ * @todo Trapezoidal interpolation
+ */
 class PairDistanceKVectorDatabase {
 public:
     PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
-    // return at least all the stars between min and max
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
-    // TODO: trapezoidal interpolation
 
-    // for debugging purposes. Return the distances from the given star to each other star it's
-    // paired with in the database.
     std::vector<float> StarDistances(int16_t star, const Catalog &) const;
 
+    /**
+     * @brief
+     * @return
+     */
     float MaxDistance() const { return index.Max(); };
+
+    /**
+     * @brief
+     * @return
+     */
     float MinDistance() const { return index.Min(); };
 
+    /**
+     * @brief
+     * @return
+     */
     long NumPairs() const;
+
+    /// @brief
     const static int32_t kMagicValue = 0x2536f009;
 private:
     KVectorIndex index;
