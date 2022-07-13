@@ -196,18 +196,39 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
+/**
+ * @brief
+ * @param i
+ * @param j
+ * @return
+ */
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
+/**
+ * @brief
+ * @param j
+ * @return
+ */
 Vec3 Mat3::Column(int j) const {
     return {At(0,j), At(1,j), At(2,j)};
 }
 
+/**
+ * @brief
+ * @param i
+ * @return
+ */
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Mat3 Mat3::operator*(const Mat3 &other) const {
 #define _MATMUL_ENTRY(row, col) At(row,0)*other.At(0,col) + At(row,1)*other.At(1,col) + At(row,2)*other.At(2,col)
     return {
@@ -218,6 +239,11 @@ Mat3 Mat3::operator*(const Mat3 &other) const {
 #undef _MATMUL_ENTRY
 }
 
+/**
+ * @brief
+ * @param vec
+ * @return
+ */
 Vec3 Mat3::operator*(const Vec3 &vec) const {
     return {
         vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2),
@@ -226,6 +252,10 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     };
 }
 
+/**
+ * @brief
+ * @return
+ */
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),

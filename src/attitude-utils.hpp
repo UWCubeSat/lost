@@ -40,8 +40,13 @@ public:
     Vec3 crossProduct(const Vec3 &) const;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Mat3 {
 public:
+    /// @brief
     float x[9];
 
     float At(int i, int j) const;
