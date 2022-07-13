@@ -54,10 +54,19 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width,
 
 // type for functions that create a centroid algorithm (by prompting the user usually)
 
+/**
+ * @brief
+ * @details
+ */
 class Image {
 public:
+    /// @brief
     unsigned char *image;
+
+    /// @brief
     int width;
+
+    /// @brief
     int height;
 };
 
