@@ -11,9 +11,18 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @details
+ */
 struct KVectorPair {
+    /// @brief
     int16_t index1;
+
+    /// @brief
     int16_t index2;
+
+    /// @brief
     float distance;
 };
 
