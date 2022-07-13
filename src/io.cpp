@@ -288,11 +288,18 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
 }
 
+/**
+ * @brief
+ * @details
+ */
 class AstrometryPipelineInput : public PipelineInput {
 public:
     AstrometryPipelineInput(const std::string &path);
 
+    /// @brief
     const Image *InputImage() const { return &image; };
+
+    /// @brief
     const Attitude *InputAttitude() const { return &attitude; };
 private:
     Image image;
@@ -329,6 +336,10 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     return result;
 }
 
+/**
+ * @brief
+ * @param path
+ */
 AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
     // create from path, TODO
 }
