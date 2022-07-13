@@ -316,6 +316,12 @@ private:
     Attitude attitude;
 };
 
+/**
+ * @brief
+ * @param cairoSurface
+ * @param camera
+ * @param catalog
+ */
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
 

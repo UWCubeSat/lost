@@ -186,12 +186,30 @@ typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
+/**
+ * @brief
+ * @details
+ */
 class PngPipelineInput : public PipelineInput {
 public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
 
+    /**
+     * @brief
+     * @return
+     */
     const Image *InputImage() const { return &image; };
+
+    /**
+     * @brief
+     * @return
+     */
     const Camera *InputCamera() const { return &camera; };
+
+    /**
+     * @brief
+     * @return
+     */
     const Catalog &GetCatalog() const { return catalog; };
 
 private:
