@@ -27,8 +27,16 @@ public:
     virtual ~CentroidAlgorithm() { };
 };
 
+/**
+ * @brief
+ * @details
+ */
 class DummyCentroidAlgorithm: public CentroidAlgorithm {
 public:
+    /**
+     * @brief
+     * @param numStars
+     */
     DummyCentroidAlgorithm(int numStars) : numStars(numStars) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 private:

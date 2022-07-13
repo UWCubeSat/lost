@@ -16,6 +16,13 @@ namespace lost {
 
 // DUMMY
 
+/**
+ * @brief
+ * @param image
+ * @param imageWidth
+ * @param imageHeight
+ * @return
+ */
 std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
