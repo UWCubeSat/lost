@@ -207,6 +207,10 @@ void PipelineComparison(const PipelineInputList &expected,
 // TODO: rename
 Catalog PromptNarrowedCatalog(const Catalog &);
 
+/**
+ * @brief
+ * @details
+ */
 class DatabaseOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
