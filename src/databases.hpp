@@ -11,20 +11,40 @@ namespace lost {
 
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
-// not an instantiable database on its own -- used in other databases
+/**
+ * @brief
+ * @details
+ * @note Not an instantiable database on its own -- used in other databases
+ * @todo QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints
+ */
 class KVectorIndex {
 public:
-    // construct from serialized
     KVectorIndex(const unsigned char *);
 
-    // finds at least all the entries containing the given range. Returns the index (starting from
-    // zero) of the first value matching the query
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
-    // TODO: QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints
 
+    /**
+     * @brief
+     * @return
+     */
     long NumValues() const { return numValues; };
+
+    /**
+     * @brief
+     * @return
+     */
     long NumBins() const { return numBins; };
+
+    /**
+     * @brief
+     * @return
+     */
     float Max() const { return max; };
+
+    /**
+     * @brief
+     * @return
+     */
     float Min() const { return min; };
 private:
     // return the lowest-indexed bin that contains the number of pairs with distance <= dist

@@ -98,6 +98,10 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
     assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
 }
 
+/**
+ * @brief Construct from serialized
+ * @param buffer
+ */
 KVectorIndex::KVectorIndex(const unsigned char *buffer) {
     numValues = *(int32_t *)buffer;
     buffer += sizeof(int32_t);
@@ -115,6 +119,13 @@ KVectorIndex::KVectorIndex(const unsigned char *buffer) {
     bins = (const int32_t *)buffer;
 }
 
+/**
+ * @brief Finds at least all the entries containing the given range
+ * @param minQueryDistance
+ * @param maxQueryDistance
+ * @param upperIndex
+ * @return the index (starting from zero) of the first value matching the query
+ */
 long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const {
     assert(maxQueryDistance > minQueryDistance);
     if (maxQueryDistance >= max) {
