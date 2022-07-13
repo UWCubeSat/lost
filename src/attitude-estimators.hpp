@@ -21,6 +21,10 @@ public:
     virtual ~AttitudeEstimationAlgorithm() {};
 };
 
+/**
+ * @brief
+ * @details
+ */
 class DavenportQAlgorithm : public AttitudeEstimationAlgorithm {
 public:
     Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &);
