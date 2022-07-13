@@ -16,6 +16,10 @@ public:
     virtual ~StarIdAlgorithm() { };
 };
 
+/**
+ * @brief
+ * @details
+ */
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;

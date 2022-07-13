@@ -9,6 +9,14 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @param database
+ * @param stars
+ * @param catalog
+ * @param camera
+ * @return
+ */
 StarIdentifiers DummyStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
