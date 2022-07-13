@@ -196,6 +196,10 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+/**
+ * @brief
+ * @return
+ */
 float Vec3::MagnitudeSq() const {
     return x*x+y*y+z*z;
 }
@@ -208,6 +212,10 @@ float Vec2::MagnitudeSq() const {
     return x*x+y*y;
 }
 
+/**
+ * @brief
+ * @return
+ */
 float Vec3::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
@@ -220,6 +228,10 @@ float Vec2::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
+/**
+ * @brief
+ * @return
+ */
 Vec3 Vec3::Normalize() const {
     float mag = Magnitude();
     return {
@@ -227,6 +239,11 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
@@ -240,6 +257,11 @@ Vec2 Vec2::operator*(const float &other) const {
     return { x*other, y*other };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec3 Vec3::operator*(const float &other) const {
     return { x*other, y*other, z*other };
 }
@@ -262,10 +284,20 @@ Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec3 Vec3::crossProduct(const Vec3 &other) const {
     return {
         y*other.z - z*other.y,

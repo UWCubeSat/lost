@@ -40,10 +40,19 @@ struct Vec2 {
     Vec2 operator+(const Vec2 &) const;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Vec3 {
 public:
+    /// @brief
     float x;
+
+    /// @brief
     float y;
+
+    /// @brief
     float z;
 
     float Magnitude() const;
