@@ -108,16 +108,39 @@ int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight)
     return mean + (std * 5);
 }
 
+/**
+ * @brief
+ * @details
+ */
 struct CentroidParams {
-    float yCoordMagSum; 
+    /// @brief
+    float yCoordMagSum;
+
+    /// @brief
     float xCoordMagSum;
+
+    /// @brief
     long magSum;
+
+    /// @brief
     int xMin;
+
+    /// @brief
     int xMax;
+
+    /// @brief
     int yMin;
+
+    /// @brief
     int yMax;
+
+    /// @brief
     int cutoff;
+
+    /// @brief
     bool isValid;
+
+    /// @brief
     std::unordered_set<int> checkedIndices;
 };
 
