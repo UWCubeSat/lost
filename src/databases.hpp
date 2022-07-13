@@ -101,18 +101,31 @@ private:
     const int16_t *pairs;
 };
 
-// stores "inner angles" between star triples. Unsensitive to first-order error in basic camera
-// parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg,
-// camera distortion, which may cause the effective FOV or principal point to be different in
-// different parts of the image). Used for Mortari's Non-Dimensional Star-ID
+/**
+ * @brief Stores "inner angles" between star triples
+ * @details Unsensitive to first-order error in basic camera
+ * parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg,
+ * camera distortion, which may cause the effective FOV or principal point to be different in
+ * different parts of the image). Used for Mortari's Non-Dimensional Star-ID
+ */
 class TripleInnerKVectorDatabase {
 public:
+    /**
+     * @brief
+     * @param databaseBytes
+     */
     TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
 
-    // return at least all the triples with inner angle in the given range. The numReturnedTriples*3
-    // ints from the returned pointer are valid to read.
+    /**
+     * @brief Return at least all the triples with inner angle in the given range
+     * @details The numReturnedTriples*3 ints from the returned pointer are valid to read.
+     * @todo Trapezoidal interpolation
+     * @param min
+     * @param max
+     * @param begin
+     * @param end
+     */
     void FindTriplesLiberal(float min, float max, long **begin, long **end) const;
-    // TODO: trapezoidal interpolation
 private:
     KVectorIndex index;
     int16_t *triples;
