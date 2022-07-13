@@ -9,15 +9,31 @@ namespace lost {
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
 // make everything more annoying, because you need vectors of pointers...ugh!
 
+/**
+ * @brief
+ * @details
+ */
 struct Vec2 {
+    /// @brief
     float x;
+
+    /// @brief
     float y;
 
     float Magnitude() const;
-    // squared magnitude
     float MagnitudeSq() const;
+
+    /**
+     * @brief
+     * @return
+     */
     Vec2 Normalize() const;
 
+    /**
+     * @brief
+     * @param vec2
+     * @return
+     */
     float operator*(const Vec2 &) const;
     Vec2 operator*(const float &) const;
     Vec2 operator-(const Vec2 &) const;

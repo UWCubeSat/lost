@@ -200,6 +200,10 @@ float Vec3::MagnitudeSq() const {
     return x*x+y*y+z*z;
 }
 
+/**
+ * @brief Squared magnitude
+ * @return
+ */
 float Vec2::MagnitudeSq() const {
     return x*x+y*y;
 }
@@ -208,6 +212,10 @@ float Vec3::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
+/**
+ * @brief
+ * @return
+ */
 float Vec2::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
@@ -223,6 +231,11 @@ float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec2 Vec2::operator*(const float &other) const {
     return { x*other, y*other };
 }
@@ -231,10 +244,20 @@ Vec3 Vec3::operator*(const float &other) const {
     return { x*other, y*other, z*other };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec2 Vec2::operator+(const Vec2 &other) const {
     return {x + other.x, y + other.y };
 }
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
