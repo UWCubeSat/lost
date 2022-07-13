@@ -282,6 +282,12 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
    | Large          | databases         | the database contents                                   |
  */
 
+/**
+ * @brief return a pointer to the start of the database type indicated by the magic value, if such
+ * a sub-database is present in the database
+ * @param magicValue
+ * @return Returns a pointer to the start of the database type indicated by the magic value, null if not found
+ */
 const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const {
     long databaseIndex = -1;
     int32_t *toc = (int32_t *)buffer;

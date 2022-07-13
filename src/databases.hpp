@@ -106,13 +106,19 @@ private:
 const int kMultiDatabaseMaxDatabases = 64;
 const long kMultiDatabaseTocLength = 8*kMultiDatabaseMaxDatabases;
 
-// represents a database that contains multiple databases, which is almost always what will be used
-// in the real world, since you'll want to store at least the catalog plus one specific database.
+// ,
+/**
+ * @brief Represents a database that contains multiple databases
+ * @details This is almost always what will be used in the real world,
+ * since you'll want to store at least the catalog plus one specific database.
+ */
 class MultiDatabase {
 public:
+    /**
+     * @brief
+     * @param buffer
+     */
     MultiDatabase(const unsigned char *buffer) : buffer(buffer) { };
-    // return a pointer to the start of the database type indicated by the magic value, if such a
-    // sub-database is present in the database. Return null if not found.
     const unsigned char *SubDatabasePointer(int32_t magicValue) const;
 private:
     const unsigned char *buffer;
