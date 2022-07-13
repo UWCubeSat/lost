@@ -32,22 +32,19 @@ before running `./lost`.
 
 ## Using Docker
 
-This option is best for Mac and non-Debian Linux users.
+This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies
+in a container.
 
-- Get [Docker](https://www.docker.com/get-started/) onto your system
+- Get [Docker](https://www.docker.com/get-started/) onto your system (Docker Desktop, an installation that provides a
+  graphical interface, is recommended for most users)
 - Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd lost`
-- Run `docker build -t lost .` to build the Docker image. This may take a second depending on your internet connection.
-- Launch the container with
-
-```shell
-docker run -d \
-  --name lost \
-  --mount type=bind,source="$(pwd)",target=/lost \
-  lost
-```
-
-- Use `make` to compile LOST and run it with `./lost`
-    - Be sure to run `make` again after you edit the source code
+- Run `docker-compose up` to build and start the container. Use this command or `docker-compose start` any time you want
+  to start it up again later.
+- Connect to the container with `docker attach {name of docker process}` or use the terminal button in Docker Desktop.
+- Once inside the container, cd into the `/lost` directory (if necessary) and use `make` to compile LOST and run it
+  with `./lost`
+  - Be sure to run `make` again after you edit the source code
+- Close the container with `docker-compose stop`. You can also close and remove the container with `docker-compose down`
 
 # Usage
 
@@ -146,19 +143,19 @@ filter should be decreased.
   crop out the edges to remove the areas where distortion is the worst.
 
   **Our framework does...**
-    - [ ] Undistortion Routines (probably should happen after centroiding)
-    - [ ] Cropping Routines (that keep track of how FOV changes due to crop)
-    - [ ] Noise removal (median of images from many angles)
+  - [ ] Undistortion Routines (probably should happen after centroiding)
+  - [ ] Cropping Routines (that keep track of how FOV changes due to crop)
+  - [ ] Noise removal (median of images from many angles)
 - **Centroiding:** Each star in the photo should be reduced to a single point, with sub-pixel
   accuracy. Auxiliary data, such as star brightness or the likelihood it is a binary star, can be
   collected too.
 
   **Our framework does...**
-    - [X] Simple centroiding
-    - [ ] Iterative weighted centroiding
-    - [ ] 2D Gaussian fit centroiding
-    - [ ] Gaussian Grid centroiding
-    - [X] Coordinate Conversion (between pixel and spherical/angular)
+  - [X] Simple centroiding
+  - [ ] Iterative weighted centroiding
+  - [ ] 2D Gaussian fit centroiding
+  - [ ] Gaussian Grid centroiding
+  - [X] Coordinate Conversion (between pixel and spherical/angular)
 - **Catalog Building:** This happens on the ground. The format of this catalog depends a lot on the
   Star Identification algorithm used. It might contain information about distances to adjacent
   stars, expected brightness, etc. One thing all catalogs have in common is the actual spherical
@@ -166,28 +163,28 @@ filter should be decreased.
   attitude can be determined.
 
   **Our framework does...**
-    - [X] Downloading a star catalog and converting to an internal format
-    - [X] Database-building routines for common Star-ID algorithms.
+  - [X] Downloading a star catalog and converting to an internal format
+  - [X] Database-building routines for common Star-ID algorithms.
 - **Star Identification:** The "main" step of star tracking: Going from a list of star positions (and
   possibly magnitudes or other info)
 
   **Our framework does...**
-    - [ ] Padgett Grid identification method with variations:
-        - [ ] Flower Method
-        - [ ] Sequential Sum method
-    - [X] Pyramid method
-    - [X] Geometric Voting
-    - [ ] Uncalibrated K-vectory method
-    - [ ] Star-ND or Liebe
-    - [ ] LIS, Tracking, and Uncalibrated modes
+  - [ ] Padgett Grid identification method with variations:
+    - [ ] Flower Method
+    - [ ] Sequential Sum method
+  - [X] Pyramid method
+  - [X] Geometric Voting
+  - [ ] Uncalibrated K-vectory method
+  - [ ] Star-ND or Liebe
+  - [ ] LIS, Tracking, and Uncalibrated modes
 - **Attitude Determination:** Once enough stars have been identified, they can be combined with
   information on camera parameters to determine the attitude.
 
   **Our framework does...**
-    - [X] Davenport Q method
-    - [X] TRIAD
-    - [ ] QUEST
-    - [ ] ESOQ
+  - [X] Davenport Q method
+  - [X] TRIAD
+  - [ ] QUEST
+  - [ ] ESOQ
 
 ## Other things LOST can do
 
