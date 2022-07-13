@@ -296,10 +296,16 @@ class AstrometryPipelineInput : public PipelineInput {
 public:
     AstrometryPipelineInput(const std::string &path);
 
-    /// @brief
+    /**
+     * @brief
+     * @return
+     */
     const Image *InputImage() const { return &image; };
 
-    /// @brief
+    /**
+     * @brief
+     * @return
+     */
     const Attitude *InputAttitude() const { return &attitude; };
 private:
     Image image;

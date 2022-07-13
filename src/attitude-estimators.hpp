@@ -13,8 +13,11 @@ namespace lost {
  */
 class AttitudeEstimationAlgorithm {
 public:
-    // TODO: more detail in return type (eg, whether attitude estimation failed, measure of error)
-    /// @brief
+    /**
+     * @brief
+     * @todo More detail in return type (eg, whether attitude estimation failed, measure of error)
+     * @return
+     */
     virtual Attitude Go(const Camera &, const Stars &, const Catalog &, const StarIdentifiers &) = 0;
 
     /// @brief

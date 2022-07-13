@@ -96,22 +96,28 @@ public:
     float k;
 };
 
-// When porting to a embedded device, you'll probalby want to get rid of this class and adapt to
-// either quaternions or DCMs exclusively, depending on the natural output format of whatever
-// attitude estimation algorithm you're using. This Attitude class stores either quaternion or DCM,
-// depending on what's the natural output of the attitude estimation algorithm, then converts to the
-// requested format on-demand.
+//
+/**
+ * @brief
+ * @details
+ * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt to
+ * either quaternions or DCMs exclusively, depending on the natural output format of whatever
+ * attitude estimation algorithm you're using. This Attitude class stores either quaternion or DCM,
+ * depending on what's the natural output of the attitude estimation algorithm, then converts to the
+ * requested format on-demand.
+ */
 class Attitude {
 public:
+    /// @brief
     Attitude() = default;
-    Attitude(const Quaternion &);
-    Attitude(const Mat3 &dcm);
+    explicit Attitude(const Quaternion &);
+    explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
     Mat3 GetDCM() const;
     EulerAngles ToSpherical() const;
     Vec3 Rotate(const Vec3 &) const;
-    
+
 private:
     enum AttitudeType {
         NullType,

@@ -234,11 +234,19 @@ Mat3 Mat3::Transpose() const {
     };
 }
 
+/**
+ * @brief
+ * @param quat
+ */
 Attitude::Attitude(const Quaternion &quat)
-    : quaternion(quat), type(QuaternionType) { }
+    : quaternion(quat), type(QuaternionType) {}
 
+/**
+ * @brief
+ * @param matrix
+ */
 Attitude::Attitude(const Mat3 &matrix)
-    : dcm(matrix), type(DCMType) { }
+    : dcm(matrix), type(DCMType) {}
 
 Mat3 QuaternionToDCM(const Quaternion &quat) {
     Vec3 x = quat.Rotate({1, 0, 0});
@@ -279,47 +287,52 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     return xAlign*yAlign;
 }
 
+/**
+ * @brief
+ * @return
+ */
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
-    case QuaternionType:
-        return quaternion;
-    case DCMType:
-        return DCMToQuaternion(dcm);
-    default:
-        assert(false);
+        case QuaternionType:return quaternion;
+        case DCMType:return DCMToQuaternion(dcm);
+        default:assert(false);
     }
 }
 
+/**
+ * @brief
+ * @return
+ */
 Mat3 Attitude::GetDCM() const {
     switch (type) {
-    case DCMType:
-        return dcm;
-    case QuaternionType:
-        return QuaternionToDCM(quaternion);
-    default:
-        assert(false);
+        case DCMType:return dcm;
+        case QuaternionType:return QuaternionToDCM(quaternion);
+        default:assert(false);
     }
 }
 
+/**
+ * @brief
+ * @param vec
+ * @return
+ */
 Vec3 Attitude::Rotate(const Vec3 &vec) const {
     switch (type) {
-    case DCMType:
-        return dcm*vec;
-    case QuaternionType:
-        return quaternion.Rotate(vec);
-    default:
-        assert(false);
+        case DCMType:return dcm*vec;
+        case QuaternionType:return quaternion.Rotate(vec);
+        default:assert(false);
     }
 }
 
+/**
+ * @brief
+ * @return
+ */
 EulerAngles Attitude::ToSpherical() const {
     switch (type) {
-    case DCMType:
-        return GetQuaternion().ToSpherical();
-    case QuaternionType:
-        return quaternion.ToSpherical();
-    default:
-        assert(false);
+        case DCMType:return GetQuaternion().ToSpherical();
+        case QuaternionType:return quaternion.ToSpherical();
+        default:assert(false);
     }
 }
 
