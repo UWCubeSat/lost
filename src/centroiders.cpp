@@ -235,15 +235,36 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 //smaller means more accurate and more iterations.
 float iWCoGMinChange = 0.0002;
 
+/**
+ * @brief
+ * @details
+ */
 struct IWCoGParams {
+    /// @brief
     int xMin;
+
+    /// @brief
     int xMax;
+
+    /// @brief
     int yMin;
+
+    /// @brief
     int yMax;
+
+    /// @brief
     int cutoff;
+
+    /// @brief
     int maxIntensity;
+
+    /// @brief
     int guess;
+
+    /// @brief
     bool isValid;
+
+    /// @brief
     std::unordered_set<int> checkedIndices;
 };
 
