@@ -89,11 +89,27 @@ public:
     float roll;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Quaternion {
 public:
-    Quaternion() = default; // I guess this lets you call Attitude on an attitude object?
-    Quaternion(const Vec3 &); // Pure quaternion
+    /**
+     * @brief
+     * @note I guess this lets you call Attitude on an attitude object?
+     */
+    Quaternion() = default;
+    Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, float);
+
+    /**
+     * @brief
+     * @param real
+     * @param i
+     * @param j
+     * @param k
+     */
     Quaternion(float real, float i, float j, float k)
         : real(real), i(i), j(j), k(k) { };
 
@@ -106,8 +122,6 @@ public:
     void SetAngle(float);
     EulerAngles ToSpherical() const;
     bool IsUnit(float tolerance) const;
-    // A canonical rotation quaternion's first component should be positive. A quaternion and its
-    // negative represent the same rotation.
     Quaternion Canonicalize() const;
 
     float real;

@@ -6,6 +6,11 @@
 
 namespace lost {
 
+/**
+ * @brief
+ * @param other
+ * @return
+ */
 Quaternion Quaternion::operator*(const Quaternion &other) const {
     return Quaternion(
         real*other.real - i*other.i - j*other.j - k*other.k,
@@ -14,25 +19,47 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
+/**
+ * @brief
+ * @return
+ */
 Quaternion Quaternion::Conjugate() const {
     return Quaternion(real, -i, -j, -k);
 }
 
+/**
+ * @brief
+ * @return
+ */
 Vec3 Quaternion::Vector() const {
     return { i, j, k };
 }
 
+/**
+ * @brief
+ * @param vec
+ */
 void Quaternion::SetVector(const Vec3 &vec) {
     i = vec.x;
     j = vec.y;
     k = vec.z;
 }
 
+/**
+ * @brief
+ * @note Pure quaternion
+ * @param input
+ */
 Quaternion::Quaternion(const Vec3 &input) {
     real = 0;
     SetVector(input);
 }
 
+/**
+ * @brief
+ * @param input
+ * @param theta
+ */
 Quaternion::Quaternion(const Vec3 &input, float theta) {
     real = cos(theta/2);
     // the compiler will optimize it. Right?
@@ -41,25 +68,42 @@ Quaternion::Quaternion(const Vec3 &input, float theta) {
     k = input.z * sin(theta/2);
 }
 
+/**
+ * @brief
+ * @param input
+ * @return
+ */
 Vec3 Quaternion::Rotate(const Vec3 &input) const {
     // TODO: optimize
     return ((*this)*Quaternion(input)*Conjugate()).Vector();
 }
 
+/**
+ * @brief
+ * @todo we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
+ * @return
+ */
 float Quaternion::Angle() const {
-    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in
-    // AngleUnit)
+    // TODO:
     if (real <= -1) {
         return 0; // 180*2=360=0
     }
     return (real >= 1 ? 0 : acos(real))*2;
 }
 
+/**
+ * @brief
+ * @param newAngle
+ */
 void Quaternion::SetAngle(float newAngle) {
     real = cos(newAngle/2);
     SetVector(Vector().Normalize() * sin(newAngle/2));
 }
 
+/**
+ * @brief
+ * @return
+ */
 EulerAngles Quaternion::ToSpherical() const {
     // Working out these equations would be a pain in the ass. Thankfully, this wikipedia page:
     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
@@ -98,10 +142,21 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     return result;
 }
 
+/**
+ * @brief
+ * @param tolerance
+ * @return
+ */
 bool Quaternion::IsUnit(float tolerance) const {
     return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
+/**
+ * @brief
+ * @note A canonical rotation quaternion's first component should be positive. A quaternion and
+ * its negative represent the same rotation.
+ * @return
+ */
 Quaternion Quaternion::Canonicalize() const {
     if (real >= 0) {
         return *this;
