@@ -47,17 +47,53 @@ public:
     int name;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class Star {
 public:
+    /**
+     * @brief
+     * @param x
+     * @param y
+     * @param radiusX
+     * @param radiusY
+     * @param magnitude
+     */
     Star(float x, float y, float radiusX, float radiusY, int magnitude) :
-        position({x, y}), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) { };
-    Star(float x, float y, float radiusX) : Star(x, y, radiusX, radiusX, 0) { };
-    Star() : Star(0.0, 0.0, 0.0) { };
+        position({x, y}), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) {};
 
+    /**
+     * @brief
+     * @param x
+     * @param y
+     * @param radiusX
+     */
+    Star(float x, float y, float radiusX) : Star(x, y, radiusX, radiusX, 0) {};
+
+    /**
+     * @brief
+     */
+    Star() : Star(0.0, 0.0, 0.0) {};
+
+    /// @brief
     Vec2 position;
+
+    /// @brief
     float radiusX;
-    float radiusY;  // if omitted, but x is present, assume circular.
-    int   magnitude; // some relative number
+
+    /**
+     * @brief
+     * @note if omitted, but x is present, assume circular.
+     */
+    float radiusY;
+
+    /**
+     * @brief
+     * @details some relative number
+     */
+    int magnitude;
     // eccentricity?
 };
 
