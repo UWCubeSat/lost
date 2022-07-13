@@ -11,13 +11,11 @@
 
 #include <unordered_set>
 #include <string.h>
+#include <cassert>
 
 namespace lost {
 
 // DUMMYS
-
-long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions);
-
 std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
@@ -28,7 +26,7 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     return result;
 }
 
-// a poorly designed thresholding algorithm
+// UNUSED: a poorly designed thresholding algorithm
 int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     //loop through entire array, find sum of magnitudes
     long totalMag = 0;
@@ -38,7 +36,7 @@ int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
 }
 
-// a more sophisticated thresholding algorithm, not tailored to star images
+// UNUSED: a more sophisticated thresholding algorithm, not tailored to star images
 int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     // code here, duh
     long total = imageWidth * imageHeight;
@@ -78,7 +76,7 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return level;
 }
 
-// a simple, but well tested thresholding algorithm that works well with star images
+// UNUSED: a simple, but well tested thresholding algorithm that works well with star images.
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
     float std = 0;
@@ -94,85 +92,9 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
-int Limit(bool test, int i, int leftover, int div) {
-    if(test) {
-        return i * (div + 1);
-    } else {
-        return leftover * (div + 1) + (i - leftover) * div;
-    }
-}
-// pixel * divisions/ size floor
-// subdivisionsize * size / divisions ceil
-
-// Box is which subdivision
-int Box(int box, unsigned char *image, int imageWidth, int imageHeight, int subdivisions, int horizontalLeftover, int horizontalDiv, int verticalLeftover, int verticalDiv) {
-    int row = box / subdivisions; // Finds which row on the subdivisions we're in
-    int col = box % subdivisions; // Finds the column on the subdivisions we're in
-    double average = 0;
-    double squareSum = 0;
-    long count = 0;
-    //std::cout << "Box " << box << "\n";
-    //std::cout << Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv) << " " << Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv) << "\n";
-    //std::cout << Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv) << " " << Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv) << "\n";
-    //std::cout << "\n";
-    int secondCount = 0;
-    int number;
-    for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
-        for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
-            average += image[i * imageWidth + j];
-            squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
-            count++;
-
-            // Checks for Error
-            if(FindSubdivision(i * imageWidth + j, imageWidth, imageHeight, subdivisions) != box) {
-                secondCount++;
-                number = FindSubdivision(i * imageWidth + j, imageWidth, imageHeight, subdivisions);
-            }
-        }
-    }
-
-    // Checks for Error
-    if(secondCount != 0) {
-        std::cout << "ERROR, Index-Subdivision Mismatching - " << "Box: " << box << " Number: " << number << " Count: "<< count << " Wrong: " <<  secondCount << "\n";
-    }
-    // double varianceNaive = 0;
-    // for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
-    //    for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
-    //        varianceNaive += std::pow(image[i*imageWidth+j]-(average/count),2);
-    //    }
-    // }
-    // std::cout << std::sqrt(varianceNaive/(count-1)) << " ";
-    average /= count;
-    // std::cout << average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1))) << "\n";
-    
-    // std::cout << squareSum << " "; 
-    // std::cout << average << " ";
-    // std::cout << sqrt((squareSum - count * average * average)/(count-1));
-    // std::cout << "\n";
-    return average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1)));
-}
-
-// Local Basic Thresholding with divisions as parameter, returns a vector containing thresholds 
-// corresponding to different divisions.
-// Divisions are horizontally based
-// Uses the same statistical algorithm as BasicThresholding
-std::vector<int> LocalBasicThresholding(unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
-    // run Basic Threshold on all elements in certain subdivisions
-    int horizontalDiv = imageHeight / subdivisions; // Minimum number of lines for each division
-    int verticalDiv = imageWidth / subdivisions;
-    int horizontalLeftover = imageHeight % subdivisions; // Determines the first few lines that have 1 more line
-    int verticalLeftover = imageWidth % subdivisions;
-    std::vector<int> standardDeviations;
-    // std::cout << subdivisions << "\n";
-    // Sets threshold for the first few subdivisions that have 1 more line than the rest
-    for(int i = 0; i < subdivisions * subdivisions; i++) {
-        standardDeviations.push_back(Box(i, image, imageWidth, imageHeight, subdivisions, horizontalLeftover, horizontalDiv, verticalLeftover, verticalDiv));
-    }
-    // Return values of previous method as a vector
-    return standardDeviations;
-}
-
-// basic thresholding, but do it faster (trade off of some accuracy?)
+// UNUSED: Accepts an array of brightnesses and image dimensions, and returns the 
+// threshold brightness for the entire image, which is defined as 5 standard deviations
+// above the mean.
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
     float std = 0;
@@ -185,9 +107,98 @@ int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight)
     float mean = totalMag / totalPixels;
     float variance = (sq_totalMag / totalPixels) - (mean * mean);
     std = std::sqrt(variance);
-    return (int) (mean + (std * 5));
+    return std::round(mean + (std * 5));
 }
 
+//                          *****START OF COG ALGORITHM*****
+
+// This algorithm takes an image and finds all "centroids" or potential stars in it. It divides
+// the image into a square grid, calculates the threshold brightness of each subsection, or "box",
+// and uses that information to find the centroids. A threshold is defined as 5 standard deviations
+// above the mean brightness of pixels.
+
+// Commonly used terms:
+    // box: A subsection in the subdivision scheme
+    // subdivision scheme: The square grid that contains the boxes the image is divided into. Each
+        // box can be assigned an index in this scheme, which follows row-major order.
+    // subdivisions: The number of slices the image is sliced into on each side. The square of
+        // this quantity indicates the number of boxes.
+    // leftover: When doing this division, we often cannot give each box the same number of
+        // rows/columns to each box. This quantity tell us how many rows/columns in the subdivision
+        // scheme will have 1 extra row/column, and these always start with the first rows/columns.
+    // div: The minimum rows/columns each box will have.
+    // For leftover and div, "horizontal" refers to rows and "vertical" refers to columns
+
+// By default, this algorithm ensures that regardless of the subdivisions entered, the number of
+// pixels in each subdivision is imageWidth*imageHeight <= size <= 100 to ensure that enough
+// pixles will be sampled in each subdivision
+
+// Accepts an index in the subdivision scheme, and a horizontal/vertical leftover and div
+// This method uses these quantities to find the first row/column index in the actual image
+// that "i" references.
+int StartOfSubdivision(int i, int leftover, int div) {
+    if(i < leftover) {
+        return i * (div + 1);
+    } else {
+        return leftover * (div + 1) + (i - leftover) * div;
+    }
+}
+
+// Refer to definition for details
+long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions);
+
+
+// Accepts a subdivsion, or "box" number, the image's brightness array and associated dimensions, 
+// and the subdivisions.
+// Returns the threshold for the corresponding box.
+int LocalBasicThreshold(int box, unsigned char *image, int imageWidth, int imageHeight, 
+        int subdivisions) {
+
+    int horizontalDiv = imageHeight / subdivisions;
+    int verticalDiv = imageWidth / subdivisions;
+    int horizontalLeftover = imageHeight % subdivisions;
+    int verticalLeftover = imageWidth % subdivisions;
+    int row = box / subdivisions; // Finds the current row in the subdivision scheme
+    int col = box % subdivisions; // Finds the current column in the subdivision scheme
+    double average = 0;
+    double squareSum = 0;
+    long count = 0;
+
+    // Runs through "box" in row-major order
+    for(int i = StartOfSubdivision(row, horizontalLeftover, horizontalDiv); 
+            i < StartOfSubdivision(row + 1, horizontalLeftover, horizontalDiv); i++) {
+        for(int j = StartOfSubdivision(col, verticalLeftover, verticalDiv); 
+                j < StartOfSubdivision(col + 1, verticalLeftover, verticalDiv); j++) {
+            average += image[i * imageWidth + j];
+            squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
+            count++;
+
+            // Checks for Error
+            assert(FindSubdivision(i*imageWidth+j, imageWidth, imageHeight, subdivisions) == box);
+        }
+    }
+
+    average /= count;
+    return std::round(average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1))));
+}
+
+// Accepts the image's brightness array and dimensions, and the subdivisions, and returns
+// a vector with the threshold for each "box" in row-major order
+std::vector<int> LocalThresholding(unsigned char *image, int imageWidth, int imageHeight, 
+        int subdivisions) {
+    
+    std::vector<int> standardDeviations;
+    for(int i = 0; i < subdivisions * subdivisions; i++) {
+        standardDeviations.push_back(LocalBasicThreshold(i, image, imageWidth, imageHeight, 
+                subdivisions));
+    }
+
+    return standardDeviations;
+}
+
+// Used in function CenterOfGravityAlgorithm:Go, and is useful for keeping track of
+// star dimensions and characteristics, as well as the database of thresholds among
+// other quantities relating to the image
 struct CentroidParams {
     float yCoordMagSum; 
     float xCoordMagSum;
@@ -196,16 +207,15 @@ struct CentroidParams {
     int xMax;
     int yMin;
     int yMax;
-    int cutoff;
     std::vector<int> localCutoff;
     bool isValid;
     std::unordered_set<int> checkedIndices;
 };
 
-// int iToDivision
-
-// int Row(i, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions)
-// int Column(i, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions)
+// Accepts the row/column of an index on the image, the imageWidth/imageHeight, the subdivisions
+// and the horizontal/vertical div and leftover
+// Returns the index of the row/column in the subdivision scheme for the corresponding "i". 
+// NOTE: This function is the inverse of the StartOfSubdivision function
 long RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
     if(i < (div + 1) * leftover) {
         return i / (div + 1);
@@ -214,18 +224,29 @@ long RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
     }
 }
 
-// For a given i and picture dimensions, determines which subdivision i is in (Zero Based)
+// Accepts an index in the image, its dimensions and the subdivisions, and returns the 
+// corresponding "box" number that the index "i" is in
 long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
-    return RowOrColumn(i / imageWidth, imageWidth, subdivisions, imageHeight / subdivisions, imageHeight % subdivisions) * subdivisions + 
-    RowOrColumn(i % imageWidth, imageHeight, subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
+    long row = RowOrColumn(i / imageWidth, imageWidth, subdivisions, imageHeight / subdivisions, 
+            imageHeight % subdivisions);
+    long column = RowOrColumn(i % imageWidth, imageHeight, 
+                    subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
+    return  row * subdivisions + column;
 }
 
-//recursive helper here
-void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions) {
+// Accepts a CentroidParams struct, the current index, image's array of brightnesses and dimensions, 
+// and the subdivisions. This is a recursive helper method that is used with 
+// CenterOfGravityAlgorithm:Go and finds the dimensions of an individual star in the context of the
+// image
+void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, 
+        int subdivisions) {
     
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions)) && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && 
+            image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions)) 
+                    && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
-        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
+        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || 
+                i / imageWidth == imageHeight - 1) {
             p.isValid = false;
         }
         p.checkedIndices.insert(i);
@@ -253,8 +274,8 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
     }
 }
 
-//CenterOfGravityAlgorithm, except the threshold changes depending on the vertical height in the image
-//Subdivisions refers to how many horizontal sections with different thresholds are present
+// Accepts an array of the image's brightnesses, and the image's dimensions, and finds all
+// stars in the image and returns the stars as an array
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
     // Program will use divisions to represent the subdivisions
@@ -269,9 +290,10 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
         divisions = min / 10;
     }
     std::vector<Star> result;
-    p.localCutoff = LocalBasicThresholding(image, imageWidth, imageHeight, divisions);
+    p.localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions)) && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions)) 
+                && p.checkedIndices.count(i) == 0) {
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
             int yDiameter = 0;
@@ -296,12 +318,15 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
 
             if (p.isValid) {
-                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
+                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, 
+                        ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
             }
         }
     }
     return result;
 }
+
+//                          *****END OF COG ALGORITHM*****
 
 //Determines how accurate and how much iteration is done by the IWCoG algorithm,
 //smaller means more accurate and more iterations.
@@ -322,7 +347,8 @@ struct IWCoGParams {
 void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices) {
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
-        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
+        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 
+                || i / imageWidth == imageHeight - 1) {
             p.isValid = false;
         }
         p.checkedIndices.insert(i);

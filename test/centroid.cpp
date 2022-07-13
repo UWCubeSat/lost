@@ -36,21 +36,6 @@ TEST_CASE("Correct Row: 27th Row") {
     CHECK(lost::RowOrColumn(24 * 1024 * 11 + 10 * 2 * 1024 + 20, 1024, 100, 1024 / 100, 1024 % 100) == 26);
 }
 
-TEST_CASE("Everything is in the Box") {
-    int row = 0;
-    int horizontalLeftover = 5;
-    int horizontalDiv = 10;
-    int col = 0;
-    int verticalLeftover = 5;
-    int verticalDiv = 10;
-    
-    for(int i = Limit(row < horizontalLeftover, row, horizontalLeftover, horizontalDiv); i < Limit(row < horizontalLeftover, row + 1, horizontalLeftover, horizontalDiv); i++) {
-        for(int j = Limit(col < verticalLeftover, col, verticalLeftover, verticalDiv); j < Limit(col < verticalLeftover, col + 1, verticalLeftover, verticalDiv); j++) {
-            if(lost::FindSubdivision(i * ))
-        }
-    }
-}
-
 TEST_CASE("Correct Row: Last Row 1") {
     CHECK(lost::RowOrColumn(1024 * 1024 - 1, 1024, 100, 1024 / 100, 1024 % 100) == 99);
 }
