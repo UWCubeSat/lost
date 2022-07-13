@@ -124,15 +124,31 @@ private:
     const unsigned char *buffer;
 };
 
+/**
+ * @brief
+ * @details
+ */
 class MultiDatabaseBuilder {
 public:
+    /**
+     * @brief
+     * @note the () after new ensures it's zero-initialized
+     */
     MultiDatabaseBuilder()
-        // the () after new ensures it's zero-initialized
         : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
     ~MultiDatabaseBuilder();
-    // return pointer to the start of the space allocated for said database. Return null if full.
     unsigned char *AddSubDatabase(int32_t magicValue, long length);
+
+    /**
+     * @brief
+     * @return
+     */
     unsigned char *Buffer() { return buffer; };
+
+    /**
+     * @brief
+     * @return
+     */
     long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
 private:
     // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to

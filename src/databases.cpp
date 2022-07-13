@@ -308,6 +308,12 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
     return buffer+kMultiDatabaseTocLength+databaseIndex;
 }
 
+/**
+ * @brief Return pointer to the start of the space allocated for said database.
+ * @param magicValue
+ * @param length
+ * @return Pointer to the start of the space allocated for said database. Return null if full.
+ */
 unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long length) {
     // find unused spot in toc and take it!
     int32_t *toc = (int32_t *)buffer;
@@ -336,6 +342,7 @@ unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long len
     return result;
 }
 
+/// @brief
 MultiDatabaseBuilder::~MultiDatabaseBuilder() {
     free(buffer);
 }
