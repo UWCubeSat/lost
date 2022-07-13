@@ -82,21 +82,66 @@ public:
 #undef LOST_CLI_OPTION
 };
 
-// represents the input and expected outputs of a pipeline run.
+/**
+ * @brief Represents the input and expected outputs of a pipeline run.
+ * @details
+ */
 class PipelineInput {
 public:
+    /// @brief
     virtual ~PipelineInput(){};
+    /**
+     * @brief
+     * @return
+     */
     virtual const Image *InputImage() const { return NULL; };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Catalog &GetCatalog() const = 0;
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Stars *InputStars() const { return NULL; };
-    // whether the input stars have identification information.
+
+    /**
+     * @brief Whether the input stars have identification information.
+     * @return
+     */
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
-    // for tracking
+
+    /**
+     * @brief For tracking
+     * @return
+     */
     virtual const Attitude *InputAttitude() const { return NULL; };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Camera *InputCamera() const { return NULL; };
 
+    /**
+     * @brief
+     * @return
+     */
     virtual const Stars *ExpectedStars() const { return InputStars(); };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
+
+    /**
+     * @brief
+     * @return
+     */
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 
     cairo_surface_t *InputImageSurface() const;

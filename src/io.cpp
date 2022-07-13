@@ -283,6 +283,10 @@ float FocalLengthFromOptions(const PipelineOptions &values) {
     }
 }
 
+/**
+ * @brief
+ * @return
+ */
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
