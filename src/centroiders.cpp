@@ -187,13 +187,13 @@ int LocalBasicThreshold(int box, unsigned char *image, int imageWidth, int image
 std::vector<int> LocalThresholding(unsigned char *image, int imageWidth, int imageHeight, 
         int subdivisions) {
     
-    std::vector<int> standardDeviations;
+    std::vector<int> thresholds;
     for(int i = 0; i < subdivisions * subdivisions; i++) {
-        standardDeviations.push_back(LocalBasicThreshold(i, image, imageWidth, imageHeight, 
+        thresholds.push_back(LocalBasicThreshold(i, image, imageWidth, imageHeight, 
                 subdivisions));
     }
 
-    return standardDeviations;
+    return thresholds;
 }
 
 // Used in function CenterOfGravityAlgorithm:Go, and is useful for keeping track of
@@ -214,9 +214,12 @@ struct CentroidParams {
 
 // Accepts the row/column of an index on the image, the imageWidth/imageHeight, the subdivisions
 // and the horizontal/vertical div and leftover
-// Returns the index of the row/column in the subdivision scheme for the corresponding "i". 
-// NOTE: This function is the inverse of the StartOfSubdivision function
-long RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
+// Returns the index of the row/column in the subdivision scheme for the corresponding "i".
+// NOTE: This function is the inverse of the StartOfSubdivision function in a way that
+// RowOrColumn(StartOfSubdivision(x)) = x for any given row/column index "x" in the subdivision 
+// scheme, but StartOfSubdivision(RowOrColumn(x)) only equals x if x = StartOfSubdivision(y),
+// for any given row/column index "y" in the subdivision scheme 
+long RowOrColumn(long i, int leftover, int div) {
     if(i < (div + 1) * leftover) {
         return i / (div + 1);
     } else {
@@ -227,11 +230,9 @@ long RowOrColumn(long i, int size, int subdivisions, int div, int leftover) {
 // Accepts an index in the image, its dimensions and the subdivisions, and returns the 
 // corresponding "box" number that the index "i" is in
 long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) {
-    long row = RowOrColumn(i / imageWidth, imageWidth, subdivisions, imageHeight / subdivisions, 
-            imageHeight % subdivisions);
-    long column = RowOrColumn(i % imageWidth, imageHeight, 
-                    subdivisions, imageWidth / subdivisions, imageWidth % subdivisions);
-    return  row * subdivisions + column;
+    long row = RowOrColumn(i / imageWidth, imageHeight % subdivisions, imageHeight / subdivisions);
+    long col = RowOrColumn(i % imageWidth, imageWidth % subdivisions, imageWidth / subdivisions);
+    return  row * subdivisions + col;
 }
 
 // Accepts a CentroidParams struct, the current index, image's array of brightnesses and dimensions, 
