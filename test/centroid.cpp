@@ -48,7 +48,9 @@ TEST_CASE("Testing Inverse Conjecture") {
     int leftover = size % subdivisions;
     int div = size / subdivisions;
     for(int i = 0; i < subdivisions; i++) {
-        CHECK(lost::RowOrColumn(lost::StartOfSubdivision(i, leftover, div), leftover, div) == i);
+        int x = lost::StartOfSubdivision(i, leftover, div);
+        CHECK(lost::RowOrColumn(x, leftover, div) == i);
+        CHECK(lost::StartOfSubdivision(lost::RowOrColumn(x, leftover, div), leftover, div) == x);
     }
 }
 
