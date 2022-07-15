@@ -98,7 +98,7 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
     assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
 }
 
-KVectorIndex::KVectorIndex(const unsigned char *buffer) {
+KVectorIndex::KVectorIndex(const unsigned char *buffer) { // buffer: file
     numValues = *(int32_t *)buffer;
     buffer += sizeof(int32_t);
     min = *(float *)buffer;

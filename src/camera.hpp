@@ -28,6 +28,7 @@ public:
     // coordinate system described for SpatialToCamera. Not all vectors returned by this function
     // will necessarily have the same magnitude.
     Vec3 CameraToSpatial(const Vec2 &) const;
+
     // converts from a 2d point in the camera sensor to right ascension and declination relative to
     // the center of the camera.
     // void CoordinateAngles(const Vec2 &vector, float *ra, float *de) const;

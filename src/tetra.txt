@@ -1,0 +1,939 @@
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+// Number of stars in stars file
+const int numStars = 5904;
+// Number of pattern locations cached when catalog accessed
+const int pattCacheSize = 16;
+// Max distance matching pattern can be from original offset in catalog
+const int maxProbeDepth = 4278;
+// Number of stars in a Pattern
+const int numPattStars = 4;
+// Number of Patterns in Tetra catalog
+const int numCatalogPatts = 770708495;
+// Max FOV for catalog in radians
+const double maxFov = 0.247;
+// Ratio of bin size to error range
+// When a data value's error range overlaps 2 bins, it is replicated into both bins
+// By LOE, expected number of replicas of a given Pattern is
+// (1+1/bin_size_ratio)^k, where k = number of data values in a Pattern
+// Tradeoff: lower ratio means more replicas => larger catalog
+// higher ratio means more collisions/mismatches => more time needed to check for a match
+const double binSizeRatio = 3.0;
+// Max centroiding error as fraction of maxFov TODO
+const double maxCentroidError = .00069054;
+// Max error in imager FOV estimate as fraction of true imager FOV TODO
+const double maxFovError = 0.01;
+// Max number of stars to process TODO: process?
+const int maxStars = 12;
+// Max number of stars per image
+const int maxStarsPerImg = 25;
+// Number of test images
+const int numImages = 1000;
+
+const double PI = 3.1415926;
+
+// TODO: used for the comparison function in identify_stars()
+int leBin = 0;
+
+// Max scaling of image caused by FOV error
+// TODO: what is this
+// Calculated using {maxFov} and {maxFovError}
+const double maxScaleFactor = fmax(tan(maxFov * (1 + maxFovError) / 2.0) / tan(maxFov / 2.0),
+                                   1 - tan(maxFov * (1 - maxFovError) / 2.0) / tan(maxFov / 2.0));
+// Largest edge error
+// TODO: what is this?
+const double leErrorSlope = maxScaleFactor - 1;
+const double leErrorOffset = 2*maxCentroidError / (2-maxScaleFactor);
+// Largest possible largest edge length given maxFov
+const double maxLELength = 2 * sin(maxFov*(1+maxFovError) / 2.0);
+
+class Vec2{
+public:
+    Vec2();
+    Vec2(double x, double y): x(x), y(y) {}
+
+    double x;
+    double y;
+};
+
+Vec2::Vec2() {}
+
+
+class Vec3{
+public:
+    Vec3();
+    Vec3(double x, double y, double z): x(x), y(y), z(z) {}
+
+    Vec3 operator- (const Vec3 &other) const;
+    double dot (const Vec3 &other) const;
+
+    double mag() const;
+    Vec3 normalize() const;
+    double dist(const Vec3 &other) const;
+    Vec3 cross(const Vec3 &other) const;
+
+    double x;
+    double y;
+    double z;
+};
+
+Vec3::Vec3(){}
+
+/**
+ * Returns the 3D vector: this - other
+ * This member function is const- will not modify this state
+ * @param other
+ * @return 3D vector = this - other
+ */
+Vec3 Vec3::operator- (const Vec3 &other) const{
+    return {x-other.x, y-other.y, z-other.z};
+}
+
+/**
+ * Returns magnitude of this
+ * @return magnitude of this 3D vector
+ */
+double Vec3::mag() const{
+    return sqrt(x*x + y*y + z*z);
+}
+
+/**
+ * Returns unit vector in direction of this
+ * @return 3D unit vector in direction of this
+ */
+Vec3 Vec3::normalize() const{
+    double m = mag();
+    return {x/m, y/m, z/m};
+}
+
+/**
+ * Returns Euclidean distance between this and other
+ * i.e. returns magnitude of this-other
+ * @param other
+ * @return
+ */
+double Vec3::dist (const Vec3 &other) const{
+    Vec3 res = *this - other;
+    return res.mag();
+}
+
+/**
+ * Returns dot product of this and other
+ * @param other
+ * @return
+ */
+double Vec3::dot (const Vec3 &other) const{
+    return x*other.x + y*other.y + z*other.z;
+}
+
+/**
+ * Returns cross product of this and other
+ * @param other
+ * @return
+ */
+Vec3 Vec3::cross(const Vec3 &other) const{
+    Vec3 res;
+    res.x = y * other.z - other.y * z;
+    res.y = other.x * z - x * other.z;
+    res.z = x * other.y - other.x * y;
+    return res;
+}
+
+//////////////////// STRUCTS //////////////////////
+////                                        ///////
+///////////////////////////////////////////////////
+
+/**
+ * Feature represents a star that is NOT part of the largest edge in a Pattern
+ */
+struct Feature{
+    // Normalized x coordinate
+    int x: 15;
+    unsigned int xBinOffset: 1; // TODO: what are these? Why do we need both x and y bin offset
+    // Normalized y coordinate
+    int y: 15;
+
+    unsigned int yBinOffset: 1;
+    // ID of the Feature's star
+    unsigned int starID: 15; // TODO: is this Hipparchos number?
+    unsigned int pad: 1;
+};
+
+/**
+ * Pattern represents the star pattern and associated coordinate system
+ * This is what is stored in a given catalog position
+ * TODO: something about 180 degree rotational ambiguity
+ */
+struct Pattern{
+    // Features represent the stars that are NOT part of the largest edge
+    // stored in order of increasing x bin, then y bin
+    Feature features[numPattStars - 2];
+    // Length of largest edge in Pattern
+    uint16_t leLength;
+    unsigned int leBinOffset: 1;
+    // ID of first star that forms the largest edge
+    unsigned int leStarID1: 15;
+    // ID of second star that forms the largest edge
+    unsigned int leStarID2: 15;
+    // Indicate whether this catalog position contains the last matching
+    // pattern in the catalog
+    // If so, no need to probe further
+    unsigned int isLast: 1; // TODO: change to bool
+};
+
+/**
+ * Check if a catalog position contains a valid Pattern
+ * @param p
+ * @return
+ */
+bool hasPattern(Pattern p){
+    return p.leLength > 0;
+}
+
+/**
+ * Represents a star stored in the stars array
+ * NOTE: this is different from a centroid star
+ * TODO: this is never expliitly used in Tetra
+ */
+struct Star{
+    // 3D unit vector pointing to star from center of celestial sphere TODO
+    Vec3 vec;
+    // Magnitude of the star TODO: in what units?
+    double mag;
+    // Star ID, i.e. Hipparchos number
+    unsigned int starID;
+};
+
+/////////////////////////////////////////////////////////////////////////
+
+/**
+ * Compute exponent base for logarithmic binning
+ * TODO: what is logarithmic binning? What do the params mean
+ * @param errorSlope
+ * @param errorOffset
+ * @return
+ */
+double getLogBinningBase (double errorSlope, double errorOffset){
+    if(errorOffset <= 0){
+        cout << "Error: non-positive error value detected" << endl;
+        exit(EXIT_FAILURE);
+    }
+    // Calculate base of logarithmic binning function
+    // fmax(a, b) returns the larger of 2 floating point arguments
+    double base = (1 + errorSlope) / fmax(1-errorSlope, 0); // std::fmax()
+    return base;
+}
+
+/**
+ * Calculates log bin TODO: how does this work
+ * @param input
+ * @param errorSlope
+ * @param errorOffset
+ * @return
+ */
+int logBin(double input, double errorSlope, double errorOffset){
+    // If either errorSlope or errorOffset is infinite, return 0 bin
+    if(isinf(errorSlope) || isinf(errorOffset)){
+        return 0;
+    }
+    // Calculate base of logarithmic binning function
+    double base = getLogBinningBase(errorSlope, errorOffset);
+    int bin;
+    // We do linear binning if slope << offset
+    if(base <= 1 + errorOffset * binSizeRatio / 10.0){
+        bin = input / (2* (errorSlope + errorOffset) * binSizeRatio);
+    }else{
+        bin = (log(input * errorSlope / errorOffset + 1) / log(base)) / binSizeRatio;
+    }
+    return bin;
+}
+
+/**
+ * Compute min possible input value given its log bin
+ * @param bin
+ * @param errorSlope
+ * @param errorOffset
+ * @return
+ */
+double logUnbin(int bin, double errorSlope, double errorOffset){
+    if(isinf(errorSlope) || isinf(errorOffset)){
+        return 0;
+    }
+    double base = getLogBinningBase(errorSlope, errorOffset);
+    double minInput;
+    if(base <= 1 + errorOffset * binSizeRatio / 10.0){
+        minInput = bin * 2 * (errorSlope + errorOffset) * binSizeRatio;
+    }else{
+        // pow(base, pwr) returns base^pwr
+        minInput = (pow(base, bin*binSizeRatio) - 1) * errorOffset / errorSlope;
+    }
+    return minInput;
+}
+
+/**
+ * Bin largest edge length- TODO: math?
+ * @param largestEdgeLen
+ * @param errorRatio
+ * @return
+ */
+int binLargestEdge(unsigned int largestEdgeLen, int errorRatio){
+    //TODO: what is this math?
+    double leRatio = largestEdgeLen / ((1 << 16) - 1.0);
+    leRatio += errorRatio * (leRatio * leErrorSlope + leErrorOffset);
+    return logBin(leRatio, leErrorSlope, leErrorOffset);
+}
+
+/**
+ * Return min largest edge ratio within the bin - TODO: math?
+ * @param bin
+ * @return
+ */
+double unbinLargestEdge(unsigned int bin){
+    double minLERatio = logUnbin(bin, leErrorSlope, leErrorOffset);
+    return minLERatio;
+}
+
+/**
+ * Return y coordinate bin
+ * @param y
+ * @param leBin
+ * @param errorRatio
+ * @return
+ */
+int binYCoord(int y, unsigned int leBin, int errorRatio){
+    double minLERatio = unbinLargestEdge(leBin);
+    double errorConst = leErrorOffset / (2-maxScaleFactor);
+    double errorSlope = errorConst / fmax(minLERatio-errorConst, 0);
+    double errorOffset = errorSlope;
+
+    double yRatio = y / ((1<<14) - 1.0);
+    // copysign(a, b) returns a floating point value with magnitude of a & sign of b
+    // fabs(x) returns absolute value of a floating point x
+    yRatio += errorRatio * copysign(fabs(yRatio) * errorSlope + errorOffset, yRatio);
+    int bin = logBin(fabs(yRatio), errorSlope, errorOffset);
+    if(yRatio < 0){
+        // ~ is bitwise NOT, inverts all bits in binary number
+        bin = ~bin;
+    }
+    return bin;
+}
+
+/**
+ * Return y coord bin into max y coordinate ratio (absolute value) within the bin
+ * TODO
+ * @param bin
+ * @param leBin
+ * @return
+ */
+double unbinYCoord(int bin, unsigned int leBin){
+    double minLERatio = unbinLargestEdge(leBin);
+    double errorConst = leErrorOffset / (2-maxScaleFactor);
+    double errorSlope = errorConst / fmax(minLERatio - errorConst, 0);
+    double errorOffset = errorSlope;
+
+    double maxYRatio = logUnbin(bin >= 0 ? bin+1 : (~bin)+1, errorSlope, errorOffset);
+    return maxYRatio;
+}
+
+/**
+ * Bin x coordinate using y coordinate and largest edge bins
+ * @param x
+ * @param leBin
+ * @param yBin
+ * @param errorRatio
+ * @return
+ */
+int binXCoord(int x, unsigned int leBin, int yBin, int errorRatio){
+    double minLERatio = unbinLargestEdge(leBin);
+    double maxYRatio = unbinYCoord(yBin, leBin);
+    double errorConst = leErrorOffset / (2-maxScaleFactor);
+
+    double errorSlope = errorConst / fmax(minLERatio-errorConst, 0);
+    double errorOffset = errorSlope * (1+ 2*sqrt((1.0/4) + maxYRatio * maxYRatio)) / 2;
+    double xRatio = x / ((1 << 14) - 1.0);
+    xRatio += errorRatio * copysign(fabs(xRatio) * errorSlope + errorOffset, xRatio);
+
+    int bin = logBin(fabs(xRatio), errorSlope, errorOffset);
+    if(xRatio < 0){
+        bin = ~bin;
+    }
+    return bin;
+}
+
+/**
+ * Hash function TODO
+ * @param oldHash
+ * @param key
+ * @return
+ */
+uint64_t hashInt(uint64_t oldHash, uint64_t key){
+    key = key * 11400714819323198549ULL;
+    return oldHash ^ (oldHash >> 13) ^ key;
+}
+
+/**
+ * Hash function, takes a Pattern and produces a catalog position/index
+ * based on the Pattern's bins
+ * NOTE: this function just computes the hash value, doesn't put anything in
+ * the actual catalog
+ * @param patt
+ * @return
+ */
+uint64_t hashPattern(Pattern patt){
+    // init hash value to largest edge bin
+    unsigned int leBin = binLargestEdge(patt.leLength, 0);
+    uint64_t hash = hashInt(0, leBin);
+
+    // Update hash using each Feature's x and y bins
+    for(int i = 0; i < numPattStars-2; i++){
+        int yBin = binYCoord(patt.features[i].y, leBin, 0);
+        hash = hashInt(hash, yBin + (1 << 31));
+        int xBin = binXCoord(patt.features[i].x, leBin, yBin, 0);
+        hash = hashInt(hash, xBin + (1 << 31));
+    }
+    // Could result in collision
+    return hash % numCatalogPatts;
+}
+
+/**
+ * Checks if newPattern and catalogPattern have same bin pairs (LE, x, y)
+ * in case of a collision
+ * Kind of a pre-check for isMatch()
+ * @param newPattern Pattern created from image
+ * @param catalogPattern Pattern stored in catalog
+ * @return 1 if all bin pairs are the same; 0 otherwise
+ */
+int checkSameBins(Pattern newPattern, Pattern catPattern){
+    unsigned int newLEBin = binLargestEdge(newPattern.leLength, 0);
+    unsigned int catLEBin = binLargestEdge(catPattern.leLength, 2*catPattern.leBinOffset - 1);
+    if(newLEBin != catLEBin){
+        return 0; // Largest edge bins don't match
+    }
+
+    for(int i = 0; i < numPattStars-2; i++){
+        Feature newFeature = newPattern.features[i];
+        Feature catFeature = catPattern.features[i];
+        int newYBin = binYCoord(newFeature.y, newLEBin, 0);
+        int catYBin = binYCoord(catFeature.y, catLEBin, 2*catFeature.yBinOffset - 1);
+
+        if(newYBin != catYBin){
+            return 0; // y bins don't match => collision
+        }
+
+        int newXBin = binXCoord(newFeature.x, newLEBin, newYBin, 0);
+        int catXBin = binXCoord(catFeature.x, catLEBin, catYBin, 2*catFeature.xBinOffset - 1);
+
+        if(newXBin != catXBin){
+            return 0; // x bins don't match => collision
+        }
+    }
+
+    return 1;
+}
+
+/**
+ * Check whether two Patterns match by checking if their x, y coordinates and
+ * largest edge lengths "match"- TODO: match check is interesting
+ * @param newPattern Pattern created from image
+ * @param catPattern Pattern stored in catalog
+ * @return 1 if the Patterns match; 0 otherwise
+ */
+int isMatch(Pattern newPattern, Pattern catPattern){
+
+    // Check that image Pattern's LE length is "within range"
+    // of the catalog Pattern
+    double newLERatio = newPattern.leLength / ((1 << 16) - 1.0);
+    double catLERatio = catPattern.leLength / ((1 << 16) - 1.0);
+    double maxLEError = catLERatio * leErrorSlope + leErrorOffset;
+    if(fabs(newLERatio - catLERatio) > maxLEError){
+        return 0;
+    }
+
+    double coordErrorConst = leErrorOffset / (2-maxScaleFactor);
+    double coordErrorSlope = coordErrorConst / fmax(newLERatio-coordErrorConst, 0);
+    double coordErrorOffsetY = coordErrorSlope;
+
+    for(int i = 0; i < numPattStars-2; i++){
+        double newYCoord = newPattern.features[i].y / ((1 << 14) - 1.0);
+        double catYCoord = catPattern.features[i].y / ((1 << 14) - 1.0);
+        double maxYError = fabs(catYCoord) * coordErrorSlope + coordErrorOffsetY;
+        if(fabs(newYCoord - catYCoord) > maxYError){
+            return 0;
+        }
+    }
+
+    unsigned int catLEBin = binLargestEdge(catPattern.leLength, 2*catPattern.leBinOffset - 1);
+    for(int i = 0; i < numPattStars-2; i++){
+        int catYBin = binYCoord(catPattern.features[i].y, catLEBin,
+                                2*catPattern.features[i].yBinOffset - 1);
+        double maxYRatio = unbinYCoord(catYBin, catLEBin);
+        double coordErrorOffsetX = coordErrorSlope * (1 + 2*sqrt((1.0/4) + maxYRatio * maxYRatio)) / 2;
+
+        double newXCoord = newPattern.features[i].x / ((1 << 14) - 1.0);
+        double catXCoord = catPattern.features[i].x / ((1 << 14) - 1.0);
+        double maxXError = fabs(catXCoord) * coordErrorSlope + coordErrorOffsetX;
+        if(fabs(newXCoord - catXCoord) > maxXError){
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+/**
+ * Update where we are in the Pattern cache, possibly update the cache itself
+ * @param pattCatalog Catalog storing all Patterns
+ * @param catCache Cache that stores catalog Patterns, used in get_matching_pattern()
+ * @param offset Where the cache starts in the CATALOG
+ * @param cacheOffset Where we are in the CACHE
+ * @param probeStep How far we step in the cache to find next possible match
+ * @return 0 if probe goes out of probe founds; else return 1
+ */
+int incrementOffset(FILE *pattCatalog, Pattern catCache[pattCacheSize],
+                    uint64_t *offset, int* cacheOffset, int* probeStep){
+
+    if(((*probeStep) * (*probeStep + 1)) / 2 > maxProbeDepth){
+        //TODO: why this calculation, n(n+1)/2
+        return 0;
+    }
+    *cacheOffset += *probeStep;
+    // If we probe outside our current cache, update cache to next probe offset
+    if(*cacheOffset >= pattCacheSize){
+        // Update offset (where we are in the catalog)
+        *offset += *cacheOffset;
+        // Reset our offset in the cache itself
+        *cacheOffset = 0;
+        // Moves file pointer {offset} bytes from {origin}
+        // SEEK_SET = 0 = beginning of file
+        // TODO: change back to fseeko64?
+        fseeko64(pattCatalog, *offset * sizeof(Pattern), SEEK_SET);
+        // TODO: right now, sizeof(Pattern) = 60
+        // Reads an array of {pattCacheSize=16} Patterns from catalog
+        // and stores them in our cache
+        fread(catCache, sizeof(Pattern), pattCacheSize, pattCatalog);
+    }
+    *probeStep += 1;
+    return 1; // probe stayed within probe bounds
+}
+
+/**
+ * Looks through catalog to see if there is a catalog Pattern
+ * matching the Pattern we constructed from our image
+ *
+ * Arguably the most important function in Tetra
+ * We use a Pattern cache that stores a section of the catalog to look for matches
+ *
+ * @param imgPattern Our constructed Pattern that we want to find a match for
+ * @param catalogPattern Output = pattern in catalog that matches ours
+ * @param pattCatalog Catalog storing all Patterns
+ * @return 1 if a UNIQUE match is found; else return 0 if multiple or no matches found
+ */
+int getMatchingPattern(Pattern imgPattern, Pattern *catalogPattern, FILE *pattCatalog){
+    // TODO: why make this static
+    // Cache of Patterns from the catalog
+    static Pattern catCache[pattCacheSize];
+    // Explore cache from beginning
+    int cacheOffset = 0;
+    // This grows linearly (0, 1, 3, 6, 10, 15, ...) which results in quadratic probing
+    int probeStep = 1;
+    // Track whether a matching catalog Pattern has been found yet
+    bool foundMatch = false;
+    // Initialize beginning of cache in catalog to hash of our imgPattern
+    uint64_t offset = hashPattern(imgPattern);
+    // Start our catalog pointer at offset * sizeof(Pattern)
+    // TODO: check fseek
+    fseeko64(pattCatalog, offset * sizeof(Pattern), SEEK_SET);
+    // Fill our cache
+    fread(catCache, sizeof(Pattern), pattCacheSize, pattCatalog);
+    // TODO: don't interact directly with file
+
+    // // Perform quadratic probing through the catalog
+    while(hasPattern(catCache[cacheOffset])){
+        Pattern cp = catCache[cacheOffset];
+        // Matching Patterns will have same bins, so check that first
+        if(checkSameBins(imgPattern, cp)){
+            if(isMatch(imgPattern, cp)){
+                if(foundMatch){
+                    // Found multiple matching Patterns
+                    return 0;
+                }
+                // If a unique matching catalog Pattern was found, update output
+                *catalogPattern = cp;
+                foundMatch = true;
+            }
+
+            if(cp.isLast){
+                break;
+            }
+        }
+        // Look at next location in cache/catalog
+        if(!incrementOffset(pattCatalog, catCache, &offset, &cacheOffset, &probeStep)){
+            return 0;
+        }
+
+    }
+    if(foundMatch){
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ * Compare 2 Features
+ */
+int compareBins(const void *p, const void *q){
+    int pYBin = binYCoord(((Feature*)p)->y, leBin, 0);
+    int qYBin = binYCoord(((Feature*)q)->y, leBin, 0);
+    int pXBin = binXCoord(((Feature*)p)->x, leBin, pYBin, 0);
+    int qXBin = binXCoord(((Feature*)q)->x, leBin, qYBin, 0);
+
+    if(pXBin != qXBin){
+        return pXBin - qXBin;
+    }
+    return pYBin - qYBin;
+}
+
+
+/**
+ * Identifies stars in the image
+ * @param imageStars stars (array of Vec3s) in the image
+ * @param imageStarIDs TODO: what is this? array passed in is always [3, 2, 1, 0]
+ * @param patternCatalog Catalog storing Patterns
+ * @param matches Output TODO: format? weird
+ * @return 1 if identification succeeded; otherwise return 0
+ */
+int identifyStars(Vec3 imageStars[maxStars], int imageStarIDs[numPattStars],
+                  FILE *patternCatalog, int matches[numPattStars][2]){
+    // image_star_ids is always [3, 2, 1, 0]??
+    // The stars are randomized so we don't know which star it is- NO
+
+    Pattern newPattern; // This is the Pattern we construct
+    Pattern catPattern; // Catalog Pattern that uniquely matches our Pattern
+
+    // Iterate over all pairs of stairs to find and build largest edge
+    double largestEdgeLength = 0.0;
+    for(int i = 0; i < numPattStars; i++){
+        for(int j = i+1; j < numPattStars; j++){
+            const Vec3 star1 = imageStars[imageStarIDs[i]];
+            const Vec3 star2 = imageStars[imageStarIDs[j]];
+            double newEdgeLength = star1.dist(star2);
+            // TODO: remove cout << newEdgeLength << endl;
+            if(newEdgeLength > largestEdgeLength){
+                largestEdgeLength = newEdgeLength;
+
+                newPattern.leStarID1 = imageStarIDs[i];
+                newPattern.leStarID2 = imageStarIDs[j];
+            }
+        }
+    }
+
+    newPattern.leLength = (largestEdgeLength / maxLELength) * ((1 << 16) - 1);
+
+    // TESTING: cout << newPattern.leLength << endl;
+
+    // Calculate vector along x-axis of Pattern coordinate system
+    Vec3 xAxis = imageStars[newPattern.leStarID2] - imageStars[newPattern.leStarID1];
+
+    // Calculate vector along y-axis of Pattern coordinate system
+    Vec3 yAxis = imageStars[newPattern.leStarID2].cross(imageStars[newPattern.leStarID1]);
+
+    xAxis = xAxis.normalize();
+    yAxis = yAxis.normalize();
+
+    // Initialize the Pattern Features
+    int featureIndex = 0;
+    for(int i = 0; i < numPattStars; i++){
+        // Skip the LE stars
+        int imageStarID = imageStarIDs[i];
+        if(imageStarID != newPattern.leStarID1 && imageStarID != newPattern.leStarID2){
+            newPattern.features[featureIndex].starID = imageStarID;
+            // Calculate normalized x, y coordinates
+            // Uses vector projection - TODO, review
+            double x = xAxis.dot(imageStars[imageStarID]) / largestEdgeLength;
+            double y = yAxis.dot(imageStars[imageStarID]) / largestEdgeLength;
+            // TODO: why are we doing this conversion thing?
+            newPattern.features[featureIndex].x = x * ((1 << 14) - 1);
+            newPattern.features[featureIndex].y = y * ((1 << 14) - 1);
+
+            Feature f = newPattern.features[featureIndex];
+            if(f.x == 0){
+                f.x = 1;
+            }
+            if(f.y == 0){
+                f.y = 1;
+            }
+            featureIndex++;
+        }
+    }
+
+    int patternRotation;
+    leBin = binLargestEdge(newPattern.leLength, 0);
+
+    // Sort Pattern Features
+    qsort(newPattern.features, numPattStars-2, sizeof(Feature), compareBins);
+
+    Feature firstFeature = newPattern.features[0];
+    firstFeature.x *= -1;
+    firstFeature.y *= -1;
+    patternRotation = compareBins((void*)&firstFeature,
+                                  (void*)&(newPattern.features[numPattStars-3]));
+    if(patternRotation >= 0){
+        for(int i = 0; i < numPattStars-2; i++){
+            newPattern.features[i].x *= -1;
+            newPattern.features[i].y *= -1;
+        }
+        for(int i = 0; i < (numPattStars-2)/2; i++){
+            Feature temp = newPattern.features[i];
+            newPattern.features[i] = newPattern.features[numPattStars-3-i];
+            newPattern.features[numPattStars-3-i] = temp;
+        }
+        unsigned int temp = newPattern.leStarID1;
+        newPattern.leStarID1 = newPattern.leStarID2;
+        newPattern.leStarID2 = temp;
+    }
+
+    // Find matching catalog pattern
+    if(!getMatchingPattern(newPattern, &catPattern, patternCatalog)){
+        return 0;
+    }
+
+    matches[0][0] = newPattern.leStarID1;
+    matches[1][0] = newPattern.leStarID2;
+    matches[0][1] = catPattern.leStarID1;
+    matches[1][1] = catPattern.leStarID2;
+    for(int i = 0; i < numPattStars-2; i++){
+        matches[i+2][0] = newPattern.features[i].starID;
+        matches[i+2][1] = catPattern.features[i].starID;
+    }
+    return 1;
+}
+
+/**
+ * TODO: sus function
+ * @param imageStars
+ * @param patternCatalog
+ * @param numImageStars
+ * @param matches
+ * @param numStarsSelected
+ * @return
+ */
+int identifyImage(Vec3 imageStars[maxStars], FILE *patternCatalog,
+                  int numImageStars, int matches[numPattStars][2], int numStarsSelected){
+    static int imageStarIDs[numPattStars];
+    // cout << numStarsSelected << " " << numPattStars << endl;
+    if(numStarsSelected < numPattStars){
+        for(imageStarIDs[numStarsSelected] = numPattStars - numStarsSelected - 1;
+            imageStarIDs[numStarsSelected] < numImageStars;
+            imageStarIDs[numStarsSelected]++){
+            // cout << "call" << endl;
+            if(identifyImage(imageStars, patternCatalog, imageStarIDs[numStarsSelected],
+                             matches, numStarsSelected + 1)){
+                return 1;
+            }
+        }
+    }else{
+        // cout << "HELLO" << endl; // we are we printing this multiple times- should be one
+        // BUG: why are we reaching this point multiple times
+        // for(int i = 0; i < numPattStars; i++){
+        //     cout << imageStarIDs[i] << " ";
+        // }
+        // cout << endl;
+        if(identifyStars(imageStars, imageStarIDs, patternCatalog, matches)){
+            return 1;
+        }
+        // cout << "FAILED" << endl;
+    }
+    return 0;
+}
+
+
+int main(){
+    ////// TESTING //////
+
+//    printf("PATTERN: %d\n", sizeof(Pattern)); // 60 in cpp
+//    printf("STAR: %d\n", sizeof(Star)); // 40 in cpp
+//    printf("FEATURE: %d\n", sizeof(Feature)); // 20 in CPP vs. 8 in C
+
+    ////////////////////
+
+    clock_t begin, end;
+    int ms_spent;
+    /* Tetra catalog file pointer */
+    FILE *pattern_catalog;
+    int matches[numPattStars][2];
+    /* Size of sides of image in pixels. */
+    int num_pixels_x = 1024;
+    int num_pixels_y = 1024;
+    /* Open pattern catalog file. */
+    pattern_catalog = fopen("pattern_catalog","rb");
+    if (!pattern_catalog){
+        printf("Unable to open pattern catalog file!\n");
+        return 1;
+    };
+    FILE *centroid_data;
+    /* open centroid memmap */
+    centroid_data = fopen("centroid_data.p","rb");
+    if (!centroid_data){
+        printf("Unable to open centroid file!");
+        return 1;
+    };
+    /* load image data from file for answer checking */
+    uint16_t *image_data = (uint16_t *)malloc(sizeof(uint16_t)*numImages*maxStarsPerImg);
+    FILE *image_data_file = fopen("image_data.p", "rb");
+    if (!image_data_file){
+        printf("Unable to open image file!\n");
+        return 1;
+    };
+    fread(image_data, sizeof(uint16_t), numImages * maxStarsPerImg, image_data_file);
+    /* Close Image Data File */
+    fclose(image_data_file);
+
+    /* fov of image along one axis */
+    for (double fov = 10.1; fov < 10.1001; fov += .05) {
+        // printf("FOV\n"); // only runs once TODO: why?
+        double fov_factor = (tan(fov*PI/360)*2)/num_pixels_x;
+        /* centroiding error in 1/100ths of pixels */
+        for (int centroid_error = 100; centroid_error < 101; centroid_error += 10) {
+            begin = clock();
+            int right = 0;
+            int failed = 0;
+            int wrong = 0;
+            int wrong_order = 0;
+            int too_few_stars = 0;
+            srand(0);
+            int count = 0;
+            for (int file_index = 0; file_index < numImages; file_index++) { // for each image:
+                cout << "FILE: " << file_index << endl;
+                int i;
+                int num_image_stars;
+                float centroids[maxStars][2];
+                fseek(centroid_data, sizeof(float) * 2 * maxStarsPerImg * file_index, SEEK_SET); // set centroid_data pointer position
+                fread(centroids, sizeof(float), maxStars*2, centroid_data); // read into centroids
+
+                // for(int cr = 0; cr <= max_stars; cr++){
+                //   printf("ROW: %d, X: %f, Y: %f\n", cr, centroids[cr][0], centroids[cr][1]);
+                // }
+
+                // TODO: sometimes x coordinate is really big
+                // example: ROW: 12, X: -629948316227842605056.000000, Y: 1.874904
+
+                // Break if a centroid x and y == 0, report "too few stars"
+                for (num_image_stars = 0; num_image_stars < maxStars; num_image_stars++) {
+                    if (centroids[num_image_stars][0] == 0 && centroids[num_image_stars][1] == 0) { // why break?
+                        break;
+                    }
+                }
+                if (num_image_stars < numPattStars) { //
+                    too_few_stars += 1;
+                    continue;
+                }
+                // num_image_stars = numPattStars here
+
+
+
+                /* (i,j,k,mag) vectors with magnitude where the image center is at (1,0,0). */
+                /* One normalized vector consists of (forward, left, up). */
+                /* Each vector points at a star on the celestial sphere in */
+                /* the camera reference frame. */
+                Vec3 image_stars[maxStars];
+                /* convert centroids to camera vectors */
+                // TODO: SpatialToCamera() or whatever, look in LOST
+                double x;
+                double y;
+                for (i = 0; i < num_image_stars; i++) { // For each star in the image
+                    // printArrayF(sizeof(centroids[i])/sizeof(centroids[i][0]), centroids[i]);
+                    float rand1 = (float)((rand() % 10000)+1) / 10000;
+                    // printf("%f\n", rand1);
+                    float rand2 = (float)((rand() % 10000)+1) / 10000;
+                    count += 1;
+                    float x_err = 2 * (rand1 - .5);
+                    float y_err = 2 * (rand2 - .5);
+                    while (sqrt(x_err*x_err + y_err*y_err) > 1.0) {
+                        rand1 = (float)((rand() % 10000)+1) / 10000;
+                        rand2 = (float)((rand() % 10000)+1) / 10000;
+                        count += 1;
+                        x_err = 2 * (rand1 - .5);
+                        y_err = 2 * (rand2 - .5);
+                    }
+                    x = (centroids[i][0] + (x_err * centroid_error / 100)) * fov_factor;
+                    y = (centroids[i][1] + (y_err * centroid_error / 100)) * fov_factor;
+                    // TODO: Why the random stuff? Looks like adding error to a coordinate?
+
+                    // TODO: doesn't this pick the same stars to use in the Pattern everytime
+                    image_stars[i].x = 1 / sqrt(1 + x*x + y*y);
+                    image_stars[i].y = -image_stars[i].x * x;
+                    image_stars[i].z = image_stars[i].x * y;
+                }
+
+
+                if(identifyImage(image_stars, pattern_catalog, num_image_stars, matches, 0)){
+                    /* Check matches. */
+                    int num_verified_stars = 0;
+                    //TODO: kinda inefficient algo? Basically go through each star in the image, see if
+                    // we identified it in one of our 4 pattern stars
+                    for (int v = 0; v < maxStarsPerImg; v++) {
+                        uint16_t image_data_star = image_data[file_index*maxStarsPerImg + v];
+                        for(int match_id = 0; match_id < numPattStars; match_id++){
+                            if(matches[match_id][1] == image_data_star){
+                                num_verified_stars += 1;
+                                break;
+                            }
+                        }
+                    }
+                    if (num_verified_stars < numPattStars) {
+                        wrong += 1;
+                    }
+                    else {
+                        // fine, we identified all the stars in our pattern
+                        // now we check that our ids are correct
+                        int mismatch = 0;
+                        for(int match_id = 0; match_id < numPattStars; match_id++){
+                            if(matches[match_id][1] != image_data[file_index*maxStarsPerImg + matches[match_id][0]]){
+                                mismatch = 1;
+                                break;
+                            }
+                        }
+                        if(mismatch == 1){
+                            wrong_order += 1;
+                        }
+                        else{
+                            right += 1;
+                        }
+                    }
+                }
+                else{
+                    failed += 1;
+                }
+            }
+            end = clock();
+            ms_spent = (int) 1000 * (end - begin) / CLOCKS_PER_SEC;
+            /* Print to Screen */
+            printf("fov: %.2f\n", roundf(fov * 100) / 100);
+            printf("centroid_error: %.2f\n", ((float) centroid_error / 100));
+            printf("number right: %d\n", right);
+            printf("number failed: %d\n", failed);
+            printf("num wrngordr: %d\n", wrong_order);
+            printf("number wrong: %d\n", wrong);
+            printf("num 2 few stars: %d\n", too_few_stars);
+            printf("ms taken: %d\n", ms_spent);
+            /* Write to Output File */
+            FILE *output_file = fopen("output.txt", "a");
+            fprintf(output_file, "fov: %.2f\n", roundf(fov * 100) / 100);
+            fprintf(output_file, "centroid_error: %.2f\n", ((float) centroid_error / 100));
+            fprintf(output_file, "number right: %d\n", right);
+            fprintf(output_file, "number failed: %d\n", failed);
+            fprintf(output_file, "num wrngordr: %d\n", wrong_order);
+            fprintf(output_file, "number wrong: %d\n", wrong);
+            fprintf(output_file, "ms taken: %d\n", ms_spent);
+            fclose(output_file);
+        }
+    }
+    /* Close Dictionary Memmap */
+    fclose(pattern_catalog);
+    /* Close centroid Memmap */
+    fclose(centroid_data);
+
+}
