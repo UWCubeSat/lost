@@ -1,0 +1,3 @@
+attitude_ra 0
+attitude_de 0
+attitude_roll -0

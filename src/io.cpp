@@ -103,7 +103,7 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
         puts("Can't convert weird image formats to grayscale.");
         return NULL;
     }
-    
+
     width  = cairo_image_surface_get_width(cairoSurface);
     height = cairo_image_surface_get_height(cairoSurface);
 
@@ -246,7 +246,7 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
     SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
 
     // TODO: also parse it and print out some stats before returning
-    
+
 }
 
 
@@ -313,7 +313,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     PipelineInputList result;
     cairo_surface_t *cairoSurface = NULL;
     std::string pngPath = values.png;
-    
+
     cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
     std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
     if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
@@ -345,7 +345,7 @@ class GeneratedStar : public Star {
 public:
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
-    
+
     float peakBrightness;
     // vector points to where the star will be visibly after one time unit.
     Vec2 delta;
@@ -560,7 +560,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             quantizedPhotons = round(photonsBuffer[i]);
         }
         curBrightness += quantizedPhotons * sensitivity;
-        
+
         // std::clamp not introduced until C++17, so we avoid it.
         float clampedBrightness = std::max(std::min(curBrightness, (float)1.0), (float)0.0);
         imageData[i] = floor(clampedBrightness * kMaxBrightness); // TODO: off-by-one, 256?
@@ -645,7 +645,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     };
 
     Pipeline result;
-    
+
     // TODO: more flexible or sth
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
@@ -676,7 +676,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
         fs.read((char *)result.database.get(), length);
         std::cerr << "Done" << std::endl;
-    } 
+    }
 
     if (values.idAlgo == "dummy") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
@@ -684,7 +684,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
-    } else if (values.idAlgo != "") {
+    } else if(values.idAlgo == "tetra"){
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TetraStarIdAlgorithm());
+    }else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
     }
@@ -697,7 +699,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         std::cout << "Illegal attitude algorithm." << std::endl;
         exit(1);
     }
-    
+
     return result;
 }
 
@@ -761,12 +763,12 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
-    
+
 
     for (const std::unique_ptr<PipelineInput> &input : inputs) {
         result.push_back(Go(*input));
     }
-    
+
     return result;
 }
 
@@ -802,7 +804,7 @@ static std::vector<int> FindClosestCentroids(float threshold,
                 closestIndex = k;
             }
         }
-        
+
         result.push_back(closestIndex);
     }
 
@@ -846,7 +848,7 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     assert(comparisons.size() > 0);
 
     CentroidComparison result;
-    
+
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
         result.numExtraStars += comparison.numExtraStars;
@@ -856,7 +858,7 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     result.meanError /= comparisons.size();
     result.numExtraStars /= comparisons.size();
     result.numMissingStars /= comparisons.size();
-    
+
     return result;
 }
 
@@ -948,7 +950,7 @@ void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
                                     const std::vector<PipelineOutput> &actual,
                                     const PipelineOptions &values) {
-    
+
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
     cairo_surface_destroy(cairoSurface);
@@ -1082,7 +1084,7 @@ void PipelineComparatorStars(std::ostream &os,
         os << "starid_num_incorrect " << comparisons[0].numIncorrect << std::endl;
         os << "starid_num_total " << comparisons[0].numTotal << std::endl;
     }
- 
+
     float fractionIncorrectSum = 0;
     float fractionCorrectSum = 0;
     for (const StarIdComparison &comparison : comparisons) {
@@ -1203,7 +1205,7 @@ void PipelineComparatorAttitude(std::ostream &os,
 // }
 
 void PipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual, 
+                              const std::vector<PipelineOutput> &actual,
                               const PipelineOptions &values) {
     assert(expected.size() == actual.size() && expected.size() > 0);
 
@@ -1301,7 +1303,7 @@ void PipelineComparison(const PipelineInputList &expected,
 //     int raHours, raMinutes;
 //     float raSeconds;
 //     int raFormatTime = sscanf(raStr.c_str(), "%dh %dm %fs", &raHours, &raMinutes, &raSeconds);
-    
+
 //     float raDeg;
 //     int raFormatDeg = sscanf(raStr.c_str(), "%f", &raDeg);
 

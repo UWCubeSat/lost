@@ -103,7 +103,7 @@ public:
                            bool shotNoise, int oversampling,
                            int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
                            int seed);
-                           
+
 
     const Image *InputImage() const { return &image; };
     const Stars *InputStars() const { return &stars; };
@@ -114,7 +114,7 @@ public:
     const Catalog &GetCatalog() const { return catalog; };
 
 private:
-    // we don't use an Image here because we want to 
+    // we don't use an Image here because we want to
     std::vector<unsigned char> imageData;
     Image image;
     Stars stars;
@@ -212,7 +212,7 @@ public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
     type prop = defaultVal;
 #include "database-options.hpp"
-#undef LOST_CLI_OPTION   
+#undef LOST_CLI_OPTION
 };
 
 // unlike the other algorithm prompters, db builders aren't a
