@@ -519,8 +519,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
             // don't add false stars to centroids or star ids
             if (isTrueStar) {
-                starIds.push_back(StarIdentifier(stars.size() - 1, i));
                 stars.push_back(star);
+                starIds.push_back(StarIdentifier(stars.size() - 1, i));
             }
         }
     }
