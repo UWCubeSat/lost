@@ -1,0 +1,19 @@
+name: Build, Test, and Lint LOST
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+
+    runs-on: ubuntu-latest
+    container: kjy5/lost:latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: 🛠 Build
+      run: make $(($(nproc)+1))
+    - name: 📊 Test
+      run: make test $(($(nproc)+1))
