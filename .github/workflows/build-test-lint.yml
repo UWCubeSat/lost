@@ -1,4 +1,4 @@
-name: Build, Test, and Lint LOST
+name: Build, Test, and Lint
 on:
   push:
     branches: [ "master" ]
