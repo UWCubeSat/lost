@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: 📦 Install deps
-      run: sudo apt update && sudo apt install -y groff xxd libcairo2-dev libeigen3-dev
+      run: sudo apt install -y groff xxd libcairo2-dev libeigen3-dev
     - uses: actions/checkout@v3
     - name: 🛠 Build
       run: make -j$(($(nproc)+1))
