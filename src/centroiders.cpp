@@ -59,7 +59,7 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     memset(histogram, 0, sizeof(int)*256);
 
     for (long i = 0; i < total; i++) {
-        histogram[image[i]] ++;
+        histogram[image[i]]++;
     }
     for (int i = 0; i < 256; i ++) {
         sum1 += i * histogram[i];
@@ -153,7 +153,7 @@ struct CentroidParams {
 
 //recursive helper here
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) {
-    
+
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
@@ -173,7 +173,7 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
         p.magSum += image[i];
         p.xCoordMagSum += ((i % imageWidth)) * image[i];
         p.yCoordMagSum += ((i / imageWidth)) * image[i];
-        if(i % imageWidth != imageWidth - 1) {
+        if (i % imageWidth != imageWidth - 1) {
             CogHelper(p, i + 1, image, imageWidth, imageHeight);
         }
         if (i % imageWidth != 0) {
@@ -290,7 +290,7 @@ void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, i
         } else if (i / imageWidth < p.yMin) {
             p.yMin = i / imageWidth;
         }
-        if(i % imageWidth != imageWidth - 1) {
+        if (i % imageWidth != imageWidth - 1) {
             IWCoGHelper(p, i + 1, image, imageWidth, imageHeight, starIndices);
         }
         if (i % imageWidth != 0) {
@@ -318,11 +318,11 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             // TODO: store longs --Mark
             std::vector<int> starIndices; //indices of the current star
             p.maxIntensity = 0;
-            int xDiameter = 0; 
+            int xDiameter = 0;
             int yDiameter = 0;
-            float yWeightedCoordMagSum = 0; 
-            float xWeightedCoordMagSum = 0; 
-            float weightedMagSum = 0; 
+            float yWeightedCoordMagSum = 0;
+            float xWeightedCoordMagSum = 0;
+            float weightedMagSum = 0;
             float fwhm; //fwhm variable
             float standardDeviation;
             float w; //weight value

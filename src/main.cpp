@@ -4,15 +4,16 @@
  * Reads in CLI arguments/flags and starts the appropriate pipelines
  */
 
+#include <assert.h>
+#include <unistd.h>
+#include <getopt.h>
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <getopt.h>
 #include <cstring>
 #include <map>
-#include <unistd.h>
-#include <assert.h>
 
 #include "databases.hpp"
 #include "centroiders.hpp"
@@ -175,8 +176,7 @@ static int LostMain(int argc, char **argv) {
             help
         };
 
-        static struct option long_options[] =
-            {
+        static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
@@ -186,7 +186,7 @@ static int LostMain(int argc, char **argv) {
 #undef LOST_CLI_OPTION
                 {"help", no_argument, 0, (int) DatabaseCliOption::help},
                 {0}
-            };
+        };
 
         DatabaseOptions databaseOptions;
         int index;
@@ -227,8 +227,7 @@ static int LostMain(int argc, char **argv) {
             help
         };
 
-        static struct option long_options[] =
-            {
+        static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
@@ -240,7 +239,7 @@ static int LostMain(int argc, char **argv) {
                 // DATABASES
                 {"help", no_argument, 0, (int) PipelineCliOption::help},
                 {0, 0, 0, 0}
-            };
+        };
 
         lost::PipelineOptions pipelineOptions;
         int index;

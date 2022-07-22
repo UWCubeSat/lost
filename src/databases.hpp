@@ -19,7 +19,7 @@ const int32_t kCatalogMagicValue = 0xF9A283BC;
  */
 class KVectorIndex {
 public:
-    KVectorIndex(const unsigned char *);
+    explicit KVectorIndex(const unsigned char *);
 
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
 
@@ -69,7 +69,7 @@ void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxD
  */
 class PairDistanceKVectorDatabase {
 public:
-    PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
+    explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
 
@@ -94,7 +94,7 @@ public:
     long NumPairs() const;
 
     /// @brief
-    const static int32_t kMagicValue = 0x2536f009;
+    static const int32_t kMagicValue = 0x2536f009;
 private:
     KVectorIndex index;
     // TODO: endianness
@@ -114,7 +114,7 @@ public:
      * @brief
      * @param databaseBytes
      */
-    TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
+    explicit TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
 
     /**
      * @brief Return at least all the triples with inner angle in the given range
@@ -147,7 +147,7 @@ public:
      * @brief
      * @param buffer
      */
-    MultiDatabase(const unsigned char *buffer) : buffer(buffer) { };
+    explicit MultiDatabase(const unsigned char *buffer) : buffer(buffer) { };
     const unsigned char *SubDatabasePointer(int32_t magicValue) const;
 private:
     const unsigned char *buffer;

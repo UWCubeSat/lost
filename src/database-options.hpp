@@ -1,5 +1,7 @@
 // see pipeline-options.hpp for more information
 
+#include <string>
+
 LOST_CLI_OPTION("min-mag"              , float      , minMag                , 100   , atof(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("max-stars"            , int        , maxStars              , 10000 , atoi(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("kvector"              , bool       , kvector               , false , atobool(optarg), true)
