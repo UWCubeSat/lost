@@ -25,7 +25,7 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidt
     std::vector<Star> result;
 
     for (int i = 0; i < numStars; i++) {
-        result.push_back(Star(rand() % imageWidth, rand() % imageHeight, 10.0));
+        result.push_back(Star(rand() % imageWidth, rand() % imageHeight, 10.0)); // NOLINT
     }
 
     return result;
@@ -150,7 +150,7 @@ struct CentroidParams {
 };
 
 //recursive helper here
-void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) {
+void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) { // NOLINT
 
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
@@ -266,7 +266,7 @@ struct IWCoGParams {
     std::unordered_set<int> checkedIndices;
 };
 
-void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices) {
+void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices) { // NOLINT
     if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {

@@ -241,7 +241,7 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) { // NOLINT
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
     long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
@@ -255,7 +255,7 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
 }
 
 
-void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) {
+void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) { // NOLINT
 
     if (values.kvector) {
         float minDistance = DegToRad(values.kvectorMinDistance);
