@@ -95,7 +95,7 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
     buffer += sizeof(int16_t);
 
     // flags
-    int8_t flags = (inclMagnitude) | (inclName<<1);
+    int8_t flags = (inclMagnitude) | (inclName << 1);
     *(int8_t *)buffer = flags;
     buffer += sizeof(int8_t);
 
