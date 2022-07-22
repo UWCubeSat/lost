@@ -1,5 +1,7 @@
 # LOST: Open-source Star Tracker
 
+[![Build, Test, and Lint](https://github.com/UWCubeSat/lost/actions/workflows/build-test-lint.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/build-test-lint.yml)
+
 This is a framework for developing high-accuracy star trackers on small, low-power, low-cost
 satellites. It is being developed in the Husky Satellite Lab, a CubeSat team at the University of
 Washington.
