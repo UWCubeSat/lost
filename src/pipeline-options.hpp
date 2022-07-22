@@ -12,6 +12,8 @@
 // Emacs, try `evil-lion`. With your cursor inside any of the blocks, type `glip,` to aLign the
 // Inside of the current Paragraph to comma.
 
+#include <string>
+
 // CAMERA
 LOST_CLI_OPTION("png"          , std::string, png         , "" , optarg       , kNoDefaultArgument)
 LOST_CLI_OPTION("focal-length" , float      , focalLength , 0  , atof(optarg) , kNoDefaultArgument)

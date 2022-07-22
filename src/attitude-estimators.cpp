@@ -21,7 +21,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     //create a vector that'll hold {ri} (Stars in catalog frame)
     Eigen::Matrix3f B;
     B.setZero();
-    for (const StarIdentifier &s: starIdentifiers) {
+    for (const StarIdentifier &s : starIdentifiers) {
         Star bStar = stars[s.starIndex];
         Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
         Eigen::Vector3f bi;
@@ -50,7 +50,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
         Z(0), S(0,0) - sigma, S(0,1), S(0,2),
         Z(1), S(1,0), S(1,1) - sigma, S(1,2),
         Z(2), S(2,0), S(2,1), S(2,2) - sigma;
-    //Find eigenvalues of K, store the largest one as lambda 
+    //Find eigenvalues of K, store the largest one as lambda
     //find the maximum index
     Eigen::EigenSolver<Eigen::Matrix4f> solver(K);
     Eigen::Vector4cf values = solver.eigenvalues();
@@ -63,7 +63,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
             maxEigenvalue = values(i).real();
         }
     }
-    //The return quaternion components = eigenvector assocaited with lambda 
+    //The return quaternion components = eigenvector assocaited with lambda
     Eigen::Vector4cf maxEigenvector = vectors.col(maxIndex);
     // IMPORTANT: The matrix K is symmetric -- clearly first row and first column are equal.
     // Furthermore, S is symmetric because s_i,j = b_i,j + b_j,i and s_j,i=b_j,i + b_i,j, so the

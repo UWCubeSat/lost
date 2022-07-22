@@ -3,14 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include <vector>
 #include <iostream>
-
 #include <unordered_map>
-
 #include <unordered_set>
-#include <string.h>
 
 namespace lost {
 

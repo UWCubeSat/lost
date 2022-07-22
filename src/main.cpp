@@ -182,7 +182,7 @@ static int LostMain(int argc, char **argv) {
              defaultArg == 0 ? required_argument : optional_argument, \
              0,                                                         \
              (int)DatabaseCliOption::prop},
-#include "database-options.hpp"
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 {"help", no_argument, 0, (int) DatabaseCliOption::help},
                 {0}
@@ -206,7 +206,7 @@ static int LostMain(int argc, char **argv) {
                         }                                       \
                     }                                           \
             break;
-#include "database-options.hpp"
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
                     return 0;
@@ -233,7 +233,7 @@ static int LostMain(int argc, char **argv) {
              defaultArg == 0 ? required_argument : optional_argument, \
              0,                                                         \
              (int)PipelineCliOption::prop},
-#include "pipeline-options.hpp"
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
 
                 // DATABASES
@@ -259,7 +259,7 @@ static int LostMain(int argc, char **argv) {
                         }                                       \
                     }                                           \
             break;
-#include "pipeline-options.hpp"
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
                     return 0;

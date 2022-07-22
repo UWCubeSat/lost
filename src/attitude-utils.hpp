@@ -125,7 +125,7 @@ public:
      * @note I guess this lets you call Attitude on an attitude object?
      */
     Quaternion() = default;
-    Quaternion(const Vec3 &);
+    explicit Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, float);
 
     /**
@@ -169,8 +169,8 @@ class Attitude {
 public:
     /// @brief
     Attitude() = default;
-    Attitude(const Quaternion &);
-    Attitude(const Mat3 &dcm);
+    Attitude(const Quaternion &); // NOLINT
+    explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
     Mat3 GetDCM() const;
