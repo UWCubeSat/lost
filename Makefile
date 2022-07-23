@@ -63,6 +63,8 @@ docs:
 
 test: $(TEST_BIN)
 	$(TEST_BIN)
+	sh ./test/scripts/readme-examples-test.sh
+	rm -f img_7660.png my-database.dat attitude.txt annotated-7660.png annotated-input.png raw-input.png
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)

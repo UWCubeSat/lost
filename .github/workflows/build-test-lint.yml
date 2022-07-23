@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    container: kjy5/lost:latest
+    container: huskysat/lost:latest
 
     steps:
     - uses: actions/checkout@v3
@@ -16,8 +16,6 @@ jobs:
       run: make -j$(($(nproc)+1))
     - name: 📊 Unit Tests
       run: make test -j$(($(nproc)+1))
-    - name: 📊 README Example Tests
-      run: sh ./test/scripts/readme-examples-test.sh
   
   lint:
     runs-on: ubuntu-latest

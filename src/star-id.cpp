@@ -23,8 +23,9 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 
     StarIdentifiers result;
 
+    unsigned int *randomSeed = 0;
     for (int i = 0; i < (int)stars.size(); i++) {
-        result.push_back(StarIdentifier(i, rand() % catalog.size()));
+        result.push_back(StarIdentifier(i, rand_r(randomSeed) % catalog.size()));
     }
 
     return result;

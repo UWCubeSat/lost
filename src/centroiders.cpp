@@ -24,8 +24,9 @@ namespace lost {
 std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
+    unsigned int *randomSeed = 0;
     for (int i = 0; i < numStars; i++) {
-        result.push_back(Star(rand() % imageWidth, rand() % imageHeight, 10.0)); // NOLINT
+        result.push_back(Star(rand_r(randomSeed) % imageWidth, rand_r(randomSeed) % imageHeight, 10.0));
     }
 
     return result;
