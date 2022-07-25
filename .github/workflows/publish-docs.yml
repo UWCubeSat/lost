@@ -2,6 +2,8 @@ name: Publish Docs
 on:
   push:
     branches: [ "master" ]
+  pull-request:
+    branches: [ "master" ]
 permissions:
   contents: write
 
