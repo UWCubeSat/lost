@@ -6,13 +6,13 @@ permissions:
   contents: write
 
 jobs:
-  lint:
+  deploy-docs:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: ⬇️ Install Doxygen
-      run: apt install -y doxygen graphviz
+      run: sudo apt install -y doxygen graphviz
     - name: ⚙️ Run Doxygen
       run: doxygen
     - name: 🚀 Deploy
