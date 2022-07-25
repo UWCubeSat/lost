@@ -1,4 +1,4 @@
-name: Build, Test, and Lint
+name: Build and Test
 on:
   push:
     branches: [ "master" ]
@@ -6,7 +6,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     container: huskysat/lost:latest
 
@@ -14,14 +14,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: 🛠 Build
       run: make -j$(($(nproc)+1))
-    - name: 📊 Unit Tests
-      run: make test -j$(($(nproc)+1))
-  
-  lint:
+
+  test:
     runs-on: ubuntu-latest
+    container: huskysat/lost:latest
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-    - run: pip install cpplint
-    - run: cpplint --recursive src/ test/
+    - name: 📊 Unit Tests
+      run: make test -j$(($(nproc)+1))
