@@ -1,0 +1,21 @@
+name: Publish Docs
+on:
+  push:
+    branches: [ "master" ]
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: ⬇️ Install Doxygen
+      run: apt install -y doxygen
+    - name: ⚙️ Run Doxygen
+      run: doxygen
+    - name: 🚀 Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: documentation/doxygen/html
