@@ -1,7 +1,6 @@
 #include "star-id.hpp"
 
 #include <assert.h>
-#include <errno.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -200,6 +199,7 @@ uint64_t TetraStarIdAlgorithm::hashInt(uint64_t oldHash, uint64_t key) const {
  * @param patt
  * @return
  */
+// TODO: pass Pattern by reference?
 uint64_t TetraStarIdAlgorithm::hashPattern(tetra::Pattern patt) const {
     // initialize hash value = largest edge bin
     int leBin = binLargestEdge(patt.leLength, 0);
@@ -229,6 +229,7 @@ bool TetraStarIdAlgorithm::checkSameBins(tetra::Pattern newPattern,
     int newLEBin = binLargestEdge(newPattern.leLength, 0);
     int catLEBin =
         binLargestEdge(catPattern.leLength, 2 * catPattern.leBinOffset - 1);
+    // cout << "LEBINs: " << newLEBin << " " << catLEBin << endl;
     if (newLEBin != catLEBin) {
         return false;
     }
@@ -241,15 +242,15 @@ bool TetraStarIdAlgorithm::checkSameBins(tetra::Pattern newPattern,
         int catYBin =
             binYCoord(catFeature.y, catLEBin, 2 * catFeature.yBinOffset - 1);
 
-        if (newYBin != catYBin) {
-            return false;  // y bins don't match => collision
-        }
-
         int newXBin = binXCoord(newFeature.x, newLEBin, newYBin, 0);
         int catXBin = binXCoord(catFeature.x, catLEBin, catYBin,
                                 2 * catFeature.xBinOffset - 1);
 
-        if (newXBin != catXBin) {
+        // cout << "BINS: " << newYBin << " " << catYBin << " " << newXBin << "
+        // "
+        //      << catXBin << endl;
+        if ((newYBin != catYBin) || (newXBin != catXBin)) {
+            // cout << "BINS NOT MATCHED" << endl;
             return false;
         }
     }
@@ -265,6 +266,7 @@ bool TetraStarIdAlgorithm::checkSameBins(tetra::Pattern newPattern,
  */
 bool TetraStarIdAlgorithm::isMatch(tetra::Pattern newPattern,
                                    tetra::Pattern catPattern) const {
+    // cout << "Matching..." << endl;
     float newLERatio = newPattern.leLength / ((1 << 16) - 1.0);
     float catLERatio = catPattern.leLength / ((1 << 16) - 1.0);
     float maxLEError = catLERatio * tetra::leErrorSlope + tetra::leErrorOffset;
@@ -303,6 +305,7 @@ bool TetraStarIdAlgorithm::isMatch(tetra::Pattern newPattern,
             return false;
         }
     }
+    // cout << "isMatch() FAILED" << endl;
     return true;
 }
 
@@ -316,13 +319,13 @@ bool TetraStarIdAlgorithm::isMatch(tetra::Pattern newPattern,
  * @param probeStep How far to step in the cache to find next possible match
  * @return
  */
-bool TetraStarIdAlgorithm::incrementOffset(FILE *pattCatalog,
-                                           tetra::Pattern *catCache,
-                                           uint64_t *offset, int *cacheOffset,
-                                           int *probeStep) const {
+bool TetraStarIdAlgorithm::incrementOffset(
+    FILE *pattCatalog, tetra::Pattern catCache[tetra::pattCacheSize],
+    uint64_t *offset, int *cacheOffset, int *probeStep) const {
     if (((*probeStep) * (*probeStep + 1)) / 2 > tetra::maxProbeDepth) {
         return false;  // probe went outside probe bounds
     }
+    // Update cache offset
     *cacheOffset += *probeStep;
     // If we probe outside our cache, update cache to next probe offset
     if (*cacheOffset >= tetra::pattCacheSize) {
@@ -374,17 +377,32 @@ bool TetraStarIdAlgorithm::getMatchingPattern(tetra::Pattern imgPattern,
     fseek(pattCatalog, offset * sizeof(tetra::Pattern), SEEK_SET);
     // Fill in our cache
     fread(catCache, sizeof(tetra::Pattern), tetra::pattCacheSize, pattCatalog);
-
     // Perform quadratic probing through catalog
     // TODO: while hasPattern(p) => { return p.leLength > 0 }- make own function
+
+    // cout << "Offset: " << offset << endl;
+    // cout << "CAT LEN: " << catCache[cacheOffset].leLength
+    //      << endl;  // if 0, no pattern
+    // cout << "CAT id check: " << catCache[cacheOffset].leStarID1 << endl;
+
     while (catCache[cacheOffset].leLength > 0) {
         tetra::Pattern cp = catCache[cacheOffset];
         // Matching Patterns will have same bins, so check that first
+
+        // cout << "CAT: " << cp.leStarID1 << " END" << endl;
+        // cout << "CAT 2: " << cp.leStarID2 << " END" << endl;
+        // cout << "OURS: " << imgPattern.leStarID1 << endl;
+        // cout << "OURS 2: " << imgPattern.leStarID2
+        //      << endl;  // NOTE: indices, not IDs
+
+        // This can actually succeed
+        // cout << "CHECK BINS: " << checkSameBins(imgPattern, cp) << endl;
         if (checkSameBins(imgPattern, cp)) {
             if (isMatch(imgPattern, cp)) {
                 if (foundMatch) {
                     // found multiple matching Patterns in catalog, so return
                     // false
+                    // cout << "ERROR: Multiple matches found" << endl;
                     return false;
                 }
                 // if a unique matching catalog Pattern was found, update output
@@ -392,13 +410,18 @@ bool TetraStarIdAlgorithm::getMatchingPattern(tetra::Pattern imgPattern,
                 foundMatch = true;
             }
             if (cp.isLast) {
+                // cout << "LAST" << endl; // TODO: possible
+                // cout << "islast" << endl;
                 break;
             }
         }
         // Catalog Pattern we're looking at right now isn't a match, so
         // go to next location in cache/catalog
+        cout << "increment" << endl;
         if (!incrementOffset(pattCatalog, catCache, &offset, &cacheOffset,
                              &probeStep)) {
+            // This is fine?
+            // cout << "increment fail" << endl;
             return false;
         }
     }
@@ -444,6 +467,8 @@ bool TetraStarIdAlgorithm::identifyStars(
     FILE *patternCatalog, int matches[tetra::numPattStars][2]) const {
     // TODO: imageStarInds is always [3, 2, 1, 0] or [4, 2, 1, 0]?
     // TODO: try DIY, just pass in 4 random indices in [0, maxStars)
+
+    // cout << "HERE" << endl; // ok
 
     // This is the Pattern we construct
     tetra::Pattern newPattern;
@@ -491,8 +516,8 @@ bool TetraStarIdAlgorithm::identifyStars(
             newPattern.features[featureInd].starInd = imageStarInd;
             // Calculate normalized x, y coordinates
             // Uses vector projection
-            float x = xAxis * imageStars[imageStarInd] / largestEdgeLength;
-            float y = yAxis * imageStars[imageStarInd] / largestEdgeLength;
+            float x = (xAxis * imageStars[imageStarInd]) / largestEdgeLength;
+            float y = (yAxis * imageStars[imageStarInd]) / largestEdgeLength;
             // TODO: why are we doing this conversion
             newPattern.features[featureInd].x = x * ((1 << 14) - 1);
             newPattern.features[featureInd].y = y * ((1 << 14) - 1);
@@ -517,14 +542,17 @@ bool TetraStarIdAlgorithm::identifyStars(
     sort(newPattern.features, newPattern.features + tetra::numPattStars - 2,
          [this](const tetra::Feature &a, const tetra::Feature &b) -> int {
              return this->compareBins(a, b);
-         });  // bug
+         });
 
     // qsort(newPattern.features, tetra::numPattStars - 2,
-    // sizeof(tetra::Feature), compareBins);
 
     tetra::Feature firstFeature = newPattern.features[0];
+    // cout << "FIRST FEATURE 1: " << firstFeature.x << endl;
+    // TODO: does this not update?s
     firstFeature.x *= -1;
     firstFeature.y *= -1;
+    // cout << "FIRST FEATURE 1-1: " << firstFeature.x << endl;
+
     patternRotation = compareBins(
         firstFeature, (newPattern.features[tetra::numPattStars - 3]));
 
@@ -546,6 +574,8 @@ bool TetraStarIdAlgorithm::identifyStars(
 
     // Find matching catalog pattern
     if (!getMatchingPattern(newPattern, &catPattern, patternCatalog)) {
+        // TODO: error, failing here
+        // cout << "Match fail" << endl;
         return false;
     }
 
@@ -553,6 +583,7 @@ bool TetraStarIdAlgorithm::identifyStars(
     matches[1][0] = newPattern.leStarID2;
     matches[0][1] = catPattern.leStarID1;
     matches[1][1] = catPattern.leStarID2;
+    cout << matches[0][1] << ", " << matches[1][1] << endl;
     for (int i = 0; i < tetra::numPattStars - 2; i++) {
         matches[i + 2][0] = newPattern.features[i].starInd;
         matches[i + 2][1] = catPattern.features[i].starInd;
@@ -568,9 +599,9 @@ bool TetraStarIdAlgorithm::identifyStars(
  *  TODO: imageStars[maxStars], but what if number of centroids < maxStars:
  * choose index within appropriate range if number of centroids < numPattStars,
  * then report too few stars, skip
- * 2. Convert each centroid in stars to a Vec3, put in a vector?
+ * 2. Convert each centroid in stars to a Vec3, put in a vector
  * 3. Create matches array, this is our result
- * 4. Pass to identifyStars() for result
+ * 4. Pass to identifyStars() to fill matches
  */
 StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
@@ -578,39 +609,24 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Camera &camera) const {
     StarIdentifiers res;
 
-    errno = 0;
-    if (2 < 3) {
-        FILE *foo = fopen("tetra.txt", "rb");
-        if (!foo) {
-            perror("ERROR: ");
-        }
-        printf("ERROR: %d", errno);
-        return res;
-    }
-
     if ((int)stars.size() < tetra::numPattStars) {
         cerr << "Too few stars in image" << endl;
         return res;  // TODO: throw an error?
     }
-    vector<Vec3> imageStars;
-    for (int i = 0; i < (int)stars.size(); i++) {
-        imageStars.push_back(camera.CameraToSpatial(stars[i].position));
-    }
-    int matches[tetra::numPattStars][2] = {0};
-    int imageStarInds[tetra::numPattStars] = {0};
 
-    uniform_int_distribution<unsigned> u(0, (int)stars.size() - 1);
-    default_random_engine e(time(0));
-    set<int> chosen;
+    // TESTING # 1 ////
+    cout << "STAR: " << sizeof(tetra::Star) << endl;
+    // cout << "FEATURE SIZE: " << sizeof(tetra::Feature) << endl;
 
-    for (int i = 0; i < tetra::numPattStars; i++) {
-        int r = u(e);
-        while (chosen.count(r) != 0) {
-            r = u(e);
-        }
-        chosen.insert(r);
-        imageStarInds[i] = r;
+    // TESTING: remove ////////////////////////////////////////////
+    bool testOn = false;
+    if (testOn) {
+        StarIdentifier si(18, 270);
+        // correct = 399
+        res.push_back(si);
+        return res;
     }
+    //////////////////////////////////////////////////////////////
 
     // TODO: change later
     FILE *patternCatalog;
@@ -622,12 +638,75 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         exit(EXIT_FAILURE);
     }
 
+    // TODO: remove, testing
+    // float positions[24] = {502.883148,  -210.082062, -406.207733,
+    // -277.607758,
+    //                        118.289345,  -249.106827, -83.203239,  103.738808,
+    //                        -34.876026,  27.294966,   191.579407,  302.748718,
+    //                        -341.711548, -307.523010, 27.620153,   212.193848,
+    //                        -502.522675, -210.006012, 506.891174,  423.762390,
+    //                        152.898392,  480.741241,  -289.067657,
+    //                        304.056427};
+
+    vector<Vec3> imageStars;
+    for (int i = 0; i < (int)stars.size(); i++) {
+        // for (int i = 0; i < 12; i++) {
+        // Vec2 testPos;
+        // testPos.x = positions[i * 2];
+        // testPos.y = positions[i * 2 + 1];
+
+        Vec3 spatialStarCoord =
+            camera.CameraToSpatial(stars[i].position).Normalize();
+        // Vec3 spatialStarCoord = camera.CameraToSpatial(testPos).Normalize();
+        // cout << "Vec2 coordinates: " << testPos.x << ", " << testPos.y <<
+        // endl;
+
+        // cout << "Vec2 coordinates: " << stars[i].position.x << ", "
+        //      << stars[i].position.y << endl;
+        // cout << "Vec3 star: " << spatialStarCoord.x << ", "
+        //      << spatialStarCoord.y << ", " << spatialStarCoord.z << endl;
+        imageStars.push_back(spatialStarCoord);
+    }
+    int matches[tetra::numPattStars][2] = {{0}};
+    int imageStarInds[tetra::numPattStars] = {0};
+
+    random_device rd;
+    uniform_int_distribution<unsigned> u(0, (int)stars.size() - 1);
+    // default_random_engine e(time(0)); // BUG, always generates same first
+    // number this is horrible, could cause star-id to ALWAYS FAIL
+    set<int> chosen;
+
+    // TODO: repeat this step as long as we failed to identify?
+
+    // TODO: uncomment this block for actual usage
+    // for (int i = 0; i < tetra::numPattStars; i++) {
+    //     int r = u(rd);
+    //     while (chosen.count(r) != 0) {
+    //         r = u(rd);
+    //     }
+    //     // cout << r << endl;
+    //     chosen.insert(r);
+
+    //     imageStarInds[i] = r;
+
+    //     cout << imageStarInds[i] << endl;
+    // }
+    imageStarInds[0] = 9;
+    imageStarInds[1] = 18;
+    imageStarInds[2] = 3;
+    imageStarInds[3] = 17;
+
     // TODO: fill in
     // TODO: error
-    identifyStars(imageStars, imageStarInds, patternCatalog, matches);
+    if (!identifyStars(imageStars, imageStarInds, patternCatalog, matches)) {
+        cerr << "ERROR: Failed to identify stars" << endl;
+    };
 
     for (int i = 0; i < tetra::numPattStars; i++) {
+        // TODO: why is this printing not-HIP numbers?
+        cout << matches[i][0] << ", " << matches[i][1] << endl;
         StarIdentifier si(matches[i][0], matches[i][1]);
+        // TODO: bug, matches[i][0] and matches[i][1] is always 0
         res.push_back(si);
     }
     return res;

@@ -108,12 +108,12 @@ Here's how to identify a real image:
 ```shell
 ./lost pipeline \
   --png img_7660.png \
-  --focal-length 49 \
+  --focal-length 174 \
   --pixel-size 22.2 \
   --centroid-algo cog \
   --centroid-mag-filter 5 \
   --database my-database.dat \
-  --star-id-algo py \
+  --star-id-algo tetra \
   --angular-tolerance 0.05 \
   --false-stars 1000 \
   --max-mismatch-prob 0.0001 \

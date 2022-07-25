@@ -4,6 +4,7 @@
 #include <cmath>  // TODO: added in here
 #include <vector>
 
+#include "attitude-utils.hpp"
 #include "camera.hpp"
 #include "centroiders.hpp"
 #include "star-utils.hpp"
@@ -14,6 +15,28 @@ namespace lost {
 
 // TODO: ok? nested namespace for Tetra constants, structs
 namespace tetra {
+
+/////////////// Constants for GenerateTetraCatalog.cpp //////
+
+// Minimum star brightness for inclusion in catalog
+// TODO: units? "lower mag values are brighter?"
+const float minStarMag = 6.2;
+// Minimum angle between stars (in radians)
+// Can be used to remove double stars
+const float minStarSeparation = 0.004;
+// Load factor of catalog- how much of catalog is used
+const int loadFactor = 0.6;
+// We generate the catalog in cached pieces
+const int maxCatCache = 100000000;
+// TODO: why is different than maxProbeDepth?
+const int maxCatProbeDepth = 50000;
+// Number of entries in HIPPARCHOS catalog
+const int hipCatalogSize = 9110;
+// Current year
+const int currYear = 2022;
+
+/////////////////////////////////////////////////////////////
+
 // Number of stars in a Pattern- recommended >= 4
 // TODO: have these be passed through constructor for TetraStarIdAlgorithm?
 const int numPattStars = 4;
@@ -30,10 +53,10 @@ const float maxFovError = 0.01;  // TODO: put in constructor
 const float maxCentroidError = .00069054;
 
 const float maxScaleFactor =
-    fmax(tan(maxFov * (1 + maxFovError) / 2.0f) / tan(maxFov / 2.0),
-         1 - tan(maxFov * (1 - maxFovError) / 2.0) / tan(maxFov / 2.0));
+    fmax(tan(maxFov * (1 + maxFovError) / 2.0f) / tan(maxFov / 2.0f),
+         1 - tan(maxFov * (1 - maxFovError) / 2.0f) / tan(maxFov / 2.0f));
 
-const float maxLELength = 2 * sin(maxFov * (1 + maxFovError) / 2.0);
+const float maxLELength = 2 * sin(maxFov * (1 + maxFovError) / 2.0f);
 const float leErrorSlope = maxScaleFactor - 1;
 const float leErrorOffset = 2 * maxCentroidError / (2 - maxScaleFactor);
 
@@ -48,7 +71,8 @@ struct Feature {
     int xBinOffset : 1;  // TODO: what are these
     int y : 15;
     int yBinOffset : 1;
-    int starInd;  // TODO: index?
+    int starInd : 15;  // TODO: index?
+    int pad : 1;
 };
 
 /**
@@ -60,13 +84,22 @@ struct Pattern {
     // stored in order of increasing x bin, then y bin
     Feature features[numPattStars - 2];
     // Length of largest edge in Pattern TODO: might not be entirely accurate
-    int leLength;
+    uint16_t leLength;
     int leBinOffset : 1;
     int leStarID1 : 15;  // ID of first star that forms the largest edge
     int leStarID2 : 15;  // ID of second star that forms the largest edge
     // Indicate whether this catalog position contains the last matching
     // Pattern in the catalog. If so, no need to probe further
     int isLast : 1;
+};
+
+////// Used in GenerateTetraCatalog.cpp only //////
+
+// sizeof(Star) = 20
+struct Star {
+    Vec3 vec;
+    float mag;
+    int starID;  // HIP number, NOT HR
 };
 
 //////////////////////////////////////////////////////////////////
