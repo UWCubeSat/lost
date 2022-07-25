@@ -1,0 +1,10 @@
+<map id="lost::Camera::InSensor" name="lost::Camera::InSensor">
+<area shape="rect" id="node1" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="835,144,1004,171"/>
+<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title=" " alt="" coords="564,115,787,141"/>
+<area shape="rect" id="node8" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title=" " alt="" coords="572,166,779,207"/>
+<area shape="rect" id="node3" href="$classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title=" " alt="" coords="291,5,514,32"/>
+<area shape="rect" id="node4" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title=" " alt="" coords="315,56,490,83"/>
+<area shape="rect" id="node5" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title=" " alt="" coords="308,107,497,149"/>
+<area shape="rect" id="node6" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title=" " alt="" coords="5,203,241,229"/>
+<area shape="rect" id="node7" href="$namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title=" " alt="" coords="289,225,516,266"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="lost::Camera::CameraToSpatial" name="lost::Camera::CameraToSpatial">
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,228,32"/>
+<area shape="rect" id="node2" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="276,5,445,32"/>
+</map>
