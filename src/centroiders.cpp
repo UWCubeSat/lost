@@ -151,27 +151,27 @@ struct CentroidParams {
 };
 
 //recursive helper here
-void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight) { // NOLINT
+void CogHelper(CentroidParams *p, long i, unsigned char *image, int imageWidth, int imageHeight) {
 
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p->cutoff && p->checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
-            p.isValid = false;
+            p->isValid = false;
         }
-        p.checkedIndices.insert(i);
-        if (i % imageWidth > p.xMax) {
-            p.xMax = i % imageWidth;
-        } else if (i % imageWidth < p.xMin) {
-            p.xMin = i % imageWidth;
+        p->checkedIndices.insert(i);
+        if (i % imageWidth > p->xMax) {
+            p->xMax = i % imageWidth;
+        } else if (i % imageWidth < p->xMin) {
+            p->xMin = i % imageWidth;
         }
-        if (i / imageWidth > p.yMax) {
-            p.yMax = i / imageWidth;
-        } else if (i / imageWidth < p.yMin) {
-            p.yMin = i / imageWidth;
+        if (i / imageWidth > p->yMax) {
+            p->yMax = i / imageWidth;
+        } else if (i / imageWidth < p->yMin) {
+            p->yMin = i / imageWidth;
         }
-        p.magSum += image[i];
-        p.xCoordMagSum += ((i % imageWidth)) * image[i];
-        p.yCoordMagSum += ((i / imageWidth)) * image[i];
+        p->magSum += image[i];
+        p->xCoordMagSum += ((i % imageWidth)) * image[i];
+        p->yCoordMagSum += ((i / imageWidth)) * image[i];
         if (i % imageWidth != imageWidth - 1) {
             CogHelper(p, i + 1, image, imageWidth, imageHeight);
         }
@@ -214,7 +214,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
             int sizeBefore = p.checkedIndices.size();
 
-            CogHelper(p, i, image, imageWidth, imageHeight);
+            CogHelper(&p, i, image, imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
 
@@ -267,27 +267,27 @@ struct IWCoGParams {
     std::unordered_set<int> checkedIndices;
 };
 
-void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices) { // NOLINT
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+void IWCoGHelper(IWCoGParams *p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> *starIndices) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p->cutoff && p->checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
-            p.isValid = false;
+            p->isValid = false;
         }
-        p.checkedIndices.insert(i);
-        starIndices.push_back(i);
-        if (image[i] > p.maxIntensity) {
-            p.maxIntensity = image[i];
-            p.guess = i;
+        p->checkedIndices.insert(i);
+        starIndices->push_back(i);
+        if (image[i] > p->maxIntensity) {
+            p->maxIntensity = image[i];
+            p->guess = i;
         }
-        if (i % imageWidth > p.xMax) {
-            p.xMax = i % imageWidth;
-        } else if (i % imageWidth < p.xMin) {
-            p.xMin = i % imageWidth;
+        if (i % imageWidth > p->xMax) {
+            p->xMax = i % imageWidth;
+        } else if (i % imageWidth < p->xMin) {
+            p->xMin = i % imageWidth;
         }
-        if (i / imageWidth > p.yMax) {
-            p.yMax = i / imageWidth;
-        } else if (i / imageWidth < p.yMin) {
-            p.yMin = i / imageWidth;
+        if (i / imageWidth > p->yMax) {
+            p->yMax = i / imageWidth;
+        } else if (i / imageWidth < p->yMin) {
+            p->yMin = i / imageWidth;
         }
         if (i % imageWidth != imageWidth - 1) {
             IWCoGHelper(p, i + 1, image, imageWidth, imageHeight, starIndices);
@@ -333,7 +333,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.isValid = true;
 
 
-            IWCoGHelper(p, i, image, imageWidth, imageHeight, starIndices);
+            IWCoGHelper(&p, i, image, imageWidth, imageHeight, &starIndices);
 
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
