@@ -48,7 +48,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    GenerateDatabases(builder, narrowedCatalog, values);
+    GenerateDatabases(&builder, narrowedCatalog, values);
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 

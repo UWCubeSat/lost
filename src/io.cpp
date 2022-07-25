@@ -255,13 +255,13 @@ void BuildKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
 }
 
 
-void GenerateDatabases(MultiDatabaseBuilder &builder, const Catalog &catalog, const DatabaseOptions &values) { // NOLINT
+void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
 
     if (values.kvector) {
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
-        BuildKVectorDatabase(&builder, catalog, minDistance, maxDistance, numBins);
+        BuildKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);

@@ -339,7 +339,7 @@ public:
 
 // unlike the other algorithm prompters, db builders aren't a
 // typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-void GenerateDatabases(MultiDatabaseBuilder &, const Catalog &, const DatabaseOptions &values);
+void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values);
 // void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 /////////////////////
