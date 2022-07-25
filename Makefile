@@ -63,17 +63,19 @@ docs:
 
 test: $(TEST_BIN)
 	$(TEST_BIN)
-	sh ./test/scripts/readme-examples-test.sh
-	rm -f img_7660.png my-database.dat attitude.txt annotated-7660.png annotated-input.png raw-input.png
+	make script-tests
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
 script-tests:
-	./test/scripts/pyramid-incorrect.sh
+	bash ./test/scripts/pyramid-incorrect.sh
+	bash ./test/scripts/readme-examples-test.sh
+	rm -f img_7660.png my-database.dat attitude.txt annotated-7660.png annotated-input.png raw-input.png input.png img_7660.png.1
 
 clean:
 	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
+	rm -f img_7660.png my-database.dat attitude.txt annotated-7660.png annotated-input.png raw-input.png input.png img_7660.png.1
 
 clean_all: clean
 	rm -f $(BSC)

@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+
+# Generated image test
 ./lost pipeline \
   --generate 1 \
   --plot-raw-input raw-input.png \
@@ -16,6 +19,7 @@
   --plot-raw-input raw-input.png \
   --plot-input annotated-input.png
 
+# Real image test
 wget https://markasoftware.com/img_7660.png
 
 ./lost database \
@@ -25,17 +29,29 @@ wget https://markasoftware.com/img_7660.png
   --kvector-max-distance 15 \
   --kvector-distance-bins 10000 \
   --output my-database.dat
-./lost pipeline \
-  --png img_7660.png \
-  --focal-length 49 \
-  --pixel-size 22.2 \
-  --centroid-algo cog \
-  --centroid-mag-filter 5 \
-  --database my-database.dat \
-  --star-id-algo py \
-  --angular-tolerance 0.05 \
-  --false-stars 1000 \
-  --max-mismatch-prob 0.0001 \
-  --attitude-algo dqm \
-  --print-attitude attitude.txt \
-  --plot-output annotated-7660.png
+
+set -x
+lost_output=$(
+  ./lost pipeline \
+    --png img_7660.png \
+    --focal-length 49 \
+    --pixel-size 22.2 \
+    --centroid-algo cog \
+    --centroid-mag-filter 5 \
+    --database my-database.dat \
+    --star-id-algo py \
+    --angular-tolerance 0.05 \
+    --false-stars 1000 \
+    --max-mismatch-prob 0.0001 \
+    --attitude-algo dqm \
+    --print-attitude attitude.txt \
+    --plot-output annotated-7660.png
+)
+set +x
+
+if grep "Matched unique pyramid!" <<< "$lost_output" && grep "Identified an additional 19 stars" <<< "$lost_output"; then
+  echo "TEST: [SUCCESS]: All clear!"
+else
+  echo "TEST: [ERROR]: README example with real image failed!"
+  exit 1
+fi
