@@ -1,12 +1,12 @@
-#include <catch.hpp>
-
 #include <math.h>
 #include <iostream>
+
+#include <catch.hpp>
 
 #include "camera.hpp"
 #include "attitude-utils.hpp"
 
-using namespace lost;
+using namespace lost; // NOLINT
 
 TEST_CASE("Convert coordinates: pixel -> spatial -> pixel", "[geometry]") {
     Camera camera(100, 512, 1024);

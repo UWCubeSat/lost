@@ -4,7 +4,7 @@
 #include "io.hpp"
 #include "attitude-utils.hpp"
 
-using namespace lost;
+using namespace lost; // NOLINT
 
 static unsigned char *BuildPairDistanceKVectorDatabase(
     const Catalog &catalog, long *length, float minDistance, float maxDistance, long numBins) {
