@@ -22,7 +22,7 @@ tmp_dir=$(mktemp -d)
   --plot-input "$tmp_dir/annotated-input.png"
 
 # Real image test
-wget https://markasoftware.com/img_7660.png -O "$tmp_dir/img_7660.png"
+curl https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
 
 ./lost database \
   --max-stars 5000 \

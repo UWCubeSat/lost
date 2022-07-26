@@ -61,7 +61,7 @@ docs:
 
 -include $(DEPS)
 
-test: $(TEST_BIN)
+test: $(BIN) $(BSC) $(TEST_BIN)
 	$(TEST_BIN)
 	# bash ./test/scripts/pyramid-incorrect.sh
 	bash ./test/scripts/readme-examples-test.sh

@@ -100,10 +100,10 @@ TEST_CASE("quat -> dcm -> quat", "[geometry]") {
     Quaternion quat1 = SphericalToQuaternion(ra, de, roll).Canonicalize();
     Mat3 dcm = QuaternionToDCM(quat1);
     Quaternion quat2 = DCMToQuaternion(dcm).Canonicalize();
-    CHECK(quat1.real == Approx(quat2.real));
-    CHECK(quat1.i == Approx(quat2.i));
-    CHECK(quat1.j == Approx(quat2.j));
-    CHECK(quat1.k == Approx(quat2.k));
+    CHECK(quat1.real == Approx(quat2.real).margin(0.0001));
+    CHECK(quat1.i == Approx(quat2.i).margin(0.0001));
+    CHECK(quat1.j == Approx(quat2.j).margin(0.0001));
+    CHECK(quat1.k == Approx(quat2.k).margin(0.0001));
 }
 
 // I know cross product seems simple, perhaps even too simple to be worth testing...but I coded it
