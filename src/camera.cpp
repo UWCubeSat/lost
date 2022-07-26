@@ -1,8 +1,9 @@
 #include "camera.hpp"
-#include "attitude-utils.hpp"
 
 #include <math.h>
 #include <assert.h>
+
+#include "attitude-utils.hpp"
 
 namespace lost {
 

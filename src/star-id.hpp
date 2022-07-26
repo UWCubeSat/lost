@@ -50,7 +50,7 @@ public:
      * @brief
      * @param tolerance
      */
-    GeometricVotingStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
+    explicit GeometricVotingStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
 private:
     float tolerance;
 };

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# Run this with `make script-tests`
-
 # The pyramid algorithm should /never/ misidentify the main, 4-star pyramid in a generated image
 # (when not using centroiding). That's because it only accepts the main pyramid when it is the
 # uniquely correct pyramid. Since it knows the centroids exactly, there is no chance of some pyramid

@@ -1,13 +1,15 @@
 #include "databases.hpp"
-#include "attitude-utils.hpp"
-#include "star-utils.hpp"
+
+#include <stdlib.h>
+#include <assert.h>
+#include <math.h>
 
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
+
+#include "attitude-utils.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -69,7 +71,7 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
         assert(thisBin <= numBins); // thisBin == numBins is acceptable since kvector length == numBins + 1
         // if thisBin > lastBin, then no more stars can be added to those bins between thisBin and lastBin, so set them.
         for (long bin = lastBin; bin < thisBin; bin++) {
-            kVector[bin]=i; // our index is the number of pairs with shorter distance
+            kVector[bin] = i; // our index is the number of pairs with shorter distance
         }
         lastBin = thisBin;
     }
@@ -243,7 +245,7 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
  */
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
-    
+
     // TODO: errors? (not even sure what i meant by this comment anymore)
     buffer += SerializeLengthKVectorIndex(index.NumBins());
     pairs = (const int16_t *)buffer;

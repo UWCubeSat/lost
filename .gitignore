@@ -97,3 +97,6 @@ fabric.properties
 # Generated files in testing
 pyramid-incorrect.dat
 /lost-test
+
+# macOS
+.DS_Store

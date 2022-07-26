@@ -4,15 +4,16 @@
  * Reads in CLI arguments/flags and starts the appropriate pipelines
  */
 
+#include <assert.h>
+#include <unistd.h>
+#include <getopt.h>
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <getopt.h>
 #include <cstring>
 #include <map>
-#include <unistd.h>
-#include <assert.h>
 
 #include "databases.hpp"
 #include "centroiders.hpp"
@@ -47,7 +48,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    GenerateDatabases(builder, narrowedCatalog, values);
+    GenerateDatabases(&builder, narrowedCatalog, values);
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
@@ -175,18 +176,17 @@ static int LostMain(int argc, char **argv) {
             help
         };
 
-        static struct option long_options[] =
-            {
+        static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
              0,                                                         \
              (int)DatabaseCliOption::prop},
-#include "database-options.hpp"
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 {"help", no_argument, 0, (int) DatabaseCliOption::help},
                 {0}
-            };
+        };
 
         DatabaseOptions databaseOptions;
         int index;
@@ -206,7 +206,7 @@ static int LostMain(int argc, char **argv) {
                         }                                       \
                     }                                           \
             break;
-#include "database-options.hpp"
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
                     return 0;
@@ -227,20 +227,19 @@ static int LostMain(int argc, char **argv) {
             help
         };
 
-        static struct option long_options[] =
-            {
+        static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
              0,                                                         \
              (int)PipelineCliOption::prop},
-#include "pipeline-options.hpp"
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
 
                 // DATABASES
                 {"help", no_argument, 0, (int) PipelineCliOption::help},
                 {0, 0, 0, 0}
-            };
+        };
 
         lost::PipelineOptions pipelineOptions;
         int index;
@@ -260,7 +259,7 @@ static int LostMain(int argc, char **argv) {
                         }                                       \
                     }                                           \
             break;
-#include "pipeline-options.hpp"
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
                     return 0;

@@ -2,6 +2,7 @@
 #include <math.h>
 #include <assert.h>
 #include <vector>
+#include <algorithm>
 
 #include "star-id.hpp"
 #include "databases.hpp"
@@ -22,8 +23,9 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 
     StarIdentifiers result;
 
+    unsigned int randomSeed = 123456;
     for (int i = 0; i < (int)stars.size(); i++) {
-        result.push_back(StarIdentifier(i, rand() % catalog.size()));
+        result.push_back(StarIdentifier(i, rand_r(&randomSeed) % catalog.size()));
     }
 
     return result;
@@ -48,7 +50,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     }
     PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
 
-    for (int i = 0; i < (int)stars.size(); i++) {  
+    for (int i = 0; i < (int)stars.size(); i++) {
         std::vector<int16_t> votes(catalog.size(), 0);
         Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
         for (int j = 0; j < (int)stars.size(); j++) {
@@ -117,7 +119,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     //loop i from 1 through n
     std::vector<int16_t> verificationVotes(identified.size(), 0);
     for (int i = 0; i < (int)identified.size(); i++) {
-        //loop j from i+1 through n 
+        //loop j from i+1 through n
         for (int j = i + 1; j < (int)identified.size(); j++) {
             // Calculate distance between catalog stars
             CatalogStar first = catalog[identified[i].catalogIndex];
@@ -129,7 +131,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
             Vec3 firstSpatial = camera.CameraToSpatial(firstIdentified.position);
             Vec3 secondSpatial = camera.CameraToSpatial(secondIdentified.position);
             float sDist = Angle(firstSpatial, secondSpatial);
-            
+
             //if sDist is in the range of (distance between stars in the image +- R)
             //add a vote for the match
             if (abs(sDist - cDist) < tolerance) {
@@ -146,7 +148,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         }
     }
 
-    // If the stars are within a certain range of the maximal number of votes, 
+    // If the stars are within a certain range of the maximal number of votes,
     // we consider it correct.
     // maximal votes = maxVotes
     StarIdentifiers verified;
@@ -380,7 +382,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     int k = j+dk;
                     int r = k+dr;
 
-                    assert(i!=j && j!=k && k!=r && i!=k && i!=r && j!=r);
+                    assert(i != j && j != k && k != r && i != k && i != r && j != r);
 
                     // TODO: move this out of the loop?
                     Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();

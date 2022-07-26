@@ -37,7 +37,7 @@ public:
      * @brief
      * @param numStars
      */
-    DummyCentroidAlgorithm(int numStars) : numStars(numStars) { };
+    explicit DummyCentroidAlgorithm(int numStars) : numStars(numStars) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 private:
     int numStars;
