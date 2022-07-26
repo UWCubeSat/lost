@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('attitude-estimators_8cpp_source.html',
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="comment">//create a vector that&#39;ll hold {ri} (Stars in catalog frame)</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    Eigen::Matrix3f B;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    B.setZero();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classlost_1_1_star_identifier.html">StarIdentifier</a> &amp;s: starIdentifiers) {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classlost_1_1_star_identifier.html">StarIdentifier</a> &amp;s : starIdentifiers) {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="classlost_1_1_star.html">Star</a> bStar = stars[s.starIndex];</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <a class="code" href="classlost_1_1_vec3.html">Vec3</a> bStarSpatial = camera.<a class="code" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e">CameraToSpatial</a>(bStar.<a class="code" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        Eigen::Vector3f bi;</div>
@@ -133,7 +133,7 @@ $(document).ready(function(){initNavTree('attitude-estimators_8cpp_source.html',
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        Z(0), S(0,0) - sigma, S(0,1), S(0,2),</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        Z(1), S(1,0), S(1,1) - sigma, S(1,2),</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        Z(2), S(2,0), S(2,1), S(2,2) - sigma;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">//Find eigenvalues of K, store the largest one as lambda </span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">//Find eigenvalues of K, store the largest one as lambda</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">//find the maximum index</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    Eigen::EigenSolver&lt;Eigen::Matrix4f&gt; solver(K);</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    Eigen::Vector4cf values = solver.eigenvalues();</div>
@@ -146,7 +146,7 @@ $(document).ready(function(){initNavTree('attitude-estimators_8cpp_source.html',
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            maxEigenvalue = values(i).real();</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">//The return quaternion components = eigenvector assocaited with lambda </span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">//The return quaternion components = eigenvector assocaited with lambda</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    Eigen::Vector4cf maxEigenvector = vectors.col(maxIndex);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">// IMPORTANT: The matrix K is symmetric -- clearly first row and first column are equal.</span></div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="comment">// Furthermore, S is symmetric because s_i,j = b_i,j + b_j,i and s_j,i=b_j,i + b_i,j, so the</span></div>
@@ -210,7 +210,7 @@ $(document).ready(function(){initNavTree('attitude-estimators_8cpp_source.html',
 <div class="ttc" id="aclasslost_1_1_quaternion_html"><div class="ttname"><a href="classlost_1_1_quaternion.html">lost::Quaternion</a></div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8hpp_source.html#l00121">attitude-utils.hpp:121</a></div></div>
 <div class="ttc" id="aclasslost_1_1_star_html"><div class="ttname"><a href="classlost_1_1_star.html">lost::Star</a></div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00054">star-utils.hpp:54</a></div></div>
 <div class="ttc" id="aclasslost_1_1_davenport_q_algorithm_html_abdceeef38f84143dd87eb19f8318fadf"><div class="ttname"><a href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8cpp_source.html#l00015">attitude-estimators.cpp:15</a></div></div>
-<div class="ttc" id="aclasslost_1_1_camera_html_aeb37d99dfc08205f5938303dbb16ff9e"><div class="ttname"><a href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e">lost::Camera::CameraToSpatial</a></div><div class="ttdeci">Vec3 CameraToSpatial(const Vec2 &amp;) const</div><div class="ttdef"><b>Definition:</b> <a href="camera_8cpp_source.html#l00040">camera.cpp:40</a></div></div>
+<div class="ttc" id="aclasslost_1_1_camera_html_aeb37d99dfc08205f5938303dbb16ff9e"><div class="ttname"><a href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e">lost::Camera::CameraToSpatial</a></div><div class="ttdeci">Vec3 CameraToSpatial(const Vec2 &amp;) const</div><div class="ttdef"><b>Definition:</b> <a href="camera_8cpp_source.html#l00041">camera.cpp:41</a></div></div>
 <div class="ttc" id="aclasslost_1_1_mat3_html"><div class="ttname"><a href="classlost_1_1_mat3.html">lost::Mat3</a></div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8hpp_source.html#l00072">attitude-utils.hpp:72</a></div></div>
 <div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8cpp_source.html#l00005">attitude-estimators.cpp:5</a></div></div>
 <div class="ttc" id="aclasslost_1_1_vec3_html_a97adb523973ae539a5d8963d78569618"><div class="ttname"><a href="classlost_1_1_vec3.html#a97adb523973ae539a5d8963d78569618">lost::Vec3::x</a></div><div class="ttdeci">float x</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8hpp_source.html#l00050">attitude-utils.hpp:50</a></div></div>
@@ -227,7 +227,7 @@ $(document).ready(function(){initNavTree('attitude-estimators_8cpp_source.html',
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="attitude-estimators_8cpp.html">attitude-estimators.cpp</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 00:03:35 for LOST by
+    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

@@ -14,7 +14,7 @@ var io_8hpp =
     [ "LOST_CLI_OPTION", "io_8hpp.html#a68d9f1b201a18b8388ba6593ab8039f6", null ],
     [ "PipelineInputList", "io_8hpp.html#acbd12c57a0797b6b786ebfc87aae0c84", null ],
     [ "CatalogRead", "io_8hpp.html#abf120394836bcbb600f135de6fea84b0", null ],
-    [ "GenerateDatabases", "io_8hpp.html#afbf386f16f9cf3a30dbb197766876dfd", null ],
+    [ "GenerateDatabases", "io_8hpp.html#aa309f1534940391b0d903f17a4c9be5c", null ],
     [ "GetPipelineInput", "io_8hpp.html#ad01d904e4a6bf5aed4a1b8f97f1416c5", null ],
     [ "GrayscaleImageToSurface", "io_8hpp.html#af0b05482238f0a180d5906f0e43ac3e2", null ],
     [ "InspectCatalog", "io_8hpp.html#ada936d93de2f3661518d1215d73ade78", null ],

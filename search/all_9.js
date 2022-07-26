@@ -18,7 +18,7 @@ var searchData=
   ['isunit_112',['IsUnit',['../classlost_1_1_quaternion.html#ac11be6116bc0db43cb7b84ec01e73e33',1,'lost::Quaternion']]],
   ['isvalid_113',['isValid',['../structlost_1_1_centroid_params.html#aa10ded620c3bbe4a1b60408e9cf90502',1,'lost::CentroidParams::isValid()'],['../structlost_1_1_i_w_co_g_params.html#add92d3af1d8df7729ece6bacb53891f3',1,'lost::IWCoGParams::isValid()']]],
   ['iterativeweightedcenterofgravityalgorithm_114',['IterativeWeightedCenterOfGravityAlgorithm',['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html',1,'lost::IterativeWeightedCenterOfGravityAlgorithm'],['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c',1,'lost::IterativeWeightedCenterOfGravityAlgorithm::IterativeWeightedCenterOfGravityAlgorithm()']]],
-  ['iwcoghelper_115',['IWCoGHelper',['../namespacelost.html#a8fea16cfe712625ebc203e85f6f8bada',1,'lost']]],
+  ['iwcoghelper_115',['IWCoGHelper',['../namespacelost.html#a789d628bbeab011d5552a6dc551b77a2',1,'lost']]],
   ['iwcogminchange_116',['iWCoGMinChange',['../namespacelost.html#adb169fa5f416a7acc9c7a9c52b2c86a6',1,'lost']]],
   ['iwcogparams_117',['IWCoGParams',['../structlost_1_1_i_w_co_g_params.html',1,'lost']]]
 ];

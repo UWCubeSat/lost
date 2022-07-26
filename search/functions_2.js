@@ -12,7 +12,7 @@ var searchData=
   ['centroidcomparisonscombine_358',['CentroidComparisonsCombine',['../namespacelost.html#a0fe01051c958fa8ced02e772aefdc991',1,'lost']]],
   ['centroidscompare_359',['CentroidsCompare',['../namespacelost.html#afd017fba4090829c28c431509c4cfc1c',1,'lost']]],
   ['clamp_360',['Clamp',['../namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8',1,'lost']]],
-  ['coghelper_361',['CogHelper',['../namespacelost.html#a27dd822c10eaac7edc7c206800f47c7d',1,'lost']]],
+  ['coghelper_361',['CogHelper',['../namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529',1,'lost']]],
   ['column_362',['Column',['../classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e',1,'lost::Mat3']]],
   ['comparekvectorpairs_363',['CompareKVectorPairs',['../namespacelost.html#a68f14b0d645721125203e669cde68358',1,'lost']]],
   ['conjugate_364',['Conjugate',['../classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9',1,'lost::Quaternion']]],

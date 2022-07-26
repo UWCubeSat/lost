@@ -22,7 +22,7 @@ var searchData=
   ['centroidscompare_42',['CentroidsCompare',['../namespacelost.html#afd017fba4090829c28c431509c4cfc1c',1,'lost']]],
   ['checkedindices_43',['checkedIndices',['../structlost_1_1_centroid_params.html#ae13910601515db040c7f164b8b1730f2',1,'lost::CentroidParams::checkedIndices()'],['../structlost_1_1_i_w_co_g_params.html#a95fa4a77be6b192d6d114f9d520cb061',1,'lost::IWCoGParams::checkedIndices()']]],
   ['clamp_44',['Clamp',['../namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8',1,'lost']]],
-  ['coghelper_45',['CogHelper',['../namespacelost.html#a27dd822c10eaac7edc7c206800f47c7d',1,'lost']]],
+  ['coghelper_45',['CogHelper',['../namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529',1,'lost']]],
   ['column_46',['Column',['../classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e',1,'lost::Mat3']]],
   ['comparekvectorpairs_47',['CompareKVectorPairs',['../namespacelost.html#a68f14b0d645721125203e669cde68358',1,'lost']]],
   ['conjugate_48',['Conjugate',['../classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9',1,'lost::Quaternion']]],

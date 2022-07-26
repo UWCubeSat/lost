@@ -11,5 +11,5 @@ var searchData=
   ['inspectcatalog_406',['InspectCatalog',['../namespacelost.html#ada936d93de2f3661518d1215d73ade78',1,'lost']]],
   ['isunit_407',['IsUnit',['../classlost_1_1_quaternion.html#ac11be6116bc0db43cb7b84ec01e73e33',1,'lost::Quaternion']]],
   ['iterativeweightedcenterofgravityalgorithm_408',['IterativeWeightedCenterOfGravityAlgorithm',['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c',1,'lost::IterativeWeightedCenterOfGravityAlgorithm']]],
-  ['iwcoghelper_409',['IWCoGHelper',['../namespacelost.html#a8fea16cfe712625ebc203e85f6f8bada',1,'lost']]]
+  ['iwcoghelper_409',['IWCoGHelper',['../namespacelost.html#a789d628bbeab011d5552a6dc551b77a2',1,'lost']]]
 ];
