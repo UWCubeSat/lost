@@ -1,7 +1,6 @@
 # LOST: Open-source Star Tracker
 
-[![Build and Test](https://github.com/UWCubeSat/lost/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/build-and-test.yml)
-[![Lint](https://github.com/UWCubeSat/lost/actions/workflows/lint.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/lint.yml)
+[![Build, Test, and Lint](https://github.com/UWCubeSat/lost/actions/workflows/build-test-lint.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/build-test-lint.yml)
 [![Publish Docs](https://github.com/UWCubeSat/lost/actions/workflows/publish-docs.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/publish-docs.yml)
 
 This is a framework for developing high-accuracy star trackers on small, low-power, low-cost
