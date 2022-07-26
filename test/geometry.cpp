@@ -56,14 +56,14 @@ TEST_CASE("Angle from camera", "[geometry]") {
     }
 }
 
-TEST_CASE("Angle from camera, diagonal", "[geometry]") {
-    Camera camera(128, 128, 128);
+// TEST_CASE("Angle from camera, diagonal", "[geometry]") {
+//     Camera camera(128, 128, 128);
 
-    Vec3 s1 = camera.CameraToSpatial({0, 0});
-    Vec3 s2 = camera.CameraToSpatial({128, 128});
-    // it's not as simple as this! TODO
-    // CHECK(Angle(s1, s2) == Approx(acos(0.25)));
-}
+//     Vec3 s1 = camera.CameraToSpatial({0, 0});
+//     Vec3 s2 = camera.CameraToSpatial({128, 128});
+//     // it's not as simple as this! TODO
+//     // CHECK(Angle(s1, s2) == Approx(acos(0.25)));
+// }
 
 TEST_CASE("spherical -> quaternion -> spherical", "[geometry]") {
     // 0.1 instead of 0, because at 0 it might sometimes return 2PI, which is fine for most
