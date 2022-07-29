@@ -373,17 +373,13 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
     }
 }
 
-int16_t square(int16_t base) {
-    return base * base;
-}
-
 std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, const Vec3 point, int16_t radius) {
     std::vector<int16_t> query_ind;
 
     for (long unsigned int i = 0; i < indices.size(); i++) {
         CatalogStar s = c[i];
         Vec3 diff = s.spatial - point;
-        if (diff.MagnitudeSq() <= square(radius)) {
+        if (diff.MagnitudeSq() <= pow(radius,2)) {
             query_ind.push_back(i);
         }
     }
