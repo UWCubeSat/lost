@@ -29,7 +29,6 @@ private:
     float tolerance;
 };
 
-
 class PyramidStarIdAlgorithm final : public StarIdAlgorithm {
 public:
     StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
@@ -50,6 +49,15 @@ private:
     float maxMismatchProbability;
     long cutoff;
 };
+
+
+class TrackingModeStarIdAlgorithm final : public StarIdAlgorithm {
+public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+};
+
+
+
 
 }
 

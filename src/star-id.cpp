@@ -503,4 +503,20 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+StarIdentifiers TrackingModeStarIdAlgorithm::Go(
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+
+    StarIdentifiers identified;
+    MultiDatabase multiDatabase(database);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(TrackingSortedDatabase::magicValue);
+    if (databaseBuffer == NULL) {
+        return identified;
+    }
+    TrackingSortedDatabase vectorDatabase(databaseBuffer);
+
+
+}
+
+
+
 }
