@@ -11,10 +11,13 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
 }
 
-// TODO: this function is about to cause a horribly difficult to debug error, because the catalog
-// used in the database may not equal the catalog used by star id or something.
-
-// TODO: the maxStars is worthless, it doesn't get the brightest stars
+/**
+ * Remove dim stars from a catalog.
+ * @param catalog Original catalog. Not mutated.
+ * @param maxMagnitude Stars dimmer than this (greater numerical magnitude) are removed.
+ * @param maxStars If there are greater than `maxStars` many stars left after filtering by `maxMagnitude`, only the `maxStars` brightest of them are kept.
+ * @return Newly constructed catalog containing only the sufficiently bright stars.
+ */
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
@@ -30,7 +33,8 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     return result;
 }
 
-const CatalogStar *findNamedStar(const Catalog &catalog, int name) {
+/// Return a pointer to the star with the given name, or NULL if not found.
+const CatalogStar *FindNamedStar(const Catalog &catalog, int name) {
     for (const CatalogStar &catalogStar : catalog) {
         if (catalogStar.name == name) {
             return &catalogStar;
@@ -39,6 +43,7 @@ const CatalogStar *findNamedStar(const Catalog &catalog, int name) {
     return NULL;
 }
 
+/// @sa SerializeCatalogStar
 long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     long starSize = SerializeLengthVec3();
     if (inclMagnitude) {
@@ -50,6 +55,13 @@ long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     return starSize;
 }
 
+/**
+ * Serialize a CatalogStar into a byte buffer.
+ * Use SerializeLengthCatalogStar() to determine how many bytes to allocate in `buffer`
+ * @param inclMagnitude Whether to include the magnitude of the star.
+ * @param inclName Whether to include the (numerical) name of the star.
+ * @param buffer[out] Where the serialized star is stored.
+ */
 void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer) {
     SerializeVec3(catalogStar.spatial, buffer);
     buffer += SerializeLengthVec3();
@@ -64,6 +76,11 @@ void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bo
     }
 }
 
+/**
+ * Deserialize a catalog star.
+ * @warn The `inclMagnitude` and `inclName` parameters must be the same as passed to SerializeCatalogStar()
+ * @sa SerializeCatalogStar
+ */
 CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitude, bool inclName) {
     CatalogStar result;
     result.spatial = DeserializeVec3(buffer);
@@ -83,10 +100,16 @@ CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitu
     return result;
 }
 
+/// @sa SerializeCatalog
 long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName) {
     return sizeof(int16_t) + sizeof(int8_t) + catalog.size()*SerializeLengthCatalogStar(inclMagnitude, inclName);
 }
 
+/**
+ * Serialize the catalog to `buffer`.
+ * Use SerializeLengthCatalog() to determine how many bytes to allocate in `buffer`
+ * @param inclMagnitude,inclName See SerializeCatalogStar()
+ */
 void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName, unsigned char *buffer) {
     unsigned char *bufferStart = buffer;
 
@@ -110,6 +133,11 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
 
 // TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so
 // we can just copy it to memory then cast
+
+/**
+ * Deserialize a catalog.
+ * @param[out] inclMagnitudeReturn,inclNameReturn Will store whether `inclMagnitude` and `inclNameReturn` were set in the corresponding SerializeCatalog() call.
+ */
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn) {
     bool inclName, inclMagnitude;
     Catalog result;

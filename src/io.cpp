@@ -304,20 +304,20 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
 }
 
-/**
- * Pipeline input for an image that's already been identified using Astrometry.net.
- * @todo Not implemented yet.
- */
-class AstrometryPipelineInput : public PipelineInput {
-public:
-    explicit AstrometryPipelineInput(const std::string &path);
+// /**
+//  * Pipeline input for an image that's already been identified using Astrometry.net.
+//  * @todo Not implemented yet.
+//  */
+// class AstrometryPipelineInput : public PipelineInput {
+// public:
+//     explicit AstrometryPipelineInput(const std::string &path);
 
-    const Image *InputImage() const { return &image; };
-    const Attitude *InputAttitude() const { return &attitude; };
-private:
-    Image image;
-    Attitude attitude;
-};
+//     const Image *InputImage() const { return &image; };
+//     const Attitude *InputAttitude() const { return &attitude; };
+// private:
+//     Image image;
+//     Attitude attitude;
+// };
 
 /**
  * A pipeline input coming from an image with no extra metadata. Only InputImage will be available.
@@ -355,9 +355,9 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     return result;
 }
 
-AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
-    // create from path, TODO
-}
+// AstrometryPipelineInput::AstrometryPipelineInput(const std::string &path) {
+//     // create from path, TODO
+// }
 
 // PipelineInputList PromptAstrometryPipelineInput() {
 //     // TODO: why does it let us do a reference to an ephemeral return value?
@@ -614,12 +614,12 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
 
     // TODO: allow random angle generation?
-    Quaternion attitude = SphericalToQuaternion(DegToRad(values.generateRa),
-                                                DegToRad(values.generateDe),
-                                                DegToRad(values.generateRoll));
-    Quaternion motionBlurDirection = SphericalToQuaternion(DegToRad(values.generateBlurRa),
-                                                           DegToRad(values.generateBlurDe),
-                                                           DegToRad(values.generateBlurRoll));
+    Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
+                                                         DegToRad(values.generateDe),
+                                                         DegToRad(values.generateRoll)));
+    Attitude motionBlurDirection = Attitude(SphericalToQuaternion(DegToRad(values.generateBlurRa),
+                                                                  DegToRad(values.generateBlurDe),
+                                                                  DegToRad(values.generateBlurRoll)));
 
     PipelineInputList result;
 
@@ -1027,8 +1027,8 @@ cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned
 /// Plots the input image with no annotation to `os`
 void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
-                                    const std::vector<PipelineOutput> &actual,
-                                    const PipelineOptions &values) {
+                                    const std::vector<PipelineOutput> &,
+                                    const PipelineOptions &) {
 
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
@@ -1039,8 +1039,8 @@ void PipelineComparatorPlotRawInput(std::ostream &os,
 // TODO: should probably use Expected methods, not Input methods, because future PipelineInputs could add noise to the result of the Input methods.
 void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &actual,
-                                 const PipelineOptions &values) {
+                                 const std::vector<PipelineOutput> &,
+                                 const PipelineOptions &) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->InputStars() != NULL);
     SurfacePlot(cairoSurface,
@@ -1080,7 +1080,7 @@ void PipelineComparatorCentroids(std::ostream &os,
 void PipelineComparatorPrintCentroids(std::ostream &os,
                                       const PipelineInputList &expected,
                                       const std::vector<PipelineOutput> &actual,
-                                      const PipelineOptions &values) {
+                                      const PipelineOptions &) {
     assert(actual.size() == 1);
     assert(actual[0].stars);
 
@@ -1134,7 +1134,7 @@ void PipelineComparatorPlotIndexes(std::ostream &os,
 void PipelineComparatorPlotOutput(std::ostream &os,
                                   const PipelineInputList &expected,
                                   const std::vector<PipelineOutput> &actual,
-                                  const PipelineOptions &values) {
+                                  const PipelineOptions &) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
@@ -1187,9 +1187,9 @@ void PipelineComparatorStarIds(std::ostream &os,
 
 /// Print the identifed attitude to `os` in Euler angle format.
 void PipelineComparatorPrintAttitude(std::ostream &os,
-                                     const PipelineInputList &expected,
+                                     const PipelineInputList &,
                                      const std::vector<PipelineOutput> &actual,
-                                     const PipelineOptions &values) {
+                                     const PipelineOptions &) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
 

@@ -12,42 +12,25 @@ namespace lost {
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
- * @brief
- * @details
+ * A data structure enabling constant-time range queries into fixed numerica data.
+ * 
  * @note Not an instantiable database on its own -- used in other databases
- * @todo QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints
  */
+// TODO: QueryConservative, QueryExact, QueryTrapezoidal?
 class KVectorIndex {
 public:
     explicit KVectorIndex(const unsigned char *);
 
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
 
-    /**
-     * @brief
-     * @return
-     */
+    /// The number of data points in the data referred to by the kvector
     long NumValues() const { return numValues; };
-
-    /**
-     * @brief
-     * @return
-     */
     long NumBins() const { return numBins; };
-
-    /**
-     * @brief
-     * @return
-     */
+    /// Upper bound on elements
     float Max() const { return max; };
-
-    /**
-     * @brief
-     * @return
-     */
+    // Lower bound on elements
     float Min() const { return min; };
 private:
-    // return the lowest-indexed bin that contains the number of pairs with distance <= dist
     long BinFor(float dist) const;
 
     long numValues;
@@ -62,38 +45,25 @@ long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, floa
 void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 
 /**
- * @brief Stores angular distance between pairs of stars
- * @details
+ * A database storing distances between pairs of stars.
+ * Supports fast range queries to find all pairs of stars separated by approximately a certain distance.
  * @warning Sensitive to uncalibrated camera parameters
- * @todo Trapezoidal interpolation
  */
 class PairDistanceKVectorDatabase {
 public:
     explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
-
     std::vector<float> StarDistances(int16_t star, const Catalog &) const;
 
-    /**
-     * @brief
-     * @return
-     */
+    /// Upper bound on stored star pair distances
     float MaxDistance() const { return index.Max(); };
-
-    /**
-     * @brief
-     * @return
-     */
+    /// Lower bound on stored star pair distances
     float MinDistance() const { return index.Min(); };
-
-    /**
-     * @brief
-     * @return
-     */
+    /// Exact number of stored pairs
     long NumPairs() const;
 
-    /// @brief
+    /// Magic value to use when storing inside a MultiDatabase
     static const int32_t kMagicValue = 0x2536f009;
 private:
     KVectorIndex index;
@@ -101,83 +71,54 @@ private:
     const int16_t *pairs;
 };
 
-/**
- * @brief Stores "inner angles" between star triples
- * @details Unsensitive to first-order error in basic camera
- * parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg,
- * camera distortion, which may cause the effective FOV or principal point to be different in
- * different parts of the image). Used for Mortari's Non-Dimensional Star-ID
- */
-class TripleInnerKVectorDatabase {
-public:
-    /**
-     * @brief
-     * @param databaseBytes
-     */
-    explicit TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
+// /**
+//  * @brief Stores "inner angles" between star triples
+//  * @details Unsensitive to first-order error in basic camera
+//  * parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg,
+//  * camera distortion, which may cause the effective FOV or principal point to be different in
+//  * different parts of the image). Used for Mortari's Non-Dimensional Star-ID
+//  */
+// class TripleInnerKVectorDatabase {
+// public:
+//     explicit TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
 
-    /**
-     * @brief Return at least all the triples with inner angle in the given range
-     * @details The numReturnedTriples*3 ints from the returned pointer are valid to read.
-     * @todo Trapezoidal interpolation
-     * @param min
-     * @param max
-     * @param begin
-     * @param end
-     */
-    void FindTriplesLiberal(float min, float max, long **begin, long **end) const;
-private:
-    KVectorIndex index;
-    int16_t *triples;
-};
+//     void FindTriplesLiberal(float min, float max, long **begin, long **end) const;
+// private:
+//     KVectorIndex index;
+//     int16_t *triples;
+// };
 
-// maximum number of databases in a MultiDatabase
+/// maximum number of databases in a MultiDatabase
 const int kMultiDatabaseMaxDatabases = 64;
+/// The size of the table of contents in a multidatabase (stores subdatabase locations)
 const long kMultiDatabaseTocLength = 8*kMultiDatabaseMaxDatabases;
 
-// ,
 /**
- * @brief Represents a database that contains multiple databases
- * @details This is almost always what will be used in the real world,
- * since you'll want to store at least the catalog plus one specific database.
+ * A database that contains multiple databases
+ * This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.
+ * Multi-databases are essentially a map from "magic values" to database buffers.
  */
 class MultiDatabase {
 public:
-    /**
-     * @brief
-     * @param buffer
-     */
+    /// Create a multidatabase from a serialized multidatabase.
     explicit MultiDatabase(const unsigned char *buffer) : buffer(buffer) { };
     const unsigned char *SubDatabasePointer(int32_t magicValue) const;
 private:
     const unsigned char *buffer;
 };
 
-/**
- * @brief
- * @details
- */
+/// Class for easily creating a MultiDatabase
 class MultiDatabaseBuilder {
 public:
-    /**
-     * @brief
-     * @note the () after new ensures it's zero-initialized
-     */
     MultiDatabaseBuilder()
         : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
     ~MultiDatabaseBuilder();
+
     unsigned char *AddSubDatabase(int32_t magicValue, long length);
 
-    /**
-     * @brief
-     * @return
-     */
+    /// When done adding databases, use this to get the buffer you should write to disk.
     unsigned char *Buffer() { return buffer; };
-
-    /**
-     * @brief
-     * @return
-     */
+    /// The length of the buffer returned by Buffer
     long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
 private:
     // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to

@@ -23,20 +23,7 @@
 
 namespace lost {
 
-/**
- * Build a database given arguments
- * @param [in] values Parameters for building this database
- * @sa
- * - lost::NarrowCatalog
- * - lost::CatalogRead
- * - lost::MultiDatabaseBuilder
- * - MultiDatabaseBuilder::AddSubDatabase
- * - lost::SerializeLengthCatalog
- * - lost::SerializeCatalog
- * - lost::GenerateDatabases
- * - MultiDatabaseBuilder::BufferLength
- * - lost::PromptedOutputStream
- */
+/// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
@@ -57,10 +44,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
 }
 
-/**
- * Start the LOST pipeline given arguments
- * @param [in] values Parameters for starting this pipeline
- */
+/// Run a star-tracking pipeline (possibly including generating inputs and analyzing outputs) based on command line options in \p values.
 static void PipelineRun(const PipelineOptions &values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
@@ -114,14 +98,7 @@ static void PipelineRun(const PipelineOptions &values) {
 //     std::cout << "camera_identified false" << std::endl;
 // }
 
-/**
- * Convert a character to a boolean
- * @param [in] cstr Character to convert
- * @return
- * - `true` if the character is '1' or 'true'
- * - `false` if '0' or 'false'
- * - Asserts `false` otherwise
- */
+/// Convert string to boolean
 bool atobool(const char *cstr) {
     std::string str(cstr);
     if (str == "1" || str == "true") {
@@ -135,7 +112,6 @@ bool atobool(const char *cstr) {
 
 /**
  * Handle optional CLI arguments
- *
  * https://stackoverflow.com/a/69177115
  */
 #define LOST_OPTIONAL_OPTARG()                                   \
@@ -143,16 +119,7 @@ bool atobool(const char *cstr) {
      ? (bool) (optarg = argv[optind++])                          \
      : (optarg != NULL))
 
-/**
- * LOST main function
- *
- * Parses CLI arguments and create the appropriate pipeline configs.
- * Wrapped so that we are in lost namespace.
- * @param [in] argc Number of arguments
- * @param [in] argv Arguments
- * @return 0 on success, 1 on error
- * @see lost::PipelineRun
- */
+// This is separate from `main` just because it's in the `lost` namespace
 static int LostMain(int argc, char **argv) {
 
     if (argc == 1) {
@@ -166,9 +133,6 @@ static int LostMain(int argc, char **argv) {
 
     if (command == "database") {
 
-        /**
-         * Database CLI options
-         */
         enum class DatabaseCliOption {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "database-options.hpp"
@@ -280,15 +244,6 @@ static int LostMain(int argc, char **argv) {
 
 }
 
-/**
- * Main function
- *
- * Runs the Lost pipeline.
- * @param [in] argc Number of arguments
- * @param [in] argv Arguments
- * @return 0 on success, 1 on error
- * @sa lost::LostMain
- */
 int main(int argc, char **argv) {
     return lost::LostMain(argc, argv);
 }

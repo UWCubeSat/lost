@@ -6,11 +6,7 @@
 
 namespace lost {
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Multiply two quaternions using the usual definition of quaternion multiplication (effectively composes rotations)
 Quaternion Quaternion::operator*(const Quaternion &other) const {
     return Quaternion(
         real*other.real - i*other.i - j*other.j - k*other.k,
@@ -19,47 +15,30 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
-/**
- * @brief
- * @return
- */
+/// Effectively computes a quaternion representing the inverse rotation of the original.
 Quaternion Quaternion::Conjugate() const {
     return Quaternion(real, -i, -j, -k);
 }
 
-/**
- * @brief
- * @return
- */
+/// The vector formed by imaginary components of the quaternion. The axis of the represented rotation.
 Vec3 Quaternion::Vector() const {
     return { i, j, k };
 }
 
-/**
- * @brief
- * @param vec
- */
+/// Set imaginary components.
 void Quaternion::SetVector(const Vec3 &vec) {
     i = vec.x;
     j = vec.y;
     k = vec.z;
 }
 
-/**
- * @brief
- * @note Pure quaternion
- * @param input
- */
+/// Creates a "pure quaternion" with the given vector for imaginary parts and zero for real part.
 Quaternion::Quaternion(const Vec3 &input) {
     real = 0;
     SetVector(input);
 }
 
-/**
- * @brief
- * @param input
- * @param theta
- */
+/// Create a quaternion which represents a rotation of theta around the axis input
 Quaternion::Quaternion(const Vec3 &input, float theta) {
     real = cos(theta/2);
     // the compiler will optimize it. Right?
@@ -68,42 +47,27 @@ Quaternion::Quaternion(const Vec3 &input, float theta) {
     k = input.z * sin(theta/2);
 }
 
-/**
- * @brief
- * @param input
- * @return
- */
+/// Rotate a 3d vector according to the rotation represented by the quaternion.
 Vec3 Quaternion::Rotate(const Vec3 &input) const {
     // TODO: optimize
     return ((*this)*Quaternion(input)*Conjugate()).Vector();
 }
 
-/**
- * @brief
- * @todo we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
- * @return
- */
+/// How many radians the rotation represented by this quaternion has.
 float Quaternion::Angle() const {
-    // TODO:
     if (real <= -1) {
         return 0; // 180*2=360=0
     }
+    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
     return (real >= 1 ? 0 : acos(real))*2;
 }
 
-/**
- * @brief
- * @param newAngle
- */
+/// Change the amount of rotation in a quaternion, keeping that rotation around the same axis.
 void Quaternion::SetAngle(float newAngle) {
     real = cos(newAngle/2);
     SetVector(Vector().Normalize() * sin(newAngle/2));
 }
 
-/**
- * @brief
- * @return
- */
 EulerAngles Quaternion::ToSpherical() const {
     // Working out these equations would be a pain in the ass. Thankfully, this wikipedia page:
     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
@@ -142,20 +106,13 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     return result;
 }
 
-/**
- * @brief
- * @param tolerance
- * @return
- */
+/// Whether the quaternion is a unit quaternion. All quaternions representing rotations should be units.
 bool Quaternion::IsUnit(float tolerance) const {
     return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
 /**
- * @brief
- * @note A canonical rotation quaternion's first component should be positive. A quaternion and
- * its negative represent the same rotation.
- * @return
+ * Ensure that the quaternion's real part is nonnegative. Does not change the rotation represented by the quaternion.
  */
 Quaternion Quaternion::Canonicalize() const {
     if (real >= 0) {
@@ -165,6 +122,7 @@ Quaternion Quaternion::Canonicalize() const {
     return Quaternion(-real, -i, -j, -k);
 }
 
+/// Convert from right ascension & declination to a 3d point on the unit sphere.
 Vec3 SphericalToSpatial(float ra, float de) {
     return {
         cos(ra)*cos(de),
@@ -173,6 +131,7 @@ Vec3 SphericalToSpatial(float ra, float de) {
     };
 }
 
+/// Convert from a 3d point on the unit sphere to right ascension & declination.
 void SpatialToSpherical(const Vec3 &vec, float *ra, float *de) {
     *ra = atan2(vec.y, vec.x);
     if (*ra < 0)
@@ -196,42 +155,25 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
-/**
- * @brief
- * @return
- */
+/// The square of the magnitude
 float Vec3::MagnitudeSq() const {
     return x*x+y*y+z*z;
 }
 
-/**
- * @brief Squared magnitude
- * @return
- */
+/// The square of the magnitude
 float Vec2::MagnitudeSq() const {
     return x*x+y*y;
 }
 
-/**
- * @brief
- * @return
- */
 float Vec3::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
-/**
- * @brief
- * @return
- */
 float Vec2::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
-/**
- * @brief
- * @return
- */
+/// Create a vector pointing in the same direction with magnitude 1
 Vec3 Vec3::Normalize() const {
     float mag = Magnitude();
     return {
@@ -239,65 +181,37 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Dot product
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Dot product
 Vec2 Vec2::operator*(const float &other) const {
     return { x*other, y*other };
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Vector-Scalar multiplication
 Vec3 Vec3::operator*(const float &other) const {
     return { x*other, y*other, z*other };
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Usual vector addition
 Vec2 Vec2::operator+(const Vec2 &other) const {
     return {x + other.x, y + other.y };
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Usual vector addition
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Usual vector subtraction
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Usual vector cross product
 Vec3 Vec3::crossProduct(const Vec3 &other) const {
     return {
         y*other.z - z*other.y,
@@ -306,39 +220,20 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
-/**
- * @brief
- * @param i
- * @param j
- * @return
- */
+/// Access the i,j-th element of the matrix
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
-/**
- * @brief
- * @param j
- * @return
- */
 Vec3 Mat3::Column(int j) const {
     return {At(0,j), At(1,j), At(2,j)};
 }
 
-/**
- * @brief
- * @param i
- * @return
- */
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
 }
 
-/**
- * @brief
- * @param other
- * @return
- */
+/// Naive matrix multiplication.
 Mat3 Mat3::operator*(const Mat3 &other) const {
 #define _MATMUL_ENTRY(row, col) At(row,0)*other.At(0,col) + At(row,1)*other.At(1,col) + At(row,2)*other.At(2,col)
     return {
@@ -349,11 +244,7 @@ Mat3 Mat3::operator*(const Mat3 &other) const {
 #undef _MATMUL_ENTRY
 }
 
-/**
- * @brief
- * @param vec
- * @return
- */
+/// Matrix-Vector multiplication
 Vec3 Mat3::operator*(const Vec3 &vec) const {
     return {
         vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2),
@@ -362,10 +253,6 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     };
 }
 
-/**
- * @brief
- * @return
- */
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
@@ -374,20 +261,13 @@ Mat3 Mat3::Transpose() const {
     };
 }
 
-/**
- * @brief
- * @param quat
- */
 Attitude::Attitude(const Quaternion &quat)
     : quaternion(quat), type(QuaternionType) {}
 
-/**
- * @brief
- * @param matrix
- */
 Attitude::Attitude(const Mat3 &matrix)
     : dcm(matrix), type(DCMType) {}
 
+/// Convert a quaternion to a rotation matrix (Direction Cosine Matrix)
 Mat3 QuaternionToDCM(const Quaternion &quat) {
     Vec3 x = quat.Rotate({1, 0, 0});
     Vec3 y = quat.Rotate({0, 1, 0});
@@ -399,6 +279,7 @@ Mat3 QuaternionToDCM(const Quaternion &quat) {
     };
 }
 
+/// Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation.
 Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // Make a quaternion that rotates the reference frame X-axis into the dcm's X-axis, just like
     // the DCM itself does
@@ -427,59 +308,60 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     return xAlign*yAlign;
 }
 
-/**
- * @brief
- * @return
- */
+/// Get the quaternion representing the attitude, converting from whatever format is stored 
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
-        case QuaternionType:return quaternion;
-        case DCMType:return DCMToQuaternion(dcm);
-        default:assert(false);
+        case QuaternionType:
+            return quaternion;
+        case DCMType:
+            return DCMToQuaternion(dcm);
+        default:
+            assert(false);
     }
 }
 
-/**
- * @brief
- * @return
- */
+/// Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever format is stored.
 Mat3 Attitude::GetDCM() const {
     switch (type) {
-        case DCMType:return dcm;
-        case QuaternionType:return QuaternionToDCM(quaternion);
-        default:assert(false);
+        case DCMType:
+            return dcm;
+        case QuaternionType:
+            return QuaternionToDCM(quaternion);
+        default:
+            assert(false);
     }
 }
 
-/**
- * @brief
- * @param vec
- * @return
- */
+/// Convert a vector from the reference frame to the body frame.
 Vec3 Attitude::Rotate(const Vec3 &vec) const {
     switch (type) {
-        case DCMType:return dcm*vec;
-        case QuaternionType:return quaternion.Rotate(vec);
-        default:assert(false);
+        case DCMType:
+            return dcm*vec;
+        case QuaternionType:
+            return quaternion.Rotate(vec);
+        default:
+            assert(false);
     }
 }
 
-/**
- * @brief
- * @return
- */
+/// Get the euler angles from the attitude, converting from whatever format is stored.
 EulerAngles Attitude::ToSpherical() const {
     switch (type) {
-        case DCMType:return GetQuaternion().ToSpherical();
-        case QuaternionType:return quaternion.ToSpherical();
-        default:assert(false);
+        case DCMType:
+            return GetQuaternion().ToSpherical();
+        case QuaternionType:
+            return quaternion.ToSpherical();
+        default:
+            assert(false);
     }
 }
 
+/// The length that a Vec3 will take up when serialized
 long SerializeLengthVec3() {
     return sizeof(float)*3;
 }
 
+/// Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3
 void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
     float *fBuffer = (float *)buffer;
     *fBuffer++ = vec.x;
@@ -496,16 +378,23 @@ Vec3 DeserializeVec3(const unsigned char *buffer) {
     return result;
 }
 
+/// Calculate the inner angle, in radians, between two vectors.
 float Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }
 
+/**
+ * Calculate the inner angle, in radians, between two /unit/ vectors.
+ * Slightly faster than Angle()
+ * @warn If the vectors are not already unit vectors, will return the wrong result!
+ */
 float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
     float dot = vec1*vec2;
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
     return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }
 
+/// The distance between two vectors, according to the usual distance formula.
 float Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
 }

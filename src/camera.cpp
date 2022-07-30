@@ -8,12 +8,8 @@
 namespace lost {
 
 /**
- * @brief
- * @details Converts from a 3D point in space to a 2D point on the camera sensor. Assumes that X is the
- * depth direction and that it points away from the center of the sensor, i.e., any vector (x,
- * 0, 0) will be at (xResolution/2, yResolution/2) on the sensor.
- * @param vector
- * @return
+ * Converts from a 3D point in space to a 2D point on the camera sensor.
+ * Assumes that X is the depth direction and that it points away from the center of the sensor, i.e., any vector (x, 0, 0) will be at (xResolution/2, yResolution/2) on the sensor.
  */
 Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     // can't handle things behind the camera.
@@ -29,14 +25,11 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
 }
 
 /**
- * @brief
- * @details Gives a point in 3d space that could correspond to the given vector, using the same
- * coordinate system described for SpatialToCamera. Not all vectors returned by this function
- * will necessarily have the same magnitude.
- * @note we'll just place the points at 1 unit away from the pinhole (x=1).
- * @warning Other functions rely on the fact that vectors are placed one unit away. Don't change this behavior!
- * @param vector
- * @return
+ * Gives a point in 3d space that could correspond to the given vector, using the same
+ * coordinate system described for SpatialToCamera.
+ * Not all vectors returned by this function will necessarily have the same magnitude.
+ * @return A vector in 3d space corresponding to the given vector, with x-component equal to 1
+ * @warning Other functions rely on the fact that returned vectors are placed one unit away (x-component equal to 1). Don't change this behavior!
  */
 Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     assert(InSensor(vector));
@@ -53,11 +46,7 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     };
 }
 
-/**
- * @brief Returns whether a given pixel is actually in the camera's field of view
- * @param vector
- * @return
- */
+/// Returns whether a given pixel is actually in the camera's field of view
 bool Camera::InSensor(const Vec2 &vector) const {
     // if vector.x == xResolution, then it is at the leftmost point of the pixel that's "hanging
     // off" the edge of the image, so vector is still in the image.

@@ -220,10 +220,6 @@ class Pipeline {
     friend Pipeline SetPipeline(const PipelineOptions &values);
 
 public:
-    /**
-     * @brief
-     * @note Pointers just so they're nullable
-     */
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
@@ -251,10 +247,7 @@ void PipelineComparison(const PipelineInputList &expected,
 // TODO: rename
 Catalog PromptNarrowedCatalog(const Catalog &);
 
-/**
- * @brief
- * @details
- */
+/// Commannd line options when using the `database` command.
 class DatabaseOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \

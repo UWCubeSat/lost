@@ -9,50 +9,27 @@ namespace lost {
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
 // make everything more annoying, because you need vectors of pointers...ugh!
 
-/**
- * @brief
- * @details
- */
+/// A two dimensional vector with floating point components
 struct Vec2 {
-    /// @brief
     float x;
-
-    /// @brief
     float y;
 
     float Magnitude() const;
     float MagnitudeSq() const;
 
-    /**
-     * @brief
-     * @return
-     */
     Vec2 Normalize() const;
 
-    /**
-     * @brief
-     * @param vec2
-     * @return
-     */
     float operator*(const Vec2 &) const;
     Vec2 operator*(const float &) const;
     Vec2 operator-(const Vec2 &) const;
     Vec2 operator+(const Vec2 &) const;
 };
 
-/**
- * @brief
- * @details
- */
+/// Three dimensional vector with floating point components
 class Vec3 {
 public:
-    /// @brief
     float x;
-
-    /// @brief
     float y;
-
-    /// @brief
     float z;
 
     float Magnitude() const;
@@ -65,13 +42,9 @@ public:
     Vec3 crossProduct(const Vec3 &) const;
 };
 
-/**
- * @brief
- * @details
- */
+/// 3x3 vector with floating point components
 class Mat3 {
 public:
-    /// @brief
     float x[9];
 
     float At(int i, int j) const;
@@ -90,51 +63,30 @@ float Distance(const Vec2 &, const Vec2 &);
 float Distance(const Vec3 &, const Vec3 &);
 
 /**
- * @brief
- * @details
+ * A "human-readable" way to represent a 3d rotation or orientation.
+ * Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans to understand.
+ * There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles.
  */
 class EulerAngles {
 public:
-    /**
-     * @brief
-     * @param ra
-     * @param de
-     * @param roll
-     */
     EulerAngles(float ra, float de, float roll)
         : ra(ra), de(de), roll(roll) { };
 
-    /// @brief
+    /// Right ascension. How far we yaw left. Yaw is performed first.
     float ra;
-
-    /// @brief
+    /// Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw.
     float de;
-
-    /// @brief
+    /// How far we roll counterclockwise. Roll is performed last (after yaw and pitch).
     float roll;
 };
 
-/**
- * @brief
- * @details
- */
+/// A quaternion is a common way to represent a 3d rotation.
 class Quaternion {
 public:
-    /**
-     * @brief
-     * @note I guess this lets you call Attitude on an attitude object?
-     */
     Quaternion() = default;
     explicit Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, float);
 
-    /**
-     * @brief
-     * @param real
-     * @param i
-     * @param j
-     * @param k
-     */
     Quaternion(float real, float i, float j, float k)
         : real(real), i(i), j(j), k(k) { };
 
@@ -157,19 +109,16 @@ public:
 
 //
 /**
- * @brief
- * @details
+ * The attitude (orientation) of a spacecraft.
+ * The Attitude object stores either a rotation matrix (direction cosine matrix) or a quaternion, and converts automatically to the other format when needed.
  * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt to
  * either quaternions or DCMs exclusively, depending on the natural output format of whatever
- * attitude estimation algorithm you're using. This Attitude class stores either quaternion or DCM,
- * depending on what's the natural output of the attitude estimation algorithm, then converts to the
- * requested format on-demand.
+ * attitude estimation algorithm you're using.
  */
 class Attitude {
 public:
-    /// @brief
     Attitude() = default;
-    Attitude(const Quaternion &); // NOLINT
+    explicit Attitude(const Quaternion &); // NOLINT
     explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
