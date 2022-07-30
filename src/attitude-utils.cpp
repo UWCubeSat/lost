@@ -308,7 +308,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     return xAlign*yAlign;
 }
 
-/// Get the quaternion representing the attitude, converting from whatever format is stored 
+/// Get the quaternion representing the attitude, converting from whatever format is stored.
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
         case QuaternionType:

@@ -7,7 +7,7 @@
 
 namespace lost {
 
-/// A star from the Bright Star Catalog. 
+/// A star from the Bright Star Catalog.
 class CatalogStar {
 public:
     CatalogStar() = default;

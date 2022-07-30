@@ -376,7 +376,7 @@ public:
     /// the brightness density at the center of the star. 0.0 is black, 1.0 is white.
     float peakBrightness;
 
-    /// (only meaningful with motion blur) Where the star will appear one time unit in the future. 
+    /// (only meaningful with motion blur) Where the star will appear one time unit in the future.
     Vec2 delta;
 };
 
