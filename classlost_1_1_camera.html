@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classlost_1_1_camera.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p>A full description of a camera. Enough information to reconstruct the camera matrix and then some.  
+ <a href="classlost_1_1_camera.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="camera_8hpp_source.html">camera.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -104,26 +107,33 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8a79c6616772f7e0c10b9ffd06d17adf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a8a79c6616772f7e0c10b9ffd06d17adf">Camera</a> (float focalLength, int xResolution, int yResolution)</td></tr>
 <tr class="separator:a8a79c6616772f7e0c10b9ffd06d17adf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2282f819be792d84f3168032a9cf457b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structlost_1_1_vec2.html">Vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a2282f819be792d84f3168032a9cf457b">SpatialToCamera</a> (const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;) const</td></tr>
+<tr class="memdesc:a2282f819be792d84f3168032a9cf457b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts from a 3D point in space to a 2D point on the camera sensor.  <a href="classlost_1_1_camera.html#a2282f819be792d84f3168032a9cf457b">More...</a><br /></td></tr>
 <tr class="separator:a2282f819be792d84f3168032a9cf457b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb37d99dfc08205f5938303dbb16ff9e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e">CameraToSpatial</a> (const <a class="el" href="structlost_1_1_vec2.html">Vec2</a> &amp;) const</td></tr>
+<tr class="memdesc:aeb37d99dfc08205f5938303dbb16ff9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gives a point in 3d space that could correspond to the given vector, using the same coordinate system described for SpatialToCamera.  <a href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e">More...</a><br /></td></tr>
 <tr class="separator:aeb37d99dfc08205f5938303dbb16ff9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d940919d1247edd431de7643473f538"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538">InSensor</a> (const <a class="el" href="structlost_1_1_vec2.html">Vec2</a> &amp;vector) const</td></tr>
 <tr class="memdesc:a4d940919d1247edd431de7643473f538"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether a given pixel is actually in the camera's field of view.  <a href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538">More...</a><br /></td></tr>
 <tr class="separator:a4d940919d1247edd431de7643473f538"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a6a4bd2d5daf114108e73126568369d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d">XResolution</a> () const</td></tr>
+<tr class="memdesc:a6a6a4bd2d5daf114108e73126568369d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Width of the sensor in pixels.  <a href="classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d">More...</a><br /></td></tr>
 <tr class="separator:a6a6a4bd2d5daf114108e73126568369d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75f02f56900338580a9cacc2f9131d70"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70">YResolution</a> () const</td></tr>
+<tr class="memdesc:a75f02f56900338580a9cacc2f9131d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Height of the sensor in pixels.  <a href="classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70">More...</a><br /></td></tr>
 <tr class="separator:a75f02f56900338580a9cacc2f9131d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7df6f5d7ee2f6c26ecc34bd1e7f2e53"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#aa7df6f5d7ee2f6c26ecc34bd1e7f2e53">FocalLength</a> () const</td></tr>
+<tr class="memdesc:aa7df6f5d7ee2f6c26ecc34bd1e7f2e53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focal length in pixels.  <a href="classlost_1_1_camera.html#aa7df6f5d7ee2f6c26ecc34bd1e7f2e53">More...</a><br /></td></tr>
 <tr class="separator:aa7df6f5d7ee2f6c26ecc34bd1e7f2e53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3830d04bcd953e27cc133944fb434f64"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a3830d04bcd953e27cc133944fb434f64">Fov</a> () const</td></tr>
+<tr class="memdesc:a3830d04bcd953e27cc133944fb434f64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Horizontal field of view in radians.  <a href="classlost_1_1_camera.html#a3830d04bcd953e27cc133944fb434f64">More...</a><br /></td></tr>
 <tr class="separator:a3830d04bcd953e27cc133944fb434f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89a0fde9a6b5b65863ad4136c6b37dd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_camera.html#a89a0fde9a6b5b65863ad4136c6b37dd4">SetFocalLength</a> (float focalLength)</td></tr>
 <tr class="separator:a89a0fde9a6b5b65863ad4136c6b37dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00012">12</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<div class="textblock"><p>A full description of a camera. Enough information to reconstruct the camera matrix and then some. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00009">9</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2fc15d984da36a7b015420dbe9fddca5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2fc15d984da36a7b015420dbe9fddca5">&#9670;&nbsp;</a></span>Camera() <span class="overload">[1/3]</span></h2>
@@ -148,12 +158,6 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname"></td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -210,16 +214,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">focalLength</td><td><a class="el" href="classlost_1_1_camera.html">Camera</a> focal lengths in pixels </td></tr>
-    <tr><td class="paramname">xCenter</td><td></td></tr>
-    <tr><td class="paramname">yCenter</td><td></td></tr>
-    <tr><td class="paramname">xResolution</td><td></td></tr>
-    <tr><td class="paramname">yResolution</td><td></td></tr>
+    <tr><td class="paramname">xCenter,yCenter</td><td>The "principal point" of the camera. In an ideal camera, just half the resolution, but physical cameras often have a bit of offset. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00028">28</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00016">16</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 
 </div>
 </div>
@@ -262,16 +262,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">focalLength</td><td></td></tr>
-    <tr><td class="paramname">xResolution</td><td></td></tr>
-    <tr><td class="paramname">yResolution</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00041">41</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00023">23</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 
 </div>
 </div>
@@ -291,23 +283,18 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gives a point in 3d space that could correspond to the given vector, using the same coordinate system described for SpatialToCamera. Not all vectors returned by this function will necessarily have the same magnitude. </p><dl class="section note"><dt>Note</dt><dd>we'll just place the points at 1 unit away from the pinhole (x=1). </dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Other functions rely on the fact that vectors are placed one unit away. Don't change this behavior! </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">vector</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00041">41</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
+<p>Gives a point in 3d space that could correspond to the given vector, using the same coordinate system described for SpatialToCamera. </p>
+<p>Not all vectors returned by this function will necessarily have the same magnitude. </p><dl class="section return"><dt>Returns</dt><dd>A vector in 3d space corresponding to the given vector, with x-component equal to 1 </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Other functions rely on the fact that returned vectors are placed one unit away (x-component equal to 1). Don't change this behavior! </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00034">34</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_cgraph.png" border="0" usemap="#classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_cgraph" alt=""/></div>
 <map name="classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_cgraph" id="classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,228,32"/>
+<area shape="rect" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="5,5,228,32"/>
 <area shape="rect" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="276,5,445,32"/>
 </map>
 </div>
@@ -316,12 +303,12 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_icgraph.png" border="0" usemap="#classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_icgraph" id="classlost_1_1_camera_aeb37d99dfc08205f5938303dbb16ff9e_icgraph">
-<area shape="rect" title=" " alt="" coords="564,115,787,141"/>
-<area shape="rect" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title=" " alt="" coords="291,5,514,32"/>
-<area shape="rect" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title=" " alt="" coords="315,56,490,83"/>
-<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title=" " alt="" coords="308,107,497,149"/>
-<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title=" " alt="" coords="5,203,241,229"/>
-<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title=" " alt="" coords="289,225,516,266"/>
+<area shape="rect" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="564,123,787,149"/>
+<area shape="rect" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title="Actually run the star&#45;id algorithm." alt="" coords="291,5,514,32"/>
+<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="308,57,497,98"/>
+<area shape="rect" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="315,123,490,149"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,203,241,229"/>
+<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,225,516,266"/>
 </map>
 </div>
 
@@ -349,16 +336,17 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00071">71</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<p>Focal length in pixels. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00042">42</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_aa7df6f5d7ee2f6c26ecc34bd1e7f2e53_icgraph.png" border="0" usemap="#classlost_1_1_camera_aa7df6f5d7ee2f6c26ecc34bd1e7f2e53_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_aa7df6f5d7ee2f6c26ecc34bd1e7f2e53_icgraph" id="classlost_1_1_camera_aa7df6f5d7ee2f6c26ecc34bd1e7f2e53_icgraph">
-<area shape="rect" title=" " alt="" coords="184,5,375,32"/>
-<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title=" " alt="" coords="5,5,136,32"/>
+<area shape="rect" title="Focal length in pixels." alt="" coords="184,5,375,32"/>
+<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="5,5,136,32"/>
 </map>
 </div>
 
@@ -378,15 +366,16 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00076">76</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
+<p>Horizontal field of view in radians. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00065">65</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_cgraph.png" border="0" usemap="#classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_cgraph" alt=""/></div>
 <map name="classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_cgraph" id="classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,141,32"/>
+<area shape="rect" title="Horizontal field of view in radians." alt="" coords="5,5,141,32"/>
 <area shape="rect" href="namespacelost.html#ae05e275818c57f3b736b70236d0e6703" title=" " alt="" coords="189,5,359,32"/>
 </map>
 </div>
@@ -395,8 +384,8 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_icgraph.png" border="0" usemap="#classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_icgraph" id="classlost_1_1_camera_a3830d04bcd953e27cc133944fb434f64_icgraph">
-<area shape="rect" title=" " alt="" coords="184,5,320,32"/>
-<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title=" " alt="" coords="5,5,136,32"/>
+<area shape="rect" title="Horizontal field of view in radians." alt="" coords="184,5,320,32"/>
+<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="5,5,136,32"/>
 </map>
 </div>
 
@@ -419,28 +408,21 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Returns whether a given pixel is actually in the camera's field of view. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">vector</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00061">61</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00050">50</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_a4d940919d1247edd431de7643473f538_icgraph.png" border="0" usemap="#classlost_1_1_camera_a4d940919d1247edd431de7643473f538_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_a4d940919d1247edd431de7643473f538_icgraph" id="classlost_1_1_camera_a4d940919d1247edd431de7643473f538_icgraph">
-<area shape="rect" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="835,144,1004,171"/>
-<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title=" " alt="" coords="564,115,787,141"/>
-<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title=" " alt="" coords="572,166,779,207"/>
-<area shape="rect" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title=" " alt="" coords="291,5,514,32"/>
-<area shape="rect" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title=" " alt="" coords="315,56,490,83"/>
-<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title=" " alt="" coords="308,107,497,149"/>
-<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title=" " alt="" coords="5,203,241,229"/>
-<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title=" " alt="" coords="289,225,516,266"/>
+<area shape="rect" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="835,152,1004,179"/>
+<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="564,123,787,149"/>
+<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="572,174,779,215"/>
+<area shape="rect" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title="Actually run the star&#45;id algorithm." alt="" coords="291,5,514,32"/>
+<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="308,57,497,98"/>
+<area shape="rect" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="315,123,490,149"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,203,241,229"/>
+<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,225,516,266"/>
 </map>
 </div>
 
@@ -469,14 +451,8 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">focalLength</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00083">83</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00046">46</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 
 </div>
 </div>
@@ -495,22 +471,18 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Converts from a 3D point in space to a 2D point on the camera sensor. Assumes that X is the depth direction and that it points away from the center of the sensor, i.e., any vector (x, 0, 0) will be at (xResolution/2, yResolution/2) on the sensor. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">vector</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00018">18</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
+<p>Converts from a 3D point in space to a 2D point on the camera sensor. </p>
+<p>Assumes that X is the depth direction and that it points away from the center of the sensor, i.e., any vector (x, 0, 0) will be at (xResolution/2, yResolution/2) on the sensor. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8cpp_source.html#l00014">14</a> of file <a class="el" href="camera_8cpp_source.html">camera.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_a2282f819be792d84f3168032a9cf457b_icgraph.png" border="0" usemap="#classlost_1_1_camera_a2282f819be792d84f3168032a9cf457b_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_a2282f819be792d84f3168032a9cf457b_icgraph" id="classlost_1_1_camera_a2282f819be792d84f3168032a9cf457b_icgraph">
-<area shape="rect" title=" " alt="" coords="260,13,483,39"/>
-<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title=" " alt="" coords="5,5,212,47"/>
+<area shape="rect" title="Converts from a 3D point in space to a 2D point on the camera sensor." alt="" coords="260,13,483,39"/>
+<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
 </map>
 </div>
 
@@ -538,17 +510,18 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00059">59</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<p>Width of the sensor in pixels. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00038">38</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_a6a6a4bd2d5daf114108e73126568369d_icgraph.png" border="0" usemap="#classlost_1_1_camera_a6a6a4bd2d5daf114108e73126568369d_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_a6a6a4bd2d5daf114108e73126568369d_icgraph" id="classlost_1_1_camera_a6a6a4bd2d5daf114108e73126568369d_icgraph">
-<area shape="rect" title=" " alt="" coords="260,42,451,69"/>
-<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title=" " alt="" coords="5,5,212,47"/>
-<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title=" " alt="" coords="43,71,174,98"/>
+<area shape="rect" title="Width of the sensor in pixels." alt="" coords="260,42,451,69"/>
+<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
+<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="43,71,174,98"/>
 </map>
 </div>
 
@@ -576,17 +549,18 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00065">65</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
+<p>Height of the sensor in pixels. </p>
+
+<p class="definition">Definition at line <a class="el" href="camera_8hpp_source.html#l00040">40</a> of file <a class="el" href="camera_8hpp_source.html">camera.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_camera_a75f02f56900338580a9cacc2f9131d70_icgraph.png" border="0" usemap="#classlost_1_1_camera_a75f02f56900338580a9cacc2f9131d70_icgraph" alt=""/></div>
 <map name="classlost_1_1_camera_a75f02f56900338580a9cacc2f9131d70_icgraph" id="classlost_1_1_camera_a75f02f56900338580a9cacc2f9131d70_icgraph">
-<area shape="rect" title=" " alt="" coords="260,42,451,69"/>
-<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title=" " alt="" coords="5,5,212,47"/>
-<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title=" " alt="" coords="43,71,174,98"/>
+<area shape="rect" title="Height of the sensor in pixels." alt="" coords="260,42,451,69"/>
+<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
+<area shape="rect" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="43,71,174,98"/>
 </map>
 </div>
 
@@ -602,7 +576,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_camera.html">Camera</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

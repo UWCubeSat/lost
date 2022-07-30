@@ -1,5 +1,5 @@
 <map id="lost::BasicThreshold" name="lost::BasicThreshold">
 <area shape="rect" id="node1" title=" " alt="" coords="304,35,457,61"/>
-<area shape="rect" id="node2" href="$classlost_1_1_center_of_gravity_algorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3" title=" " alt="" coords="5,5,256,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6" title=" " alt="" coords="24,57,237,98"/>
+<area shape="rect" id="node2" href="$classlost_1_1_center_of_gravity_algorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3" title="Actually perform the centroid detection." alt="" coords="5,5,256,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6" title="Actually perform the centroid detection." alt="" coords="24,57,237,98"/>
 </map>

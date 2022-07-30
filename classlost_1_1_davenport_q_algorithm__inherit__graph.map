@@ -1,4 +1,4 @@
 <map id="lost::DavenportQAlgorithm" name="lost::DavenportQAlgorithm">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,201,121"/>
-<area shape="rect" id="node2" href="$classlost_1_1_attitude_estimation_algorithm.html" title=" " alt="" coords="15,5,191,47"/>
+<area shape="rect" id="node1" title="A slow but reliable attitude estimation algorithm." alt="" coords="5,95,201,121"/>
+<area shape="rect" id="node2" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="15,5,191,47"/>
 </map>

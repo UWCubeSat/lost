@@ -1,6 +1,6 @@
 <map id="lost::Attitude::Rotate" name="lost::Attitude::Rotate">
-<area shape="rect" id="node1" title=" " alt="" coords="5,31,163,57"/>
-<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title=" " alt="" coords="211,31,388,57"/>
-<area shape="rect" id="node3" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title=" " alt="" coords="436,5,636,32"/>
+<area shape="rect" id="node1" title="Convert a vector from the reference frame to the body frame." alt="" coords="5,31,163,57"/>
+<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="211,31,388,57"/>
+<area shape="rect" id="node3" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="436,5,636,32"/>
 <area shape="rect" id="node4" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="684,31,891,57"/>
 </map>

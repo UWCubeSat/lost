@@ -1,7 +1,7 @@
 <map id="lost::FovToFocalLength" name="lost::FovToFocalLength">
 <area shape="rect" id="node1" title=" " alt="" coords="724,42,893,69"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title=" " alt="" coords="461,42,676,69"/>
-<area shape="rect" id="node3" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title=" " alt="" coords="216,5,413,47"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title=" " alt="" coords="221,71,408,98"/>
-<area shape="rect" id="node4" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title=" " alt="" coords="5,42,168,69"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,42,676,69"/>
+<area shape="rect" id="node3" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,47"/>
+<area shape="rect" id="node5" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,71,408,98"/>
+<area shape="rect" id="node4" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,42,168,69"/>
 </map>

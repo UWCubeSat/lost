@@ -1,4 +1,4 @@
 <map id="lost::GrayscaleImageToSurface" name="lost::GrayscaleImageToSurface">
 <area shape="rect" id="node1" title=" " alt="" coords="207,13,429,39"/>
-<area shape="rect" id="node2" href="$classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b" title=" " alt="" coords="5,5,159,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b" title="Convert the InputImage() output into a cairo surface." alt="" coords="5,5,159,47"/>
 </map>

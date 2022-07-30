@@ -93,14 +93,17 @@ $(document).ready(function(){initNavTree('classlost_1_1_center_of_gravity_algori
 </div><!--header-->
 <div class="contents">
 
+<p>A simple, fast, and pretty decent centroid algorithm.  
+ <a href="classlost_1_1_center_of_gravity_algorithm.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="centroiders_8hpp_source.html">centroiders.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for lost::CenterOfGravityAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_center_of_gravity_algorithm__inherit__graph.png" border="0" usemap="#lost_1_1_center_of_gravity_algorithm_inherit__map" alt="Inheritance graph"/></div>
 <map name="lost_1_1_center_of_gravity_algorithm_inherit__map" id="lost_1_1_center_of_gravity_algorithm_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,80,229,107"/>
-<area shape="rect" href="classlost_1_1_centroid_algorithm.html" title=" " alt="" coords="31,5,204,32"/>
+<area shape="rect" title="A simple, fast, and pretty decent centroid algorithm." alt="" coords="5,80,229,107"/>
+<area shape="rect" href="classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="31,5,204,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -108,8 +111,8 @@ Collaboration diagram for lost::CenterOfGravityAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_center_of_gravity_algorithm__coll__graph.png" border="0" usemap="#lost_1_1_center_of_gravity_algorithm_coll__map" alt="Collaboration graph"/></div>
 <map name="lost_1_1_center_of_gravity_algorithm_coll__map" id="lost_1_1_center_of_gravity_algorithm_coll__map">
-<area shape="rect" title=" " alt="" coords="5,80,229,107"/>
-<area shape="rect" href="classlost_1_1_centroid_algorithm.html" title=" " alt="" coords="31,5,204,32"/>
+<area shape="rect" title="A simple, fast, and pretty decent centroid algorithm." alt="" coords="5,80,229,107"/>
+<area shape="rect" href="classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="31,5,204,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -118,14 +121,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad138e20f7ba0fe236847b1616219a49b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_center_of_gravity_algorithm.html#ad138e20f7ba0fe236847b1616219a49b">CenterOfGravityAlgorithm</a> ()</td></tr>
 <tr class="separator:ad138e20f7ba0fe236847b1616219a49b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47d588a30c71d8b61f1d7791f2d08ea3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_center_of_gravity_algorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3">Go</a> (unsigned char *image, int imageWidth, int imageHeight) const override</td></tr>
+<tr class="memdesc:a47d588a30c71d8b61f1d7791f2d08ea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Actually perform the centroid detection.  <a href="classlost_1_1_center_of_gravity_algorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3">More...</a><br /></td></tr>
 <tr class="separator:a47d588a30c71d8b61f1d7791f2d08ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classlost_1_1_centroid_algorithm"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classlost_1_1_centroid_algorithm')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classlost_1_1_centroid_algorithm.html">lost::CentroidAlgorithm</a></td></tr>
 <tr class="memitem:a2b8d8657624550f78354a3d29a856653 inherit pub_methods_classlost_1_1_centroid_algorithm"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_centroid_algorithm.html#a2b8d8657624550f78354a3d29a856653">~CentroidAlgorithm</a> ()</td></tr>
 <tr class="separator:a2b8d8657624550f78354a3d29a856653 inherit pub_methods_classlost_1_1_centroid_algorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="centroiders_8hpp_source.html#l00050">50</a> of file <a class="el" href="centroiders_8hpp_source.html">centroiders.hpp</a>.</p>
+<div class="textblock"><p>A simple, fast, and pretty decent centroid algorithm. </p>
+<p>Simply finds the weighted average of the coordinates of all bright pixels, the weight being proportional to the brightness of the pixel. </p>
+
+<p class="definition">Definition at line <a class="el" href="centroiders_8hpp_source.html#l00037">37</a> of file <a class="el" href="centroiders_8hpp_source.html">centroiders.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad138e20f7ba0fe236847b1616219a49b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad138e20f7ba0fe236847b1616219a49b">&#9670;&nbsp;</a></span>CenterOfGravityAlgorithm()</h2>
@@ -150,7 +156,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8hpp_source.html#l00053">53</a> of file <a class="el" href="centroiders_8hpp_source.html">centroiders.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8hpp_source.html#l00039">39</a> of file <a class="el" href="centroiders_8hpp_source.html">centroiders.hpp</a>.</p>
 
 </div>
 </div>
@@ -194,25 +200,25 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
+
+<p>Actually perform the centroid detection. </p>
+<p>This is the "main" function of <a class="el" href="classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;.">CentroidAlgorithm</a>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">image</td><td></td></tr>
-    <tr><td class="paramname">imageWidth</td><td></td></tr>
-    <tr><td class="paramname">imageHeight</td><td></td></tr>
+    <tr><td class="paramname">image</td><td>An row-major indexed array of grayscale pixels. 0 is black, 255 is white. The total length is <code>imageWidth</code> * <code>imageHeight</code> </td></tr>
+    <tr><td class="paramname">imageWidth,imageHeight</td><td><a class="el" href="classlost_1_1_image.html" title="An 8-bit grayscale 2d image.">Image</a> dimensions in pixels. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Implements <a class="el" href="classlost_1_1_centroid_algorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">lost::CentroidAlgorithm</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00193">193</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00156">156</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_center_of_gravity_algorithm_a47d588a30c71d8b61f1d7791f2d08ea3_cgraph.png" border="0" usemap="#classlost_1_1_center_of_gravity_algorithm_a47d588a30c71d8b61f1d7791f2d08ea3_cgraph" alt=""/></div>
 <map name="classlost_1_1_center_of_gravity_algorithm_a47d588a30c71d8b61f1d7791f2d08ea3_cgraph" id="classlost_1_1_center_of_gravity_algorithm_a47d588a30c71d8b61f1d7791f2d08ea3_cgraph">
-<area shape="rect" title=" " alt="" coords="5,31,256,57"/>
+<area shape="rect" title="Actually perform the centroid detection." alt="" coords="5,31,256,57"/>
 <area shape="rect" href="namespacelost.html#ae369ca6366d9b3c350a14a403107641a" title=" " alt="" coords="304,5,457,32"/>
 <area shape="rect" href="namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529" title=" " alt="" coords="319,56,442,83"/>
 </map>
@@ -230,7 +236,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_center_of_gravity_algorithm.html">CenterOfGravityAlgorithm</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

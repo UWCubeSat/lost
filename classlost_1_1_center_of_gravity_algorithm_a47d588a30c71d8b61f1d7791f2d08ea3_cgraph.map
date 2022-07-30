@@ -1,5 +1,5 @@
 <map id="lost::CenterOfGravityAlgorithm::Go" name="lost::CenterOfGravityAlgorithm::Go">
-<area shape="rect" id="node1" title=" " alt="" coords="5,31,256,57"/>
+<area shape="rect" id="node1" title="Actually perform the centroid detection." alt="" coords="5,31,256,57"/>
 <area shape="rect" id="node2" href="$namespacelost.html#ae369ca6366d9b3c350a14a403107641a" title=" " alt="" coords="304,5,457,32"/>
 <area shape="rect" id="node3" href="$namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529" title=" " alt="" coords="319,56,442,83"/>
 </map>

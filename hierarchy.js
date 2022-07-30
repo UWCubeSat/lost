@@ -27,7 +27,6 @@ var hierarchy =
     [ "lost::PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html", null ],
     [ "lost::Pipeline", "classlost_1_1_pipeline.html", null ],
     [ "lost::PipelineInput", "classlost_1_1_pipeline_input.html", [
-      [ "lost::AstrometryPipelineInput", "classlost_1_1_astrometry_pipeline_input.html", null ],
       [ "lost::GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html", null ],
       [ "lost::PngPipelineInput", "classlost_1_1_png_pipeline_input.html", null ]
     ] ],
@@ -45,7 +44,6 @@ var hierarchy =
     ] ],
     [ "lost::StarIdComparison", "structlost_1_1_star_id_comparison.html", null ],
     [ "lost::StarIdentifier", "classlost_1_1_star_identifier.html", null ],
-    [ "lost::TripleInnerKVectorDatabase", "classlost_1_1_triple_inner_k_vector_database.html", null ],
     [ "lost::Vec2", "structlost_1_1_vec2.html", null ],
     [ "lost::Vec3", "classlost_1_1_vec3.html", null ]
 ];

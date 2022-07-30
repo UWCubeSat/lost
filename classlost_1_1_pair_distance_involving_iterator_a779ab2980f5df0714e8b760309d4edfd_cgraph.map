@@ -1,4 +1,4 @@
 <map id="lost::PairDistanceInvolvingIterator::operator++" name="lost::PairDistanceInvolvingIterator::operator++">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,200,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_pair_distance_involving_iterator.html#aa0c80d2dd6fd6ee6f86dee59f0e43468" title=" " alt="" coords="248,5,443,47"/>
+<area shape="rect" id="node1" title="Move to the next matching pair." alt="" coords="5,5,200,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="248,5,443,47"/>
 </map>

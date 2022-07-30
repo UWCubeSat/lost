@@ -93,14 +93,17 @@ $(document).ready(function(){initNavTree('classlost_1_1_geometric_voting_star_id
 </div><!--header-->
 <div class="contents">
 
+<p>A star-id algorithm based on assigning votes for each centroid-catalog pair then choosing the highest voted catalog stars.  
+ <a href="classlost_1_1_geometric_voting_star_id_algorithm.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for lost::GeometricVotingStarIdAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_geometric_voting_star_id_algorithm__inherit__graph.png" border="0" usemap="#lost_1_1_geometric_voting_star_id_algorithm_inherit__map" alt="Inheritance graph"/></div>
 <map name="lost_1_1_geometric_voting_star_id_algorithm_inherit__map" id="lost_1_1_geometric_voting_star_id_algorithm_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,80,195,121"/>
-<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title=" " alt="" coords="22,5,178,32"/>
+<area shape="rect" title="A star&#45;id algorithm based on assigning votes for each centroid&#45;catalog pair then choosing the highest..." alt="" coords="5,80,195,121"/>
+<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="22,5,178,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -108,14 +111,15 @@ Collaboration diagram for lost::GeometricVotingStarIdAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_geometric_voting_star_id_algorithm__coll__graph.png" border="0" usemap="#lost_1_1_geometric_voting_star_id_algorithm_coll__map" alt="Collaboration graph"/></div>
 <map name="lost_1_1_geometric_voting_star_id_algorithm_coll__map" id="lost_1_1_geometric_voting_star_id_algorithm_coll__map">
-<area shape="rect" title=" " alt="" coords="5,80,195,121"/>
-<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title=" " alt="" coords="22,5,178,32"/>
+<area shape="rect" title="A star&#45;id algorithm based on assigning votes for each centroid&#45;catalog pair then choosing the highest..." alt="" coords="5,80,195,121"/>
+<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="22,5,178,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:adea674f2fdf9d0715655eddbb749ecf0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0">Go</a> (const unsigned char *database, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;) const</td></tr>
+<tr class="memdesc:adea674f2fdf9d0715655eddbb749ecf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Actualy perform the star idenification. This is the "main" function for <a class="el" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm.">StarIdAlgorithm</a>.  <a href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0">More...</a><br /></td></tr>
 <tr class="separator:adea674f2fdf9d0715655eddbb749ecf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34789f103fe935cdd41a9f053ba0b349"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_geometric_voting_star_id_algorithm.html#a34789f103fe935cdd41a9f053ba0b349">GeometricVotingStarIdAlgorithm</a> (float tolerance)</td></tr>
 <tr class="separator:a34789f103fe935cdd41a9f053ba0b349"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,8 +128,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1c440e5ca7c623e3dd1fc8958eac99de inherit pub_methods_classlost_1_1_star_id_algorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00045">45</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
+<div class="textblock"><p>A star-id algorithm based on assigning votes for each centroid-catalog pair then choosing the highest voted catalog stars. </p>
+<p>While the geometric voting algorithm is the simplest true star-id algorithm I know of and is quite fast, it has some reliability issues and there are no statistical guarantees on how often it will return the wrong result. It will also frequently fail to idenify images with few stars. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00035">35</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a34789f103fe935cdd41a9f053ba0b349"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a34789f103fe935cdd41a9f053ba0b349">&#9670;&nbsp;</a></span>GeometricVotingStarIdAlgorithm()</h2>
@@ -152,12 +158,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tolerance</td><td></td></tr>
+    <tr><td class="paramname">tolerance</td><td>Angular tolerance (Two inter-star distances are considered the same if within this many radians) </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00053">53</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00042">42</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 
 </div>
 </div>
@@ -181,19 +187,19 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;&#160;</td>
-          <td class="paramname"><em>stars</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
-          <td class="paramname"><em>catalog</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;&#160;</td>
-          <td class="paramname"><em>camera</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -207,36 +213,28 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">database</td><td></td></tr>
-    <tr><td class="paramname">stars</td><td></td></tr>
-    <tr><td class="paramname">catalog</td><td></td></tr>
-    <tr><td class="paramname">camera</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Actualy perform the star idenification. This is the "main" function for <a class="el" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm.">StarIdAlgorithm</a>. </p>
 
 <p>Implements <a class="el" href="classlost_1_1_star_id_algorithm.html#a303db15af0aecc9c4053a81429f8667c">lost::StarIdAlgorithm</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00042">42</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00026">26</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_geometric_voting_star_id_algorithm_adea674f2fdf9d0715655eddbb749ecf0_cgraph.png" border="0" usemap="#classlost_1_1_geometric_voting_star_id_algorithm_adea674f2fdf9d0715655eddbb749ecf0_cgraph" alt=""/></div>
 <map name="classlost_1_1_geometric_voting_star_id_algorithm_adea674f2fdf9d0715655eddbb749ecf0_cgraph" id="classlost_1_1_geometric_voting_star_id_algorithm_adea674f2fdf9d0715655eddbb749ecf0_cgraph">
-<area shape="rect" title=" " alt="" coords="5,112,195,154"/>
-<area shape="rect" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title=" " alt="" coords="309,44,399,70"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title=" " alt="" coords="539,6,657,33"/>
-<area shape="rect" href="classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title=" " alt="" coords="518,69,678,96"/>
-<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title=" " alt="" coords="243,145,465,172"/>
-<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the stars between min and max." alt="" coords="257,196,451,238"/>
+<area shape="rect" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,112,195,154"/>
+<area shape="rect" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="309,44,399,70"/>
+<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="539,6,657,33"/>
+<area shape="rect" href="classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="518,69,678,96"/>
+<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="243,145,465,172"/>
+<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="257,196,451,238"/>
 <area shape="rect" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="273,262,435,303"/>
 <area shape="rect" href="classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="731,69,893,96"/>
-<area shape="rect" href="classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title=" " alt="" coords="941,69,1120,96"/>
+<area shape="rect" href="classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="941,69,1120,96"/>
 <area shape="rect" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="513,145,683,172"/>
-<area shape="rect" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds at least all the entries containing the given range." alt="" coords="528,196,668,238"/>
+<area shape="rect" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="528,196,668,238"/>
 </map>
 </div>
 
@@ -252,7 +250,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_geometric_voting_star_id_algorithm.html">GeometricVotingStarIdAlgorithm</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

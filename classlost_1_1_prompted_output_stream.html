@@ -93,20 +93,26 @@ $(document).ready(function(){initNavTree('classlost_1_1_prompted_output_stream.h
 </div><!--header-->
 <div class="contents">
 
+<p>An output stream which might be a file or stdout.  
+ <a href="classlost_1_1_prompted_output_stream.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="io_8hpp_source.html">io.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa882b4720973a24822434a6f626e6e1a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_prompted_output_stream.html#aa882b4720973a24822434a6f626e6e1a">PromptedOutputStream</a> (std::string filePath)</td></tr>
+<tr class="memdesc:aa882b4720973a24822434a6f626e6e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classlost_1_1_prompted_output_stream.html" title="An output stream which might be a file or stdout.">PromptedOutputStream</a> which will output to the given file.  <a href="classlost_1_1_prompted_output_stream.html#aa882b4720973a24822434a6f626e6e1a">More...</a><br /></td></tr>
 <tr class="separator:aa882b4720973a24822434a6f626e6e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed30bbdfdab26313b6293ca949dabf37"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_prompted_output_stream.html#aed30bbdfdab26313b6293ca949dabf37">~PromptedOutputStream</a> ()</td></tr>
 <tr class="separator:aed30bbdfdab26313b6293ca949dabf37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae35516532496d3bb29c7af566adcf12a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_prompted_output_stream.html#ae35516532496d3bb29c7af566adcf12a">Stream</a> ()</td></tr>
+<tr class="memdesc:ae35516532496d3bb29c7af566adcf12a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the inner output stream, suitable for use with &lt;&lt;  <a href="classlost_1_1_prompted_output_stream.html#ae35516532496d3bb29c7af566adcf12a">More...</a><br /></td></tr>
 <tr class="separator:ae35516532496d3bb29c7af566adcf12a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00037">37</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<div class="textblock"><p>An output stream which might be a file or stdout. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00034">34</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa882b4720973a24822434a6f626e6e1a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa882b4720973a24822434a6f626e6e1a">&#9670;&nbsp;</a></span>PromptedOutputStream()</h2>
@@ -131,14 +137,10 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">filePath</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00034">34</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p>Create a <a class="el" href="classlost_1_1_prompted_output_stream.html" title="An output stream which might be a file or stdout.">PromptedOutputStream</a> which will output to the given file. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00031">31</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -157,7 +159,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00054">54</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00048">48</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -184,9 +186,10 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00046">46</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p>return the inner output stream, suitable for use with &lt;&lt; </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00040">40</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -200,7 +203,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_prompted_output_stream.html">PromptedOutputStream</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

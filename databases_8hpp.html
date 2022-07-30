@@ -131,17 +131,16 @@ This graph shows which files directly or indirectly include this file:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_k_vector_index.html">lost::KVectorIndex</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A data structure enabling constant-time range queries into fixed numerica data.  <a href="classlost_1_1_k_vector_index.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">lost::PairDistanceKVectorDatabase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores angular distance between pairs of stars.  <a href="classlost_1_1_pair_distance_k_vector_database.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_triple_inner_k_vector_database.html">lost::TripleInnerKVectorDatabase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores "inner angles" between star triples.  <a href="classlost_1_1_triple_inner_k_vector_database.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database storing distances between pairs of stars.  <a href="classlost_1_1_pair_distance_k_vector_database.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database.html">lost::MultiDatabase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a database that contains multiple databases.  <a href="classlost_1_1_multi_database.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.  <a href="classlost_1_1_multi_database.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_builder.html">lost::MultiDatabaseBuilder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for easily creating a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>.  <a href="classlost_1_1_multi_database_builder.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -153,8 +152,10 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac9c297050f327e91460630fa720ae93c"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c">lost::SerializeLengthPairDistanceKVector</a> (const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
+<tr class="memdesc:ac9c297050f327e91460630fa720ae93c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes that a serialized KVectorDatabase will take up.  <a href="namespacelost.html#ac9c297050f327e91460630fa720ae93c">More...</a><br /></td></tr>
 <tr class="separator:ac9c297050f327e91460630fa720ae93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f6c4f99ab47d2c48676901452fb8634"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">lost::SerializePairDistanceKVector</a> (const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer)</td></tr>
+<tr class="memdesc:a8f6c4f99ab47d2c48676901452fb8634"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">More...</a><br /></td></tr>
 <tr class="separator:a8f6c4f99ab47d2c48676901452fb8634"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
@@ -162,8 +163,10 @@ Variables</h2></td></tr>
 <tr class="memitem:a280b11c878f729f878b2968037ccbc3d"><td class="memItemLeft" align="right" valign="top">const int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a280b11c878f729f878b2968037ccbc3d">lost::kCatalogMagicValue</a> = 0xF9A283BC</td></tr>
 <tr class="separator:a280b11c878f729f878b2968037ccbc3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc0e4e86929e738c92ddef0732ea9afa"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa">lost::kMultiDatabaseMaxDatabases</a> = 64</td></tr>
+<tr class="memdesc:afc0e4e86929e738c92ddef0732ea9afa"><td class="mdescLeft">&#160;</td><td class="mdescRight">maximum number of databases in a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>  <a href="namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa">More...</a><br /></td></tr>
 <tr class="separator:afc0e4e86929e738c92ddef0732ea9afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9adbcdb10395a84290141accfd0377ce"><td class="memItemLeft" align="right" valign="top">const long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9adbcdb10395a84290141accfd0377ce">lost::kMultiDatabaseTocLength</a> = 8*kMultiDatabaseMaxDatabases</td></tr>
+<tr class="memdesc:a9adbcdb10395a84290141accfd0377ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">The size of the table of contents in a multidatabase (stores subdatabase locations)  <a href="namespacelost.html#a9adbcdb10395a84290141accfd0377ce">More...</a><br /></td></tr>
 <tr class="separator:a9adbcdb10395a84290141accfd0377ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
@@ -172,7 +175,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="databases_8hpp.html">databases.hpp</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

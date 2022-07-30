@@ -1,4 +1,4 @@
 <map id="lost::Camera::SpatialToCamera" name="lost::Camera::SpatialToCamera">
-<area shape="rect" id="node1" title=" " alt="" coords="260,13,483,39"/>
-<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title=" " alt="" coords="5,5,212,47"/>
+<area shape="rect" id="node1" title="Converts from a 3D point in space to a 2D point on the camera sensor." alt="" coords="260,13,483,39"/>
+<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
 </map>

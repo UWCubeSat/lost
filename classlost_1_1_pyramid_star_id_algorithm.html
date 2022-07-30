@@ -93,14 +93,17 @@ $(document).ready(function(){initNavTree('classlost_1_1_pyramid_star_id_algorith
 </div><!--header-->
 <div class="contents">
 
+<p>The "de facto" star-id algorithm used in many real-world missions.  
+ <a href="classlost_1_1_pyramid_star_id_algorithm.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for lost::PyramidStarIdAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pyramid_star_id_algorithm__inherit__graph.png" border="0" usemap="#lost_1_1_pyramid_star_id_algorithm_inherit__map" alt="Inheritance graph"/></div>
 <map name="lost_1_1_pyramid_star_id_algorithm_inherit__map" id="lost_1_1_pyramid_star_id_algorithm_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,80,216,107"/>
-<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title=" " alt="" coords="33,5,189,32"/>
+<area shape="rect" title="The &quot;de facto&quot; star&#45;id algorithm used in many real&#45;world missions." alt="" coords="5,80,216,107"/>
+<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="33,5,189,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -108,14 +111,15 @@ Collaboration diagram for lost::PyramidStarIdAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pyramid_star_id_algorithm__coll__graph.png" border="0" usemap="#lost_1_1_pyramid_star_id_algorithm_coll__map" alt="Collaboration graph"/></div>
 <map name="lost_1_1_pyramid_star_id_algorithm_coll__map" id="lost_1_1_pyramid_star_id_algorithm_coll__map">
-<area shape="rect" title=" " alt="" coords="5,80,216,107"/>
-<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title=" " alt="" coords="33,5,189,32"/>
+<area shape="rect" title="The &quot;de facto&quot; star&#45;id algorithm used in many real&#45;world missions." alt="" coords="5,80,216,107"/>
+<area shape="rect" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="33,5,189,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac4d954f0b508e6b1818f416cbed5c67a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a">Go</a> (const unsigned char *database, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;) const</td></tr>
+<tr class="memdesc:ac4d954f0b508e6b1818f416cbed5c67a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Actualy perform the star idenification. This is the "main" function for <a class="el" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm.">StarIdAlgorithm</a>.  <a href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a">More...</a><br /></td></tr>
 <tr class="separator:ac4d954f0b508e6b1818f416cbed5c67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af49d0a219e84d31fccdc927aa7476d50"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pyramid_star_id_algorithm.html#af49d0a219e84d31fccdc927aa7476d50">PyramidStarIdAlgorithm</a> (float tolerance, int numFalseStars, float maxMismatchProbability, long cutoff)</td></tr>
 <tr class="separator:af49d0a219e84d31fccdc927aa7476d50"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,8 +128,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1c440e5ca7c623e3dd1fc8958eac99de inherit pub_methods_classlost_1_1_star_id_algorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00063">63</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
+<div class="textblock"><p>The "de facto" star-id algorithm used in many real-world missions. </p>
+<p>Pyramid searches through groups of 4 stars in the image. For each one it tries to find a corresponding 4-star pattern in the database. Four stars is enough that pyramid is often able to uniquely match the first 4-star pattern it tries, making it fast and reliable. However, this only holds true if the camera is calibrated and has low centroid error. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00052">52</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af49d0a219e84d31fccdc927aa7476d50"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af49d0a219e84d31fccdc927aa7476d50">&#9670;&nbsp;</a></span>PyramidStarIdAlgorithm()</h2>
@@ -174,15 +180,15 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tolerance</td><td>Angular tolerance in distances (measurement error) </td></tr>
+    <tr><td class="paramname">tolerance</td><td>Angular tolerance (Two inter-star distances are considered the same if within this many radians) </td></tr>
     <tr><td class="paramname">numFalseStars</td><td>an estimate of the number of false stars in the whole celestial sphere (not just the field of view). Eg, if you estimate 10 dead pixels in a 40 degree FOV, you'd want to multiply that up to a hundred-something numFalseStars. </td></tr>
     <tr><td class="paramname">maxMismatchProbability</td><td>The maximum allowable probability for any star to be mis-id'd. </td></tr>
-    <tr><td class="paramname">cutoff</td><td>Maximum number of pyramids to iterate through. </td></tr>
+    <tr><td class="paramname">cutoff</td><td>Maximum number of pyramids to iterate through before giving up. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00075">75</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00063">63</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 
 </div>
 </div>
@@ -206,19 +212,19 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;&#160;</td>
-          <td class="paramname"><em>stars</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
-          <td class="paramname"><em>catalog</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;&#160;</td>
-          <td class="paramname"><em>camera</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -232,39 +238,31 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">database</td><td></td></tr>
-    <tr><td class="paramname">stars</td><td></td></tr>
-    <tr><td class="paramname">catalog</td><td></td></tr>
-    <tr><td class="paramname">camera</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Actualy perform the star idenification. This is the "main" function for <a class="el" href="classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm.">StarIdAlgorithm</a>. </p>
 
 <p>Implements <a class="el" href="classlost_1_1_star_id_algorithm.html#a303db15af0aecc9c4053a81429f8667c">lost::StarIdAlgorithm</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00333">333</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00304">304</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pyramid_star_id_algorithm_ac4d954f0b508e6b1818f416cbed5c67a_cgraph.png" border="0" usemap="#classlost_1_1_pyramid_star_id_algorithm_ac4d954f0b508e6b1818f416cbed5c67a_cgraph" alt=""/></div>
 <map name="classlost_1_1_pyramid_star_id_algorithm_ac4d954f0b508e6b1818f416cbed5c67a_cgraph" id="classlost_1_1_pyramid_star_id_algorithm_ac4d954f0b508e6b1818f416cbed5c67a_cgraph">
-<area shape="rect" title=" " alt="" coords="5,203,241,230"/>
-<area shape="rect" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title=" " alt="" coords="357,43,448,70"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title=" " alt="" coords="616,43,735,70"/>
-<area shape="rect" href="classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title=" " alt="" coords="595,94,755,120"/>
-<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title=" " alt="" coords="564,155,787,182"/>
-<area shape="rect" href="classlost_1_1_vec3.html#a67ce90f3f67d14cf9a537aeb19434907" title=" " alt="" coords="315,363,491,390"/>
-<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the stars between min and max." alt="" coords="578,217,773,258"/>
-<area shape="rect" href="classlost_1_1_pair_distance_involving_iterator.html#aa0c80d2dd6fd6ee6f86dee59f0e43468" title=" " alt="" coords="578,293,773,334"/>
-<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title=" " alt="" coords="289,196,516,237"/>
+<area shape="rect" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,203,241,230"/>
+<area shape="rect" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="357,43,448,70"/>
+<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="616,43,735,70"/>
+<area shape="rect" href="classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="595,94,755,120"/>
+<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="564,155,787,182"/>
+<area shape="rect" href="classlost_1_1_vec3.html#a67ce90f3f67d14cf9a537aeb19434907" title="Usual vector cross product." alt="" coords="315,363,491,390"/>
+<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="578,217,773,258"/>
+<area shape="rect" href="classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="578,293,773,334"/>
+<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,196,516,237"/>
 <area shape="rect" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="321,414,484,456"/>
 <area shape="rect" href="classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="838,94,1001,120"/>
-<area shape="rect" href="classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title=" " alt="" coords="1052,94,1231,120"/>
+<area shape="rect" href="classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="1052,94,1231,120"/>
 <area shape="rect" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="835,155,1004,182"/>
-<area shape="rect" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds at least all the entries containing the given range." alt="" coords="849,217,989,258"/>
+<area shape="rect" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="849,217,989,258"/>
 </map>
 </div>
 
@@ -280,7 +278,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_pyramid_star_id_algorithm.html">PyramidStarIdAlgorithm</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

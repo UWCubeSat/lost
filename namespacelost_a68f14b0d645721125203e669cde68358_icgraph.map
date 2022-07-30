@@ -1,6 +1,6 @@
 <map id="lost::CompareKVectorPairs" name="lost::CompareKVectorPairs">
-<area shape="rect" id="node1" title=" " alt="" coords="721,13,916,39"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title=" " alt="" coords="483,5,673,47"/>
-<area shape="rect" id="node3" href="$namespacelost.html#af5acd5430716bdd9bd29cd60d667cd46" title=" " alt="" coords="236,13,435,39"/>
-<area shape="rect" id="node4" href="$namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title=" " alt="" coords="5,13,188,39"/>
+<area shape="rect" id="node1" title=" " alt="" coords="741,13,936,39"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,5,693,47"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,5,455,47"/>
+<area shape="rect" id="node4" href="$namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,13,188,39"/>
 </map>

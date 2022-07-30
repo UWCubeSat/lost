@@ -1,4 +1,4 @@
 <map id="lost::PngPipelineInput" name="lost::PngPipelineInput">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,168,107"/>
+<area shape="rect" id="node1" title="A pipeline input created by reading a PNG from a file on disk." alt="" coords="5,80,168,107"/>
 <area shape="rect" id="node2" href="$classlost_1_1_pipeline_input.html" title="Represents the input and expected outputs of a pipeline run." alt="" coords="17,5,156,32"/>
 </map>

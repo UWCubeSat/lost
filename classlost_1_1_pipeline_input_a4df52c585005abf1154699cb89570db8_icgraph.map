@@ -1,6 +1,6 @@
 <map id="lost::PipelineInput::InputImage" name="lost::PipelineInput::InputImage">
 <area shape="rect" id="node1" title=" " alt="" coords="387,27,525,69"/>
-<area shape="rect" id="node2" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="196,5,328,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b" title=" " alt="" coords="185,57,339,98"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,5,137,32"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="196,5,328,32"/>
+<area shape="rect" id="node4" href="$classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b" title="Convert the InputImage() output into a cairo surface." alt="" coords="185,57,339,98"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
 </map>

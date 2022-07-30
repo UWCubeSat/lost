@@ -1,13 +1,13 @@
 <map id="lost::GenerateDatabases" name="lost::GenerateDatabases">
-<area shape="rect" id="node1" title=" " alt="" coords="5,97,188,123"/>
-<area shape="rect" id="node2" href="$namespacelost.html#af5acd5430716bdd9bd29cd60d667cd46" title=" " alt="" coords="236,71,435,98"/>
-<area shape="rect" id="node11" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="276,122,395,149"/>
-<area shape="rect" id="node3" href="$classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e" title="Return pointer to the start of the space allocated for said database." alt="" coords="483,5,677,47"/>
-<area shape="rect" id="node4" href="$namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="739,51,918,92"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title=" " alt="" coords="485,135,675,176"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="980,109,1184,151"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="725,218,932,245"/>
-<area shape="rect" id="node9" href="$namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="731,269,926,295"/>
-<area shape="rect" id="node10" href="$namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title=" " alt="" coords="731,117,927,143"/>
-<area shape="rect" id="node8" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title=" " alt="" coords="1023,218,1141,245"/>
+<area shape="rect" id="node1" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,101,188,127"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,64,455,105"/>
+<area shape="rect" id="node11" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="286,130,405,157"/>
+<area shape="rect" id="node3" href="$classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e" title="Add a database to a MultiDatabase." alt="" coords="503,5,697,47"/>
+<area shape="rect" id="node4" href="$namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="759,51,938,92"/>
+<area shape="rect" id="node6" href="$namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="505,135,695,176"/>
+<area shape="rect" id="node5" href="$namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="1000,109,1204,151"/>
+<area shape="rect" id="node7" href="$namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="745,218,952,245"/>
+<area shape="rect" id="node9" href="$namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="751,269,946,295"/>
+<area shape="rect" id="node10" href="$namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="751,117,947,143"/>
+<area shape="rect" id="node8" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1043,218,1161,245"/>
 </map>

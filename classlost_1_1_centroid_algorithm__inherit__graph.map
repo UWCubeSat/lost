@@ -1,6 +1,6 @@
 <map id="lost::CentroidAlgorithm" name="lost::CentroidAlgorithm">
-<area shape="rect" id="node1" title=" " alt="" coords="5,56,179,83"/>
-<area shape="rect" id="node2" href="$classlost_1_1_center_of_gravity_algorithm.html" title=" " alt="" coords="227,5,451,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_dummy_centroid_algorithm.html" title=" " alt="" coords="227,56,452,83"/>
-<area shape="rect" id="node4" href="$classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html" title=" " alt="" coords="233,107,446,149"/>
+<area shape="rect" id="node1" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="5,56,179,83"/>
+<area shape="rect" id="node2" href="$classlost_1_1_center_of_gravity_algorithm.html" title="A simple, fast, and pretty decent centroid algorithm." alt="" coords="227,5,451,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_dummy_centroid_algorithm.html" title="A centroid algorithm for debugging that returns random centroids." alt="" coords="227,56,452,83"/>
+<area shape="rect" id="node4" href="$classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html" title="A more complicated centroid algorithm which doesn&#39;t perform much better than CenterOfGravityAlgorithm..." alt="" coords="233,107,446,149"/>
 </map>

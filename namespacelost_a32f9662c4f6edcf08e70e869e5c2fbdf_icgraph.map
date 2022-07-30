@@ -1,10 +1,10 @@
 <map id="lost::SerializeLengthKVectorIndex" name="lost::SerializeLengthKVectorIndex">
-<area shape="rect" id="node1" title="K&#45;vector index layout." alt="" coords="1055,89,1259,131"/>
-<area shape="rect" id="node2" href="$classlost_1_1_pair_distance_k_vector_database.html#a50d3f4dd6d53a9d20bf9fb282a99c81b" title=" " alt="" coords="721,5,1007,47"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title=" " alt="" coords="766,71,962,98"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title=" " alt="" coords="483,115,673,156"/>
-<area shape="rect" id="node7" href="$namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="775,173,953,215"/>
-<area shape="rect" id="node5" href="$namespacelost.html#af5acd5430716bdd9bd29cd60d667cd46" title=" " alt="" coords="236,151,435,178"/>
-<area shape="rect" id="node6" href="$namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title=" " alt="" coords="5,151,188,178"/>
-<area shape="rect" id="node8" href="$namespacelost.html#ac9c297050f327e91460630fa720ae93c" title=" " alt="" coords="489,232,667,273"/>
+<area shape="rect" id="node1" title="K&#45;vector index layout." alt="" coords="1075,89,1279,131"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pair_distance_k_vector_database.html#a50d3f4dd6d53a9d20bf9fb282a99c81b" title="Create the database from a serialized buffer." alt="" coords="741,5,1027,47"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="786,71,982,98"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,115,693,156"/>
+<area shape="rect" id="node7" href="$namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="795,173,973,215"/>
+<area shape="rect" id="node5" href="$namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,144,455,185"/>
+<area shape="rect" id="node6" href="$namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,151,188,178"/>
+<area shape="rect" id="node8" href="$namespacelost.html#ac9c297050f327e91460630fa720ae93c" title="Number of bytes that a serialized KVectorDatabase will take up." alt="" coords="509,232,687,273"/>
 </map>

@@ -143,6 +143,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a32f9662c4f6edcf08e70e869e5c2fbdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">K-vector index layout.  <a href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf">More...</a><br /></td></tr>
 <tr class="separator:a32f9662c4f6edcf08e70e869e5c2fbdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27ceaf6d1d5d30db1fe89367989c642c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c">lost::SerializeKVectorIndex</a> (const std::vector&lt; float &gt; &amp;values, float min, float max, long numBins, unsigned char *buffer)</td></tr>
+<tr class="memdesc:a27ceaf6d1d5d30db1fe89367989c642c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a KVector index to disk.  <a href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c">More...</a><br /></td></tr>
 <tr class="separator:a27ceaf6d1d5d30db1fe89367989c642c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63bf3cd684687462bda2231e2aa1f14c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; KVectorPair &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c">lost::CatalogToPairDistances</a> (const Catalog &amp;catalog, float minDistance, float maxDistance)</td></tr>
 <tr class="memdesc:a63bf3cd684687462bda2231e2aa1f14c"><td class="mdescLeft">&#160;</td><td class="mdescRight">pair K-vector database layout.  <a href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c">More...</a><br /></td></tr>
@@ -150,10 +151,13 @@ Functions</h2></td></tr>
 <tr class="memitem:afaa7020ad6a01645b45d4da236d4dfcb"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb">lost::SerializeLengthPairDistanceKVector</a> (long numPairs, long numBins)</td></tr>
 <tr class="separator:afaa7020ad6a01645b45d4da236d4dfcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9c297050f327e91460630fa720ae93c"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c">lost::SerializeLengthPairDistanceKVector</a> (const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
+<tr class="memdesc:ac9c297050f327e91460630fa720ae93c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes that a serialized KVectorDatabase will take up.  <a href="namespacelost.html#ac9c297050f327e91460630fa720ae93c">More...</a><br /></td></tr>
 <tr class="separator:ac9c297050f327e91460630fa720ae93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f6c4f99ab47d2c48676901452fb8634"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">lost::SerializePairDistanceKVector</a> (const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer)</td></tr>
+<tr class="memdesc:a8f6c4f99ab47d2c48676901452fb8634"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">More...</a><br /></td></tr>
 <tr class="separator:a8f6c4f99ab47d2c48676901452fb8634"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4753c4aab04ad2deb202dd8be458e5d8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8">lost::Clamp</a> (float num, float low, float high)</td></tr>
+<tr class="memdesc:a4753c4aab04ad2deb202dd8be458e5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value in the range [low,high] which is closest to num.  <a href="namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8">More...</a><br /></td></tr>
 <tr class="separator:a4753c4aab04ad2deb202dd8be458e5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
@@ -162,7 +166,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="databases_8cpp.html">databases.cpp</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

@@ -1,4 +1,4 @@
 <map id="lost::DummyCentroidAlgorithm" name="lost::DummyCentroidAlgorithm">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,231,107"/>
-<area shape="rect" id="node2" href="$classlost_1_1_centroid_algorithm.html" title=" " alt="" coords="31,5,205,32"/>
+<area shape="rect" id="node1" title="A centroid algorithm for debugging that returns random centroids." alt="" coords="5,80,231,107"/>
+<area shape="rect" id="node2" href="$classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="31,5,205,32"/>
 </map>

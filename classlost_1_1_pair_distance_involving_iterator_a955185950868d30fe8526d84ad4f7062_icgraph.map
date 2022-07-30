@@ -1,0 +1,6 @@
+<map id="lost::PairDistanceInvolvingIterator::HasValue" name="lost::PairDistanceInvolvingIterator::HasValue">
+<area shape="rect" id="node1" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="564,27,759,68"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,38,241,65"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pair_distance_involving_iterator.html#a779ab2980f5df0714e8b760309d4edfd" title="Move to the next matching pair." alt="" coords="305,27,500,68"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,92,516,133"/>
+</map>

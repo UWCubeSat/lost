@@ -1,4 +1,4 @@
 <map id="lost::PairDistanceKVectorDatabase::NumPairs" name="lost::PairDistanceKVectorDatabase::NumPairs">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,191,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title=" " alt="" coords="239,5,379,47"/>
+<area shape="rect" id="node1" title="Exact number of stored pairs." alt="" coords="5,5,191,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title="The number of data points in the data referred to by the kvector." alt="" coords="239,5,379,47"/>
 </map>

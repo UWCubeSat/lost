@@ -1,4 +1,4 @@
 <map id="lost::DummyStarIdAlgorithm" name="lost::DummyStarIdAlgorithm">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,213,107"/>
-<area shape="rect" id="node2" href="$classlost_1_1_star_id_algorithm.html" title=" " alt="" coords="31,5,187,32"/>
+<area shape="rect" id="node1" title="A star&#45;id algorithm that returns random results. For debugging." alt="" coords="5,80,213,107"/>
+<area shape="rect" id="node2" href="$classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="31,5,187,32"/>
 </map>

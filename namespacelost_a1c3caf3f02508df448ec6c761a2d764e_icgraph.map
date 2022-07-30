@@ -1,4 +1,4 @@
 <map id="lost::SurfaceToGrayscaleImage" name="lost::SurfaceToGrayscaleImage">
-<area shape="rect" id="node1" title=" " alt="" coords="216,5,399,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe" title=" " alt="" coords="5,5,168,47"/>
+<area shape="rect" id="node1" title="Convert a colored Cairo image surface into a row&#45;major array of grayscale pixels." alt="" coords="216,5,399,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe" title="A pipeline input coming from an image with no extra metadata." alt="" coords="5,5,168,47"/>
 </map>

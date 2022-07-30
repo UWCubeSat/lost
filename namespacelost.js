@@ -1,6 +1,5 @@
 var namespacelost =
 [
-    [ "AstrometryPipelineInput", "classlost_1_1_astrometry_pipeline_input.html", "classlost_1_1_astrometry_pipeline_input" ],
     [ "Attitude", "classlost_1_1_attitude.html", "classlost_1_1_attitude" ],
     [ "AttitudeEstimationAlgorithm", "classlost_1_1_attitude_estimation_algorithm.html", "classlost_1_1_attitude_estimation_algorithm" ],
     [ "Camera", "classlost_1_1_camera.html", "classlost_1_1_camera" ],
@@ -40,7 +39,6 @@ var namespacelost =
     [ "StarIdComparison", "structlost_1_1_star_id_comparison.html", "structlost_1_1_star_id_comparison" ],
     [ "StarIdentifier", "classlost_1_1_star_identifier.html", "classlost_1_1_star_identifier" ],
     [ "TriadAlgorithm", "classlost_1_1_triad_algorithm.html", "classlost_1_1_triad_algorithm" ],
-    [ "TripleInnerKVectorDatabase", "classlost_1_1_triple_inner_k_vector_database.html", "classlost_1_1_triple_inner_k_vector_database" ],
     [ "Vec2", "structlost_1_1_vec2.html", "structlost_1_1_vec2" ],
     [ "Vec3", "classlost_1_1_vec3.html", "classlost_1_1_vec3" ]
 ];

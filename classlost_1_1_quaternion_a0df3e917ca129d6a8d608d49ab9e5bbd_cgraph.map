@@ -1,4 +1,4 @@
 <map id="lost::Quaternion::Canonicalize" name="lost::Quaternion::Canonicalize">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,223,32"/>
+<area shape="rect" id="node1" title="Ensure that the quaternion&#39;s real part is nonnegative." alt="" coords="5,5,223,32"/>
 <area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="271,5,477,32"/>
 </map>

@@ -1,8 +1,8 @@
 <map id="lost::operator&lt;&lt;" name="lost::operator&lt;&lt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,81,136,108"/>
-<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aa7df6f5d7ee2f6c26ecc34bd1e7f2e53" title=" " alt="" coords="184,5,375,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a3830d04bcd953e27cc133944fb434f64" title=" " alt="" coords="211,56,347,83"/>
-<area shape="rect" id="node5" href="$classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title=" " alt="" coords="184,107,375,133"/>
-<area shape="rect" id="node6" href="$classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title=" " alt="" coords="184,157,375,184"/>
+<area shape="rect" id="node1" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="5,81,136,108"/>
+<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aa7df6f5d7ee2f6c26ecc34bd1e7f2e53" title="Focal length in pixels." alt="" coords="184,5,375,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a3830d04bcd953e27cc133944fb434f64" title="Horizontal field of view in radians." alt="" coords="211,56,347,83"/>
+<area shape="rect" id="node5" href="$classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title="Width of the sensor in pixels." alt="" coords="184,107,375,133"/>
+<area shape="rect" id="node6" href="$classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title="Height of the sensor in pixels." alt="" coords="184,157,375,184"/>
 <area shape="rect" id="node4" href="$namespacelost.html#ae05e275818c57f3b736b70236d0e6703" title=" " alt="" coords="423,56,592,83"/>
 </map>

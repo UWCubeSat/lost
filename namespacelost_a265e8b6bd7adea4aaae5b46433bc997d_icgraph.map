@@ -1,4 +1,4 @@
 <map id="lost::PyramidIdentifyRemainingStars" name="lost::PyramidIdentifyRemainingStars">
-<area shape="rect" id="node1" title=" " alt="" coords="289,5,516,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title=" " alt="" coords="5,13,241,39"/>
+<area shape="rect" id="node1" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,5,516,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,39"/>
 </map>

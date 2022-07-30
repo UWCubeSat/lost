@@ -1,13 +1,13 @@
 <map id="lost::GeometricVotingStarIdAlgorithm::Go" name="lost::GeometricVotingStarIdAlgorithm::Go">
-<area shape="rect" id="node1" title=" " alt="" coords="5,112,195,154"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a6b951e30f05e0a748e6c906697002093" title=" " alt="" coords="309,44,399,70"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title=" " alt="" coords="539,6,657,33"/>
-<area shape="rect" id="node4" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title=" " alt="" coords="518,69,678,96"/>
-<area shape="rect" id="node7" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title=" " alt="" coords="243,145,465,172"/>
-<area shape="rect" id="node9" href="$classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the stars between min and max." alt="" coords="257,196,451,238"/>
+<area shape="rect" id="node1" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,112,195,154"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="309,44,399,70"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="539,6,657,33"/>
+<area shape="rect" id="node4" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="518,69,678,96"/>
+<area shape="rect" id="node7" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="243,145,465,172"/>
+<area shape="rect" id="node9" href="$classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="257,196,451,238"/>
 <area shape="rect" id="node11" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="273,262,435,303"/>
 <area shape="rect" id="node5" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="731,69,893,96"/>
-<area shape="rect" id="node6" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title=" " alt="" coords="941,69,1120,96"/>
+<area shape="rect" id="node6" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="941,69,1120,96"/>
 <area shape="rect" id="node8" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="513,145,683,172"/>
-<area shape="rect" id="node10" href="$classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds at least all the entries containing the given range." alt="" coords="528,196,668,238"/>
+<area shape="rect" id="node10" href="$classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="528,196,668,238"/>
 </map>

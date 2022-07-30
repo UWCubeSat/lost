@@ -94,6 +94,9 @@ $(document).ready(function(){initNavTree('classlost_1_1_euler_angles.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>A "human-readable" way to represent a 3d rotation or orientation.  
+ <a href="classlost_1_1_euler_angles.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -104,15 +107,20 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a86cffd1e68a380145e5b684c7d7c2406"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_euler_angles.html#a86cffd1e68a380145e5b684c7d7c2406">ra</a></td></tr>
+<tr class="memdesc:a86cffd1e68a380145e5b684c7d7c2406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right ascension. How far we yaw left. Yaw is performed first.  <a href="classlost_1_1_euler_angles.html#a86cffd1e68a380145e5b684c7d7c2406">More...</a><br /></td></tr>
 <tr class="separator:a86cffd1e68a380145e5b684c7d7c2406"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acce7640ab1aa3431e04cc39037e538fe"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_euler_angles.html#acce7640ab1aa3431e04cc39037e538fe">de</a></td></tr>
+<tr class="memdesc:acce7640ab1aa3431e04cc39037e538fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw.  <a href="classlost_1_1_euler_angles.html#acce7640ab1aa3431e04cc39037e538fe">More...</a><br /></td></tr>
 <tr class="separator:acce7640ab1aa3431e04cc39037e538fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a224cfa3989b86edc65d0e6e96bc7b3ca"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_euler_angles.html#a224cfa3989b86edc65d0e6e96bc7b3ca">roll</a></td></tr>
+<tr class="memdesc:a224cfa3989b86edc65d0e6e96bc7b3ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">How far we roll counterclockwise. Roll is performed last (after yaw and pitch).  <a href="classlost_1_1_euler_angles.html#a224cfa3989b86edc65d0e6e96bc7b3ca">More...</a><br /></td></tr>
 <tr class="separator:a224cfa3989b86edc65d0e6e96bc7b3ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00096">96</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<div class="textblock"><p>A "human-readable" way to represent a 3d rotation or orientation. </p>
+<p>Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans to understand. There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00070">70</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a139701e558ffce8c4710ec55e5b37b75"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a139701e558ffce8c4710ec55e5b37b75">&#9670;&nbsp;</a></span>EulerAngles()</h2>
@@ -153,16 +161,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ra</td><td></td></tr>
-    <tr><td class="paramname">de</td><td></td></tr>
-    <tr><td class="paramname">roll</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00104">104</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00072">72</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -179,7 +179,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00111">111</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p>Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00078">78</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -195,7 +197,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00105">105</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p>Right ascension. How far we yaw left. Yaw is performed first. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00073">73</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -211,7 +215,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00114">114</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p>How far we roll counterclockwise. Roll is performed last (after yaw and pitch). </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00080">80</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -224,7 +230,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_euler_angles.html">EulerAngles</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

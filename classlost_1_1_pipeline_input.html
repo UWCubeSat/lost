@@ -102,10 +102,9 @@ Inheritance diagram for lost::PipelineInput:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input__inherit__graph.png" border="0" usemap="#lost_1_1_pipeline_input_inherit__map" alt="Inheritance graph"/></div>
 <map name="lost_1_1_pipeline_input_inherit__map" id="lost_1_1_pipeline_input_inherit__map">
-<area shape="rect" title="Represents the input and expected outputs of a pipeline run." alt="" coords="243,5,381,32"/>
-<area shape="rect" href="classlost_1_1_astrometry_pipeline_input.html" title=" " alt="" coords="5,80,184,121"/>
-<area shape="rect" href="classlost_1_1_generated_pipeline_input.html" title=" " alt="" coords="209,87,415,114"/>
-<area shape="rect" href="classlost_1_1_png_pipeline_input.html" title=" " alt="" coords="440,87,603,114"/>
+<area shape="rect" title="Represents the input and expected outputs of a pipeline run." alt="" coords="143,5,282,32"/>
+<area shape="rect" href="classlost_1_1_generated_pipeline_input.html" title="A pipeline input which is generated (fake image)." alt="" coords="5,80,212,107"/>
+<area shape="rect" href="classlost_1_1_png_pipeline_input.html" title="A pipeline input created by reading a PNG from a file on disk." alt="" coords="237,80,399,107"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -116,30 +115,32 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4df52c585005abf1154699cb89570db8"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classlost_1_1_image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">InputImage</a> () const</td></tr>
 <tr class="separator:a4df52c585005abf1154699cb89570db8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31278ee2b910cf3e8af25f71aefcf295"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295">GetCatalog</a> () const =0</td></tr>
+<tr class="memdesc:a31278ee2b910cf3e8af25f71aefcf295"><td class="mdescLeft">&#160;</td><td class="mdescRight">The catalog to which catalog indexes returned from other methods refer.  <a href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295">More...</a><br /></td></tr>
 <tr class="separator:a31278ee2b910cf3e8af25f71aefcf295"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6c9969bb4118ddf877a1000636f6486"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">InputStars</a> () const</td></tr>
 <tr class="separator:aa6c9969bb4118ddf877a1000636f6486"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3942b6fcacd994b5d9f841a770d895bc"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc">InputStarIds</a> () const</td></tr>
-<tr class="memdesc:a3942b6fcacd994b5d9f841a770d895bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the input stars have identification information.  <a href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc">More...</a><br /></td></tr>
 <tr class="separator:a3942b6fcacd994b5d9f841a770d895bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19bb4239a2e3b6622aa168959be70d98"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98">InputAttitude</a> () const</td></tr>
-<tr class="memdesc:a19bb4239a2e3b6622aa168959be70d98"><td class="mdescLeft">&#160;</td><td class="mdescRight">For tracking.  <a href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98">More...</a><br /></td></tr>
+<tr class="memdesc:a19bb4239a2e3b6622aa168959be70d98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.  <a href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98">More...</a><br /></td></tr>
 <tr class="separator:a19bb4239a2e3b6622aa168959be70d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af88962a236353e511724a699dab7a785"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classlost_1_1_camera.html">Camera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785">InputCamera</a> () const</td></tr>
 <tr class="separator:af88962a236353e511724a699dab7a785"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8707ebe081ca65531341eeb2b9d4ff7b"><td class="memItemLeft" align="right" valign="top">cairo_surface_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b">InputImageSurface</a> () const</td></tr>
+<tr class="memdesc:a8707ebe081ca65531341eeb2b9d4ff7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert the <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">InputImage()</a> output into a cairo surface.  <a href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b">More...</a><br /></td></tr>
+<tr class="separator:a8707ebe081ca65531341eeb2b9d4ff7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d0edc6bfda801512627d6bb1bc39c4a"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars</a> () const</td></tr>
 <tr class="separator:a3d0edc6bfda801512627d6bb1bc39c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cdd08fecc4186dd3b9263c1a7de2047"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a9cdd08fecc4186dd3b9263c1a7de2047">ExpectedStarIds</a> () const</td></tr>
 <tr class="separator:a9cdd08fecc4186dd3b9263c1a7de2047"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade22c9a790a978c96383c6497e9567ec"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#ade22c9a790a978c96383c6497e9567ec">ExpectedAttitude</a> () const</td></tr>
 <tr class="separator:ade22c9a790a978c96383c6497e9567ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8707ebe081ca65531341eeb2b9d4ff7b"><td class="memItemLeft" align="right" valign="top">cairo_surface_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b">InputImageSurface</a> () const</td></tr>
-<tr class="separator:a8707ebe081ca65531341eeb2b9d4ff7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the input and expected outputs of a pipeline run. </p>
+<p>This is all the data about the pipeline we are about to run that can be gathered without actually running the pipeline. The "input" members return the things that will be fed into the pipeline. The "expected" methods return the "correct" outputs, i.e. what a perfect star tracking algorithm would output (this is only meaningful whe the image is generated, otherwise we don't know the correct output!). The "expected" methods are used to evaluate the quality of our algorithms. Some of the methods (both input and expected) may return NULL for certain subclasses. By default, the "expected" methods return the corresponding inputs, which is reasonable behavior unless you are trying to intentionally introduce error into the inputs. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00103">103</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00092">92</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab766f2ef88e9d036c7bb7780d35306f3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab766f2ef88e9d036c7bb7780d35306f3">&#9670;&nbsp;</a></span>~PipelineInput()</h2>
@@ -164,7 +165,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00106">106</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00094">94</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -191,16 +192,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00159">159</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00109">109</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_ade22c9a790a978c96383c6497e9567ec_cgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_ade22c9a790a978c96383c6497e9567ec_cgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_ade22c9a790a978c96383c6497e9567ec_cgraph" id="classlost_1_1_pipeline_input_ade22c9a790a978c96383c6497e9567ec_cgraph">
 <area shape="rect" title=" " alt="" coords="5,5,148,47"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98" title="For tracking." alt="" coords="196,5,335,47"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98" title="Only used in tracking mode, in which case it is an estimate of the current attitude based on the last..." alt="" coords="196,5,335,47"/>
 </map>
 </div>
 
@@ -228,16 +228,15 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00153">153</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00108">108</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_a9cdd08fecc4186dd3b9263c1a7de2047_cgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_a9cdd08fecc4186dd3b9263c1a7de2047_cgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_a9cdd08fecc4186dd3b9263c1a7de2047_cgraph" id="classlost_1_1_pipeline_input_a9cdd08fecc4186dd3b9263c1a7de2047_cgraph">
 <area shape="rect" title=" " alt="" coords="5,5,144,47"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="Whether the input stars have identification information." alt="" coords="192,5,331,47"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title=" " alt="" coords="192,5,331,47"/>
 </map>
 </div>
 
@@ -265,9 +264,8 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00147">147</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00107">107</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -302,7 +300,8 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>The catalog to which catalog indexes returned from other methods refer. </p>
 
 <p>Implemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#ae1db3bb642d9b4410c641c9f7db92097">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#aa525af4b907a9ffd29b2b574f33fc53d">lost::GeneratedPipelineInput</a>.</p>
 <div class="dynheader">
@@ -310,9 +309,9 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_a31278ee2b910cf3e8af25f71aefcf295_icgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_a31278ee2b910cf3e8af25f71aefcf295_icgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_a31278ee2b910cf3e8af25f71aefcf295_icgraph" id="classlost_1_1_pipeline_input_a31278ee2b910cf3e8af25f71aefcf295_icgraph">
-<area shape="rect" title=" " alt="" coords="365,5,504,47"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="185,13,317,39"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,13,137,39"/>
+<area shape="rect" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="365,5,504,47"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,13,317,39"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,13,137,39"/>
 </map>
 </div>
 
@@ -341,18 +340,17 @@ Here is the caller graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p>For tracking. </p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p>Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc. </p>
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_astrometry_pipeline_input.html#afee0d0b50553087757c498633a9e59dc">lost::AstrometryPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00135">135</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00102">102</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_a19bb4239a2e3b6622aa168959be70d98_icgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_a19bb4239a2e3b6622aa168959be70d98_icgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_a19bb4239a2e3b6622aa168959be70d98_icgraph" id="classlost_1_1_pipeline_input_a19bb4239a2e3b6622aa168959be70d98_icgraph">
-<area shape="rect" title="For tracking." alt="" coords="196,5,335,47"/>
+<area shape="rect" title="Only used in tracking mode, in which case it is an estimate of the current attitude based on the last..." alt="" coords="196,5,335,47"/>
 <area shape="rect" href="classlost_1_1_pipeline_input.html#ade22c9a790a978c96383c6497e9567ec" title=" " alt="" coords="5,5,148,47"/>
 </map>
 </div>
@@ -381,19 +379,18 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a75645fe6b18c9de509b72ffbbe64cf3e">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#af5c60e7bfee6a569710a8cc7c40ccbac">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00141">141</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00103">103</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_af88962a236353e511724a699dab7a785_icgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_af88962a236353e511724a699dab7a785_icgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_af88962a236353e511724a699dab7a785_icgraph" id="classlost_1_1_pipeline_input_af88962a236353e511724a699dab7a785_icgraph">
 <area shape="rect" title=" " alt="" coords="365,5,504,47"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="185,13,317,39"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,13,137,39"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,13,317,39"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,13,137,39"/>
 </map>
 </div>
 
@@ -421,20 +418,19 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_astrometry_pipeline_input.html#a065f0174f055100a937af7b62f5fcef9">lost::AstrometryPipelineInput</a>, <a class="el" href="classlost_1_1_png_pipeline_input.html#a57f55058c0dcc5822f9c133210342111">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a57f55058c0dcc5822f9c133210342111">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00111">111</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00096">96</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_a4df52c585005abf1154699cb89570db8_icgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_a4df52c585005abf1154699cb89570db8_icgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_a4df52c585005abf1154699cb89570db8_icgraph" id="classlost_1_1_pipeline_input_a4df52c585005abf1154699cb89570db8_icgraph">
 <area shape="rect" title=" " alt="" coords="387,27,525,69"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="196,5,328,32"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b" title=" " alt="" coords="185,57,339,98"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,5,137,32"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="196,5,328,32"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b" title="Convert the InputImage() output into a cairo surface." alt="" coords="185,57,339,98"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
 </map>
 </div>
 
@@ -454,15 +450,17 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00295">295</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p>Convert the <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">InputImage()</a> output into a cairo surface. </p>
+<p>Convert the result of <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">InputImage()</a> into a cairo surface. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00302">302</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_a8707ebe081ca65531341eeb2b9d4ff7b_cgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_a8707ebe081ca65531341eeb2b9d4ff7b_cgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_a8707ebe081ca65531341eeb2b9d4ff7b_cgraph" id="classlost_1_1_pipeline_input_a8707ebe081ca65531341eeb2b9d4ff7b_cgraph">
-<area shape="rect" title=" " alt="" coords="5,27,159,69"/>
+<area shape="rect" title="Convert the InputImage() output into a cairo surface." alt="" coords="5,27,159,69"/>
 <area shape="rect" href="namespacelost.html#af0b05482238f0a180d5906f0e43ac3e2" title=" " alt="" coords="207,5,429,32"/>
 <area shape="rect" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="249,57,387,98"/>
 </map>
@@ -493,21 +491,18 @@ Here is the call graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p>Whether the input stars have identification information. </p>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
 <p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a6c16727bf2582645ae537c50e6fa589c">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00129">129</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00100">100</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_input_a3942b6fcacd994b5d9f841a770d895bc_icgraph.png" border="0" usemap="#classlost_1_1_pipeline_input_a3942b6fcacd994b5d9f841a770d895bc_icgraph" alt=""/></div>
 <map name="classlost_1_1_pipeline_input_a3942b6fcacd994b5d9f841a770d895bc_icgraph" id="classlost_1_1_pipeline_input_a3942b6fcacd994b5d9f841a770d895bc_icgraph">
-<area shape="rect" title="Whether the input stars have identification information." alt="" coords="372,35,511,76"/>
+<area shape="rect" title=" " alt="" coords="372,35,511,76"/>
 <area shape="rect" href="classlost_1_1_pipeline_input.html#a9cdd08fecc4186dd3b9263c1a7de2047" title=" " alt="" coords="185,5,324,47"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="189,71,321,98"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,71,137,98"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="189,71,321,98"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,71,137,98"/>
 </map>
 </div>
 
@@ -535,11 +530,10 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00123">123</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00099">99</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -547,8 +541,8 @@ Here is the caller graph for this function:</div>
 <map name="classlost_1_1_pipeline_input_aa6c9969bb4118ddf877a1000636f6486_icgraph" id="classlost_1_1_pipeline_input_aa6c9969bb4118ddf877a1000636f6486_icgraph">
 <area shape="rect" title=" " alt="" coords="372,35,511,76"/>
 <area shape="rect" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a" title=" " alt="" coords="185,5,324,47"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="189,71,321,98"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,71,137,98"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="189,71,321,98"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,71,137,98"/>
 </map>
 </div>
 
@@ -564,7 +558,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_pipeline_input.html">PipelineInput</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

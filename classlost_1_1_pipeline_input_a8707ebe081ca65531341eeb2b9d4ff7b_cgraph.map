@@ -1,5 +1,5 @@
 <map id="lost::PipelineInput::InputImageSurface" name="lost::PipelineInput::InputImageSurface">
-<area shape="rect" id="node1" title=" " alt="" coords="5,27,159,69"/>
+<area shape="rect" id="node1" title="Convert the InputImage() output into a cairo surface." alt="" coords="5,27,159,69"/>
 <area shape="rect" id="node2" href="$namespacelost.html#af0b05482238f0a180d5906f0e43ac3e2" title=" " alt="" coords="207,5,429,32"/>
 <area shape="rect" id="node3" href="$classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="249,57,387,98"/>
 </map>

@@ -1,6 +1,6 @@
 <map id="lost::PipelineComparatorCentroids" name="lost::PipelineComparatorCentroids">
-<area shape="rect" id="node1" title=" " alt="" coords="5,35,188,76"/>
+<area shape="rect" id="node1" title="Compare the actual and expected centroids, printing key stats to os" alt="" coords="5,35,188,76"/>
 <area shape="rect" id="node2" href="$namespacelost.html#a0fe01051c958fa8ced02e772aefdc991" title=" " alt="" coords="236,5,431,47"/>
-<area shape="rect" id="node3" href="$namespacelost.html#afd017fba4090829c28c431509c4cfc1c" title=" " alt="" coords="246,71,421,98"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d" title=" " alt="" coords="479,71,589,98"/>
+<area shape="rect" id="node3" href="$namespacelost.html#afd017fba4090829c28c431509c4cfc1c" title="Compare expected and actual centroids." alt="" coords="246,71,421,98"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d" title="The distance between two vectors, according to the usual distance formula." alt="" coords="479,71,589,98"/>
 </map>

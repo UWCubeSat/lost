@@ -1,5 +1,5 @@
 <map id="lost::PipelineInput::GetCatalog" name="lost::PipelineInput::GetCatalog">
-<area shape="rect" id="node1" title=" " alt="" coords="365,5,504,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title=" " alt="" coords="185,13,317,39"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title=" " alt="" coords="5,13,137,39"/>
+<area shape="rect" id="node1" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="365,5,504,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,13,317,39"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,13,137,39"/>
 </map>

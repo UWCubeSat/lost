@@ -1,4 +1,4 @@
 <map id="lost::QuaternionToDCM" name="lost::QuaternionToDCM">
-<area shape="rect" id="node1" title=" " alt="" coords="221,5,392,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title=" " alt="" coords="5,5,173,32"/>
+<area shape="rect" id="node1" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="221,5,392,32"/>
+<area shape="rect" id="node2" href="$classlost_1_1_attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="5,5,173,32"/>
 </map>

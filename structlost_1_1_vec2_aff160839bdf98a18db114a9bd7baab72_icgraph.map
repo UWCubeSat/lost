@@ -1,4 +1,4 @@
 <map id="lost::Vec2::MagnitudeSq" name="lost::Vec2::MagnitudeSq">
-<area shape="rect" id="node1" title="Squared magnitude." alt="" coords="216,5,395,32"/>
+<area shape="rect" id="node1" title="The square of the magnitude." alt="" coords="216,5,395,32"/>
 <area shape="rect" id="node2" href="$structlost_1_1_vec2.html#a358e9b88c20e79e262eaa413b41a446e" title=" " alt="" coords="5,5,168,32"/>
 </map>

@@ -1,4 +1,4 @@
 <map id="lost::GeneratedPipelineInput" name="lost::GeneratedPipelineInput">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,212,107"/>
+<area shape="rect" id="node1" title="A pipeline input which is generated (fake image)." alt="" coords="5,80,212,107"/>
 <area shape="rect" id="node2" href="$classlost_1_1_pipeline_input.html" title="Represents the input and expected outputs of a pipeline run." alt="" coords="39,5,178,32"/>
 </map>

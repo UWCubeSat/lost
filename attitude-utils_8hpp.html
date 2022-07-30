@@ -133,16 +133,22 @@ This graph shows which files directly or indirectly include this file:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1_vec2.html">lost::Vec2</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A two dimensional vector with floating point components.  <a href="structlost_1_1_vec2.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_vec3.html">lost::Vec3</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Three dimensional vector with floating point components.  <a href="classlost_1_1_vec3.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_mat3.html">lost::Mat3</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">3x3 vector with floating point components  <a href="classlost_1_1_mat3.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_euler_angles.html">lost::EulerAngles</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A "human-readable" way to represent a 3d rotation or orientation.  <a href="classlost_1_1_euler_angles.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quaternion.html">lost::Quaternion</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A quaternion is a common way to represent a 3d rotation.  <a href="classlost_1_1_quaternion.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_attitude.html">lost::Attitude</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The attitude (orientation) of a spacecraft.  <a href="classlost_1_1_attitude.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -154,28 +160,37 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:abe88691626edfb0955f7fe04bcec9375"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">lost::SerializeLengthVec3</a> ()</td></tr>
+<tr class="memdesc:abe88691626edfb0955f7fe04bcec9375"><td class="mdescLeft">&#160;</td><td class="mdescRight">The length that a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> will take up when serialized.  <a href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">More...</a><br /></td></tr>
 <tr class="separator:abe88691626edfb0955f7fe04bcec9375"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65578753ccfdbffee5d561e99c7ccf19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">lost::SerializeVec3</a> (const Vec3 &amp;vec, unsigned char *buffer)</td></tr>
+<tr class="memdesc:a65578753ccfdbffee5d561e99c7ccf19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3.  <a href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">More...</a><br /></td></tr>
 <tr class="separator:a65578753ccfdbffee5d561e99c7ccf19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a268223937ff19ee72a713631586557d3"><td class="memItemLeft" align="right" valign="top">Vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a268223937ff19ee72a713631586557d3">lost::DeserializeVec3</a> (const unsigned char *buffer)</td></tr>
 <tr class="separator:a268223937ff19ee72a713631586557d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a862ea58cf013ca5df18ab749fd563a2d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d">lost::Distance</a> (const Vec2 &amp;v1, const Vec2 &amp;v2)</td></tr>
+<tr class="memdesc:a862ea58cf013ca5df18ab749fd563a2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The distance between two vectors, according to the usual distance formula.  <a href="namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d">More...</a><br /></td></tr>
 <tr class="separator:a862ea58cf013ca5df18ab749fd563a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10f0dede807e0a46e2a09defd4270f51"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a10f0dede807e0a46e2a09defd4270f51">lost::Distance</a> (const Vec3 &amp;, const Vec3 &amp;)</td></tr>
 <tr class="separator:a10f0dede807e0a46e2a09defd4270f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08209cdf2c6b9415866d576343c35bf2"><td class="memItemLeft" align="right" valign="top">Mat3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a08209cdf2c6b9415866d576343c35bf2">lost::QuaternionToDCM</a> (const Quaternion &amp;quat)</td></tr>
+<tr class="memdesc:a08209cdf2c6b9415866d576343c35bf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a quaternion to a rotation matrix (Direction Cosine Matrix)  <a href="namespacelost.html#a08209cdf2c6b9415866d576343c35bf2">More...</a><br /></td></tr>
 <tr class="separator:a08209cdf2c6b9415866d576343c35bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bb9983e45dfa4b82b531ca96c397eed"><td class="memItemLeft" align="right" valign="top">Quaternion&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed">lost::DCMToQuaternion</a> (const Mat3 &amp;dcm)</td></tr>
+<tr class="memdesc:a6bb9983e45dfa4b82b531ca96c397eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation.  <a href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed">More...</a><br /></td></tr>
 <tr class="separator:a6bb9983e45dfa4b82b531ca96c397eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="memItemLeft" align="right" valign="top">Quaternion&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1">lost::SphericalToQuaternion</a> (float ra, float dec, float roll)</td></tr>
 <tr class="separator:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62a70a38d20ca4be158d9f592862aeb4"><td class="memItemLeft" align="right" valign="top">Vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a62a70a38d20ca4be158d9f592862aeb4">lost::SphericalToSpatial</a> (float ra, float de)</td></tr>
+<tr class="memdesc:a62a70a38d20ca4be158d9f592862aeb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert from right ascension &amp; declination to a 3d point on the unit sphere.  <a href="namespacelost.html#a62a70a38d20ca4be158d9f592862aeb4">More...</a><br /></td></tr>
 <tr class="separator:a62a70a38d20ca4be158d9f592862aeb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a922de1d7dbef8e24f5ca6e7505a8e944"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a922de1d7dbef8e24f5ca6e7505a8e944">lost::SpatialToSpherical</a> (const Vec3 &amp;vec, float *ra, float *de)</td></tr>
+<tr class="memdesc:a922de1d7dbef8e24f5ca6e7505a8e944"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert from a 3d point on the unit sphere to right ascension &amp; declination.  <a href="namespacelost.html#a922de1d7dbef8e24f5ca6e7505a8e944">More...</a><br /></td></tr>
 <tr class="separator:a922de1d7dbef8e24f5ca6e7505a8e944"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b951e30f05e0a748e6c906697002093"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">lost::Angle</a> (const Vec3 &amp;vec1, const Vec3 &amp;vec2)</td></tr>
+<tr class="memdesc:a6b951e30f05e0a748e6c906697002093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the inner angle, in radians, between two vectors.  <a href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">More...</a><br /></td></tr>
 <tr class="separator:a6b951e30f05e0a748e6c906697002093"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07ccf05a4c7ac13fbee5edb5beb309bb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb">lost::AngleUnit</a> (const Vec3 &amp;vec1, const Vec3 &amp;vec2)</td></tr>
+<tr class="memdesc:a07ccf05a4c7ac13fbee5edb5beb309bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the inner angle, in radians, between two /unit/ vectors.  <a href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb">More...</a><br /></td></tr>
 <tr class="separator:a07ccf05a4c7ac13fbee5edb5beb309bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc5108f643b7657a835838c7f6411aa7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">lost::RadToDeg</a> (float rad)</td></tr>
 <tr class="separator:adc5108f643b7657a835838c7f6411aa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,7 +207,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="attitude-utils_8hpp.html">attitude-utils.hpp</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

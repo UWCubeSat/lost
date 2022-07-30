@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classlost_1_1_multi_database_builder.h
 </div><!--header-->
 <div class="contents">
 
+<p>Class for easily creating a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>.  
+ <a href="classlost_1_1_multi_database_builder.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="databases_8hpp_source.html">databases.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -102,16 +105,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5d5467034fa3c96e1287929b146d6a80"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_builder.html#a5d5467034fa3c96e1287929b146d6a80">~MultiDatabaseBuilder</a> ()</td></tr>
 <tr class="separator:a5d5467034fa3c96e1287929b146d6a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0fd44e30041b65d3d2d61f905d8f63e"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e">AddSubDatabase</a> (int32_t magicValue, long length)</td></tr>
-<tr class="memdesc:ad0fd44e30041b65d3d2d61f905d8f63e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return pointer to the start of the space allocated for said database.  <a href="classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e">More...</a><br /></td></tr>
+<tr class="memdesc:ad0fd44e30041b65d3d2d61f905d8f63e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a database to a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>.  <a href="classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e">More...</a><br /></td></tr>
 <tr class="separator:ad0fd44e30041b65d3d2d61f905d8f63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d7164983b736aeda7cec25701bb0668"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_builder.html#a0d7164983b736aeda7cec25701bb0668">Buffer</a> ()</td></tr>
+<tr class="memdesc:a0d7164983b736aeda7cec25701bb0668"><td class="mdescLeft">&#160;</td><td class="mdescRight">When done adding databases, use this to get the buffer you should write to disk.  <a href="classlost_1_1_multi_database_builder.html#a0d7164983b736aeda7cec25701bb0668">More...</a><br /></td></tr>
 <tr class="separator:a0d7164983b736aeda7cec25701bb0668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7fa5b11c23697ded84cb091f66f00f6"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_builder.html#aa7fa5b11c23697ded84cb091f66f00f6">BufferLength</a> ()</td></tr>
+<tr class="memdesc:aa7fa5b11c23697ded84cb091f66f00f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The length of the buffer returned by Buffer.  <a href="classlost_1_1_multi_database_builder.html#aa7fa5b11c23697ded84cb091f66f00f6">More...</a><br /></td></tr>
 <tr class="separator:aa7fa5b11c23697ded84cb091f66f00f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00160">160</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<div class="textblock"><p>Class for easily creating a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00111">111</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac064cc9d5aff5132ea76b2880ceec847"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac064cc9d5aff5132ea76b2880ceec847">&#9670;&nbsp;</a></span>MultiDatabaseBuilder()</h2>
@@ -135,9 +141,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section note"><dt>Note</dt><dd>the () after new ensures it's zero-initialized </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00166">166</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00113">113</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -156,7 +161,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00366">366</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00363">363</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 
 </div>
 </div>
@@ -187,25 +192,25 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Return pointer to the start of the space allocated for said database. </p>
+<p>Add a database to a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">magicValue</td><td></td></tr>
-    <tr><td class="paramname">length</td><td></td></tr>
+    <tr><td class="paramname">magicValue</td><td>A value unique to this type of database which is used to extract it out of the database later. </td></tr>
+    <tr><td class="paramname">length</td><td>The number of bytes to allocate for this database. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the start of the space allocated for said database. Return null if full. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the start of the space allocated for said database. Return null if full (too many databases). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00337">337</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00335">335</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_multi_database_builder_ad0fd44e30041b65d3d2d61f905d8f63e_icgraph.png" border="0" usemap="#classlost_1_1_multi_database_builder_ad0fd44e30041b65d3d2d61f905d8f63e_icgraph" alt=""/></div>
 <map name="classlost_1_1_multi_database_builder_ad0fd44e30041b65d3d2d61f905d8f63e_icgraph" id="classlost_1_1_multi_database_builder_ad0fd44e30041b65d3d2d61f905d8f63e_icgraph">
-<area shape="rect" title="Return pointer to the start of the space allocated for said database." alt="" coords="483,5,677,47"/>
-<area shape="rect" href="namespacelost.html#af5acd5430716bdd9bd29cd60d667cd46" title=" " alt="" coords="236,13,435,39"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title=" " alt="" coords="5,13,188,39"/>
+<area shape="rect" title="Add a database to a MultiDatabase." alt="" coords="503,5,697,47"/>
+<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,5,455,47"/>
+<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,13,188,39"/>
 </map>
 </div>
 
@@ -233,9 +238,10 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00175">175</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p>When done adding databases, use this to get the buffer you should write to disk. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00120">120</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -261,9 +267,10 @@ Here is the caller graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00181">181</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p>The length of the buffer returned by Buffer. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00122">122</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -277,7 +284,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_multi_database_builder.html">MultiDatabaseBuilder</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

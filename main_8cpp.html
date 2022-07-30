@@ -157,7 +157,7 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a089bd9a13d6fb6149353c65fdf20f83c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a>()</td></tr>
-<tr class="memdesc:a089bd9a13d6fb6149353c65fdf20f83c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle optional CLI arguments.  <a href="main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c">More...</a><br /></td></tr>
+<tr class="memdesc:a089bd9a13d6fb6149353c65fdf20f83c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle optional CLI arguments <a href="https://stackoverflow.com/a/69177115">https://stackoverflow.com/a/69177115</a>.  <a href="main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c">More...</a><br /></td></tr>
 <tr class="separator:a089bd9a13d6fb6149353c65fdf20f83c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68d9f1b201a18b8388ba6593ab8039f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)&#160;&#160;&#160;prop,</td></tr>
 <tr class="separator:a68d9f1b201a18b8388ba6593ab8039f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,10 +175,9 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ad716669cae846c56701cf10aff6f8e5f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad716669cae846c56701cf10aff6f8e5f">lost::atobool</a> (const char *cstr)</td></tr>
-<tr class="memdesc:ad716669cae846c56701cf10aff6f8e5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a character to a boolean.  <a href="namespacelost.html#ad716669cae846c56701cf10aff6f8e5f">More...</a><br /></td></tr>
+<tr class="memdesc:ad716669cae846c56701cf10aff6f8e5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert string to boolean.  <a href="namespacelost.html#ad716669cae846c56701cf10aff6f8e5f">More...</a><br /></td></tr>
 <tr class="separator:ad716669cae846c56701cf10aff6f8e5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c04138a5bfe5d72780bb7e82a18e627"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a> (int argc, char **argv)</td></tr>
-<tr class="memdesc:a3c04138a5bfe5d72780bb7e82a18e627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main function.  <a href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">More...</a><br /></td></tr>
 <tr class="separator:a3c04138a5bfe5d72780bb7e82a18e627"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -542,10 +541,9 @@ Functions</h2></td></tr>
 <div class="line">     ? (<span class="keywordtype">bool</span>) (optarg = argv[optind++])                          \</div>
 <div class="line">     : (optarg != NULL))</div>
 </div><!-- fragment -->
-<p>Handle optional CLI arguments. </p>
-<p><a href="https://stackoverflow.com/a/69177115">https://stackoverflow.com/a/69177115</a> </p>
+<p>Handle optional CLI arguments <a href="https://stackoverflow.com/a/69177115">https://stackoverflow.com/a/69177115</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00141">141</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00117">117</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
@@ -576,29 +574,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Main function. </p>
-<p>Runs the Lost pipeline. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">argc</td><td>Number of arguments </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">argv</td><td>Arguments </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, 1 on error </dd></dl>
-<dl class="section see"><dt>See also</dt><dd>lost::LostMain </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00292">292</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00247">247</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="amain_8cpp_html_a089bd9a13d6fb6149353c65fdf20f83c"><div class="ttname"><a href="main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a></div><div class="ttdeci">#define LOST_OPTIONAL_OPTARG()</div><div class="ttdoc">Handle optional CLI arguments.</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00141">main.cpp:141</a></div></div>
+<div class="ttc" id="amain_8cpp_html_a089bd9a13d6fb6149353c65fdf20f83c"><div class="ttname"><a href="main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a></div><div class="ttdeci">#define LOST_OPTIONAL_OPTARG()</div><div class="ttdoc">Handle optional CLI arguments https://stackoverflow.com/a/69177115.</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00117">main.cpp:117</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="main_8cpp.html">main.cpp</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

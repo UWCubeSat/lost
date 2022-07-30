@@ -1,4 +1,4 @@
 <map id="lost::IterativeWeightedCenterOfGravityAlgorithm" name="lost::IterativeWeightedCenterOfGravityAlgorithm">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,219,121"/>
-<area shape="rect" id="node2" href="$classlost_1_1_centroid_algorithm.html" title=" " alt="" coords="25,5,199,32"/>
+<area shape="rect" id="node1" title="A more complicated centroid algorithm which doesn&#39;t perform much better than CenterOfGravityAlgorithm..." alt="" coords="5,80,219,121"/>
+<area shape="rect" id="node2" href="$classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="25,5,199,32"/>
 </map>

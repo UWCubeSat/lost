@@ -93,6 +93,9 @@ $(document).ready(function(){initNavTree('classlost_1_1_centroid_comparison.html
 <div class="title">lost::CentroidComparison Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The result of comparing actual and expected centroids Used for debugging and benchmarking.  
+ <a href="classlost_1_1_centroid_comparison.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -102,7 +105,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ac1e005780ebb245a3baafde37654aafa"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_centroid_comparison.html#ac1e005780ebb245a3baafde37654aafa">meanError</a></td></tr>
-<tr class="memdesc:ac1e005780ebb245a3baafde37654aafa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Average distance from actual to expected star.  <a href="classlost_1_1_centroid_comparison.html#ac1e005780ebb245a3baafde37654aafa">More...</a><br /></td></tr>
+<tr class="memdesc:ac1e005780ebb245a3baafde37654aafa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Average distance from actual to expected centroids (in pixels) Only correct centroids are considered in this average.  <a href="classlost_1_1_centroid_comparison.html#ac1e005780ebb245a3baafde37654aafa">More...</a><br /></td></tr>
 <tr class="separator:ac1e005780ebb245a3baafde37654aafa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0efd4fa65ca9e2a5e387b9c1232a0856"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_centroid_comparison.html#a0efd4fa65ca9e2a5e387b9c1232a0856">numExtraStars</a></td></tr>
 <tr class="memdesc:a0efd4fa65ca9e2a5e387b9c1232a0856"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stars in actual but not expected.  <a href="classlost_1_1_centroid_comparison.html#a0efd4fa65ca9e2a5e387b9c1232a0856">More...</a><br /></td></tr>
@@ -112,8 +115,9 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a79a7c2c75e4dbda95b47d23b26d63dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00847">847</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<div class="textblock"><p>The result of comparing actual and expected centroids Used for debugging and benchmarking. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00836">836</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad46cc5ba0521e788511aac2bbdc2569d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad46cc5ba0521e788511aac2bbdc2569d">&#9670;&nbsp;</a></span>CentroidComparison()</h2>
@@ -138,7 +142,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00850">850</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00838">838</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -155,9 +159,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Average distance from actual to expected star. </p>
+<p>Average distance from actual to expected centroids (in pixels) Only correct centroids are considered in this average. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00850">850</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00838">838</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -174,9 +178,9 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Stars in actual but not expected. </p>
-<p>Ideally 0 </p><dl class="section note"><dt>Note</dt><dd>This is a float because we may average multiple centroid comparisons together. </dd></dl>
+<p>Ideally 0 This is a float because we may average multiple centroid comparisons together. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00858">858</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00849">849</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -193,12 +197,9 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Stars in expected but not actual. </p>
-<p>Ideally 0 </p><dl class="section note"><dt>Note</dt><dd>This is a float because we may average multiple centroid comparisons together. </dd>
-<dd>
-Mark P. says "I would add 99th percentile or something, but the really far away stars should really just
-count in extra_num" </dd></dl>
+<p>Ideally 0 This is a float because we may average multiple centroid comparisons together. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00866">866</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00855">855</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -211,7 +212,7 @@ count in extra_num" </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_centroid_comparison.html">CentroidComparison</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

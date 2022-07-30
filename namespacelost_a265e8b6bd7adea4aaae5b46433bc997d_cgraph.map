@@ -1,12 +1,12 @@
 <map id="lost::PyramidIdentifyRemainingStars" name="lost::PyramidIdentifyRemainingStars">
-<area shape="rect" id="node1" title=" " alt="" coords="5,107,232,149"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title=" " alt="" coords="332,5,451,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title=" " alt="" coords="280,56,503,83"/>
-<area shape="rect" id="node5" href="$classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the stars between min and max." alt="" coords="294,107,489,149"/>
-<area shape="rect" id="node7" href="$classlost_1_1_pair_distance_involving_iterator.html#aa0c80d2dd6fd6ee6f86dee59f0e43468" title=" " alt="" coords="294,173,489,214"/>
-<area shape="rect" id="node8" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title=" " alt="" coords="311,239,471,265"/>
+<area shape="rect" id="node1" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="5,107,232,149"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="332,5,451,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="280,56,503,83"/>
+<area shape="rect" id="node5" href="$classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="294,107,489,149"/>
+<area shape="rect" id="node7" href="$classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="294,173,489,214"/>
+<area shape="rect" id="node8" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="311,239,471,265"/>
 <area shape="rect" id="node4" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="551,56,720,83"/>
-<area shape="rect" id="node6" href="$classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds at least all the entries containing the given range." alt="" coords="565,107,705,149"/>
+<area shape="rect" id="node6" href="$classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="565,107,705,149"/>
 <area shape="rect" id="node9" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="554,239,717,265"/>
-<area shape="rect" id="node10" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title=" " alt="" coords="768,239,947,265"/>
+<area shape="rect" id="node10" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="768,239,947,265"/>
 </map>

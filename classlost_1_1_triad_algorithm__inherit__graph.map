@@ -1,4 +1,4 @@
 <map id="lost::TriadAlgorithm" name="lost::TriadAlgorithm">
-<area shape="rect" id="node1" title=" " alt="" coords="19,95,168,121"/>
-<area shape="rect" id="node2" href="$classlost_1_1_attitude_estimation_algorithm.html" title=" " alt="" coords="5,5,181,47"/>
+<area shape="rect" id="node1" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="19,95,168,121"/>
+<area shape="rect" id="node2" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="5,5,181,47"/>
 </map>

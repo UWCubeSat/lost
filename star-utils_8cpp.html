@@ -125,20 +125,26 @@ Functions</h2></td></tr>
 <tr class="memitem:a5c01d4154fbfefd3af1f3c081a372035"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">lost::CatalogStarMagnitudeCompare</a> (const CatalogStar &amp;a, const CatalogStar &amp;b)</td></tr>
 <tr class="separator:a5c01d4154fbfefd3af1f3c081a372035"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a1ecb78b66d778ff4de71f1b60b7309"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8a1ecb78b66d778ff4de71f1b60b7309">lost::NarrowCatalog</a> (const Catalog &amp;catalog, int maxMagnitude, int maxStars)</td></tr>
+<tr class="memdesc:a8a1ecb78b66d778ff4de71f1b60b7309"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove dim stars from a catalog.  <a href="namespacelost.html#a8a1ecb78b66d778ff4de71f1b60b7309">More...</a><br /></td></tr>
 <tr class="separator:a8a1ecb78b66d778ff4de71f1b60b7309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b70ef5e26df21014df9d1370e1a298f"><td class="memItemLeft" align="right" valign="top">const CatalogStar *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6b70ef5e26df21014df9d1370e1a298f">lost::findNamedStar</a> (const Catalog &amp;catalog, int name)</td></tr>
-<tr class="separator:a6b70ef5e26df21014df9d1370e1a298f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f79cfbc58b6a256964a43014760ba67"><td class="memItemLeft" align="right" valign="top">const CatalogStar *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5f79cfbc58b6a256964a43014760ba67">lost::FindNamedStar</a> (const Catalog &amp;catalog, int name)</td></tr>
+<tr class="memdesc:a5f79cfbc58b6a256964a43014760ba67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the star with the given name, or NULL if not found.  <a href="namespacelost.html#a5f79cfbc58b6a256964a43014760ba67">More...</a><br /></td></tr>
+<tr class="separator:a5f79cfbc58b6a256964a43014760ba67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18edb7eda27b641f898fe6bcd9a37dc0"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">lost::SerializeLengthCatalogStar</a> (bool inclMagnitude, bool inclName)</td></tr>
 <tr class="separator:a18edb7eda27b641f898fe6bcd9a37dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">lost::SerializeCatalogStar</a> (const CatalogStar &amp;catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer)</td></tr>
+<tr class="memdesc:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a> into a byte buffer.  <a href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">More...</a><br /></td></tr>
 <tr class="separator:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9238a92be7c82c102f015c90ce10536"><td class="memItemLeft" align="right" valign="top">CatalogStar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">lost::DeserializeCatalogStar</a> (const unsigned char *buffer, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:ae9238a92be7c82c102f015c90ce10536"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog star.  <a href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">More...</a><br /></td></tr>
 <tr class="separator:ae9238a92be7c82c102f015c90ce10536"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0b24b666a681eccbaacf52b37c6b09b"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">lost::SerializeLengthCatalog</a> (const Catalog &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
 <tr class="separator:ac0b24b666a681eccbaacf52b37c6b09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71348982edf43778012c9682bfa99521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a71348982edf43778012c9682bfa99521">lost::SerializeCatalog</a> (const Catalog &amp;catalog, bool inclMagnitude, bool inclName, unsigned char *buffer)</td></tr>
+<tr class="memdesc:a71348982edf43778012c9682bfa99521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the catalog to <code>buffer</code>.  <a href="namespacelost.html#a71348982edf43778012c9682bfa99521">More...</a><br /></td></tr>
 <tr class="separator:a71348982edf43778012c9682bfa99521"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4b650ecb61d27c188477fc9fbf4c886"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">lost::DeserializeCatalog</a> (const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
+<tr class="memdesc:af4b650ecb61d27c188477fc9fbf4c886"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <a href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">More...</a><br /></td></tr>
 <tr class="separator:af4b650ecb61d27c188477fc9fbf4c886"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
@@ -147,7 +153,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="star-utils_8cpp.html">star-utils.cpp</a></li>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

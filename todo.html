@@ -90,18 +90,14 @@ $(document).ready(function(){initNavTree('todo.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt>Member <a class="el" href="classlost_1_1_attitude_estimation_algorithm.html#a4ec6765403adace17271b469851dadf7">lost::AttitudeEstimationAlgorithm::Go</a>  (const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)=0</dt>
+<dt>Member <a class="el" href="classlost_1_1_attitude_estimation_algorithm.html#a4ec6765403adace17271b469851dadf7">lost::AttitudeEstimationAlgorithm::Go</a>  (const <a class="el" href="classlost_1_1_camera.html" title="A full description of a camera. Enough information to reconstruct the camera matrix and then some.">Camera</a> &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)=0</dt>
 <dd><a class="anchor" id="_todo000001"></a>More detail in return type (eg, whether attitude estimation failed, measure of error)  </dd>
-<dt>Class <a class="el" href="classlost_1_1_k_vector_index.html">lost::KVectorIndex</a>  </dt>
-<dd><a class="anchor" id="_todo000003"></a>QueryConservative, and QueryTrapezoidal which interpolates linearly between endpoints  </dd>
-<dt>Class <a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">lost::PairDistanceKVectorDatabase</a>  </dt>
-<dd><a class="anchor" id="_todo000004"></a>Trapezoidal interpolation  </dd>
 <dt>Member <a class="el" href="structlost_1_1_pipeline_output.html#a18bcd3f7aa001bd26cbc67a2ae3ffcca">lost::PipelineOutput::catalog</a>  </dt>
-<dd><a class="anchor" id="_todo000006"></a>Don't store it here  </dd>
-<dt>Member <a class="el" href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250">lost::Quaternion::Angle</a>  () const</dt>
-<dd><a class="anchor" id="_todo000002"></a>we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)  </dd>
-<dt>Member <a class="el" href="classlost_1_1_triple_inner_k_vector_database.html#a6b91bf1fd251fe16e6b79027c909b049">lost::TripleInnerKVectorDatabase::FindTriplesLiberal</a>  (float min, float max, long **begin, long **end) const</dt>
-<dd><a class="anchor" id="_todo000005"></a>Trapezoidal interpolation </dd>
+<dd><a class="anchor" id="_todo000004"></a>Don't store it here  </dd>
+<dt>Member <a class="el" href="classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe">lost::PngPipelineInput::PngPipelineInput</a>  (cairo_surface_t *, <a class="el" href="classlost_1_1_camera.html" title="A full description of a camera. Enough information to reconstruct the camera matrix and then some.">Camera</a>, const Catalog &amp;)</dt>
+<dd><a class="anchor" id="_todo000003"></a>should rename, not specific to PNG.  </dd>
+<dt>Member <a class="el" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c">lost::SerializeKVectorIndex</a>  (const std::vector&lt; float &gt; &amp;values, float min, float max, long numBins, unsigned char *buffer)</dt>
+<dd><a class="anchor" id="_todo000002"></a>Consider replacing min and max parameters by just calculating the min and max of values? </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
@@ -109,7 +105,7 @@ $(document).ready(function(){initNavTree('todo.html',''); initResizable(); });
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jul 26 2022 01:01:01 for LOST by
+    <li class="footer">Generated on Sat Jul 30 2022 20:33:52 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

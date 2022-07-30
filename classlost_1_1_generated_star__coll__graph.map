@@ -1,5 +1,5 @@
 <map id="lost::GeneratedStar" name="lost::GeneratedStar">
-<area shape="rect" id="node1" title=" " alt="" coords="5,171,153,197"/>
-<area shape="rect" id="node2" href="$classlost_1_1_star.html" title=" " alt="" coords="107,95,187,121"/>
-<area shape="rect" id="node3" href="$structlost_1_1_vec2.html" title=" " alt="" coords="25,5,110,32"/>
+<area shape="rect" id="node1" title="A star used in simulated image generation. Contains extra data about how to simulate the star." alt="" coords="5,171,153,197"/>
+<area shape="rect" id="node2" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="107,95,187,121"/>
+<area shape="rect" id="node3" href="$structlost_1_1_vec2.html" title="A two dimensional vector with floating point components." alt="" coords="25,5,110,32"/>
 </map>
