@@ -30,19 +30,13 @@ namespace lost {
 
 const char kNoDefaultArgument = 0;
 
-/**
- * @brief
- * @details
- */
+/// An output stream which might be a file or stdout
 class PromptedOutputStream {
 public:
     explicit PromptedOutputStream(std::string filePath);
     ~PromptedOutputStream();
 
-    /**
-     * @brief
-     * @return
-     */
+    /// return the inner output stream, suitable for use with <<
     std::ostream &Stream() { return *stream; };
 
 private:
@@ -64,19 +58,16 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width,
 
 // type for functions that create a centroid algorithm (by prompting the user usually)
 
-/**
- * @brief
- * @details
- */
+/// An 8-bit grayscale 2d image
 class Image {
 public:
-    /// @brief
+    /**
+     * The raw pixel data in the image.
+     * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte is pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits may be added in the future.
+     */
     unsigned char *image;
 
-    /// @brief
     int width;
-
-    /// @brief
     int height;
 };
 
@@ -84,10 +75,7 @@ public:
 // PIPELINE INPUT //
 ////////////////////
 
-/**
- * @brief
- * @details
- */
+/// The command line options passed when running a pipeline
 class PipelineOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
@@ -97,70 +85,34 @@ public:
 };
 
 /**
- * @brief Represents the input and expected outputs of a pipeline run.
- * @details
+ * Represents the input and expected outputs of a pipeline run.
+ * This is all the data about the pipeline we are about to run that can be gathered without actually running the pipeline. The "input" members return the things that will be fed into the pipeline. The "expected" methods return the "correct" outputs, i.e. what a perfect star tracking algorithm would output (this is only meaningful whe the image is generated, otherwise we don't know the correct output!). The "expected" methods are used to evaluate the quality of our algorithms. Some of the methods (both input and expected) may return NULL for certain subclasses.
+ * By default, the "expected" methods return the corresponding inputs, which is reasonable behavior unless you are trying to intentionally introduce error into the inputs.
  */
 class PipelineInput {
 public:
-    /// @brief
     virtual ~PipelineInput(){};
-    /**
-     * @brief
-     * @return
-     */
+
     virtual const Image *InputImage() const { return NULL; };
-
-    /**
-     * @brief
-     * @return
-     */
+    /// The catalog to which catalog indexes returned from other methods refer.
     virtual const Catalog &GetCatalog() const = 0;
-
-    /**
-     * @brief
-     * @return
-     */
     virtual const Stars *InputStars() const { return NULL; };
-
-    /**
-     * @brief Whether the input stars have identification information.
-     * @return
-     */
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
-
-    /**
-     * @brief For tracking
-     * @return
-     */
+    /// Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.
     virtual const Attitude *InputAttitude() const { return NULL; };
-
-    /**
-     * @brief
-     * @return
-     */
     virtual const Camera *InputCamera() const { return NULL; };
-
-    /**
-     * @brief
-     * @return
-     */
-    virtual const Stars *ExpectedStars() const { return InputStars(); };
-
-    /**
-     * @brief
-     * @return
-     */
-    virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
-
-    /**
-     * @brief
-     * @return
-     */
-    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
-
+    /// Convert the InputImage() output into a cairo surface
     cairo_surface_t *InputImageSurface() const;
+
+    virtual const Stars *ExpectedStars() const { return InputStars(); };
+    virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
+    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 };
 
+/**
+ * A pipeline input which is generated (fake image).
+ * Uses a pretty decent image generation algorithm to create a fake image as the basis for a pipeline input. Since we know everything about the generated image, all of the input and expected methods are available.
+ */
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
@@ -182,7 +134,6 @@ public:
     const Catalog &GetCatalog() const { return catalog; };
 
 private:
-    // we don't use an Image here because we want to
     std::vector<unsigned char> imageData;
     Image image;
     Stars stars;
@@ -196,30 +147,13 @@ typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
 PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
-/**
- * @brief
- * @details
- */
+/// A pipeline input created by reading a PNG from a file on disk.
 class PngPipelineInput : public PipelineInput {
 public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
 
-    /**
-     * @brief
-     * @return
-     */
     const Image *InputImage() const { return &image; };
-
-    /**
-     * @brief
-     * @return
-     */
     const Camera *InputCamera() const { return &camera; };
-
-    /**
-     * @brief
-     * @return
-     */
     const Catalog &GetCatalog() const { return catalog; };
 
 private:
@@ -233,17 +167,12 @@ private:
 /////////////////////
 
 /**
- * @brief
- * @details
+ * @brief The result of running a pipeline.
+ * @details Also stores intermediate outputs, not just the final attitude.
  */
 struct PipelineOutput {
-    /// @brief
     std::unique_ptr<Stars> stars;
-
-    /// @brief
     std::unique_ptr<StarIdentifiers> starIds;
-
-    /// @brief
     std::unique_ptr<Attitude> attitude;
 
     /**
@@ -253,24 +182,21 @@ struct PipelineOutput {
     Catalog catalog;
 };
 
-/**
- * @brief
- * @details
- */
+/// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
-    /// @brief
+    /// The number of centroids which were identified as the correct catalog star.
     int numCorrect;
 
-    /// @brief
+    /// The number of centroids which were identified, but as the wrong catalog star.
     int numIncorrect;
 
-    /// @brief
+    /// The total number of true stars in the image (the number the ideal star-id algorithm would identify)
     int numTotal;
 
-    /// @brief
+    /// numCorrect/numTotal
     float fractionCorrect;
 
-    /// @brief
+    /// numIncorrect/numTotal
     float fractionIncorrect;
 };
 
@@ -287,17 +213,13 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 //////////////
 
 /**
- * @brief A pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
- * @details
+ * @brief A set of algorithms that describes all or part of the star-tracking "pipeline"
+ * @details A centroiding algorithm identifies the (x,y) pixel coordinates of each star detected in the raw image. The star id algorithm then determines which centroid corresponds to which catalog star. Finally, the attitude estimation algorithm determines the orientation of the camera based on the centroids and identified stars.
  */
 class Pipeline {
     friend Pipeline SetPipeline(const PipelineOptions &values);
 
 public:
-    /**
-     * @brief
-     * @note Pointers just so they're nullable
-     */
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
@@ -325,10 +247,7 @@ void PipelineComparison(const PipelineInputList &expected,
 // TODO: rename
 Catalog PromptNarrowedCatalog(const Catalog &);
 
-/**
- * @brief
- * @details
- */
+/// Commannd line options when using the `database` command.
 class DatabaseOptions {
 public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \

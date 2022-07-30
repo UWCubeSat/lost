@@ -10,16 +10,8 @@
 
 namespace lost {
 
-/**
- * @brief
- * @param database
- * @param stars
- * @param catalog
- * @param camera
- * @return
- */
 StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    const unsigned char *, const Stars &stars, const Catalog &catalog, const Camera &) const {
 
     StarIdentifiers result;
 
@@ -31,14 +23,6 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
     return result;
 }
 
-/**
- * @brief
- * @param database
- * @param stars
- * @param catalog
- * @param camera
- * @return
- */
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
@@ -163,10 +147,8 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     return verified;
 }
 
-/**
- * @brief
- * @details
- * @note Strategies:
+/*
+ * Strategies:
  * 1. For each star, enumerate all stars which have the same combination of distances to some
  *  other stars, getting down to a hopefully small (<10) list of candidates for each star, then
  *  do a quad-nested loop to correlate them.
@@ -175,26 +157,31 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
  * i-loop. When a possible ij combination is found, loop through k stars according to ik. IF
  * none are found, continue the outer i loop. If some are found, check jk for each one. For each possible ijk triangle,
  */
+
+/**
+ * Given a list of star pairs, finds all those pairs which involve a certain star.
+ * Here "involve" means that one of the two stars in the pair is the given star.
+ */
 class PairDistanceInvolvingIterator {
 public:
     /**
-     * @brief
-     * @note Unqualified constructor makes a "past-the-end" iterator
+     * Create a "past-the-end" iterator.
+     * If another PairDistanceInvolvingIterator is equal to this, then it is done iterating.
      */
     PairDistanceInvolvingIterator()
         : pairs(NULL), end(NULL) { };
 
     /**
-     * @brief
-     * @param pairs
-     * @param end
-     * @param involving
+     * The main constructor.
+     * @param pairs Start of an array of star pairs
+     * @param end "past-the-end" pointer for \p pairs
+     * @param The catalog index that we want to be involved in the outputted pairs.
      */
     PairDistanceInvolvingIterator(const int16_t *pairs, const int16_t *end, int16_t involving)
         : pairs(pairs), end(end), involving(involving) {
 
         assert((end-pairs)%2 == 0);
-        forwardUntilInvolving();
+        ForwardUntilInvolving();
     };
 
     // PairDistanceInvolvingIterator operator++() {
@@ -203,30 +190,21 @@ public:
     //     return result;
     // }
 
-    /**
-     * @brief
-     * @return
-     */
+    /// Move to the next matching pair.
     PairDistanceInvolvingIterator &operator++() {
-        assert(hasValue());
+        assert(HasValue());
         pairs += 2;
-        forwardUntilInvolving();
+        ForwardUntilInvolving();
         return *this;
     }
 
-    /**
-     * @brief
-     * @return
-     */
+    /// Access the curent pair.
     int16_t operator*() const {
         return curValue;
     }
 
-    /**
-     * @brief
-     * @return
-     */
-    bool hasValue() {
+    /// Whether the iterator is currently on a value. (false if iteration is complete)
+    bool HasValue() {
         return pairs != end;
     }
 
@@ -243,8 +221,8 @@ private:
     int16_t involving;
     int16_t curValue;
 
-    // like postfix++, except it's a no-op if already on a valid spot.
-    void forwardUntilInvolving() {
+    /// like postfix++, except it's a no-op if already on a valid spot.
+    void ForwardUntilInvolving() {
         while (pairs != end) {
             if (pairs[0] == involving) {
                 curValue = pairs[1];
@@ -259,6 +237,7 @@ private:
     }
 };
 
+/// After some stars have been identified, try to idenify the rest using a faster algorithm.
 void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
                                    const Stars &stars,
                                    const Catalog &catalog,
@@ -294,7 +273,7 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
 
         std::vector<int16_t> pCandidates; // collect them all in the loop, at the end only identify
                                           // the star if unique
-        while (pIterator.hasValue()) {
+        while (pIterator.HasValue()) {
             bool ok = true;
             for (int l = 1; l < 4; l++) {
                 float actualDist = AngleUnit(pSpatial, pyramidActualSpatials[l]);
@@ -322,14 +301,6 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
     }
 }
 
-/**
- * @brief
- * @param database
- * @param stars
- * @param catalog
- * @param camera
- * @return
- */
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
@@ -460,15 +431,15 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         std::vector<int16_t> jCandidates;
                         std::vector<int16_t> kCandidates;
                         std::vector<int16_t> rCandidates;
-                        while (jIterator.hasValue()) {
+                        while (jIterator.HasValue()) {
                             jCandidates.push_back(*jIterator);
                             ++jIterator;
                         }
-                        while (kIterator.hasValue()) {
+                        while (kIterator.HasValue()) {
                             kCandidates.push_back(*kIterator);
                             ++kIterator;
                         }
-                        while (rIterator.hasValue()) {
+                        while (rIterator.HasValue()) {
                             rCandidates.push_back(*rIterator);
                             ++rIterator;
                         }

@@ -4,14 +4,6 @@
 
 namespace lost {
 
-/**
- * @brief
- * @param camera
- * @param stars
- * @param catalog
- * @param starIdentifiers
- * @return
- */
 Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
                                  const Catalog &catalog,
@@ -75,7 +67,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                maxEigenvector[3].real()));
 }
 
-// return a matrix whose columns are the axes of the frame
+/// return a matrix whose columns are the axes of the frame
 static Mat3 TriadCoordinateFrame(Vec3 v1, Vec3 v2) {
     Vec3 d1 = v1.Normalize();
     Vec3 d2 = v1.crossProduct(v2).Normalize();
@@ -87,20 +79,12 @@ static Mat3 TriadCoordinateFrame(Vec3 v1, Vec3 v2) {
     };
 }
 
-/**
- * @brief
- * @param camera
- * @param stars
- * @param catalog
- * @param starIds
- * @return
- */
 Attitude TriadAlgorithm::Go(const Camera &camera,
                             const Stars &stars,
                             const Catalog &catalog,
                             const StarIdentifiers &starIds) {
     if ((int)stars.size() < 2 || (int)starIds.size() < 2) {
-        return Quaternion(1,0,0,0);
+        return Attitude(Quaternion(1,0,0,0));
     }
 
     // TODO: Better way of picking the two stars
