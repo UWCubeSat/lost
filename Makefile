@@ -26,6 +26,7 @@ TESTS := $(wildcard test/*.cpp)
 MANS := $(wildcard documentation/*.man)
 MAN_TXTS := $(patsubst documentation/%.man, documentation/%.txt, $(MANS))
 MAN_HS := $(patsubst documentation/%.man, documentation/man-%.h, $(MANS))
+DOXYGEN_DIR := ./documentation/doxygen
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS)) # includes tests
@@ -35,7 +36,7 @@ TEST_BIN := ./lost-test
 BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -pedantic --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
 
 all: $(BIN) $(BSC)
 
@@ -56,6 +57,9 @@ src/main.o: $(MAN_HS)
 docs:
 	doxygen
 
+lint:
+	cpplint --recursive src test
+
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
@@ -69,11 +73,11 @@ test: $(BIN) $(BSC) $(TEST_BIN)
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
-
 clean:
 	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
+	rm -rf $(DOXYGEN_DIR)
 
 clean_all: clean
 	rm -f $(BSC)
 
-.PHONY: all clean test
+.PHONY: all clean test docs lint
