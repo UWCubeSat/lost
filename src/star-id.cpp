@@ -194,8 +194,8 @@ uint64_t TetraStarIdAlgorithm::hashInt(uint64_t oldHash, uint64_t key) const {
 
 /**
  * Hash function, takes in a Pattern and produces a corresponding catalog
- * position Hash is based on Pattern's bins NOTE: this function just computes an
- * index, doesn't put anything in the actual catalog
+ * position. Hash is based on Pattern's bins NOTE: this function just computes
+ * an index, doesn't put anything in the actual catalog
  * @param patt
  * @return
  */
@@ -398,7 +398,14 @@ bool TetraStarIdAlgorithm::getMatchingPattern(tetra::Pattern imgPattern,
         // This can actually succeed
         // cout << "CHECK BINS: " << checkSameBins(imgPattern, cp) << endl;
         if (checkSameBins(imgPattern, cp)) {
+            cout << "CHECK: Bins same" << endl;
+            // TESTING: must remove later
+            // Basically as a test I'll return the pattern found at position
+            // *catalogPattern = cp;
+            // return true;
+
             if (isMatch(imgPattern, cp)) {
+                cout << "MATCH TOO!!!!!!!!" << endl;
                 if (foundMatch) {
                     // found multiple matching Patterns in catalog, so return
                     // false
@@ -411,7 +418,7 @@ bool TetraStarIdAlgorithm::getMatchingPattern(tetra::Pattern imgPattern,
             }
             if (cp.isLast) {
                 // cout << "LAST" << endl; // TODO: possible
-                // cout << "islast" << endl;
+                cout << "ISLAST" << endl;
                 break;
             }
         }
@@ -482,15 +489,21 @@ bool TetraStarIdAlgorithm::identifyStars(
         for (int j = i + 1; j < tetra::numPattStars; j++) {
             const Vec3 star1 = imageStars[imageStarInds[i]];
             const Vec3 star2 = imageStars[imageStarInds[j]];
+            // cout << "star 2: " << star2.x << " " << star2.y << " " << star2.z
+            //      << endl;
             float newEdgeLength = Distance(star1, star2);
             if (newEdgeLength > largestEdgeLength) {
                 largestEdgeLength = newEdgeLength;
 
                 newPattern.leStarID1 = imageStarInds[i];
                 newPattern.leStarID2 = imageStarInds[j];
+                cout << "LE ids: " << imageStarInds[i] << " "
+                     << imageStarInds[j] << endl;
             }
         }
     }
+    cout << "new pattern LE: " << newPattern.leStarID1 << " "
+         << newPattern.leStarID2 << endl;
 
     newPattern.leLength =
         (largestEdgeLength / tetra::maxLELength) * ((1 << 16) - 1);
@@ -566,6 +579,7 @@ bool TetraStarIdAlgorithm::identifyStars(
             newPattern.features[i] =
                 newPattern.features[tetra::numPattStars - 3 - i];
             newPattern.features[tetra::numPattStars - 3 - i] = temp;
+            // cout << "temp: " << temp << endl;
         }
         int temp = newPattern.leStarID1;
         newPattern.leStarID1 = newPattern.leStarID2;
@@ -575,11 +589,12 @@ bool TetraStarIdAlgorithm::identifyStars(
     // Find matching catalog pattern
     if (!getMatchingPattern(newPattern, &catPattern, patternCatalog)) {
         // TODO: error, failing here
-        // cout << "Match fail" << endl;
+        cout << "ERROR: getMatchingPattern() call fail" << endl;
         return false;
     }
 
     matches[0][0] = newPattern.leStarID1;
+    // cout << "WHAT: " << matches[0][0] << endl; // ERROR: didn't reach here
     matches[1][0] = newPattern.leStarID2;
     matches[0][1] = catPattern.leStarID1;
     matches[1][1] = catPattern.leStarID2;
@@ -649,22 +664,57 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     //                        304.056427};
 
     vector<Vec3> imageStars;
+
+    // Try Tetra.c way of converting into Vec3
+    float fov = camera.Fov();
+    // TODO: why isn't fovLength = 49? Instead it's 2207.21, and fov=0.445542
+    // ANSWER: 49 mm -> fov in number of pixels
+    // fov = atan(camera.XResolution() / 2 * 1.0 / 49) * 2;
+    float fovLength = camera.FocalLength();
+    // fovLength = 49;  // also sus
+    float fovFactor = (tan(fov * M_PI / 360) * 2) / camera.XResolution();
+
+    cout << "TEST FOVs: " << fov << " " << fovLength << " " << fovFactor
+         << endl;
+
     for (int i = 0; i < (int)stars.size(); i++) {
         // for (int i = 0; i < 12; i++) {
         // Vec2 testPos;
         // testPos.x = positions[i * 2];
         // testPos.y = positions[i * 2 + 1];
 
+        // more testing code, comment out this block later
+        cout << "ORIGINAL: " << stars[i].position.x << ", "
+             << stars[i].position.y << endl;
+
+        // TESTING: uncomment this block as needed
+        // float x = stars[i].position.x * fovFactor;
+        // float y = stars[i].position.y * fovFactor;
+        // cout << "X, Y: " << x << ", " << y << endl;
+
+        // Vec3 spatialStarCoord;
+        // spatialStarCoord.x = 1 / sqrt(1 + x * x + y * y);
+        // spatialStarCoord.y = -spatialStarCoord.x * x;
+        // spatialStarCoord.z = spatialStarCoord.x * y;
+        // cout << "MAG: " << spatialStarCoord.Magnitude() << endl;
+
+        // ORIGINAL: uncomment later
         Vec3 spatialStarCoord =
             camera.CameraToSpatial(stars[i].position).Normalize();
-        // Vec3 spatialStarCoord = camera.CameraToSpatial(testPos).Normalize();
-        // cout << "Vec2 coordinates: " << testPos.x << ", " << testPos.y <<
-        // endl;
+
+        // Vec3 spatialStarCoord =
+        //     camera.CameraToSpatialTetra(stars[i].position).Normalize();
+
+        // Vec3 spatialStarCoord =
+        // camera.CameraToSpatialTetra(testPos).Normalize(); cout << "Vec2
+        // coordinates: " << testPos.x << ", " << testPos.y << endl;
 
         // cout << "Vec2 coordinates: " << stars[i].position.x << ", "
         //      << stars[i].position.y << endl;
         // cout << "Vec3 star: " << spatialStarCoord.x << ", "
         //      << spatialStarCoord.y << ", " << spatialStarCoord.z << endl;
+        cout << "SP: " << spatialStarCoord.x << " " << spatialStarCoord.y << " "
+             << spatialStarCoord.z << endl;
         imageStars.push_back(spatialStarCoord);
     }
     int matches[tetra::numPattStars][2] = {{0}};
@@ -691,10 +741,19 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
     //     cout << imageStarInds[i] << endl;
     // }
-    imageStarInds[0] = 9;
-    imageStarInds[1] = 18;
-    imageStarInds[2] = 3;
-    imageStarInds[3] = 17;
+
+    // imageStarInds[0] = 9;
+    // imageStarInds[1] = 18;
+    // imageStarInds[2] = 3;
+    // imageStarInds[3] = 17;
+
+    // WHAT: order matters????? so 8 7 doesn't work, 7 8 works
+    cout << "CHANGED TAG &&&&&&&&&&&&&&&&: pineapple"
+         << endl;  // put a random string here
+    imageStarInds[0] = 13;
+    imageStarInds[1] = 7;
+    imageStarInds[2] = 10;
+    imageStarInds[3] = 8;
 
     // TODO: fill in
     // TODO: error
@@ -704,7 +763,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
     for (int i = 0; i < tetra::numPattStars; i++) {
         // TODO: why is this printing not-HIP numbers?
-        cout << matches[i][0] << ", " << matches[i][1] << endl;
+        cout << matches[i][0] << ", " << catalog[matches[i][1]].name << endl;
         StarIdentifier si(matches[i][0], matches[i][1]);
         // TODO: bug, matches[i][0] and matches[i][1] is always 0
         res.push_back(si);

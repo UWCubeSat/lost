@@ -1,6 +1,8 @@
 #ifndef STAR_ID_H
 #define STAR_ID_H
 
+#define _USE_MATH_DEFINES
+
 #include <cmath>  // TODO: added in here
 #include <vector>
 

@@ -28,14 +28,26 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     assert(InSensor(vector));
 
     // isn't it interesting: To convert from center-based to left-corner-based
-    // coordinates is the same formula; f(x)=f^{-1}(x) !
+    // (top-left is origin) coordinates is the same formula; f(x)=f^{-1}(x) !
     float xPixel = -vector.x + xCenter;
     float yPixel = -vector.y + yCenter;
+    // float xPixel = -vector.x;
+    // float yPixel = -vector.y;
 
     return {
         1,
         xPixel / focalLength,
         yPixel / focalLength,
+    };
+}
+
+Vec3 Camera::CameraToSpatialTetra(const Vec2 &vector) const {
+    assert(InSensor(vector));
+
+    return {
+        1,
+        vector.x / focalLength,
+        vector.y / focalLength,
     };
 }
 
