@@ -376,17 +376,56 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
 std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, const Vec3 point, float radius) {
     std::vector<int16_t> query_ind;
 
-    for (long unsigned int i = 0; i < indices.size(); i++) {
-        CatalogStar s = c[i];
+    float radiusSq = pow(radius,2);
+
+    // use binary search to find an initial element within the right range (see https://www.geeksforgeeks.org/binary-search/)
+    int left = 0;
+    int right = indices.size()-1;
+    int index = -1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2; 
+        CatalogStar s = c[mid];
         Vec3 diff = s.spatial - point;
-        if (diff.MagnitudeSq() <= pow(radius,2)) {
-            query_ind.push_back(i);
+
+        if (diff.MagnitudeSq() <= radiusSq) {
+            index = mid;
+        } else if (s.spatial.x < point.x) {
+            left += mid;
+        } else {
+            right = mid - 1;
         }
     }
 
+    left = index;
+    right = index;
+
+    // see how far left you can go
+    CatalogStar sLeft = c[left];
+    Vec3 diffLeft = sLeft.spatial - point;
+    while (left > 0 && sLeft.spatial.x <= point.x - radius) {
+        if (diffLeft.MagnitudeSq() <= radiusSq) {
+            query_ind.push_back(left);
+        }
+        left--;
+        sLeft = c[left];
+        diffLeft = sLeft.spatial - point;
+    }
+
+
+    // see how far right you can go
+    CatalogStar sRight = c[right];
+    Vec3 diffRight = sRight.spatial - point;
+    while (right > 0 && sRight.spatial.x <= point.x - radius) {
+        if (diffRight.MagnitudeSq() <= radiusSq) {
+            query_ind.push_back(right);
+        }
+        right--;
+        sRight = c[right];
+        diffLeft = sRight.spatial - point;
+    }
     return query_ind;
 }
-
 
 }
 
