@@ -1,8 +1,10 @@
 <map id="lost::Camera::CameraToSpatial" name="lost::Camera::CameraToSpatial">
-<area shape="rect" id="node1" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="564,123,787,149"/>
-<area shape="rect" id="node2" href="$classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title="Actually run the star&#45;id algorithm." alt="" coords="291,5,514,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="308,57,497,98"/>
-<area shape="rect" id="node4" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="315,123,490,149"/>
-<area shape="rect" id="node5" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,203,241,229"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,225,516,266"/>
+<area shape="rect" id="node1" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="564,155,787,181"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c" title="Returns necessary matrix information for calculations in both the dqm and quest algorithms." alt="" coords="291,23,514,65"/>
+<area shape="rect" id="node5" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="308,89,497,130"/>
+<area shape="rect" id="node6" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,209,241,236"/>
+<area shape="rect" id="node7" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="315,205,490,232"/>
+<area shape="rect" id="node8" href="$namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,257,516,298"/>
+<area shape="rect" id="node3" href="$classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title="Actually run the star&#45;id algorithm." alt="" coords="12,5,235,32"/>
+<area shape="rect" id="node4" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="32,56,215,83"/>
 </map>

@@ -1,0 +1,5 @@
+<map id="lost::QuestCharPoly" name="lost::QuestCharPoly">
+<area shape="rect" id="node1" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="511,5,661,32"/>
+<area shape="rect" id="node2" href="$namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,5,463,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,32"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="lost::QuestAlgorithm::Go" name="lost::QuestAlgorithm::Go">
+<area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,42,188,69"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c" title="Returns necessary matrix information for calculations in both the dqm and quest algorithms." alt="" coords="238,5,461,47"/>
+<area shape="rect" id="node5" href="$namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,71,463,98"/>
+<area shape="rect" id="node3" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="511,13,733,39"/>
+<area shape="rect" id="node4" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="781,13,951,39"/>
+<area shape="rect" id="node6" href="$namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="547,67,697,94"/>
+<area shape="rect" id="node7" href="$namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="528,118,716,145"/>
+</map>

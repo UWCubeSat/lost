@@ -1,0 +1,4 @@
+<map id="lost::QuestAlgorithm" name="lost::QuestAlgorithm">
+<area shape="rect" id="node1" title="A faster and just as accurate attitude estimator as the Davenport Q algorithm." alt="" coords="15,95,171,121"/>
+<area shape="rect" id="node2" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="5,5,181,47"/>
+</map>

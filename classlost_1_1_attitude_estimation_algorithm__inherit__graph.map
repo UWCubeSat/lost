@@ -1,5 +1,6 @@
 <map id="lost::AttitudeEstimationAlgorithm" name="lost::AttitudeEstimationAlgorithm">
-<area shape="rect" id="node1" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="114,5,290,47"/>
+<area shape="rect" id="node1" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="215,5,391,47"/>
 <area shape="rect" id="node2" href="$classlost_1_1_davenport_q_algorithm.html" title="A slow but reliable attitude estimation algorithm." alt="" coords="5,95,201,121"/>
-<area shape="rect" id="node3" href="$classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="226,95,375,121"/>
+<area shape="rect" id="node3" href="$classlost_1_1_quest_algorithm.html" title="A faster and just as accurate attitude estimator as the Davenport Q algorithm." alt="" coords="225,95,381,121"/>
+<area shape="rect" id="node4" href="$classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="406,95,555,121"/>
 </map>

@@ -15,6 +15,8 @@ var searchData=
   ['deserializevec3_62',['DeserializeVec3',['../namespacelost.html#a268223937ff19ee72a713631586557d3',1,'lost']]],
   ['distance_63',['distance',['../structlost_1_1_k_vector_pair.html#af099ea7e016e1e192592f9170a100453',1,'lost::KVectorPair::distance()'],['../namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d',1,'lost::Distance(const Vec2 &amp;v1, const Vec2 &amp;v2)'],['../namespacelost.html#a10f0dede807e0a46e2a09defd4270f51',1,'lost::Distance(const Vec3 &amp;, const Vec3 &amp;)']]],
   ['doxygen_5fsplash_2emd_64',['doxygen_splash.md',['../doxygen__splash_8md.html',1,'']]],
-  ['dummycentroidalgorithm_65',['DummyCentroidAlgorithm',['../classlost_1_1_dummy_centroid_algorithm.html',1,'lost::DummyCentroidAlgorithm'],['../classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d',1,'lost::DummyCentroidAlgorithm::DummyCentroidAlgorithm()']]],
-  ['dummystaridalgorithm_66',['DummyStarIdAlgorithm',['../classlost_1_1_dummy_star_id_algorithm.html',1,'lost']]]
+  ['dqmquesthelpermatrices_65',['DqmQuestHelperMatrices',['../structlost_1_1_dqm_quest_helper_matrices.html',1,'lost']]],
+  ['dqmquesthelpermatricesconstructor_66',['DqmQuestHelperMatricesConstructor',['../namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c',1,'lost']]],
+  ['dummycentroidalgorithm_67',['DummyCentroidAlgorithm',['../classlost_1_1_dummy_centroid_algorithm.html',1,'lost::DummyCentroidAlgorithm'],['../classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d',1,'lost::DummyCentroidAlgorithm::DummyCentroidAlgorithm()']]],
+  ['dummystaridalgorithm_68',['DummyStarIdAlgorithm',['../classlost_1_1_dummy_star_id_algorithm.html',1,'lost']]]
 ];

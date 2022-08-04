@@ -1,0 +1,4 @@
+<map id="lost::QuestEigenvalueEstimator" name="lost::QuestEigenvalueEstimator">
+<area shape="rect" id="node1" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,5,463,32"/>
+<area shape="rect" id="node2" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,32"/>
+</map>

@@ -100,9 +100,10 @@ Inheritance diagram for lost::AttitudeEstimationAlgorithm:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_attitude_estimation_algorithm__inherit__graph.png" border="0" usemap="#lost_1_1_attitude_estimation_algorithm_inherit__map" alt="Inheritance graph"/></div>
 <map name="lost_1_1_attitude_estimation_algorithm_inherit__map" id="lost_1_1_attitude_estimation_algorithm_inherit__map">
-<area shape="rect" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="114,5,290,47"/>
+<area shape="rect" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="215,5,391,47"/>
 <area shape="rect" href="classlost_1_1_davenport_q_algorithm.html" title="A slow but reliable attitude estimation algorithm." alt="" coords="5,95,201,121"/>
-<area shape="rect" href="classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="226,95,375,121"/>
+<area shape="rect" href="classlost_1_1_quest_algorithm.html" title="A faster and just as accurate attitude estimator as the Davenport Q algorithm." alt="" coords="225,95,381,121"/>
+<area shape="rect" href="classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="406,95,555,121"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -118,7 +119,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>An attitude estimation algorithm estimates the orientation of the camera based on identified stars. </p>
 <p>Subclasses should have a constructor which stores any configuration values in private fields, and then override the Go method to perform the actual attitude estimation. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-estimators_8hpp_source.html#l00014">14</a> of file <a class="el" href="attitude-estimators_8hpp_source.html">attitude-estimators.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8hpp_source.html#l00028">28</a> of file <a class="el" href="attitude-estimators_8hpp_source.html">attitude-estimators.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6e7a086e474f98124cc4dd5fb01682e9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e7a086e474f98124cc4dd5fb01682e9">&#9670;&nbsp;</a></span>~AttitudeEstimationAlgorithm()</h2>
@@ -143,7 +144,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-estimators_8hpp_source.html#l00023">23</a> of file <a class="el" href="attitude-estimators_8hpp_source.html">attitude-estimators.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8hpp_source.html#l00037">37</a> of file <a class="el" href="attitude-estimators_8hpp_source.html">attitude-estimators.hpp</a>.</p>
 
 </div>
 </div>
@@ -197,7 +198,7 @@ Public Member Functions</h2></td></tr>
 <p>Actually run the star-id algorithm. </p>
 <p>Uses the given centroids and star identifiers to come up with an attitude estimate which minimizes error. </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>More detail in return type (eg, whether attitude estimation failed, measure of error) </dd></dl>
 
-<p>Implemented in <a class="el" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9">lost::TriadAlgorithm</a>, and <a class="el" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm</a>.</p>
+<p>Implemented in <a class="el" href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23">lost::QuestAlgorithm</a>, <a class="el" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9">lost::TriadAlgorithm</a>, and <a class="el" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm</a>.</p>
 
 </div>
 </div>
@@ -210,7 +211,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_attitude_estimation_algorithm.html">AttitudeEstimationAlgorithm</a></li>
-    <li class="footer">Generated on Mon Aug 1 2022 21:01:43 for LOST by
+    <li class="footer">Generated on Thu Aug 4 2022 05:45:09 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

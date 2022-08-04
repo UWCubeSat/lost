@@ -1,11 +1,7 @@
 var dir_68267d1309a1af8e8297ef4c3efbcdba =
 [
-    [ "attitude-estimators.cpp", "attitude-estimators_8cpp.html", null ],
-    [ "attitude-estimators.hpp", "attitude-estimators_8hpp.html", [
-      [ "AttitudeEstimationAlgorithm", "classlost_1_1_attitude_estimation_algorithm.html", "classlost_1_1_attitude_estimation_algorithm" ],
-      [ "DavenportQAlgorithm", "classlost_1_1_davenport_q_algorithm.html", "classlost_1_1_davenport_q_algorithm" ],
-      [ "TriadAlgorithm", "classlost_1_1_triad_algorithm.html", "classlost_1_1_triad_algorithm" ]
-    ] ],
+    [ "attitude-estimators.cpp", "attitude-estimators_8cpp.html", "attitude-estimators_8cpp" ],
+    [ "attitude-estimators.hpp", "attitude-estimators_8hpp.html", "attitude-estimators_8hpp" ],
     [ "attitude-utils.cpp", "attitude-utils_8cpp.html", "attitude-utils_8cpp" ],
     [ "attitude-utils.hpp", "attitude-utils_8hpp.html", "attitude-utils_8hpp" ],
     [ "camera.cpp", "camera_8cpp.html", "camera_8cpp" ],

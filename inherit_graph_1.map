@@ -1,5 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="5,23,181,65"/>
+<area shape="rect" id="node1" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="5,49,181,90"/>
 <area shape="rect" id="node2" href="$classlost_1_1_davenport_q_algorithm.html" title="A slow but reliable attitude estimation algorithm." alt="" coords="229,5,425,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="253,56,402,83"/>
+<area shape="rect" id="node3" href="$classlost_1_1_quest_algorithm.html" title="A faster and just as accurate attitude estimator as the Davenport Q algorithm." alt="" coords="249,56,405,83"/>
+<area shape="rect" id="node4" href="$classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="253,107,402,133"/>
 </map>

@@ -1,0 +1,5 @@
+<map id="lost::QuestEigenvalueEstimator" name="lost::QuestEigenvalueEstimator">
+<area shape="rect" id="node1" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="5,31,232,57"/>
+<area shape="rect" id="node2" href="$namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="299,5,449,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="280,56,468,83"/>
+</map>

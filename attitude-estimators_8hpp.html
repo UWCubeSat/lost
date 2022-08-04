@@ -85,7 +85,8 @@ $(document).ready(function(){initNavTree('attitude-estimators_8hpp.html',''); in
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">attitude-estimators.hpp File Reference</div>  </div>
 </div><!--header-->
@@ -93,20 +94,22 @@ $(document).ready(function(){initNavTree('attitude-estimators_8hpp.html',''); in
 <div class="textblock"><code>#include &quot;<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera_8hpp_source.html">camera.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>&quot;</code><br />
+<code>#include &lt;eigen3/Eigen/Eigenvalues&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for attitude-estimators.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="attitude-estimators_8hpp__incl.png" border="0" usemap="#src_2attitude-estimators_8hpp" alt=""/></div>
 <map name="src_2attitude-estimators_8hpp" id="src_2attitude-estimators_8hpp">
-<area shape="rect" title=" " alt="" coords="5,5,204,32"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="12,304,147,331"/>
-<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="55,155,154,181"/>
-<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="145,80,237,107"/>
-<area shape="rect" title=" " alt="" coords="41,379,118,405"/>
-<area shape="rect" title=" " alt="" coords="336,304,399,331"/>
-<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="229,155,351,181"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="117,229,225,256"/>
-<area shape="rect" title=" " alt="" coords="250,229,330,256"/>
+<area shape="rect" title=" " alt="" coords="40,5,239,32"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="5,304,140,331"/>
+<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="49,155,147,181"/>
+<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="137,80,229,107"/>
+<area shape="rect" title=" " alt="" coords="254,80,443,107"/>
+<area shape="rect" title=" " alt="" coords="34,379,111,405"/>
+<area shape="rect" title=" " alt="" coords="329,304,392,331"/>
+<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="222,155,345,181"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="111,229,219,256"/>
+<area shape="rect" title=" " alt="" coords="243,229,323,256"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -126,6 +129,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1_dqm_quest_helper_matrices.html">lost::DqmQuestHelperMatrices</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Necessary matrix information for both the dqm and quest algos.  <a href="structlost_1_1_dqm_quest_helper_matrices.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_attitude_estimation_algorithm.html">lost::AttitudeEstimationAlgorithm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.  <a href="classlost_1_1_attitude_estimation_algorithm.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,12 +141,21 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_triad_algorithm.html">lost::TriadAlgorithm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A fast attitude estimator which only takes into account information from two stars.  <a href="classlost_1_1_triad_algorithm.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quest_algorithm.html">lost::QuestAlgorithm</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A faster and just as accurate attitude estimator as the Davenport Q algorithm.  <a href="classlost_1_1_quest_algorithm.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacelost"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html">lost</a></td></tr>
 <tr class="memdesc:namespacelost"><td class="mdescLeft">&#160;</td><td class="mdescRight">LOST starting point. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a5ca1fb02bb5a2e11cd25f68a9ffb529c"><td class="memItemLeft" align="right" valign="top">DqmQuestHelperMatrices&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c">lost::DqmQuestHelperMatricesConstructor</a> (const Camera &amp;camera, const Stars &amp;stars, const Catalog &amp;catalog, const StarIdentifiers &amp;starIdentifiers)</td></tr>
+<tr class="memdesc:a5ca1fb02bb5a2e11cd25f68a9ffb529c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns necessary matrix information for calculations in both the dqm and quest algorithms.  <a href="namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c">More...</a><br /></td></tr>
+<tr class="separator:a5ca1fb02bb5a2e11cd25f68a9ffb529c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -148,7 +163,7 @@ Namespaces</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="attitude-estimators_8hpp.html">attitude-estimators.hpp</a></li>
-    <li class="footer">Generated on Mon Aug 1 2022 21:01:43 for LOST by
+    <li class="footer">Generated on Thu Aug 4 2022 05:45:09 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>

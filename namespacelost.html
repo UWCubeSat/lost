@@ -127,6 +127,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_davenport_q_algorithm.html">DavenportQAlgorithm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A slow but reliable attitude estimation algorithm.  <a href="classlost_1_1_davenport_q_algorithm.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1_dqm_quest_helper_matrices.html">DqmQuestHelperMatrices</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Necessary matrix information for both the dqm and quest algos.  <a href="structlost_1_1_dqm_quest_helper_matrices.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_dummy_centroid_algorithm.html">DummyCentroidAlgorithm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A centroid algorithm for debugging that returns random centroids.  <a href="classlost_1_1_dummy_centroid_algorithm.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -197,6 +200,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quaternion.html">Quaternion</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A quaternion is a common way to represent a 3d rotation.  <a href="classlost_1_1_quaternion.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quest_algorithm.html">QuestAlgorithm</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A faster and just as accurate attitude estimator as the Davenport Q algorithm.  <a href="classlost_1_1_quest_algorithm.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_star.html">Star</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A "centroid" detected in an image.  <a href="classlost_1_1_star.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -242,6 +248,18 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a5ca1fb02bb5a2e11cd25f68a9ffb529c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structlost_1_1_dqm_quest_helper_matrices.html">DqmQuestHelperMatrices</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c">DqmQuestHelperMatricesConstructor</a> (const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;camera, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;starIdentifiers)</td></tr>
+<tr class="memdesc:a5ca1fb02bb5a2e11cd25f68a9ffb529c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns necessary matrix information for calculations in both the dqm and quest algorithms.  <a href="namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c">More...</a><br /></td></tr>
+<tr class="separator:a5ca1fb02bb5a2e11cd25f68a9ffb529c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1a9beb3699da6901d13dcebcb0e987b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b">QuestCharPoly</a> (float x, float a, float b, float c, float d, float s)</td></tr>
+<tr class="memdesc:ab1a9beb3699da6901d13dcebcb0e987b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Characteristic polynomial of the quest K-matrix.  <a href="namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b">More...</a><br /></td></tr>
+<tr class="separator:ab1a9beb3699da6901d13dcebcb0e987b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecb22b335d98f9abefb94e377afa3bdb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb">QuestCharPolyPrime</a> (float x, float a, float b, float c)</td></tr>
+<tr class="memdesc:aecb22b335d98f9abefb94e377afa3bdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivitive of the characteristic polynomial of the quest K-matrix.  <a href="namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb">More...</a><br /></td></tr>
+<tr class="separator:aecb22b335d98f9abefb94e377afa3bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5">QuestEigenvalueEstimator</a> (float guess, float a, float b, float c, float d, float s)</td></tr>
+<tr class="memdesc:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Approximates roots of a real function using the Newton-Raphson algorithm.  <a href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5">More...</a><br /></td></tr>
+<tr class="separator:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_quaternion.html">Quaternion</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1">SphericalToQuaternion</a> (float ra, float dec, float roll)</td></tr>
 <tr class="separator:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62a70a38d20ca4be158d9f592862aeb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a62a70a38d20ca4be158d9f592862aeb4">SphericalToSpatial</a> (float ra, float de)</td></tr>
@@ -518,7 +536,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01015">1015</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01017">1017</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -1167,7 +1185,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00920">920</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00922">922</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -1221,7 +1239,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00887">887</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00889">889</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1701,6 +1719,70 @@ Here is the caller graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5ca1fb02bb5a2e11cd25f68a9ffb529c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ca1fb02bb5a2e11cd25f68a9ffb529c">&#9670;&nbsp;</a></span>DqmQuestHelperMatricesConstructor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structlost_1_1_dqm_quest_helper_matrices.html">DqmQuestHelperMatrices</a> lost::DqmQuestHelperMatricesConstructor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;&#160;</td>
+          <td class="paramname"><em>camera</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;&#160;</td>
+          <td class="paramname"><em>stars</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
+          <td class="paramname"><em>catalog</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;&#160;</td>
+          <td class="paramname"><em>starIdentifiers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns necessary matrix information for calculations in both the dqm and quest algorithms. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00009">9</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_cgraph.png" border="0" usemap="#namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_cgraph" alt=""/></div>
+<map name="namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_cgraph" id="namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_cgraph">
+<area shape="rect" title="Returns necessary matrix information for calculations in both the dqm and quest algorithms." alt="" coords="5,5,228,47"/>
+<area shape="rect" href="classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,13,499,39"/>
+<area shape="rect" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,13,716,39"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_icgraph.png" border="0" usemap="#namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_icgraph" alt=""/></div>
+<map name="namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_icgraph" id="namespacelost_a5ca1fb02bb5a2e11cd25f68a9ffb529c_icgraph">
+<area shape="rect" title="Returns necessary matrix information for calculations in both the dqm and quest algorithms." alt="" coords="276,23,499,65"/>
+<area shape="rect" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,228,32"/>
+<area shape="rect" href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="25,56,208,83"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -2311,7 +2393,7 @@ Here is the call graph for this function:</div>
 
 <p>Plotter suitable for <code>cairo_surface_write_to_png_stream</code> which simply writes to an std::ostream. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01021">1021</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01023">1023</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -2404,7 +2486,7 @@ Here is the caller graph for this function:</div>
 
 <p>Compare the actual and expected attitudes. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01207">1207</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01209">1209</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2473,7 +2555,7 @@ Here is the caller graph for this function:</div>
 
 <p>Compare the actual and expected centroids, printing key stats to <code>os</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01058">1058</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01060">1060</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2531,7 +2613,7 @@ Here is the caller graph for this function:</div>
 
 <p>Plot an annotated image where centroids are annotated with their centroid index. For debugging. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01112">1112</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01114">1114</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2600,7 +2682,7 @@ Here is the call graph for this function:</div>
 
 <p>Plot the annotated input image to <code>os</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01040">1040</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01042">1042</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2678,7 +2760,7 @@ Here is the caller graph for this function:</div>
 
 <p>Plot the image annotated with output data computed by the star tracking algorithms. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01134">1134</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01136">1136</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2756,7 +2838,7 @@ Here is the caller graph for this function:</div>
 
 <p>Plots the input image with no annotation to <code>os</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01028">1028</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01030">1030</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2818,7 +2900,7 @@ Here is the caller graph for this function:</div>
 
 <p>Print the identifed attitude to <code>os</code> in Euler angle format. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01189">1189</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01191">1191</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2880,7 +2962,7 @@ Here is the caller graph for this function:</div>
 
 <p>Print a list of centroids to <code>os</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01080">1080</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01082">1082</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -2933,7 +3015,7 @@ Here is the caller graph for this function:</div>
 
 <p>Compare the expected and actual star identifiers. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01152">1152</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01154">1154</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2991,7 +3073,7 @@ Here is the caller graph for this function:</div>
 <p>Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline. </p>
 <p>Uses the command line options in <code>values</code> to determine which analyses to run. Examples include plotting an annotated output image to a png file, comparing the actual and expected centroids, etc </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01299">1299</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01301">1301</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3172,6 +3254,203 @@ Here is the caller graph for this function:</div>
 <map name="namespacelost_a08209cdf2c6b9415866d576343c35bf2_icgraph" id="namespacelost_a08209cdf2c6b9415866d576343c35bf2_icgraph">
 <area shape="rect" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="221,5,392,32"/>
 <area shape="rect" href="classlost_1_1_attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="5,5,173,32"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="ab1a9beb3699da6901d13dcebcb0e987b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1a9beb3699da6901d13dcebcb0e987b">&#9670;&nbsp;</a></span>QuestCharPoly()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float lost::QuestCharPoly </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Characteristic polynomial of the quest K-matrix. </p>
+<dl class="section see"><dt>See also</dt><dd>equation 19b of <a href="https://arc.aiaa.org/doi/pdf/10.2514/1.62549">https://arc.aiaa.org/doi/pdf/10.2514/1.62549</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00132">132</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_ab1a9beb3699da6901d13dcebcb0e987b_icgraph.png" border="0" usemap="#namespacelost_ab1a9beb3699da6901d13dcebcb0e987b_icgraph" alt=""/></div>
+<map name="namespacelost_ab1a9beb3699da6901d13dcebcb0e987b_icgraph" id="namespacelost_ab1a9beb3699da6901d13dcebcb0e987b_icgraph">
+<area shape="rect" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="511,5,661,32"/>
+<area shape="rect" href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,5,463,32"/>
+<area shape="rect" href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,32"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="aecb22b335d98f9abefb94e377afa3bdb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecb22b335d98f9abefb94e377afa3bdb">&#9670;&nbsp;</a></span>QuestCharPolyPrime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float lost::QuestCharPolyPrime </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Derivitive of the characteristic polynomial of the quest K-matrix. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00137">137</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_aecb22b335d98f9abefb94e377afa3bdb_icgraph.png" border="0" usemap="#namespacelost_aecb22b335d98f9abefb94e377afa3bdb_icgraph" alt=""/></div>
+<map name="namespacelost_aecb22b335d98f9abefb94e377afa3bdb_icgraph" id="namespacelost_aecb22b335d98f9abefb94e377afa3bdb_icgraph">
+<area shape="rect" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="511,5,699,32"/>
+<area shape="rect" href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,5,463,32"/>
+<area shape="rect" href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,32"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="aa3cff2017989bf09b8b4111c1a0bfdf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3cff2017989bf09b8b4111c1a0bfdf5">&#9670;&nbsp;</a></span>QuestEigenvalueEstimator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float lost::QuestEigenvalueEstimator </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>guess</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>s</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Approximates roots of a real function using the Newton-Raphson algorithm. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://www.geeksforgeeks.org/program-for-newton-raphson-method/">https://www.geeksforgeeks.org/program-for-newton-raphson-method/</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00143">143</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_cgraph.png" border="0" usemap="#namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_cgraph" alt=""/></div>
+<map name="namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_cgraph" id="namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_cgraph">
+<area shape="rect" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="5,31,232,57"/>
+<area shape="rect" href="namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="299,5,449,32"/>
+<area shape="rect" href="namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="280,56,468,83"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_icgraph.png" border="0" usemap="#namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_icgraph" alt=""/></div>
+<map name="namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_icgraph" id="namespacelost_aa3cff2017989bf09b8b4111c1a0bfdf5_icgraph">
+<area shape="rect" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,5,463,32"/>
+<area shape="rect" href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,32"/>
 </map>
 </div>
 
@@ -4047,7 +4326,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00938">938</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00940">940</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -4121,7 +4400,7 @@ Here is the caller graph for this function:</div>
 <p>Compare expected and actual star identifications. </p>
 <p>Useful for debugging and benchmarking. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00946">946</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00948">948</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -4405,7 +4684,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li>
-    <li class="footer">Generated on Mon Aug 1 2022 21:01:43 for LOST by
+    <li class="footer">Generated on Thu Aug 4 2022 05:45:09 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>
