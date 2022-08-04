@@ -515,6 +515,77 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
 
 
+    // TODO figure out how users can get 
+    float radius;
+    float ra;
+    float dec;
+    float roll;
+    
+
+    for (int i = 0; i < (int)stars.size(); i++) {
+
+        // TODO figure out math for how to get the current position in degrees based on prev attitude
+        Vec3 position;
+
+        std::vector<int16_t> possiblePrevStarInd = vectorDatabase.QueryNearestStars(catalog, position, radius);
+
+
+
+        std::vector<int16_t> votes(catalog.size(), 0);
+        Vec2 c;
+        c.x = 0;
+        c.y = 0;
+        Vec3 center = camera.CameraToSpatial(c).Normalize();
+        Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
+        float distance = Distance(center, iSpatial);
+
+
+
+
+        // for (int j = 0; j < (int)stars.size(); j++) {
+        //     if (i != j) {
+        //         // TODO: find a faster way to do this:
+        //         std::vector<bool> votedInPair(catalog.size(), false);
+        //         Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
+        //         float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
+        //         //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
+        //         float lowerBoundRange = greatCircleDistance - tolerance;
+        //         float upperBoundRange = greatCircleDistance + tolerance;
+        //         const int16_t *upperBoundSearch;
+        //         const int16_t *lowerBoundSearch = vectorDatabase.FindPairsLiberal(
+        //             lowerBoundRange, upperBoundRange, &upperBoundSearch);
+        //         //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
+        //         for (const int16_t *k = lowerBoundSearch; k != upperBoundSearch; k++) {
+        //             if ((k - lowerBoundSearch) % 2 == 0) {
+        //                 float actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
+        //                 assert(actualAngle <= greatCircleDistance + tolerance * 2);
+        //                 assert(actualAngle >= greatCircleDistance - tolerance * 2);
+        //             }
+        //             if (!votedInPair[*k] || true) {
+        //                 votes[*k]++;
+        //                 votedInPair[*k] = true;
+        //             }
+        //         }
+        //         // US voting system
+        //     }
+        // }
+        // // Find star w most votes
+        // int16_t maxVotes = votes[0];
+        // int indexOfMax = 0;
+        // for (int v = 1; v < (int)votes.size(); v++) {
+        //     if (votes[v] > maxVotes) {
+        //         maxVotes = votes[v];
+        //         indexOfMax = v;
+        //     }
+        // }
+        // StarIdentifier newStar(i, indexOfMax);
+        // // Set identified[i] to value of catalog index of star w most votesr
+        // identified.push_back(newStar);
+    }   
+
+
+
+
 }
 
 
