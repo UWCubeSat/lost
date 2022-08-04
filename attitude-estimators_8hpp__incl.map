@@ -1,12 +1,12 @@
 <map id="src/attitude&#45;estimators.hpp" name="src/attitude&#45;estimators.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="40,5,239,32"/>
-<area shape="rect" id="node2" href="$attitude-utils_8hpp.html" title=" " alt="" coords="5,304,140,331"/>
-<area shape="rect" id="node4" href="$camera_8hpp.html" title=" " alt="" coords="49,155,147,181"/>
-<area shape="rect" id="node5" href="$star-id_8hpp.html" title=" " alt="" coords="137,80,229,107"/>
-<area shape="rect" id="node10" title=" " alt="" coords="254,80,443,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="34,379,111,405"/>
-<area shape="rect" id="node6" title=" " alt="" coords="329,304,392,331"/>
-<area shape="rect" id="node7" href="$centroiders_8hpp.html" title=" " alt="" coords="222,155,345,181"/>
-<area shape="rect" id="node9" href="$star-utils_8hpp.html" title=" " alt="" coords="111,229,219,256"/>
-<area shape="rect" id="node8" title=" " alt="" coords="243,229,323,256"/>
+<area shape="rect" id="node1" title=" " alt="" coords="167,5,366,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,195,107"/>
+<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="226,304,361,331"/>
+<area shape="rect" id="node5" href="$camera_8hpp.html" title=" " alt="" coords="269,155,368,181"/>
+<area shape="rect" id="node6" href="$star-id_8hpp.html" title=" " alt="" coords="359,80,451,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="255,379,332,405"/>
+<area shape="rect" id="node7" title=" " alt="" coords="550,304,613,331"/>
+<area shape="rect" id="node8" href="$centroiders_8hpp.html" title=" " alt="" coords="443,155,565,181"/>
+<area shape="rect" id="node10" href="$star-utils_8hpp.html" title=" " alt="" coords="331,229,439,256"/>
+<area shape="rect" id="node9" title=" " alt="" coords="464,229,544,256"/>
 </map>
