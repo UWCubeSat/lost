@@ -220,6 +220,25 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
+/// The product of a vector and a transposed vector
+Mat3 Vec3::matrixMult(const Vec3 &other) const {
+    return {
+        x*other.x, x*other.y, x*other.z, 
+        y*other.x, y*other.y, y*other.z,
+        z*other.x, z*other.y, z*other.z
+    };
+}
+
+/// Vector-matrix multiplication, where the vector is transposed
+Vec3 Vec3::operator*(const Mat3 &other) const {
+    return {
+        x*other.At(0,0) + y*other.At(0,1) + z*other.At(0,2),
+        x*other.At(1,0) + y*other.At(1,1) + z*other.At(1,2),
+        x*other.At(2,0) + y*other.At(2,1) + z*other.At(2,2),
+    };
+}
+
+
 /// Access the i,j-th element of the matrix
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
@@ -232,6 +251,15 @@ Vec3 Mat3::Column(int j) const {
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
 }
+
+Mat3 Mat3::operator+(const Mat3 &other) const {
+    return {
+        At(0,0)+other.At(0,0), At(0,1)+other.At(0,1), At(0,2)+other.At(0,2),
+        At(1,0)+other.At(1,0), At(1,1)+other.At(1,1), At(1,2)+other.At(1,2),
+        At(2,0)+other.At(2,0), At(2,1)+other.At(2,1), At(2,2)+other.At(2,2)
+    };
+}
+
 
 /// Naive matrix multiplication.
 Mat3 Mat3::operator*(const Mat3 &other) const {
