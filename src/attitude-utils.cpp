@@ -253,12 +253,65 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     };
 }
 
+/// Matrix-Scalar multiplication
+Mat3 Mat3::operator*(const float &s) const {
+    return {
+        s*At(0,0), s*At(0,1), s*At(0,2),
+        s*At(1,0), s*At(1,1), s*At(1,2),
+        s*At(2,0), s*At(2,1), s*At(2,2)
+    };
+}
+
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
         At(0,1), At(1,1), At(2,1),
         At(0,2), At(1,2), At(2,2),
     };
+}
+
+/// Trace of the matrix
+float Mat3::Trace() const {
+    return At(0,0) + At(1,1) + At(2,2);
+}
+
+/// Determinant of the matrix
+float Mat3::Det() const {
+    return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
+}
+
+Mat3 Mat3::Inverse() const {
+    // https://byjus.com/maths/inverse-of-3-by-3-matrix/
+    // TODO assert det != 0?
+    float scalar = 1 / Det();
+
+    // find determinants of the 2x2 minor matrices
+    Mat3 temp = {
+        At(1,1)*At(2,2) - At(2,1)*At(1,2), At(1,0)*At(2,2) - At(2,0)*At(1,2), At(1,0)*At(2,1) - At(2,0)*At(1,1),
+        At(0,0)*At(2,2) - At(2,1)*At(0,2), At(0,0)*At(2,2) - At(2,0)*At(0,2), At(0,0)*At(2,1) - At(2,0)*At(0,1),
+        At(0,0)*At(1,2) - At(1,1)*At(0,2), At(0,0)*At(1,2) - At(1,0)*At(0,2), At(0,0)*At(1,1) - At(1,0)*At(0,1)
+    };
+
+    // get the cofactor matrix
+    Mat3 signs = {
+        1, -1, 1,
+        -1, 1, -1,
+        1, -1, 1
+    };
+    temp = temp * signs;
+
+    // transpose to get adjugate matrix
+    temp = temp.Transpose();
+
+    // multiply by 1 over det
+    temp = temp * scalar;
+
+    return temp;
+}
+
+/// Returns identity matrix
+Mat3 Mat3::Identity() const {
+    return {1,0,0,0,1,0,0,0,1};
 }
 
 Attitude::Attitude(const Quaternion &quat)

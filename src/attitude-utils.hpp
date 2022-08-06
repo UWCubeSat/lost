@@ -50,9 +50,14 @@ public:
     float At(int i, int j) const;
     Mat3 operator*(const Mat3 &) const;
     Vec3 operator*(const Vec3 &) const;
+    Mat3 operator*(const float &) const;
     Mat3 Transpose() const;
     Vec3 Column(int) const;
     Vec3 Row(int) const;
+    float Trace() const;
+    float Det() const;
+    Mat3 Inverse() const;
+    Mat3 Identity() const;
 };
 
 long SerializeLengthVec3();
