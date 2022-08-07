@@ -220,7 +220,7 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
-/// The product of a vector and a transposed vector
+/// The product of a vector and the other vector transposed
 Mat3 Vec3::matrixMult(const Vec3 &other) const {
     return {
         x*other.x, x*other.y, x*other.z, 
@@ -238,20 +238,22 @@ Vec3 Vec3::operator*(const Mat3 &other) const {
     };
 }
 
-
 /// Access the i,j-th element of the matrix
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
+/// Get the column at index j
 Vec3 Mat3::Column(int j) const {
     return {At(0,j), At(1,j), At(2,j)};
 }
 
+/// Get the row at index i
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
 }
 
+/// Normal matrix addition
 Mat3 Mat3::operator+(const Mat3 &other) const {
     return {
         At(0,0)+other.At(0,0), At(0,1)+other.At(0,1), At(0,2)+other.At(0,2),
@@ -259,7 +261,6 @@ Mat3 Mat3::operator+(const Mat3 &other) const {
         At(2,0)+other.At(2,0), At(2,1)+other.At(2,1), At(2,2)+other.At(2,2)
     };
 }
-
 
 /// Naive matrix multiplication.
 Mat3 Mat3::operator*(const Mat3 &other) const {
@@ -290,6 +291,7 @@ Mat3 Mat3::operator*(const float &s) const {
     };
 }
 
+/// Transpose of a matrix
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
@@ -303,11 +305,12 @@ float Mat3::Trace() const {
     return At(0,0) + At(1,1) + At(2,2);
 }
 
-/// Determinant of the matrix
+/// Determinant of a matrix
 float Mat3::Det() const {
     return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
 }
 
+/// Inverse of a matrix
 Mat3 Mat3::Inverse() const {
     // https://byjus.com/maths/inverse-of-3-by-3-matrix/
     // TODO assert det != 0?

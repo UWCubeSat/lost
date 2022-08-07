@@ -25,7 +25,7 @@ struct Vec2 {
     Vec2 operator+(const Vec2 &) const;
 };
 
-class Mat3;
+class Mat3; // define above so we can use in Vec3 class
 
 /// Three dimensional vector with floating point components
 class Vec3 {
