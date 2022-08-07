@@ -64,10 +64,7 @@ public:
     Mat3 Inverse() const;
 };
 
-/// 3x3 identity matrix
-Mat3 IdentityMat3 = {1,0,0,
-                     0,1,0,
-                     0,0,1};
+extern Mat3 IdentityMat3;
 
 long SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);

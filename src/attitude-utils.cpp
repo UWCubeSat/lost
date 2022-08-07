@@ -324,6 +324,11 @@ Mat3 Mat3::Inverse() const {
     return res * scalar;
 }
 
+/// 3x3 identity matrix
+ Mat3 IdentityMat3 = {1,0,0,
+                     0,1,0,
+                     0,0,1};
+
 Attitude::Attitude(const Quaternion &quat)
     : quaternion(quat), type(QuaternionType) {}
 
