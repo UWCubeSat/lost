@@ -6,7 +6,7 @@ namespace lost {
 
 #define EPSILON 0.0001       // threshold for 0 for Newton-Raphson method
 
-DqmQuestHelperMatrices DqmQuestHelperMatricesConstructor(const Camera &camera,
+Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
                                  const Catalog &catalog,
                                  const StarIdentifiers &starIdentifiers) {
@@ -39,29 +39,12 @@ DqmQuestHelperMatrices DqmQuestHelperMatricesConstructor(const Camera &camera,
         B(2,0) - B(0,2),
         B(0,1) - B(1,0);
 
-    // only used for Davenport matrix
     // K =  [[[sigma], [Z[0]], [Z[1]], [Z[2]]], [[Z[0]], [S[0][0] - sigma], [S[0][1]], [S[0][2]]], [[Z[1]], [S[1][0]], [S[1][1] - sigma], [S[1][2]]], [[Z[2]], [S[2][0]], [S[2][1]], [S[2][2] - sigma]]]
     Eigen::Matrix4f K;
     K << sigma, Z(0), Z(1), Z(2),
         Z(0), S(0,0) - sigma, S(0,1), S(0,2),
         Z(1), S(1,0), S(1,1) - sigma, S(1,2),
         Z(2), S(2,0), S(2,1), S(2,2) - sigma;
-
-    DqmQuestHelperMatrices m;
-    m.K = K;
-    m.S = S;
-    m.Z = Z;
-    m.sigma = sigma;
-    return m;
-}
-
-Attitude DavenportQAlgorithm::Go(const Camera &camera,
-                                 const Stars &stars,
-                                 const Catalog &catalog,
-                                 const StarIdentifiers &starIdentifiers) {
-
-    // Create matrix
-    Eigen::Matrix4f K = DqmQuestHelperMatricesConstructor(camera, stars, catalog, starIdentifiers).K;
 
     //Find eigenvalues of K, store the largest one as lambda
     //find the maximum index
