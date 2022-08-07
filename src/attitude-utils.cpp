@@ -316,25 +316,24 @@ Mat3 Mat3::Inverse() const {
     // find determinants of the 2x2 minor matrices
     Mat3 temp = {
         At(1,1)*At(2,2) - At(2,1)*At(1,2), At(1,0)*At(2,2) - At(2,0)*At(1,2), At(1,0)*At(2,1) - At(2,0)*At(1,1),
-        At(0,0)*At(2,2) - At(2,1)*At(0,2), At(0,0)*At(2,2) - At(2,0)*At(0,2), At(0,0)*At(2,1) - At(2,0)*At(0,1),
+        At(0,1)*At(2,2) - At(2,1)*At(0,2), At(0,0)*At(2,2) - At(2,0)*At(0,2), At(0,0)*At(2,1) - At(2,0)*At(0,1),
         At(0,0)*At(1,2) - At(1,1)*At(0,2), At(0,0)*At(1,2) - At(1,0)*At(0,2), At(0,0)*At(1,1) - At(1,0)*At(0,1)
     };
 
     // get the cofactor matrix
-    Mat3 signs = {
-        1, -1, 1,
-        -1, 1, -1,
-        1, -1, 1
+    Mat3 cofactor = {
+        temp.At(0,0), -temp.At(0,1), temp.At(0,2),
+        -temp.At(1,0), temp.At(1,1), -temp.At(1,2),
+        temp.At(2,0), -temp.At(2,1), temp.At(2,2)
     };
-    temp = temp * signs;
 
     // transpose to get adjugate matrix
-    temp = temp.Transpose();
+    Mat3 adj = cofactor.Transpose();
 
     // multiply by 1 over det
-    temp = temp * scalar;
+    Mat3 inv = adj * scalar;
 
-    return temp;
+    return inv;
 }
 
 /// Returns identity matrix
