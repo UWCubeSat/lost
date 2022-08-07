@@ -152,7 +152,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
 
         //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
         // Calculate matrix B = sum({ai}{bi}{ri}T)
-        B = B + (rStarSpatial.multTranspose(bStarSpatial) * s.weight);
+        B = B + (rStarSpatial.outerProduct(bStarSpatial) * s.weight);
 
         // sum up the weights for initial guess of eigenvalue
         guess += s.weight;
@@ -185,7 +185,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     float beta = eig - sigma;
     float gamma = (eig + sigma) * alpha - delta;
 
-    Vec3 X = ((B.Identity() * alpha) + (S * beta) + (S * S)) * Z;
+    Vec3 X = ((IdentityMat3 * alpha) + (S * beta) + (S * S)) * Z;
     float scalar = 1 / sqrt(pow(gamma,2) + X.MagnitudeSq());
     X = X * scalar;
     gamma *= scalar;

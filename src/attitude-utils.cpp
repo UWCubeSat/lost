@@ -220,8 +220,8 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
-/// The product of a vector and the other vector transposed
-Mat3 Vec3::multTranspose(const Vec3 &other) const {
+/// The outer product of two vectors
+Mat3 Vec3::outerProduct(const Vec3 &other) const {
     return {
         x*other.x, x*other.y, x*other.z,
         y*other.x, y*other.y, y*other.z,
@@ -322,11 +322,6 @@ Mat3 Mat3::Inverse() const {
     };
 
     return res * scalar;
-}
-
-/// Returns identity matrix
-Mat3 Mat3::Identity() const {
-    return {1,0,0,0,1,0,0,0,1};
 }
 
 Attitude::Attitude(const Quaternion &quat)

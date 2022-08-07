@@ -43,7 +43,7 @@ public:
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
     Vec3 crossProduct(const Vec3 &) const;
-    Mat3 multTranspose(const Vec3 &) const;
+    Mat3 outerProduct(const Vec3 &) const;
 };
 
 /// 3x3 vector with floating point components
@@ -62,8 +62,12 @@ public:
     float Trace() const;
     float Det() const;
     Mat3 Inverse() const;
-    Mat3 Identity() const;
 };
+
+/// 3x3 identity matrix
+Mat3 IdentityMat3 = {1,0,0,
+                     0,1,0,
+                     0,0,1};
 
 long SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);
