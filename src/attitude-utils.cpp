@@ -300,7 +300,7 @@ Mat3 Mat3::Transpose() const {
     };
 }
 
-/// Trace of the matrix
+/// Trace of a matrix
 float Mat3::Trace() const {
     return At(0,0) + At(1,1) + At(2,2);
 }
@@ -312,31 +312,16 @@ float Mat3::Det() const {
 
 /// Inverse of a matrix
 Mat3 Mat3::Inverse() const {
-    // https://byjus.com/maths/inverse-of-3-by-3-matrix/
-    // TODO assert det != 0?
+    // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
     float scalar = 1 / Det();
 
-    // find determinants of the 2x2 minor matrices
-    Mat3 temp = {
-        At(1,1)*At(2,2) - At(2,1)*At(1,2), At(1,0)*At(2,2) - At(2,0)*At(1,2), At(1,0)*At(2,1) - At(2,0)*At(1,1),
-        At(0,1)*At(2,2) - At(2,1)*At(0,2), At(0,0)*At(2,2) - At(2,0)*At(0,2), At(0,0)*At(2,1) - At(2,0)*At(0,1),
-        At(0,0)*At(1,2) - At(1,1)*At(0,2), At(0,0)*At(1,2) - At(1,0)*At(0,2), At(0,0)*At(1,1) - At(1,0)*At(0,1)
+    Mat3 res = {
+        At(1,1)*At(2,2) - At(1,2)*At(2,1), At(0,2)*At(2,1) - At(0,1)*At(2,2), At(0,1)*At(1,2) - At(0,2)*At(1,1),
+        At(1,2)*At(2,0) - At(1,0)*At(2,2), At(0,0)*At(2,2) - At(0,2)*At(2,0), At(0,2)*At(1,0) - At(0,0)*At(1,2),
+        At(1,0)*At(2,1) - At(1,1)*At(2,0), At(0,1)*At(2,0) - At(0,0)*At(2,1), At(0,0)*At(1,1) - At(0,1)*At(1,0)
     };
 
-    // get the cofactor matrix
-    Mat3 cofactor = {
-        temp.At(0,0), -temp.At(0,1), temp.At(0,2),
-        -temp.At(1,0), temp.At(1,1), -temp.At(1,2),
-        temp.At(2,0), -temp.At(2,1), temp.At(2,2)
-    };
-
-    // transpose to get adjugate matrix
-    Mat3 adj = cofactor.Transpose();
-
-    // multiply by 1 over det
-    Mat3 inv = adj * scalar;
-
-    return inv;
+    return res * scalar;
 }
 
 /// Returns identity matrix
