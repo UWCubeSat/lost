@@ -153,7 +153,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
         //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
         // Calculate matrix B = sum({ai}{bi}{ri}T)
         B = B + (rStarSpatial.multTranspose(bStarSpatial) * s.weight);
-    
+
         // sum up the weights for initial guess of eigenvalue
         guess += s.weight;
     }

@@ -223,7 +223,7 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
 /// The product of a vector and the other vector transposed
 Mat3 Vec3::multTranspose(const Vec3 &other) const {
     return {
-        x*other.x, x*other.y, x*other.z, 
+        x*other.x, x*other.y, x*other.z,
         y*other.x, y*other.y, y*other.z,
         z*other.x, z*other.y, z*other.z
     };
