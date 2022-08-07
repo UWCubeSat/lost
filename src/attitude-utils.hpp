@@ -43,7 +43,7 @@ public:
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
     Vec3 crossProduct(const Vec3 &) const;
-    Mat3 matrixMult(const Vec3 &) const;
+    Mat3 multTranspose(const Vec3 &) const;
 };
 
 /// 3x3 vector with floating point components
