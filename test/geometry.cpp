@@ -111,14 +111,14 @@ TEST_CASE("quat -> dcm -> quat", "[geometry]") {
 TEST_CASE("cross product", "[geometry]") {
     Vec3 x = { 1, 0, 0 };
     Vec3 y = { 0, 1, 0 };
-    Vec3 z = x.crossProduct(y);
+    Vec3 z = x.CrossProduct(y);
     CHECK(z.x == 0);
     CHECK(z.y == 0);
     CHECK(z.z == Approx(1.0));
 
     Vec3 a = { 5, 8, -2 };
     Vec3 b = { -5.9, 92, 3 };
-    Vec3 c = a.crossProduct(b);
+    Vec3 c = a.CrossProduct(b);
     CHECK(c.x == 208);
     CHECK(c.y == Approx(-3.2));
     CHECK(c.z == Approx(507.2));

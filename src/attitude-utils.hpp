@@ -42,8 +42,8 @@ public:
     Vec3 operator*(const float &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
-    Vec3 crossProduct(const Vec3 &) const;
-    Mat3 outerProduct(const Vec3 &) const;
+    Vec3 CrossProduct(const Vec3 &) const;
+    Mat3 OuterProduct(const Vec3 &) const;
 };
 
 /// 3x3 vector with floating point components
@@ -64,7 +64,7 @@ public:
     Mat3 Inverse() const;
 };
 
-extern Mat3 IdentityMat3;
+extern const Mat3 kIdentityMat3;
 
 long SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);

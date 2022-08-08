@@ -75,8 +75,8 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
 /// return a matrix whose columns are the axes of the frame
 static Mat3 TriadCoordinateFrame(Vec3 v1, Vec3 v2) {
     Vec3 d1 = v1.Normalize();
-    Vec3 d2 = v1.crossProduct(v2).Normalize();
-    Vec3 d3 = d1.crossProduct(d2).Normalize();
+    Vec3 d2 = v1.CrossProduct(v2).Normalize();
+    Vec3 d3 = d1.CrossProduct(d2).Normalize();
     return {
         d1.x, d2.x, d3.x,
         d1.y, d2.y, d3.y,
@@ -152,7 +152,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
 
         //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
         // Calculate matrix B = sum({ai}{bi}{ri}T)
-        B = B + (rStarSpatial.outerProduct(bStarSpatial) * s.weight);
+        B = B + (rStarSpatial.OuterProduct(bStarSpatial) * s.weight);
 
         // sum up the weights for initial guess of eigenvalue
         guess += s.weight;
@@ -185,7 +185,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     float beta = eig - sigma;
     float gamma = (eig + sigma) * alpha - delta;
 
-    Vec3 X = ((IdentityMat3 * alpha) + (S * beta) + (S * S)) * Z;
+    Vec3 X = ((kIdentityMat3 * alpha) + (S * beta) + (S * S)) * Z;
     float scalar = 1 / sqrt(pow(gamma,2) + X.MagnitudeSq());
     X = X * scalar;
     gamma *= scalar;

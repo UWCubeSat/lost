@@ -212,7 +212,7 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
 }
 
 /// Usual vector cross product
-Vec3 Vec3::crossProduct(const Vec3 &other) const {
+Vec3 Vec3::CrossProduct(const Vec3 &other) const {
     return {
         y*other.z - z*other.y,
         -(x*other.z - z*other.x),
@@ -221,7 +221,7 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
 }
 
 /// The outer product of two vectors
-Mat3 Vec3::outerProduct(const Vec3 &other) const {
+Mat3 Vec3::OuterProduct(const Vec3 &other) const {
     return {
         x*other.x, x*other.y, x*other.z,
         y*other.x, y*other.y, y*other.z,
@@ -325,7 +325,7 @@ Mat3 Mat3::Inverse() const {
 }
 
 /// 3x3 identity matrix
- Mat3 IdentityMat3 = {1,0,0,
+ const Mat3 kIdentityMat3 = {1,0,0,
                      0,1,0,
                      0,0,1};
 
@@ -354,7 +354,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     Vec3 oldXAxis = Vec3({1, 0, 0});
     Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
     assert(abs(newXAxis.Magnitude()-1) < 0.001);
-    Vec3 xAlignAxis = oldXAxis.crossProduct(newXAxis).Normalize();
+    Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
     float xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
 
@@ -364,7 +364,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // we still need to take the cross product, because acos returns a value in [0,pi], and thus we
     // need to know which direction to rotate before we rotate. We do this by checking if the cross
     // product of old and new y axes is in the same direction as the new X axis.
-    bool rotateClockwise = oldYAxis.crossProduct(newYAxis) * newXAxis > 0; // * is dot product
+    bool rotateClockwise = oldYAxis.CrossProduct(newYAxis) * newXAxis > 0; // * is dot product
     Quaternion yAlign({1, 0, 0}, AngleUnit(oldYAxis, newYAxis) * (rotateClockwise ? 1 : -1));
 
     // We're done! There's no need to worry about the Z-axis because the handed-ness of the
