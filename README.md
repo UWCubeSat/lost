@@ -3,9 +3,8 @@
 [![Build, Test, and Lint](https://github.com/UWCubeSat/lost/actions/workflows/build-test-lint.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/build-test-lint.yml)
 [![Publish Docs](https://github.com/UWCubeSat/lost/actions/workflows/publish-docs.yml/badge.svg)](https://github.com/UWCubeSat/lost/actions/workflows/publish-docs.yml)
 
-This is a framework for developing high-accuracy star trackers on small, low-power, low-cost
-satellites. It is being developed in the Husky Satellite Lab, a CubeSat team at the University of
-Washington.
+LOST is star tracker software for small, low-power, low-cost satellites. It is being developed in
+the Husky Satellite Lab, a CubeSat team at the University of Washington.
 
 In depth code documentation is available on this repo's [Doxygen Page](https://uwcubesat.github.io/lost/)
 
