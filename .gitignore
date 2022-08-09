@@ -5,6 +5,8 @@
 *.o
 *.d
 *.png
+*.dat
+*.txt
 
 /documentation/man-*.h
 
