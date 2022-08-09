@@ -804,6 +804,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
             starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
         inputStarIds = result.starIds.get();
+    } else if (starIdAlgorithm && !database) {
+        std::cout << "Warning: star id algorithm is set without database" << std::endl;
     }
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
