@@ -60,6 +60,16 @@ const CatalogStar *findNamedStar(const Catalog &, int name);
 // (so 523 = 5.23)
 Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 
+// for tracking mode
+class PrevAttitude {
+public:
+    PrevAttitude(Attitude prev, float uncertainty)
+        : prev(prev), uncertainty(uncertainty) { };
+
+    Attitude prev;
+    float uncertainty;
+};
+
 }
 
 #endif
