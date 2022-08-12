@@ -24,6 +24,8 @@ LOST_CLI_OPTION("centroid-dummy-stars"     , int        , centroidDummyNumStars 
 LOST_CLI_OPTION("centroid-mag-filter"      , float      , centroidMagFilter      , -1  , atof(optarg) , 5)
 LOST_CLI_OPTION("database"                 , std::string, databasePath           , ""  , optarg       , kNoDefaultArgument)
 LOST_CLI_OPTION("star-id-algo"             , std::string, idAlgo                 , ""  , optarg       , "pyramid")
+LOST_CLI_OPTION("prev-attitude"            , std::string, prevAttitudeString     , ""  , optarg       , kNoDefaultArgument)
+LOST_CLI_OPTION("uncertainty "             , float      , uncertainty            , -1  , atof(optarg) , 5)
 LOST_CLI_OPTION("angular-tolerance"        , float      , angularTolerance       , .04 , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("false-stars-estimate"     , int        , estimatedNumFalseStars , 500 , atoi(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("max-mismatch-probability" , float      , maxMismatchProb        , .001, atof(optarg) , kNoDefaultArgument)

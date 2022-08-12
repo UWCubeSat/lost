@@ -695,6 +695,24 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+    } else if (values.idAlgo == "tracking") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TrackingModeStarIdAlgorithm());
+
+        // convert user inputted string ra,dec,roll to individual floats
+        std::vector<float> attInputs;
+        std::stringstream ss (values.prevAttitudeString);
+        std::string item;
+        while (std::getline (ss, item, ',')) {
+            attInputs.push_back(stof(item));
+        }
+
+        // convert ra, dec, and roll to quaternion attitude
+        Quaternion q = SphericalToQuaternion(attInputs[0], attInputs[1], attInputs[2]);
+        Attitude a = Attitude(q);
+        
+        // set prev attitude part of pipeline
+        PrevAttitude prev(a, values.uncertainty);
+        result.prevAttitude = prev;
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
@@ -757,7 +775,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
+            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera(), prevAttitude)));
         inputStarIds = result.starIds.get();
     }
 
@@ -773,7 +791,6 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
     
-
     for (const std::unique_ptr<PipelineInput> &input : inputs) {
         result.push_back(Go(*input));
     }

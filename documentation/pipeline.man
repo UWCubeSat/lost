@@ -11,7 +11,7 @@ pipeline \- builds a pipeline of the star identification process
 .br
 \fBpipeline\fP --generate[=\fInum-images\fP] [--horizontal-res \fIres\fP] [--vertical-res \fIres\fP] [--horizontal-fov \fIdegrees\fP] [--ref-brightness \fImag\fP] [--spread-stddev \fIstddev\fP] [--noise-stddev \fIstddev\fP] [--boresight-right-asc \fIascension\fP] [--boresight-dec \fIdeclination\fP] [--boresight-roll \fIroll\fP] 
 [--centroid-algo \fIalgorithm\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP] 
-[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
+[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--gv-tolerance \fIdegrees\fP | --py-tolerance \fIdegrees\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP | --prev-attitude \fIattitude\fP --uncertainty \fIradius\fP)] [--attitude-algo \fIalgo\fP] [--plot \fIoutput-path\fB]
 
 .SH DESCRIPTION
 
@@ -68,6 +68,14 @@ used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 de
 .TP
 \fB--max-mismatch-prob\fP \fIprobability\fP
 \fIprobability\fP is the maximum allowable probability of an incorrect star identification, for star id algorithms which support it. Defaults to 0.001.
+
+.TP
+\fB--prev-attitude\fP \fIattitude\fP
+\fIattitude\fP is the known previous attitude for tracking mode. Should give ra, dec, and roll as a comma-separated list: "ra,dec,roll."
+
+.TP
+\fB--uncertainty\fP \fIradius\fP
+For tracking mode. \fIradius\fP gives the boundary for how much the field of view could have rotated.
 
 .TP
 \fB--attitude-algo\fP \fIalgo\fP

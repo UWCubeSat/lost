@@ -65,6 +65,8 @@ class PrevAttitude {
 public:
     PrevAttitude(Attitude prev, float uncertainty)
         : prev(prev), uncertainty(uncertainty) { };
+    PrevAttitude()
+        : PrevAttitude(Attitude(), -1.0f) { };
 
     Attitude prev;
     float uncertainty;

@@ -10,7 +10,7 @@
 namespace lost {
 
 StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
 
     StarIdentifiers result;
 
@@ -22,7 +22,7 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 }
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
@@ -285,7 +285,7 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
 }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
@@ -504,7 +504,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 }
 
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
