@@ -1,3 +1,3 @@
-attitude_ra 225.102
-attitude_de 28.9928
-attitude_roll 81.3329
+attitude_ra 0
+attitude_de 0
+attitude_roll -0
