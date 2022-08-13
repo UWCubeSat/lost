@@ -2,6 +2,7 @@
 #include <math.h>
 #include <assert.h>
 #include <vector>
+#include <map>
 
 #include "star-id.hpp"
 #include "databases.hpp"
@@ -503,6 +504,13 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+// for ordering vec3 in votes map in tracking mode
+bool operator<(const Vec3& l, const Vec3& r) {
+    if (l.x < r.x) return true;
+    if (l.y < r.y) return true;
+    return (l.z < r.z);
+}
+
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
 
@@ -514,80 +522,64 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
 
+    std::map<Vec3, int> votes;
 
-    // TODO figure out how users can get 
-    float radius;
-    float ra;
-    float dec;
-    float roll;
-    
+    // for every centroid...
+    for (int i = 0; i < (int)stars.size(); i++) {
+        
+        // find previous position of the centroid based on the old attitude
+        Vec3 prevPosition = camera.CameraToSpatial(stars[i].position);
+        prevPosition = prevAttitude.prev.Rotate(prevPosition);
+        
+        // find out which stars are within the bounds of that position
+        std::vector<int16_t> possiblePrevStarInd = vectorDatabase.QueryNearestStars(catalog, prevPosition, prevAttitude.uncertainty);
 
+        // for every possible prev position...
+        for (int j = 0; j < (int)possiblePrevStarInd.size(); j++) {
+            
+            // vote for the amount of rotation
+            CatalogStar possibleStar = catalog[possiblePrevStarInd[j]];
+            Vec3 pos = possibleStar.spatial;
+            Vec3 diff = prevPosition - pos;
+
+            if (votes.count(diff)) {
+                votes[diff]++;
+            } else {
+                votes.insert(std::make_pair(diff,1));
+            }
+        } 
+ 
+    }
+
+    // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
+    Vec3 votedDiff = {0,0,0};
+    std::pair<Vec3, int> entryWithMaxValue = std::make_pair(votedDiff,0);
+    std::map<Vec3, int>::iterator currentEntry;
+    for (currentEntry = votes.begin(); currentEntry != votes.end(); ++currentEntry) {
+ 
+        if (currentEntry->second > entryWithMaxValue.second) {
+            entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
+            votedDiff = currentEntry->first;
+        }
+    }
+ 
     for (int i = 0; i < (int)stars.size(); i++) {
 
-        // TODO figure out math for how to get the current position in degrees based on prev attitude
-        Vec3 position;
+        // find star's past position
+        Vec3 prevPosition = camera.CameraToSpatial(stars[i].position);
+        prevPosition = prevAttitude.prev.Rotate(prevPosition);
+        prevPosition = prevPosition - votedDiff;
 
-        std::vector<int16_t> possiblePrevStarInd = vectorDatabase.QueryNearestStars(catalog, position, radius);
+        // identify which star in the catalog has the same past position
+        for (int j = 0; j < (int)catalog.size(); j++) {
+            if (catalog[j].spatial.x == prevPosition.x && catalog[j].spatial.y == prevPosition.y && catalog[j].spatial.z == prevPosition.z) {
+                identified.push_back(StarIdentifier(i, j));
+                break;
+            }
+        }
+    }
 
-
-
-        std::vector<int16_t> votes(catalog.size(), 0);
-        Vec2 c;
-        c.x = 0;
-        c.y = 0;
-        Vec3 center = camera.CameraToSpatial(c).Normalize();
-        Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
-        float distance = Distance(center, iSpatial);
-
-
-
-
-        // for (int j = 0; j < (int)stars.size(); j++) {
-        //     if (i != j) {
-        //         // TODO: find a faster way to do this:
-        //         std::vector<bool> votedInPair(catalog.size(), false);
-        //         Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
-        //         float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
-        //         //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
-        //         float lowerBoundRange = greatCircleDistance - tolerance;
-        //         float upperBoundRange = greatCircleDistance + tolerance;
-        //         const int16_t *upperBoundSearch;
-        //         const int16_t *lowerBoundSearch = vectorDatabase.FindPairsLiberal(
-        //             lowerBoundRange, upperBoundRange, &upperBoundSearch);
-        //         //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
-        //         for (const int16_t *k = lowerBoundSearch; k != upperBoundSearch; k++) {
-        //             if ((k - lowerBoundSearch) % 2 == 0) {
-        //                 float actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
-        //                 assert(actualAngle <= greatCircleDistance + tolerance * 2);
-        //                 assert(actualAngle >= greatCircleDistance - tolerance * 2);
-        //             }
-        //             if (!votedInPair[*k] || true) {
-        //                 votes[*k]++;
-        //                 votedInPair[*k] = true;
-        //             }
-        //         }
-        //         // US voting system
-        //     }
-        // }
-        // // Find star w most votes
-        // int16_t maxVotes = votes[0];
-        // int indexOfMax = 0;
-        // for (int v = 1; v < (int)votes.size(); v++) {
-        //     if (votes[v] > maxVotes) {
-        //         maxVotes = votes[v];
-        //         indexOfMax = v;
-        //     }
-        // }
-        // StarIdentifier newStar(i, indexOfMax);
-        // // Set identified[i] to value of catalog index of star w most votesr
-        // identified.push_back(newStar);
-    }   
-
-
-
-
+    return identified;
 }
-
-
 
 }
