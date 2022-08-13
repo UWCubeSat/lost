@@ -1332,7 +1332,7 @@ void PipelineComparison(const PipelineInputList &expected,
         LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids);
     }
     if (values.compareStarIds != "") {
-        assert(expected[0]->ExpectedStars() && actual[0].starIds && values.centroidCompareThreshold);
+        assert(expected[0]->ExpectedStarIds() && actual[0].starIds);
         LOST_PIPELINE_COMPARE(PipelineComparatorStarIds, values.compareStarIds);
     }
     if (values.printAttitude != "") {

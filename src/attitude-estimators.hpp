@@ -8,20 +8,6 @@
 #include "star-id.hpp"
 
 namespace lost {
-
-/// Necessary matrix information for both the dqm and quest algos
-struct DqmQuestHelperMatrices {
-    Eigen::Matrix4f K;      /// Davenport matrix
-    Eigen::Matrix3f S;      /// B + B^T (where B is the attitude profile matrix)
-    Eigen::Vector3f Z;      /// [B23 - B32, B31 - B13, B12 - B21]^T]
-    float sigma;            /// tr(B)
-};
-
-/**
- * Returns necessary matrix information for calculations in both the dqm and quest algorithms
- */
-DqmQuestHelperMatrices DqmQuestHelperMatricesConstructor(const Camera &camera, const Stars &stars, const Catalog &catalog, const StarIdentifiers &starIdentifiers);
-
 /**
  * An attitude estimation algorithm estimates the orientation of the camera based on identified stars.
  * Subclasses should have a constructor which stores any configuration values in private fields, and then override the Go method to perform the actual attitude estimation.

@@ -382,7 +382,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     Vec3 rSpatial = camera.CameraToSpatial(stars[r].position).Normalize();
 
                     // sign of determinant, to detect flipped patterns
-                    bool spectralTorch = iSpatial.crossProduct(jSpatial)*kSpatial > 0;
+                    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
 
                     float ikDist = AngleUnit(iSpatial, kSpatial);
                     float irDist = AngleUnit(iSpatial, rSpatial);
@@ -447,7 +447,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         // significant performance improvement.
                         for (int16_t jCandidate : jCandidates) {
                             const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
-                            Vec3 ijCandidateCross = iCandidateSpatial.crossProduct(jCandidateSpatial);
+                            Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
 
                             for (int16_t kCandidate : kCandidates) {
                                 Vec3 kCandidateSpatial = catalog[kCandidate].spatial;

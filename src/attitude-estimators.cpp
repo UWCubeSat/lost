@@ -6,7 +6,7 @@ namespace lost {
 
 #define EPSILON 0.0001       // threshold for 0 for Newton-Raphson method
 
-DqmQuestHelperMatrices DqmQuestHelperMatricesConstructor(const Camera &camera,
+Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
                                  const Catalog &catalog,
                                  const StarIdentifiers &starIdentifiers) {
@@ -39,29 +39,12 @@ DqmQuestHelperMatrices DqmQuestHelperMatricesConstructor(const Camera &camera,
         B(2,0) - B(0,2),
         B(0,1) - B(1,0);
 
-    // only used for Davenport matrix
     // K =  [[[sigma], [Z[0]], [Z[1]], [Z[2]]], [[Z[0]], [S[0][0] - sigma], [S[0][1]], [S[0][2]]], [[Z[1]], [S[1][0]], [S[1][1] - sigma], [S[1][2]]], [[Z[2]], [S[2][0]], [S[2][1]], [S[2][2] - sigma]]]
     Eigen::Matrix4f K;
     K << sigma, Z(0), Z(1), Z(2),
         Z(0), S(0,0) - sigma, S(0,1), S(0,2),
         Z(1), S(1,0), S(1,1) - sigma, S(1,2),
         Z(2), S(2,0), S(2,1), S(2,2) - sigma;
-
-    DqmQuestHelperMatrices m;
-    m.K = K;
-    m.S = S;
-    m.Z = Z;
-    m.sigma = sigma;
-    return m;
-}
-
-Attitude DavenportQAlgorithm::Go(const Camera &camera,
-                                 const Stars &stars,
-                                 const Catalog &catalog,
-                                 const StarIdentifiers &starIdentifiers) {
-
-    // Create matrix
-    Eigen::Matrix4f K = DqmQuestHelperMatricesConstructor(camera, stars, catalog, starIdentifiers).K;
 
     //Find eigenvalues of K, store the largest one as lambda
     //find the maximum index
@@ -92,8 +75,8 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
 /// return a matrix whose columns are the axes of the frame
 static Mat3 TriadCoordinateFrame(Vec3 v1, Vec3 v2) {
     Vec3 d1 = v1.Normalize();
-    Vec3 d2 = v1.crossProduct(v2).Normalize();
-    Vec3 d3 = d1.crossProduct(d2).Normalize();
+    Vec3 d2 = v1.CrossProduct(v2).Normalize();
+    Vec3 d3 = d1.CrossProduct(d2).Normalize();
     return {
         d1.x, d2.x, d3.x,
         d1.y, d2.y, d3.y,
@@ -155,38 +138,59 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
                             const Catalog &catalog,
                             const StarIdentifiers &starIdentifiers) {
 
-    // create matrix
-    DqmQuestHelperMatrices m = DqmQuestHelperMatricesConstructor(camera, stars, catalog, starIdentifiers);
-
-    // calculate coefficients for characteristic polynomial
-    float delta = m.S.determinant();
-    float kappa = (delta * m.S.inverse()).trace();
-    float a = pow(m.sigma,2) - kappa;
-    float b = pow(m.sigma,2) + (m.Z.transpose() * m.Z);
-    float c = delta + (m.Z.transpose() * m.S * m.Z);
-    float d = m.Z.transpose() * (m.S * m.S) * m.Z;
-
-    // sum up the weights for initial guess of eigenvalue
+    // initial guess for eigenvalue (sum of the weights)
     float guess = 0;
+
+    // attitude profile matrix
+    Mat3 B = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (const StarIdentifier &s : starIdentifiers) {
+        Star bStar = stars[s.starIndex];
+        Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
+
+        CatalogStar rStar = catalog[s.catalogIndex];
+        Vec3 rStarSpatial = {rStar.spatial.x, rStar.spatial.y, rStar.spatial.z};
+
+        //Weight = 1 (can be changed later, in which case we want to make a vector to hold all weights {ai})
+        // Calculate matrix B = sum({ai}{bi}{ri}T)
+        B = B + (rStarSpatial.OuterProduct(bStarSpatial) * s.weight);
+
+        // sum up the weights for initial guess of eigenvalue
         guess += s.weight;
     }
 
+    // S = B + Transpose(B)
+    Mat3 S = B + B.Transpose();
+    //sigma = B[0][0] + B[1][1] + B[2][2]
+    float sigma = B.Trace();
+    //Z = [[B[1][2] - B[2][1]], [B[2][0] - B[0][2]], [B[0][1] - B[1][0]]]
+    Vec3 Z = {
+        B.At(1,2) - B.At(2,1),
+        B.At(2,0) - B.At(0,2),
+        B.At(0,1) - B.At(1,0)
+    };
+
+    // calculate coefficients for characteristic polynomial
+    float delta = S.Det();
+    float kappa = (S.Inverse() * delta).Trace();
+    float a = pow(sigma,2) - kappa;
+    float b = pow(sigma,2) + (Z * Z);
+    float c = delta + (Z * S * Z);
+    float d = Z * (S * S) * Z;
+
     // Newton-Raphson method for estimating the largest eigenvalue
-    float eig = QuestEigenvalueEstimator(guess, a, b, c, d, m.sigma);
+    float eig = QuestEigenvalueEstimator(guess, a, b, c, d, sigma);
 
     // solve for the optimal quaternion: from https://ahrs.readthedocs.io/en/latest/filters/quest.html
-    float alpha = pow(eig,2) - pow(m.sigma, 2) + kappa;
-    float beta = eig - m.sigma;
-    float gamma = (eig + m.sigma) * alpha - delta;
+    float alpha = pow(eig,2) - pow(sigma, 2) + kappa;
+    float beta = eig - sigma;
+    float gamma = (eig + sigma) * alpha - delta;
 
-    Eigen::Vector3f X = ((alpha * Eigen::Matrix3f::Identity()) + (beta * m.S) + (m.S * m.S)) * m.Z;
+    Vec3 X = ((kIdentityMat3 * alpha) + (S * beta) + (S * S)) * Z;
+    float scalar = 1 / sqrt(pow(gamma,2) + X.MagnitudeSq());
+    X = X * scalar;
+    gamma *= scalar;
 
-    Eigen::Vector4f optQuat;
-    optQuat << gamma, X[0], X[1], X[2];
-    optQuat /= optQuat.norm();
-
-    return Attitude(Quaternion(optQuat[0], optQuat[1], optQuat[2], optQuat[3]));
+    return Attitude(Quaternion(gamma, X.x, X.y, X.z));
 }
 
 }

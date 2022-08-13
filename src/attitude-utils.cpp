@@ -212,11 +212,29 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
 }
 
 /// Usual vector cross product
-Vec3 Vec3::crossProduct(const Vec3 &other) const {
+Vec3 Vec3::CrossProduct(const Vec3 &other) const {
     return {
         y*other.z - z*other.y,
         -(x*other.z - z*other.x),
         x*other.y - y*other.x,
+    };
+}
+
+/// The outer product of two vectors
+Mat3 Vec3::OuterProduct(const Vec3 &other) const {
+    return {
+        x*other.x, x*other.y, x*other.z,
+        y*other.x, y*other.y, y*other.z,
+        z*other.x, z*other.y, z*other.z
+    };
+}
+
+/// Vector-matrix multiplication, where the vector is transposed
+Vec3 Vec3::operator*(const Mat3 &other) const {
+    return {
+        x*other.At(0,0) + y*other.At(0,1) + z*other.At(0,2),
+        x*other.At(1,0) + y*other.At(1,1) + z*other.At(1,2),
+        x*other.At(2,0) + y*other.At(2,1) + z*other.At(2,2),
     };
 }
 
@@ -225,12 +243,23 @@ float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
+/// Get the column at index j
 Vec3 Mat3::Column(int j) const {
     return {At(0,j), At(1,j), At(2,j)};
 }
 
+/// Get the row at index i
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
+}
+
+/// Normal matrix addition
+Mat3 Mat3::operator+(const Mat3 &other) const {
+    return {
+        At(0,0)+other.At(0,0), At(0,1)+other.At(0,1), At(0,2)+other.At(0,2),
+        At(1,0)+other.At(1,0), At(1,1)+other.At(1,1), At(1,2)+other.At(1,2),
+        At(2,0)+other.At(2,0), At(2,1)+other.At(2,1), At(2,2)+other.At(2,2)
+    };
 }
 
 /// Naive matrix multiplication.
@@ -253,6 +282,16 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     };
 }
 
+/// Matrix-Scalar multiplication
+Mat3 Mat3::operator*(const float &s) const {
+    return {
+        s*At(0,0), s*At(0,1), s*At(0,2),
+        s*At(1,0), s*At(1,1), s*At(1,2),
+        s*At(2,0), s*At(2,1), s*At(2,2)
+    };
+}
+
+/// Transpose of a matrix
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
@@ -260,6 +299,35 @@ Mat3 Mat3::Transpose() const {
         At(0,2), At(1,2), At(2,2),
     };
 }
+
+/// Trace of a matrix
+float Mat3::Trace() const {
+    return At(0,0) + At(1,1) + At(2,2);
+}
+
+/// Determinant of a matrix
+float Mat3::Det() const {
+    return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
+}
+
+/// Inverse of a matrix
+Mat3 Mat3::Inverse() const {
+    // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
+    float scalar = 1 / Det();
+
+    Mat3 res = {
+        At(1,1)*At(2,2) - At(1,2)*At(2,1), At(0,2)*At(2,1) - At(0,1)*At(2,2), At(0,1)*At(1,2) - At(0,2)*At(1,1),
+        At(1,2)*At(2,0) - At(1,0)*At(2,2), At(0,0)*At(2,2) - At(0,2)*At(2,0), At(0,2)*At(1,0) - At(0,0)*At(1,2),
+        At(1,0)*At(2,1) - At(1,1)*At(2,0), At(0,1)*At(2,0) - At(0,0)*At(2,1), At(0,0)*At(1,1) - At(0,1)*At(1,0)
+    };
+
+    return res * scalar;
+}
+
+/// 3x3 identity matrix
+ const Mat3 kIdentityMat3 = {1,0,0,
+                     0,1,0,
+                     0,0,1};
 
 Attitude::Attitude(const Quaternion &quat)
     : quaternion(quat), type(QuaternionType) {}
@@ -286,7 +354,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     Vec3 oldXAxis = Vec3({1, 0, 0});
     Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
     assert(abs(newXAxis.Magnitude()-1) < 0.001);
-    Vec3 xAlignAxis = oldXAxis.crossProduct(newXAxis).Normalize();
+    Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
     float xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
 
@@ -296,7 +364,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // we still need to take the cross product, because acos returns a value in [0,pi], and thus we
     // need to know which direction to rotate before we rotate. We do this by checking if the cross
     // product of old and new y axes is in the same direction as the new X axis.
-    bool rotateClockwise = oldYAxis.crossProduct(newYAxis) * newXAxis > 0; // * is dot product
+    bool rotateClockwise = oldYAxis.CrossProduct(newYAxis) * newXAxis > 0; // * is dot product
     Quaternion yAlign({1, 0, 0}, AngleUnit(oldYAxis, newYAxis) * (rotateClockwise ? 1 : -1));
 
     // We're done! There's no need to worry about the Z-axis because the handed-ness of the

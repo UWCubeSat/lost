@@ -25,6 +25,8 @@ struct Vec2 {
     Vec2 operator+(const Vec2 &) const;
 };
 
+class Mat3; // define above so we can use in Vec3 class
+
 /// Three dimensional vector with floating point components
 class Vec3 {
 public:
@@ -38,8 +40,10 @@ public:
 
     float operator*(const Vec3 &) const;
     Vec3 operator*(const float &) const;
+    Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
-    Vec3 crossProduct(const Vec3 &) const;
+    Vec3 CrossProduct(const Vec3 &) const;
+    Mat3 OuterProduct(const Vec3 &) const;
 };
 
 /// 3x3 vector with floating point components
@@ -48,12 +52,19 @@ public:
     float x[9];
 
     float At(int i, int j) const;
+    Mat3 operator+(const Mat3 &) const;
     Mat3 operator*(const Mat3 &) const;
     Vec3 operator*(const Vec3 &) const;
+    Mat3 operator*(const float &) const;
     Mat3 Transpose() const;
     Vec3 Column(int) const;
     Vec3 Row(int) const;
+    float Trace() const;
+    float Det() const;
+    Mat3 Inverse() const;
 };
+
+extern const Mat3 kIdentityMat3;
 
 long SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);
