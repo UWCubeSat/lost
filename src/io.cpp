@@ -251,7 +251,7 @@ void BuildKVectorDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog,
 
 void BuildTrackingDatabase(MultiDatabaseBuilder &builder, const Catalog &catalog) {
     long length = SerializeLengthTrackingCatalog(catalog);
-    unsigned char *buffer = builder.AddSubDatabase(TrackingSortedDatabase::magicValue, length);
+    unsigned char *buffer = builder.AddSubDatabase(TrackingSortedDatabase::kMagicValue, length);
     if (buffer == NULL) {
         std::cerr << "No room for another database." << std::endl;
     }

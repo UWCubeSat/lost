@@ -516,7 +516,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
-    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(TrackingSortedDatabase::magicValue);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(TrackingSortedDatabase::kMagicValue);
     if (databaseBuffer == NULL) {
         return identified;
     }

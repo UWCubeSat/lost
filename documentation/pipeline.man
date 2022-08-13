@@ -55,7 +55,7 @@ Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
 
 .TP
 \fB--star-id-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
+Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", "pyramid", and "tracking". Defaults to "pyramid" if option is not selected.
 
 .TP
 \fB--angular-tolerance\fP [\fItolerance\fP] Sets the estimated angular centroiding error tolerance,
@@ -75,7 +75,7 @@ used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 de
 
 .TP
 \fB--uncertainty\fP \fIradius\fP
-For tracking mode. \fIradius\fP gives the boundary for how much the field of view could have rotated.
+For tracking mode. \fIradius\fP gives the boundary for how much the field of view could have rotated. Defaults to 5 if not selected.
 
 .TP
 \fB--attitude-algo\fP \fIalgo\fP
