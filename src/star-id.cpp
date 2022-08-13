@@ -511,6 +511,13 @@ bool operator<(const Vec3& l, const Vec3& r) {
     return (l.z < r.z);
 }
 
+bool vecEquals(const Vec3& l, const Vec3& r, const float threshold) {
+    if (abs(l.x - r.x) > threshold) return false;
+    if (abs(l.y - r.y) > threshold) return false;
+    if (abs(l.z - r.z) > threshold) return false;
+    return true;
+}
+
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
 
@@ -542,9 +549,15 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
             Vec3 pos = possibleStar.spatial;
             Vec3 diff = prevPosition - pos;
 
-            if (votes.count(diff)) {
-                votes[diff]++;
-            } else {
+            bool found = false;
+            for (auto& pair : votes) {
+                if (vecEquals(pair.first, diff, prevAttitude.compareThreshold)) {
+                    pair.second++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 votes.insert(std::make_pair(diff,1));
             }
         } 

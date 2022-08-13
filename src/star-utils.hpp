@@ -63,13 +63,14 @@ Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 // for tracking mode
 class PrevAttitude {
 public:
-    PrevAttitude(Attitude prev, float uncertainty)
-        : prev(prev), uncertainty(uncertainty) { };
+    PrevAttitude(Attitude prev, float uncertainty, float compareThreshold)
+        : prev(prev), uncertainty(uncertainty), compareThreshold(compareThreshold) { };
     PrevAttitude()
-        : PrevAttitude(Attitude(), -1.0f) { };
+        : PrevAttitude(Attitude(), -1.0f, 0.001) { };
 
     Attitude prev;
     float uncertainty;
+    float compareThreshold;
 };
 
 }

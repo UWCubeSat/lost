@@ -711,7 +711,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         Attitude a = Attitude(q);
         
         // set prev attitude part of pipeline
-        PrevAttitude prev(a, values.uncertainty);
+        PrevAttitude prev(a, values.uncertainty, values.trackingCompareThreshold);
         result.prevAttitude = prev;
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
