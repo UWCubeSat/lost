@@ -16,5 +16,5 @@ var searchData=
   ['column_367',['Column',['../classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e',1,'lost::Mat3']]],
   ['comparekvectorpairs_368',['CompareKVectorPairs',['../namespacelost.html#a68f14b0d645721125203e669cde68358',1,'lost']]],
   ['conjugate_369',['Conjugate',['../classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9',1,'lost::Quaternion']]],
-  ['crossproduct_370',['crossProduct',['../classlost_1_1_vec3.html#a67ce90f3f67d14cf9a537aeb19434907',1,'lost::Vec3']]]
+  ['crossproduct_370',['CrossProduct',['../classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba',1,'lost::Vec3']]]
 ];

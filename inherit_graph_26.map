@@ -1,6 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="5,64,161,91"/>
-<area shape="rect" id="node2" href="$classlost_1_1_dummy_star_id_algorithm.html" title="A star&#45;id algorithm that returns random results. For debugging." alt="" coords="211,5,419,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_geometric_voting_star_id_algorithm.html" title="A star&#45;id algorithm based on assigning votes for each centroid&#45;catalog pair then choosing the highest..." alt="" coords="220,57,409,98"/>
-<area shape="rect" id="node4" href="$classlost_1_1_pyramid_star_id_algorithm.html" title="The &quot;de facto&quot; star&#45;id algorithm used in many real&#45;world missions." alt="" coords="209,123,420,149"/>
+<area shape="rect" id="node1" href="$structlost_1_1_star_id_comparison.html" title="The result of comparing an actual star identification with the true star idenification,..." alt="" coords="5,5,176,32"/>
 </map>

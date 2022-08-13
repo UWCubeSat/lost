@@ -1,4 +1,5 @@
 <map id="lost::Mat3::Transpose" name="lost::Mat3::Transpose">
-<area shape="rect" id="node1" title=" " alt="" coords="228,5,388,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,180,32"/>
+<area shape="rect" id="node1" title="Transpose of a matrix." alt="" coords="236,31,396,57"/>
+<area shape="rect" id="node2" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="9,5,184,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,56,188,83"/>
 </map>

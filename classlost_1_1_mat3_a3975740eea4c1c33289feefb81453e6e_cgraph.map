@@ -1,4 +1,4 @@
 <map id="lost::Mat3::Column" name="lost::Mat3::Column">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,151,32"/>
+<area shape="rect" id="node1" title="Get the column at index j." alt="" coords="5,5,151,32"/>
 <area shape="rect" id="node2" href="$classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="199,5,308,32"/>
 </map>

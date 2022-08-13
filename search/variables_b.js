@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['peakbrightness_539',['peakBrightness',['../classlost_1_1_generated_star.html#aadcacbb1bf27616e20db9b86cde2e691',1,'lost::GeneratedStar']]],
-  ['position_540',['position',['../classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea',1,'lost::Star']]]
+  ['peakbrightness_543',['peakBrightness',['../classlost_1_1_generated_star.html#aadcacbb1bf27616e20db9b86cde2e691',1,'lost::GeneratedStar']]],
+  ['position_544',['position',['../classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea',1,'lost::Star']]]
 ];

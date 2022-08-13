@@ -1,6 +1,5 @@
 <map id="lost::DavenportQAlgorithm::Go" name="lost::DavenportQAlgorithm::Go">
-<area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,13,228,39"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a5ca1fb02bb5a2e11cd25f68a9ffb529c" title="Returns necessary matrix information for calculations in both the dqm and quest algorithms." alt="" coords="276,5,499,47"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="547,13,769,39"/>
-<area shape="rect" id="node4" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="817,13,987,39"/>
+<area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,228,32"/>
+<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,5,499,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,5,716,32"/>
 </map>

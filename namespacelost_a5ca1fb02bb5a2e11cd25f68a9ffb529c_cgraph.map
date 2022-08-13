@@ -1,5 +1,0 @@
-<map id="lost::DqmQuestHelperMatricesConstructor" name="lost::DqmQuestHelperMatricesConstructor">
-<area shape="rect" id="node1" title="Returns necessary matrix information for calculations in both the dqm and quest algorithms." alt="" coords="5,5,228,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,13,499,39"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,13,716,39"/>
-</map>

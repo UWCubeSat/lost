@@ -1,35 +1,35 @@
 <map id="lost::PipelineComparison" name="lost::PipelineComparison">
 <area shape="rect" id="node1" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,286,189,313"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6" title="Compare the actual and expected attitudes." alt="" coords="960,60,1143,101"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6" title="Compare the actual and expected attitudes." alt="" coords="960,60,1143,102"/>
 <area shape="rect" id="node11" href="$namespacelost.html#a280cc4fd6b73771d018721ff55db89d7" title="Compare the actual and expected centroids, printing key stats to os" alt="" coords="237,367,420,408"/>
-<area shape="rect" id="node15" href="$namespacelost.html#a800beb5e9d3cc8ace23094b253a2a397" title="Plot the annotated input image to os" alt="" coords="237,184,420,225"/>
+<area shape="rect" id="node15" href="$namespacelost.html#a800beb5e9d3cc8ace23094b253a2a397" title="Plot the annotated input image to os" alt="" coords="237,184,420,226"/>
 <area shape="rect" id="node27" href="$namespacelost.html#aca0bcc5fdf17cecfb9020c897b3bb5d0" title="Plot the image annotated with output data computed by the star tracking algorithms." alt="" coords="237,119,420,160"/>
-<area shape="rect" id="node28" href="$namespacelost.html#a8557cba951933582593cd557f9cd98ad" title="Plots the input image with no annotation to os" alt="" coords="237,249,420,291"/>
-<area shape="rect" id="node29" href="$namespacelost.html#a8ab6e86fca2857fcbc77fdf2d9a9d82b" title="Print the identifed attitude to os in Euler angle format." alt="" coords="474,268,657,309"/>
-<area shape="rect" id="node30" href="$namespacelost.html#adf2b017d7891344d689081bf5fbe70bf" title="Print a list of centroids to os" alt="" coords="237,432,420,473"/>
-<area shape="rect" id="node31" href="$namespacelost.html#adfc11912c9b3ba49aa7a32cee07ba3b8" title="Compare the expected and actual star identifiers." alt="" coords="237,497,420,539"/>
+<area shape="rect" id="node28" href="$namespacelost.html#a8557cba951933582593cd557f9cd98ad" title="Plots the input image with no annotation to os" alt="" coords="237,250,420,291"/>
+<area shape="rect" id="node29" href="$namespacelost.html#a8ab6e86fca2857fcbc77fdf2d9a9d82b" title="Print the identifed attitude to os in Euler angle format." alt="" coords="474,268,657,310"/>
+<area shape="rect" id="node30" href="$namespacelost.html#adf2b017d7891344d689081bf5fbe70bf" title="Print a list of centroids to os" alt="" coords="237,432,420,474"/>
+<area shape="rect" id="node31" href="$namespacelost.html#adfc11912c9b3ba49aa7a32cee07ba3b8" title="Compare the expected and actual star identifiers." alt="" coords="237,498,420,539"/>
 <area shape="rect" id="node3" href="$namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="1244,70,1335,97"/>
-<area shape="rect" id="node8" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="1648,171,1848,198"/>
-<area shape="rect" id="node10" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="1230,121,1349,147"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1452,70,1571,97"/>
-<area shape="rect" id="node5" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="1431,121,1591,147"/>
-<area shape="rect" id="node6" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="1667,121,1829,147"/>
-<area shape="rect" id="node7" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="1910,121,2089,147"/>
-<area shape="rect" id="node9" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="1896,197,2103,223"/>
-<area shape="rect" id="node12" href="$namespacelost.html#a0fe01051c958fa8ced02e772aefdc991" title=" " alt="" coords="468,400,663,441"/>
-<area shape="rect" id="node13" href="$namespacelost.html#afd017fba4090829c28c431509c4cfc1c" title="Compare expected and actual centroids." alt="" coords="478,349,653,375"/>
-<area shape="rect" id="node14" href="$namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d" title="The distance between two vectors, according to the usual distance formula." alt="" coords="749,349,860,375"/>
+<area shape="rect" id="node8" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="1649,172,1849,198"/>
+<area shape="rect" id="node10" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="1230,121,1349,148"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1453,70,1571,97"/>
+<area shape="rect" id="node5" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="1432,121,1592,148"/>
+<area shape="rect" id="node6" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="1668,121,1831,148"/>
+<area shape="rect" id="node7" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="1911,121,2090,148"/>
+<area shape="rect" id="node9" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="1897,197,2104,224"/>
+<area shape="rect" id="node12" href="$namespacelost.html#a0fe01051c958fa8ced02e772aefdc991" title=" " alt="" coords="468,400,663,442"/>
+<area shape="rect" id="node13" href="$namespacelost.html#afd017fba4090829c28c431509c4cfc1c" title="Compare expected and actual centroids." alt="" coords="478,349,653,376"/>
+<area shape="rect" id="node14" href="$namespacelost.html#a862ea58cf013ca5df18ab749fd563a2d" title="The distance between two vectors, according to the usual distance formula." alt="" coords="749,349,860,376"/>
 <area shape="rect" id="node16" href="$namespacelost.html#a1a6f9a38b109664a4205cdf5b83588cc" title="Plotter suitable for cairo_surface_write_to_png_stream which simply writes to an std::ostream." alt="" coords="489,210,642,237"/>
-<area shape="rect" id="node17" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="501,159,629,186"/>
-<area shape="rect" id="node18" href="$namespacelost.html#adc5108f643b7657a835838c7f6411aa7" title=" " alt="" coords="745,243,864,270"/>
-<area shape="rect" id="node19" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="711,159,899,186"/>
-<area shape="rect" id="node20" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="947,177,1156,203"/>
+<area shape="rect" id="node17" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="501,160,629,186"/>
+<area shape="rect" id="node18" href="$namespacelost.html#adc5108f643b7657a835838c7f6411aa7" title=" " alt="" coords="745,244,864,270"/>
+<area shape="rect" id="node19" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="711,160,899,186"/>
+<area shape="rect" id="node20" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="947,177,1156,204"/>
 <area shape="rect" id="node26" href="$classlost_1_1_quaternion.html#a565b9cb827d1938fe0b88aaa19093686" title=" " alt="" coords="947,126,1155,153"/>
-<area shape="rect" id="node21" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1204,173,1375,199"/>
-<area shape="rect" id="node22" href="$classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title=" " alt="" coords="1439,273,1584,299"/>
-<area shape="rect" id="node24" href="$classlost_1_1_vec3.html#a67ce90f3f67d14cf9a537aeb19434907" title="Usual vector cross product." alt="" coords="1423,171,1599,198"/>
-<area shape="rect" id="node25" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1423,222,1600,249"/>
-<area shape="rect" id="node23" href="$classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="1693,273,1803,299"/>
-<area shape="rect" id="node32" href="$namespacelost.html#aa614a4c5a8d13a9909d14773cf29b294" title="Compare expected and actual star identifications." alt="" coords="486,505,645,531"/>
-<area shape="rect" id="node33" href="$namespacelost.html#a45aed28f093253469594e7329f16a5e2" title=" " alt="" coords="729,505,880,531"/>
+<area shape="rect" id="node21" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1204,173,1375,200"/>
+<area shape="rect" id="node22" href="$classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title="Get the column at index j." alt="" coords="1439,273,1585,300"/>
+<area shape="rect" id="node24" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="1423,172,1601,198"/>
+<area shape="rect" id="node25" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1423,222,1601,249"/>
+<area shape="rect" id="node23" href="$classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="1695,273,1804,300"/>
+<area shape="rect" id="node32" href="$namespacelost.html#aa614a4c5a8d13a9909d14773cf29b294" title="Compare expected and actual star identifications." alt="" coords="486,505,645,532"/>
+<area shape="rect" id="node33" href="$namespacelost.html#a45aed28f093253469594e7329f16a5e2" title=" " alt="" coords="729,505,880,532"/>
 </map>

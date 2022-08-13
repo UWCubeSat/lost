@@ -1,7 +1,7 @@
 <map id="lost::TriadAlgorithm::Go" name="lost::TriadAlgorithm::Go">
 <area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,31,180,57"/>
 <area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="228,5,451,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf" title=" " alt="" coords="259,56,419,83"/>
+<area shape="rect" id="node4" href="$classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf" title="Transpose of a matrix." alt="" coords="259,56,419,83"/>
 <area shape="rect" id="node3" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="499,5,668,32"/>
 <area shape="rect" id="node5" href="$classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="529,56,638,83"/>
 </map>

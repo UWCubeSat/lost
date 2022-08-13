@@ -10,7 +10,6 @@ var namespacelost =
     [ "CentroidParams", "structlost_1_1_centroid_params.html", "structlost_1_1_centroid_params" ],
     [ "DatabaseOptions", "classlost_1_1_database_options.html", null ],
     [ "DavenportQAlgorithm", "classlost_1_1_davenport_q_algorithm.html", "classlost_1_1_davenport_q_algorithm" ],
-    [ "DqmQuestHelperMatrices", "structlost_1_1_dqm_quest_helper_matrices.html", "structlost_1_1_dqm_quest_helper_matrices" ],
     [ "DummyCentroidAlgorithm", "classlost_1_1_dummy_centroid_algorithm.html", "classlost_1_1_dummy_centroid_algorithm" ],
     [ "DummyStarIdAlgorithm", "classlost_1_1_dummy_star_id_algorithm.html", "classlost_1_1_dummy_star_id_algorithm" ],
     [ "EulerAngles", "classlost_1_1_euler_angles.html", "classlost_1_1_euler_angles" ],

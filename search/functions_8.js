@@ -9,7 +9,8 @@ var searchData=
   ['inputstarsidentified_409',['InputStarsIdentified',['../classlost_1_1_generated_pipeline_input.html#a0a91637d82c0fafa754686080a3dea78',1,'lost::GeneratedPipelineInput']]],
   ['insensor_410',['InSensor',['../classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538',1,'lost::Camera']]],
   ['inspectcatalog_411',['InspectCatalog',['../namespacelost.html#ada936d93de2f3661518d1215d73ade78',1,'lost']]],
-  ['isunit_412',['IsUnit',['../classlost_1_1_quaternion.html#ac11be6116bc0db43cb7b84ec01e73e33',1,'lost::Quaternion']]],
-  ['iterativeweightedcenterofgravityalgorithm_413',['IterativeWeightedCenterOfGravityAlgorithm',['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c',1,'lost::IterativeWeightedCenterOfGravityAlgorithm']]],
-  ['iwcoghelper_414',['IWCoGHelper',['../namespacelost.html#a789d628bbeab011d5552a6dc551b77a2',1,'lost']]]
+  ['inverse_412',['Inverse',['../classlost_1_1_mat3.html#a155df2c02f28acae5a3b59757eca0945',1,'lost::Mat3']]],
+  ['isunit_413',['IsUnit',['../classlost_1_1_quaternion.html#ac11be6116bc0db43cb7b84ec01e73e33',1,'lost::Quaternion']]],
+  ['iterativeweightedcenterofgravityalgorithm_414',['IterativeWeightedCenterOfGravityAlgorithm',['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c',1,'lost::IterativeWeightedCenterOfGravityAlgorithm']]],
+  ['iwcoghelper_415',['IWCoGHelper',['../namespacelost.html#a789d628bbeab011d5552a6dc551b77a2',1,'lost']]]
 ];

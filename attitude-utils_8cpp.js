@@ -15,5 +15,6 @@ var attitude_utils_8cpp =
     [ "SerializeVec3", "attitude-utils_8cpp.html#a65578753ccfdbffee5d561e99c7ccf19", null ],
     [ "SpatialToSpherical", "attitude-utils_8cpp.html#a922de1d7dbef8e24f5ca6e7505a8e944", null ],
     [ "SphericalToQuaternion", "attitude-utils_8cpp.html#a7057fa740aebe1cbd43f3bafafff4ac1", null ],
-    [ "SphericalToSpatial", "attitude-utils_8cpp.html#a62a70a38d20ca4be158d9f592862aeb4", null ]
+    [ "SphericalToSpatial", "attitude-utils_8cpp.html#a62a70a38d20ca4be158d9f592862aeb4", null ],
+    [ "kIdentityMat3", "attitude-utils_8cpp.html#a66abb8e44054268322b5ccba535bb975", null ]
 ];

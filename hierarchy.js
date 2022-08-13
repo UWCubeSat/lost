@@ -16,7 +16,6 @@ var hierarchy =
     [ "lost::CentroidComparison", "classlost_1_1_centroid_comparison.html", null ],
     [ "lost::CentroidParams", "structlost_1_1_centroid_params.html", null ],
     [ "lost::DatabaseOptions", "classlost_1_1_database_options.html", null ],
-    [ "lost::DqmQuestHelperMatrices", "structlost_1_1_dqm_quest_helper_matrices.html", null ],
     [ "lost::EulerAngles", "classlost_1_1_euler_angles.html", null ],
     [ "lost::Image", "classlost_1_1_image.html", null ],
     [ "lost::IWCoGParams", "structlost_1_1_i_w_co_g_params.html", null ],

@@ -1,5 +1,5 @@
-<map id="lost::Vec3::crossProduct" name="lost::Vec3::crossProduct">
-<area shape="rect" id="node1" title="Usual vector cross product." alt="" coords="1440,74,1616,101"/>
+<map id="lost::Vec3::CrossProduct" name="lost::Vec3::CrossProduct">
+<area shape="rect" id="node1" title="Usual vector cross product." alt="" coords="1440,74,1619,101"/>
 <area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1189,49,1359,75"/>
 <area shape="rect" id="node11" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="1156,99,1392,126"/>
 <area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="899,49,1108,75"/>

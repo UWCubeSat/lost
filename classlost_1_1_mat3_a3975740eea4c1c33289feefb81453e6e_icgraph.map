@@ -1,5 +1,5 @@
 <map id="lost::Mat3::Column" name="lost::Mat3::Column">
-<area shape="rect" id="node1" title=" " alt="" coords="1375,49,1520,75"/>
+<area shape="rect" id="node1" title="Get the column at index j." alt="" coords="1375,49,1520,75"/>
 <area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1156,49,1327,75"/>
 <area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="899,49,1108,75"/>
 <area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="644,12,851,53"/>
