@@ -391,7 +391,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
         if (diff.MagnitudeSq() <= radiusSq) {
             index = mid;
             break;
-        } else if (s.spatial.x < point.x) {
+        } else if (s.spatial.x > point.x) {
             left += mid;
         } else {
             right = mid - 1;
@@ -425,6 +425,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
         sRight = c[right];
         diffLeft = sRight.spatial - point;
     }
+
     return query_ind;
 }
 

@@ -505,19 +505,19 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 }
 
 // for ordering Quaternions in votes map in tracking mode
-bool operator<(const Quaternion& l, const Quaternion& r) {
-    if (l.real < r.real) return true;
-    if (l.i < r.i) return true;
-    if (l.j < r.j) return true;
-    return (l.k < r.k);
+bool operator<(const Mat3& l, const Mat3& r) {
+    for (int i = 0; i < 9; i++) {
+        if (l.x[i] < r.x[i]) return true;
+    }
+    return false;
 }
 
-// for tracking mode vector equality
-bool quatEquals(const Quaternion& l, const Quaternion& r, const float threshold) {
-    if (abs(l.real - r.real) > threshold) return false;
-    if (abs(l.i - r.i) > threshold) return false;
-    if (abs(l.j - r.j) > threshold) return false;
-    return abs(l.k - r.k) > threshold;
+// for tracking mode dcm matrix equality
+bool mat3Equals(const Mat3& l, const Mat3& r, const float threshold) {
+    for (int i = 0; i < 9; i++) {
+        if (abs(l.x[i] - r.x[i]) > threshold) return false;
+    }
+    return true;
 }
 
 bool vec3Equals(const Vec3& l, const Vec3& r, const float threshold) {
@@ -549,7 +549,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
 
-    std::map<Quaternion, int> votes;
+    std::map<Mat3, int> votes;
 
     // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
@@ -557,7 +557,6 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         // find previous position of the centroid based on the old attitude
         Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position);
         starAPrevPos = prevAttitude.prev.Rotate(starAPrevPos);
-        
         // find all the possible previous stars
         std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty);
 
@@ -574,12 +573,12 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                     // calculate the rotation (using triad attitude estimation method)
                     Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
                     Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAPossiblePrevStars[k]].spatial, catalog[starBPossiblePrevStars[l]].spatial);
-                    Quaternion rot = DCMToQuaternion(prevFrame*possibleFrame.Transpose());      // TODO normalize to unit quaternion?
+                    Mat3 rot = prevFrame*possibleFrame.Transpose();
 
                     // vote for the quaternion
                     bool found = false;
                     for (auto& pair : votes) {
-                        if (quatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
+                        if (mat3Equals(pair.first, rot, prevAttitude.compareThreshold)) {
                             pair.second++;
                             found = true;
                             break;
@@ -594,13 +593,13 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
 
     // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
-    Quaternion votedQuat = {0,0,0,0};
-    std::pair<Quaternion, int> entryWithMaxValue = std::make_pair(votedQuat,0);
-    std::map<Quaternion, int>::iterator currentEntry;
+    Mat3 votedDCM = {0,0,0,0,0,0,0,0,0};
+    std::pair<Mat3, int> entryWithMaxValue = std::make_pair(votedDCM,0);
+    std::map<Mat3, int>::iterator currentEntry;
     for (currentEntry = votes.begin(); currentEntry != votes.end(); ++currentEntry) {
         if (currentEntry->second > entryWithMaxValue.second) {
             entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
-            votedQuat = currentEntry->first;
+            votedDCM = currentEntry->first;
         }
     }
  
@@ -609,7 +608,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         // find star's current position
         Vec3 currPosition = camera.CameraToSpatial(stars[i].position);
         currPosition = prevAttitude.prev.Rotate(currPosition);
-        currPosition = Attitude(votedQuat).Rotate(currPosition);
+        currPosition = Attitude(votedDCM).Rotate(currPosition);
 
         // identify which star in the catalog has the same curr position
         for (int j = 0; j < (int)catalog.size(); j++) {
