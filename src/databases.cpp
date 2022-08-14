@@ -374,6 +374,7 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
 }
 
 std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, const Vec3 point, float radius) {
+    assert(radius >= 0);
     std::vector<int16_t> query_ind;
 
     float radiusSq = pow(radius,2);
@@ -399,12 +400,12 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
     }
 
     left = index;
-    right = index;
+    right = index+1;
 
     // see how far left you can go
     CatalogStar sLeft = c[left];
     Vec3 diffLeft = sLeft.spatial - point;
-    while (left > 0 && sLeft.spatial.x <= point.x - radius) {
+    while (left > 0 && (abs(diffLeft.x) <= radius)) {
         if (diffLeft.MagnitudeSq() <= radiusSq) {
             query_ind.push_back(left);
         }
@@ -413,19 +414,23 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
         diffLeft = sLeft.spatial - point;
     }
 
-
     // see how far right you can go
     CatalogStar sRight = c[right];
     Vec3 diffRight = sRight.spatial - point;
-    while (right > 0 && sRight.spatial.x <= point.x - radius) {
+    while (right < (int)c.size() && (abs(diffRight.x) <= radius)) {
         if (diffRight.MagnitudeSq() <= radiusSq) {
             query_ind.push_back(right);
         }
-        right--;
+        right++;
         sRight = c[right];
-        diffLeft = sRight.spatial - point;
+        diffRight = sRight.spatial - point;
     }
 
+    // std::cout << query_ind.size() << std::endl;
+    // for (int i = 0; i < (int)query_ind.size(); i++) {
+    //     std::cout << "i " << query_ind[i] << std::endl;
+    // }
+    
     return query_ind;
 }
 
