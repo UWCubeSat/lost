@@ -541,9 +541,6 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
-    std::cout << "HERE" << std::endl;
-
-
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
     const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(TrackingSortedDatabase::kMagicValue);
@@ -551,8 +548,6 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         return identified;
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
-
-    std::cout << "HERE2" << std::endl;
 
     std::map<Quaternion, int> votes;
 
