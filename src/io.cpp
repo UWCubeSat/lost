@@ -696,7 +696,10 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
     } else if (values.idAlgo == "tracking") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TrackingModeStarIdAlgorithm());
+
+        if (values.prevAttitudeString == "") {
+            std::cout << "WARNING: information about the previous attitude has not been passed in while tracking mode is set." << std::endl;
+        }
 
         // convert user inputted string ra,dec,roll to individual floats
         std::vector<float> attInputs;
@@ -707,12 +710,13 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         }
 
         // convert ra, dec, and roll to quaternion attitude
-        Quaternion q = SphericalToQuaternion(attInputs[0], attInputs[1], attInputs[2]);
+        Quaternion q = SphericalToQuaternion(DegToRad(attInputs[0]), DegToRad(attInputs[1]), DegToRad(attInputs[2]));
         Attitude a = Attitude(q);
-        
-        // set prev attitude part of pipeline
+
+        // set prev attitude and id algo
         PrevAttitude prev(a, values.uncertainty, values.trackingCompareThreshold);
-        result.prevAttitude = prev;
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TrackingModeStarIdAlgorithm(prev));
+
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
@@ -775,7 +779,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera(), prevAttitude)));
+            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
         inputStarIds = result.starIds.get();
     }
 

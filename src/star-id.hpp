@@ -11,19 +11,18 @@ namespace lost {
 
 class StarIdAlgorithm {
 public:
-    virtual StarIdentifiers Go(
-        const unsigned char *database, const Stars &, const Catalog &, const Camera &, const PrevAttitude &) const = 0;
+    virtual StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const = 0;
     virtual ~StarIdAlgorithm() { };
 };
 
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &, const PrevAttitude &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
 };
 
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &, const PrevAttitude &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
     GeometricVotingStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
 private:
     float tolerance;
@@ -31,7 +30,7 @@ private:
 
 class PyramidStarIdAlgorithm final : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &, const PrevAttitude &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
     /**
      * @param tolerance Angular tolerance in distances (measurement error)
      * @param numFalseStars an estimate of the number of false stars in the whole celestial sphere
@@ -53,7 +52,12 @@ private:
 
 class TrackingModeStarIdAlgorithm final : public StarIdAlgorithm {
 public:
-    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &, const PrevAttitude &) const;
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+    TrackingModeStarIdAlgorithm(PrevAttitude prevAttitude) 
+        : prevAttitude(prevAttitude) { };
+
+private:
+    PrevAttitude prevAttitude;
 };
 
 

@@ -11,7 +11,7 @@
 namespace lost {
 
 StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
     StarIdentifiers result;
 
@@ -23,7 +23,7 @@ StarIdentifiers DummyStarIdAlgorithm::Go(
 }
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
@@ -286,7 +286,7 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
 }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
@@ -539,7 +539,10 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
 }
 
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera, const PrevAttitude &prevAttitude) const {
+    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+
+    std::cout << "HERE" << std::endl;
+
 
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
@@ -548,6 +551,8 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         return identified;
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
+
+    std::cout << "HERE2" << std::endl;
 
     std::map<Quaternion, int> votes;
 

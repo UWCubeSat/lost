@@ -191,7 +191,6 @@ private:
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     std::unique_ptr<unsigned char[]> database;
-    PrevAttitude prevAttitude;
 };
 
 Pipeline SetPipeline(const PipelineOptions &values);
