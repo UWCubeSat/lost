@@ -504,18 +504,38 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
-// for ordering vec3 in votes map in tracking mode
-bool operator<(const Vec3& l, const Vec3& r) {
-    if (l.x < r.x) return true;
-    if (l.y < r.y) return true;
-    return (l.z < r.z);
+// for ordering Quaternions in votes map in tracking mode
+bool operator<(const Quaternion& l, const Quaternion& r) {
+    if (l.real < r.real) return true;
+    if (l.i < r.i) return true;
+    if (l.j < r.j) return true;
+    return (l.k < r.k);
 }
 
-bool vecEquals(const Vec3& l, const Vec3& r, const float threshold) {
+// for tracking mode vector equality
+bool quatEquals(const Quaternion& l, const Quaternion& r, const float threshold) {
+    if (abs(l.real - r.real) > threshold) return false;
+    if (abs(l.i - r.i) > threshold) return false;
+    if (abs(l.j - r.j) > threshold) return false;
+    return abs(l.k - r.k) > threshold;
+}
+
+bool vec3Equals(const Vec3& l, const Vec3& r, const float threshold) {
     if (abs(l.x - r.x) > threshold) return false;
     if (abs(l.y - r.y) > threshold) return false;
-    if (abs(l.z - r.z) > threshold) return false;
-    return true;
+    return abs(l.z - r.z) > threshold;
+}
+
+// return a matrix whose columns are the axes of the frame
+static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
+    Vec3 d1 = v1.Normalize();
+    Vec3 d2 = v1.crossProduct(v2).Normalize();
+    Vec3 d3 = d1.crossProduct(d2).Normalize();
+    return {
+        d1.x, d2.x, d3.x,
+        d1.y, d2.y, d3.y,
+        d1.z, d2.z, d3.z,
+    };
 }
 
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
@@ -529,63 +549,71 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
 
-    std::map<Vec3, int> votes;
+    std::map<Quaternion, int> votes;
 
-    // for every centroid...
+    // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
-        
+
         // find previous position of the centroid based on the old attitude
-        Vec3 prevPosition = camera.CameraToSpatial(stars[i].position);
-        prevPosition = prevAttitude.prev.Rotate(prevPosition);
+        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position);
+        starAPrevPos = prevAttitude.prev.Rotate(starAPrevPos);
         
-        // find out which stars are within the bounds of that position
-        std::vector<int16_t> possiblePrevStarInd = vectorDatabase.QueryNearestStars(catalog, prevPosition, prevAttitude.uncertainty);
+        // find all the possible previous stars
+        std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty);
 
-        // for every possible prev position...
-        for (int j = 0; j < (int)possiblePrevStarInd.size(); j++) {
-            
-            // vote for the amount of rotation
-            CatalogStar possibleStar = catalog[possiblePrevStarInd[j]];
-            Vec3 pos = possibleStar.spatial;
-            Vec3 diff = prevPosition - pos;
+        for (int j = i+1; j < (int)stars.size()-1; j++) {
+            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position);
+            starBPrevPos = prevAttitude.prev.Rotate(starBPrevPos);
 
-            bool found = false;
-            for (auto& pair : votes) {
-                if (vecEquals(pair.first, diff, prevAttitude.compareThreshold)) {
-                    pair.second++;
-                    found = true;
-                    break;
+            std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty);
+
+            // vote for the rotation that every pair makes
+            for (int k = 0; k < (int)starAPossiblePrevStars.size(); k++) {
+                for (int l = 0; l < (int)starBPossiblePrevStars.size(); l++) {
+
+                    // calculate the rotation (using triad attitude estimation method)
+                    Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
+                    Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAPossiblePrevStars[k]].spatial, catalog[starBPossiblePrevStars[l]].spatial);
+                    Quaternion rot = DCMToQuaternion(prevFrame*possibleFrame.Transpose());      // TODO normalize to unit quaternion?
+
+                    // vote for the quaternion
+                    bool found = false;
+                    for (auto& pair : votes) {
+                        if (quatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
+                            pair.second++;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        votes.insert(std::make_pair(rot,1));
+                    }
                 }
             }
-            if (!found) {
-                votes.insert(std::make_pair(diff,1));
-            }
-        } 
- 
+        }
     }
 
     // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
-    Vec3 votedDiff = {0,0,0};
-    std::pair<Vec3, int> entryWithMaxValue = std::make_pair(votedDiff,0);
-    std::map<Vec3, int>::iterator currentEntry;
+    Quaternion votedQuat = {0,0,0,0};
+    std::pair<Quaternion, int> entryWithMaxValue = std::make_pair(votedQuat,0);
+    std::map<Quaternion, int>::iterator currentEntry;
     for (currentEntry = votes.begin(); currentEntry != votes.end(); ++currentEntry) {
- 
         if (currentEntry->second > entryWithMaxValue.second) {
             entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
-            votedDiff = currentEntry->first;
+            votedQuat = currentEntry->first;
         }
     }
  
     for (int i = 0; i < (int)stars.size(); i++) {
 
-        // find star's past position
-        Vec3 prevPosition = camera.CameraToSpatial(stars[i].position);
-        prevPosition = prevAttitude.prev.Rotate(prevPosition);
-        prevPosition = prevPosition - votedDiff;
+        // find star's current position
+        Vec3 currPosition = camera.CameraToSpatial(stars[i].position);
+        currPosition = prevAttitude.prev.Rotate(currPosition);
+        currPosition = Attitude(votedQuat).Rotate(currPosition);
 
-        // identify which star in the catalog has the same past position
+        // identify which star in the catalog has the same curr position
         for (int j = 0; j < (int)catalog.size(); j++) {
-            if (catalog[j].spatial.x == prevPosition.x && catalog[j].spatial.y == prevPosition.y && catalog[j].spatial.z == prevPosition.z) {
+            if (vec3Equals(catalog[j].spatial,currPosition, prevAttitude.compareThreshold)) {
                 identified.push_back(StarIdentifier(i, j));
                 break;
             }
