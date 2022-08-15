@@ -377,7 +377,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
     assert(radius >= 0);
     std::vector<int16_t> query_ind;
 
-    float radiusSq = pow(radius,2);
+    // std::cout << "POINT " << point.x << ", " << point.y << ", " << point.z << std::endl;
 
     // use binary search to find an initial element within the right range (see https://www.geeksforgeeks.org/binary-search/)
     int left = 0;
@@ -388,11 +388,13 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
         int mid = left + (right - left) / 2; 
         CatalogStar s = c[mid];
         Vec3 diff = s.spatial - point;
+        // std::cout << "INDEX " << mid << " CATALOG STAR " << s.spatial.x << ", " << s.spatial.y << ", " << s.spatial.z << std::endl;
 
-        if (diff.MagnitudeSq() <= radiusSq) {
+        if (diff.Magnitude() <= radius) {
             index = mid;
+            // std::cout << "HERE " << std::endl;
             break;
-        } else if (s.spatial.x > point.x) {
+        } else if (s.spatial.x < point.x) {
             left += mid;
         } else {
             right = mid - 1;
@@ -406,7 +408,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
     CatalogStar sLeft = c[left];
     Vec3 diffLeft = sLeft.spatial - point;
     while (left > 0 && (abs(diffLeft.x) <= radius)) {
-        if (diffLeft.MagnitudeSq() <= radiusSq) {
+        if (diffLeft.Magnitude() <= radius) {
             query_ind.push_back(left);
         }
         left--;
@@ -418,7 +420,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
     CatalogStar sRight = c[right];
     Vec3 diffRight = sRight.spatial - point;
     while (right < (int)c.size() && (abs(diffRight.x) <= radius)) {
-        if (diffRight.MagnitudeSq() <= radiusSq) {
+        if (diffRight.Magnitude() <= radius) {
             query_ind.push_back(right);
         }
         right++;
@@ -431,6 +433,8 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
     //     std::cout << "i " << query_ind[i] << std::endl;
     // }
     
+    // std::cout << query_ind.size() << std::endl;
+
     return query_ind;
 }
 
