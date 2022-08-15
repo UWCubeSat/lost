@@ -553,8 +553,10 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
 
+        std::cout << "i: " << i << std::endl;
+
         // find previous position of the centroid based on the old attitude
-        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position).Normalize();
+        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position);
         starAPrevPos = prevAttitude.prev.Rotate(starAPrevPos);
         // find all the possible previous stars
         std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty);
@@ -562,7 +564,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         if (debugQuery) break;
 
         for (int j = i+1; j < (int)stars.size()-1; j++) {
-            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position).Normalize();
+            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position);
             starBPrevPos = prevAttitude.prev.Rotate(starBPrevPos);
 
             std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty);
@@ -575,37 +577,34 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                     StarIdentifier starAChanges =  StarIdentifier(i, starAPossiblePrevStars[k]);
                     StarIdentifier starBChanges = StarIdentifier(j, starBPossiblePrevStars[l]);
 
+                    if (starAChanges.catalogIndex == starBChanges.catalogIndex) continue;
+
                     // calculate the rotation (using triad attitude estimation method)
                     Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
-                    Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAPossiblePrevStars[k]].spatial, catalog[starBPossiblePrevStars[l]].spatial);
-
-
+                    Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAChanges.catalogIndex].spatial, catalog[starBChanges.catalogIndex].spatial);
                     Mat3 dcmRot = prevFrame*possibleFrame.Transpose();
-                    if (!(abs(dcmRot.Column(0).Magnitude()-1) < 0.001)) {
-                        std::cout << "impossible" << std::endl;
-                    } else {
-                        // std::cout << "okay" << std::endl;
-                
-                        Quaternion rot = DCMToQuaternion(dcmRot);
+                    Quaternion rot = DCMToQuaternion(dcmRot);
 
-                        // vote for the quaternion
-                        bool found = false;
-                        for (auto& pair : votes) {
-                            if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
-                                pair.second.push_back(starAChanges);
-                                pair.second.push_back(starBChanges);
-                                found = true;
-                                break;
-                            }
+                    // vote for the quaternion
+                    bool found = false;
+                    for (auto& pair : votes) {
+                        if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
+                            pair.second.push_back(starAChanges);
+                            pair.second.push_back(starBChanges);
+                            found = true;
+                            break;
                         }
-                        if (!found) {
-                            votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
-                        }
+                    }
+                    if (!found) {
+                        votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
                     }
                 }
             }
         }
     }
+
+std::cout << "Done with voting" << std::endl;
+
 
     // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
     Quaternion votedRot = {0,0,0,0};
