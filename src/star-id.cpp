@@ -535,6 +535,8 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
     };
 }
 
+#define debugQuery 0
+
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
@@ -552,13 +554,15 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     for (int i = 0; i < (int)stars.size(); i++) {
 
         // find previous position of the centroid based on the old attitude
-        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position);
+        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position).Normalize();
         starAPrevPos = prevAttitude.prev.Rotate(starAPrevPos);
         // find all the possible previous stars
         std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty);
 
+        if (debugQuery) break;
+
         for (int j = i+1; j < (int)stars.size()-1; j++) {
-            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position);
+            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position).Normalize();
             starBPrevPos = prevAttitude.prev.Rotate(starBPrevPos);
 
             std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty);
@@ -574,20 +578,29 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                     // calculate the rotation (using triad attitude estimation method)
                     Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
                     Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAPossiblePrevStars[k]].spatial, catalog[starBPossiblePrevStars[l]].spatial);
-                    Quaternion rot = DCMToQuaternion(prevFrame*possibleFrame.Transpose());
 
-                    // vote for the quaternion
-                    bool found = false;
-                    for (auto& pair : votes) {
-                        if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
-                            pair.second.push_back(starAChanges);
-                            pair.second.push_back(starBChanges);
-                            found = true;
-                            break;
+
+                    Mat3 dcmRot = prevFrame*possibleFrame.Transpose();
+                    if (!(abs(dcmRot.Column(0).Magnitude()-1) < 0.001)) {
+                        std::cout << "impossible" << std::endl;
+                    } else {
+                        // std::cout << "okay" << std::endl;
+                
+                        Quaternion rot = DCMToQuaternion(dcmRot);
+
+                        // vote for the quaternion
+                        bool found = false;
+                        for (auto& pair : votes) {
+                            if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
+                                pair.second.push_back(starAChanges);
+                                pair.second.push_back(starBChanges);
+                                found = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!found) {
-                        votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
+                        if (!found) {
+                            votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
+                        }
                     }
                 }
             }
