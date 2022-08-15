@@ -538,11 +538,6 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
     };
 }
 
-struct IndexChanges{
-    int starsIndex;
-    int catalogIndex;
-};
-
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
@@ -554,7 +549,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
 
-    std::map<Mat3, std::vector<IndexChanges>> votes;
+    std::map<Mat3, StarIdentifiers> votes;
 
     // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
@@ -576,14 +571,8 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                 for (int l = 0; l < (int)starBPossiblePrevStars.size(); l++) {
 
                     // get the changes
-                    IndexChanges starAChanges;
-                    starAChanges.starsIndex = i;
-                    starAChanges.catalogIndex = starAPossiblePrevStars[k];
-
-                    // get the changes
-                    IndexChanges starBChanges;
-                    starBChanges.starsIndex = j;
-                    starBChanges.catalogIndex = starBPossiblePrevStars[l];
+                    StarIdentifier starAChanges =  StarIdentifier(i, starAPossiblePrevStars[k]);
+                    StarIdentifier starBChanges = StarIdentifier(j, starBPossiblePrevStars[l]);
 
                     // calculate the rotation (using triad attitude estimation method)
                     Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
@@ -601,7 +590,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                         }
                     }
                     if (!found) {
-                        votes.insert(std::make_pair(rot,std::vector<IndexChanges>{starAChanges, starBChanges}));
+                        votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
                     }
                 }
             }
@@ -610,8 +599,8 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
 
     // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
     Mat3 votedDCM = {0,0,0,0,0,0,0,0,0};
-    std::pair<Mat3, std::vector<IndexChanges>> entryWithMaxValue = std::make_pair(votedDCM,std::vector<IndexChanges>());
-    std::map<Mat3, std::vector<IndexChanges>>::iterator currentEntry;
+    std::pair<Mat3, StarIdentifiers> entryWithMaxValue = std::make_pair(votedDCM,StarIdentifiers{});
+    std::map<Mat3, StarIdentifiers>::iterator currentEntry;
     for (currentEntry = votes.begin(); currentEntry != votes.end(); ++currentEntry) {
         if (currentEntry->second.size() > entryWithMaxValue.second.size()) {
             entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
@@ -620,29 +609,11 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         }
     }
  
-    std::cout << entryWithMaxValue.second.size() << std::endl;
+    // std::cout << entryWithMaxValue.second.size() << std::endl;
 
     for (int i = 0; i < (int)entryWithMaxValue.second.size(); i++) {
-        identified.push_back(StarIdentifier(entryWithMaxValue.second[i].starsIndex, entryWithMaxValue.second[i].catalogIndex));
+        identified.push_back(entryWithMaxValue.second[i]);
     }
-
-    // for (int i = 0; i < (int)stars.size(); i++) {
-
-    //     // find star's current position
-    //     Vec3 currPosition = camera.CameraToSpatial(stars[i].position);
-    //     currPosition = prevAttitude.prev.Rotate(currPosition);
-    //     currPosition = Attitude(votedDCM).Rotate(currPosition);
-    //             std::cout << "HERE " << i << std::endl;
-
-    //     // identify which star in the catalog has the same curr position
-    //     for (int j = 0; j < (int)catalog.size(); j++) {
-    //         if (vec3Equals(catalog[j].spatial,currPosition, prevAttitude.compareThreshold)) {
-    //             std::cout << "HERE " << std::endl;
-    //             identified.push_back(StarIdentifier(i, j));
-    //             break;
-    //         }
-    //     }
-    // }
 
     return identified;
 }
