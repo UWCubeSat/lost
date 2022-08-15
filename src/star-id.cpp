@@ -505,19 +505,16 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 }
 
 // for ordering Quaternions in votes map in tracking mode
-bool operator<(const Mat3& l, const Mat3& r) {
-    for (int i = 0; i < 9; i++) {
-        if (l.x[i] < r.x[i]) return true;
-    }
-    return false;
+bool operator<(const Quaternion& l, const Quaternion& r) {
+    if (l.real < r.real) return true;
+    if (l.i < r.i) return true;
+    if (l.j < r.j) return true;
+    return (l.k < r.k);
 }
 
-// for tracking mode dcm matrix equality
-bool mat3Equals(const Mat3& l, const Mat3& r, const float threshold) {
-    for (int i = 0; i < 9; i++) {
-        if (abs(l.x[i] - r.x[i]) > threshold) return false;
-    }
-    return true;
+// for tracking mode rotation equality
+bool QuatEquals(const Quaternion& l, const Quaternion& r, const float threshold) {
+    return (l * r.Conjugate()).Angle() < threshold;
 }
 
 bool vec3Equals(const Vec3& l, const Vec3& r, const float threshold) {
@@ -549,7 +546,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
     TrackingSortedDatabase vectorDatabase(databaseBuffer);
 
-    std::map<Mat3, StarIdentifiers> votes;
+    std::map<Quaternion, StarIdentifiers> votes;
 
     // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
@@ -577,12 +574,12 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                     // calculate the rotation (using triad attitude estimation method)
                     Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
                     Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAPossiblePrevStars[k]].spatial, catalog[starBPossiblePrevStars[l]].spatial);
-                    Mat3 rot = prevFrame*possibleFrame.Transpose();
+                    Quaternion rot = DCMToQuaternion(prevFrame*possibleFrame.Transpose());
 
                     // vote for the quaternion
                     bool found = false;
                     for (auto& pair : votes) {
-                        if (mat3Equals(pair.first, rot, prevAttitude.compareThreshold)) {
+                        if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
                             pair.second.push_back(starAChanges);
                             pair.second.push_back(starBChanges);
                             found = true;
@@ -598,13 +595,13 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     }
 
     // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
-    Mat3 votedDCM = {0,0,0,0,0,0,0,0,0};
-    std::pair<Mat3, StarIdentifiers> entryWithMaxValue = std::make_pair(votedDCM,StarIdentifiers{});
-    std::map<Mat3, StarIdentifiers>::iterator currentEntry;
+    Quaternion votedRot = {0,0,0,0};
+    std::pair<Quaternion, StarIdentifiers> entryWithMaxValue = std::make_pair(votedRot,StarIdentifiers{});
+    std::map<Quaternion, StarIdentifiers>::iterator currentEntry;
     for (currentEntry = votes.begin(); currentEntry != votes.end(); ++currentEntry) {
         if (currentEntry->second.size() > entryWithMaxValue.second.size()) {
             entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
-            votedDCM = currentEntry->first;
+            votedRot = currentEntry->first;
             std::cout << currentEntry->second.size() << std::endl;
         }
     }
