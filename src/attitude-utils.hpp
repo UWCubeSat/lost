@@ -37,6 +37,7 @@ public:
     float Magnitude() const;
     float MagnitudeSq() const;
     Vec3 Normalize() const;
+    
 
     float operator*(const Vec3 &) const;
     Vec3 operator*(const float &) const;

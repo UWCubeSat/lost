@@ -22,6 +22,23 @@ public:
     virtual ~StarIdAlgorithm() { };
 };
 
+class TetraStarIdAlgorithm: public StarIdAlgorithm{
+public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+
+private:
+    const float fov = 25.5705; // in degrees
+
+    const int numPattStars = 4;
+    const int numPattBins = 25;
+    const float pattMaxError = 0.005;
+
+    const int catalogLength = 11841082;
+
+    const long long MAGIC_RAND = 2654435761; 
+
+}
+
 /// A star-id algorithm that returns random results. For debugging.
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {
 public:
