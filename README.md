@@ -114,7 +114,7 @@ Here's how to identify a real image:
   --centroid-algo cog \
   --centroid-mag-filter 5 \
   --database my-database.dat \
-  --star-id-algo py \
+  --star-id-algo tetra \
   --angular-tolerance 0.05 \
   --false-stars 1000 \
   --max-mismatch-prob 0.0001 \

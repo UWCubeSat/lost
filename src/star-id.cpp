@@ -10,6 +10,31 @@
 
 namespace lost {
 
+StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
+                                         const Stars &stars,
+                                         const Catalog &catalog,
+                                         const Camera &camera) const {
+    StarIdentifiers result;
+
+    std::vector<Star> copyStars(stars);
+
+    // Need to sort centroids by brightness, high to low
+    // TODO: somehow keep track of centroid indices, since StarIdentifier(catindex, starID)
+    std::sort(
+        copyStars.begin(), copyStars.end(),
+        [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
+
+    // for(const Star &star: copyStars){
+    //     std::cout << star.position.x << ", " << star.position.y << std::endl;
+    // }
+    
+
+
+
+    return result;
+
+}
+
 StarIdentifiers DummyStarIdAlgorithm::Go(
     const unsigned char *, const Stars &stars, const Catalog &catalog, const Camera &) const {
 

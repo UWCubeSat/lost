@@ -46,6 +46,20 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     };
 }
 
+Vec3 Camera::CameraToSpatialFov(const Vec2 &vector) const{
+    float fov = DegToRad(this->Fov());
+    float centerX = this->XResolution() / 2.0;
+    float centerY = this->YResolution() / 2.0;
+    float scaleFactor = std::tan(fov / 2) / centerX;
+
+    float jOverI = (centerX - vector.x) * scaleFactor;
+    float kOverI = (centerY - vector.y) * scaleFactor;
+    float j = jOverI * i;
+    float k = kOverI * i;
+
+
+}
+
 /// Returns whether a given pixel is actually in the camera's field of view
 bool Camera::InSensor(const Vec2 &vector) const {
     // if vector.x == xResolution, then it is at the leftmost point of the pixel that's "hanging

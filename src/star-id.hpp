@@ -37,7 +37,7 @@ private:
 
     const long long MAGIC_RAND = 2654435761; 
 
-}
+};
 
 /// A star-id algorithm that returns random results. For debugging.
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {

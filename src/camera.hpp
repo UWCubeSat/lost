@@ -27,6 +27,7 @@ public:
 
     Vec2 SpatialToCamera(const Vec3 &) const;
     Vec3 CameraToSpatial(const Vec2 &) const;
+    Vec3 CameraToSpatialFov(const Vec2 &) const;
 
     // converts from a 2d point in the camera sensor to right ascension and declination relative to
     // the center of the camera.
@@ -41,7 +42,7 @@ public:
     /// Focal length in pixels
     float FocalLength() const { return focalLength; };
     /// Horizontal field of view in radians
-    float Fov() const;
+    float Fov() const; // in radians
 
     void SetFocalLength(float focalLength) { this->focalLength = focalLength; }
 
