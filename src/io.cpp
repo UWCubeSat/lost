@@ -709,9 +709,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
             attInputs.push_back(stof(item));
         }
 
-        // convert ra, dec, and roll to quaternion attitude
+        // convert ra, dec, and roll to attitude
         Quaternion q = SphericalToQuaternion(DegToRad(attInputs[0]), DegToRad(attInputs[1]), DegToRad(attInputs[2]));
-        Attitude a = Attitude(q);
+        Attitude a(q);
 
         // set prev attitude and id algo
         PrevAttitude prev(a, values.uncertainty, values.trackingCompareThreshold);
