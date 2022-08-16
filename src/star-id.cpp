@@ -14,6 +14,16 @@
 
 namespace lost {
 
+int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const{
+    // key = hashCode
+    // Outputs a row of the Pattern Catalog
+    long index = 0;
+    for(int i = 0; i < (int)key.size(); i++){
+        index += key[i] * std::pow(binFactor, i);
+    }
+    return (index * MAGIC_RAND) % maxIndex;
+}
+
 StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
                                          const Catalog &catalog,
@@ -22,11 +32,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
     TetraDatabase db;
     db.fillStarTable();
-    // db.fillPattCatalog();
-    // std::cout << db.starTable[0][0] << std::endl;
-    // TODO: I do notice that the floats being stored are rounded up to/including 5th decimal place
-
-
+    db.fillPattCatalog();
+    std::cout << "Star check " << db.starTable[1][1] << std::endl;
+    std::cout << "Patt cat check " << db.pattCatalog[1][1] << std::endl;
+    // TODO: I do notice that the floats being stored are rounded up
+    // to/including 5th decimal place
 
     std::vector<Star> copyStars(stars);
 
@@ -124,14 +134,14 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     //     }
     //     std::cout << std::endl;
     // }
-  
+
     for(std::vector<int> code : finalCodes){
-        // correct
-        
-        break;
-        
+
+        int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
+
+
     }
-    
+
 
     return result;
 
@@ -141,15 +151,20 @@ void TetraDatabase::fillStarTable(){
     std::ifstream file;
     file.open("amendStarTable.txt");
 
+    starTable.clear();
     float num;
     int col = 0;
-    int row = 0;
+    std::vector<float> tableRow;
     while(file >> num){
-        starTable[row][col] = num;
+        // std::cout << num << std::endl;
+        if (col == 0) {
+            tableRow.clear();
+        }
+        tableRow.push_back(num);
         col++;
         if(col == 7){
             col = 0;
-            row++;
+            starTable.push_back(tableRow);
         }
     }
     file.close();
@@ -159,15 +174,19 @@ void TetraDatabase::fillPattCatalog(){
     std::ifstream file;
     file.open("pattCatalog.txt");
 
+    pattCatalog.clear();
     int num;
-    int row = 0;
     int col = 0;
+    std::vector<int> tableRow;
     while (file >> num) {
-        pattCatalog[row][col] = num;
+        if(col == 0){
+            tableRow.clear();
+        }
+        tableRow.push_back(num);
         col++;
         if (col == 4) { // hardcoded numPattStars
             col = 0;
-            row++;
+            pattCatalog.push_back(tableRow);
         }
     }
     file.close();
