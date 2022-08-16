@@ -360,7 +360,7 @@ void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer) {
     assert(buffer - bufferStart == SerializeLengthTrackingCatalog(catalog));
 }
 
-
+// deserialize database
 TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
 
     length = *(int16_t *)buffer;
@@ -373,21 +373,23 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
     }
 }
 
-std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, const Vec3 point, float radius) {
+// query database
+std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog catalog, const Vec3 point, float radius) {
     assert(radius >= 0);
     std::vector<int16_t> query_ind;
 
     // std::cout << "POINT " << point.x << ", " << point.y << ", " << point.z << std::endl;
 
     // use binary search to find an initial element within the right range (see https://www.geeksforgeeks.org/binary-search/)
-    int left = 0;
-    int right = indices.size()-1;
-    int index = -1;
+    int16_t left = 0;
+    int16_t right = length-1;
+    int16_t index = -1;
 
     while (left <= right) {
-        int mid = left + (right - left) / 2; 
-        CatalogStar s = c[mid];
+        int16_t mid = left + (right - left) / 2; 
+        CatalogStar s = catalog[indices[mid]];
         Vec3 diff = s.spatial - point;
+        // std::cout << mid << std::endl;
 
         if (diff.Magnitude() <= radius) {
             index = mid;
@@ -399,31 +401,43 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
         }
     }
 
-    left = index;
-    right = index+1;
+    if (index != -1) {
+        left = index;
+        right = index+1;
 
-    // see how far left you can go
-    CatalogStar sLeft = c[left];
-    Vec3 diffLeft = sLeft.spatial - point;
-    while (left > 0 && (abs(diffLeft.x) <= radius)) {
-        if (diffLeft.Magnitude() <= radius) {
-            query_ind.push_back(left);
+        // see how far left you can go
+        CatalogStar sLeft = catalog[indices[left]];
+        Vec3 diffLeft = sLeft.spatial - point;
+        while (left >= 0 && (abs(diffLeft.x) <= radius)) {
+            if (diffLeft.Magnitude() <= radius) {
+                query_ind.push_back(indices[left]);
+            }
+            left--;
+            sLeft = catalog[indices[left]];
+            diffLeft = sLeft.spatial - point;
         }
-        left--;
-        sLeft = c[left];
-        diffLeft = sLeft.spatial - point;
-    }
 
-    // see how far right you can go
-    CatalogStar sRight = c[right];
-    Vec3 diffRight = sRight.spatial - point;
-    while (right < (int)c.size() && (abs(diffRight.x) <= radius)) {
-        if (diffRight.Magnitude() <= radius) {
-            query_ind.push_back(right);
+        // see how far right you can go
+        CatalogStar sRight = catalog[indices[right]];
+        Vec3 diffRight = sRight.spatial - point;
+        while (right < length && (abs(diffRight.x) <= radius)) {
+            if (diffRight.Magnitude() <= radius) {
+                query_ind.push_back(indices[right]);
+            }
+            right++;
+            sRight = catalog[indices[right]];
+            diffRight = sRight.spatial - point;
         }
-        right++;
-        sRight = c[right];
-        diffRight = sRight.spatial - point;
+    } else {
+        for (int i = 0; i < length; i++) {
+            CatalogStar cstar = catalog[i];
+            Vec3 diff = cstar.spatial - point;
+            if (diff.Magnitude() <= radius) {
+                query_ind.push_back(i);
+                // std::cout << "CORRECT : " << i << std::endl;
+            }
+        }
+
     }
 
     // std::cout << query_ind.size() << std::endl;
@@ -432,6 +446,32 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog c, 
     // }
     
     // std::cout << query_ind.size() << std::endl;
+
+
+    std::vector<int16_t> correct_query_ind;
+    for (int i = 0; i < (int)catalog.size(); i++) {
+        CatalogStar cstar = catalog[i];
+        Vec3 diff = cstar.spatial - point;
+        if (diff.Magnitude() <= radius) {
+            correct_query_ind.push_back(i);
+            // std::cout << "CORRECT : " << i << std::endl;
+        }
+    }
+
+    // for (int i = 0; i < query_ind.size(); i++) 
+
+    // assert(query_ind == correct_query_ind);
+
+    // std::cout << query_ind.size() << std::endl;
+    // std::cout << "=============" << std::endl;
+
+    std::sort(query_ind.begin(), query_ind.end());
+    std::sort(correct_query_ind.begin(), correct_query_ind.end());
+    assert(query_ind.size() == correct_query_ind.size());
+    for (int i = 0; i < query_ind.size(); i++) {
+        assert(query_ind[i] == correct_query_ind[i]);
+    }
+
 
     return query_ind;
 }
