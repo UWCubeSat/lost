@@ -550,22 +550,34 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
 
     std::map<Quaternion, StarIdentifiers> votes;
 
+
+    // int max = log(stars.size() - 1);
+
+    // EulerAngles spherical = prevAttitude.prev.ToSpherical();
+    // std::cout << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
+    // std::cout << "attitude_de " << RadToDeg(spherical.de) << std::endl;
+    // std::cout << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+
     // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
 
-        std::cout << "i: " << i << std::endl;
+        // std::cout << "i: " << i << std::endl;
 
         // find previous position of the centroid based on the old attitude
-        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position);
+        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position).Normalize();
         starAPrevPos = prevAttitude.prev.Rotate(starAPrevPos);
         // find all the possible previous stars
         std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty);
 
-        if (debugQuery) break;
+        if (debugQuery && i > 0) break;
 
         for (int j = i+1; j < (int)stars.size()-1; j++) {
-            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position);
+            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position).Normalize();
             starBPrevPos = prevAttitude.prev.Rotate(starBPrevPos);
+
+            // skip stars that are close to each other
+            float prevDist = (starAPrevPos - starBPrevPos).Magnitude();
+            if (prevDist <= prevAttitude.uncertainty) continue;
 
             std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty);
 
@@ -576,34 +588,60 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
                     // get the changes
                     StarIdentifier starAChanges =  StarIdentifier(i, starAPossiblePrevStars[k]);
                     StarIdentifier starBChanges = StarIdentifier(j, starBPossiblePrevStars[l]);
+                    float possibleDist = (catalog[starAChanges.catalogIndex].spatial - catalog[starBChanges.catalogIndex].spatial).Magnitude();
 
-                    if (starAChanges.catalogIndex == starBChanges.catalogIndex) continue;
+                    // don't vote for impossible rotations
+                    if ((possibleDist <= prevAttitude.uncertainty) || (abs(possibleDist - prevDist) >= 0.001)) continue;
+                    // if (starAChanges.catalogIndex == starBChanges.catalogIndex) continue;
 
                     // calculate the rotation (using triad attitude estimation method)
                     Mat3 prevFrame = TrackingCoordinateFrame(starAPrevPos, starBPrevPos);
                     Mat3 possibleFrame = TrackingCoordinateFrame(catalog[starAChanges.catalogIndex].spatial, catalog[starBChanges.catalogIndex].spatial);
+                    
+                    
                     Mat3 dcmRot = prevFrame*possibleFrame.Transpose();
-                    Quaternion rot = DCMToQuaternion(dcmRot);
 
-                    // vote for the quaternion
-                    bool found = false;
-                    for (auto& pair : votes) {
-                        if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
-                            pair.second.push_back(starAChanges);
-                            pair.second.push_back(starBChanges);
-                            found = true;
-                            break;
+                    if (!(abs(dcmRot.Column(0).Magnitude()-1) < 0.001)) {
+                        std::cout << "STAR A: Catalog is " << starAChanges.catalogIndex << " and stars index is " << starAChanges.starIndex << std::endl;
+                        std::cout << "STAR B: Catalog is " << starBChanges.catalogIndex << " and stars index is " << starBChanges.starIndex << std::endl;
+                        std::cout << "MATRIX prevFrame: " << std::endl;
+                        std::cout << prevFrame.At(0,0) << ", " << prevFrame.At(0,1) << ", " << prevFrame.At(0,2) << ", " << std::endl;
+                        std::cout << prevFrame.At(1,0) << ", " << prevFrame.At(1,1) << ", " << prevFrame.At(1,2) << ", " << std::endl;
+                        std::cout << prevFrame.At(2,0) << ", " << prevFrame.At(2,1) << ", " << prevFrame.At(2,2) << ", " << std::endl;
+                        std::cout << "MATRIX possibleFrame: " << std::endl;
+                        std::cout << possibleFrame.At(0,0) << ", " << possibleFrame.At(0,1) << ", " << possibleFrame.At(0,2) << ", " << std::endl;
+                        std::cout << possibleFrame.At(1,0) << ", " << possibleFrame.At(1,1) << ", " << possibleFrame.At(1,2) << ", " << std::endl;
+                        std::cout << possibleFrame.At(2,0) << ", " << possibleFrame.At(2,1) << ", " << possibleFrame.At(2,2) << ", " << std::endl;
+                        std::cout << "MATRIX: " << std::endl;
+                        std::cout << dcmRot.At(0,0) << ", " << dcmRot.At(0,1) << ", " << dcmRot.At(0,2) << ", " << std::endl;
+                        std::cout << dcmRot.At(1,0) << ", " << dcmRot.At(1,1) << ", " << dcmRot.At(1,2) << ", " << std::endl;
+                        std::cout << dcmRot.At(2,0) << ", " << dcmRot.At(2,1) << ", " << dcmRot.At(2,2) << ", " << std::endl;
+                        std::cout << "======================" << std::endl;
+
+                    } else {
+                        Quaternion rot = DCMToQuaternion(dcmRot);
+
+                        // vote for the quaternion
+                        bool found = false;
+                        for (auto& pair : votes) {
+                            if (QuatEquals(pair.first, rot, prevAttitude.compareThreshold)) {
+                                pair.second.push_back(starAChanges);
+                                pair.second.push_back(starBChanges);
+                                found = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!found) {
-                        votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
+                        if (!found) {
+                            votes.insert(std::make_pair(rot,StarIdentifiers{starAChanges, starBChanges}));
+                        }
+                    
                     }
                 }
             }
         }
     }
 
-std::cout << "Done with voting" << std::endl;
+    std::cout << "Done with voting" << std::endl;
 
 
     // find most-voted difference (https://www.geeksforgeeks.org/how-to-find-the-entry-with-largest-value-in-a-c-map/)
@@ -614,11 +652,9 @@ std::cout << "Done with voting" << std::endl;
         if (currentEntry->second.size() > entryWithMaxValue.second.size()) {
             entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
             votedRot = currentEntry->first;
-            std::cout << currentEntry->second.size() << std::endl;
+            std::cout << entryWithMaxValue.second.size() << std::endl;
         }
     }
- 
-    // std::cout << entryWithMaxValue.second.size() << std::endl;
 
     for (int i = 0; i < (int)entryWithMaxValue.second.size(); i++) {
         identified.push_back(entryWithMaxValue.second[i]);
