@@ -216,6 +216,10 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
+Vec3 Vec3::operator+(const Vec3 &other) const{
+    return {x + other.x, y + other.y, z + other.z};
+}
+
 /// Usual vector cross product
 Vec3 Vec3::CrossProduct(const Vec3 &other) const {
     return {

@@ -24,6 +24,25 @@ int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int ma
     return (index * MAGIC_RAND) % maxIndex;
 }
 
+std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, TetraDatabase db) const{
+    // Returns a list of rows from the Pattern Catalog
+    // Does quadratic probing
+
+    int maxInd = catalogLength;
+    std::vector<std::vector<int>> res;
+    for (int c = 0;; c++){
+        int i = (index + c * c) % maxInd;
+        std::vector<int> tableRow = db.pattCatalog[i];
+        if (std::all_of(tableRow.begin(), tableRow.end(),
+                        [](int ele) { return ele == 0; })){
+            return res;
+        }else{
+            res.push_back(tableRow);
+        }
+    }
+    return res;
+}
+
 StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
                                          const Catalog &catalog,
@@ -33,10 +52,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     TetraDatabase db;
     db.fillStarTable();
     db.fillPattCatalog();
-    std::cout << "Star check " << db.starTable[1][1] << std::endl;
-    std::cout << "Patt cat check " << db.pattCatalog[1][1] << std::endl;
+    // std::cout << "Star check " << db.starTable[1][1] << std::endl;
+    // std::cout << "Patt cat check " << db.pattCatalog[1][1] << std::endl;
     // TODO: I do notice that the floats being stored are rounded up
     // to/including 5th decimal place
+    // Correct!
 
     std::vector<Star> copyStars(stars);
 
@@ -138,10 +158,69 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     for(std::vector<int> code : finalCodes){
 
         int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
+        std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, db);
+
+        if((int)matches.size() == 0){
+            std::cout << "Alert: matches size = 0, continuing" << std::endl;
+            continue;
+        }
+
+        for(std::vector<int> matchRow : matches){
+            std::vector<int> catStarIDs;
+            std::vector<Vec3> catStarVecs;
+            for(int star : matchRow){
+                Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
+                            db.starTable[star][4]);
+                catStarIDs.push_back(db.starTable[star][6]);
+                catStarVecs.push_back(catVec);
+            }
+
+            // Make the Catalog Pattern
+            std::vector<float> catEdgeLengths;
+            for (int i = 0; i < (int)catStarVecs.size(); i++) {
+                for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
+                    Vec3 diff = catStarVecs[i] - catStarVecs[j];
+                    catEdgeLengths.push_back(diff.Magnitude());
+                }
+            }
+            std::sort(catEdgeLengths.begin(), catEdgeLengths.end());
+            float catLargestEdge =
+                catEdgeLengths[(int)(catEdgeLengths.size()) - 1];
+
+            std::vector<float> catEdgeRatios;  // size() = 5
+            for (int i = 0; i < (int)catEdgeLengths.size() - 1; i++) {
+                catEdgeRatios.push_back(catEdgeLengths[i] / catLargestEdge);
+            }
+
+            bool skipMatchRow = false;
+            for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
+                float val = catEdgeRatios[i] - pattEdgeRatios[i];
+                val = std::abs(val);
+                if (val > pattMaxError) {
+                    skipMatchRow = true;
+                }
+            }
+            // TODO: change comment here
+            if (skipMatchRow) {
+                std::cout << "Alert: Match Row skipped!!!" << std::endl;
+                continue;
+            }
+
+            Vec3 pattCentroid(0, 0, 0);
+            for(Vec3 pattStarVec : pattStarVecs){
+                pattCentroid = pattCentroid + pattStarVec;
+            }
+            pattCentroid = pattCentroid * (1.0 / (int)pattStarVecs.size());
+
+            // TODO: what is this
+            std::vector<float> pattRadii;
+            for(Vec3 pattStarVec : pattStarVecs){
+                pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
+            }
 
 
+        }
     }
-
 
     return result;
 
