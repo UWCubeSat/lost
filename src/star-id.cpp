@@ -220,10 +220,32 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
             std::vector<Vec3> pattSortedVecs =
                 ArgsortVector<Vec3>(pattStarVecs, pattRadii);
-            // for(auto vec: pattSortedVecs){
-            //     std::cout << vec << std::endl;
-            // }
             // NOTE: accuracy here isn't great? Accurate to 3rd decimal place
+
+            // TODO: modularize this, creation of catRadii
+            Vec3 catCentroid(0, 0, 0);
+            for(Vec3 catStarVec : catStarVecs){
+                catCentroid = catCentroid + catStarVec;
+            }
+            catCentroid = catCentroid * (1.0 / (int)catStarVecs.size());
+
+            std::vector<float> catRadii;
+            for(Vec3 catStarVec : catStarVecs){
+                catRadii.push_back((catStarVec - catCentroid).Magnitude());
+            }
+
+            std::vector<int> catSortedStarIDs =
+                ArgsortVector<int>(catStarIDs, catRadii);
+            std::vector<Vec3> catSortedVecs =
+                ArgsortVector<Vec3>(catStarVecs, catRadii);
+
+            for(int starID : catSortedStarIDs){
+                std::cout << starID << ", " << std::endl;
+            }
+            std::cout << std::endl;
+
+            std::cout << "SUCCESS: stars successfully matched" << std::endl;
+            return result; // TODO: work on this more
         }
     }
 
