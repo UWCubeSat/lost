@@ -4,6 +4,9 @@
 #include <vector>
 #include <algorithm>
 
+// added for Tetra
+#include <set>
+
 #include "star-id.hpp"
 #include "databases.hpp"
 #include "attitude-utils.hpp"
@@ -30,6 +33,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     //     std::cout << star.position.x << ", " << star.position.y << std::endl;
     // }
 
+    // Compute Vec3 spatial vectors (in celestial sphere) for each star chosen to be in the Pattern
     std::vector<Vec3> pattStarVecs; // size = numPattStars
     for(const Star &star : copyStars){
         Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
@@ -37,6 +41,9 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         // std::cout << spatialVec << std::endl;
     }
 
+    // Compute angle between each pair of stars chosen to be in the Pattern
+    // If any angle should > maxFov, then we should throw away this Pattern choice,
+    // since our database will not contain it
     bool angleAcceptable = true;
     for(int i = 0; i < (int)pattStarVecs.size(); i++){
         Vec3 u = pattStarVecs[i];
@@ -74,6 +81,44 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     }
 
     std::vector<std::vector<int>> hcSpace;
+    for(float edgeRatio : pattEdgeRatios){
+        std::vector<int> range;
+        int lo = int((edgeRatio - pattMaxError) * numPattBins);
+        lo = std::max(lo, 0);
+        int hi = int((edgeRatio + pattMaxError) * numPattBins);
+        hi = std::min(hi + 1, numPattBins);
+        range.push_back(lo);
+        range.push_back(hi);
+        hcSpace.push_back(range);
+    }
+    std::set<std::vector<int>> finalCodes;
+    // TODO: describe what this does
+    // TODO: implement this with recursion?
+    for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
+        for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
+            for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
+                for (int d = hcSpace[3][0]; d < hcSpace[3][1]; d++) {
+                    for (int e = hcSpace[4][0]; e < hcSpace[4][1]; e++) {
+                        std::vector<int> code{a, b, c, d, e};
+                        std::sort(code.begin(), code.end());
+                        finalCodes.insert(code);
+                    }
+                }
+            }
+        }
+    }
+
+    // PrintVector
+    for(auto arr: finalCodes){
+        for(int a : arr){
+            std::cout << a << ", ";
+        }
+        std::cout << std::endl;
+    }
+
+    
+
+
     
 
     
