@@ -41,6 +41,29 @@ private:
 
 };
 
+/// Class just to hold the Tetra "databases" for now
+// TODO: remove
+class TetraDatabase{
+public:
+    // Generated at FOV = 12
+    
+    // pattCatalog is a 2D matrix, with 11841082 rows and 4 columns (starIDs)
+    // std::vector<std::vector<int>> pattCatalog;
+    int pattCatalog[11841082][4];
+
+    // starTable is a 2D matrix, with 8416 rows and 7 columns
+    // Columns: RA, DE, x, y, z, Magnitude, Star ID
+    // x, y, and z correspond to the Vec3 spatial vector for this star
+    // Star ID in each row is exactly what is displayed on annotated.png
+    // TODO: HR number I think? 
+    // std::vector<std::vector<float>> starTable;
+    float starTable[8416][7];
+    // TODO: do it this way, otherwise we get a seg fault
+
+    void fillPattCatalog();
+    void fillStarTable();
+};
+
 /// A star-id algorithm that returns random results. For debugging.
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {
 public:

@@ -6,6 +6,7 @@
 
 // added for Tetra
 #include <set>
+#include <fstream> // probably delete later, this is just for bad Tetra db loading
 
 #include "star-id.hpp"
 #include "databases.hpp"
@@ -18,6 +19,14 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Catalog &catalog,
                                          const Camera &camera) const {
     StarIdentifiers result;
+
+    TetraDatabase db;
+    db.fillStarTable();
+    // db.fillPattCatalog();
+    // std::cout << db.starTable[0][0] << std::endl;
+    // TODO: I do notice that the floats being stored are rounded up to/including 5th decimal place
+
+
 
     std::vector<Star> copyStars(stars);
 
@@ -115,19 +124,50 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         }
         std::cout << std::endl;
     }
-
+  
     
-
-
     
-
-    
-
-
 
     return result;
 
 }
+
+void TetraDatabase::fillStarTable(){
+    std::ifstream file;
+    file.open("amendStarTable.txt");
+
+    float num;
+    int col = 0;
+    int row = 0;
+    while(file >> num){
+        starTable[row][col] = num;
+        col++;
+        if(col == 7){
+            col = 0;
+            row++;
+        }
+    }
+    file.close();
+}
+
+void TetraDatabase::fillPattCatalog(){
+    std::ifstream file;
+    file.open("pattCatalog.txt");
+
+    int num;
+    int row = 0;
+    int col = 0;
+    while (file >> num) {
+        pattCatalog[row][col] = num;
+        col++;
+        if (col == 4) { // hardcoded numPattStars
+            col = 0;
+            row++;
+        }
+    }
+    file.close();
+}
+
 
 StarIdentifiers DummyStarIdAlgorithm::Go(
     const unsigned char *, const Stars &stars, const Catalog &catalog, const Camera &) const {
