@@ -3,6 +3,9 @@
 
 #include <memory>
 #include <fstream>
+#include <vector>
+#include <numeric> // iota
+#include <algorithm>
 
 namespace lost {
 
@@ -179,6 +182,22 @@ float RadToDeg(float);
 float DegToRad(float);
 float RadToArcSec(float);
 float ArcSecToRad(float);
+
+// Argsort function - Tetra
+// Sort first vector based on values of second float vector
+template <class T>
+std::vector<T> ArgsortVector(std::vector<T> arr, std::vector<float> cmp) {
+    std::vector<T> res;
+    std::vector<int> indices(arr.size());
+    std::iota(indices.begin(), indices.end(), 0);
+    std::sort(indices.begin(), indices.end(),
+              [&](int a, int b) -> bool { return cmp[a] < cmp[b]; });
+
+    for (int ind : indices) {
+        res.push_back(arr[ind]);
+    }
+    return res;
+}
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 

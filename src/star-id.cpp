@@ -218,7 +218,12 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
             }
 
-
+            std::vector<Vec3> pattSortedVecs =
+                ArgsortVector<Vec3>(pattStarVecs, pattRadii);
+            // for(auto vec: pattSortedVecs){
+            //     std::cout << vec << std::endl;
+            // }
+            // NOTE: accuracy here isn't great? Accurate to 3rd decimal place
         }
     }
 

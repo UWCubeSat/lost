@@ -476,4 +476,5 @@ float Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
 }
 
+
 }
