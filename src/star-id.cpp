@@ -118,14 +118,19 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     }
 
     // PrintVector
-    for(auto arr: finalCodes){
-        for(int a : arr){
-            std::cout << a << ", ";
-        }
-        std::cout << std::endl;
-    }
+    // for(auto arr: finalCodes){
+    //     for(int a : arr){
+    //         std::cout << a << ", ";
+    //     }
+    //     std::cout << std::endl;
+    // }
   
-    
+    for(std::vector<int> code : finalCodes){
+        // correct
+        
+        break;
+        
+    }
     
 
     return result;

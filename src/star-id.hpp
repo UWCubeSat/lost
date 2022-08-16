@@ -48,8 +48,9 @@ public:
     // Generated at FOV = 12
     
     // pattCatalog is a 2D matrix, with 11841082 rows and 4 columns (starIDs)
-    // std::vector<std::vector<int>> pattCatalog;
-    int pattCatalog[11841082][4];
+    std::vector<std::vector<int>> pattCatalog;
+    // int pattCatalog[11841082][4];
+    // TODO: seg faulting if I make the vector back into an array
 
     // starTable is a 2D matrix, with 8416 rows and 7 columns
     // Columns: RA, DE, x, y, z, Magnitude, Star ID
