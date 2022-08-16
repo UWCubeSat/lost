@@ -2,6 +2,7 @@
 #define ATTITUDE_UTILS_H
 
 #include <memory>
+#include <fstream>
 
 namespace lost {
 
@@ -34,6 +35,7 @@ public:
     float y;
     float z;
 
+    Vec3(){};
     Vec3(float x, float y, float z): x(x), y(y), z(z) {};
 
     float Magnitude() const;
@@ -47,6 +49,10 @@ public:
     Vec3 operator-(const Vec3 &) const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
+
+    friend std::ostream& operator<< (std::ostream &output, const Vec3 &vec);
+    
+
 };
 
 /// 3x3 vector with floating point components

@@ -24,9 +24,58 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
+    copyStars = std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
+
     // for(const Star &star: copyStars){
     //     std::cout << star.position.x << ", " << star.position.y << std::endl;
     // }
+
+    std::vector<Vec3> pattStarVecs; // size = numPattStars
+    for(const Star &star : copyStars){
+        Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
+        pattStarVecs.push_back(spatialVec);
+        // std::cout << spatialVec << std::endl;
+    }
+
+    bool angleAcceptable = true;
+    for(int i = 0; i < (int)pattStarVecs.size(); i++){
+        Vec3 u = pattStarVecs[i];
+        for(int j = i+1; j < (int)pattStarVecs.size(); j++){
+            Vec3 v = pattStarVecs[j];
+            float angle = Angle(u, v); // in radians
+            if(RadToDeg(angle) > maxFov){
+                angleAcceptable = false;
+            }
+        }
+    }
+    if(!angleAcceptable){
+        std::cerr << "Error: some angle is greater than maxFov" << std::endl;
+        return result;
+        // TODO: probably continue later?
+    }
+
+    // Calculate all edge lengths in order to find value of largest edge
+    // Since each Pattern consists of size=numPattStars stars, there will be C(numPattStars, 2) edges
+    // For default of 4-star Patterns, calculate C(4, 2) = 6 edge lengths
+    std::vector<float> pattEdgeLengths; // default size = 6
+    for(int i = 0; i < (int)pattStarVecs.size(); i++){
+        for(int j = i+1; j < (int)pattStarVecs.size(); j++){
+            Vec3 diff = pattStarVecs[i] - pattStarVecs[j];
+            pattEdgeLengths.push_back(diff.Magnitude());
+        }
+    }
+    std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
+    float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1]; // largest edge value
+
+    // Now divide each edge length by pattLargestEdge
+    std::vector<float> pattEdgeRatios; // size() = C(numPattStars, 2) - 1
+    for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) { // size()-1, since we ignore the largest edge
+        pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
+    }
+
+    std::vector<std::vector<int>> hcSpace;
+    
+
     
 
 

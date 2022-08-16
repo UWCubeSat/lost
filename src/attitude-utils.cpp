@@ -155,6 +155,11 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+std::ostream& operator<< (std::ostream& output, const Vec3 &vec){
+    output << "x: " << vec.x << "   y: " << vec.y << "  z: " << vec.z;
+    return output;
+}
+
 /// The square of the magnitude
 float Vec3::MagnitudeSq() const {
     return x*x+y*y+z*z;

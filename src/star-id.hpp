@@ -28,6 +28,8 @@ public:
 
 private:
     const float fov = 25.5705; // in degrees
+    const float maxFov = 12.00; // in degrees, max FOV of database
+    // TODO: this may not be accurate, think I saw a 20 FOV somewhere. Also make this part of constructor / default, not hardcoded
 
     const int numPattStars = 4;
     const int numPattBins = 25;
