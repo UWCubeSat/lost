@@ -38,6 +38,7 @@ public:
     Vec3 operator*(const float &) const;
     Vec3 operator-(const Vec3 &) const;
     Vec3 crossProduct(const Vec3 &) const;
+    float Angle(const Vec3 &) const;
 };
 
 class Mat3 {
