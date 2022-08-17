@@ -14,6 +14,16 @@
 
 namespace lost {
 
+/*
+Tetra TODOs:
+1. Make generator function to go through multiple combinations of centroids
+    Then, fix returns and continues as needed
+2. Database generation for Pattern Catalog
+3. Alternative, Tetra-specific way of generating the Catalog? (basically BSC5)
+4. Documentation for math functions, esp. binning / hashing
+5. Modularize some of the functions - patternEdgeRatio, patternRadii creation
+*/
+
 int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const{
     // key = hashCode
     // Outputs a row of the Pattern Catalog
