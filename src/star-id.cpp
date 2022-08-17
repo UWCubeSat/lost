@@ -7,6 +7,7 @@
 // added for Tetra
 #include <set>
 #include <fstream> // probably delete later, this is just for bad Tetra db loading
+// Or maybe not, we'll probably have to use fseek anyways
 
 #include "star-id.hpp"
 #include "databases.hpp"
@@ -17,9 +18,10 @@ namespace lost {
 /*
 Tetra TODOs:
 1. Make generator function to go through multiple combinations of centroids
+(_generate_patterns_from_centroids)
     Then, fix returns and continues as needed
 2. Database generation for Pattern Catalog
-3. Alternative, Tetra-specific way of generating the Catalog? (basically BSC5)
+3. Tetra-specific catalog (i.e. star table?)
 4. Documentation for math functions, esp. binning / hashing
 5. Modularize some of the functions - patternEdgeRatio, patternRadii creation
 */
@@ -53,31 +55,30 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, TetraD
     return res;
 }
 
+/**
+ * @brief Identifies stars using Tetra Star Identification Algorithm
+ *
+ * @param database
+ * @param stars
+ * @param catalog
+ * @param camera
+ * @return StarIdentifiers
+ */
 StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
                                          const Catalog &catalog,
                                          const Camera &camera) const {
+    // format: (centroidIndex, catalogIndex)
     StarIdentifiers result;
 
-    // for(const Star &star : stars){
-    //     std::cout << star.position.x << ", " << star.position.y << std::endl;
-    // }
-    // std::cout << catalog.size() << std::endl; // 5000 stars
-
-
+    // TODO: definitely change later
+    // Right now, we're reading the entire Pattern Catalog and Star Table into memory
     TetraDatabase db;
     db.fillStarTable();
     db.fillPattCatalog();
-    // std::cout << "Star check " << db.starTable[1][1] << std::endl;
-    // std::cout << "Patt cat check " << db.pattCatalog[1][1] << std::endl;
-    // TODO: I do notice that the floats being stored are rounded up
-    // to/including 5th decimal place
-    // Correct!
 
     std::vector<Star> copyStars(stars);
-
     // Need to sort centroids by brightness, high to low
-    // TODO: somehow keep track of centroid indices, since StarIdentifier(catindex, starID)
     std::sort(
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
@@ -88,9 +89,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
     copyStars = std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
 
+    // Get indices of chosen centroids
+    // TODO: better way of doing this?- maybe
+    // Above, instead of copyStars, produce array of centroid indices sorted by centroid brightness
     std::vector<int> centroidIndices;
     for(const Star &star : copyStars){
-        // auto itr = std::find_i(stars.begin(), stars.end(), star);
         auto itr =
             std::find_if(stars.begin(), stars.end(), [&](const Star &st) {
                 return st.position.x == star.position.x &&
@@ -99,12 +102,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             int ind = std::distance(stars.begin(), itr);
             centroidIndices.push_back(ind);
     }
-
-    // 12, 11, 22, 5
-
-    // for(const Star &star: copyStars){
-    //     std::cout << star.position.x << ", " << star.position.y << std::endl;
-    // }
 
     // Compute Vec3 spatial vectors (in celestial sphere) for each star chosen to be in the Pattern
     std::vector<Vec3> pattStarVecs; // size = numPattStars
@@ -128,10 +125,13 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             }
         }
     }
+
+
     if(!angleAcceptable){
         std::cerr << "Error: some angle is greater than maxFov" << std::endl;
         return result;
-        // TODO: probably continue later?
+        // TODO: probably continue instead of returning, change after
+        // implementing generator function
     }
 
     // Calculate all edge lengths in order to find value of largest edge
@@ -147,7 +147,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
     float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1]; // largest edge value
 
-    // Now divide each edge length by pattLargestEdge
+    // Now divide each edge length by pattLargestEdge for edge ratios
     std::vector<float> pattEdgeRatios; // size() = C(numPattStars, 2) - 1
     for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) { // size()-1, since we ignore the largest edge
         pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
@@ -165,6 +165,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         hcSpace.push_back(range);
     }
     std::set<std::vector<int>> finalCodes;
+
     // TODO: describe what this does
     // TODO: implement this with recursion?
     for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
@@ -181,14 +182,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         }
     }
 
-    // PrintVector
-    // for(auto arr: finalCodes){
-    //     for(int a : arr){
-    //         std::cout << a << ", ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-
     for(std::vector<int> code : finalCodes){
 
         int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
@@ -203,6 +196,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             std::vector<int> catStarIDs;
             std::vector<Vec3> catStarVecs;
             for(int star : matchRow){
+                // std::cout << "Match star: " << star << std::endl;
                 Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
                             db.starTable[star][4]);
                 catStarIDs.push_back(db.starTable[star][6]);
@@ -247,7 +241,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             }
             pattCentroid = pattCentroid * (1.0 / (int)pattStarVecs.size());
 
-            // TODO: what is this
+            // TODO: what is this math
             std::vector<float> pattRadii;
             for(Vec3 pattStarVec : pattStarVecs){
                 pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
@@ -259,7 +253,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 ArgsortVector<Vec3>(pattStarVecs, pattRadii);
             // NOTE: accuracy here isn't great? Accurate to 3rd decimal place
 
-            // TODO: modularize this, creation of catRadii
+            // TODO: modularize this, creation of radii vector- maybe
             Vec3 catCentroid(0, 0, 0);
             for(Vec3 catStarVec : catStarVecs){
                 catCentroid = catCentroid + catStarVec;
@@ -277,23 +271,22 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 ArgsortVector<Vec3>(catStarVecs, catRadii);
 
             for(int i = 0; i < numPattStars; i++){
-                // std::cout << "centroid: " << sortedCentroidIndices[i]
-                //           << ", starID: " << catSortedStarIDs[i];
-                // std::cout << std::endl;
 
                 int centroidIndex = sortedCentroidIndices[i];
                 int resultStarID = catSortedStarIDs[i];
 
+                std::cout << "Centroid Index: " << centroidIndex
+                          << ", Result StarID: " << resultStarID << std::endl;
+
                 int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
 
                 // const CatalogStar *catStar = FindNamedStar(catalog, resultStarID);
-                std::cout << "catstar: " << catalogIndex << std::endl;
+                // std::cout << "catstar: " << catalogIndex << std::endl;
 
                 result.push_back(StarIdentifier(centroidIndex, catalogIndex));
-                // Ah, catalog is different than what Tetra expects
             }
 
-            // TODO: StarIdentifier wants the catalog INDEX, not the real star ID
+            // NOTE: StarIdentifier wants the catalog INDEX, not the real star ID
 
             std::cout << "SUCCESS: stars successfully matched" << std::endl;
             return result;
