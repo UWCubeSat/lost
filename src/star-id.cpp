@@ -49,6 +49,10 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Camera &camera) const {
     StarIdentifiers result;
 
+    // for(const Star &star : stars){
+    //     std::cout << star.position.x << ", " << star.position.y << std::endl;
+    // }
+
     TetraDatabase db;
     db.fillStarTable();
     db.fillPattCatalog();
@@ -66,7 +70,23 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
+    // TODO: implement the generator function
+    // Right now I'm just do a simplified way, taking the first 4 centroids
     copyStars = std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
+
+    std::vector<int> centroidIndices;
+    for(const Star &star : copyStars){
+        // auto itr = std::find_i(stars.begin(), stars.end(), star);
+        auto itr =
+            std::find_if(stars.begin(), stars.end(), [&](const Star &st) {
+                return st.position.x == star.position.x &&
+                       st.position.y == star.position.y;
+            });
+            int ind = std::distance(stars.begin(), itr);
+            centroidIndices.push_back(ind);
+    }
+
+    // 12, 11, 22, 5
 
     // for(const Star &star: copyStars){
     //     std::cout << star.position.x << ", " << star.position.y << std::endl;
@@ -161,7 +181,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, db);
 
         if((int)matches.size() == 0){
-            std::cout << "Alert: matches size = 0, continuing" << std::endl;
+            // std::cout << "Alert: matches size = 0, continuing" << std::endl;
             continue;
         }
 
@@ -201,8 +221,9 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 }
             }
             // TODO: change comment here
+            // Very common to continue here
             if (skipMatchRow) {
-                std::cout << "Alert: Match Row skipped!!!" << std::endl;
+                // std::cout << "Alert: Match Row skipped!!!" << std::endl;
                 continue;
             }
 
@@ -218,6 +239,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
             }
 
+            std::vector<int> sortedCentroidIndices =
+                ArgsortVector<int>(centroidIndices, pattRadii);
             std::vector<Vec3> pattSortedVecs =
                 ArgsortVector<Vec3>(pattStarVecs, pattRadii);
             // NOTE: accuracy here isn't great? Accurate to 3rd decimal place
@@ -239,10 +262,15 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             std::vector<Vec3> catSortedVecs =
                 ArgsortVector<Vec3>(catStarVecs, catRadii);
 
-            for(int starID : catSortedStarIDs){
-                std::cout << starID << ", " << std::endl;
+            for(int i = 0; i < numPattStars; i++){
+                std::cout << "centroid: " << centroidIndices[i]
+                          << ", starID: " << catSortedStarIDs[i];
+                std::cout << std::endl;
+                result.push_back(
+                    StarIdentifier(centroidIndices[i], catSortedStarIDs[i]));
             }
-            std::cout << std::endl;
+
+            // TODO: StarIdentifier wants the catalog INDEX, not the real star ID
 
             std::cout << "SUCCESS: stars successfully matched" << std::endl;
             return result; // TODO: work on this more
