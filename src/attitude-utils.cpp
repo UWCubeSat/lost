@@ -196,12 +196,6 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
-// angle between two vectors (rad)
-float Vec3::Angle(const Vec3 &other) const {
-    return acos((*this) * other) / (this->Magnitude() * other.Magnitude());
-}
-
-
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
