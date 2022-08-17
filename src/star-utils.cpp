@@ -43,6 +43,16 @@ const CatalogStar *FindNamedStar(const Catalog &catalog, int name) {
     return NULL;
 }
 
+// TODO: ok? Seems kinda stupid, anyways here's a function to get index of a CatalogStar in catalog given name
+int FindCatalogStarIndex(const Catalog &catalog, int name){
+    for(int i = 0; i < (int)catalog.size(); i++){
+        if(catalog[i].name == name){
+            return i;
+        }
+    }
+    return -1; // no star found
+}
+
 /// @sa SerializeCatalogStar
 long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     long starSize = SerializeLengthVec3();

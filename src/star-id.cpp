@@ -52,6 +52,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // for(const Star &star : stars){
     //     std::cout << star.position.x << ", " << star.position.y << std::endl;
     // }
+    // std::cout << catalog.size() << std::endl; // 5000 stars
+
 
     TetraDatabase db;
     db.fillStarTable();
@@ -70,8 +72,10 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
+
     // TODO: implement the generator function
     // Right now I'm just do a simplified way, taking the first 4 centroids
+
     copyStars = std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
 
     std::vector<int> centroidIndices;
@@ -263,17 +267,26 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 ArgsortVector<Vec3>(catStarVecs, catRadii);
 
             for(int i = 0; i < numPattStars; i++){
-                std::cout << "centroid: " << centroidIndices[i]
-                          << ", starID: " << catSortedStarIDs[i];
-                std::cout << std::endl;
-                result.push_back(
-                    StarIdentifier(centroidIndices[i], catSortedStarIDs[i]));
+                // std::cout << "centroid: " << sortedCentroidIndices[i]
+                //           << ", starID: " << catSortedStarIDs[i];
+                // std::cout << std::endl;
+
+                int centroidIndex = sortedCentroidIndices[i];
+                int resultStarID = catSortedStarIDs[i];
+
+                int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
+
+                // const CatalogStar *catStar = FindNamedStar(catalog, resultStarID);
+                std::cout << "catstar: " << catalogIndex << std::endl;
+
+                result.push_back(StarIdentifier(centroidIndex, catalogIndex));
+                // Ah, catalog is different than what Tetra expects
             }
 
             // TODO: StarIdentifier wants the catalog INDEX, not the real star ID
 
             std::cout << "SUCCESS: stars successfully matched" << std::endl;
-            return result; // TODO: work on this more
+            return result;
         }
     }
 
