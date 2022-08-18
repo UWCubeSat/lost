@@ -38,45 +38,54 @@ TEST_CASE("Tracking mode database", "[tracking]") {
 
     SECTION("small uncertainty") {
 
-        Vec3 point = catalog[rand() % catalog.size()].spatial;
-        float radius = 0.001;
-        float threshold = 0.001;
+        for (int i = 0; i < (int)catalog.size(); i++) {
+            Vec3 point = catalog[i].spatial;
+            float radius = 0.001;
+            float threshold = 0.001;
 
-        std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
-        std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
+            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
 
-        std::sort(query_ind.begin(), query_ind.end());
-        std::sort(correct_query_ind.begin(), correct_query_ind.end());
-        CHECK(query_ind.size() == correct_query_ind.size());
-        CHECK(query_ind == correct_query_ind);
+            std::sort(query_ind.begin(), query_ind.end());
+            std::sort(correct_query_ind.begin(), correct_query_ind.end());
+            CHECK(query_ind.size() == correct_query_ind.size());
+            CHECK(query_ind == correct_query_ind);
+        }
+        
     }
 
     SECTION("medium uncertainty") {
-        Vec3 point = catalog[rand() % catalog.size()].spatial;
-        float radius = 0.05;
-        float threshold = 0.001;
 
-        std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
-        std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+        for (int i = 0; i < (int)catalog.size(); i++) {
+            Vec3 point = catalog[i].spatial;
+            float radius = 0.05;
+            float threshold = 0.001;
 
-        std::sort(query_ind.begin(), query_ind.end());
-        std::sort(correct_query_ind.begin(), correct_query_ind.end());
-        CHECK(query_ind.size() == correct_query_ind.size());
-        CHECK(query_ind == correct_query_ind);
+            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
+            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+
+            std::sort(query_ind.begin(), query_ind.end());
+            std::sort(correct_query_ind.begin(), correct_query_ind.end());
+            CHECK(query_ind.size() == correct_query_ind.size());
+            CHECK(query_ind == correct_query_ind);
+        }
     }
 
     SECTION("large uncertainty") {
-        Vec3 point = catalog[rand() % catalog.size()].spatial;
-        float radius = 1;
-        float threshold = 0.001;
+        for (int i = 0; i < (int)catalog.size(); i++) {
+            Vec3 point = catalog[i].spatial;
+            float radius = 1;
+            float threshold = 0.001;
 
-        std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
-        std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
+            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
 
-        std::sort(query_ind.begin(), query_ind.end());
-        std::sort(correct_query_ind.begin(), correct_query_ind.end());
-        CHECK(query_ind.size() == correct_query_ind.size());
-        CHECK(query_ind == correct_query_ind);
+            std::sort(query_ind.begin(), query_ind.end());
+            std::sort(correct_query_ind.begin(), correct_query_ind.end());
+            CHECK(query_ind.size() == correct_query_ind.size());
+            CHECK(query_ind.size() != 0);
+            CHECK(query_ind == correct_query_ind);
+        }
     }
 }
 
