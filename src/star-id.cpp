@@ -491,6 +491,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
                         printf("Identified an additional %d stars\n", (int)identified.size() - 4);
 
+                            for (int i = 0; i < (int)identified.size(); i++) {
+        std::cout << "STAR: " << identified[i].starIndex << ", " << identified[i].catalogIndex << std::endl;
+    }
                         return identified;
                     }
 
@@ -536,6 +539,7 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
 }
 
 #define debugQuery 0
+#define query_threshold 0
 
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
@@ -551,13 +555,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
 
     std::map<Quaternion, StarIdentifiers> votes;
 
-
     // int max = log(stars.size() - 1);
-
-    EulerAngles spherical = prevAttitude.prev.ToSpherical();
-    std::cout << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
-    std::cout << "attitude_de " << RadToDeg(spherical.de) << std::endl;
-    std::cout << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
 
     // vote for each rotation that would make each pair of stars go from the old attitude to the current position
     for (int i = 0; i < (int)stars.size(); i++) {
@@ -565,25 +563,28 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         // std::cout << "i: " << i << std::endl;
 
         // find previous position of the centroid based on the old attitude
-        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position);
-        starAPrevPos = prevAttitude.prev.Rotate(starAPrevPos);
+        Vec3 starAPrevPos = camera.CameraToSpatial(stars[i].position).Normalize();
+        starAPrevPos = prevAttitude.prev.GetQuaternion().Conjugate().Rotate(starAPrevPos);
+
         // find all the possible previous stars
-        std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty);
+        std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty, prevAttitude.compareThreshold);
         if (starAPossiblePrevStars.size() == 1) {
+            std::cout << "HERE " << i << " " << starAPossiblePrevStars[0] << std::endl;
             definite.push_back(StarIdentifier(i,starAPossiblePrevStars[0]));
+            // break;
         }
 
-        if (debugQuery && i > 0) break;
+        if (debugQuery && i >= query_threshold) continue;
 
         for (int j = i+1; j < (int)stars.size()-1; j++) {
-            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position);
-            starBPrevPos = prevAttitude.prev.Rotate(starBPrevPos);
+            Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position).Normalize();
+            starBPrevPos = prevAttitude.prev.GetQuaternion().Conjugate().Rotate(starBPrevPos);
 
             // skip stars that are close to each other
             float prevDist = (starAPrevPos - starBPrevPos).Magnitude();
             if (prevDist <= prevAttitude.uncertainty) continue;
 
-            std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty);
+            std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty, prevAttitude.compareThreshold);
             if (starBPossiblePrevStars.size() == 1) {
                 definite.push_back(StarIdentifier(j,starBPossiblePrevStars[0]));
             }
@@ -654,7 +655,6 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     std::pair<Quaternion, StarIdentifiers> entryWithMaxValue = std::make_pair(votedRot,StarIdentifiers{});
     std::map<Quaternion, StarIdentifiers>::iterator currentEntry;
     for (currentEntry = votes.begin(); currentEntry != votes.end(); ++currentEntry) {
-        // if (currentEntry->second.size() == 8) {
         if (currentEntry->second.size() > entryWithMaxValue.second.size()) {
             entryWithMaxValue = std::make_pair(currentEntry->first, currentEntry->second);
             votedRot = currentEntry->first;
@@ -664,32 +664,22 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
 
     std::cout << entryWithMaxValue.second.size() << std::endl;
 
-
-    Quaternion quat = entryWithMaxValue.first;
-    Attitude att(quat);
-    EulerAngles identifiedAtt = att.ToSpherical();
-    std::cout << "attitude_ra " << RadToDeg(identifiedAtt.ra) << std::endl;
-    std::cout << "attitude_de " << RadToDeg(identifiedAtt.de) << std::endl;
-    std::cout << "attitude_roll " << RadToDeg(identifiedAtt.roll) << std::endl;
-
-    // Quaternion currentAtt = prevAttitude.prev.Rotate(quat);
-
     for (int i = 0; i < (int)definite.size(); i++) {
         identified.push_back(definite[i]);
     }
 
-    for (int i = 0; i < (int)entryWithMaxValue.second.size(); i++) {
-        bool found = false;
-        for (int j = 0; j < (int)definite.size(); j++) {
-            if (entryWithMaxValue.second[i].catalogIndex == definite[j].catalogIndex) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            identified.push_back(entryWithMaxValue.second[i]);
-        }
-    }
+    // for (int i = 0; i < (int)entryWithMaxValue.second.size(); i++) {
+    //     bool found = false;
+    //     for (int j = 0; j < (int)definite.size(); j++) {
+    //         if (entryWithMaxValue.second[i].catalogIndex == definite[j].catalogIndex) {
+    //             found = true;
+    //             break;
+    //         }
+    //     }
+    //     if (!found) {
+    //         identified.push_back(entryWithMaxValue.second[i]);
+    //     }
+    // }
 
     return identified;
 }
