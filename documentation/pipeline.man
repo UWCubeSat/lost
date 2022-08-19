@@ -75,7 +75,7 @@ used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 de
 
 .TP
 \fB--uncertainty\fP \fIradius\fP
-For tracking mode. \fIradius\fP gives the boundary for how much the field of view could have rotated. Defaults to 5 if not selected. Must be nonnegative.
+For tracking mode. \fIradius\fP gives the boundary for how much the field of view could have rotated. Defaults to 0.001 if not selected. Must be nonnegative.
 
 .TP
 \fB--tracking-compare-threshold\fP \fIthreshold\fP
