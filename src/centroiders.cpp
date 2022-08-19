@@ -207,9 +207,8 @@ struct CentroidParams {
     int xMax;
     int yMin;
     int yMax;
-    std::vector<int> localCutoff;
+    int magnitude;
     bool isValid;
-    std::unordered_set<int> checkedIndices;
 };
 
 // Accepts the row/column of an index on the image, the imageWidth/imageHeight, the subdivisions
@@ -235,10 +234,7 @@ long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) 
     return  row * subdivisions + col;
 }
 
-// Accepts a CentroidParams struct, the current index, image's array of brightnesses and dimensions, 
-// and the subdivisions. This is a recursive helper method that is used with 
-// CenterOfGravityAlgorithm:Go and finds the dimensions of an individual star in the context of the
-// image
+/*
 void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, 
         int subdivisions) {
     
@@ -274,11 +270,10 @@ void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, 
         CogHelper(p, i - imageWidth, image, imageWidth, imageHeight, subdivisions);
     }
 }
-
+*/
 // Accepts an array of the image's brightnesses, and the image's dimensions, and finds all
 // stars in the image and returns the stars as an array
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
-    CentroidParams p;
     // Program will use divisions to represent the subdivisions
     int divisions = subdivisions;
     int min = 0;
@@ -290,40 +285,118 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     if(min / subdivisions < 10) {
         divisions = min / 10;
     }
+    // Make an array of stars
     std::vector<Star> result;
-    p.localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
-    for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions)) 
-                && p.checkedIndices.count(i) == 0) {
-            //iterate over pixels that are part of the star
-            int xDiameter = 0; //radius of current star
-            int yDiameter = 0;
-            p.yCoordMagSum = 0; //y coordinate of current star
-            p.xCoordMagSum = 0; //x coordinate of current star
-            p.magSum = 0; //sum of magnitudes of current star
-
-            p.xMax = i % imageWidth;
-            p.xMin = i % imageWidth;
-            p.yMax = i / imageWidth;
-            p.yMin = i / imageWidth;
-            p.isValid = true;
-
-            int sizeBefore = p.checkedIndices.size();
-
-            CogHelper(p, i, image, imageWidth, imageHeight, divisions);
-            xDiameter = (p.xMax - p.xMin) + 1;
-            yDiameter = (p.yMax - p.yMin) + 1;
-
-            //use the sums to finish CoG equation and add stars to the result
-            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
-            float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
-
-            if (p.isValid) {
-                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter))/2.0f, 
-                        ((float)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
+    std::vector<int> localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
+    std::unordered_map<int, int> equivalencies;
+    unsigned char *stars = (unsigned char *) std::malloc(imageWidth * imageHeight * sizeof(unsigned char));
+    for(int i = 0; i < imageWidth * imageHeight; i++) {
+        stars[i] = 0;
+    }
+    stars[0] = (image[0] >= localCutoff.at(0)) ? 1 : 0;
+    int L = stars[0];
+    for(long i = 1; i < imageHeight * imageWidth; i++) {
+        int cutoff = localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions));
+        if(image[i] > cutoff) { // By default, stars[i] = 0, so if this passes, its part of a star
+            int up = i - imageWidth;
+            int left = i - 1;
+            bool leftEq = stars[left] != 0;
+            bool upEq = stars[up] != 0;
+            if(i / imageWidth == 0) {
+                if(leftEq) { // Should we use an appoximation, ie use cutoff instead?
+                    stars[i] = stars[left];
+                } else {
+                    stars[i] = ++L;
+                }
+            } else if(i % imageWidth == 0) {
+                if(upEq) {
+                    stars[i] = stars[up];
+                } else {
+                    stars[i] = ++L;
+                }
+            } else {
+                if(leftEq && upEq && stars[left] == stars[up]) {
+                    stars[i] = stars[left];
+                } else if(leftEq && upEq && stars[left] != stars[up]) {
+                    stars[i] = std::min(stars[left], stars[up]);
+                    std::unordered_map<int, int>::iterator key = equivalencies.find(stars[i]);
+                    if(key == equivalencies.end()) {
+                        equivalencies.insert(std::pair<int, int>(int(std::max(stars[left], stars[up])), int(stars[i])));
+                    } else {
+                        key -> second = stars[i];
+                    }
+                } else if(leftEq) { // Should we use an appoximation, ie use cutoff instead?
+                    stars[i] = stars[left];
+                } else if(upEq) {
+                    stars[i] = stars[up];
+                } else {
+                    stars[i] = ++L;
+                }
             }
+            // Factor out 328 - 330 and put it here as an if?
         }
     }
+     // Get statistics of each star
+    std::unordered_map<int, CentroidParams> params; // Star # to param
+   for(int i = 0; i < imageWidth * imageHeight; i++) {
+        if(stars[i] != 0) {
+            int starNumber = equivalencies.find(stars[i]) == equivalencies.end() ? 
+                    stars[i] : equivalencies.find(stars[i]) -> second;
+            if(params.find(starNumber) == params.end()) {
+                CentroidParams p;
+                p.magnitude = 0;
+                p.magSum = 0;
+                p.xCoordMagSum = 0;
+                p.yCoordMagSum = 0;
+                p.xMax = 0;
+                p.xMin = imageWidth;
+                p.yMax = 0;
+                p.yMin = imageHeight;
+                p.isValid = true;
+                params.insert(std::pair<int, CentroidParams>(starNumber, p));
+            }
+            CentroidParams *centroid_ptr = &params.at(starNumber);
+            int row = i / imageWidth;
+            int col = i % imageWidth;
+            centroid_ptr -> xCoordMagSum += col * image[i];
+            centroid_ptr -> yCoordMagSum += row * image[i];
+            centroid_ptr -> magnitude++;
+            centroid_ptr -> magSum += image[i];
+            if(col > centroid_ptr -> xMax) {
+                centroid_ptr -> xMax = col;
+            }
+            if(col < centroid_ptr -> xMin) {
+                centroid_ptr -> xMin = col;
+            }
+            if(row > centroid_ptr -> yMax) {
+                centroid_ptr -> yMax = row;
+            }
+            if(row < centroid_ptr -> yMin) {
+                centroid_ptr -> yMin = row;
+            }
+            if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || 
+                i / imageWidth == imageHeight - 1) {
+                centroid_ptr -> isValid = false;
+            }
+
+        }
+   }
+
+    // Now we actually make stars
+    for(auto itr = params.begin(); itr != params.end(); itr++) {
+        if(itr -> second.isValid && itr -> first != 0) {
+            CentroidParams p = itr -> second;
+            float xRadius = p.xMax - p.xMin;
+            float yRadius = p.yMax - p.yMin;
+            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
+            if(xRadius > 150) {
+                std::cout << xRadius << " " << yRadius << " " << itr -> first << " " << itr -> second.magnitude << "\n";
+            }
+            result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, xRadius / 2.0f, yRadius / 2.0f, p.magnitude));
+        }
+    }
+
     return result;
 }
 

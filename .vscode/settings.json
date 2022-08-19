@@ -48,7 +48,6 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "files.eol": "\n",
-        "regex": "cpp",
         "bitset": "cpp",
         "chrono": "cpp",
         "complex": "cpp",
@@ -57,11 +56,13 @@
         "ctime": "cpp",
         "set": "cpp",
         "ratio": "cpp",
+        "regex": "cpp",
         "future": "cpp",
         "iomanip": "cpp",
         "mutex": "cpp",
         "shared_mutex": "cpp",
         "thread": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "list": "cpp"
     }
 }
