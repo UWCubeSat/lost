@@ -541,7 +541,7 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
 }
 
 #define debugQuery 0
-#define query_threshold 0
+#define query_threshold 5
 
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
@@ -565,12 +565,13 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
         starAPrevPos = prevAttitude.prev.GetQuaternion().Conjugate().Rotate(starAPrevPos);
 
         // find all the possible previous stars
-        std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty, prevAttitude.compareThreshold);
+        std::vector<int16_t> starAPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starAPrevPos, prevAttitude.uncertainty+prevAttitude.compareThreshold);
         if (starAPossiblePrevStars.size() == 1) {
             definite.push_back(StarIdentifier(i,starAPossiblePrevStars[0]));
         }
 
-        if (debugQuery && i >= query_threshold) continue;
+        // std::cout << "i: " << i << std::endl;
+        if (debugQuery && i <= query_threshold) continue;
 
         for (int j = i+1; j < (int)stars.size()-1; j++) {
             Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position).Normalize();
@@ -580,7 +581,7 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
             float prevDist = (starAPrevPos - starBPrevPos).Magnitude();
             if (prevDist <= prevAttitude.uncertainty) continue;
 
-            std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty, prevAttitude.compareThreshold);
+            std::vector<int16_t> starBPossiblePrevStars = vectorDatabase.QueryNearestStars(catalog, starBPrevPos, prevAttitude.uncertainty+prevAttitude.compareThreshold);
             if (starBPossiblePrevStars.size() == 1) {
                 definite.push_back(StarIdentifier(j,starBPossiblePrevStars[0]));
             }

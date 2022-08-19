@@ -374,10 +374,9 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
 }
 
 // query database
-std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog catalog, const Vec3 point, float radius, float threshold) {
+std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog catalog, const Vec3 point, float radius) {
     assert(radius >= 0);
-    radius += threshold;
-   
+
     std::vector<int16_t> query_ind;     // the list of catalog indices to be returned
 
     // use binary search to find an initial element within the right range (see https://www.geeksforgeeks.org/binary-search/)

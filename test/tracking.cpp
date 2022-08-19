@@ -17,12 +17,12 @@ static unsigned char *BuildTrackingDatabase(const Catalog &catalog, long *length
     return result;
 }
 
-std::vector<int16_t> NaiveQuery(const Catalog catalog, const Vec3 point, float radius, float threshold) {
+std::vector<int16_t> NaiveQuery(const Catalog catalog, const Vec3 point, float radius) {
     std::vector<int16_t> correct_query_ind;
     for (int i = 0; i < (int)catalog.size(); i++) {
         CatalogStar cstar = catalog[i];
         Vec3 diff = cstar.spatial - point;
-        if (diff.Magnitude() <= radius + threshold) {
+        if (diff.Magnitude() <= radius) {
             correct_query_ind.push_back(i);
         }
     }
@@ -43,8 +43,8 @@ TEST_CASE("Tracking mode database", "[tracking]") {
             float radius = 0.001;
             float threshold = 0.001;
 
-            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
-            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius+threshold);
+            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius+threshold);
 
             std::sort(query_ind.begin(), query_ind.end());
             std::sort(correct_query_ind.begin(), correct_query_ind.end());
@@ -61,8 +61,8 @@ TEST_CASE("Tracking mode database", "[tracking]") {
             float radius = 0.05;
             float threshold = 0.001;
 
-            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
-            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius+threshold);
+            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius+threshold);
 
             std::sort(query_ind.begin(), query_ind.end());
             std::sort(correct_query_ind.begin(), correct_query_ind.end());
@@ -77,8 +77,8 @@ TEST_CASE("Tracking mode database", "[tracking]") {
             float radius = 1;
             float threshold = 0.001;
 
-            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius, threshold);
-            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius, threshold);
+            std::vector<int16_t> query_ind = db.QueryNearestStars(catalog, point, radius+threshold);
+            std::vector<int16_t> correct_query_ind = NaiveQuery(catalog, point, radius+threshold);
 
             std::sort(query_ind.begin(), query_ind.end());
             std::sort(correct_query_ind.begin(), correct_query_ind.end());

@@ -89,7 +89,7 @@ class TrackingSortedDatabase {
 public:
     TrackingSortedDatabase(const unsigned char *databaseBytes);
     const static int32_t kMagicValue = 0x2536f0A9;
-    std::vector<int16_t> QueryNearestStars(const Catalog c, const Vec3 point, float radius, float threshold);
+    std::vector<int16_t> QueryNearestStars(const Catalog c, const Vec3 point, float radius);
 
 private:
     int16_t length;                     // length of catalog
