@@ -491,10 +491,6 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
                         PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
                         printf("Identified an additional %d stars\n", (int)identified.size() - 4);
-
-                            for (int i = 0; i < (int)identified.size(); i++) {
-        std::cout << "STAR: " << identified[i].starIndex << ", " << identified[i].catalogIndex << std::endl;
-    }
                         return identified;
                     }
 
@@ -540,9 +536,6 @@ static Mat3 TrackingCoordinateFrame(Vec3 v1, Vec3 v2) {
     };
 }
 
-#define debugQuery 0
-#define query_threshold 5
-
 StarIdentifiers TrackingModeStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
@@ -570,14 +563,11 @@ StarIdentifiers TrackingModeStarIdAlgorithm::Go(
             definite.push_back(StarIdentifier(i,starAPossiblePrevStars[0]));
         }
 
-        // std::cout << "i: " << i << std::endl;
-        if (debugQuery && i <= query_threshold) continue;
-
         for (int j = i+1; j < (int)stars.size()-1; j++) {
             Vec3 starBPrevPos = camera.CameraToSpatial(stars[j].position).Normalize();
             starBPrevPos = prevAttitude.prev.GetQuaternion().Conjugate().Rotate(starBPrevPos);
 
-            // skip stars that are close to each other
+            // skip stars that are close to each other, since that gets confusing
             float prevDist = (starAPrevPos - starBPrevPos).Magnitude();
             if (prevDist <= prevAttitude.uncertainty) continue;
 

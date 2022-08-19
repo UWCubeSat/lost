@@ -317,20 +317,23 @@ MultiDatabaseBuilder::~MultiDatabaseBuilder() {
 
 /*** for tracking mode ***/
 
+// to associate stars with a definite index in the catalog
 struct TrackingStar {
     int16_t index;
     CatalogStar star;
 };
 
+// length of the serialized tracking catalog
 long SerializeLengthTrackingCatalog(const Catalog &catalog) {
     return (catalog.size()+1) * sizeof(int16_t);
 }
 
+// comparator for ordering stars in tracking database
 bool CompareTrackingStars(const TrackingStar &s1, const TrackingStar &s2) {
     return s1.star.spatial.x < s2.star.spatial.x;
 }
 
-// sort by x coordinate of stars
+// serialize tracking catalog (length of catalog, then list of indices into catalog sorted by x-coordinate of stars)
 void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer) {
     std::vector<TrackingStar> stars;
 
@@ -373,13 +376,13 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
     }
 }
 
-// query database
+// query database (returns list of indices into the catalog that have stars within radius of point)
 std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog catalog, const Vec3 point, float radius) {
     assert(radius >= 0);
 
-    std::vector<int16_t> query_ind;     // the list of catalog indices to be returned
+    std::vector<int16_t> query_ind;
 
-    // use binary search to find an initial element within the right range (see https://www.geeksforgeeks.org/binary-search/)
+    //  binary search to find an initial element with x-element in right range
     int16_t left = 0;
     int16_t right = length-1;
     int16_t index = -1;
