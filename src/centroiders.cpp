@@ -234,49 +234,17 @@ long FindSubdivision(long i, int imageWidth, int imageHeight, int subdivisions) 
     return  row * subdivisions + col;
 }
 
-/*
-void CogHelper(CentroidParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, 
-        int subdivisions) {
-    
-    if (i >= 0 && i < imageWidth * imageHeight && 
-            image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions)) 
-                    && p.checkedIndices.count(i) == 0) {
-        //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
-        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || 
-                i / imageWidth == imageHeight - 1) {
-            p.isValid = false;
-        }
-        p.checkedIndices.insert(i);
-        if (i % imageWidth > p.xMax) {
-            p.xMax = i % imageWidth;
-        } else if (i % imageWidth < p.xMin) {
-            p.xMin = i % imageWidth;
-        }
-        if (i / imageWidth > p.yMax) {
-            p.yMax = i / imageWidth;
-        } else if (i / imageWidth < p.yMin) {
-            p.yMin = i / imageWidth;
-        }
-        p.magSum += image[i];
-        p.xCoordMagSum += ((i % imageWidth)) * image[i];
-        p.yCoordMagSum += ((i / imageWidth)) * image[i];
-        if(i % imageWidth != imageWidth - 1) {
-            CogHelper(p, i + 1, image, imageWidth, imageHeight, subdivisions);
-        }
-        if (i % imageWidth != 0) {
-            CogHelper(p, i - 1, image, imageWidth, imageHeight, subdivisions);
-        }
-        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight, subdivisions);
-        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight, subdivisions);
-    }
-}
-*/
+
 // Accepts an array of the image's brightnesses, and the image's dimensions, and finds all
 // stars in the image and returns the stars as an array
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+    
     // Program will use divisions to represent the subdivisions
     int divisions = subdivisions;
     int min = 0;
+    if(divisions < 1) {
+        divisions = 1;
+    }
     if(imageWidth > imageHeight) {
         min = imageWidth;
     } else {
