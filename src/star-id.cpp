@@ -106,9 +106,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // Compute Vec3 spatial vectors (in celestial sphere) for each star chosen to be in the Pattern
     std::vector<Vec3> pattStarVecs; // size = numPattStars
     for(const Star &star : copyStars){
-        Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
+        // Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
+        // CameraToSpatial produces different vector but also works
+        Vec3 spatialVec = camera.CameraToSpatial(star.position);
         pattStarVecs.push_back(spatialVec);
-        // std::cout << spatialVec << std::endl;
+        std::cout << spatialVec << std::endl;
     }
 
     // Compute angle between each pair of stars chosen to be in the Pattern
