@@ -6,17 +6,23 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-test-lint:
+  build-and-test:
     runs-on: ubuntu-latest
     container: huskysat/lost:latest
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
     - name: 🛠 Build
       run: CXXFLAGS=-Werror make -j$(($(nproc)+1))
     - name: 📊 Unit Tests
       run: CXXFLAGS=-Werror make test -j$(($(nproc)+1))
+  
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
     - run: pip install cpplint
     - name: Lint
       run: cpplint --recursive src/ test/
