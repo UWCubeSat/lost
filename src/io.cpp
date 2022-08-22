@@ -689,9 +689,6 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 /// Create a pipeline from command line options.
 Pipeline SetPipeline(const PipelineOptions &values) {
-    enum class PipelineStage {
-        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
-    };
 
     Pipeline result;
 
