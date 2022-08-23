@@ -165,9 +165,9 @@ int LocalBasicThreshold(int box, unsigned char *image, int imageWidth, int image
     long count = 0;
 
     // Runs through "box" in row-major order
-    for(int i = StartOfSubdivision(row, horizontalLeftover, horizontalDiv); 
+    for(long i = StartOfSubdivision(row, horizontalLeftover, horizontalDiv); 
             i < StartOfSubdivision(row + 1, horizontalLeftover, horizontalDiv); i++) {
-        for(int j = StartOfSubdivision(col, verticalLeftover, verticalDiv); 
+        for(long j = StartOfSubdivision(col, verticalLeftover, verticalDiv); 
                 j < StartOfSubdivision(col + 1, verticalLeftover, verticalDiv); j++) {
             average += image[i * imageWidth + j];
             squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
