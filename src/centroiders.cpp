@@ -165,9 +165,9 @@ int LocalBasicThreshold(int box, unsigned char *image, int imageWidth, int image
     long count = 0;
 
     // Runs through "box" in row-major order
-    for(int i = StartOfSubdivision(row, horizontalLeftover, horizontalDiv); 
+    for(long i = StartOfSubdivision(row, horizontalLeftover, horizontalDiv); 
             i < StartOfSubdivision(row + 1, horizontalLeftover, horizontalDiv); i++) {
-        for(int j = StartOfSubdivision(col, verticalLeftover, verticalDiv); 
+        for(long j = StartOfSubdivision(col, verticalLeftover, verticalDiv); 
                 j < StartOfSubdivision(col + 1, verticalLeftover, verticalDiv); j++) {
             average += image[i * imageWidth + j];
             squareSum += image[i * imageWidth + j] * image[i * imageWidth + j];
@@ -179,7 +179,7 @@ int LocalBasicThreshold(int box, unsigned char *image, int imageWidth, int image
     }
 
     average /= count;
-    return std::round(average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1))));
+    return average + (5 * std::sqrt((squareSum - count * average * average) / (count - 1)));
 }
 
 // Accepts the image's brightness array and dimensions, and the subdivisions, and returns
@@ -253,25 +253,23 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     if(min / subdivisions < 10) {
         divisions = min / 10;
     }
-    // Make an array of stars
-    std::vector<Star> result;
+    // Make an array-map of stars
     std::vector<int> localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
     std::unordered_map<int, int> equivalencies;
+    
+    // Does this ensure 0/null based values?
     unsigned char *stars = (unsigned char *) std::malloc(imageWidth * imageHeight * sizeof(unsigned char));
-    for(int i = 0; i < imageWidth * imageHeight; i++) {
-        stars[i] = 0;
-    }
     stars[0] = (image[0] >= localCutoff.at(0)) ? 1 : 0;
     int L = stars[0];
+
     for(long i = 1; i < imageHeight * imageWidth; i++) {
-        int cutoff = localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions));
-        if(image[i] > cutoff) { // By default, stars[i] = 0, so if this passes, its part of a star
+        if(image[i] >= localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions))) {
             int up = i - imageWidth;
             int left = i - 1;
             bool leftEq = stars[left] != 0;
             bool upEq = stars[up] != 0;
             if(i / imageWidth == 0) {
-                if(leftEq) { // Should we use an appoximation, ie use cutoff instead?
+                if(leftEq) {
                     stars[i] = stars[left];
                 } else {
                     stars[i] = ++L;
@@ -287,13 +285,9 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                     stars[i] = stars[left];
                 } else if(leftEq && upEq && stars[left] != stars[up]) {
                     stars[i] = std::min(stars[left], stars[up]);
-                    std::unordered_map<int, int>::iterator key = equivalencies.find(stars[i]);
-                    if(key == equivalencies.end()) {
-                        equivalencies.insert(std::pair<int, int>(int(std::max(stars[left], stars[up])), int(stars[i])));
-                    } else {
-                        key -> second = stars[i];
-                    }
-                } else if(leftEq) { // Should we use an appoximation, ie use cutoff instead?
+                    equivalencies.insert(std::pair<int, int>(int(std::max(stars[left], stars[up])), int(stars[i])));
+                    assert(equivalencies.find(stars[i]) == equivalencies.end());
+                } else if(leftEq) {
                     stars[i] = stars[left];
                 } else if(upEq) {
                     stars[i] = stars[up];
@@ -301,7 +295,6 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                     stars[i] = ++L;
                 }
             }
-            // Factor out 328 - 330 and put it here as an if?
         }
     }
      // Get statistics of each star
@@ -351,16 +344,14 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
    }
 
     // Now we actually make stars
+    std::vector<Star> result;
     for(auto itr = params.begin(); itr != params.end(); itr++) {
         if(itr -> second.isValid && itr -> first != 0) {
             CentroidParams p = itr -> second;
-            float xRadius = p.xMax - p.xMin;
-            float yRadius = p.yMax - p.yMin;
-            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));      
+            float xRadius = p.xMax - p.xMin + 1;
+            float yRadius = p.yMax - p.yMin + 1;
+            float xCoord = (p.xCoordMagSum / (p.magSum * 1.0));
             float yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
-            if(xRadius > 150) {
-                std::cout << xRadius << " " << yRadius << " " << itr -> first << " " << itr -> second.magnitude << "\n";
-            }
             result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, xRadius / 2.0f, yRadius / 2.0f, p.magnitude));
         }
     }
