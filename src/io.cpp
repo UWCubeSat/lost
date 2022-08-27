@@ -36,13 +36,13 @@ PromptedOutputStream::PromptedOutputStream(std::string filePath) {
 
     if (filePath == "stdout" || filePath == "-") {
         stream = &std::cout;
-        isFstream = false;
     } else {
         std::fstream *fs = new std::fstream();
         fs->open(filePath, std::fstream::out);
         stream = fs;
-        isFstream = true;
+        
     }
+    isFstream = true;
 }
 
 PromptedOutputStream::~PromptedOutputStream() {

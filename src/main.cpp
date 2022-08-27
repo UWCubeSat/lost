@@ -99,6 +99,7 @@ static void PipelineRun(const PipelineOptions &values) {
 // }
 
 /// Convert string to boolean
+// FLAG: Can simplify if only "1", "0", "true", or "false" is entered
 bool atobool(const char *cstr) {
     std::string str(cstr);
     if (str == "1" || str == "true") {
@@ -133,7 +134,7 @@ static int LostMain(int argc, char **argv) {
 
     if (command == "database") {
 
-        enum class DatabaseCliOption {
+        enum class DatabaseCliOption:int{
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "database-options.hpp"
 #undef LOST_CLI_OPTION
@@ -160,16 +161,12 @@ static int LostMain(int argc, char **argv) {
             switch (option) {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
                 case (int)DatabaseCliOption::prop :                     \
-                    if (defaultArg == 0) {     \
+                    if (defaultArg == 0 || LOST_OPTIONAL_OPTARG()) {     \
                         databaseOptions.prop = converter;       \
                     } else {                                    \
-                        if (LOST_OPTIONAL_OPTARG()) {           \
-                            databaseOptions.prop = converter;   \
-                        } else {                                \
-                            databaseOptions.prop = defaultArg;  \
-                        }                                       \
+                        databaseOptions.prop = defaultArg;      \
                     }                                           \
-            break;
+                    break;
 #include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
@@ -184,7 +181,7 @@ static int LostMain(int argc, char **argv) {
 
     } else if (command == "pipeline") {
 
-        enum class PipelineCliOption {
+        enum class PipelineCliOption:int{
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "pipeline-options.hpp"
 #undef LOST_CLI_OPTION
@@ -202,7 +199,7 @@ static int LostMain(int argc, char **argv) {
 
                 // DATABASES
                 {"help", no_argument, 0, (int) PipelineCliOption::help},
-                {0, 0, 0, 0}
+                {0}
         };
 
         lost::PipelineOptions pipelineOptions;
@@ -222,7 +219,7 @@ static int LostMain(int argc, char **argv) {
                             pipelineOptions.prop = defaultArg;  \
                         }                                       \
                     }                                           \
-            break;
+                    break;
 #include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
                 case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
