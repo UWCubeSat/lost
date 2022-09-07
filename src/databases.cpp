@@ -44,7 +44,7 @@ long SerializeLengthKVectorIndex(long numBins) {
 // which will throw an error if the operators are not implemented.
 
 
-void kVectorBinStatistics(const std::vector<int32_t> &kVector) {
+void KVectorBinStatistics(const std::vector<int32_t> &kVector) {
     if(kVector.size() != 0) {
         int sum = 0;
         int squareSum = 0;
@@ -56,8 +56,8 @@ void kVectorBinStatistics(const std::vector<int32_t> &kVector) {
         // Could not resolve wording - This means if we considered each bin to hold the stars that
         // satisfied that specific bin (Look at "thisBin" for SerializeKVectorIndex)
         // the following average and standard dev are for that system
-        std::cout << "Average Stars per Highest Bin: " << sum / kVector.size() << " +/- " 
-                << squareSum / kVector.size() - (sum / kVector.size()) * (sum / kVector.size())<< std::endl;
+        std::cerr << "Average Stars per Highest Bin: " << sum / kVector.size() << " +/- " 
+                << std::sqrt(squareSum / kVector.size() - (sum / kVector.size()) * (sum / kVector.size())) << std::endl;
     }
 }
 
@@ -103,7 +103,7 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
         assert(bin >= lastBinVal);
         lastBinVal = bin;
     }
-    kVectorBinStatistics(kVector);
+    KVectorBinStatistics(kVector);
 
     unsigned char *bufferStart = buffer;
     // metadata fields
