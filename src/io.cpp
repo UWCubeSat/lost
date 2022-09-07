@@ -42,13 +42,6 @@ PromptedOutputStream::PromptedOutputStream(std::string filePath) {
         stream = fs;
         
     }
-    isFstream = true;
-}
-
-PromptedOutputStream::~PromptedOutputStream() {
-    if (isFstream) {
-        delete stream;
-    }
 }
 
 /// Parse the bright star catalog from the TSV file on disk.
@@ -57,12 +50,13 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
     FILE *file;
     double raj2000, dej2000;
     int magnitudeHigh, magnitudeLow, name;
-    char weird;
+    char weird; // dead variable
 
     file = fopen(tsvPath.c_str(), "r");
     if (file == NULL) {
         printf("Error opening file: %s\n", strerror(errno));
-        return result; // TODO
+        exit(1);
+        return result;
     }
 
     while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d",
@@ -71,7 +65,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                          &magnitudeHigh, &magnitudeLow)) {
         result.push_back(CatalogStar(DegToRad(raj2000),
                                      DegToRad(dej2000),
-                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
+                                     magnitudeHigh*100 + abs(magnitudeLow),
                                      name));
     }
 
@@ -85,11 +79,10 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
 
 /// Read and parse the full catalog from disk. If called multiple times, will re-use the first result.
 std::vector<CatalogStar> &CatalogRead() {
-    static bool readYet = false;
     static std::vector<CatalogStar> catalog;
 
-    if (!readYet) {
-        readYet = true;
+    // An apporximation of whether its been initialized, but its accurate in a practical sense
+    if (catalog.size() == 0) {
         char *tsvPath = getenv("LOST_BSC_PATH");
         catalog = BscParse(tsvPath ? tsvPath : DEFAULT_BSC_PATH);
     }
@@ -247,14 +240,14 @@ typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 /// Add a pair-distance KVector database to the given builder.
 void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
-    // database generation
-    long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
+    
+    std::vector<lost::KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
+    long length = SerializeLengthPairDistanceKVector(pairs.size(), numBins);
     unsigned char *buffer = builder->AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
     if (buffer == NULL) {
         std::cerr << "No room for another database." << std::endl;
     }
-    SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
+    SerializePairDistanceKVector(pairs, minDistance, maxDistance, numBins, buffer);
 
     // TODO: also parse it and print out some stats before returning
 }

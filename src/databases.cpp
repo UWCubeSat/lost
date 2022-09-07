@@ -13,12 +13,6 @@
 
 namespace lost {
 
-struct KVectorPair {
-    int16_t index1;
-    int16_t index2;
-    float distance;
-};
-
 bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
     return p1.distance < p2.distance;
 }
@@ -38,7 +32,7 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  |               |            | min+i*(max-min)/numBins                                     |
  */
 
-/// The number of bytes that a kvector index will take up whe serialized
+/// The number of bytes that a kvector index will take up when serialized
 long SerializeLengthKVectorIndex(long numBins) {
     return 4+sizeof(float)+sizeof(float)+4+4*(numBins+1);
 }
@@ -59,7 +53,7 @@ long SerializeLengthKVectorIndex(long numBins) {
  * @param numBins the number of "bins" the KVector should use. A higher number makes query results "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min) divided by the "width" of the typical query.
  * @param buffer[out] index is written here.
  */
-void SerializeKVectorIndex(const std::vector<float> &values, float min, float max, long numBins, unsigned char *buffer) {
+void SerializeKVectorIndex(const std::vector<float> &values, float min, float max, long numBins, unsigned char * &buffer) {
     std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     float binWidth = (max - min) / numBins;
 
@@ -203,23 +197,17 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
     return result;
 }
 
+/// Number of bytes that a serialized KVectorDatabase will take up
 long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
     return SerializeLengthKVectorIndex(numBins) + 2*sizeof(int16_t)*numPairs;
-}
-
-/// Number of bytes that a serialized KVectorDatabase will take up
-long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    return SerializeLengthPairDistanceKVector(CatalogToPairDistances(catalog, minDistance, maxDistance).size(), numBins);
 }
 
 /**
  * Serialize a pair-distance KVector into buffer.
  * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
-void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
-    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
-    std::vector<KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
-
+void SerializePairDistanceKVector(std::vector<lost::KVectorPair> &pairs, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
+    
     // sort pairs in increasing order.
     std::sort(pairs.begin(), pairs.end(), CompareKVectorPairs);
     std::vector<float> distances;
@@ -230,9 +218,12 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
 
     unsigned char *bufferStart = buffer;
 
-    // index field
+    // characteristics and index fields according to increasing distances
+    // Function automatically moves pointer
     SerializeKVectorIndex(distances, minDistance, maxDistance, numBins, buffer);
-    buffer += SerializeLengthKVectorIndex(numBins);
+    
+    // We make sure that it is uninitialised here
+    assert(*buffer == '\0');
 
     // bulk pairs field
     for (const KVectorPair &pair : pairs) {

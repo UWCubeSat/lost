@@ -34,13 +34,11 @@ const char kNoDefaultArgument = 0;
 class PromptedOutputStream {
 public:
     explicit PromptedOutputStream(std::string filePath);
-    ~PromptedOutputStream();
 
     /// return the inner output stream, suitable for use with <<
     std::ostream &Stream() { return *stream; };
 
 private:
-    bool isFstream;
     std::ostream *stream;
 };
 

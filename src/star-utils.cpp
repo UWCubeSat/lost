@@ -45,14 +45,7 @@ const CatalogStar *FindNamedStar(const Catalog &catalog, int name) {
 
 /// @sa SerializeCatalogStar
 long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
-    long starSize = SerializeLengthVec3();
-    if (inclMagnitude) {
-        starSize += sizeof(float);
-    }
-    if (inclName) {
-        starSize += sizeof(int16_t);
-    }
-    return starSize;
+    return SerializeLengthVec3() + (inclMagnitude ? sizeof(float) : 0) + (inclName ? sizeof(int16_t) : 0);
 }
 
 /**
@@ -118,8 +111,7 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
     buffer += sizeof(int16_t);
 
     // flags
-    int8_t flags = (inclMagnitude) | (inclName << 1);
-    *(int8_t *)buffer = flags;
+    *(int8_t *)buffer = int8_t((inclMagnitude) | (inclName << 1));
     buffer += sizeof(int8_t);
 
     long catalogStarLength = SerializeLengthCatalogStar(inclMagnitude, inclName);

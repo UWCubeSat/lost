@@ -9,6 +9,12 @@
 
 namespace lost {
 
+struct KVectorPair {
+    int16_t index1;
+    int16_t index2;
+    float distance;
+};
+
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
@@ -41,8 +47,9 @@ private:
     const int32_t *bins;
 };
 
-long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
-void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
+std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float minDistance, float maxDistance);
+long SerializeLengthPairDistanceKVector(long numPairs, long numBins);
+void SerializePairDistanceKVector(std::vector<lost::KVectorPair> &pairs, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 
 /**
  * A database storing distances between pairs of stars.
