@@ -338,15 +338,16 @@ struct IWCoGParams {
     int xMax;
     int yMin;
     int yMax;
-    int cutoff;
+    std::vector<int> localCutoff;
     int maxIntensity;
     int guess;
     bool isValid;
     std::unordered_set<int> checkedIndices;
 };
 
-void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> &starIndices) {
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, int imageHeight, int subdivisions, std::vector<int> &starIndices) {
+    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions))
+        && p.checkedIndices.count(i) == 0) {
         //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
         if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 
                 || i / imageWidth == imageHeight - 1) {
@@ -369,23 +370,34 @@ void IWCoGHelper(IWCoGParams &p, long i, unsigned char *image, int imageWidth, i
             p.yMin = i / imageWidth;
         }
         if(i % imageWidth != imageWidth - 1) {
-            IWCoGHelper(p, i + 1, image, imageWidth, imageHeight, starIndices);
+            IWCoGHelper(p, i + 1, image, imageWidth, imageHeight, subdivisions, starIndices);
         }
         if (i % imageWidth != 0) {
-            IWCoGHelper(p, i - 1, image, imageWidth, imageHeight, starIndices);
+            IWCoGHelper(p, i - 1, image, imageWidth, imageHeight, subdivisions, starIndices);
         }
-        IWCoGHelper(p, i + imageWidth, image, imageWidth, imageHeight, starIndices);
-        IWCoGHelper(p, i - imageWidth, image, imageWidth, imageHeight, starIndices);
+        IWCoGHelper(p, i + imageWidth, image, imageWidth, imageHeight, subdivisions, starIndices);
+        IWCoGHelper(p, i - imageWidth, image, imageWidth, imageHeight, subdivisions, starIndices);
     }
 }
 
 Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
+    int divisions = subdivisions;
+    int min = 0;
+    if(imageWidth > imageHeight) {
+        min = imageWidth;
+    } else {
+        min = imageHeight;
+    }
+    if(min / subdivisions < 10) {
+        divisions = min / 10;
+    }
     std::vector<Star> result;
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    p.localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
-        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, subdivisions))
+             && p.checkedIndices.count(i) == 0) {
             // TODO: store longs --Mark
             std::vector<int> starIndices; //indices of the current star
             p.maxIntensity = 0;
@@ -405,7 +417,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.isValid = true;
 
 
-            IWCoGHelper(p, i, image, imageWidth, imageHeight, starIndices);
+            IWCoGHelper(p, i, image, imageWidth, imageHeight, divisions, starIndices);
 
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
