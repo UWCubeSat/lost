@@ -43,6 +43,24 @@ long SerializeLengthKVectorIndex(long numBins) {
 // rather, the correct way is to use a template and just use the ++ and * operators willy-nilly,
 // which will throw an error if the operators are not implemented.
 
+
+void kVectorBinStatistics(const std::vector<int32_t> &kVector) {
+    if(kVector.size() != 0) {
+        int sum = 0;
+        int squareSum = 0;
+        for(ulong i = 1; i < kVector.size(); i++) {
+            int num = kVector[i] - kVector[i - 1];
+            sum += num;
+            squareSum += num * num;
+        }
+        // Could not resolve wording - This means if we considered each bin to hold the stars that
+        // satisfied that specific bin (Look at "thisBin" for SerializeKVectorIndex)
+        // the following average and standard dev are for that system
+        std::cout << "Average Stars per Highest Bin: " << sum / kVector.size() << " +/- " 
+                << squareSum / kVector.size() - (sum / kVector.size()) * (sum / kVector.size())<< std::endl;
+    }
+}
+
 /**
  * Serialize a KVector index to disk.
  * Use SerializeLengthKVectorIndex to determine how long the buffer should be.
@@ -85,6 +103,7 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
         assert(bin >= lastBinVal);
         lastBinVal = bin;
     }
+    kVectorBinStatistics(kVector);
 
     unsigned char *bufferStart = buffer;
     // metadata fields

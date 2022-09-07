@@ -247,9 +247,9 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
     if (buffer == NULL) {
         std::cerr << "No room for another database." << std::endl;
     }
+    std::cout << "Generated KVector with pair distances ranging from " << minDistance << " to " << maxDistance << std::endl;
     SerializePairDistanceKVector(pairs, minDistance, maxDistance, numBins, buffer);
-
-    // TODO: also parse it and print out some stats before returning
+    
 }
 
 /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
