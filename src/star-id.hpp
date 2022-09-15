@@ -65,8 +65,9 @@ private:
     const int numPattBins = 25;
     const float pattMaxError = 0.005;
 
-    // const int catalogLength = 11841082;
-    const int catalogLength = 8979154;
+    // const int catalogLength = 11841082; // default database
+    // const int catalogLength = 8979154; // tetra3 fov=12, stable
+    const int catalogLength = 8978892;
 
     const long long MAGIC_RAND = 2654435761;
 
