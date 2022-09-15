@@ -101,8 +101,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // Right now, we're reading the entire Pattern Catalog and Star Table into
     // memory TetraDatabase db; db.fillStarTable(); db.fillPattCatalog();
 
-    std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
-    std::ifstream starTableFile("starTable.bin", std::ios_base::binary);
+    std::ifstream pattCatFile("pattCatGen12Stable.bin", std::ios_base::binary);
+    std::ifstream starTableFile("starTableGen12Stable.bin", std::ios_base::binary);
 
     if (!pattCatFile.is_open()) {
         std::cout << "PROBLEM, FAILED TO OPEN PATT CATALOG" << std::endl;
@@ -252,11 +252,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
         for (std::vector<int> matchRow : matches) {
             // TESTING: test
-            // std::cout << "matchRow" << std::endl;
-            // for (int x : matchRow) {
-            //     std::cout << x << ", ";
-            // }
-            // std::cout << std::endl;
+            std::cout << "matchRow" << std::endl;
+            for (int x : matchRow) {
+                std::cout << x << ", ";
+            }
+            std::cout << std::endl;
 
             std::vector<int> catStarIDs;
             std::vector<Vec3> catStarVecs;

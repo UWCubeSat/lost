@@ -65,8 +65,8 @@ private:
     const int numPattBins = 25;
     const float pattMaxError = 0.005;
 
-    const int catalogLength = 11841082;
-    // const int catalogLength = 8979154;
+    // const int catalogLength = 11841082;
+    const int catalogLength = 8979154;
 
     const long long MAGIC_RAND = 2654435761;
 
