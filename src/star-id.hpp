@@ -2,6 +2,7 @@
 #define STAR_ID_H
 
 #include <vector>
+#include <fstream>
 
 #include "centroiders.hpp"
 #include "star-utils.hpp"
@@ -64,12 +65,14 @@ private:
     const int numPattBins = 25;
     const float pattMaxError = 0.005;
 
-    const int catalogLength = 11841082;
+    // const int catalogLength = 11841082;
+    const int catalogLength = 8979154;
 
     const long long MAGIC_RAND = 2654435761;
 
     int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const;
-    std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const;
+    // std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const;
+    std::vector<std::vector<int>> GetAtIndex(int index, std::ifstream &pattCatFile) const;
 };
 
 /// A star-id algorithm that returns random results. For debugging.

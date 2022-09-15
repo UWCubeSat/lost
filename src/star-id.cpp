@@ -6,7 +6,7 @@
 
 // added for Tetra
 #include <set>
-#include <fstream> // probably delete later, this is just for bad Tetra db loading
+// #include <fstream> // probably delete later, this is just for bad Tetra db loading
 // Or maybe not, we'll probably have to use fseek anyways
 
 #include "star-id.hpp"
@@ -20,6 +20,7 @@ Tetra TODOs:
 1. Make generator function to go through multiple combinations of centroids
 (_generate_patterns_from_centroids)
     Then, fix returns and continues as needed
+
 2. Database generation for Pattern Catalog
 3. Tetra-specific catalog (i.e. star table?)
 4. Documentation for math functions, esp. binning / hashing
@@ -36,15 +37,34 @@ int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int ma
     return (index * MAGIC_RAND) % maxIndex;
 }
 
-std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, TetraDatabase db) const{
+// std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, TetraDatabase db) const{
+std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, std::ifstream &pattCatFile) const{
     // Returns a list of rows from the Pattern Catalog
     // Does quadratic probing
 
     int maxInd = catalogLength;
+    // std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
+
     std::vector<std::vector<int>> res;
     for (int c = 0;; c++){
         int i = (index + c * c) % maxInd;
-        std::vector<int> tableRow = db.pattCatalog[i];
+
+        // std::vector<int> tableRow = db.pattCatalog[i];
+        std::vector<int> tableRow;
+
+        short* row = new short[4];
+        pattCatFile.seekg(sizeof(short) * 4 * i, std::ios::beg);
+        pattCatFile.read((char *)row, sizeof(short) * 4);
+        std::cout << "CHECK " << i << std::endl;
+        for(int check = 0; check < 4; check++){
+            std::cout << row[check] << ", ";
+        }
+        std::cout << std::endl;
+
+        for(int j = 0; j < 4; j++){
+            tableRow.push_back(int(row[j]));
+        }
+
         if (std::all_of(tableRow.begin(), tableRow.end(),
                         [](int ele) { return ele == 0; })){
             return res;
@@ -68,14 +88,40 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
                                          const Catalog &catalog,
                                          const Camera &camera) const {
+
+
+
     // format: (centroidIndex, catalogIndex)
     StarIdentifiers result;
+    std::cout << "TETRA" << std::endl;
 
     // TODO: definitely change later
     // Right now, we're reading the entire Pattern Catalog and Star Table into memory
-    TetraDatabase db;
-    db.fillStarTable();
-    db.fillPattCatalog();
+    // TetraDatabase db;
+    // db.fillStarTable();
+    // db.fillPattCatalog();
+
+    std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
+    std::ifstream starTableFile("starTable.bin", std::ios_base::binary);
+
+    if(!pattCatFile.is_open()){
+        std::cout << "PROBLEM, FAILED TO OPEN PATT CATALOG" << std::endl;
+    }
+    if(!starTableFile.is_open()){
+        std::cout << "PROBLEM, FAILED TO OPEN STAR TABLE" << std::endl;
+    }
+
+    // TODO: remove later
+    // std::cout << "CHECK START START" << std::endl;
+    // short *pattRow = new short[4];
+    // int pattRowNum = 0;
+    // pattCatFile.seekg(sizeof(short) * 4 * pattRowNum, std::ios::beg);
+    // pattCatFile.read((char *)pattRow, sizeof(short) * 4);
+
+    // for (int i = 0; i < 4; i++) {
+    //     std::cout << pattRow[i] << ", ";
+    // }
+    // std::cout << std::endl;
 
     std::vector<Star> copyStars(stars);
     // Need to sort centroids by brightness, high to low
@@ -110,7 +156,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         // CameraToSpatial produces different vector but also works
         Vec3 spatialVec = camera.CameraToSpatial(star.position);
         pattStarVecs.push_back(spatialVec);
-        std::cout << spatialVec << std::endl;
     }
 
     // Compute angle between each pair of stars chosen to be in the Pattern
@@ -132,7 +177,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     if(!angleAcceptable){
         std::cerr << "Error: some angle is greater than maxFov" << std::endl;
         return result;
-        // TODO: probably continue instead of returning, change after
+        // TODO: probably continue (try again) instead of returning, change after
         // implementing generator function
     }
 
@@ -187,7 +232,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     for(std::vector<int> code : finalCodes){
 
         int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
-        std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, db);
+        std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, pattCatFile);
 
         if((int)matches.size() == 0){
             // std::cout << "Alert: matches size = 0, continuing" << std::endl;
@@ -195,18 +240,34 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         }
 
         for(std::vector<int> matchRow : matches){
+
+            // TESTING: test
+            std::cout << "matchRow" << std::endl;
+            for(int x : matchRow){
+                std::cout << x << ", ";
+            }
+            std::cout << std::endl;
+
             std::vector<int> catStarIDs;
             std::vector<Vec3> catStarVecs;
             for(int star : matchRow){
                 // std::cout << "Match star: " << star << std::endl;
-                Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
-                            db.starTable[star][4]);
-                catStarIDs.push_back(db.starTable[star][6]);
+                float* row = new float[7];
+                starTableFile.seekg(sizeof(float) * 7 * star, std::ios::beg);
+                starTableFile.read((char *)row, sizeof(float) * 7);
+
+                Vec3 catVec(row[2], row[3], row[4]);
+
+                // Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
+                //             db.starTable[star][4]);
+                // catStarIDs.push_back(db.starTable[star][6]);
+                catStarIDs.push_back(row[6]);
                 catStarVecs.push_back(catVec);
             }
 
             // Make the Catalog Pattern
             std::vector<float> catEdgeLengths;
+            // Combination
             for (int i = 0; i < (int)catStarVecs.size(); i++) {
                 for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
                     Vec3 diff = catStarVecs[i] - catStarVecs[j];
@@ -280,6 +341,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 std::cout << "Centroid Index: " << centroidIndex
                           << ", Result StarID: " << resultStarID << std::endl;
 
+                // TODO later: take out this function, since once we actually use the given catalog,
+                // we can just give the actual index
                 int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
 
                 // const CatalogStar *catStar = FindNamedStar(catalog, resultStarID);
@@ -291,8 +354,16 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             // NOTE: StarIdentifier wants the catalog INDEX, not the real star ID
 
             std::cout << "SUCCESS: stars successfully matched" << std::endl;
+            pattCatFile.close();
+            starTableFile.close();
             return result;
         }
+
+        std::cout << "FAIL" << std::endl;
+        pattCatFile.close();
+        starTableFile.close();
+        return result;
+
     }
 
     return result;
