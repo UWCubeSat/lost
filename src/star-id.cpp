@@ -34,6 +34,8 @@ int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int ma
     for(int i = 0; i < (int)key.size(); i++){
         index += key[i] * std::pow(binFactor, i);
     }
+    // BUG: key is 7, 10, 10, 14, 15 first time
+    std::cout << "index: " << index << std::endl;
     return (index * MAGIC_RAND) % maxIndex;
 }
 
@@ -55,11 +57,12 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, std::i
         short* row = new short[4];
         pattCatFile.seekg(sizeof(short) * 4 * i, std::ios::beg);
         pattCatFile.read((char *)row, sizeof(short) * 4);
-        std::cout << "CHECK " << i << std::endl;
-        for(int check = 0; check < 4; check++){
-            std::cout << row[check] << ", ";
-        }
-        std::cout << std::endl;
+
+        // std::cout << "CHECK " << i << std::endl;
+        // for(int check = 0; check < 4; check++){
+        //     std::cout << row[check] << ", ";
+        // }
+        // std::cout << std::endl;
 
         for(int j = 0; j < 4; j++){
             tableRow.push_back(int(row[j]));
@@ -230,9 +233,27 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     }
 
     for(std::vector<int> code : finalCodes){
+        std::cout << "HASH CODE" << std::endl;
+        for (int cEle : code) {
+            std::cout << cEle << ", ";
+        }
+        std::cout << std::endl;
+    }
+
+    for(std::vector<int> code : finalCodes){
+
+        std::cout << "HASH CODE" << std::endl;
+        for(int cEle : code){
+            std::cout << cEle << ", ";
+        }
+        std::cout << std::endl;
+        // correct here- not correct anymore
 
         int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
+        std::cout << "hashIndex: " << catalogLength << ", " << hashIndex << std::endl; // ok
+        // hashIndex wrong
         std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, pattCatFile);
+
 
         if((int)matches.size() == 0){
             // std::cout << "Alert: matches size = 0, continuing" << std::endl;
@@ -257,11 +278,12 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 starTableFile.read((char *)row, sizeof(float) * 7);
 
                 Vec3 catVec(row[2], row[3], row[4]);
+                catStarIDs.push_back(row[6]);
 
                 // Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
                 //             db.starTable[star][4]);
                 // catStarIDs.push_back(db.starTable[star][6]);
-                catStarIDs.push_back(row[6]);
+
                 catStarVecs.push_back(catVec);
             }
 
