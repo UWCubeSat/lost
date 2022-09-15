@@ -1,17 +1,18 @@
-#include <stdlib.h>
-#include <math.h>
 #include <assert.h>
-#include <vector>
+#include <math.h>
+#include <stdlib.h>
+
 #include <algorithm>
+#include <vector>
 
 // added for Tetra
+#include <fstream>  // probably delete later, this is just for bad Tetra db loading
 #include <set>
-// #include <fstream> // probably delete later, this is just for bad Tetra db loading
 // Or maybe not, we'll probably have to use fseek anyways
 
-#include "star-id.hpp"
-#include "databases.hpp"
 #include "attitude-utils.hpp"
+#include "databases.hpp"
+#include "star-id.hpp"
 
 namespace lost {
 
@@ -20,58 +21,37 @@ Tetra TODOs:
 1. Make generator function to go through multiple combinations of centroids
 (_generate_patterns_from_centroids)
     Then, fix returns and continues as needed
-
 2. Database generation for Pattern Catalog
 3. Tetra-specific catalog (i.e. star table?)
 4. Documentation for math functions, esp. binning / hashing
 5. Modularize some of the functions - patternEdgeRatio, patternRadii creation
 */
 
-int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const{
+int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
+                                     int maxIndex) const {
     // key = hashCode
     // Outputs a row of the Pattern Catalog
     long index = 0;
-    for(int i = 0; i < (int)key.size(); i++){
+    for (int i = 0; i < (int)key.size(); i++) {
         index += key[i] * std::pow(binFactor, i);
     }
-    // BUG: key is 7, 10, 10, 14, 15 first time
-    std::cout << "index: " << index << std::endl;
     return (index * MAGIC_RAND) % maxIndex;
 }
 
-// std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, TetraDatabase db) const{
-std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, std::ifstream &pattCatFile) const{
+std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
+    int index, TetraDatabase db) const {
     // Returns a list of rows from the Pattern Catalog
     // Does quadratic probing
 
     int maxInd = catalogLength;
-    // std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
-
     std::vector<std::vector<int>> res;
-    for (int c = 0;; c++){
+    for (int c = 0;; c++) {
         int i = (index + c * c) % maxInd;
-
-        // std::vector<int> tableRow = db.pattCatalog[i];
-        std::vector<int> tableRow;
-
-        short* row = new short[4];
-        pattCatFile.seekg(sizeof(short) * 4 * i, std::ios::beg);
-        pattCatFile.read((char *)row, sizeof(short) * 4);
-
-        // std::cout << "CHECK " << i << std::endl;
-        // for(int check = 0; check < 4; check++){
-        //     std::cout << row[check] << ", ";
-        // }
-        // std::cout << std::endl;
-
-        for(int j = 0; j < 4; j++){
-            tableRow.push_back(int(row[j]));
-        }
-
+        std::vector<int> tableRow = db.pattCatalog[i];
         if (std::all_of(tableRow.begin(), tableRow.end(),
-                        [](int ele) { return ele == 0; })){
+                        [](int ele) { return ele == 0; })) {
             return res;
-        }else{
+        } else {
             res.push_back(tableRow);
         }
     }
@@ -91,40 +71,15 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
                                          const Catalog &catalog,
                                          const Camera &camera) const {
-
-
-
     // format: (centroidIndex, catalogIndex)
     StarIdentifiers result;
-    std::cout << "TETRA" << std::endl;
 
     // TODO: definitely change later
-    // Right now, we're reading the entire Pattern Catalog and Star Table into memory
-    // TetraDatabase db;
-    // db.fillStarTable();
-    // db.fillPattCatalog();
-
-    std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
-    std::ifstream starTableFile("starTable.bin", std::ios_base::binary);
-
-    if(!pattCatFile.is_open()){
-        std::cout << "PROBLEM, FAILED TO OPEN PATT CATALOG" << std::endl;
-    }
-    if(!starTableFile.is_open()){
-        std::cout << "PROBLEM, FAILED TO OPEN STAR TABLE" << std::endl;
-    }
-
-    // TODO: remove later
-    // std::cout << "CHECK START START" << std::endl;
-    // short *pattRow = new short[4];
-    // int pattRowNum = 0;
-    // pattCatFile.seekg(sizeof(short) * 4 * pattRowNum, std::ios::beg);
-    // pattCatFile.read((char *)pattRow, sizeof(short) * 4);
-
-    // for (int i = 0; i < 4; i++) {
-    //     std::cout << pattRow[i] << ", ";
-    // }
-    // std::cout << std::endl;
+    // Right now, we're reading the entire Pattern Catalog and Star Table into
+    // memory
+    TetraDatabase db;
+    db.fillStarTable();
+    db.fillPattCatalog();
 
     std::vector<Star> copyStars(stars);
     // Need to sort centroids by brightness, high to low
@@ -132,79 +87,82 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
-
     // TODO: implement the generator function
     // Right now I'm just do a simplified way, taking the first 4 centroids
 
-    copyStars = std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
+    copyStars =
+        std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
 
     // Get indices of chosen centroids
     // TODO: better way of doing this?- maybe
-    // Above, instead of copyStars, produce array of centroid indices sorted by centroid brightness
+    // Above, instead of copyStars, produce array of centroid indices sorted by
+    // centroid brightness
     std::vector<int> centroidIndices;
-    for(const Star &star : copyStars){
+    for (const Star &star : copyStars) {
         auto itr =
             std::find_if(stars.begin(), stars.end(), [&](const Star &st) {
                 return st.position.x == star.position.x &&
                        st.position.y == star.position.y;
             });
-            int ind = std::distance(stars.begin(), itr);
-            centroidIndices.push_back(ind);
+        int ind = std::distance(stars.begin(), itr);
+        centroidIndices.push_back(ind);
     }
 
-    // Compute Vec3 spatial vectors (in celestial sphere) for each star chosen to be in the Pattern
-    std::vector<Vec3> pattStarVecs; // size = numPattStars
-    for(const Star &star : copyStars){
-        // Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
-        // CameraToSpatial produces different vector but also works
-        Vec3 spatialVec = camera.CameraToSpatial(star.position);
+    // Compute Vec3 spatial vectors (in celestial sphere) for each star chosen
+    // to be in the Pattern
+    std::vector<Vec3> pattStarVecs;  // size = numPattStars
+    for (const Star &star : copyStars) {
+        Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
         pattStarVecs.push_back(spatialVec);
+        // std::cout << spatialVec << std::endl;
     }
 
     // Compute angle between each pair of stars chosen to be in the Pattern
-    // If any angle should > maxFov, then we should throw away this Pattern choice,
-    // since our database will not contain it
+    // If any angle should > maxFov, then we should throw away this Pattern
+    // choice, since our database will not contain it
     bool angleAcceptable = true;
-    for(int i = 0; i < (int)pattStarVecs.size(); i++){
+    for (int i = 0; i < (int)pattStarVecs.size(); i++) {
         Vec3 u = pattStarVecs[i];
-        for(int j = i+1; j < (int)pattStarVecs.size(); j++){
+        for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
             Vec3 v = pattStarVecs[j];
-            float angle = Angle(u, v); // in radians
-            if(RadToDeg(angle) > maxFov){
+            float angle = Angle(u, v);  // in radians
+            if (RadToDeg(angle) > maxFov) {
                 angleAcceptable = false;
             }
         }
     }
 
-
-    if(!angleAcceptable){
+    if (!angleAcceptable) {
         std::cerr << "Error: some angle is greater than maxFov" << std::endl;
         return result;
-        // TODO: probably continue (try again) instead of returning, change after
+        // TODO: probably continue instead of returning, change after
         // implementing generator function
     }
 
     // Calculate all edge lengths in order to find value of largest edge
-    // Since each Pattern consists of size=numPattStars stars, there will be C(numPattStars, 2) edges
-    // For default of 4-star Patterns, calculate C(4, 2) = 6 edge lengths
-    std::vector<float> pattEdgeLengths; // default size = 6
-    for(int i = 0; i < (int)pattStarVecs.size(); i++){
-        for(int j = i+1; j < (int)pattStarVecs.size(); j++){
+    // Since each Pattern consists of size=numPattStars stars, there will be
+    // C(numPattStars, 2) edges For default of 4-star Patterns, calculate C(4,
+    // 2) = 6 edge lengths
+    std::vector<float> pattEdgeLengths;  // default size = 6
+    for (int i = 0; i < (int)pattStarVecs.size(); i++) {
+        for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
             Vec3 diff = pattStarVecs[i] - pattStarVecs[j];
             pattEdgeLengths.push_back(diff.Magnitude());
         }
     }
     std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
-    float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1]; // largest edge value
+    float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size()) -
+                                            1];  // largest edge value
 
     // Now divide each edge length by pattLargestEdge for edge ratios
-    std::vector<float> pattEdgeRatios; // size() = C(numPattStars, 2) - 1
-    for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) { // size()-1, since we ignore the largest edge
+    std::vector<float> pattEdgeRatios;  // size() = C(numPattStars, 2) - 1
+    for (int i = 0; i < (int)pattEdgeLengths.size() - 1;
+         i++) {  // size()-1, since we ignore the largest edge
         pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
     }
 
     std::vector<std::vector<int>> hcSpace;
-    for(float edgeRatio : pattEdgeRatios){
+    for (float edgeRatio : pattEdgeRatios) {
         std::vector<int> range;
         int lo = int((edgeRatio - pattMaxError) * numPattBins);
         lo = std::max(lo, 0);
@@ -233,63 +191,35 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     }
 
     for(std::vector<int> code : finalCodes){
-        std::cout << "HASH CODE" << std::endl;
-        for (int cEle : code) {
-            std::cout << cEle << ", ";
+        std::cout << "code" << std::endl;
+        for(auto x : code){
+            std::cout << x << ", ";
         }
         std::cout << std::endl;
     }
 
-    for(std::vector<int> code : finalCodes){
-
-        std::cout << "HASH CODE" << std::endl;
-        for(int cEle : code){
-            std::cout << cEle << ", ";
-        }
-        std::cout << std::endl;
-        // correct here- not correct anymore
-
+    for (std::vector<int> code : finalCodes) {
         int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
-        std::cout << "hashIndex: " << catalogLength << ", " << hashIndex << std::endl; // ok
-        // hashIndex wrong
-        std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, pattCatFile);
+        std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, db);
 
-
-        if((int)matches.size() == 0){
+        if ((int)matches.size() == 0) {
             // std::cout << "Alert: matches size = 0, continuing" << std::endl;
             continue;
         }
 
-        for(std::vector<int> matchRow : matches){
-
-            // TESTING: test
-            std::cout << "matchRow" << std::endl;
-            for(int x : matchRow){
-                std::cout << x << ", ";
-            }
-            std::cout << std::endl;
-
+        for (std::vector<int> matchRow : matches) {
             std::vector<int> catStarIDs;
             std::vector<Vec3> catStarVecs;
-            for(int star : matchRow){
+            for (int star : matchRow) {
                 // std::cout << "Match star: " << star << std::endl;
-                float* row = new float[7];
-                starTableFile.seekg(sizeof(float) * 7 * star, std::ios::beg);
-                starTableFile.read((char *)row, sizeof(float) * 7);
-
-                Vec3 catVec(row[2], row[3], row[4]);
-                catStarIDs.push_back(row[6]);
-
-                // Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
-                //             db.starTable[star][4]);
-                // catStarIDs.push_back(db.starTable[star][6]);
-
+                Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
+                            db.starTable[star][4]);
+                catStarIDs.push_back(db.starTable[star][6]);
                 catStarVecs.push_back(catVec);
             }
 
             // Make the Catalog Pattern
             std::vector<float> catEdgeLengths;
-            // Combination
             for (int i = 0; i < (int)catStarVecs.size(); i++) {
                 for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
                     Vec3 diff = catStarVecs[i] - catStarVecs[j];
@@ -321,14 +251,14 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             }
 
             Vec3 pattCentroid(0, 0, 0);
-            for(Vec3 pattStarVec : pattStarVecs){
+            for (Vec3 pattStarVec : pattStarVecs) {
                 pattCentroid = pattCentroid + pattStarVec;
             }
             pattCentroid = pattCentroid * (1.0 / (int)pattStarVecs.size());
 
             // TODO: what is this math
             std::vector<float> pattRadii;
-            for(Vec3 pattStarVec : pattStarVecs){
+            for (Vec3 pattStarVec : pattStarVecs) {
                 pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
             }
 
@@ -340,13 +270,13 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
             // TODO: modularize this, creation of radii vector- maybe
             Vec3 catCentroid(0, 0, 0);
-            for(Vec3 catStarVec : catStarVecs){
+            for (Vec3 catStarVec : catStarVecs) {
                 catCentroid = catCentroid + catStarVec;
             }
             catCentroid = catCentroid * (1.0 / (int)catStarVecs.size());
 
             std::vector<float> catRadii;
-            for(Vec3 catStarVec : catStarVecs){
+            for (Vec3 catStarVec : catStarVecs) {
                 catRadii.push_back((catStarVec - catCentroid).Magnitude());
             }
 
@@ -355,44 +285,34 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             std::vector<Vec3> catSortedVecs =
                 ArgsortVector<Vec3>(catStarVecs, catRadii);
 
-            for(int i = 0; i < numPattStars; i++){
-
+            for (int i = 0; i < numPattStars; i++) {
                 int centroidIndex = sortedCentroidIndices[i];
                 int resultStarID = catSortedStarIDs[i];
 
                 std::cout << "Centroid Index: " << centroidIndex
                           << ", Result StarID: " << resultStarID << std::endl;
 
-                // TODO later: take out this function, since once we actually use the given catalog,
-                // we can just give the actual index
                 int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
 
-                // const CatalogStar *catStar = FindNamedStar(catalog, resultStarID);
-                // std::cout << "catstar: " << catalogIndex << std::endl;
+                // const CatalogStar *catStar = FindNamedStar(catalog,
+                // resultStarID); std::cout << "catstar: " << catalogIndex <<
+                // std::endl;
 
                 result.push_back(StarIdentifier(centroidIndex, catalogIndex));
             }
 
-            // NOTE: StarIdentifier wants the catalog INDEX, not the real star ID
+            // NOTE: StarIdentifier wants the catalog INDEX, not the real star
+            // ID
 
             std::cout << "SUCCESS: stars successfully matched" << std::endl;
-            pattCatFile.close();
-            starTableFile.close();
             return result;
         }
-
-        std::cout << "FAIL" << std::endl;
-        pattCatFile.close();
-        starTableFile.close();
-        return result;
-
     }
 
     return result;
-
 }
 
-void TetraDatabase::fillStarTable(){
+void TetraDatabase::fillStarTable() {
     std::ifstream file;
     file.open("amendStarTable.txt");
 
@@ -400,14 +320,14 @@ void TetraDatabase::fillStarTable(){
     float num;
     int col = 0;
     std::vector<float> tableRow;
-    while(file >> num){
+    while (file >> num) {
         // std::cout << num << std::endl;
         if (col == 0) {
             tableRow.clear();
         }
         tableRow.push_back(num);
         col++;
-        if(col == 7){
+        if (col == 7) {
             col = 0;
             starTable.push_back(tableRow);
         }
@@ -415,7 +335,7 @@ void TetraDatabase::fillStarTable(){
     file.close();
 }
 
-void TetraDatabase::fillPattCatalog(){
+void TetraDatabase::fillPattCatalog() {
     std::ifstream file;
     file.open("pattCatalog.txt");
 
@@ -424,12 +344,12 @@ void TetraDatabase::fillPattCatalog(){
     int col = 0;
     std::vector<int> tableRow;
     while (file >> num) {
-        if(col == 0){
+        if (col == 0) {
             tableRow.clear();
         }
         tableRow.push_back(num);
         col++;
-        if (col == 4) { // hardcoded numPattStars
+        if (col == 4) {  // hardcoded numPattStars
             col = 0;
             pattCatalog.push_back(tableRow);
         }
@@ -437,26 +357,28 @@ void TetraDatabase::fillPattCatalog(){
     file.close();
 }
 
-
-StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *, const Stars &stars, const Catalog &catalog, const Camera &) const {
-
+StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *,
+                                         const Stars &stars,
+                                         const Catalog &catalog,
+                                         const Camera &) const {
     StarIdentifiers result;
 
     unsigned int randomSeed = 123456;
     for (int i = 0; i < (int)stars.size(); i++) {
-        result.push_back(StarIdentifier(i, rand_r(&randomSeed) % catalog.size()));
+        result.push_back(
+            StarIdentifier(i, rand_r(&randomSeed) % catalog.size()));
     }
 
     return result;
 }
 
 StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
-
+    const unsigned char *database, const Stars &stars, const Catalog &catalog,
+    const Camera &camera) const {
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
-    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(
+        PairDistanceKVectorDatabase::kMagicValue);
     if (databaseBuffer == NULL) {
         return identified;
     }
@@ -469,24 +391,33 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
             if (i != j) {
                 // TODO: find a faster way to do this:
                 std::vector<bool> votedInPair(catalog.size(), false);
-                Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
+                Vec3 jSpatial =
+                    camera.CameraToSpatial(stars[j].position).Normalize();
                 float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
-                //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
+                // give a greater range for min-max Query for bigger radius
+                // (GreatCircleDistance)
                 float lowerBoundRange = greatCircleDistance - tolerance;
                 float upperBoundRange = greatCircleDistance + tolerance;
                 const int16_t *upperBoundSearch;
-                const int16_t *lowerBoundSearch = vectorDatabase.FindPairsLiberal(
-                    lowerBoundRange, upperBoundRange, &upperBoundSearch);
-                //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
-                for (const int16_t *k = lowerBoundSearch; k != upperBoundSearch; k++) {
+                const int16_t *lowerBoundSearch =
+                    vectorDatabase.FindPairsLiberal(
+                        lowerBoundRange, upperBoundRange, &upperBoundSearch);
+                // loop from lowerBoundSearch till numReturnedPairs, add one
+                // vote to each star in the pairs in the datastructure
+                for (const int16_t *k = lowerBoundSearch; k != upperBoundSearch;
+                     k++) {
                     if ((k - lowerBoundSearch) % 2 == 0) {
-                        float actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
-                        assert(actualAngle <= greatCircleDistance + tolerance * 2);
-                        assert(actualAngle >= greatCircleDistance - tolerance * 2);
+                        float actualAngle = AngleUnit(
+                            catalog[*k].spatial, catalog[*(k + 1)].spatial);
+                        assert(actualAngle <=
+                               greatCircleDistance + tolerance * 2);
+                        assert(actualAngle >=
+                               greatCircleDistance - tolerance * 2);
                     }
                     if (!votedInPair[*k] || true) {
                         // if (i == 542 && *k == 9085) {
-                        //     printf("INC, distance %f from query %f to %f\n", greatCircleDistance,
+                        //     printf("INC, distance %f from query %f to %f\n",
+                        //     greatCircleDistance,
                         //         lowerBoundRange, upperBoundRange);
                         // }
                         votes[*k]++;
@@ -512,26 +443,27 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
         //     puts("Debug star.");
         //     for (int i = 0; i < (int)votes.size(); i++) {
         //         if (votes[i] > maxVotes/2) {
-        //             printf("Star %4d received %d votes.\n", catalog[i].name, votes[i]);
+        //             printf("Star %4d received %d votes.\n", catalog[i].name,
+        //             votes[i]);
         //         }
         //     }
         //     printf("Debug star: Actually voted for %d with %d votes\n",
         //            catalog[indexOfMax].name, maxVotes);
         // }
         // printf("Max votes: %d\n", maxVotes);
-        //starIndex = i, catalog index = indexOfMax
+        // starIndex = i, catalog index = indexOfMax
         StarIdentifier newStar(i, indexOfMax);
         // Set identified[i] to value of catalog index of star w most votesr
         identified.push_back(newStar);
     }
-    //optimizations? N^2
-    //https://www.researchgate.net/publication/3007679_Geometric_voting_algorithm_for_star_trackers
+    // optimizations? N^2
+    // https://www.researchgate.net/publication/3007679_Geometric_voting_algorithm_for_star_trackers
     //
-    // Do we have a metric for localization uncertainty? Star brighntess?
-    //loop i from 1 through n
+    //  Do we have a metric for localization uncertainty? Star brighntess?
+    // loop i from 1 through n
     std::vector<int16_t> verificationVotes(identified.size(), 0);
     for (int i = 0; i < (int)identified.size(); i++) {
-        //loop j from i+1 through n
+        // loop j from i+1 through n
         for (int j = i + 1; j < (int)identified.size(); j++) {
             // Calculate distance between catalog stars
             CatalogStar first = catalog[identified[i].catalogIndex];
@@ -540,12 +472,14 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
 
             Star firstIdentified = stars[identified[i].starIndex];
             Star secondIdentified = stars[identified[j].starIndex];
-            Vec3 firstSpatial = camera.CameraToSpatial(firstIdentified.position);
-            Vec3 secondSpatial = camera.CameraToSpatial(secondIdentified.position);
+            Vec3 firstSpatial =
+                camera.CameraToSpatial(firstIdentified.position);
+            Vec3 secondSpatial =
+                camera.CameraToSpatial(secondIdentified.position);
             float sDist = Angle(firstSpatial, secondSpatial);
 
-            //if sDist is in the range of (distance between stars in the image +- R)
-            //add a vote for the match
+            // if sDist is in the range of (distance between stars in the image
+            // +- R) add a vote for the match
             if (abs(sDist - cDist) < tolerance) {
                 verificationVotes[i]++;
                 verificationVotes[j]++;
@@ -577,38 +511,42 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
 
 /*
  * Strategies:
- * 1. For each star, enumerate all stars which have the same combination of distances to some
- *  other stars, getting down to a hopefully small (<10) list of candidates for each star, then
- *  do a quad-nested loop to correlate them.
- * 2. Loop through all possible stars in the catalog for star i. Then look at edge ij, using
- * this to select possible j-th stars. If ever there is not a possible j-th star, continue the
- * i-loop. When a possible ij combination is found, loop through k stars according to ik. IF
- * none are found, continue the outer i loop. If some are found, check jk for each one. For each possible ijk triangle,
+ * 1. For each star, enumerate all stars which have the same combination of
+ * distances to some other stars, getting down to a hopefully small (<10) list
+ * of candidates for each star, then do a quad-nested loop to correlate them.
+ * 2. Loop through all possible stars in the catalog for star i. Then look at
+ * edge ij, using this to select possible j-th stars. If ever there is not a
+ * possible j-th star, continue the i-loop. When a possible ij combination is
+ * found, loop through k stars according to ik. IF none are found, continue the
+ * outer i loop. If some are found, check jk for each one. For each possible ijk
+ * triangle,
  */
 
 /**
- * Given a list of star pairs, finds all those pairs which involve a certain star.
- * Here "involve" means that one of the two stars in the pair is the given star.
+ * Given a list of star pairs, finds all those pairs which involve a certain
+ * star. Here "involve" means that one of the two stars in the pair is the given
+ * star.
  */
 class PairDistanceInvolvingIterator {
-public:
+   public:
     /**
      * Create a "past-the-end" iterator.
-     * If another PairDistanceInvolvingIterator is equal to this, then it is done iterating.
+     * If another PairDistanceInvolvingIterator is equal to this, then it is
+     * done iterating.
      */
-    PairDistanceInvolvingIterator()
-        : pairs(NULL), end(NULL) { };
+    PairDistanceInvolvingIterator() : pairs(NULL), end(NULL){};
 
     /**
      * The main constructor.
      * @param pairs Start of an array of star pairs
      * @param end "past-the-end" pointer for \p pairs
-     * @param The catalog index that we want to be involved in the outputted pairs.
+     * @param The catalog index that we want to be involved in the outputted
+     * pairs.
      */
-    PairDistanceInvolvingIterator(const int16_t *pairs, const int16_t *end, int16_t involving)
+    PairDistanceInvolvingIterator(const int16_t *pairs, const int16_t *end,
+                                  int16_t involving)
         : pairs(pairs), end(end), involving(involving) {
-
-        assert((end-pairs)%2 == 0);
+        assert((end - pairs) % 2 == 0);
         ForwardUntilInvolving();
     };
 
@@ -627,14 +565,11 @@ public:
     }
 
     /// Access the curent pair.
-    int16_t operator*() const {
-        return curValue;
-    }
+    int16_t operator*() const { return curValue; }
 
-    /// Whether the iterator is currently on a value. (false if iteration is complete)
-    bool HasValue() {
-        return pairs != end;
-    }
+    /// Whether the iterator is currently on a value. (false if iteration is
+    /// complete)
+    bool HasValue() { return pairs != end; }
 
     // bool operator==(const PairDistanceInvolvingIterator &other) const {
     //     return ()other.pairs == pairs;
@@ -643,7 +578,7 @@ public:
     // bool operator!=(const PairDistanceInvolvingIterator &other) const {
     //     return !(*this == other);
     // }
-private:
+   private:
     const int16_t *pairs;
     const int16_t *end;
     int16_t involving;
@@ -665,19 +600,22 @@ private:
     }
 };
 
-/// After some stars have been identified, try to idenify the rest using a faster algorithm.
+/// After some stars have been identified, try to idenify the rest using a
+/// faster algorithm.
 void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
-                                   const Stars &stars,
-                                   const Catalog &catalog,
+                                   const Stars &stars, const Catalog &catalog,
                                    const PairDistanceKVectorDatabase &db,
-                                   const Camera &camera,
-                                   float tolerance) {
-
+                                   const Camera &camera, float tolerance) {
     assert(identifiers->size() == 4);
-    StarIdentifiers pyramidIdentifiers = *identifiers; // copy with only the pyramid's high confidence stars
+    StarIdentifiers pyramidIdentifiers =
+        *identifiers;  // copy with only the pyramid's high confidence stars
     Vec3 pyramidActualSpatials[4];
     for (int l = 0; l < 4; l++) {
-        pyramidActualSpatials[l] = camera.CameraToSpatial(stars[pyramidIdentifiers[l].starIndex].position).Normalize();
+        pyramidActualSpatials[l] =
+            camera
+                .CameraToSpatial(
+                    stars[pyramidIdentifiers[l].starIndex].position)
+                .Normalize();
     }
 
     for (int p = 0; p < (int)stars.size(); p++) {
@@ -696,18 +634,24 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
         Vec3 pSpatial = camera.CameraToSpatial(stars[p].position).Normalize();
         float ipDist = AngleUnit(pyramidActualSpatials[0], pSpatial);
         const int16_t *ipEnd;
-        const int16_t *ipPairs = db.FindPairsLiberal(ipDist - tolerance, ipDist + tolerance, &ipEnd);
-        PairDistanceInvolvingIterator pIterator(ipPairs, ipEnd, pyramidIdentifiers[0].catalogIndex);
+        const int16_t *ipPairs =
+            db.FindPairsLiberal(ipDist - tolerance, ipDist + tolerance, &ipEnd);
+        PairDistanceInvolvingIterator pIterator(
+            ipPairs, ipEnd, pyramidIdentifiers[0].catalogIndex);
 
-        std::vector<int16_t> pCandidates; // collect them all in the loop, at the end only identify
-                                          // the star if unique
+        std::vector<int16_t>
+            pCandidates;  // collect them all in the loop, at the end only
+                          // identify the star if unique
         while (pIterator.HasValue()) {
             bool ok = true;
             for (int l = 1; l < 4; l++) {
-                float actualDist = AngleUnit(pSpatial, pyramidActualSpatials[l]);
-                float expectedDist = AngleUnit(catalog[*pIterator].spatial,
-                                               catalog[pyramidIdentifiers[l].catalogIndex].spatial);
-                if (actualDist < expectedDist - tolerance || actualDist > expectedDist + tolerance) {
+                float actualDist =
+                    AngleUnit(pSpatial, pyramidActualSpatials[l]);
+                float expectedDist = AngleUnit(
+                    catalog[*pIterator].spatial,
+                    catalog[pyramidIdentifiers[l].catalogIndex].spatial);
+                if (actualDist < expectedDist - tolerance ||
+                    actualDist > expectedDist + tolerance) {
                     ok = false;
                 }
             }
@@ -729,47 +673,54 @@ void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
     }
 }
 
-StarIdentifiers PyramidStarIdAlgorithm::Go(
-    const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
-
+StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database,
+                                           const Stars &stars,
+                                           const Catalog &catalog,
+                                           const Camera &camera) const {
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
-    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(
+        PairDistanceKVectorDatabase::kMagicValue);
     if (databaseBuffer == NULL || stars.size() < 4) {
         std::cerr << "Not enough stars, or database missing." << std::endl;
         return identified;
     }
     PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
 
-    // smallest normal single-precision float is around 10^-38 so we should be all good. See
-    // Analytic_Star_Pattern_Probability on the HSL wiki for details.
-    float expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
+    // smallest normal single-precision float is around 10^-38 so we should be
+    // all good. See Analytic_Star_Pattern_Probability on the HSL wiki for
+    // details.
+    float expectedMismatchesConstant =
+        pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
 
-    // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
-    // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and
-    // k-th from the j-th. In addition, we here add some other numbers so that the pyramids are not
-    // weird lines in wide FOV images. TODO: Select the starting points to ensure that the first pyramids are all within measurement tolerance.
+    // this iteration technique is described in the Pyramid paper. Briefly: i
+    // will always be the lowest index, then dj and dk are how many indexes
+    // ahead the j-th star is from the i-th, and k-th from the j-th. In
+    // addition, we here add some other numbers so that the pyramids are not
+    // weird lines in wide FOV images. TODO: Select the starting points to
+    // ensure that the first pyramids are all within measurement tolerance.
     int numStars = (int)stars.size();
     // the idea is that the square root is about across the FOV horizontally
-    int across = floor(sqrt(numStars))*2;
-    int halfwayAcross = floor(sqrt(numStars)/2);
+    int across = floor(sqrt(numStars)) * 2;
+    int halfwayAcross = floor(sqrt(numStars) / 2);
     long totalIterations = 0;
 
     int jMax = numStars - 3;
     for (int jIter = 0; jIter < jMax; jIter++) {
-        int dj = 1+(jIter+halfwayAcross)%jMax;
+        int dj = 1 + (jIter + halfwayAcross) % jMax;
 
-        int kMax = numStars-dj-2;
+        int kMax = numStars - dj - 2;
         for (int kIter = 0; kIter < kMax; kIter++) {
-            int dk = 1+(kIter+across)%kMax;
+            int dk = 1 + (kIter + across) % kMax;
 
-            int rMax = numStars-dj-dk-1;
+            int rMax = numStars - dj - dk - 1;
             for (int rIter = 0; rIter < rMax; rIter++) {
-                int dr = 1+(rIter+halfwayAcross)%rMax;
+                int dr = 1 + (rIter + halfwayAcross) % rMax;
 
-                int iMax = numStars-dj-dk-dr-1;
+                int iMax = numStars - dj - dk - dr - 1;
                 for (int iIter = 0; iIter <= iMax; iIter++) {
-                    int i = (iIter + iMax/2)%(iMax+1); // start near the center of the photo
+                    int i = (iIter + iMax / 2) %
+                            (iMax + 1);  // start near the center of the photo
 
                     // identification failure due to cutoff
                     if (++totalIterations > cutoff) {
@@ -777,54 +728,70 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         return identified;
                     }
 
-                    int j = i+dj;
-                    int k = j+dk;
-                    int r = k+dr;
+                    int j = i + dj;
+                    int k = j + dk;
+                    int r = k + dr;
 
-                    assert(i != j && j != k && k != r && i != k && i != r && j != r);
+                    assert(i != j && j != k && k != r && i != k && i != r &&
+                           j != r);
 
                     // TODO: move this out of the loop?
-                    Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
-                    Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
-                    Vec3 kSpatial = camera.CameraToSpatial(stars[k].position).Normalize();
+                    Vec3 iSpatial =
+                        camera.CameraToSpatial(stars[i].position).Normalize();
+                    Vec3 jSpatial =
+                        camera.CameraToSpatial(stars[j].position).Normalize();
+                    Vec3 kSpatial =
+                        camera.CameraToSpatial(stars[k].position).Normalize();
 
                     float ijDist = AngleUnit(iSpatial, jSpatial);
 
-                    float iSinInner = sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
-                    float jSinInner = sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
-                    float kSinInner = sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
+                    float iSinInner =
+                        sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
+                    float jSinInner =
+                        sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
+                    float kSinInner =
+                        sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
 
-                    // if we made it this far, all 6 angles are confirmed! Now check
-                    // that this match would not often occur due to chance.
-                    // See Analytic_Star_Pattern_Probability on the HSL wiki for details
-                    float expectedMismatches = expectedMismatchesConstant
-                        * sin(ijDist)
-                        / kSinInner
-                        / std::max(std::max(iSinInner, jSinInner), kSinInner);
+                    // if we made it this far, all 6 angles are confirmed! Now
+                    // check that this match would not often occur due to
+                    // chance. See Analytic_Star_Pattern_Probability on the HSL
+                    // wiki for details
+                    float expectedMismatches =
+                        expectedMismatchesConstant * sin(ijDist) / kSinInner /
+                        std::max(std::max(iSinInner, jSinInner), kSinInner);
 
                     if (expectedMismatches > maxMismatchProbability) {
                         std::cout << "skip: mismatch prob." << std::endl;
                         continue;
                     }
 
-                    Vec3 rSpatial = camera.CameraToSpatial(stars[r].position).Normalize();
+                    Vec3 rSpatial =
+                        camera.CameraToSpatial(stars[r].position).Normalize();
 
                     // sign of determinant, to detect flipped patterns
-                    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
+                    bool spectralTorch =
+                        iSpatial.CrossProduct(jSpatial) * kSpatial > 0;
 
                     float ikDist = AngleUnit(iSpatial, kSpatial);
                     float irDist = AngleUnit(iSpatial, rSpatial);
                     float jkDist = AngleUnit(jSpatial, kSpatial);
                     float jrDist = AngleUnit(jSpatial, rSpatial);
-                    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
-                                                                  // check krDist, if k has been
-                                                                  // verified by i and j it's fine.
+                    float krDist = AngleUnit(
+                        kSpatial, rSpatial);  // TODO: we don't really need to
+                                              // check krDist, if k has been
+                                              // verified by i and j it's fine.
 
-                    // we check the distances with the extra tolerance requirement to ensure that
-                    // there isn't some pyramid that's just outside the database's bounds, but
-                    // within measurement tolerance of the observed pyramid, since that would
-                    // possibly cause a non-unique pyramid to be identified as unique.
-#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
+                    // we check the distances with the extra tolerance
+                    // requirement to ensure that there isn't some pyramid
+                    // that's just outside the database's bounds, but within
+                    // measurement tolerance of the observed pyramid, since that
+                    // would possibly cause a non-unique pyramid to be
+                    // identified as unique.
+#define _CHECK_DISTANCE(_dist)                              \
+    if (_dist < vectorDatabase.MinDistance() + tolerance || \
+        _dist > vectorDatabase.MaxDistance() - tolerance) { \
+        continue;                                           \
+    }
                     _CHECK_DISTANCE(ikDist);
                     _CHECK_DISTANCE(irDist);
                     _CHECK_DISTANCE(jkDist);
@@ -833,29 +800,40 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 #undef _CHECK_DISTANCE
 
                     const int16_t *ijEnd, *ikEnd, *irEnd;
-                    const int16_t *const ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
-                    const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
-                    const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
-
+                    const int16_t *const ijQuery =
+                        vectorDatabase.FindPairsLiberal(
+                            ijDist - tolerance, ijDist + tolerance, &ijEnd);
+                    const int16_t *const ikQuery =
+                        vectorDatabase.FindPairsLiberal(
+                            ikDist - tolerance, ikDist + tolerance, &ikEnd);
+                    const int16_t *const irQuery =
+                        vectorDatabase.FindPairsLiberal(
+                            irDist - tolerance, irDist + tolerance, &irEnd);
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     std::vector<bool> iSeen(catalog.size(), false);
-                    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+                    for (const int16_t *iCandidateQuery = ijQuery;
+                         iCandidateQuery != ijEnd; iCandidateQuery++) {
                         int iCandidate = *iCandidateQuery;
                         if (iSeen[iCandidate]) {
                             continue;
                         }
                         iSeen[iCandidate] = true;
 
-                        const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
+                        const Vec3 &iCandidateSpatial =
+                            catalog[iCandidate].spatial;
 
-                        // TODO: caching these iterator results into vectors can improve
-                        // performance, but at the cost of memory. It would be best to put some kind
-                        // of guarantee on the memory usage, and then switch to using the iterator
+                        // TODO: caching these iterator results into vectors can
+                        // improve performance, but at the cost of memory. It
+                        // would be best to put some kind of guarantee on the
+                        // memory usage, and then switch to using the iterator
                         // without caching if that memory limit is exceeded.
-                        PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd, iCandidate);
-                        PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd, iCandidate);
-                        PairDistanceInvolvingIterator rIterator(irQuery, irEnd, iCandidate);
+                        PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd,
+                                                                iCandidate);
+                        PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd,
+                                                                iCandidate);
+                        PairDistanceInvolvingIterator rIterator(irQuery, irEnd,
+                                                                iCandidate);
                         std::vector<int16_t> jCandidates;
                         std::vector<int16_t> kCandidates;
                         std::vector<int16_t> rCandidates;
@@ -871,38 +849,52 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             rCandidates.push_back(*rIterator);
                             ++rIterator;
                         }
-                        // TODO: break fast if any of the iterators are empty, if it's any
-                        // significant performance improvement.
+                        // TODO: break fast if any of the iterators are empty,
+                        // if it's any significant performance improvement.
                         for (int16_t jCandidate : jCandidates) {
-                            const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
-                            Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
+                            const Vec3 &jCandidateSpatial =
+                                catalog[jCandidate].spatial;
+                            Vec3 ijCandidateCross =
+                                iCandidateSpatial.CrossProduct(
+                                    jCandidateSpatial);
 
                             for (int16_t kCandidate : kCandidates) {
-                                Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
-                                bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
+                                Vec3 kCandidateSpatial =
+                                    catalog[kCandidate].spatial;
+                                bool candidateSpectralTorch =
+                                    ijCandidateCross * kCandidateSpatial > 0;
                                 // checking the spectral-ity early to fail fast
                                 if (candidateSpectralTorch != spectralTorch) {
                                     continue;
                                 }
 
-                                // small optimization: We can calculate jk before iterating through r, so we will!
-                                float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
-                                if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
+                                // small optimization: We can calculate jk
+                                // before iterating through r, so we will!
+                                float jkCandidateDist = AngleUnit(
+                                    jCandidateSpatial, kCandidateSpatial);
+                                if (jkCandidateDist < jkDist - tolerance ||
+                                    jkCandidateDist > jkDist + tolerance) {
                                     continue;
                                 }
 
-                                // TODO: if there are no jr matches, there's no reason to
-                                // continue iterating through all the other k-s. Possibly
-                                // enumarete all r matches, according to ir, before this loop
+                                // TODO: if there are no jr matches, there's no
+                                // reason to continue iterating through all the
+                                // other k-s. Possibly enumarete all r matches,
+                                // according to ir, before this loop
                                 for (int16_t rCandidate : rCandidates) {
-                                    const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
-                                    float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
+                                    const Vec3 &rCandidateSpatial =
+                                        catalog[rCandidate].spatial;
+                                    float jrCandidateDist = AngleUnit(
+                                        jCandidateSpatial, rCandidateSpatial);
                                     float krCandidateDist;
-                                    if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
+                                    if (jrCandidateDist < jrDist - tolerance ||
+                                        jrCandidateDist > jrDist + tolerance) {
                                         continue;
                                     }
-                                    krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
-                                    if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
+                                    krCandidateDist = AngleUnit(
+                                        kCandidateSpatial, rCandidateSpatial);
+                                    if (krCandidateDist < krDist - tolerance ||
+                                        krCandidateDist > krDist + tolerance) {
                                         continue;
                                     }
 
@@ -915,25 +907,34 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                                         rMatch = rCandidate;
                                     } else {
                                         // uh-oh, stinky!
-                                        // TODO: test duplicate detection, it's hard to cause it in the real catalog...
-                                        std::cerr << "Pyramid not unique, skipping..." << std::endl;
+                                        // TODO: test duplicate detection, it's
+                                        // hard to cause it in the real
+                                        // catalog...
+                                        std::cerr
+                                            << "Pyramid not unique, skipping..."
+                                            << std::endl;
                                         goto sensorContinue;
                                     }
                                 }
                             }
-
                         }
                     }
 
                     if (iMatch != -1) {
-                        printf("Matched unique pyramid!\nExpected mismatches: %e\n", expectedMismatches);
+                        printf(
+                            "Matched unique pyramid!\nExpected mismatches: "
+                            "%e\n",
+                            expectedMismatches);
                         identified.push_back(StarIdentifier(i, iMatch));
                         identified.push_back(StarIdentifier(j, jMatch));
                         identified.push_back(StarIdentifier(k, kMatch));
                         identified.push_back(StarIdentifier(r, rMatch));
 
-                        PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
-                        printf("Identified an additional %d stars\n", (int)identified.size() - 4);
+                        PyramidIdentifyRemainingStars(&identified, stars,
+                                                      catalog, vectorDatabase,
+                                                      camera, tolerance);
+                        printf("Identified an additional %d stars\n",
+                               (int)identified.size() - 4);
 
                         return identified;
                     }
@@ -948,4 +949,4 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
-}
+}  // namespace lost

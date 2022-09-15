@@ -71,8 +71,8 @@ private:
     const long long MAGIC_RAND = 2654435761;
 
     int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const;
-    // std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const;
-    std::vector<std::vector<int>> GetAtIndex(int index, std::ifstream &pattCatFile) const;
+    std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const;
+    // std::vector<std::vector<int>> GetAtIndex(int index, std::ifstream &pattCatFile) const;
 };
 
 /// A star-id algorithm that returns random results. For debugging.
