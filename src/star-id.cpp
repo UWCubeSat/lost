@@ -3,12 +3,11 @@
 #include <stdlib.h>
 
 #include <algorithm>
-#include <vector>
 
 // added for Tetra
+#include <fstream>  // delete after implementing database for Tetra
 #include <set>
-// #include <fstream> // probably delete later, this is just for bad Tetra db
-// loading Or maybe not, we'll probably have to use fseek anyways
+#include <utility>  // std::pair
 
 #include "attitude-utils.hpp"
 #include "databases.hpp"
@@ -16,17 +15,6 @@
 
 namespace lost {
 
-/*
-Tetra TODOs:
-1. Make generator function to go through multiple combinations of centroids
-(_generate_patterns_from_centroids)
-    Then, fix returns and continues as needed
-
-2. Database generation for Pattern Catalog
-3. Tetra-specific catalog (i.e. star table?)
-4. Documentation for math functions, esp. binning / hashing
-5. Modularize some of the functions - patternEdgeRatio, patternRadii creation
-*/
 
 int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
                                      int maxIndex) const {
@@ -43,7 +31,7 @@ int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
 // TetraDatabase db) const{
 std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
     int index, std::ifstream &pattCatFile) const {
-    // Returns a list of rows from the Pattern Catalog
+    // Returns a list of rows from the Pattern Catalog with hashcode==index
     // Does quadratic probing
 
     int maxInd = catalogLength;
@@ -56,17 +44,11 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
         // std::vector<int> tableRow = db.pattCatalog[i];
         std::vector<int> tableRow;
 
-        short *row = new short[4];
-        pattCatFile.seekg(sizeof(short) * 4 * i, std::ios::beg);
-        pattCatFile.read((char *)row, sizeof(short) * 4);
+        short *row = new short[numPattStars];
+        pattCatFile.seekg(sizeof(short) * numPattStars * i, std::ios::beg);
+        pattCatFile.read((char *)row, sizeof(short) * numPattStars);
 
-        // std::cout << "CHECK " << i << std::endl;
-        // for(int check = 0; check < 4; check++){
-        //     std::cout << row[check] << ", ";
-        // }
-        // std::cout << std::endl;
-
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < numPattStars; j++) {
             tableRow.push_back(int(row[j]));
         }
 
@@ -83,9 +65,9 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
 /**
  * @brief Identifies stars using Tetra Star Identification Algorithm
  *
- * @param database
- * @param stars
- * @param catalog
+ * @param database Pattern catalog
+ * @param stars Star centroids detected from image
+ * @param catalog Star table
  * @param camera
  * @return StarIdentifiers
  */
@@ -101,10 +83,13 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // Right now, we're reading the entire Pattern Catalog and Star Table into
     // memory TetraDatabase db; db.fillStarTable(); db.fillPattCatalog();
 
-    // std::ifstream pattCatFile("pattCatGen12Stable.bin", std::ios_base::binary);
-    // std::ifstream starTableFile("starTableGen12Stable.bin", std::ios_base::binary);
+    // std::ifstream pattCatFile("pattCatGen12Stable.bin",
+    // std::ios_base::binary); std::ifstream
+    // starTableFile("starTableGen12Stable.bin", std::ios_base::binary); .dat
+    // also works
     std::ifstream pattCatFile("pattCatalogOurs.bin", std::ios_base::binary);
-    std::ifstream starTableFile("amendStarTableOurs.bin", std::ios_base::binary);
+    std::ifstream starTableFile("amendStarTableOurs.bin",
+                                std::ios_base::binary);
 
     if (!pattCatFile.is_open()) {
         std::cout << "PROBLEM, FAILED TO OPEN PATT CATALOG" << std::endl;
@@ -113,26 +98,15 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         std::cout << "PROBLEM, FAILED TO OPEN STAR TABLE" << std::endl;
     }
 
-    // TODO: remove later
-    // std::cout << "CHECK START START" << std::endl;
-    // short *pattRow = new short[4];
-    // int pattRowNum = 0;
-    // pattCatFile.seekg(sizeof(short) * 4 * pattRowNum, std::ios::beg);
-    // pattCatFile.read((char *)pattRow, sizeof(short) * 4);
-
-    // for (int i = 0; i < 4; i++) {
-    //     std::cout << pattRow[i] << ", ";
-    // }
-    // std::cout << std::endl;
-
     std::vector<Star> copyStars(stars);
-    // Need to sort centroids by brightness, high to low
+    // Sort centroided stars by brightness, high to low
     std::sort(
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
     // TODO: implement the generator function
-    // Right now I'm just do a simplified way, taking the first 4 centroids
+    // Right now I'm just do a simplified way, taking the first 4 centroids-
+    // this may cause bugs
 
     copyStars =
         std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
@@ -152,19 +126,20 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         centroidIndices.push_back(ind);
     }
 
-    // Compute Vec3 spatial vectors (in celestial sphere) for each star chosen
+    // Compute Vec3 spatial vectors for each star chosen
     // to be in the Pattern
-    std::vector<Vec3> pattStarVecs;  // size = numPattStars
+    std::vector<Vec3> pattStarVecs;  // size==numPattStars
     for (const Star &star : copyStars) {
         // Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
         // CameraToSpatial produces different vector but also works
+        // TODO: examine why the math works this way
         Vec3 spatialVec = camera.CameraToSpatial(star.position);
         pattStarVecs.push_back(spatialVec);
     }
 
     // Compute angle between each pair of stars chosen to be in the Pattern
-    // If any angle should > maxFov, then we should throw away this Pattern
-    // choice, since our database will not contain it
+    // If any angle > maxFov, then we should throw away this Pattern
+    // choice, since our database will not store it
     bool angleAcceptable = true;
     for (int i = 0; i < (int)pattStarVecs.size(); i++) {
         Vec3 u = pattStarVecs[i];
@@ -173,6 +148,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
             float angle = Angle(u, v);  // in radians
             if (RadToDeg(angle) > maxFov) {
                 angleAcceptable = false;
+                break;
             }
         }
     }
@@ -185,8 +161,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     }
 
     // Calculate all edge lengths in order to find value of largest edge
-    // Since each Pattern consists of size=numPattStars stars, there will be
-    // C(numPattStars, 2) edges For default of 4-star Patterns, calculate C(4,
+    // Since each Pattern consists of size==numPattStars stars, there will be
+    // C(numPattStars, 2) edges For default 4-star Patterns, calculate C(4,
     // 2) = 6 edge lengths
     std::vector<float> pattEdgeLengths;  // default size = 6
     for (int i = 0; i < (int)pattStarVecs.size(); i++) {
@@ -199,33 +175,35 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size()) -
                                             1];  // largest edge value
 
-    // Now divide each edge length by pattLargestEdge for edge ratios
-    std::vector<float> pattEdgeRatios;  // size() = C(numPattStars, 2) - 1
-    for (int i = 0; i < (int)pattEdgeLengths.size() - 1;
-         i++) {  // size()-1, since we ignore the largest edge
+    // Divide each edge length by pattLargestEdge for edge ratios
+    // size() = C(numPattStars, 2) - 1
+    // We don't calculate ratio for largest edge, which would just be 1
+    std::vector<float> pattEdgeRatios;
+    for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) {
         pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
     }
 
-    std::vector<std::vector<int>> hcSpace;
+    // Binning step - discretize values so they can be used for hashing
+    // We account for potential error in calculated values by testing hash codes
+    // in a range
+    std::vector<std::pair<int, int>> hcSpace;
     for (float edgeRatio : pattEdgeRatios) {
-        std::vector<int> range;
+        std::pair<int, int> range;
         int lo = int((edgeRatio - pattMaxError) * numPattBins);
         lo = std::max(lo, 0);
         int hi = int((edgeRatio + pattMaxError) * numPattBins);
         hi = std::min(hi + 1, numPattBins);
-        range.push_back(lo);
-        range.push_back(hi);
+        range = std::make_pair(lo, hi);
         hcSpace.push_back(range);
     }
-    std::set<std::vector<int>> finalCodes;
 
-    // TODO: describe what this does
-    // TODO: implement this with recursion?
-    for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
-        for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
-            for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
-                for (int d = hcSpace[3][0]; d < hcSpace[3][1]; d++) {
-                    for (int e = hcSpace[4][0]; e < hcSpace[4][1]; e++) {
+    std::set<std::vector<int>> finalCodes;
+    // Go through all the actual hash codes
+    for (int a = hcSpace[0].first; a < hcSpace[0].second; a++) {
+        for (int b = hcSpace[1].first; b < hcSpace[1].second; b++) {
+            for (int c = hcSpace[2].first; c < hcSpace[2].second; c++) {
+                for (int d = hcSpace[3].first; d < hcSpace[3].second; d++) {
+                    for (int e = hcSpace[4].first; e < hcSpace[4].second; e++) {
                         std::vector<int> code{a, b, c, d, e};
                         std::sort(code.begin(), code.end());
                         finalCodes.insert(code);
@@ -236,19 +214,13 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     }
 
     for (std::vector<int> code : finalCodes) {
-        // std::cout << "HASH CODE" << std::endl;
-        // for (int cEle : code) {
-        //     std::cout << cEle << ", ";
-        // }
-        // std::cout << std::endl;
-        // correct
-
         int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
+        // Get a list of Pattern Catalog rows with hash code == hashIndex
         std::vector<std::vector<int>> matches =
             GetAtIndex(hashIndex, pattCatFile);
 
         if ((int)matches.size() == 0) {
-            // std::cout << "Alert: matches size = 0, continuing" << std::endl;
+            std::cout << "Alert: matches size = 0, continuing" << std::endl;
             continue;
         }
 

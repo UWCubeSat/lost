@@ -2,7 +2,6 @@
 #define STAR_ID_H
 
 #include <vector>
-#include <fstream>
 
 #include "centroiders.hpp"
 #include "star-utils.hpp"
@@ -61,13 +60,15 @@ private:
     const float maxFov = 12.00; // in degrees, max FOV of database
     // TODO: this may not be accurate, think I saw a 20 FOV somewhere. Also make this part of constructor / default, not hardcoded
 
+    // I feel these should be held constant, cannot be changed
     const int numPattStars = 4;
     const int numPattBins = 25;
     const float pattMaxError = 0.005;
 
     // const int catalogLength = 11841082; // default database
     // const int catalogLength = 8979154; // tetra3 fov=12, stable
-    const int catalogLength = 8978892;
+    // number of patterns in catalog:
+    const int catalogLength = 8978892; // hardcoded, just for testing - remove later
 
     const long long MAGIC_RAND = 2654435761;
 

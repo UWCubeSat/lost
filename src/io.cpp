@@ -92,6 +92,7 @@ std::vector<CatalogStar> &CatalogRead() {
         readYet = true;
         char *tsvPath = getenv("LOST_BSC_PATH");
         catalog = BscParse(tsvPath ? tsvPath : DEFAULT_BSC_PATH);
+        // default path = bright-star-catalog.tsv
     }
     return catalog;
 }
