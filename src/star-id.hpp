@@ -72,6 +72,8 @@ private:
 
     const long long MAGIC_RAND = 2654435761;
 
+    const int starTableRowSize = 7; // TODO: remove
+
     int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const;
     // std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const;
     std::vector<std::vector<int>> GetAtIndex(int index, std::ifstream &pattCatFile) const;

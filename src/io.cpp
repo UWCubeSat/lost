@@ -65,6 +65,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
         return result; // TODO
     }
 
+    // name == starID?
     while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d",
                          &raj2000, &dej2000,
                          &name, &weird,

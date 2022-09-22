@@ -18,6 +18,7 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
  * @param maxStars If there are greater than `maxStars` many stars left after filtering by `maxMagnitude`, only the `maxStars` brightest of them are kept.
  * @return Newly constructed catalog containing only the sufficiently bright stars.
  */
+// Potentially sorted
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
@@ -72,6 +73,8 @@ long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
  * @param inclName Whether to include the (numerical) name of the star.
  * @param buffer[out] Where the serialized star is stored.
  */
+// TODO: make inclusion of name/magnitude true by default?
+// Actually why give the option in the first place, algos like Tetra need this to work
 void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer) {
     SerializeVec3(catalogStar.spatial, buffer);
     buffer += SerializeLengthVec3();
