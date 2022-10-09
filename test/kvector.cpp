@@ -58,6 +58,8 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
         }
         REQUIRE(totalReturnedPairs == db.NumPairs());
     }
+
+    delete[] dbBytes;
 }
 
 TEST_CASE("Tighter tolerance test", "[kvector]") {
@@ -89,6 +91,8 @@ TEST_CASE("Tighter tolerance test", "[kvector]") {
         }
     }
     CHECK(outsideRangeReturned);
+
+    delete[] dbBytes;
 }
 
 TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
@@ -108,4 +112,6 @@ TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
         REQUIRE(end - pairs == 2);
         CHECK(AngleUnit(tripleCatalog[pairs[0]].spatial, tripleCatalog[pairs[1]].spatial) == Approx(distance));
     }
+
+    delete[] dbBytes;
 }

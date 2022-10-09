@@ -96,7 +96,8 @@ std::vector<CatalogStar> &CatalogRead() {
     return catalog;
 }
 
-/// Convert a colored Cairo image surface into a row-major array of grayscale pixels
+/// Convert a colored Cairo image surface into a row-major array of grayscale pixels.
+/// Result is allocated with new[]
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
     int width, height;
     unsigned char *result;
@@ -299,6 +300,7 @@ float FocalLengthFromOptions(const PipelineOptions &values) {
 }
 
 /// Convert the result of InputImage() into a cairo surface.
+/// Allocates a new surface, whih must be destroyed with cairo_surface_destroy
 cairo_surface_t *PipelineInput::InputImageSurface() const {
     const Image *inputImage = InputImage();
     return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
@@ -321,6 +323,7 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
 
 /**
  * A pipeline input coming from an image with no extra metadata. Only InputImage will be available.
+ * No references to the surface are kept in the class and it may be freed after construction.
  * @param cairoSurface A cairo surface from the image file.
  * @todo should rename, not specific to PNG.
  */
@@ -330,6 +333,10 @@ PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera,
     image.image = SurfaceToGrayscaleImage(cairoSurface);
     image.width = cairo_image_surface_get_width(cairoSurface);
     image.height = cairo_image_surface_get_height(cairoSurface);
+}
+
+PngPipelineInput::~PngPipelineInput() {
+    delete[] image.image;
 }
 
 /// Create a PngPipelineInput using command line options.
@@ -352,6 +359,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
     result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
+    cairo_surface_destroy(cairoSurface);
     return result;
 }
 

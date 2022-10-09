@@ -151,6 +151,7 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values);
 class PngPipelineInput : public PipelineInput {
 public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
+    ~PngPipelineInput();
 
     const Image *InputImage() const { return &image; };
     const Camera *InputCamera() const { return &camera; };
