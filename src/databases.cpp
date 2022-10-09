@@ -268,7 +268,7 @@ float Clamp(float num, float low, float high) {
 const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
 
-    long upperIndex;
+    long upperIndex = -1;
     long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
     *end = &pairs[upperIndex * 2];
     return &pairs[lowerIndex * 2];

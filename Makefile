@@ -37,8 +37,19 @@ BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
+RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
+# debug flags:
+CXXFLAGS := $(CXXFLAGS) -ggdb -fsanitize=address -fno-omit-frame-pointer
+
+RELEASE_LDFLAGS := $(LDFLAGS)
+# debug flags:
+LDFLAGS := $(LDFLAGS) -fsanitize=address
 
 all: $(BIN) $(BSC)
+
+release: CXXFLAGS := $(RELEASE_CXXFLAGS)
+release: LDFLAGS := $(RELEASE_LDFLAGS)
+release: all
 
 $(BSC): download-bsc.sh
 	./download-bsc.sh
