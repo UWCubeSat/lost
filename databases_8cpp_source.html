@@ -305,7 +305,7 @@ $(document).ready(function(){initNavTree('databases_8cpp_source.html',''); initR
 <div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6">  268</a></span>&#160;<span class="keyword">const</span> int16_t *<a class="code" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6">PairDistanceKVectorDatabase::FindPairsLiberal</a>(</div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keywordtype">float</span> minQueryDistance, <span class="keywordtype">float</span> maxQueryDistance, <span class="keyword">const</span> int16_t **end)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="keywordtype">long</span> upperIndex;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="keywordtype">long</span> upperIndex = -1;</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keywordtype">long</span> lowerIndex = index.<a class="code" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c">QueryLiberal</a>(minQueryDistance, maxQueryDistance, &amp;upperIndex);</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    *end = &amp;pairs[upperIndex * 2];</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">return</span> &amp;pairs[lowerIndex * 2];</div>
@@ -418,7 +418,7 @@ $(document).ready(function(){initNavTree('databases_8cpp_source.html',''); initR
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="databases_8cpp.html">databases.cpp</a></li>
-    <li class="footer">Generated on Sat Aug 20 2022 22:27:06 for LOST by
+    <li class="footer">Generated on Sun Oct 9 2022 18:58:13 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>
