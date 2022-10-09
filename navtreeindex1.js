@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"classlost_1_1_star_identifier.html#ad0ad99d3e7f46b46101983f2bfc05898":[3,0,0,38,0],
 "classlost_1_1_star_identifier.html#af59a1b9b343e7cb659073d36dca24567":[3,0,0,38,1],
 "classlost_1_1_star_identifier.html#afaace9db445eee4b7ff239fbb71bba57":[3,0,0,38,4],
 "classlost_1_1_star_identifier.html#afb04c9b116a8a67e31083d50e28cdce2":[3,0,0,38,3],
@@ -135,12 +136,12 @@ var NAVTREEINDEX1 =
 "main_8cpp.html":[4,0,1,13],
 "main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c":[4,0,1,13,6],
 "main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627":[4,0,1,13,8],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,2],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,5],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,3],
 "main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,4],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,0],
 "main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,1],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,5],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,2],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,0],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,3],
 "main_8cpp.html#ad716669cae846c56701cf10aff6f8e5f":[4,0,1,13,7],
 "main_8cpp_source.html":[4,0,1,13],
 "namespacelost.html":[2,0,0],

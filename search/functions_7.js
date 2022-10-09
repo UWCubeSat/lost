@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hasvalue_402',['HasValue',['../classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062',1,'lost::PairDistanceInvolvingIterator']]]
+  ['hasvalue_403',['HasValue',['../classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062',1,'lost::PairDistanceInvolvingIterator']]]
 ];

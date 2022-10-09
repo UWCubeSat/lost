@@ -119,6 +119,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adee57652282fb256ea2deeb737b81afe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe">PngPipelineInput</a> (cairo_surface_t *, <a class="el" href="classlost_1_1_camera.html">Camera</a>, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;)</td></tr>
 <tr class="memdesc:adee57652282fb256ea2deeb737b81afe"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pipeline input coming from an image with no extra metadata.  <a href="classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe">More...</a><br /></td></tr>
 <tr class="separator:adee57652282fb256ea2deeb737b81afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01b8ddf0471b41c2a3d306f49156a0ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_png_pipeline_input.html#a01b8ddf0471b41c2a3d306f49156a0ab">~PngPipelineInput</a> ()</td></tr>
+<tr class="separator:a01b8ddf0471b41c2a3d306f49156a0ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57f55058c0dcc5822f9c133210342111"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_png_pipeline_input.html#a57f55058c0dcc5822f9c133210342111">InputImage</a> () const</td></tr>
 <tr class="separator:a57f55058c0dcc5822f9c133210342111"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75645fe6b18c9de509b72ffbbe64cf3e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_camera.html">Camera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_png_pipeline_input.html#a75645fe6b18c9de509b72ffbbe64cf3e">InputCamera</a> () const</td></tr>
@@ -184,7 +186,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>A pipeline input coming from an image with no extra metadata. </p>
-<p>Only InputImage will be available. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Only InputImage will be available. No references to the surface are kept in the class and it may be freed after construction. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cairoSurface</td><td>A cairo surface from the image file. </td></tr>
   </table>
@@ -192,7 +194,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>should rename, not specific to PNG. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00327">327</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00330">330</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -202,6 +204,25 @@ Here is the call graph for this function:</div>
 <area shape="rect" href="namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e" title="Convert a colored Cairo image surface into a row&#45;major array of grayscale pixels." alt="" coords="216,5,399,47"/>
 </map>
 </div>
+
+</div>
+</div>
+<a id="a01b8ddf0471b41c2a3d306f49156a0ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01b8ddf0471b41c2a3d306f49156a0ab">&#9670;&nbsp;</a></span>~PngPipelineInput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">lost::PngPipelineInput::~PngPipelineInput </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00338">338</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -233,7 +254,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00157">157</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00158">158</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -262,7 +283,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00156">156</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00157">157</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -291,7 +312,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00155">155</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00156">156</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -305,7 +326,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_png_pipeline_input.html">PngPipelineInput</a></li>
-    <li class="footer">Generated on Sun Oct 9 2022 18:58:13 for LOST by
+    <li class="footer">Generated on Sun Oct 9 2022 20:23:48 for LOST by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
   </ul>
