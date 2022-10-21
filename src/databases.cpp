@@ -290,6 +290,8 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
     return result;
 }
 
+
+
 /**
    MultiDatabase memory layout:
 

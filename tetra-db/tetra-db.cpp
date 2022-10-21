@@ -99,10 +99,14 @@ void Tetra::GenerateDatabase(float maxFov, std::string &starTableFName,
     // This implies brighter stars come first
     // stable_sort produces same result as py
     // TODO: question now is, does stable work? - YES
+
+    // TODO: presort in some other place
+    // probably not O(1) after all this stuff
     std::stable_sort(starTable.begin(), starTable.end(),
                      [](const StarTableEntry &a, const StarTableEntry &b) {
                          return a.magnitude < b.magnitude;
                      });
+
 
     // Calculate star direction vectors
     for (int i = 0; i < numEntries; i++) {
@@ -110,6 +114,11 @@ void Tetra::GenerateDatabase(float maxFov, std::string &starTableFName,
         starTable[i].y = std::sin(starTable[i].ra) * std::cos(starTable[i].dec);
         starTable[i].z = std::sin(starTable[i].dec);
     }
+
+    // NOTE: BscParse() and NarrowCatalog() combined take care of all steps prior to this point
+
+    // NOTE: beginning of new code
+
 
     int keepForPattCount = 1;
     std::vector<bool> keepForPatterns(numEntries);
@@ -198,6 +207,10 @@ void Tetra::GenerateDatabase(float maxFov, std::string &starTableFName,
             pattStars.push_back(cumulativeSum);
         }
     }
+
+    // This is what's tricky about this step
+    // We update starTable one last time, but also prepare pattStars for
+    // database generation
 
     numEntries = (int)starTable.size();
     // size = 4358 = keptForPattCount

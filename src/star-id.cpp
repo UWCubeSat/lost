@@ -108,6 +108,14 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // Right now I'm just do a simplified way, taking the first 4 centroids-
     // this may cause bugs
 
+    // testing
+    for(const Star &s : copyStars){
+        std::cout << "centroid " << s.position.x << ", " << s.position.y << std::endl;
+    }
+
+    // TODO: pattCheckingStars = 6, number of stars used to create possible patterns for lookup in db
+    const int pattCheckingStars = 6;
+
     copyStars =
         std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
 

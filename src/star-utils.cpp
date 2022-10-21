@@ -18,7 +18,6 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
  * @param maxStars If there are greater than `maxStars` many stars left after filtering by `maxMagnitude`, only the `maxStars` brightest of them are kept.
  * @return Newly constructed catalog containing only the sufficiently bright stars.
  */
-// Potentially sorted
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
@@ -27,12 +26,117 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
         }
     }
     if (maxStars < (int)result.size()) {
+        // TODO: could change to stable sort
         std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
         result.resize(maxStars);
     }
 
     return result;
 }
+
+std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog, const float maxFovDeg){
+
+    // TODO: pass through constructor or keep constant?
+    const int pattStarsPerFOV = 10;
+    const int verificationStarsPerFOV = 20;
+    // const float starMaxMag = 7.0;
+    const float starMinSep = 0.05;
+    // const float pattMaxError = 0.005;
+
+    // The following especially
+    const float maxFOV = DegToRad(maxFovDeg);
+    // const short pattSize = 4;
+    // const short pattBins = 25;
+
+    int numEntries = catalog.size();
+    int keepForPattCount = 1;
+    std::vector<bool> keepForPatterns(numEntries);
+    std::vector<bool> keepForVerifying(numEntries);
+
+    keepForPatterns[0] = true;
+    keepForVerifying[0] = true;
+
+    for(int ind = 1; ind < numEntries; ind++){
+        Vec3 vec = catalog[ind].spatial;
+
+        std::vector<float> angsPatterns;
+        for(int j = 0; j < numEntries; j++){
+            if(keepForPatterns[j]){
+                // float dotProd = vec *
+                float dotProd = vec * catalog[j].spatial;
+                angsPatterns.push_back(dotProd);
+            }
+        }
+
+        std::vector<float> angsVerifying;
+        for(int j = 0; j < numEntries; j++){
+            if(keepForVerifying[j]){
+                float dotProd = vec * catalog[j].spatial;
+                angsVerifying.push_back(dotProd);
+            }
+        }
+
+        bool angsPatternsOK = true;
+        for(float angPatt : angsPatterns){
+            // if(angPatt >= std::cos())
+            if(angPatt >= std::cos(DegToRad(starMinSep))){
+                angsPatternsOK = false;
+                break;
+            }
+        }
+        if (angsPatternsOK) {
+            int numStarsInFOV = 0;
+            for(float angPatt : angsPatterns){
+                if(angPatt > std::cos(maxFOV / 2)){
+                    numStarsInFOV++;
+                }
+            }
+            if(numStarsInFOV < pattStarsPerFOV){
+                keepForPatterns[ind] = true;
+                keepForVerifying[ind] = true;
+                keepForPattCount++;
+            }
+        }
+
+        bool angsVerifyingOK = true;
+        for(float angVer: angsVerifying){
+            if(angVer >= std::cos(DegToRad(starMinSep))){
+                angsVerifyingOK = false;
+                break;
+            }
+        }
+        if(angsVerifyingOK){
+            int numStarsInFOV = 0;
+            for(float angVer : angsVerifying){
+                if(angVer > std::cos(maxFOV / 2)){
+                    numStarsInFOV++;
+                }
+            }
+            if(numStarsInFOV < verificationStarsPerFOV){
+                keepForVerifying[ind] = true;
+            }
+        }
+    }
+
+    Catalog finalCat;
+    std::vector<short> pattStars;
+    short cumulativeSum = -1;
+
+    for(int i = 0; i < (int)keepForVerifying.size(); i++){
+        if(keepForVerifying[i]){
+            cumulativeSum++;
+            finalCat.push_back(catalog[i]);
+        }
+        if(keepForPatterns[i]){
+            pattStars.push_back(cumulativeSum);
+        }
+    }
+
+    std::pair<Catalog, std::vector<short>> res{finalCat, pattStars};
+
+    return res;
+}
+
 
 /// Return a pointer to the star with the given name, or NULL if not found.
 const CatalogStar *FindNamedStar(const Catalog &catalog, int name) {
