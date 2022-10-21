@@ -315,8 +315,8 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
  * @param cairoSurface A cairo surface from the image file.
  * @todo should rename, not specific to PNG.
  */
-PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
-    : camera(camera), catalog(catalog) {
+PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera *camera, const Catalog &catalog)
+    : camera(*camera), catalog(catalog) {
 
     image.image = SurfaceToGrayscaleImage(cairoSurface);
     image.width = cairo_image_surface_get_width(cairoSurface);
@@ -342,7 +342,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     float focalLengthPixels = FocalLengthFromOptions(values);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
-    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
+    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, &cam, CatalogRead())));
     return result;
 }
 
@@ -726,6 +726,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         exit(1);
     }
 
+    // attitude estimation stage
     if (values.attitudeAlgo == "dqm") {
         result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
     } else if (values.attitudeAlgo == "triad") {

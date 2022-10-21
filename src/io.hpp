@@ -148,7 +148,7 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values);
 /// A pipeline input created by reading a PNG from a file on disk.
 class PngPipelineInput : public PipelineInput {
 public:
-    PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
+    PngPipelineInput(cairo_surface_t *, Camera *, const Catalog &);
 
     const Image *InputImage() const { return &image; };
     const Camera *InputCamera() const { return &camera; };
