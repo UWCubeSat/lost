@@ -13,6 +13,17 @@
 
 namespace lost {
 
+struct KVectorQuad {
+    int16_t central;
+    int16_t first;
+    int16_t second;
+    int16_t third;
+    float pa1;
+    float pa2;
+    float pa3;
+    float pb;
+};
+
 struct KVectorPair {
     int16_t index1;
     int16_t index2;
@@ -201,6 +212,67 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
         }
     }
     return result;
+}
+
+void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIndex, int16_t starIndex) {
+    int size = sizeof(quad);
+    for(int i = 0; i < sizeof(quad); i++) {
+        int dist1 = AngleUnit(catalog[centralIndex].spatial, catalog[i].spatial);
+        int dist2 = AngleUnit(catalog[centralIndex].spatial, catalog[starIndex].spatial);
+        if(dist2 < dist1) {
+            quad.insert(quad.cbegin() + i, starIndex);
+            break;
+        }
+    }
+    if(sizeof(quad) - size == 0) {
+        quad.push_back(starIndex);
+    }
+}
+
+float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo) {
+    return (1 - oneToTwo) / (2 - centralToOne - centralToTwo);
+}
+
+float StarParameterB(float centralToOne, float centralToTwo, float centralToThree) {
+    return (centralToTwo - centralToOne) / (centralToOne - centralToThree);
+}
+
+std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance) {
+    std::vector<KVectorQuad> result;
+    for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
+        std::vector<int16_t> quad;
+        for (int16_t j = 0; j < (int16_t)catalog.size(); j++) {
+            if(i != j) {
+                Insert(catalog, quad, i, j);
+                if(sizeof(quad) > 3) {
+                    quad.resize(3);
+                }
+            }
+        }
+        assert(sizeof(quad) == 3);
+        float pa1 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
+                AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
+                AngleUnit(catalog[0].spatial, catalog[quad[1]].spatial));
+        float pa2 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
+                AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
+                AngleUnit(catalog[1].spatial, catalog[quad[2]].spatial));
+        float pa3 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
+                AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
+                AngleUnit(catalog[0].spatial, catalog[quad[2]].spatial));
+        float pb = StarParameterB(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
+                AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
+                AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial));
+        result.push_back({i, quad.at(0), quad.at(1), quad.at(2), pa1, pa2, pa3, pb});
+    }
+    return result;
+}
+
+
+void BinFunctionND() {
+    
+}
+void SerializeKVectorND() {
+    
 }
 
 long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
