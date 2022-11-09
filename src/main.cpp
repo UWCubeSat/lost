@@ -28,8 +28,11 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
+
     // pattern catalog generation for tetra needs to modify catalog another time
     // TODO: our final modification to star table also needs to pass pattStars to here for db generation
+    // TODO: edit CLI, but this should do for now
+
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird

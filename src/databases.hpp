@@ -13,7 +13,7 @@ const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
  * A data structure enabling constant-time range queries into fixed numerica data.
- * 
+ *
  * @note Not an instantiable database on its own -- used in other databases
  */
 // TODO: QueryConservative, QueryExact, QueryTrapezoidal?
@@ -51,6 +51,7 @@ void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxD
  */
 class PairDistanceKVectorDatabase {
 public:
+    // TODO: databaseBytes just = buffer?
     explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
@@ -68,8 +69,13 @@ public:
 private:
     KVectorIndex index;
     // TODO: endianness
+    // TODO: wut
     const int16_t *pairs;
 };
+
+// class TetraDatabase{
+
+// }
 
 // /**
 //  * @brief Stores "inner angles" between star triples

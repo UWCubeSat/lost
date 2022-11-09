@@ -4,8 +4,7 @@
 
 #include <algorithm>
 
-// added for Tetra
-#include <fstream>  // delete after implementing database for Tetra
+#include <fstream>  // remove after integrating database for Tetra
 #include <set>
 #include <utility>  // std::pair
 
@@ -66,36 +65,33 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
  * @brief Identifies stars using Tetra Star Identification Algorithm
  *
  * @param database Pattern catalog
- * @param stars Star centroids detected from image
+ * @param stars List of star centroids detected from image
  * @param catalog Star table
- * @param camera
+ * @param camera // TODO: configure camera module for Tetra support
  * @return StarIdentifiers
  */
 StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                          const Stars &stars,
                                          const Catalog &catalog,
                                          const Camera &camera) const {
+
     // format: (centroidIndex, catalogIndex)
     StarIdentifiers result;
     std::cout << "TETRA" << std::endl;
 
-    // TODO: definitely change later
+    // TODO: definitely change later- finish database integration
     // Right now, we're reading the entire Pattern Catalog and Star Table into
     // memory TetraDatabase db; db.fillStarTable(); db.fillPattCatalog();
 
-    // std::ifstream pattCatFile("pattCatGen12Stable.bin",
-    // std::ios_base::binary); std::ifstream
-    // starTableFile("starTableGen12Stable.bin", std::ios_base::binary);
-    // .dat also works
     std::ifstream pattCatFile("pattCatalogOurs9-22.dat", std::ios_base::binary);
     std::ifstream starTableFile("starTableOurs9-22.dat",
                                 std::ios_base::binary);
 
     if (!pattCatFile.is_open()) {
-        std::cout << "PROBLEM, FAILED TO OPEN PATT CATALOG" << std::endl;
+        std::cout << "Error: Failed to open pattern catalog" << std::endl;
     }
     if (!starTableFile.is_open()) {
-        std::cout << "PROBLEM, FAILED TO OPEN STAR TABLE" << std::endl;
+        std::cout << "Error: failed to open star table" << std::endl;
     }
 
     std::vector<Star> copyStars(stars);
@@ -105,16 +101,16 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
     // TODO: implement the generator function
-    // Right now I'm just do a simplified way, taking the first 4 centroids-
-    // this may cause bugs
+    // Currently doing a naive way,  just taking the first 4 centroids
+    // "Generator function" can really just be another loop
 
     // testing
-    for(const Star &s : copyStars){
-        std::cout << "centroid " << s.position.x << ", " << s.position.y << std::endl;
-    }
+    // for(const Star &s : copyStars){
+    //     std::cout << "centroid " << s.position.x << ", " << s.position.y << std::endl;
+    // }
 
     // TODO: pattCheckingStars = 6, number of stars used to create possible patterns for lookup in db
-    const int pattCheckingStars = 6;
+    // const int pattCheckingStars = 6;
 
     copyStars =
         std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
@@ -123,6 +119,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // TODO: better way of doing this?- maybe
     // Above, instead of copyStars, produce array of centroid indices sorted by
     // centroid brightness
+
     std::vector<int> centroidIndices;
     for (const Star &star : copyStars) {
         auto itr =
@@ -139,7 +136,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     std::vector<Vec3> pattStarVecs;  // size==numPattStars
     for (const Star &star : copyStars) {
         // Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
-        // CameraToSpatial produces different vector but also works
+        // CameraToSpatial produces different vector but also works out in the end
         // TODO: examine why the math works this way
         Vec3 spatialVec = camera.CameraToSpatial(star.position);
         pattStarVecs.push_back(spatialVec);
@@ -207,6 +204,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
     std::set<std::vector<int>> finalCodes;
     // TODO: if we maintain constant that numPattStars==4, we don't need to change this
+    // Most star ID papers recommend setting numPattStars=4, no need to go higher (and definitely not lower)
     // Go through all the actual hash codes
     for (int a = hcSpace[0].first; a < hcSpace[0].second; a++) {
         for (int b = hcSpace[1].first; b < hcSpace[1].second; b++) {

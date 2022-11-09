@@ -261,6 +261,11 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
     // TODO: also parse it and print out some stats before returning
 }
 
+
+// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, )
+
+
+
 /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
 void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
 
