@@ -39,11 +39,17 @@ LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
 RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
 # debug flags:
-CXXFLAGS := $(CXXFLAGS) -ggdb -fsanitize=address -fno-omit-frame-pointer
+CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
+ifndef LOST_DISABLE_ASAN
+	CXXFLAGS := $(CXXFLAGS) -fsanitize=address
+endif
 
 RELEASE_LDFLAGS := $(LDFLAGS)
-# debug flags:
-LDFLAGS := $(LDFLAGS) -fsanitize=address
+
+# debug link flags:
+ifndef LOST_DISABLE_ASAN
+	LDFLAGS := $(LDFLAGS) -fsanitize=address
+endif
 
 all: $(BIN) $(BSC)
 

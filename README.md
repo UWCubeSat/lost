@@ -19,6 +19,8 @@ test and benchmark things quickly.
 - Linux or Mac. If you have Windows, I recommend installing the Windows Subsystem for Linux.
 - A C compiler, such as GCC. On Debian, `apt install gcc`
 - GNU Make. On Debian, `apt install make`
+- Groff, to generate help text. `apt install groff`
+- (Recommended) ASAN (Address Sanitizer). We use this to catch memory errors early. `apt install libasan`. (If you wish to use LOST without the address sanitizer, build it with `make LOST_DISABLE_ASAN=1`)
 - Git. On Debian, `apt install git`
 - Cairo, to read and write PNGs as well as draw on them for debugging and demo purposes. You won't
   need this on your CubeSat. On Debian, `apt install libcairo2-dev`. Elsewhere, follow the
@@ -36,8 +38,9 @@ before running `./lost`.
 
 ## Using Docker
 
-This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies
-in a container.
+This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies in a container.
+
+Docker is best if you just want to *run* LOST. If you want to help develop LOST, local installation is preferred.
 
 - Get [Docker](https://www.docker.com/get-started/) onto your system (Docker Desktop, an installation that provides a
   graphical interface, is recommended for most users)
