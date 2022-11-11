@@ -14,14 +14,8 @@
 namespace lost {
 
 struct KVectorQuad {
-    int16_t central;
-    int16_t first;
-    int16_t second;
-    int16_t third;
-    float pa1;
-    float pa2;
-    float pa3;
-    float pb;
+    int16_t* stars;
+    float* parameters;
 };
 
 struct KVectorPair {
@@ -122,8 +116,8 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
         buffer += sizeof(int32_t);
     }
 
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
+    // TODO: verify length
+    // assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
 }
 
 /// Construct from serialized buffer.
@@ -214,67 +208,6 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
     return result;
 }
 
-void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIndex, int16_t starIndex) {
-    int size = sizeof(quad);
-    for(int i = 0; i < sizeof(quad); i++) {
-        int dist1 = AngleUnit(catalog[centralIndex].spatial, catalog[i].spatial);
-        int dist2 = AngleUnit(catalog[centralIndex].spatial, catalog[starIndex].spatial);
-        if(dist2 < dist1) {
-            quad.insert(quad.cbegin() + i, starIndex);
-            break;
-        }
-    }
-    if(sizeof(quad) - size == 0) {
-        quad.push_back(starIndex);
-    }
-}
-
-float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo) {
-    return (1 - oneToTwo) / (2 - centralToOne - centralToTwo);
-}
-
-float StarParameterB(float centralToOne, float centralToTwo, float centralToThree) {
-    return (centralToTwo - centralToOne) / (centralToOne - centralToThree);
-}
-
-std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance) {
-    std::vector<KVectorQuad> result;
-    for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
-        std::vector<int16_t> quad;
-        for (int16_t j = 0; j < (int16_t)catalog.size(); j++) {
-            if(i != j) {
-                Insert(catalog, quad, i, j);
-                if(sizeof(quad) > 3) {
-                    quad.resize(3);
-                }
-            }
-        }
-        assert(sizeof(quad) == 3);
-        float pa1 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
-                AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
-                AngleUnit(catalog[0].spatial, catalog[quad[1]].spatial));
-        float pa2 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
-                AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
-                AngleUnit(catalog[1].spatial, catalog[quad[2]].spatial));
-        float pa3 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
-                AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
-                AngleUnit(catalog[0].spatial, catalog[quad[2]].spatial));
-        float pb = StarParameterB(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
-                AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
-                AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial));
-        result.push_back({i, quad.at(0), quad.at(1), quad.at(2), pa1, pa2, pa3, pb});
-    }
-    return result;
-}
-
-
-void BinFunctionND() {
-    
-}
-void SerializeKVectorND() {
-    
-}
-
 long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
     return SerializeLengthKVectorIndex(numBins) + 2*sizeof(int16_t)*numPairs;
 }
@@ -318,6 +251,35 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
+unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, float* max, long numBins, unsigned char *buffer, int entries) {
+
+    unsigned char *bufferStart = buffer;
+    // metadata fields
+    *(int32_t *)buffer = entries; // Entries
+    buffer += sizeof(int32_t);
+    for(int i = 0; i < 4; i++) {
+        *(float *)buffer = min[i];
+        buffer += sizeof(float);
+        *(float *)buffer = max[i];
+        buffer += sizeof(float);
+    }
+    *(int32_t *)buffer = numBins; // quartic root of the real number of bins
+    buffer += sizeof(int32_t);
+
+    // kvector index field
+    // you could probably do this with memcpy instead, but the explicit loop is necessary for endian
+    // concerns? TODO endianness
+    for (int i = 0; i < sizeof(kVector); i++) {
+        *(int32_t *)buffer = kVector[i];
+        buffer += sizeof(int32_t);
+    }
+
+    // verify length
+    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
+
+    return buffer;
+}
+
 /// Create the database from a serialized buffer.
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
@@ -325,6 +287,149 @@ PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *bu
     // TODO: errors? (not even sure what i meant by this comment anymore)
     buffer += SerializeLengthKVectorIndex(index.NumBins());
     pairs = (const int16_t *)buffer;
+}
+
+
+void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIndex, int16_t starIndex) {
+    int size = sizeof(quad);
+    for(int i = 0; i < sizeof(quad); i++) {
+        int dist1 = AngleUnit(catalog[centralIndex].spatial, catalog[i].spatial);
+        int dist2 = AngleUnit(catalog[centralIndex].spatial, catalog[starIndex].spatial);
+        if(dist2 < dist1) {
+            quad.insert(quad.cbegin() + i, starIndex);
+            break;
+        }
+    }
+    if(sizeof(quad) - size == 0) {
+        quad.push_back(starIndex);
+    }
+}
+
+float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo) {
+    return (1 - oneToTwo) / (2 - centralToOne - centralToTwo);
+}
+
+float StarParameterB(float centralToOne, float centralToTwo, float centralToThree) {
+    return (centralToTwo - centralToOne) / (centralToOne - centralToThree);
+}
+
+std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance) {
+    std::vector<KVectorQuad> result;
+    for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
+        std::vector<int16_t> quad;
+        for (int16_t j = 0; j < (int16_t)catalog.size(); j++) {
+            if(i != j) {
+                Insert(catalog, quad, i, j);
+                if(sizeof(quad) > 3) {
+                    quad.resize(3);
+                }
+            }
+        }
+        assert(sizeof(quad) == 3);
+        if(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial) > minDistance && AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial) < maxDistance) {
+            float pa1 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
+                AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
+                AngleUnit(catalog[0].spatial, catalog[quad[1]].spatial));
+            float pa2 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
+                    AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
+                    AngleUnit(catalog[1].spatial, catalog[quad[2]].spatial));
+            float pa3 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
+                    AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
+                    AngleUnit(catalog[0].spatial, catalog[quad[2]].spatial));
+            float pb = StarParameterB(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
+                    AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
+                    AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial));
+            int16_t stars[] = {i, quad.at(0), quad.at(1), quad.at(2)};
+            float parameters[] = {pa1, pa2, pa3, pb};
+            result.push_back({stars, parameters});
+        }
+            
+    }
+    return result;
+}
+
+
+int BinFunctionND(KVectorQuad &quad, float* offset, float* scale, int* product) {
+    int bin = 0;
+    for(int i = 0; i < 4; i++) {
+        bin += std::floor(scale[i] * (quad.parameters[i] - offset[i])) * product[i];
+    }
+    return bin;
+}
+
+void SerializeKVectorND(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
+    std::vector<KVectorQuad> quads = CatalogToQuadDistances(catalog, minDistance, maxDistance);
+    assert(sizeof(quads) > 0);
+
+    // Preprocessing: Finding boundaries along axes
+    float min[] = {quads[0].parameters[0], quads[0].parameters[1], quads[0].parameters[2], quads[0].parameters[3]};
+    float max[] = {quads[0].parameters[0], quads[0].parameters[1], quads[0].parameters[2], quads[0].parameters[3]};
+    for(int i = 1; i < sizeof(quads); i++) {
+        KVectorQuad quad = quads[i];
+        for(int j = 0; j < 4; j++) {
+            float param = quad.parameters[i];
+            if(param < min[i]) {
+                min[i] = param;
+            }
+            if(param > max[i]) {
+                max[i] = param;
+            }
+        }
+    }
+    
+    // Preprocessing: Calculating scaling factors
+    float scale[4];
+    int product[] = {1, 1, 1, 1, 1};
+    for(int i = 0; i < 4; i++) {
+        scale[i] = numBins / (max[i] - min[i]);
+        product[i + 1] = product[i] * numBins;
+    }
+    
+    // Preprocessing: Finding bins for all elements
+    KVectorQuad* pointers[sizeof(quads)];
+    int bins[sizeof(quads)];
+    for(int i = 0; i < sizeof(quads); i++) {
+        pointers[i] = &quads[i];
+        bins[i] = BinFunctionND(quads[i], min, scale, product);
+    }
+
+    // KVector Positions
+    int32_t kVector[product[4] + 1];
+    for(int i = 0; i < product[4]; i++) {
+        kVector[bins[i]]++;
+    }
+    int32_t sum = 0;
+    for(int i = 0; i < sizeof(kVector); i++) {
+        int32_t temp = kVector[i];
+        kVector[i] = sum;
+        sum += temp;
+    }
+    kVector[product[4]] = sum;
+
+    // Sorting all elements
+    KVectorQuad* sortedPointers[sizeof(pointers)];
+    int positions[product[4]];
+    for(int i = 0; i < sizeof(sortedPointers); i++) {
+        int bin = bins[i];
+        sortedPointers[kVector[bin] + positions[bin]] = pointers[i];
+        positions[bin]++;
+    }
+    
+    // Metadata and KVector Positions
+    unsigned char *bufferStart = buffer;
+    buffer = SerializeQuadKVectorIndex(kVector, min, max, numBins, buffer, sizeof(quads));
+
+    
+    for (int i = 0; i < sizeof(sortedPointers); i++) {
+        for(int j = 0; j < 4; j++) {
+            *(int16_t *)buffer = sortedPointers[i]->parameters[j];
+            buffer += sizeof(int16_t);
+        }
+    }
+
+    // TODO: verify length
+    // assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
+
 }
 
 /// Return the value in the range [low,high] which is closest to num
