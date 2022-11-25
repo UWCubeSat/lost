@@ -248,6 +248,7 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 /// Add a pair-distance KVector database to the given builder.
+// TODO: make this static?
 void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
@@ -262,7 +263,27 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
 }
 
 
-// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, )
+
+
+/*
+
+void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, constants...){
+    // Probably need patt vector of shorts for sure
+    long dbLength = SerializeLengthTetraDatabase(catalog, sta)
+    unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::magicValue, length);
+    if(buffer == NULL){
+        std::cerr >> "No room for another database." << std::endl;
+    }
+    SerializeTetraDatabase(catalog, ....)
+    // SerializeLength and SerializeDatabase do the exact same thing, except SerializeLength generates the database and does nothing with it
+}
+
+*/
+
+// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog& catalog, const std::vector<short>& pattStars){
+
+
+// }
 
 
 
@@ -278,6 +299,16 @@ void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, co
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
+
+    /*
+
+    if(values.tetra){
+        // whatever needed constants
+        BuildTetraDatabase(builder, catalog, constants...)
+    }
+
+
+    */
 
 }
 

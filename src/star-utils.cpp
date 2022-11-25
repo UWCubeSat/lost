@@ -21,6 +21,7 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
+        // Somewhat unintuitively, higher magnitude => dimmmer and v.v.
         if (catalog[i].magnitude <= maxMagnitude) {
             result.push_back(catalog[i]);
         }
@@ -34,6 +35,7 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     return result;
 }
 
+// TODO: maxFovDeg is possibly misleading, more accurately maxAovDeg
 std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog, const float maxFovDeg){
 
     // TODO: pass through constructor or keep constant?
@@ -43,7 +45,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
     const float starMinSep = 0.05;
     // const float pattMaxError = 0.005;
 
-    // The following especially
+    // Should change to maxAOV
     const float maxFOV = DegToRad(maxFovDeg);
     // const short pattSize = 4;
     // const short pattBins = 25;
@@ -122,6 +124,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
     std::vector<short> pattStars;
     short cumulativeSum = -1;
 
+    // TODO: feels like there's a smarter way to do this
     for(int i = 0; i < (int)keepForVerifying.size(); i++){
         if(keepForVerifying[i]){
             cumulativeSum++;
@@ -133,7 +136,6 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
     }
 
     std::pair<Catalog, std::vector<short>> res{finalCat, pattStars};
-
     return res;
 }
 
@@ -248,8 +250,11 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
     assert(buffer-bufferStart == SerializeLengthCatalog(catalog, inclMagnitude, inclName));
 }
 
-// TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so
-// we can just copy it to memory then cast
+// TODO (longer term): don't deserialize the catalog, store it on disk using the
+// in-memory format so we can just copy it to memory then cast Sus, 333 hw3
+// comes to mind...
+// https://courses.cs.washington.edu/courses/cse333/22au/hw/hw3/hw3.html
+
 
 /**
  * Deserialize a catalog.

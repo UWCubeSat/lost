@@ -7,6 +7,9 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <map>
+#include <array>
+#include <set>
 
 #include "attitude-utils.hpp"
 #include "star-utils.hpp"
@@ -288,6 +291,170 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
         }
     }
     return result;
+}
+
+
+///////////////////// Tetra database //////////////////////
+
+typedef std::array<short, 3> ShortVec3;
+typedef std::array<float, 3> FloatVec3;
+
+void SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer, std::vector<short>& pattStars) {
+
+    maxFov = DegToRad(maxFov);
+    const short pattBins = 25;
+
+    std::map<ShortVec3, std::set<short>> tempCoarseSkyMap;
+    const int tempBins = 4;
+    for(short starID : pattStars){
+        ShortVec3 hash = {
+          (short)((catalog[starID].spatial.x + 1) * tempBins),
+          (short)((catalog[starID].spatial.y + 1) * tempBins),
+          (short)((catalog[starID].spatial.z + 1) * tempBins)
+        };
+        tempCoarseSkyMap[hash].insert(starID);
+    }
+
+    auto tempGetNearbyStars = [&tempCoarseSkyMap, &catalog](FloatVec3 vec, float radius, int ind){
+        std::vector<std::vector<int>> hcSpace;
+        for (float x : vec) {
+          std::vector<int> range;
+          int lo = int((x + 1 - radius) * tempBins);
+          lo = std::max(lo, 0);
+          int hi = int((x + 1 + radius) * tempBins);
+          hi = std::min(hi + 1, 2 * tempBins);
+          range.push_back(lo);
+          range.push_back(hi);
+          hcSpace.push_back(range);
+        }
+
+        std::vector<short> nearbyStarIDs;
+
+        for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
+          for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
+            for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
+              ShortVec3 code{short(a), short(b), short(c)};
+              if (tempCoarseSkyMap.count(code) == 0) {
+                continue;
+              }
+              for (short starID : tempCoarseSkyMap[code]) {
+                float dotProd = vec[0] * catalog[starID].spatial.x +
+                                vec[1] * catalog[starID].spatial.y +
+                                vec[2] * catalog[starID].spatial.z;
+                if(dotProd > std::cos(radius)){
+                    nearbyStarIDs.push_back(starID);
+                }
+              }
+            }
+          }
+        }
+
+        return nearbyStarIDs;
+    };
+
+    const int pattSize = 4;
+    typedef std::array<short, pattSize> Pattern;
+    std::vector<Pattern> pattList;
+    Pattern patt{0, 0, 0, 0};
+
+    for(int ind = 0; ind < (int)pattStars.size(); ind++){
+        short firstStarID = pattStars[ind];
+        patt[0] = firstStarID;
+
+        FloatVec3 firstStarVec = {
+            catalog[firstStarID].spatial.x,
+            catalog[firstStarID].spatial.y,
+            catalog[firstStarID].spatial.z
+        };
+
+        ShortVec3 hashCode = {
+            short((firstStarVec[0] + 1) * (float)tempBins),
+            short((firstStarVec[1] + 1) * (float)tempBins),
+            short((firstStarVec[2] + 1) * (float)tempBins),
+        };
+
+        tempCoarseSkyMap[hashCode].erase(patt[0]);
+        auto nearbyStars = tempGetNearbyStars(firstStarVec,maxFov, ind);
+        const int n = (int)nearbyStars.size();
+
+        for(int i = 0; i < n; i++){
+            for(int j = i+1; j < n; j++){
+                for(int k = j+1; k < n; k++){
+                  patt[1] = nearbyStars[i];
+                  patt[2] = nearbyStars[j];
+                  patt[3] = nearbyStars[k];
+
+                  bool pattFits = true;
+                  for (int pair1 = 0; pair1 < pattSize; pair1++) {
+                    for (int pair2 = pair1 + 1; pair2 < pattSize; pair2++) {
+                      float dotProd = catalog[patt[pair1]].spatial.x *
+                                          catalog[patt[pair2]].spatial.x +
+                                      catalog[patt[pair1]].spatial.y *
+                                          catalog[patt[pair2]].spatial.y +
+                                      catalog[patt[pair1]].spatial.z *
+                                          catalog[patt[pair2]].spatial.z;
+                      if (dotProd <= std::cos(maxFov)) {
+                        pattFits = false;
+                        break;
+                      }
+                    }
+                  }
+                  // end of for loop
+                  if(pattFits){
+                    pattList.push_back(patt);
+                  }
+                }
+            }
+        }
+
+    }
+
+    std::cout << "Found " << pattList.size() << " patterns" << std::endl;
+
+    int catalogLength = 2 * (int)pattList.size();
+    std::vector<Pattern> pattCatalog(catalogLength);
+
+    //
+    for (Pattern patt : pattList) {
+        std::vector<float> pattEdgeLengths;
+        for (int i = 0; i < pattSize; i++) {
+            CatalogStar star1 = catalog[patt[i]];
+            for (int j = i + 1; j < pattSize; j++) {
+                // calculate distance between vectors
+                CatalogStar star2 = catalog[patt[j]];
+                float edgeLen =
+                    std::sqrt(std::pow(star2.spatial.x - star1.spatial.x, 2) +
+                              std::pow(star2.spatial.y - star1.spatial.y, 2) +
+                              std::pow(star2.spatial.z - star1.spatial.z, 2));
+                pattEdgeLengths.push_back(edgeLen);
+            }
+        }
+        std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
+
+        float pattLargestEdge =
+            pattEdgeLengths[(int)(pattEdgeLengths.size() - 1)];
+        std::vector<float> pattEdgeRatios;
+        for (int i = 0; i < (int)pattEdgeLengths.size() - 1;
+             i++) {  // size()-1, since we ignore the largest edge
+            pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
+        }
+
+        std::vector<int> key;
+        for (float edgeRatio : pattEdgeRatios) {
+            key.push_back(int(edgeRatio * pattBins));
+        }
+
+        int hashIndex = KeyToIndex(key, pattBins, catalogLength);
+        long long offset = 0;
+        while (true) {
+            int index = int(hashIndex + std::pow(offset, 2)) % catalogLength;
+            offset++;
+            if (pattCatalog[index][0] == 0) {
+                pattCatalog[index] = patt;
+                break;
+            }
+        }
+    }
 }
 
 
