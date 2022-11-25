@@ -296,10 +296,19 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
 
 ///////////////////// Tetra database //////////////////////
 
+int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) {
+    const long long MAGIC_RAND = 2654435761;
+    long index = 0;
+    for (int i = 0; i < (int)key.size(); i++) {
+        index += key[i] * std::pow(binFactor, i);
+    }
+    return (index * MAGIC_RAND) % maxIndex;
+}
+
 typedef std::array<short, 3> ShortVec3;
 typedef std::array<float, 3> FloatVec3;
 
-void SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer, std::vector<short>& pattStars) {
+long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer, std::vector<short>& pattStars, bool ser) {
 
     maxFov = DegToRad(maxFov);
     const short pattBins = 25;
@@ -455,6 +464,21 @@ void SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
             }
         }
     }
+
+    // Done with everything, write to buffer
+
+    if(ser){
+        for (Pattern patt : pattCatalog) {
+            for (int i = 0; i < pattSize; i++) {
+                *((short *)buffer) = patt[i];
+                buffer += sizeof(short);
+            }
+        }
+        return -1;
+    }else{
+        return sizeof(short) * pattCatalog.size() * pattSize;
+    }
+
 }
 
 
