@@ -73,9 +73,21 @@ private:
     const int16_t *pairs;
 };
 
-// class TetraDatabase{
 
-// }
+long SerializeTetraDatabase(const Catalog &, float maxFov,
+                            unsigned char *buffer,
+                            std::vector<short> &pattStars, bool ser);
+
+class TetraDatabase {
+   public:
+    explicit TetraDatabase(const unsigned char *buffer);
+
+
+    // TODO: choose a different value
+    /// Magic value to use when storing inside a MultiDatabase
+    static const int32_t kMagicValue = 0xDEADBEEF;
+
+};
 
 // /**
 //  * @brief Stores "inner angles" between star triples

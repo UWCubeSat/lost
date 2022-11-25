@@ -262,8 +262,12 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
     // TODO: also parse it and print out some stats before returning
 }
 
+void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
+                        const std::vector<short> &pattStars) {
 
 
+
+}
 
 /*
 
@@ -280,10 +284,7 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, c
 
 */
 
-// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog& catalog, const std::vector<short>& pattStars){
 
-
-// }
 
 
 

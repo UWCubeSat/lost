@@ -358,50 +358,50 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 }
 
 // TODO: remove these functions
-void TetraDatabase::fillStarTable() {
-    std::ifstream file;
-    file.open("amendStarTable.txt");
+// void TetraDatabase::fillStarTable() {
+//     std::ifstream file;
+//     file.open("amendStarTable.txt");
 
-    starTable.clear();
-    float num;
-    int col = 0;
-    std::vector<float> tableRow;
-    while (file >> num) {
-        // std::cout << num << std::endl;
-        if (col == 0) {
-            tableRow.clear();
-        }
-        tableRow.push_back(num);
-        col++;
-        if (col == 7) {
-            col = 0;
-            starTable.push_back(tableRow);
-        }
-    }
-    file.close();
-}
+//     starTable.clear();
+//     float num;
+//     int col = 0;
+//     std::vector<float> tableRow;
+//     while (file >> num) {
+//         // std::cout << num << std::endl;
+//         if (col == 0) {
+//             tableRow.clear();
+//         }
+//         tableRow.push_back(num);
+//         col++;
+//         if (col == 7) {
+//             col = 0;
+//             starTable.push_back(tableRow);
+//         }
+//     }
+//     file.close();
+// }
 
-void TetraDatabase::fillPattCatalog() {
-    std::ifstream file;
-    file.open("pattCatalog.txt");
+// void TetraDatabase::fillPattCatalog() {
+//     std::ifstream file;
+//     file.open("pattCatalog.txt");
 
-    pattCatalog.clear();
-    int num;
-    int col = 0;
-    std::vector<int> tableRow;
-    while (file >> num) {
-        if (col == 0) {
-            tableRow.clear();
-        }
-        tableRow.push_back(num);
-        col++;
-        if (col == 4) {  // hardcoded numPattStars
-            col = 0;
-            pattCatalog.push_back(tableRow);
-        }
-    }
-    file.close();
-}
+//     pattCatalog.clear();
+//     int num;
+//     int col = 0;
+//     std::vector<int> tableRow;
+//     while (file >> num) {
+//         if (col == 0) {
+//             tableRow.clear();
+//         }
+//         tableRow.push_back(num);
+//         col++;
+//         if (col == 4) {  // hardcoded numPattStars
+//             col = 0;
+//             pattCatalog.push_back(tableRow);
+//         }
+//     }
+//     file.close();
+// }
 
 StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *,
                                          const Stars &stars,

@@ -24,32 +24,32 @@ public:
 
 /// Class just to hold the Tetra "databases" for now
 // TODO: remove
-class TetraDatabase {
-   public:
-    // Generated at FOV = 12
-    TetraDatabase()
-        : pattCatalog(11841082, std::vector<int>(4)),
-          starTable(8416, std::vector<float>(7)) {}
+// class TetraDatabase {
+//    public:
+//     // Generated at FOV = 12
+//     TetraDatabase()
+//         : pattCatalog(11841082, std::vector<int>(4)),
+//           starTable(8416, std::vector<float>(7)) {}
 
-    // pattCatalog is a 2D matrix, with 11841082 rows and 4 columns (starIDs)
-    std::vector<std::vector<int>> pattCatalog;
-    // std::vector<std::vector<int>> pattCatalog (std::vector<int>(4),
-    // 11841082); int pattCatalog[11841082][4];
-    // TODO: seg faulting if I make the vector back into an array
-    // This overflows the stack?
+//     // pattCatalog is a 2D matrix, with 11841082 rows and 4 columns (starIDs)
+//     std::vector<std::vector<int>> pattCatalog;
+//     // std::vector<std::vector<int>> pattCatalog (std::vector<int>(4),
+//     // 11841082); int pattCatalog[11841082][4];
+//     // TODO: seg faulting if I make the vector back into an array
+//     // This overflows the stack?
 
-    // starTable is a 2D matrix, with 8416 rows and 7 columns
-    // Columns: RA, DE, x, y, z, Magnitude, Star ID
-    // x, y, and z correspond to the Vec3 spatial vector for this star
-    // Star ID in each row is exactly what is displayed on annotated.png
-    // TODO: HR number I think?
-    std::vector<std::vector<float>> starTable;
-    // float starTable[8416][7];
-    // TODO: do it this way, otherwise we get a seg fault
+//     // starTable is a 2D matrix, with 8416 rows and 7 columns
+//     // Columns: RA, DE, x, y, z, Magnitude, Star ID
+//     // x, y, and z correspond to the Vec3 spatial vector for this star
+//     // Star ID in each row is exactly what is displayed on annotated.png
+//     // TODO: HR number I think?
+//     std::vector<std::vector<float>> starTable;
+//     // float starTable[8416][7];
+//     // TODO: do it this way, otherwise we get a seg fault
 
-    void fillPattCatalog();
-    void fillStarTable();
-};
+//     void fillPattCatalog();
+//     void fillStarTable();
+// };
 
 class TetraStarIdAlgorithm: public StarIdAlgorithm{
 public:
