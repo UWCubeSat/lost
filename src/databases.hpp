@@ -76,7 +76,7 @@ private:
 
 long SerializeTetraDatabase(const Catalog &, float maxFov,
                             unsigned char *buffer,
-                            std::vector<short> &pattStars, bool ser);
+                            const std::vector<short> &pattStars, bool ser);
 
 class TetraDatabase {
    public:

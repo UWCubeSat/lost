@@ -266,6 +266,14 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
                         const std::vector<short> &pattStars) {
 
 
+   const float maxFov = 12.00; // degrees, TODO: don't hardcode it, see star-id
+   long length = SerializeTetraDatabase(catalog, maxFov, nullptr, pattStars, false);
+   unsigned char* buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
+   if(buffer == nullptr){
+    std::cerr << "Error: No room for Tetra database" << std::endl;
+   }
+   SerializeTetraDatabase(catalog, maxFov, buffer, pattStars, true);
+
 
 }
 

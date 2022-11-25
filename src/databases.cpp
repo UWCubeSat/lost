@@ -22,6 +22,7 @@ struct KVectorPair {
     float distance;
 };
 
+
 bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
     return p1.distance < p2.distance;
 }
@@ -308,7 +309,7 @@ int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) {
 typedef std::array<short, 3> ShortVec3;
 typedef std::array<float, 3> FloatVec3;
 
-long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer, std::vector<short>& pattStars, bool ser) {
+long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer, const std::vector<short>& pattStars, bool ser) {
 
     maxFov = DegToRad(maxFov);
     const short pattBins = 25;
