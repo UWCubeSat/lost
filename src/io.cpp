@@ -292,32 +292,36 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, c
 
 */
 
-
-
-
-
-/// Generate and add databases to the given multidatabase builder according to the command line options in `values`
-void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
-
+void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
+                            const DatabaseOptions &values,
+                            std::vector<short> &pattStars){
+    // stuff
     if (values.kvector) {
-        float minDistance = DegToRad(values.kvectorMinDistance);
-        float maxDistance = DegToRad(values.kvectorMaxDistance);
-        long numBins = values.kvectorNumDistanceBins;
-        BuildPairDistanceKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+        BuildTetraDatabase(builder, catalog, pattStars);
+
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
 
-    /*
+}
 
-    if(values.tetra){
-        // whatever needed constants
-        BuildTetraDatabase(builder, catalog, constants...)
+/// Generate and add databases to the given multidatabase builder according to the command line options in `values`
+void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
+
+    if (values.kvector) {
+        // TODO: change to allow Tetra or kvector
+        float minDistance = DegToRad(values.kvectorMinDistance);
+        float maxDistance = DegToRad(values.kvectorMaxDistance);
+        long numBins = values.kvectorNumDistanceBins;
+        BuildPairDistanceKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+
+        // values contains stuff from CLI, think about if any constants can be passed there (maybe maxFov)
+        // TODO: question is, how to get pattStars into BuildTetraDatabase?
+    } else {
+        std::cerr << "No database builder selected -- no database generated." << std::endl;
+        exit(1);
     }
-
-
-    */
 
 }
 

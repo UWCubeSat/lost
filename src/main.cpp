@@ -20,6 +20,7 @@
 #include "io.hpp"
 #include "man-database.h"
 #include "man-pipeline.h"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -32,7 +33,12 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     // pattern catalog generation for tetra needs to modify catalog another time
     // TODO: our final modification to star table also needs to pass pattStars to here for db generation
     // TODO: edit CLI, but this should do for now
-
+    // TODO: oh god change the variable names
+    // TODO: again, don't hardcode this- put it ONCE somewhere
+    const float maxFov = 12;
+    auto tetraStuff = TetraPreparePattCat(narrowedCatalog, maxFov);
+    narrowedCatalog = tetraStuff.first;
+    std::vector<short> pattStars = tetraStuff.second;
 
 
 
@@ -43,7 +49,12 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    GenerateDatabases(&builder, narrowedCatalog, values);
+    if(true){
+      GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars);
+    }else{
+      GenerateDatabases(&builder, narrowedCatalog, values);
+    }
+
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 

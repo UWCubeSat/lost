@@ -261,6 +261,9 @@ public:
 void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values);
 // void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
+// TODO: change this
+void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values, std::vector<short>& pattStars);
+
 /////////////////////
 // INSPECT CATALOG //
 /////////////////////
