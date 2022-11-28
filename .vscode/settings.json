@@ -68,6 +68,8 @@
         "cassert": "cpp",
         "cerrno": "cpp",
         "cfloat": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "hash_map": "cpp",
+        "valarray": "cpp"
     }
 }

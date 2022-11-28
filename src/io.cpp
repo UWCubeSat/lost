@@ -761,7 +761,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         MultiDatabase multiDatabase(database.get());
         const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
         if (catalogBuffer != NULL) {
-            result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+            result.catalog = DeserializeCatalog(catalogBuffer, NULL, NULL);
         } else {
             std::cerr << "Warning: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
             result.catalog = input.GetCatalog();
