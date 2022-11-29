@@ -242,15 +242,23 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                 // TODO: note that star IS the catalogIndex
                 // Instead of scanning through entire catalog at the end (O(11 million)), just
                 // scan through the 4 stars of the pattern
+
                 float *row = new float[starTableRowSize];
                 starTableFile.seekg(sizeof(float) * starTableRowSize * star,
                                     std::ios::beg);
                 starTableFile.read((char *)row,
                                    sizeof(float) * starTableRowSize);
 
-                Vec3 catVec(row[2], row[3], row[4]);
-                catStarIDs.push_back(row[6]);
 
+                CatalogStar catstar = catalog[star];
+                Vec3 catVec(catstar.spatial.x, catstar.spatial.y,
+                            catstar.spatial.z);
+                catStarIDs.push_back(catstar.name);
+
+                // Vec3 catVec(row[2], row[3], row[4]);
+                // catStarIDs.push_back(row[6]);
+
+                // OUTDATED, delete completely
                 // Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
                 //             db.starTable[star][4]);
                 // catStarIDs.push_back(db.starTable[star][6]);

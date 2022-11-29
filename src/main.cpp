@@ -26,8 +26,11 @@ namespace lost {
 
 /// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars);
+    // Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag * 100), values.maxStars);
+    std::cout << "minMag: " << values.minMag << std::endl;
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), 700, 999999999);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+    // 9050 stars
 
 
     // pattern catalog generation for tetra needs to modify catalog another time
@@ -38,6 +41,8 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     const float maxFov = 12;
     auto tetraStuff = TetraPreparePattCat(narrowedCatalog, maxFov);
     narrowedCatalog = tetraStuff.first;
+    std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+
     std::vector<short> pattStars = tetraStuff.second;
 
 
@@ -49,14 +54,15 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    if(true){
+    if (true) {
       GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars);
-    }else{
+      std::cout << "Generated TETRA database with " << builder.BufferLength()
+                << " bytes" << std::endl;
+    } else {
       GenerateDatabases(&builder, narrowedCatalog, values);
+      std::cout << "Generated normal database with " << builder.BufferLength()
+                << " bytes" << std::endl;
     }
-
-
-    std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
     PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
     pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());

@@ -124,16 +124,30 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
     std::vector<short> pattStars;
     short cumulativeSum = -1;
 
-    // TODO: feels like there's a smarter way to do this
+    for(int i = 0; i < (int)keepForVerifying.size(); i++){
+        if(keepForVerifying[i]){
+            finalCat.push_back(catalog[i]);
+        }
+    }
+
     for(int i = 0; i < (int)keepForVerifying.size(); i++){
         if(keepForVerifying[i]){
             cumulativeSum++;
-            finalCat.push_back(catalog[i]);
         }
         if(keepForPatterns[i]){
             pattStars.push_back(cumulativeSum);
         }
     }
+    // TODO: feels like there's a smarter way to do this
+    // for(int i = 0; i < (int)keepForVerifying.size(); i++){
+    //     if(keepForVerifying[i]){
+    //         cumulativeSum++;
+    //         finalCat.push_back(catalog[i]);
+    //     }
+    //     if(keepForPatterns[i]){
+    //         pattStars.push_back(cumulativeSum);
+    //     }
+    // }
 
     std::pair<Catalog, std::vector<short>> res{finalCat, pattStars};
     return res;
