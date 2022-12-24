@@ -70,6 +70,13 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                          &raj2000, &dej2000,
                          &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
+        // TODO: how can magnitudeHigh be < 0
+        // Do we need to store RA and DEC for current year?
+        // I don't think our stable stores these valeus though
+        // Intuitively these shouldn't change much anyway
+
+        if(raj2000 == 0.0 && dej2000 == 0.0) continue;
+
         result.push_back(CatalogStar(DegToRad(raj2000),
                                      DegToRad(dej2000),
                                      magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
@@ -785,6 +792,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
     } else if(values.idAlgo == "tetra"){
+        // TODO: change this
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TetraStarIdAlgorithm());
     }else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;

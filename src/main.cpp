@@ -27,8 +27,10 @@ namespace lost {
 /// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
     // Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag * 100), values.maxStars);
-    std::cout << "minMag: " << values.minMag << std::endl;
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), 700, 999999999);
+
+    // Default minMag is 100
+    // So min magnitude is 7 right now
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), 700, 999999);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
     // 9050 stars
 
@@ -36,15 +38,14 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     // pattern catalog generation for tetra needs to modify catalog another time
     // TODO: our final modification to star table also needs to pass pattStars to here for db generation
     // TODO: edit CLI, but this should do for now
-    // TODO: oh god change the variable names
-    // TODO: again, don't hardcode this- put it ONCE somewhere
-    const float maxFov = 12;
+    // TODO: maxFov should be included in DatabaseOptions
+    const float maxFov = 12; // degrees
     auto tetraStuff = TetraPreparePattCat(narrowedCatalog, maxFov);
     narrowedCatalog = tetraStuff.first;
     std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+    // 7102 stars, significant drop
 
     std::vector<short> pattStars = tetraStuff.second;
-
 
 
     MultiDatabaseBuilder builder;
@@ -54,7 +55,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    if (true) {
+    if (false) {
       GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars);
       std::cout << "Generated TETRA database with " << builder.BufferLength()
                 << " bytes" << std::endl;

@@ -21,55 +21,56 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
-        // Somewhat unintuitively, higher magnitude => dimmmer and v.v.
+        // Higher magnitude implies the star is dimmer
         if (catalog[i].magnitude <= maxMagnitude) {
             result.push_back(catalog[i]);
         }
     }
+    // TODO: sort regardless?
+    std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
+
     if (maxStars < (int)result.size()) {
-        // TODO: could change to stable sort
-        std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
+        // std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
         result.resize(maxStars);
     }
 
     return result;
 }
 
-// TODO: maxFovDeg is possibly misleading, more accurately maxAovDeg
 std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog, const float maxFovDeg){
 
-    // TODO: pass through constructor or keep constant?
+    // TODO: I suggest these values be kept constant
     const int pattStarsPerFOV = 10;
     const int verificationStarsPerFOV = 20;
-    // const float starMaxMag = 7.0;
+    // To eliminate double stars, specify that star must be > 0.05 degrees apart
     const float starMinSep = 0.05;
-    // const float pattMaxError = 0.005;
 
-    // Should change to maxAOV
     const float maxFOV = DegToRad(maxFovDeg);
-    // const short pattSize = 4;
-    // const short pattBins = 25;
 
     int numEntries = catalog.size();
     int keepForPattCount = 1;
     std::vector<bool> keepForPatterns(numEntries);
     std::vector<bool> keepForVerifying(numEntries);
 
+    // Definitely keep the first star
     keepForPatterns[0] = true;
     keepForVerifying[0] = true;
 
     for(int ind = 1; ind < numEntries; ind++){
         Vec3 vec = catalog[ind].spatial;
 
-        std::vector<float> angsPatterns;
+        // We should test each new star's angular distance to all stars
+        // we've already selected to be kept for pattern construction
+        std::vector<float> angsToPatterns;
         for(int j = 0; j < numEntries; j++){
             if(keepForPatterns[j]){
-                // float dotProd = vec *
                 float dotProd = vec * catalog[j].spatial;
-                angsPatterns.push_back(dotProd);
+                angsToPatterns.push_back(dotProd);
             }
         }
 
+        // Same thing here, we should test each new star's angular distance to all
+        // stars we've already selected to be kept for verification
         std::vector<float> angsVerifying;
         for(int j = 0; j < numEntries; j++){
             if(keepForVerifying[j]){
@@ -79,7 +80,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
         }
 
         bool angsPatternsOK = true;
-        for(float angPatt : angsPatterns){
+        for(float angPatt : angsToPatterns){
             // if(angPatt >= std::cos())
             if(angPatt >= std::cos(DegToRad(starMinSep))){
                 angsPatternsOK = false;
@@ -88,7 +89,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
         }
         if (angsPatternsOK) {
             int numStarsInFOV = 0;
-            for(float angPatt : angsPatterns){
+            for(float angPatt : angsToPatterns){
                 if(angPatt > std::cos(maxFOV / 2)){
                     numStarsInFOV++;
                 }
