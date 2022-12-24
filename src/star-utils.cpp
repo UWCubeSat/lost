@@ -49,76 +49,81 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
 
     int numEntries = catalog.size();
     int keepForPattCount = 1;
-    std::vector<bool> keepForPatterns(numEntries);
-    std::vector<bool> keepForVerifying(numEntries);
+    std::vector<bool> keepForPatterns(numEntries, false);
+    std::vector<bool> keepForVerifying(numEntries, false);
+
+    // NOTE: pattern set will always be a subset of verification set
+    // We technically don't even need the verification set unless we plan
+    // to calculate probability of mismatch - (which we probably should)
 
     // Definitely keep the first star
     keepForPatterns[0] = true;
     keepForVerifying[0] = true;
 
-    for(int ind = 1; ind < numEntries; ind++){
-        Vec3 vec = catalog[ind].spatial;
+    for (int i = 1; i < numEntries; i++) {
+        Vec3 vec = catalog[i].spatial;
+
+        bool angsPatternsOK = true;
+        int numPattStarsInFov = 0;
 
         // We should test each new star's angular distance to all stars
         // we've already selected to be kept for pattern construction
-        std::vector<float> angsToPatterns;
-        for(int j = 0; j < numEntries; j++){
+        // Stop early if:
+        // a) double star: angle < min separation allowed
+        // b) Number of stars in region maxFov/2 >= pattStarsPerFOV
+        // std::vector<float> angsToPatterns;
+        for (int j = 0; j < i; j++) {
             if(keepForPatterns[j]){
                 float dotProd = vec * catalog[j].spatial;
-                angsToPatterns.push_back(dotProd);
-            }
-        }
-
-        // Same thing here, we should test each new star's angular distance to all
-        // stars we've already selected to be kept for verification
-        std::vector<float> angsVerifying;
-        for(int j = 0; j < numEntries; j++){
-            if(keepForVerifying[j]){
-                float dotProd = vec * catalog[j].spatial;
-                angsVerifying.push_back(dotProd);
-            }
-        }
-
-        bool angsPatternsOK = true;
-        for(float angPatt : angsToPatterns){
-            // if(angPatt >= std::cos())
-            if(angPatt >= std::cos(DegToRad(starMinSep))){
-                angsPatternsOK = false;
-                break;
-            }
-        }
-        if (angsPatternsOK) {
-            int numStarsInFOV = 0;
-            for(float angPatt : angsToPatterns){
-                if(angPatt > std::cos(maxFOV / 2)){
-                    numStarsInFOV++;
+                // angsToPatterns.push_back(dotProd);
+                if(dotProd >= std::cos(DegToRad(starMinSep))){
+                    angsPatternsOK = false;
+                    break;
+                }
+                if(dotProd > std::cos(maxFOV / 2)){
+                    numPattStarsInFov++;
+                    if(numPattStarsInFov >= pattStarsPerFOV){
+                        angsPatternsOK = false;
+                        break;
+                    }
                 }
             }
-            if(numStarsInFOV < pattStarsPerFOV){
-                keepForPatterns[ind] = true;
-                keepForVerifying[ind] = true;
-                keepForPattCount++;
-            }
+        }
+
+        if(angsPatternsOK){
+            keepForPatterns[i] = true;
+            keepForVerifying[i] = true;
+            keepForPattCount++;
+            continue;
         }
 
         bool angsVerifyingOK = true;
-        for(float angVer: angsVerifying){
-            if(angVer >= std::cos(DegToRad(starMinSep))){
-                angsVerifyingOK = false;
-                break;
-            }
-        }
-        if(angsVerifyingOK){
-            int numStarsInFOV = 0;
-            for(float angVer : angsVerifying){
-                if(angVer > std::cos(maxFOV / 2)){
-                    numStarsInFOV++;
+        int numVerStarsInFov = 0;
+
+        // Same thing here, we should test each new star's angular distance to all
+        // stars we've already selected to be kept for verification
+        // std::vector<float> angsVerifying;
+        for (int j = 0; j < i; j++) {
+            if(keepForVerifying[j]){
+                float dotProd = vec * catalog[j].spatial;
+                if (dotProd >= std::cos(DegToRad(starMinSep))) {
+                    angsVerifyingOK = false;
+                    break;
+                }
+                if (dotProd > std::cos(maxFOV / 2)) {
+                    numVerStarsInFov++;
+                    if (numVerStarsInFov >= verificationStarsPerFOV) {
+                        angsVerifyingOK = false;
+                        break;
+                    }
                 }
             }
-            if(numStarsInFOV < verificationStarsPerFOV){
-                keepForVerifying[ind] = true;
-            }
         }
+
+        if(angsVerifyingOK){
+            keepForVerifying[i] = true;
+        }
+
     }
 
     Catalog finalCat;
