@@ -326,9 +326,11 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
   const short pattBins = 25;
   const int tempBins = 4;
 
-  // std::map<ShortVec3, std::set<short>> tempCoarseSkyMap;
+
   // TODO: unorderd_map might be better
   std::map<Vec3, std::vector<short>> tempCoarseSkyMap;
+
+  //  // std::map<ShortVec3, std::set<short>> tempCoarseSkyMap;
 
   for (const short starID : pattStars) {
     // ShortVec3 hash = {
@@ -347,9 +349,12 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
     tempCoarseSkyMap[hash].push_back(starID);
   }
 
-  auto tempGetNearbyStars = [&tempCoarseSkyMap, &catalog](FloatVec3 vec, float radius, int ind) {
+  // Return a list of stars that are nearby
+  auto tempGetNearbyStars = [&tempCoarseSkyMap, &catalog](const Vec3 &vec, float radius) {
+    std::vector<float> components{vec.x, vec.y, vec.z};
+
     std::vector<std::vector<int>> hcSpace;
-    for (float x : vec) {
+    for (float x : components) {
       std::vector<int> range;
       int lo = int((x + 1 - radius) * tempBins);
       lo = std::max(lo, 0);
@@ -360,21 +365,30 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
       hcSpace.push_back(range);
     }
 
+    // hashcode space has 3 ranges, one for each of [x, y, z]
+
     std::vector<short> nearbyStarIDs;
 
     for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
       for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
         for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
-          ShortVec3 code{short(a), short(b), short(c)};
-          if (tempCoarseSkyMap.count(code) == 0) {
-            continue;
-          }
+          //   ShortVec3 code{short(a), short(b), short(c)};
+          Vec3 code{short(a), short(b), short(c)};
+
+          // For each star j in partition with key=code,
+          // see if our star and j have angle < radius. If so, they are nearby
           for (short starID : tempCoarseSkyMap[code]) {
-            float dotProd = vec[0] * catalog[starID].spatial.x +
-                            vec[1] * catalog[starID].spatial.y + vec[2] * catalog[starID].spatial.z;
-            if (dotProd > std::cos(radius)) {
-              nearbyStarIDs.push_back(starID);
+
+            float dotProd = vec * catalog[starID].spatial;
+            if(dotProd > std::cos(radius)){
+                nearbyStarIDs.push_back(starID);
             }
+
+            // float dotProd = vec[0] * catalog[starID].spatial.x +
+            //                 vec[1] * catalog[starID].spatial.y + vec[2] * catalog[starID].spatial.z;
+            // if (dotProd > std::cos(radius)) {
+            //   nearbyStarIDs.push_back(starID);
+            // }
           }
         }
       }
