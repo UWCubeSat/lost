@@ -326,7 +326,6 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
   const short pattBins = 25;
   const int tempBins = 4;
 
-
   // TODO: unorderd_map might be better
   std::map<Vec3, std::vector<short>> tempCoarseSkyMap;
 
@@ -378,14 +377,14 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
           // For each star j in partition with key=code,
           // see if our star and j have angle < radius. If so, they are nearby
           for (short starID : tempCoarseSkyMap[code]) {
-
             float dotProd = vec * catalog[starID].spatial;
-            if(dotProd > std::cos(radius)){
-                nearbyStarIDs.push_back(starID);
+            if (dotProd > std::cos(radius)) {
+              nearbyStarIDs.push_back(starID);
             }
 
             // float dotProd = vec[0] * catalog[starID].spatial.x +
-            //                 vec[1] * catalog[starID].spatial.y + vec[2] * catalog[starID].spatial.z;
+            //                 vec[1] * catalog[starID].spatial.y + vec[2] *
+            //                 catalog[starID].spatial.z;
             // if (dotProd > std::cos(radius)) {
             //   nearbyStarIDs.push_back(starID);
             // }
@@ -398,25 +397,40 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
   };
 
   const int pattSize = 4;
+  // TODO: might switch to vector
   typedef std::array<short, pattSize> Pattern;
   std::vector<Pattern> pattList;
   Pattern patt{0, 0, 0, 0};
 
+  // Construct all possible patterns
   for (int ind = 0; ind < (int)pattStars.size(); ind++) {
     short firstStarID = pattStars[ind];
     patt[0] = firstStarID;
 
-    FloatVec3 firstStarVec = {catalog[firstStarID].spatial.x, catalog[firstStarID].spatial.y,
-                              catalog[firstStarID].spatial.z};
+    // FloatVec3 firstStarVec = {catalog[firstStarID].spatial.x, catalog[firstStarID].spatial.y,
+    //                           catalog[firstStarID].spatial.z};
 
-    ShortVec3 hashCode = {
-        short((firstStarVec[0] + 1) * (float)tempBins),
-        short((firstStarVec[1] + 1) * (float)tempBins),
-        short((firstStarVec[2] + 1) * (float)tempBins),
-    };
+    Vec3 v(catalog[firstStarID].spatial);
+    Vec3 hashCode{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
+                  short((v.z + 1) * tempBins)};
 
-    tempCoarseSkyMap[hashCode].erase(patt[0]);
-    auto nearbyStars = tempGetNearbyStars(firstStarVec, maxFov, ind);
+    // ShortVec3 hashCode = {
+    //     short((firstStarVec[0] + 1) * (float)tempBins),
+    //     short((firstStarVec[1] + 1) * (float)tempBins),
+    //     short((firstStarVec[2] + 1) * (float)tempBins),
+    // };
+
+    // tempCoarseSkyMap[hashCode].erase(patt[0]);
+    // Remove star i from its sky map partition
+    auto removeIt = std::find(tempCoarseSkyMap[hashCode].begin(), tempCoarseSkyMap[hashCode].end(),
+                              firstStarID);
+    if (removeIt == tempCoarseSkyMap[hashCode].end()) {
+      std::cerr << "Fatal error with hashing" << std::endl;
+      exit(1);
+    }
+    tempCoarseSkyMap[hashCode].erase(removeIt);
+
+    auto nearbyStars = tempGetNearbyStars(v, maxFov);
     const int n = (int)nearbyStars.size();
 
     for (int i = 0; i < n; i++) {
@@ -429,9 +443,10 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
           bool pattFits = true;
           for (int pair1 = 0; pair1 < pattSize; pair1++) {
             for (int pair2 = pair1 + 1; pair2 < pattSize; pair2++) {
-              float dotProd = catalog[patt[pair1]].spatial.x * catalog[patt[pair2]].spatial.x +
-                              catalog[patt[pair1]].spatial.y * catalog[patt[pair2]].spatial.y +
-                              catalog[patt[pair1]].spatial.z * catalog[patt[pair2]].spatial.z;
+              float dotProd = catalog[patt[pair1]].spatial * catalog[patt[pair2]].spatial;
+              //   float dotProd = catalog[patt[pair1]].spatial.x * catalog[patt[pair2]].spatial.x +
+              //                   catalog[patt[pair1]].spatial.y * catalog[patt[pair2]].spatial.y +
+              //                   catalog[patt[pair1]].spatial.z * catalog[patt[pair2]].spatial.z;
               if (dotProd <= std::cos(maxFov)) {
                 pattFits = false;
                 break;
@@ -440,6 +455,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
           }
           // end of for loop
           if (pattFits) {
+            // TODO: is it possible for this to not copy? probably not, just check to be sure
             pattList.push_back(patt);
           }
         }
