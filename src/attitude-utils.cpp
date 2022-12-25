@@ -186,12 +186,19 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
+// Allows Vec3 to be used as key in associative containers
+bool Vec3::operator<(const Vec3 &other) const{
+    if (x != other.x) return (x < other.x);
+    if (y != other.y) return (y < other.y);
+    return z < other.z;
+}
+
 /// Dot product
 float Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
-/// Dot product
+/// Vector-scalar multiplication
 Vec2 Vec2::operator*(const float &other) const {
     return { x*other, y*other };
 }

@@ -45,6 +45,7 @@ public:
     float MagnitudeSq() const;
     Vec3 Normalize() const;
 
+    bool operator<(const Vec3 &other) const;
 
     float operator*(const Vec3 &) const;
     Vec3 operator*(const float &) const;
