@@ -262,6 +262,25 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
   assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
+TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer){
+  catalogSize_ = *(int*)buffer;
+  std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
+}
+
+int TetraDatabase::Size() const{
+  return catalogSize_;
+}
+
+std::vector<int> TetraDatabase::GetPattern(int index) const{
+  std::vector<int> res;
+  const unsigned char* p = buffer_ + headerSize;
+  for(int i = 0; i < 4; i++){
+    res.push_back(*((short*)p + 4*index + i));
+  }
+
+  return res;
+}
+
 /// Create the database from a serialized buffer.
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
@@ -317,8 +336,8 @@ int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) {
   return (index * MAGIC_RAND) % maxIndex;
 }
 
-typedef std::array<short, 3> ShortVec3;
-typedef std::array<float, 3> FloatVec3;
+// typedef std::array<short, 3> ShortVec3;
+// typedef std::array<float, 3> FloatVec3;
 
 long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer,
                             const std::vector<short> &pattStars, bool ser) {
@@ -465,10 +484,11 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
 
   std::cout << "Found " << pattList.size() << " patterns" << std::endl;
 
+  // Load factor of 0.5
   int catalogLength = 2 * (int)pattList.size();
   std::vector<Pattern> pattCatalog(catalogLength);
 
-  //
+
   for (Pattern patt : pattList) {
     std::vector<float> pattEdgeLengths;
     for (int i = 0; i < pattSize; i++) {
@@ -476,15 +496,17 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
       for (int j = i + 1; j < pattSize; j++) {
         // calculate distance between vectors
         CatalogStar star2 = catalog[patt[j]];
-        float edgeLen = std::sqrt(std::pow(star2.spatial.x - star1.spatial.x, 2) +
-                                  std::pow(star2.spatial.y - star1.spatial.y, 2) +
-                                  std::pow(star2.spatial.z - star1.spatial.z, 2));
+        // float edgeLen = std::sqrt(std::pow(star2.spatial.x - star1.spatial.x, 2) +
+        //                           std::pow(star2.spatial.y - star1.spatial.y, 2) +
+        //                           std::pow(star2.spatial.z - star1.spatial.z, 2));
+        float edgeLen = (star2.spatial - star1.spatial).Magnitude();
         pattEdgeLengths.push_back(edgeLen);
       }
     }
     std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
 
     float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size() - 1)];
+    // Length = 5 = C(4,2) - 1
     std::vector<float> pattEdgeRatios;
     for (int i = 0; i < (int)pattEdgeLengths.size() - 1;
          i++) {  // size()-1, since we ignore the largest edge
@@ -498,10 +520,11 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
 
     int hashIndex = KeyToIndex(key, pattBins, catalogLength);
     long long offset = 0;
+    // Quadratic probing to find next available bucket for element with key=hashIndex
     while (true) {
       int index = int(hashIndex + std::pow(offset, 2)) % catalogLength;
       offset++;
-      if (pattCatalog[index][0] == 0) {
+      if (pattCatalog[index][0] == 0 && pattCatalog[index][1] == 0) {
         pattCatalog[index] = patt;
         break;
       }
@@ -510,6 +533,8 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
 
   // Done with everything, write to buffer
 
+  *((int*)buffer) = (int)pattCatalog.size();
+  buffer += sizeof(int);
   if (ser) {
     for (Pattern patt : pattCatalog) {
       for (int i = 0; i < pattSize; i++) {
@@ -519,7 +544,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
     }
     return -1;
   } else {
-    return sizeof(short) * pattCatalog.size() * pattSize;
+    return sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize;
   }
 }
 

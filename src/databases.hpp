@@ -69,7 +69,6 @@ public:
 private:
     KVectorIndex index;
     // TODO: endianness
-    // TODO: wut
     const int16_t *pairs;
 };
 
@@ -82,11 +81,22 @@ class TetraDatabase {
    public:
     explicit TetraDatabase(const unsigned char *buffer);
 
+    /// Number of rows in pattern catalog
+    // With load factor of 0.5, size = number of patterns * 2
+    int Size() const;
+
+    // Get the 4-tuple pattern at row=index, 0-based
+    std::vector<int> GetPattern(int index) const;
+
 
     // TODO: choose a different value
     /// Magic value to use when storing inside a MultiDatabase
-    static const int32_t kMagicValue = 0xDEADBEEF;
+    static const int32_t kMagicValue = 0x2536f009;
+    static const int headerSize = sizeof(int);
 
+private:
+    const unsigned char* buffer_;
+    int catalogSize_;
 };
 
 // /**
