@@ -520,4 +520,38 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+StarIdentifiers StarNDAlgorithm::Go(const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
+    StarIdentifiers result;
+    /*
+    Stars starsCopy = copyOf(stars);
+    Array of Star Patterns (0, 1, 2, 3, 4, 5);
+    while(sizeof(starsCopy) > 4) {
+        if(Passes cosines 1, 2, and 4) {
+            // Dependent on Current Star Pattern, but here's the first
+            StarParameterA(0, 1, 2);
+            StarParameterA(0, 2, 3);
+            StarParameterA(0, 1, 3);
+            StarParameterB(0, 1, 2, 3);
+        }
+        Vector search = RangeSearch();
+        if(all have not been ID'ed) {
+            Filter out cosine values and delete from search
+        }
+        if(sizeOf(search) == 0) {
+            if(There are enough stars to move to the next star pattern) {
+                Move to next star pattern
+            } else if(no more star patterns) {
+                Mark as false star -> Maybe just throw out the star from copy
+            }
+        } else if(sizeOf(search) > 1) {
+            choose the one with the highest fit -> Use S^2 or some other metric
+            result.pushback(search.at(0));
+        } else {
+            result.pushback(search.at(0));
+        }
+    }
+    return result;
+    */
+}
+
 }

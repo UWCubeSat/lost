@@ -250,34 +250,10 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     // verify length
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
-
-unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, float* max, long numBins, unsigned char *buffer, int entries) {
-
-    unsigned char *bufferStart = buffer;
-    // metadata fields
-    *(int32_t *)buffer = entries; // Entries
-    buffer += sizeof(int32_t);
-    for(int i = 0; i < 4; i++) {
-        *(float *)buffer = min[i];
-        buffer += sizeof(float);
-        *(float *)buffer = max[i];
-        buffer += sizeof(float);
-    }
-    *(int32_t *)buffer = numBins; // quartic root of the real number of bins
-    buffer += sizeof(int32_t);
-
-    // kvector index field
-    // you could probably do this with memcpy instead, but the explicit loop is necessary for endian
-    // concerns? TODO endianness
-    for (int i = 0; i < sizeof(kVector); i++) {
-        *(int32_t *)buffer = kVector[i];
-        buffer += sizeof(int32_t);
-    }
-
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
-
-    return buffer;
+// 
+long SerializeLengthKVectorNDIndex(int totalBins) {
+    return sizeof(int32_t) + 4 * sizeof(float) + 4 * sizeof(float) 
+            + sizeof(int32_t) + sizeof(int32_t) * (totalBins + 1);
 }
 
 /// Create the database from a serialized buffer.
@@ -289,6 +265,74 @@ PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *bu
     pairs = (const int16_t *)buffer;
 }
 
+KVectorNDIndex::KVectorNDIndex(const unsigned char *buffer) {
+    numValues = *(int32_t *)buffer; // Entries
+    buffer += sizeof(int32_t);
+
+    // Bounds
+    min = (float *) malloc(4 * sizeof(float));
+    max = (float *) malloc(4 * sizeof(float));
+    for(int i = 0; i < 4; i++) {
+        min[i] = *(float *)buffer;
+        buffer += sizeof(float);
+        max[i] = *(float *)buffer;
+        buffer += sizeof(float);
+    }
+
+    long numBins = *(int32_t *)buffer; // quartic root of the real number of bins
+    buffer += sizeof(int32_t);
+
+    binWidth = (float *) malloc(4 * sizeof(float));
+    for(int i = 0; i < 4; i++) {
+        binWidth[i] = (max[i] - min[i]) / numBins;
+        buffer += sizeof(float);
+    }
+
+    bins = (int32_t *)buffer;
+}
+
+KVectorNDIndex::~KVectorNDIndex() {
+    delete[] min; // Would free() be better here?
+    delete[] max;
+    delete[] binWidth;
+}
+
+QuadKVectorNDDatabase::QuadKVectorNDDatabase(const unsigned char *buffer) 
+    : index(buffer) {
+
+    buffer += SerializeLengthKVectorNDIndex(index.NumBins() * index.NumBins() * index.NumBins() * index.NumBins());
+    quads = (const int16_t *)buffer;
+}
+
+unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, float* max, long numBins, unsigned char *buffer, int entries) {
+
+    unsigned char *bufferStart = buffer;
+    // metadata fields
+    *(int32_t *)buffer = entries; // Entries
+    buffer += sizeof(int32_t);
+
+    // Bounds
+    for(int i = 0; i < 4; i++) {
+        *(float *)buffer = min[i];
+        buffer += sizeof(float);
+        *(float *)buffer = max[i];
+        buffer += sizeof(float);
+    }
+
+    *(int32_t *)buffer = numBins; // quartic root of the real number of bins
+    buffer += sizeof(int32_t);
+
+    // kvector index field
+    for (int i = 0; i < sizeof(kVector); i++) {
+        *(int32_t *)buffer = kVector[i];
+        buffer += sizeof(int32_t);
+    }
+
+    // verify length
+    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
+
+    return buffer;
+}
 
 void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIndex, int16_t starIndex) {
     int size = sizeof(quad);
@@ -419,10 +463,10 @@ void SerializeKVectorND(const Catalog &catalog, float minDistance, float maxDist
     unsigned char *bufferStart = buffer;
     buffer = SerializeQuadKVectorIndex(kVector, min, max, numBins, buffer, sizeof(quads));
 
-    
+    // indexes for each quad entry
     for (int i = 0; i < sizeof(sortedPointers); i++) {
         for(int j = 0; j < 4; j++) {
-            *(int16_t *)buffer = sortedPointers[i]->parameters[j];
+            *(int16_t *)buffer = sortedPointers[i]->stars[i];
             buffer += sizeof(int16_t);
         }
     }
@@ -449,11 +493,6 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
     *end = &pairs[upperIndex * 2];
     return &pairs[lowerIndex * 2];
-}
-
-/// Number of star pairs stored in the database
-long PairDistanceKVectorDatabase::NumPairs() const {
-    return index.NumValues();
 }
 
 /// Return the distances from the given star to each star it's paired with in the database (for debugging).

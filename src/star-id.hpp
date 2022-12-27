@@ -70,6 +70,17 @@ private:
     long cutoff;
 };
 
+class StarNDAlgorithm final : public StarIdAlgorithm {
+public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &, const Camera &) const;
+
+    StarNDAlgorithm(float tolerance, float maxDistance) : tolerance(tolerance),  maxDistance(maxDistance) { };
+private:
+    float tolerance;
+    float maxDistance;
+};
+
+
 }
 
 #endif
