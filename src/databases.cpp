@@ -536,11 +536,10 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
 
   // Done with everything, write to buffer
 
-  *((int *)buffer) = (int)pattCatalog.size();
-  std::cout << "hello" << std::endl;
-
-  buffer += sizeof(int);
   if (ser) {
+    *((int *)buffer) = (int)pattCatalog.size();
+    buffer += sizeof(int);
+
     for (Pattern patt : pattCatalog) {
       for (int i = 0; i < pattSize; i++) {
         *((short *)buffer) = patt[i];
