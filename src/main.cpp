@@ -43,9 +43,19 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     auto tetraStuff = TetraPreparePattCat(narrowedCatalog, maxFov);
     narrowedCatalog = tetraStuff.first;
     std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
-    // 7102 stars, significant drop
+    // 7102 stars here
+    // Interesting, these actually account for the 3 missing- tetra-db gives 7099 stars
 
     std::vector<short> pattStars = tetraStuff.second;
+    // lost: 4356 pattern stars
+    // tetra-db: 4358 pattern stars
+    // The pattern IDs chosen are basically the same at first, but after 2500
+    // or so, starts to differ by a lot
+
+    std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
+    // for(short pattStarID : pattStars){
+    //     std::cout << pattStarID << std::endl;
+    // }
 
 
     MultiDatabaseBuilder builder;
@@ -55,7 +65,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    if (false) {
+    if (true) {
       GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars);
       std::cout << "Generated TETRA database with " << builder.BufferLength()
                 << " bytes" << std::endl;

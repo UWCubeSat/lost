@@ -216,6 +216,10 @@ void Tetra::GenerateDatabase(float maxFov, std::string &starTableFName,
     // size = 4358 = keptForPattCount
     // pattStars contains ints corresponding to star IDs
 
+    // for(short pattStarID : pattStars){
+    //     std::cout << pattStarID << std::endl;
+    // }
+
     std::cout << "For pattern matching with at most " << pattStarsPerFOV
               << " stars per FOV and no doubles: " << keepForPattCount
               << std::endl;
@@ -426,19 +430,21 @@ void Tetra::GenerateDatabase(float maxFov, std::string &starTableFName,
                 break;
             }
         }
+        // std::cout << offset << std::endl;
     }
     // DONE WITH EVERYTHING
 
-    std::cout << "Catalog size: " << pattCatalog.size() << std::endl;
+    std::cout << "Pttern catalog size: " << pattCatalog.size() << std::endl;
     std::cout << "Star table size: " << starTable.size() << std::endl;
 
     std::ofstream pattCatFile("pattCatalogOurs9-22.dat", std::ios::binary);
     // int pattInd = 0;
     for (Pattern patt : pattCatalog) {
         for(int i = 0; i < pattSize; i++){
+            std::cout << patt[i] << ", ";
             pattCatFile.write((char *)&patt[i], sizeof(short));
         }
-
+        std::cout << std::endl;
         // std::cout << pattInd << ": " << patt[0] << ", " << patt[1] << ", "
         //           << patt[2] << ", " << patt[3] << std::endl;
         // pattInd++;

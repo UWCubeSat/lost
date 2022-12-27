@@ -261,7 +261,7 @@ public:
 void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values);
 // void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
-// TODO: change this
+// TODO:  can we avoid the split?
 void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values, std::vector<short>& pattStars);
 
 /////////////////////

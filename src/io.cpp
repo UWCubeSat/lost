@@ -272,7 +272,6 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
 void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
                         const std::vector<short> &pattStars) {
 
-
    const float maxFov = 12.00; // degrees, TODO: don't hardcode it, see star-id
    long length = SerializeTetraDatabase(catalog, maxFov, nullptr, pattStars, false);
    unsigned char* buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
@@ -280,8 +279,6 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
     std::cerr << "Error: No room for Tetra database" << std::endl;
    }
    SerializeTetraDatabase(catalog, maxFov, buffer, pattStars, true);
-
-
 }
 
 /*
@@ -302,15 +299,7 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, c
 void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
                             const DatabaseOptions &values,
                             std::vector<short> &pattStars){
-    // stuff
-    if (values.kvector) {
-        BuildTetraDatabase(builder, catalog, pattStars);
-
-    } else {
-        std::cerr << "No database builder selected -- no database generated." << std::endl;
-        exit(1);
-    }
-
+   BuildTetraDatabase(builder, catalog, pattStars);
 }
 
 /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
