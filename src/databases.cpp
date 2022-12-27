@@ -345,6 +345,8 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
   const short pattBins = 25;
   const int tempBins = 4;
 
+  std::cout << "serializing" << std::endl;
+
   // TODO: unorderd_map might be better
   std::map<Vec3, std::vector<short>> tempCoarseSkyMap;
 
@@ -524,7 +526,8 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
     while (true) {
       int index = int(hashIndex + std::pow(offset, 2)) % catalogLength;
       offset++;
-      if (pattCatalog[index][0] == 0 && pattCatalog[index][1] == 0) {
+      if (pattCatalog[index][0] == 0) {
+        //&& pattCatalog[index][1] == 0
         pattCatalog[index] = patt;
         break;
       }
@@ -533,7 +536,9 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
 
   // Done with everything, write to buffer
 
-  *((int*)buffer) = (int)pattCatalog.size();
+  *((int *)buffer) = (int)pattCatalog.size();
+  std::cout << "hello" << std::endl;
+
   buffer += sizeof(int);
   if (ser) {
     for (Pattern patt : pattCatalog) {
