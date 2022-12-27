@@ -65,6 +65,8 @@
         "variant": "cpp",
         "list": "cpp",
         "hash_map": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "forward_list": "cpp",
+        "typeindex": "cpp"
     }
 }

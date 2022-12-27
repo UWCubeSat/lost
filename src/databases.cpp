@@ -265,7 +265,7 @@ PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *bu
     pairs = (const int16_t *)buffer;
 }
 
-KVectorNDIndex::KVectorNDIndex(const unsigned char *buffer) {
+KVectorND::KVectorND(const unsigned char *buffer) {
     numValues = *(int32_t *)buffer; // Entries
     buffer += sizeof(int32_t);
 
@@ -289,19 +289,15 @@ KVectorNDIndex::KVectorNDIndex(const unsigned char *buffer) {
     }
 
     bins = (int32_t *)buffer;
+
+    buffer += SerializeLengthKVectorNDIndex(numBins * numBins * numBins * numBins);
+    quads = (int16_t *)buffer;
 }
 
-KVectorNDIndex::~KVectorNDIndex() {
+KVectorND::~KVectorND() {
     delete[] min; // Would free() be better here?
     delete[] max;
     delete[] binWidth;
-}
-
-QuadKVectorNDDatabase::QuadKVectorNDDatabase(const unsigned char *buffer) 
-    : index(buffer) {
-
-    buffer += SerializeLengthKVectorNDIndex(index.NumBins() * index.NumBins() * index.NumBins() * index.NumBins());
-    quads = (const int16_t *)buffer;
 }
 
 unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, float* max, long numBins, unsigned char *buffer, int entries) {
@@ -393,10 +389,10 @@ std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float mi
 }
 
 
-int BinFunctionND(KVectorQuad &quad, float* offset, float* scale, int* product) {
+int BinFunctionND(float* parameters, float* offset, float* scale, int* product) {
     int bin = 0;
     for(int i = 0; i < 4; i++) {
-        bin += std::floor(scale[i] * (quad.parameters[i] - offset[i])) * product[i];
+        bin += std::floor(scale[i] * (parameters[i] - offset[i])) * product[i];
     }
     return bin;
 }
@@ -434,7 +430,7 @@ void SerializeKVectorND(const Catalog &catalog, float minDistance, float maxDist
     int bins[sizeof(quads)];
     for(int i = 0; i < sizeof(quads); i++) {
         pointers[i] = &quads[i];
-        bins[i] = BinFunctionND(quads[i], min, scale, product);
+        bins[i] = BinFunctionND(quads[i].parameters, min, scale, product);
     }
 
     // KVector Positions
@@ -474,6 +470,54 @@ void SerializeKVectorND(const Catalog &catalog, float minDistance, float maxDist
     // TODO: verify length
     // assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 
+}
+
+int16_t *KVectorND::GetEntry(const long index) const {
+    int16_t stars[] = {0, 0, 0, 0};
+    int i = 0;
+    for(const int16_t *ptr = quads; ptr < quads + 4; ptr++) {
+        stars[i] = *ptr;
+        i++;
+    }
+    return stars;
+}
+
+std::vector<int16_t *> KVectorND::RangeSearch(const float *maxParameter, const float *minParameter) const {
+    // Somehow assert or guarentee the size of each array
+    long* minBins = new long[4];
+    long* maxBins = new long[4];
+    std::vector<int16_t *> result;
+
+    // Preprocessing: Calculating scaling factors
+    float scale[4];
+    int product[] = {1, 1, 1, 1, 1};
+    for(int i = 0; i < 4; i++) {
+        scale[i] = numBins / (max[i] - min[i]);
+        product[i + 1] = product[i] * numBins;
+    }
+
+    long b0 = 0;
+    for(int i = 0; i < 4; i++) {
+        minBins[i] = std::floor(scale[i] * (minParameter[i] - min[i])) * product[i];
+        maxBins[i] = std::floor(scale[i] * (maxParameter[i] - min[i])) * product[i];
+        b0 += minBins[i];
+    }
+    const long difference = maxBins[0] - minBins[0];
+
+    for(int k = 0; k <= maxBins[3] - minBins[3]; k++) {
+        for(int j = 0; j <= maxBins[2] - minBins[2]; j++) {
+            for(int i = 0; i <= maxBins[1] - minBins[1]; i++) {
+                long begin = b0 + i * numBins + j * numBins * numBins + k * numBins * numBins * numBins;
+                long end = begin + difference;
+                for(begin; begin < end; begin++) {
+                    result.push_back(GetEntry(begin));
+                }
+            }
+        }
+    }
+    delete[] minBins;
+    delete[] maxBins;
+    return result;
 }
 
 /// Return the value in the range [low,high] which is closest to num

@@ -76,21 +76,30 @@ private:
  * 
  * @note Hard Coded for a dimension of 4, possible to generalize later
 */
-class KVectorNDIndex {
+class KVectorND {
 public:
-    explicit KVectorNDIndex(const unsigned char *);
-    ~KVectorNDIndex();
+    explicit KVectorND(const unsigned char *);
+    ~KVectorND();
 
-    long RangeSearch(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
+    std::vector<int16_t *> RangeSearch(const float *maxParameter, const float *minParameter) const;
+    int16_t *GetEntry(const long index) const;
+
+    const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
+
+    /// Upper bound parameter corresponding to axis i
+    float MaxParameter(int i) const { return max[i]; };
+    /// Lower bound parameter corresponding to axis i
+    float MinParameter(int i) const { return min[i]; };
+    /// Exact number of stored pairs
+    long NumQuads() const { return numValues; };
+
+    /// Magic value to use when storing inside a MultiDatabase
+    static const int32_t kMagicValue = 0xff23ab79;
 
     /// The number of data points in the data referred to by the kvector
     long NumValues() const { return numValues; };
     // Number of bins on each axis
     long NumBins() const { return numBins; };
-    /// Upper bound on elements on axis i
-    float Max(int i) const { return max[i]; };
-    // Lower bound on elements on axis i
-    float Min(int i) const { return min[i]; };
 private:
     // Total Entries
     long numValues;
@@ -102,33 +111,9 @@ private:
     // Bins on each axis
     long numBins;
     // Indexes for each bin
-    const int32_t *bins;
-};
+    const int32_t* bins;
 
-/**
- * A database storing star quadruples
- * Uses modified Liebe parameters to uniquely identify all valid patterns
- *
- */
-class QuadKVectorNDDatabase {
-public:
-    explicit QuadKVectorNDDatabase(const unsigned char *);
-
-    const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
-
-    /// Upper bound parameter corresponding to axis i
-    float MaxParameter(int i) const { return index.Max(i); };
-    /// Lower bound parameter corresponding to axis i
-    float MinParameter(int i) const { return index.Min(i); };
-    /// Exact number of stored pairs
-    long NumQuads() const { return index.NumValues(); };
-
-    /// Magic value to use when storing inside a MultiDatabase
-    static const int32_t kMagicValue = 0xff23ab79;
-private:
-    KVectorNDIndex index;
-    // TODO: endianness
-    const int16_t *quads;
+    const int16_t* quads;
 };
 
 // /**
