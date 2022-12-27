@@ -526,8 +526,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char 
     while (true) {
       int index = int(hashIndex + std::pow(offset, 2)) % catalogLength;
       offset++;
-      if (pattCatalog[index][0] == 0) {
-        //&& pattCatalog[index][1] == 0
+      if (pattCatalog[index][0] == 0 && pattCatalog[index][1] == 0) {
         pattCatalog[index] = patt;
         break;
       }
