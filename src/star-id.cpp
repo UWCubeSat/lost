@@ -15,9 +15,10 @@
 namespace lost {
 
 
+// TODO: duplicate in databases.cpp
 int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
                                      int maxIndex) const {
-    // key = hashCode
+    // key = 5-tuple of binned edge ratios
     // Outputs a row of the Pattern Catalog
     long index = 0;
     for (int i = 0; i < (int)key.size(); i++) {
@@ -30,7 +31,7 @@ int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
 // TetraDatabase db) const{
 std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
     int index, std::ifstream &pattCatFile) const {
-    // Returns a list of rows from the Pattern Catalog with hashcode==index
+    // Returns a list of rows (4-tuples) from the Pattern Catalog with hashcode==index
     // Does quadratic probing
 
     int maxInd = catalogLength;
@@ -96,7 +97,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
 
     std::vector<Star> copyStars(stars);
     // Sort centroided stars by brightness, high to low
-    std::sort(
+    std::stable_sort(
         copyStars.begin(), copyStars.end(),
         [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
 
@@ -104,10 +105,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
     // Currently doing a naive way,  just taking the first 4 centroids
     // "Generator function" can really just be another loop
 
-    // testing
-    // for(const Star &s : copyStars){
-    //     std::cout << "centroid " << s.position.x << ", " << s.position.y << std::endl;
-    // }
 
     // TODO: pattCheckingStars = 6, number of stars used to create possible patterns for lookup in db
     // const int pattCheckingStars = 6;
@@ -250,18 +247,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
                                    sizeof(float) * starTableRowSize);
 
 
-                CatalogStar catstar = catalog[star];
-                Vec3 catVec(catstar.spatial.x, catstar.spatial.y,
-                            catstar.spatial.z);
-                catStarIDs.push_back(catstar.name);
-
-                // Vec3 catVec(row[2], row[3], row[4]);
-                // catStarIDs.push_back(row[6]);
-
-                // OUTDATED, delete completely
-                // Vec3 catVec(db.starTable[star][2], db.starTable[star][3],
-                //             db.starTable[star][4]);
-                // catStarIDs.push_back(db.starTable[star][6]);
+                Vec3 catVec(row[2], row[3], row[4]);
+                catStarIDs.push_back(row[6]);
 
                 catStarVecs.push_back(catVec);
             }
