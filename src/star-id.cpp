@@ -95,38 +95,49 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database,
         std::cout << "Error: failed to open star table" << std::endl;
     }
 
-    std::vector<Star> copyStars(stars);
+    std::vector<int> centroidIndices;
+    for(int i = 0; i < (int)stars.size(); i++){
+        centroidIndices.push_back(i);
+    }
+
+    // std::vector<Star> copyStars(stars);
     // Sort centroided stars by brightness, high to low
-    std::stable_sort(
-        copyStars.begin(), copyStars.end(),
-        [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
+    // std::stable_sort(
+    //     copyStars.begin(), copyStars.end(),
+    //     [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
+
+    std::stable_sort(centroidIndices.begin(), centroidIndices.end(),
+                     [&stars](int a, int b) { return stars[a].magnitude > stars[b].magnitude; });
 
     // TODO: implement the generator function
     // Currently doing a naive way,  just taking the first 4 centroids
     // "Generator function" can really just be another loop
 
-
     // TODO: pattCheckingStars = 6, number of stars used to create possible patterns for lookup in db
     // const int pattCheckingStars = 6;
 
-    copyStars =
-        std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
+    // copyStars = std::vector<Star>(copyStars.begin(), copyStars.begin() + numPattStars);
+
+    std::vector<Star> copyStars;
+    for(int i = 0; i < numPattStars; i++){
+        copyStars.push_back(stars[centroidIndices[i]]);
+    }
 
     // Get indices of chosen centroids
     // TODO: better way of doing this?- maybe
     // Above, instead of copyStars, produce array of centroid indices sorted by
     // centroid brightness
 
-    std::vector<int> centroidIndices;
-    for (const Star &star : copyStars) {
-        auto itr =
-            std::find_if(stars.begin(), stars.end(), [&](const Star &st) {
-                return st.position.x == star.position.x &&
-                       st.position.y == star.position.y;
-            });
-        int ind = std::distance(stars.begin(), itr);
-        centroidIndices.push_back(ind);
-    }
+    // std::vector<int> centroidIndices;
+    // for (const Star &star : copyStars) {
+    //     auto itr =
+    //         std::find_if(stars.begin(), stars.end(), [&](const Star &st) {
+    //             return st.position.x == star.position.x &&
+    //                    st.position.y == star.position.y;
+    //         });
+    //     int ind = std::distance(stars.begin(), itr);
+    //     centroidIndices.push_back(ind);
+    // }
 
     // Compute Vec3 spatial vectors for each star chosen
     // to be in the Pattern
