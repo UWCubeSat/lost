@@ -55,7 +55,8 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
     // }
 
     if (std::all_of(tableRow.begin(), tableRow.end(), [](int ele) { return ele == 0; })) {
-      return res;
+    //   std::cout << c << std::endl;
+      break;
     } else {
       res.push_back(tableRow);
     }
@@ -88,21 +89,22 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   TetraDatabase tetraDatabase(databaseBuffer);
 
   int catLength = tetraDatabase.Size();
-  std::cout << "cat length: " << catLength << std::endl;
+  std::cout << "camera fov: " << camera.Fov() << ", focal length: " << camera.FocalLength()
+            << std::endl;
 
   // TODO: definitely change later- finish database integration
   // Right now, we're reading the entire Pattern Catalog and Star Table into
   // memory TetraDatabase db; db.fillStarTable(); db.fillPattCatalog();
 
-  std::ifstream pattCatFile("pattCatalogOurs9-22.dat", std::ios_base::binary);
-  std::ifstream starTableFile("starTableOurs9-22.dat", std::ios_base::binary);
+//   std::ifstream pattCatFile("pattCatalogOurs9-22.dat", std::ios_base::binary);
+//   std::ifstream starTableFile("starTableOurs9-22.dat", std::ios_base::binary);
 
-  if (!pattCatFile.is_open()) {
-    std::cout << "Error: Failed to open pattern catalog" << std::endl;
-  }
-  if (!starTableFile.is_open()) {
-    std::cout << "Error: failed to open star table" << std::endl;
-  }
+//   if (!pattCatFile.is_open()) {
+//     std::cout << "Error: Failed to open pattern catalog" << std::endl;
+//   }
+//   if (!starTableFile.is_open()) {
+//     std::cout << "Error: failed to open star table" << std::endl;
+//   }
 
   std::vector<int> centroidIndices;
   for (int i = 0; i < (int)stars.size(); i++) {
@@ -342,15 +344,15 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
       // ID
 
       std::cout << "SUCCESS: stars successfully matched" << std::endl;
-      pattCatFile.close();
-      starTableFile.close();
+    //   pattCatFile.close();
+    //   starTableFile.close();
       return result;
     }
   }
 
   std::cout << "FAIL" << std::endl;
-  pattCatFile.close();
-  starTableFile.close();
+//   pattCatFile.close();
+//   starTableFile.close();
   return result;
 }
 
