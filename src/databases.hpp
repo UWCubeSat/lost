@@ -11,6 +11,11 @@ namespace lost {
 
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
+struct KVectorQuad {
+    int16_t* stars;
+    float* parameters;
+};
+
 /**
  * A data structure enabling constant-time range queries into fixed numerica data.
  * 
@@ -43,6 +48,9 @@ private:
 
 long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
 void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
+std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance);
+void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
+long SerializeLengthQuadStarKVectorND(int numEntries, int bins);
 
 /**
  * A database storing distances between pairs of stars.

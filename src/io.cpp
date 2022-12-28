@@ -259,6 +259,18 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
     // TODO: also parse it and print out some stats before returning
 }
 
+void BuildQuadStarKVectorND(MultiDatabaseBuilder *builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+    std::vector<KVectorQuad> quads = CatalogToQuadDistances(catalog, minDistance, maxDistance);
+    long length = SerializeLengthQuadStarKVectorND(quads.size(), numBins * numBins * numBins * numBins);
+    unsigned char *buffer = builder->AddSubDatabase(KVectorND::kMagicValue, length);
+    if (buffer == NULL) {
+        std::cerr << "No room for another database." << std::endl;
+    }
+    SerializeKVectorND(catalog, quads, minDistance, maxDistance, numBins, buffer);
+
+    
+}
+
 /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
 void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
 
@@ -267,6 +279,13 @@ void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, co
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
         BuildPairDistanceKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+    } 
+    
+    if (values.kvectorND) {
+        float minDistance = DegToRad(values.kvectorMinDistance);
+        float maxDistance = DegToRad(values.kvectorMaxDistance);
+        long numBins = values.kvectorNumDistanceBins;
+        BuildQuadStarKVectorND(builder, catalog, minDistance, maxDistance, numBins);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);

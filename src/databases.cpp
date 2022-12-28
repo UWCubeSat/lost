@@ -13,11 +13,6 @@
 
 namespace lost {
 
-struct KVectorQuad {
-    int16_t* stars;
-    float* parameters;
-};
-
 struct KVectorPair {
     int16_t index1;
     int16_t index2;
@@ -250,10 +245,16 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     // verify length
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
-// 
+
+// Obtains the size of the buffer with just the metadata and KVector number fields
 long SerializeLengthKVectorNDIndex(int totalBins) {
     return sizeof(int32_t) + 4 * sizeof(float) + 4 * sizeof(float) 
             + sizeof(int32_t) + sizeof(int32_t) * (totalBins + 1);
+}
+
+// Obtains the size of an entire KVectorND database
+long SerializeLengthQuadStarKVectorND(int numEntries, int bins) {
+    return SerializeLengthKVectorNDIndex(bins) + 4 * sizeof(int16_t) * numEntries;
 }
 
 /// Create the database from a serialized buffer.
@@ -397,9 +398,10 @@ int BinFunctionND(float* parameters, float* offset, float* scale, int* product) 
     return bin;
 }
 
-void SerializeKVectorND(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
-    std::vector<KVectorQuad> quads = CatalogToQuadDistances(catalog, minDistance, maxDistance);
+void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
     assert(sizeof(quads) > 0);
+
+    // TODO: Statistics Printout
 
     // Preprocessing: Finding boundaries along axes
     float min[] = {quads[0].parameters[0], quads[0].parameters[1], quads[0].parameters[2], quads[0].parameters[3]};
