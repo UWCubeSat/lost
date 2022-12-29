@@ -14,9 +14,7 @@
 
 namespace lost {
 
-
-static bool GetCentroidCombination(std::vector<int>* const res, int pattSize, int numCentroids);
-
+static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids);
 
 // TODO: duplicate in databases.cpp
 int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const {
@@ -59,7 +57,7 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
     // }
 
     if (std::all_of(tableRow.begin(), tableRow.end(), [](int ele) { return ele == 0; })) {
-    //   std::cout << c << std::endl;
+      //   std::cout << c << std::endl;
       break;
     } else {
       res.push_back(tableRow);
@@ -68,16 +66,16 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
   return res;
 }
 
-static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids){
-  if(numCentroids < pattSize){
+static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids) {
+  if (numCentroids < pattSize) {
     return false;
   }
   static bool firstTime = true;
   static std::vector<int> indices;
-  if(firstTime){
+  if (firstTime) {
     firstTime = false;
     indices.push_back(-1);
-    for(int i = 0; i < pattSize; i++){
+    for (int i = 0; i < pattSize; i++) {
       indices.push_back(i);
     }
     indices.push_back(numCentroids);
@@ -85,20 +83,19 @@ static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, in
     return true;
   }
 
-  if(indices[1] >= numCentroids - pattSize){
+  if (indices[1] >= numCentroids - pattSize) {
     return false;
   }
 
-  for(int i = 1; i <= pattSize; i++){
+  for (int i = 1; i <= pattSize; i++) {
     indices[i]++;
-    if(indices[i] < indices[i+1]){
+    if (indices[i] < indices[i + 1]) {
       break;
     }
-    indices[i] = indices[i-1] + 1;
+    indices[i] = indices[i - 1] + 1;
   }
   *res = std::vector<int>(indices.begin() + 1, indices.end() - 1);
   return true;
-
 }
 
 /**
@@ -125,8 +122,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   }
   TetraDatabase tetraDatabase(databaseBuffer);
 
-  int catLength = tetraDatabase.Size(); // TODO: use this, not hardcoded value in star-id.hpp
-
+  int catLength = tetraDatabase.Size();  // TODO: use this, not hardcoded value in star-id.hpp
 
   std::vector<int> centroidIndices;
   for (int i = 0; i < (int)stars.size(); i++) {
@@ -145,230 +141,249 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   // TODO: pattCheckingStars = 6, number of stars used to create possible patterns for lookup in db
   // const int pattCheckingStars = 6;
 
+  // Index of centroid indices list
+  std::vector<int> chosenCentroidIndices(numPattStars);
 
 
-  std::vector<Star> chosenStars;
-  for (int i = 0; i < numPattStars; i++) {
-    chosenStars.push_back(stars[centroidIndices[i]]);
-  }
+  while (GetCentroidCombination(&chosenCentroidIndices, numPattStars, centroidIndices.size())) {
 
-  // Compute Vec3 spatial vectors for each star chosen
-  // to be in the Pattern
-  std::vector<Vec3> pattStarVecs;  // size==numPattStars
-  for (const Star &star : chosenStars) {
-    // Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
-    // CameraToSpatial produces different vector but also works out in the end
-    // TODO: examine why the math works this way
-    Vec3 spatialVec = camera.CameraToSpatial(star.position);
-    pattStarVecs.push_back(spatialVec);
-  }
+    for(const int& e : chosenCentroidIndices){
+      std::cout << centroidIndices[e] << ", ";
+    }
+    std::cout << std::endl;
 
-  // Compute angle between each pair of stars chosen to be in the Pattern
-  // If any angle > maxFov, then we should throw away this Pattern
-  // choice, since our database will not store it
-  bool angleAcceptable = true;
-  for (int i = 0; i < (int)pattStarVecs.size(); i++) {
-    Vec3 u = pattStarVecs[i];
-    for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
-      Vec3 v = pattStarVecs[j];
-      float angle = Angle(u, v);  // in radians
-      if (RadToDeg(angle) > maxFov) {
-        angleAcceptable = false;
-        break;
+    // Index in centroid indices list
+    std::vector<int> chosenIndices; // TODO: rename
+    std::vector<Star> chosenStars;
+    // for (int i = 0; i < numPattStars; i++) {
+    //   chosenStars.push_back(stars[centroidIndices[i]]);
+    // }
+    for(int i = 0; i < numPattStars; i++){
+      chosenIndices.push_back(centroidIndices[chosenCentroidIndices[i]]);
+      chosenStars.push_back(stars[chosenIndices[i]]);
+    }
+
+    // TODO: change this
+    // std::vector<int> chosenIndices =
+    //     std::vector<int>(centroidIndices.begin(), centroidIndices.begin() + numPattStars);
+
+    // Compute Vec3 spatial vectors for each star chosen
+    // to be in the Pattern
+    std::vector<Vec3> pattStarVecs;  // size==numPattStars
+    for (const Star &star : chosenStars) {
+      // Vec3 spatialVec = camera.CameraToSpatialFov(star.position);
+      // CameraToSpatial produces different vector but also works out in the end
+      // TODO: examine why the math works this way
+      Vec3 spatialVec = camera.CameraToSpatial(star.position);
+      pattStarVecs.push_back(spatialVec);
+    }
+
+    // Compute angle between each pair of stars chosen to be in the Pattern
+    // If any angle > maxFov, then we should throw away this Pattern
+    // choice, since our database will not store it
+    bool angleAcceptable = true;
+    for (int i = 0; i < (int)pattStarVecs.size(); i++) {
+      Vec3 u = pattStarVecs[i];
+      for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
+        Vec3 v = pattStarVecs[j];
+        float angle = Angle(u, v);  // in radians
+        if (RadToDeg(angle) > maxFov) {
+          angleAcceptable = false;
+          break;
+        }
       }
     }
-  }
 
-  if (!angleAcceptable) {
-    std::cerr << "Error: some angle is greater than maxFov" << std::endl;
-    return result;
-    // TODO: probably continue (try again) instead of returning, change
-    // after implementing generator function
-  }
-
-  // Calculate all edge lengths in order to find value of largest edge
-  // Since each Pattern consists of size==numPattStars stars, there will be
-  // C(numPattStars, 2) edges For default 4-star Patterns, calculate C(4,
-  // 2) = 6 edge lengths
-  std::vector<float> pattEdgeLengths;  // default size = 6
-  for (int i = 0; i < (int)pattStarVecs.size(); i++) {
-    for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
-      Vec3 diff = pattStarVecs[i] - pattStarVecs[j];
-      pattEdgeLengths.push_back(diff.Magnitude());
+    if (!angleAcceptable) {
+      std::cerr << "Error: some angle is greater than maxFov" << std::endl;
+      return result;
+      // TODO: probably continue (try again) instead of returning, change
+      // after implementing generator function
     }
-  }
-  std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
-  float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1];  // largest edge value
 
-  // Divide each edge length by pattLargestEdge for edge ratios
-  // size() = C(numPattStars, 2) - 1
-  // We don't calculate ratio for largest edge, which would just be 1
-  std::vector<float> pattEdgeRatios;
-  for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) {
-    pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
-  }
+    // Calculate all edge lengths in order to find value of largest edge
+    // Since each Pattern consists of size==numPattStars stars, there will be
+    // C(numPattStars, 2) edges For default 4-star Patterns, calculate C(4,
+    // 2) = 6 edge lengths
+    std::vector<float> pattEdgeLengths;  // default size = 6
+    for (int i = 0; i < (int)pattStarVecs.size(); i++) {
+      for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
+        Vec3 diff = pattStarVecs[i] - pattStarVecs[j];
+        pattEdgeLengths.push_back(diff.Magnitude());
+      }
+    }
+    std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
+    float pattLargestEdge =
+        pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1];  // largest edge value
 
-  // Binning step - discretize values so they can be used for hashing
-  // We account for potential error in calculated values by testing hash codes
-  // in a range
-  std::vector<std::pair<int, int>> hcSpace;
-  for (float edgeRatio : pattEdgeRatios) {
-    std::pair<int, int> range;
-    int lo = int((edgeRatio - pattMaxError) * numPattBins);
-    lo = std::max(lo, 0);
-    int hi = int((edgeRatio + pattMaxError) * numPattBins);
-    hi = std::min(hi + 1, numPattBins);
-    range = std::make_pair(lo, hi);
-    hcSpace.push_back(range);
-  }
+    // Divide each edge length by pattLargestEdge for edge ratios
+    // size() = C(numPattStars, 2) - 1
+    // We don't calculate ratio for largest edge, which would just be 1
+    std::vector<float> pattEdgeRatios;
+    for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) {
+      pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
+    }
 
-  std::set<std::vector<int>> finalCodes;
-  // TODO: if we maintain constant that numPattStars==4, we don't need to change this
-  // Most star ID papers recommend setting numPattStars=4, no need to go higher (and definitely not
-  // lower) Go through all the actual hash codes
-  for (int a = hcSpace[0].first; a < hcSpace[0].second; a++) {
-    for (int b = hcSpace[1].first; b < hcSpace[1].second; b++) {
-      for (int c = hcSpace[2].first; c < hcSpace[2].second; c++) {
-        for (int d = hcSpace[3].first; d < hcSpace[3].second; d++) {
-          for (int e = hcSpace[4].first; e < hcSpace[4].second; e++) {
-            std::vector<int> code{a, b, c, d, e};
-            std::sort(code.begin(), code.end());
-            finalCodes.insert(code);
+    // Binning step - discretize values so they can be used for hashing
+    // We account for potential error in calculated values by testing hash codes
+    // in a range
+    std::vector<std::pair<int, int>> hcSpace;
+    for (float edgeRatio : pattEdgeRatios) {
+      std::pair<int, int> range;
+      int lo = int((edgeRatio - pattMaxError) * numPattBins);
+      lo = std::max(lo, 0);
+      int hi = int((edgeRatio + pattMaxError) * numPattBins);
+      hi = std::min(hi + 1, numPattBins);
+      range = std::make_pair(lo, hi);
+      hcSpace.push_back(range);
+    }
+
+    std::set<std::vector<int>> finalCodes;
+    // TODO: if we maintain constant that numPattStars==4, we don't need to change this
+    // Most star ID papers recommend setting numPattStars=4, no need to go higher (and definitely
+    // not lower) Go through all the actual hash codes
+    for (int a = hcSpace[0].first; a < hcSpace[0].second; a++) {
+      for (int b = hcSpace[1].first; b < hcSpace[1].second; b++) {
+        for (int c = hcSpace[2].first; c < hcSpace[2].second; c++) {
+          for (int d = hcSpace[3].first; d < hcSpace[3].second; d++) {
+            for (int e = hcSpace[4].first; e < hcSpace[4].second; e++) {
+              std::vector<int> code{a, b, c, d, e};
+              std::sort(code.begin(), code.end());
+              finalCodes.insert(code);
+            }
           }
         }
       }
     }
-  }
 
-  for (std::vector<int> code : finalCodes) {
-    int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
-    // Get a list of Pattern Catalog rows with hash code == hashIndex
-    // One of these Patterns in the database could be a match to our constructed Pattern
-    // std::vector<std::vector<int>> matches =
-    //     GetAtIndex(hashIndex, pattCatFile);
-    std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, tetraDatabase);
+    for (std::vector<int> code : finalCodes) {
+      int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
+      // Get a list of Pattern Catalog rows with hash code == hashIndex
+      // One of these Patterns in the database could be a match to our constructed Pattern
+      // std::vector<std::vector<int>> matches =
+      //     GetAtIndex(hashIndex, pattCatFile);
+      std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, tetraDatabase);
 
-    if ((int)matches.size() == 0) {
-      std::cout << "Alert: matches size = 0, continuing" << std::endl;
-      continue;
-    }
-
-    for (std::vector<int> matchRow : matches) {
-      // std::cout << matchRow[0] << ", " << matchRow[1] << ", " << matchRow[2] << ", " <<
-      // matchRow[3] << std::endl; Construct the Pattern we found in the database
-      std::vector<int> catStarIDs;
-      std::vector<Vec3> catStarVecs;
-      for (int star : matchRow) {
-        // TODO: definitely don't do this for final version, change
-
-        // TODO: note that star IS the catalogIndex
-        // Instead of scanning through entire catalog at the end (O(11 million)), just
-        // scan through the 4 stars of the pattern
-
-        // float *row = new float[starTableRowSize];
-        // starTableFile.seekg(sizeof(float) * starTableRowSize * star,
-        //                     std::ios::beg);
-        // starTableFile.read((char *)row,
-        //                    sizeof(float) * starTableRowSize);
-
-        // Vec3 catVec(row[2], row[3], row[4]);
-        // catStarIDs.push_back(row[6]);
-
-        Vec3 catVec = catalog[star].spatial;
-        catStarIDs.push_back(catalog[star].name);
-
-        catStarVecs.push_back(catVec);
-      }
-
-      // Make the Catalog Pattern
-      std::vector<float> catEdgeLengths;
-      for (int i = 0; i < (int)catStarVecs.size(); i++) {
-        for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
-          Vec3 diff = catStarVecs[i] - catStarVecs[j];
-          catEdgeLengths.push_back(diff.Magnitude());
-        }
-      }
-      std::sort(catEdgeLengths.begin(), catEdgeLengths.end());
-      float catLargestEdge = catEdgeLengths[(int)(catEdgeLengths.size()) - 1];
-
-      std::vector<float> catEdgeRatios;  // size() = C(numPattStars, 2) - 1
-      for (int i = 0; i < (int)catEdgeLengths.size() - 1; i++) {
-        catEdgeRatios.push_back(catEdgeLengths[i] / catLargestEdge);
-      }
-
-      bool skipMatchRow = false;
-      for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
-        float val = catEdgeRatios[i] - pattEdgeRatios[i];
-        val = std::abs(val);
-        if (val > pattMaxError) {
-          skipMatchRow = true;
-        }
-      }
-
-      // Very common to skip here, database Pattern is NOT a match to ours
-      if (skipMatchRow) {
-        // std::cout << "Alert: Match Row skipped!!!" << std::endl;
+      if ((int)matches.size() == 0) {
+        std::cout << "Alert: matches size = 0, continuing" << std::endl;
         continue;
       }
 
-      // std::cout << "fine match" << std::endl;
+      for (std::vector<int> matchRow : matches) {
+        // std::cout << matchRow[0] << ", " << matchRow[1] << ", " << matchRow[2] << ", " <<
+        // matchRow[3] << std::endl; Construct the Pattern we found in the database
+        std::vector<int> catStarIDs;
+        std::vector<Vec3> catStarVecs;
+        for (int star : matchRow) {
+          // TODO: definitely don't do this for final version, change
 
-      Vec3 pattCentroid(0, 0, 0);
-      for (Vec3 pattStarVec : pattStarVecs) {
-        pattCentroid = pattCentroid + pattStarVec;
+          // TODO: note that star IS the catalogIndex
+          // Instead of scanning through entire catalog at the end (O(11 million)), just
+          // scan through the 4 stars of the pattern
+
+          // float *row = new float[starTableRowSize];
+          // starTableFile.seekg(sizeof(float) * starTableRowSize * star,
+          //                     std::ios::beg);
+          // starTableFile.read((char *)row,
+          //                    sizeof(float) * starTableRowSize);
+
+          // Vec3 catVec(row[2], row[3], row[4]);
+          // catStarIDs.push_back(row[6]);
+
+          Vec3 catVec = catalog[star].spatial;
+          catStarIDs.push_back(catalog[star].name);
+
+          catStarVecs.push_back(catVec);
+        }
+
+        // Make the Catalog Pattern
+        std::vector<float> catEdgeLengths;
+        for (int i = 0; i < (int)catStarVecs.size(); i++) {
+          for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
+            Vec3 diff = catStarVecs[i] - catStarVecs[j];
+            catEdgeLengths.push_back(diff.Magnitude());
+          }
+        }
+        std::sort(catEdgeLengths.begin(), catEdgeLengths.end());
+        float catLargestEdge = catEdgeLengths[(int)(catEdgeLengths.size()) - 1];
+
+        std::vector<float> catEdgeRatios;  // size() = C(numPattStars, 2) - 1
+        for (int i = 0; i < (int)catEdgeLengths.size() - 1; i++) {
+          catEdgeRatios.push_back(catEdgeLengths[i] / catLargestEdge);
+        }
+
+        bool skipMatchRow = false;
+        for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
+          float val = catEdgeRatios[i] - pattEdgeRatios[i];
+          val = std::abs(val);
+          if (val > pattMaxError) {
+            skipMatchRow = true;
+          }
+        }
+
+        // Very common to skip here, database Pattern is NOT a match to ours
+        if (skipMatchRow) {
+          // std::cout << "Alert: Match Row skipped!!!" << std::endl;
+          continue;
+        }
+
+        // std::cout << "fine match" << std::endl;
+
+        Vec3 pattCentroid(0, 0, 0);
+        for (Vec3 pattStarVec : pattStarVecs) {
+          pattCentroid = pattCentroid + pattStarVec;
+        }
+        pattCentroid = pattCentroid * (1.0 / (int)pattStarVecs.size());
+
+        std::vector<float> pattRadii;
+        for (Vec3 pattStarVec : pattStarVecs) {
+          pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
+        }
+
+        std::vector<int> sortedCentroidIndices = ArgsortVector<int>(chosenIndices, pattRadii);
+
+        std::vector<Vec3> pattSortedVecs = ArgsortVector<Vec3>(pattStarVecs, pattRadii);
+
+        Vec3 catCentroid(0, 0, 0);
+        for (Vec3 catStarVec : catStarVecs) {
+          catCentroid = catCentroid + catStarVec;
+        }
+        catCentroid = catCentroid * (1.0 / (int)catStarVecs.size());
+
+        std::vector<float> catRadii;
+        for (Vec3 catStarVec : catStarVecs) {
+          catRadii.push_back((catStarVec - catCentroid).Magnitude());
+        }
+
+        std::vector<int> catSortedStarIDs = ArgsortVector<int>(catStarIDs, catRadii);
+        std::vector<Vec3> catSortedVecs = ArgsortVector<Vec3>(catStarVecs, catRadii);
+
+        for (int i = 0; i < numPattStars; i++) {
+          int centroidIndex = sortedCentroidIndices[i];
+
+          // segfault
+          int resultStarID = catSortedStarIDs[i];
+
+          std::cout << "Centroid Index: " << centroidIndex << ", Result StarID: " << resultStarID
+                    << std::endl;
+
+          // TODO later: take out this function, since once we actually
+          // use the given catalog, we can just give the actual index
+          // TODO: specifically, "star" is the catalog index
+          int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
+
+          // const CatalogStar *catStar = FindNamedStar(catalog,
+          // resultStarID);
+
+          result.push_back(StarIdentifier(centroidIndex, catalogIndex));
+        }
+
+        // NOTE: StarIdentifier wants the catalog INDEX, not the real star
+        // ID
+
+        std::cout << "SUCCESS: stars successfully matched" << std::endl;
+        return result;
       }
-      pattCentroid = pattCentroid * (1.0 / (int)pattStarVecs.size());
-
-      std::vector<float> pattRadii;
-      for (Vec3 pattStarVec : pattStarVecs) {
-        pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
-      }
-
-      std::vector<int> chosenIndices =
-          std::vector<int>(centroidIndices.begin(), centroidIndices.begin() + numPattStars);
-
-      std::vector<int> sortedCentroidIndices = ArgsortVector<int>(chosenIndices, pattRadii);
-
-      std::vector<Vec3> pattSortedVecs = ArgsortVector<Vec3>(pattStarVecs, pattRadii);
-
-      Vec3 catCentroid(0, 0, 0);
-      for (Vec3 catStarVec : catStarVecs) {
-        catCentroid = catCentroid + catStarVec;
-      }
-      catCentroid = catCentroid * (1.0 / (int)catStarVecs.size());
-
-      std::vector<float> catRadii;
-      for (Vec3 catStarVec : catStarVecs) {
-        catRadii.push_back((catStarVec - catCentroid).Magnitude());
-      }
-
-      std::vector<int> catSortedStarIDs = ArgsortVector<int>(catStarIDs, catRadii);
-      std::vector<Vec3> catSortedVecs = ArgsortVector<Vec3>(catStarVecs, catRadii);
-
-      for (int i = 0; i < numPattStars; i++) {
-        int centroidIndex = sortedCentroidIndices[i];
-
-        // segfault
-        int resultStarID = catSortedStarIDs[i];
-
-        std::cout << "Centroid Index: " << centroidIndex << ", Result StarID: " << resultStarID
-                  << std::endl;
-
-        // TODO later: take out this function, since once we actually
-        // use the given catalog, we can just give the actual index
-        int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
-
-        // const CatalogStar *catStar = FindNamedStar(catalog,
-        // resultStarID);
-
-        result.push_back(StarIdentifier(centroidIndex, catalogIndex));
-      }
-
-      // NOTE: StarIdentifier wants the catalog INDEX, not the real star
-      // ID
-
-      std::cout << "SUCCESS: stars successfully matched" << std::endl;
-      return result;
     }
   }
 
