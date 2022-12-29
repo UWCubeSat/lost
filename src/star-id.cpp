@@ -194,7 +194,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
     if (!angleAcceptable) {
       std::cerr << "Error: some angle is greater than maxFov" << std::endl;
-      return result;
+      continue;
       // TODO: probably continue (try again) instead of returning, change
       // after implementing generator function
     }
