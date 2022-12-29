@@ -14,6 +14,10 @@
 
 namespace lost {
 
+
+static bool GetCentroidCombination(std::vector<int>* const res, int pattSize, int numCentroids);
+
+
 // TODO: duplicate in databases.cpp
 int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const {
   // key = 5-tuple of binned edge ratios
@@ -64,6 +68,39 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
   return res;
 }
 
+static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids){
+  if(numCentroids < pattSize){
+    return false;
+  }
+  static bool firstTime = true;
+  static std::vector<int> indices;
+  if(firstTime){
+    firstTime = false;
+    indices.push_back(-1);
+    for(int i = 0; i < pattSize; i++){
+      indices.push_back(i);
+    }
+    indices.push_back(numCentroids);
+    *res = std::vector<int>(indices.begin() + 1, indices.end() - 1);
+    return true;
+  }
+
+  if(indices[1] >= numCentroids - pattSize){
+    return false;
+  }
+
+  for(int i = 1; i <= pattSize; i++){
+    indices[i]++;
+    if(indices[i] < indices[i+1]){
+      break;
+    }
+    indices[i] = indices[i-1] + 1;
+  }
+  *res = std::vector<int>(indices.begin() + 1, indices.end() - 1);
+  return true;
+
+}
+
 /**
  * @brief Identifies stars using Tetra Star Identification Algorithm
  *
@@ -88,23 +125,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   }
   TetraDatabase tetraDatabase(databaseBuffer);
 
-  int catLength = tetraDatabase.Size();
-  std::cout << "camera fov: " << camera.Fov() << ", focal length: " << camera.FocalLength()
-            << std::endl;
+  int catLength = tetraDatabase.Size(); // TODO: use this, not hardcoded value in star-id.hpp
 
-  // TODO: definitely change later- finish database integration
-  // Right now, we're reading the entire Pattern Catalog and Star Table into
-  // memory TetraDatabase db; db.fillStarTable(); db.fillPattCatalog();
-
-//   std::ifstream pattCatFile("pattCatalogOurs9-22.dat", std::ios_base::binary);
-//   std::ifstream starTableFile("starTableOurs9-22.dat", std::ios_base::binary);
-
-//   if (!pattCatFile.is_open()) {
-//     std::cout << "Error: Failed to open pattern catalog" << std::endl;
-//   }
-//   if (!starTableFile.is_open()) {
-//     std::cout << "Error: failed to open star table" << std::endl;
-//   }
 
   std::vector<int> centroidIndices;
   for (int i = 0; i < (int)stars.size(); i++) {
@@ -122,6 +144,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   // tetra does this somewhat strangely
   // TODO: pattCheckingStars = 6, number of stars used to create possible patterns for lookup in db
   // const int pattCheckingStars = 6;
+
+
 
   std::vector<Star> chosenStars;
   for (int i = 0; i < numPattStars; i++) {
@@ -344,15 +368,12 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
       // ID
 
       std::cout << "SUCCESS: stars successfully matched" << std::endl;
-    //   pattCatFile.close();
-    //   starTableFile.close();
       return result;
     }
   }
 
   std::cout << "FAIL" << std::endl;
-//   pattCatFile.close();
-//   starTableFile.close();
+
   return result;
 }
 

@@ -30,7 +30,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
                      const Camera &) const;
 
  private:
-  const float fov = 25.5705;   // in degrees
+  const float fov = 25.5705;   // in degrees, TODO: not used anywhere so delete later
   const float maxFov = 12.00;  // in degrees, max FOV of database
   // TODO: this may not be accurate, think I saw a 20 FOV somewhere. Also make this part of
   // constructor / default, not hardcoded
@@ -47,8 +47,6 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
   const int catalogLength = 8951660;
 
   const long long MAGIC_RAND = 2654435761;
-
-  const int starTableRowSize = 7;  // TODO: remove
 
   /**
    * @brief Hash function, convert from star pattern representation into index in pattern catalog
