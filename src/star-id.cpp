@@ -32,17 +32,15 @@ int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int ma
 // std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
 //     int index, std::ifstream &pattCatFile) const {
 
-std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
+std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int maxIndex,
                                                                const TetraDatabase &db) const {
   // Returns a list of rows (4-tuples) from the Pattern Catalog
   // Does quadratic probing
-
-  int maxInd = catalogLength;
   // std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
 
   std::vector<std::vector<int>> res;
   for (int c = 0;; c++) {
-    int i = (index + c * c) % maxInd;
+    int i = (index + c * c) % maxIndex;
 
     // std::vector<int> tableRow = db.pattCatalog[i];
     // std::vector<int> tableRow;
@@ -257,12 +255,12 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     }
 
     for (std::vector<int> code : finalCodes) {
-      int hashIndex = KeyToIndex(code, numPattBins, catalogLength);
+      int hashIndex = KeyToIndex(code, numPattBins, catLength);
       // Get a list of Pattern Catalog rows with hash code == hashIndex
       // One of these Patterns in the database could be a match to our constructed Pattern
       // std::vector<std::vector<int>> matches =
       //     GetAtIndex(hashIndex, pattCatFile);
-      std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, tetraDatabase);
+      std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, catLength, tetraDatabase);
 
       if ((int)matches.size() == 0) {
         std::cout << "Alert: matches size = 0, continuing" << std::endl;

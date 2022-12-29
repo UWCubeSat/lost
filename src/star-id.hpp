@@ -30,7 +30,9 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
                      const Camera &) const;
 
  private:
-  const float fov = 25.5705;   // in degrees, TODO: not used anywhere so delete later
+  // const float fov = 25.5705;   // in degrees, TODO: not used anywhere so delete later
+  // TODO: this should be read from the database in the Go algorithm
+  // TODO: update database for this
   const float maxFov = 12.00;  // in degrees, max FOV of database
   // TODO: this may not be accurate, think I saw a 20 FOV somewhere. Also make this part of
   // constructor / default, not hardcoded
@@ -71,7 +73,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
    * @return std::vector<std::vector<int>> List of 4-star patterns that could be matches
    */
   // std::vector<std::vector<int>> GetAtIndex(int index, std::ifstream &pattCatFile) const;
-    std::vector<std::vector<int>> GetAtIndex(int index, const TetraDatabase &db) const;
+    std::vector<std::vector<int>> GetAtIndex(int index, int maxIndex, const TetraDatabase &db) const;
   // TODO: change, should read from database not the file
 
   // std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const; REMOVE
