@@ -33,7 +33,8 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
   // const float fov = 25.5705;   // in degrees, TODO: not used anywhere so delete later
   // TODO: this should be read from the database in the Go algorithm
   // TODO: update database for this
-  const float maxFov = 12.00;  // in degrees, max FOV of database
+  // TODO: not modifiable lvalue?
+  // float maxFov = 12.00;  // in degrees, max FOV of database
   // TODO: this may not be accurate, think I saw a 20 FOV somewhere. Also make this part of
   // constructor / default, not hardcoded
 

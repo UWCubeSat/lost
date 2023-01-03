@@ -81,6 +81,9 @@ class TetraDatabase {
    public:
     explicit TetraDatabase(const unsigned char *buffer);
 
+    // Get max angle (in degrees) allowed between stars in the same pattern
+    float MaxAngle() const;
+
     /// Number of rows in pattern catalog
     // With load factor of 0.5, size = number of patterns * 2
     int Size() const;
@@ -91,11 +94,13 @@ class TetraDatabase {
 
     // TODO: choose a different value
     /// Magic value to use when storing inside a MultiDatabase
-    static const int32_t kMagicValue = 0x2536f009;
-    static const int headerSize = sizeof(int);
+    // static const int32_t kMagicValue = 0x2536f009;
+    static const int32_t kMagicValue = 0xDEADBEEF;
+    static const int headerSize = sizeof(float) + sizeof(int);
 
 private:
     const unsigned char* buffer_;
+    float maxAngle_;
     int catalogSize_;
 };
 

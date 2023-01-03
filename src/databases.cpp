@@ -263,8 +263,14 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
 }
 
 TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer){
+  maxAngle_ = *(float*)buffer;
+  buffer += sizeof(float);
   catalogSize_ = *(int*)buffer;
   std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
+}
+
+float TetraDatabase::MaxAngle() const{
+  return maxAngle_;
 }
 
 int TetraDatabase::Size() const{
@@ -537,6 +543,8 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
   // Done with everything, write to buffer
 
   if (ser) {
+    *((float *)buffer) = maxFovDeg;
+    buffer += sizeof(float);
     *((int *)buffer) = (int)pattCatalog.size();
     buffer += sizeof(int);
 
@@ -548,7 +556,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     }
     return -1;
   } else {
-    return sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize;
+    return sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize;
   }
 }
 
