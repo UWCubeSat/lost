@@ -142,7 +142,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   // Index of centroid indices list
   std::vector<int> chosenCentroidIndices(numPattStars);
 
-
+  // TODO: cap this at some number of combinations, maybe 10 or so
   while (GetCentroidCombination(&chosenCentroidIndices, numPattStars, centroidIndices.size())) {
 
     for(const int& e : chosenCentroidIndices){
@@ -273,20 +273,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         std::vector<int> catStarIDs;
         std::vector<Vec3> catStarVecs;
         for (int star : matchRow) {
-          // TODO: definitely don't do this for final version, change
-
-          // TODO: note that star IS the catalogIndex
-          // Instead of scanning through entire catalog at the end (O(11 million)), just
-          // scan through the 4 stars of the pattern
-
-          // float *row = new float[starTableRowSize];
-          // starTableFile.seekg(sizeof(float) * starTableRowSize * star,
-          //                     std::ios::beg);
-          // starTableFile.read((char *)row,
-          //                    sizeof(float) * starTableRowSize);
-
-          // Vec3 catVec(row[2], row[3], row[4]);
-          // catStarIDs.push_back(row[6]);
 
           Vec3 catVec = catalog[star].spatial;
           catStarIDs.push_back(catalog[star].name);
@@ -359,7 +345,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         for (int i = 0; i < numPattStars; i++) {
           int centroidIndex = sortedCentroidIndices[i];
 
-          // segfault
           int resultStarID = catSortedStarIDs[i];
 
           std::cout << "Centroid Index: " << centroidIndex << ", Result StarID: " << resultStarID

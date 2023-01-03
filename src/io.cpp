@@ -270,36 +270,23 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
 }
 
 void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                        const std::vector<short> &pattStars) {
+                        float maxAngle, const std::vector<short> &pattStars) {
 
-   const float maxFov = 12.00; // degrees, TODO: don't hardcode it, see star-id
-   long length = SerializeTetraDatabase(catalog, maxFov, nullptr, pattStars, false);
+//    const float maxFov = 12.00; // degrees, TODO: don't hardcode it, see star-id
+   long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, false);
    unsigned char* buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
    if(buffer == nullptr){
     std::cerr << "Error: No room for Tetra database" << std::endl;
    }
-   SerializeTetraDatabase(catalog, maxFov, buffer, pattStars, true);
+   SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, true);
 }
 
-/*
-
-void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, constants...){
-    // Probably need patt vector of shorts for sure
-    long dbLength = SerializeLengthTetraDatabase(catalog, sta)
-    unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::magicValue, length);
-    if(buffer == NULL){
-        std::cerr >> "No room for another database." << std::endl;
-    }
-    SerializeTetraDatabase(catalog, ....)
-    // SerializeLength and SerializeDatabase do the exact same thing, except SerializeLength generates the database and does nothing with it
-}
-
-*/
 
 void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
                             const DatabaseOptions &values,
                             std::vector<short> &pattStars){
-   BuildTetraDatabase(builder, catalog, pattStars);
+   float maxAngle = values.tetraMaxAngle;
+   BuildTetraDatabase(builder, catalog, maxAngle, pattStars);
 }
 
 /// Generate and add databases to the given multidatabase builder according to the command line options in `values`

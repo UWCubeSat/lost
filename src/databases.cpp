@@ -339,9 +339,10 @@ int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) {
 // typedef std::array<short, 3> ShortVec3;
 // typedef std::array<float, 3> FloatVec3;
 
-long SerializeTetraDatabase(const Catalog &catalog, float maxFov, unsigned char *buffer,
+long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
                             const std::vector<short> &pattStars, bool ser) {
-  maxFov = DegToRad(maxFov);
+
+  const float maxFov = DegToRad(maxFovDeg);
   const short pattBins = 25;
   const int tempBins = 4;
 

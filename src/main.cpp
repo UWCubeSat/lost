@@ -26,37 +26,29 @@ namespace lost {
 
 /// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
-    // Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag * 100), values.maxStars);
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag * 100), values.maxStars);
 
     // Default minMag is 100
     // So min magnitude is 7 right now
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), 700, 999999);
+    // Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), 700, 999999);
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
     // 9050 stars
 
 
     // pattern catalog generation for tetra needs to modify catalog another time
+    // TODO: Tetra - only return catalog indices, not modify the entire catalog
     // TODO: our final modification to star table also needs to pass pattStars to here for db generation
     // TODO: edit CLI, but this should do for now
-    // TODO: maxFov should be included in DatabaseOptions
-    const float maxFov = 12; // degrees
-    auto tetraStuff = TetraPreparePattCat(narrowedCatalog, maxFov);
+
+    std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
+    auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
     narrowedCatalog = tetraStuff.first;
     std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
-    // 7102 stars here
-    // Interesting, these actually account for the 3 missing- tetra-db gives 7099 stars
+
 
     std::vector<short> pattStars = tetraStuff.second;
-    // lost: 4356 pattern stars
-    // tetra-db: 4358 pattern stars
-    // The pattern IDs chosen are basically the same at first, but after 2500
-    // or so, starts to differ by a lot
 
     std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
-    // for(short pattStarID : pattStars){
-    //     std::cout << pattStarID << std::endl;
-    // }
-
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
@@ -65,13 +57,15 @@ static void DatabaseBuild(const DatabaseOptions &values) {
         builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    if (true) {
+    if (values.tetra) {
       GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars);
       std::cout << "Generated TETRA database with " << builder.BufferLength()
                 << " bytes" << std::endl;
-    } else {
+    }
+
+    if(values.kvector){
       GenerateDatabases(&builder, narrowedCatalog, values);
-      std::cout << "Generated normal database with " << builder.BufferLength()
+      std::cout << "Generated kvector database with " << builder.BufferLength()
                 << " bytes" << std::endl;
     }
 
