@@ -349,6 +349,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
                             const std::vector<short> &pattStars, bool ser) {
 
   const float maxFov = DegToRad(maxFovDeg);
+  // TODO: default is 25
   const short pattBins = 25;
   const int tempBins = 4;
 
@@ -539,6 +540,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
       }
     }
   }
+
 
   // Done with everything, write to buffer
 

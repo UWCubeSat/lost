@@ -121,7 +121,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   TetraDatabase tetraDatabase(databaseBuffer);
 
   int catLength = tetraDatabase.Size();  // TODO: use this, not hardcoded value in star-id.hpp
-  // maxFov = tetraDatabase.MaxAngle();
+  // this->maxFov = tetraDatabase.MaxAngle();
   const float maxFov = tetraDatabase.MaxAngle();
 
   std::cout << "maxFov: " << maxFov << std::endl;

@@ -24,31 +24,21 @@ class StarIdAlgorithm {
   virtual ~StarIdAlgorithm(){};
 };
 
+
 class TetraStarIdAlgorithm : public StarIdAlgorithm {
  public:
   StarIdentifiers Go(const unsigned char *database, const Stars &centroids, const Catalog &catalog,
                      const Camera &) const;
 
  private:
-  // const float fov = 25.5705;   // in degrees, TODO: not used anywhere so delete later
-  // TODO: this should be read from the database in the Go algorithm
-  // TODO: update database for this
-  // TODO: not modifiable lvalue?
-  // float maxFov = 12.00;  // in degrees, max FOV of database
-  // TODO: this may not be accurate, think I saw a 20 FOV somewhere. Also make this part of
-  // constructor / default, not hardcoded
 
-  // I feel these should be held constant, cannot be changed
+  // TODO: I feel these should be held constant, cannot be changed
+  // TODO: maybe numPattBins should be passed in CLI, suspect this is causing
+  // high rate of hash collision
   const int numPattStars = 4;
+  // TODO: changed
   const int numPattBins = 25;
   const float pattMaxError = 0.005;
-
-  // const int catalogLength = 11841082; // default database
-  // const int catalogLength = 8979154; // tetra3 fov=12, stable
-  // number of patterns in catalog:
-  // const int catalogLength = 8978892;  // hardcoded, just for testing - remove later
-  const int catalogLength = 8951660;
-
   const long long MAGIC_RAND = 2654435761;
 
   /**
@@ -73,11 +63,9 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
    * @param pattCatFile
    * @return std::vector<std::vector<int>> List of 4-star patterns that could be matches
    */
-  // std::vector<std::vector<int>> GetAtIndex(int index, std::ifstream &pattCatFile) const;
-    std::vector<std::vector<int>> GetAtIndex(int index, int maxIndex, const TetraDatabase &db) const;
-  // TODO: change, should read from database not the file
 
-  // std::vector<std::vector<int>> GetAtIndex(int index, TetraDatabase db) const; REMOVE
+    std::vector<std::vector<int>> GetAtIndex(int index, int maxIndex, const TetraDatabase &db) const;
+
 };
 
 /// A star-id algorithm that returns random results. For debugging.
