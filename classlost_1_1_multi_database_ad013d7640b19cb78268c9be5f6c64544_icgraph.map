@@ -1,7 +1,7 @@
 <map id="lost::MultiDatabase::SubDatabasePointer" name="lost::MultiDatabase::SubDatabasePointer">
-<area shape="rect" id="node1" title="MultiDatabase memory layout:" alt="" coords="469,64,632,105"/>
-<area shape="rect" id="node2" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="209,5,398,47"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="185,71,421,98"/>
-<area shape="rect" id="node4" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="237,122,369,149"/>
-<area shape="rect" id="node5" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,122,137,149"/>
+<area shape="rect" id="node1" title="MultiDatabase memory layout:" alt="" coords="469,57,632,98"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="237,5,369,32"/>
+<area shape="rect" id="node4" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="209,57,398,98"/>
+<area shape="rect" id="node5" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="185,123,421,149"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
 </map>
