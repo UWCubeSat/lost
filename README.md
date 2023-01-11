@@ -17,7 +17,7 @@ test and benchmark things quickly.
 ## Local installation
 
 - Linux or Mac. If you have Windows, I recommend installing the Windows Subsystem for Linux.
-- A C compiler, such as GCC. On Debian, `apt install gcc`
+- A C++ compiler, such as g++. On Debian, `apt install g++`
 - GNU Make. On Debian, `apt install make`
 - Groff, to generate help text. `apt install groff`
 - (Recommended) ASAN (Address Sanitizer). We use this to catch memory errors early. `apt install libasan`. (If you wish to use LOST without the address sanitizer, build it with `make LOST_DISABLE_ASAN=1`)
