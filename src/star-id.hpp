@@ -37,7 +37,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
   // high rate of hash collision
   const int numPattStars = 4;
   // TODO: changed
-  const int numPattBins = 25;
+  const int numPattBins = 50;
   const float pattMaxError = 0.005;
   const long long MAGIC_RAND = 2654435761;
 
@@ -52,7 +52,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
    * @param maxIndex Number of rows in pattern catalog
    * @return int
    */
-  int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const;
+  int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) const;
 
   /**
    * @brief Get all possible matching patterns starting from given index

@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <math.h>
 
+#include <iostream> // TODO: remove
+
 #include <algorithm>
 
 namespace lost {
@@ -43,8 +45,13 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
                                                            const float maxFovDeg) {
 
   // TODO: I suggest these values be kept constant
+  // TODO: these should scale based on FOV
+  // Larger FOV should allow more patterns
+  // 10, 20 for maxFovDeg=20ish seemed to work
   const int pattStarsPerFOV = 10;
   const int verificationStarsPerFOV = 20;
+  // const int pattStarsPerFOV = 20;
+  // const int verificationStarsPerFOV = 30;
   // To eliminate double stars, specify that star must be > 0.05 degrees apart
   const float starMinSep = 0.05;
 
@@ -64,6 +71,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
   keepForVerifying[0] = true;
 
   for (int i = 1; i < numEntries; i++) {
+    // vec representing new star
     Vec3 vec = catalog[i].spatial;
 
     bool angsPatternsOK = true;
@@ -83,6 +91,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
           angsPatternsOK = false;
           break;
         }
+        // If angle between new star i and old star j is less than maxFov/2, OK
         if (dotProd > std::cos(maxFOV / 2)) {
           numPattStarsInFov++;
           if (numPattStarsInFov >= pattStarsPerFOV) {
@@ -111,12 +120,18 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
         float dotProd = vec * catalog[j].spatial;
         if (dotProd >= std::cos(DegToRad(starMinSep))) {
           angsVerifyingOK = false;
+          // No problems here
           break;
         }
         if (dotProd > std::cos(maxFOV / 2)) {
           numVerStarsInFov++;
+          // Not really a bug, more like mistake on my part
+          // verificationStarsPerFOV is still low, so when FOV is big,
+          // very few patterns are generated
           if (numVerStarsInFov >= verificationStarsPerFOV) {
             angsVerifyingOK = false;
+            // TODO: bug
+            // why are there "too many" all the time?
             break;
           }
         }

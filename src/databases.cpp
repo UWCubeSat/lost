@@ -333,13 +333,15 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 
 ///////////////////// Tetra database //////////////////////
 
-int KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) {
+int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
   const long long MAGIC_RAND = 2654435761;
   long index = 0;
   for (int i = 0; i < (int)key.size(); i++) {
     index += key[i] * std::pow(binFactor, i);
   }
-  return (index * MAGIC_RAND) % maxIndex;
+  // return (index * MAGIC_RAND) % maxIndex;
+  // std::cout << (index % maxIndex) << " * " << (MAGIC_RAND % maxIndex) << std::endl;
+  return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
 }
 
 // typedef std::array<short, 3> ShortVec3;
@@ -350,7 +352,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
   const float maxFov = DegToRad(maxFovDeg);
   // TODO: default is 25
-  const short pattBins = 25;
+  const short pattBins = 50;
   const int tempBins = 4;
 
   std::cout << "serializing" << std::endl;
@@ -495,7 +497,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
   std::cout << "Found " << pattList.size() << " patterns" << std::endl;
 
   // Load factor of 0.5
-  int catalogLength = 2 * (int)pattList.size();
+  long long catalogLength = 2 * (int)pattList.size();
   std::vector<Pattern> pattCatalog(catalogLength);
 
 
@@ -529,6 +531,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     }
 
     int hashIndex = KeyToIndex(key, pattBins, catalogLength);
+    // std::cout << "hash index: " << hashIndex << std::endl;
     long long offset = 0;
     // Quadratic probing to find next available bucket for element with key=hashIndex
     while (true) {

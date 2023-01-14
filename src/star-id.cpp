@@ -17,14 +17,16 @@ namespace lost {
 static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids);
 
 // TODO: duplicate in databases.cpp
-int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor, int maxIndex) const {
+int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
+                                     long long maxIndex) const {
   // key = 5-tuple of binned edge ratios
   // Outputs a row of the Pattern Catalog
   long index = 0;
   for (int i = 0; i < (int)key.size(); i++) {
     index += key[i] * std::pow(binFactor, i);
   }
-  return (index * MAGIC_RAND) % maxIndex;
+  // return (index * MAGIC_RAND) % maxIndex;
+  return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
 }
 
 // std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
@@ -54,8 +56,9 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int ma
     //     tableRow.push_back(int(row[j]));
     // }
 
-    if (std::all_of(tableRow.begin(), tableRow.end(), [](int ele) { return ele == 0; })) {
-      //   std::cout << c << std::endl;
+    // if (std::all_of(tableRow.begin(), tableRow.end(), [](int ele) { return ele == 0; })) {
+    if (tableRow[0] == 0 && tableRow[1] == 0) {
+      std::cout << "c: " << c << std::endl;
       break;
     } else {
       res.push_back(tableRow);
@@ -120,7 +123,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   }
   TetraDatabase tetraDatabase(databaseBuffer);
 
-  int catLength = tetraDatabase.Size();  // TODO: use this, not hardcoded value in star-id.hpp
+  long long catLength = tetraDatabase.Size();  // TODO: use this, not hardcoded value in star-id.hpp
   // this->maxFov = tetraDatabase.MaxAngle();
   const float maxFov = tetraDatabase.MaxAngle();
 
@@ -148,19 +151,18 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
   // TODO: cap this at some number of combinations, maybe 10 or so
   while (GetCentroidCombination(&chosenCentroidIndices, numPattStars, centroidIndices.size())) {
-
-    for(const int& e : chosenCentroidIndices){
+    for (const int &e : chosenCentroidIndices) {
       std::cout << centroidIndices[e] << ", ";
     }
     std::cout << std::endl;
 
     // Index in centroid indices list
-    std::vector<int> chosenIndices; // TODO: rename
+    std::vector<int> chosenIndices;  // TODO: rename
     std::vector<Star> chosenStars;
     // for (int i = 0; i < numPattStars; i++) {
     //   chosenStars.push_back(stars[centroidIndices[i]]);
     // }
-    for(int i = 0; i < numPattStars; i++){
+    for (int i = 0; i < numPattStars; i++) {
       chosenIndices.push_back(centroidIndices[chosenCentroidIndices[i]]);
       chosenStars.push_back(stars[chosenIndices[i]]);
     }
@@ -277,7 +279,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         std::vector<int> catStarIDs;
         std::vector<Vec3> catStarVecs;
         for (int star : matchRow) {
-
           Vec3 catVec = catalog[star].spatial;
           catStarIDs.push_back(catalog[star].name);
 

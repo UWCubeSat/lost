@@ -43,11 +43,9 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
     auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
     narrowedCatalog = tetraStuff.first;
-    std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
-
-
     std::vector<short> pattStars = tetraStuff.second;
 
+    std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
     std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
 
     MultiDatabaseBuilder builder;
