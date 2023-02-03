@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Mark Polyakov (If you edit the file, add your name here!)
+# Copyright (c) 2020 Mark Polyakov, Karen Haining (If you edit the file, add your name here!)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -65,6 +65,7 @@ $(BIN): $(OBJS)
 
 documentation/%.txt: documentation/%.man
 	groff -mandoc -Tascii $< > $@
+	printf '\0' >> $@
 
 documentation/man-%.h: documentation/%.txt
 	xxd -i $< > $@
