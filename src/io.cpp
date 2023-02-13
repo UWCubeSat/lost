@@ -623,9 +623,9 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
 
     // TODO: allow random angle generation?
-    Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
-                                                         DegToRad(values.generateDe),
-                                                         DegToRad(values.generateRoll)));
+    std::uniform_real_distribution<float> raDistribution(0.0, 359.0);
+    std::uniform_real_distribution<float> deDistribution(-179.0, 179.0);
+    std::default_random_engine rng(values.generateSeed);
     Attitude motionBlurDirection = Attitude(SphericalToQuaternion(DegToRad(values.generateBlurRa),
                                                                   DegToRad(values.generateBlurDe),
                                                                   DegToRad(values.generateBlurRoll)));
@@ -635,6 +635,9 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     float focalLength = FocalLengthFromOptions(values);
 
     for (int i = 0; i < values.generate; i++) {
+        Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(raDistribution(rng)),
+                                                           DegToRad(deDistribution(rng)),
+                                                           DegToRad(raDistribution(rng))));
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
             CatalogRead(),
             attitude,
@@ -1232,8 +1235,8 @@ void PipelineComparatorAttitude(std::ostream &os,
         Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
         float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).Angle();
         assert(attitudeError >= 0);
-        attitudeErrorSum += attitudeError;
         if (attitudeError <= angleThreshold) {
+            attitudeErrorSum += attitudeError;
             numCorrect++;
         }
     }
