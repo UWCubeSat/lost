@@ -134,7 +134,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     centroidIndices.push_back(i);
   }
 
-  // Sort centroided stars by brightness, high to low
+  // Sort centroided stars by brightness, high to low. Larger is brighter
 
   std::stable_sort(centroidIndices.begin(), centroidIndices.end(),
                    [&stars](int a, int b) { return stars[a].magnitude > stars[b].magnitude; });
@@ -305,10 +305,15 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
           float val = catEdgeRatios[i] - pattEdgeRatios[i];
           val = std::abs(val);
+          // pattMaxError set to 0.005 right now
           if (val > pattMaxError) {
             skipMatchRow = true;
           }
         }
+
+        // TODO: this is a fairly naive way to check error, especially checking ratios (which should
+        // be replaced later) Maybe fine as prelim check, but definitely should use a more
+        // mathematically robust way (Kabsch, etc.)
 
         // Very common to skip here, database Pattern is NOT a match to ours
         if (skipMatchRow) {
@@ -370,6 +375,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         // ID
 
         std::cout << "SUCCESS: stars successfully matched" << std::endl;
+
         return result;
       }
     }

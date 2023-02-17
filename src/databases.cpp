@@ -380,6 +380,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
   }
 
   // Return a list of stars that are nearby
+  // yay lambda expression
   auto tempGetNearbyStars = [&tempCoarseSkyMap, &catalog](const Vec3 &vec, float radius) {
     std::vector<float> components{vec.x, vec.y, vec.z};
 
@@ -425,7 +426,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     }
 
     return nearbyStarIDs;
-  };
+  }; // end of function
 
   const int pattSize = 4;
   // TODO: might switch to vector
@@ -457,11 +458,12 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
                               firstStarID);
     if (removeIt == tempCoarseSkyMap[hashCode].end()) {
       std::cerr << "Fatal error with hashing" << std::endl;
-      exit(1);
+      exit(EXIT_FAILURE);
     }
     tempCoarseSkyMap[hashCode].erase(removeIt);
 
     auto nearbyStars = tempGetNearbyStars(v, maxFov);
+    // TODO: either don't cast or use explicit casts
     const int n = (int)nearbyStars.size();
 
     for (int i = 0; i < n; i++) {

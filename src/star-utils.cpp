@@ -41,15 +41,16 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
   return result;
 }
 
+// TODO: make static or declare in header file or move
 std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
                                                            const float maxFovDeg) {
 
-  // TODO: I suggest these values be kept constant
   // TODO: these should scale based on FOV
   // Larger FOV should allow more patterns
   // 10, 20 for maxFovDeg=20ish seemed to work
   const int pattStarsPerFOV = 10;
   const int verificationStarsPerFOV = 20;
+  // 25, 25
   // const int pattStarsPerFOV = 20;
   // const int verificationStarsPerFOV = 30;
   // To eliminate double stars, specify that star must be > 0.05 degrees apart
@@ -120,7 +121,6 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
         float dotProd = vec * catalog[j].spatial;
         if (dotProd >= std::cos(DegToRad(starMinSep))) {
           angsVerifyingOK = false;
-          // No problems here
           break;
         }
         if (dotProd > std::cos(maxFOV / 2)) {
@@ -130,8 +130,6 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
           // very few patterns are generated
           if (numVerStarsInFov >= verificationStarsPerFOV) {
             angsVerifyingOK = false;
-            // TODO: bug
-            // why are there "too many" all the time?
             break;
           }
         }
@@ -145,7 +143,6 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
 
   Catalog finalCat;
   std::vector<short> pattStars;
-  short cumulativeSum = -1;
 
   // finalCat is the final version of the star table
   for (int i = 0; i < (int)keepForVerifying.size(); i++) {
@@ -156,6 +153,7 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
 
   // Pretty clever way of finding which stars in the FINAL star table
   // should be used for pattern construction later in Tetra's database generation step
+  short cumulativeSum = -1;
   for (int i = 0; i < (int)keepForVerifying.size(); i++) {
     if (keepForVerifying[i]) {
       cumulativeSum++;
