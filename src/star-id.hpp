@@ -39,7 +39,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
   // TODO: changed
   const int numPattBins = 50;
   // TODO: investigate pattMaxError, default 0.005
-  const float pattMaxError = 0.005;
+  const float pattMaxError = 0.002;
   const long long MAGIC_RAND = 2654435761;
 
   /**
