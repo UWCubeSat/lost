@@ -155,6 +155,12 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+float FloatModulo(float x, float mod) {
+    // first but not last chatgpt generated code in lost:
+    float result = x - mod * floor(x / mod);
+    return result >= 0 ? result : result + mod;
+}
+
 /// The square of the magnitude
 float Vec3::MagnitudeSq() const {
     return x*x+y*y+z*z;

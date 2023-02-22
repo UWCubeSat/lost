@@ -1,3 +1,4 @@
+#include <limits>
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
@@ -237,6 +238,187 @@ private:
     }
 };
 
+std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) {
+    std::vector<int16_t> result;
+    for (; it.HasValue(); ++it) {
+        result.push_back(*it);
+    }
+    return result;
+}
+
+/// unidentified centroid used in IdentifyRemainingStarsPairDistance
+/// The "angles" through here are "triangular angles". A triangular angle is a 2D angle in a triangle formed by three centroids.
+class IRUnidentifiedCentroid {
+public:
+    IRUnidentifiedCentroid(const Star &star)
+        : bestAngleFrom90(std::numeric_limits<float>::max()), // should be infinity
+          bestStar1(0,0), bestStar2(0,0),
+          star(star) { }
+
+    float bestAngleFrom90; /// For the pair of other centroids forming the triangular angle closest to 90 degrees, how far from 90 degrees it is (in radians)
+    StarIdentifier bestStar1; /// One star corresponding to bestAngleFrom90
+    StarIdentifier bestStar2; /// The other star corresponding to bestAngleFrom90
+    int16_t index; /// Index into list of all centroids
+    const Star &star;
+
+private:
+    // possible improvement: Use a tree map here to allow binary search
+    std::vector<std::pair<float, StarIdentifier>> identifiedStarsInRange;
+
+private:
+    float VerticalAnglesToAngleFrom90(float v1, float v2) {
+        return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
+    }
+
+public:
+    /**
+     * When a centroid within range of this centroid is identified, call this function. This
+     * function does /not/ check whether the centroid is within range.
+     */
+    void AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
+        const Star &otherStar = stars[starId.starIndex];
+        Vec2 positionDifference = otherStar.position - star.position;
+        float angleFromVertical = atan2(positionDifference.y, positionDifference.x);
+
+        for (const auto &otherPair : identifiedStarsInRange) {
+            float curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
+            if (curAngleFrom90 < bestAngleFrom90) {
+                bestAngleFrom90 = curAngleFrom90;
+                bestStar1 = starId;
+                bestStar2 = otherPair.second;
+            }
+        }
+
+        identifiedStarsInRange.emplace_back(angleFromVertical, starId);
+    }
+};
+
+std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(std::vector<IRUnidentifiedCentroid> *centroids, const Star &star, float minDistance, float maxDistance) {
+    std::vector<IRUnidentifiedCentroid *> result;
+
+    // Find the first centroid that is within range of the given centroid.
+    auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x - maxDistance,
+        [](const IRUnidentifiedCentroid &centroid, float x) {
+            return centroid.star.position.x < x;
+        });
+
+    // Find the first centroid that is not within range of the given centroid.
+    auto firstNotInRange = std::lower_bound(firstInRange, centroids->end(), star.position.x + maxDistance,
+        [](const IRUnidentifiedCentroid &centroid, float x) {
+            return centroid.star.position.x <= x;
+        });
+
+    // Copy the pointers to the stars into the result vector.
+    for (auto it = firstInRange; it != firstNotInRange; ++it) {
+        float distance = Distance(star.position, it->star.position);
+        if (distance >= minDistance && distance <= maxDistance) {
+            result.push_back(&*it);
+        }
+    }
+
+    return result;
+}
+
+/**
+ * Given a newly identified centroid and a list of unidentifed centroids, update all the
+ * unidentified centroids which are within range.
+ */
+void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &stars,
+                                   std::vector<IRUnidentifiedCentroid> *unidentifiedCentroids,
+                                   float minDistance, float maxDistance,
+                                   const Camera &camera) {
+    for (IRUnidentifiedCentroid *centroid : FindUnidentifiedCentroidsInRange(unidentifiedCentroids, stars[starId.starIndex], minDistance, maxDistance)) {
+        centroid->AddIdentifiedStar(starId, stars);
+    }
+}
+
+/**
+ * Given some identified stars, attempt to identify the rest.
+ *
+ * Requires a pair distance database to be present. Iterates through the unidentified centroids in
+ * an intelligent order, identifying them one by one.
+ */
+int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
+                                        const Stars &stars,
+                                        const Catalog &catalog,
+                                        const PairDistanceKVectorDatabase &db,
+                                        const Camera &camera,
+                                        float tolerance) {
+    // initialize all unidentified centroids
+    std::vector<IRUnidentifiedCentroid> unidentifiedCentroids;
+    for (const Star &star : stars) {
+        unidentifiedCentroids.push_back(IRUnidentifiedCentroid(star));
+    }
+
+    // sort unidentified centroids by x coordinate
+    std::sort(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
+        [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
+            return a.star.position.x < b.star.position.x;
+        });
+
+    // for each identified star, add it to the list of identified stars for each unidentified centroid within range
+    for (const auto &starId : *identifiers) {
+        for (auto it = unidentifiedCentroids.begin(); it != unidentifiedCentroids.end();) {
+            if (starId.starIndex == it->index) {
+                unidentifiedCentroids.erase(it);
+            } else {
+                AddToAllUnidentifiedCentroids(starId, stars, &unidentifiedCentroids, db.MinDistance(), db.MaxDistance(), camera);
+            }
+        }
+    }
+
+    int numExtraIdentifiedStars = 0;
+
+    // keep getting the best unidentified centroid and identifying it
+    while (!unidentifiedCentroids.empty()) {
+        // find the best unidentified centroid
+        auto bestUnidentifiedCentroidIt = std::min_element(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
+            [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
+                return a.bestAngleFrom90 < b.bestAngleFrom90;
+            });
+        const IRUnidentifiedCentroid &bestUnidentifiedCentroid = *bestUnidentifiedCentroidIt;
+
+        // Project best stars to 3d, find angle between them and current unidentified centroid
+        Vec3 unidentifiedSpatial = camera.CameraToSpatial(bestUnidentifiedCentroid.star.position);
+        float d1 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar1.starIndex].position), unidentifiedSpatial);
+        float d2 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar2.starIndex].position), unidentifiedSpatial);
+
+        const int16_t *query1End, *query2End;
+        const int16_t *query1 = db.FindPairsLiberal(d1-tolerance, d1+tolerance, &query1End);
+        const int16_t *query2 = db.FindPairsLiberal(d2-tolerance, d2+tolerance, &query2End);
+
+        // Use PairDistanceInvolvingIterator to find catalog candidates for the unidentified centroid from both sides.
+        PairDistanceInvolvingIterator it1(query1, query1End, bestUnidentifiedCentroid.bestStar1.catalogIndex);
+        PairDistanceInvolvingIterator it2(query2, query2End, bestUnidentifiedCentroid.bestStar2.catalogIndex);
+
+        // find all the catalog stars that are in both annuli
+        std::vector<int16_t> candidates1 = ConsumeInvolvingIterator(it1);
+        std::vector<int16_t> candidates2 = ConsumeInvolvingIterator(it2);
+        std::sort(candidates1.begin(), candidates1.end());
+        std::sort(candidates2.begin(), candidates2.end());
+        std::vector<int16_t> candidatesIntersection;
+        std::set_intersection(candidates1.begin(), candidates1.end(), candidates2.begin(), candidates2.end(), std::back_inserter(candidatesIntersection));
+
+        if (candidatesIntersection.size() != 1) { // if there is not exactly one candidate, we can't identify the star. Just remove it from the list.
+            if (candidatesIntersection.size() > 1) {
+                std::cerr << "WARNING: Multiple catalog stars matched during identify remaining stars. This should be rare." << std::endl;
+            }
+        } else {
+            // identify the centroid
+            identifiers->emplace_back(bestUnidentifiedCentroid.index, candidatesIntersection[0]);
+
+            // update nearby unidentified centroids with the new identified star
+            AddToAllUnidentifiedCentroids(identifiers->back(), stars, &unidentifiedCentroids, db.MinDistance(), db.MaxDistance(), camera);
+
+            ++numExtraIdentifiedStars;
+        }
+        // remove the centroid from the list of unidentified centroids
+        unidentifiedCentroids.erase(bestUnidentifiedCentroidIt);
+    }
+
+    return numExtraIdentifiedStars;
+}
+
 /// After some stars have been identified, try to idenify the rest using a faster algorithm.
 void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
                                    const Stars &stars,
@@ -428,21 +610,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd, iCandidate);
                         PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd, iCandidate);
                         PairDistanceInvolvingIterator rIterator(irQuery, irEnd, iCandidate);
-                        std::vector<int16_t> jCandidates;
-                        std::vector<int16_t> kCandidates;
-                        std::vector<int16_t> rCandidates;
-                        while (jIterator.HasValue()) {
-                            jCandidates.push_back(*jIterator);
-                            ++jIterator;
-                        }
-                        while (kIterator.HasValue()) {
-                            kCandidates.push_back(*kIterator);
-                            ++kIterator;
-                        }
-                        while (rIterator.HasValue()) {
-                            rCandidates.push_back(*rIterator);
-                            ++rIterator;
-                        }
+                        std::vector<int16_t> jCandidates = ConsumeInvolvingIterator(jIterator);
+                        std::vector<int16_t> kCandidates = ConsumeInvolvingIterator(kIterator);
+                        std::vector<int16_t> rCandidates = ConsumeInvolvingIterator(rIterator);
                         // TODO: break fast if any of the iterators are empty, if it's any
                         // significant performance improvement.
                         for (int16_t jCandidate : jCandidates) {
