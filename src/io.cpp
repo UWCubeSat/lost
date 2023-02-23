@@ -517,7 +517,10 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness/exposureTime)*2*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
-                             catalogStar.magnitude);
+                             // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
+                             // It's possible to make it so that the magnitude is always positive too, but allowing weirder magnitudes helps keep star-id algos honest about their assumptions on magnitude.
+                             // we don't use its magnitude anywhere else in generation; peakBrightness was already calculated.
+                             -catalogStar.magnitude);
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
 
             // don't add false stars to centroids or star ids
