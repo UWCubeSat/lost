@@ -27,6 +27,8 @@ struct Vec2 {
     Vec2 operator*(const float &) const;
     Vec2 operator-(const Vec2 &) const;
     Vec2 operator+(const Vec2 &) const;
+
+    friend std::ostream &operator<<(std::ostream &output, const Vec2 &vec);
 };
 
 class Mat3; // define above so we can use in Vec3 class

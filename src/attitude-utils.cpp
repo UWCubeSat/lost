@@ -155,6 +155,11 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+std::ostream& operator<< (std::ostream& output, const Vec2 &vec){
+    output << "x: " << vec.x << "   y: " << vec.y;
+    return output;
+}
+
 std::ostream& operator<< (std::ostream& output, const Vec3 &vec){
     output << "x: " << vec.x << "   y: " << vec.y << "  z: " << vec.z;
     return output;

@@ -2,7 +2,19 @@
 
 # Tetra testing
 
+# TODO: get average attitude error
+
 th="0.5"
+
+totalTime=0
+n=2000
+totalCorrect=0
+totalIncorrect=0
+totalNoStars=0
+
+totalAttCorrect=0
+totalAttIncorrect=0
+
 
 # compare actual to expected
 function cmpAE() {
@@ -20,7 +32,9 @@ function cmpAE() {
     return 0
   fi
 
-  if (( $(echo "$diff < $th" | bc -l) )); then
+  diff=$(echo "$diff % 360" | bc)
+
+  if (( $(echo "$diff < $th" | bc -l) || $(echo "(360 - $diff) < $th" | bc -l) )); then
     return 0
   else
     return 1
@@ -35,6 +49,7 @@ function rand_int {
   echo $((lo + (RANDOM % (hi - lo + 1))))
 }
 
+# This works fine
 # create database if not exists
 # test -e tetra-incorrect.dat || ./lost database \
 #   --min-mag 7 \
@@ -42,11 +57,17 @@ function rand_int {
 #   --tetra-max-angle 12 \
 #   --output tetra-incorrect.dat
 
-for _ in $(seq "${1:-1000}"); do
+for _ in $(seq "${1:-$n}"); do
   ra=$(rand_int 0 359)
   de=$(rand_int -89 89)
   roll=$(rand_int 0 359)
+  fov=$(rand_int 10 60)
 
+  # ra=141
+  # de=-48
+  # roll=122
+
+  # TODO: separate image generation and actual pipeline run for accurate timing
   # set -x
   lost_output=$(
     ./lost pipeline \
@@ -61,13 +82,14 @@ for _ in $(seq "${1:-1000}"); do
       --generate-de "$de" \
       --generate-roll "$roll" \
       --database my-database-small.dat \
-      --centroid-algo cog \
       --centroid-mag-filter 5 \
       --star-id-algo tetra \
       --compare-star-ids \
       --attitude-algo dqm \
       --print-attitude
   )
+
+  # --centroid-algo cog \
   # set +x
   num_incorrect_stars=$(grep -oP "(?<=starid_num_incorrect )\\d+" <<<"$lost_output")
   num_correct_stars=$(grep -4oP "(?<=starid_num_correct )\\d+" <<<"$lost_output")
@@ -76,28 +98,42 @@ for _ in $(seq "${1:-1000}"); do
   deOurs=$(grep -oP "(?<=attitude_de )[-+]?[0-9]*\.?[0-9]+" <<<"$lost_output")
   rollOurs=$(grep -oP "(?<=attitude_roll )[-+]?[0-9]*\.?[0-9]+" <<<"$lost_output")
 
-  echo "Real: $ra, $de, $roll"
-  echo "Calculated: $raOurs, $deOurs, $rollOurs"
+  # echo "Fov: $fov"
+  echo "Real: $ra, $de, $roll vs Calculated: $raOurs, $deOurs, $rollOurs"
+
+  # TODO: 360 and 0 should be deemed equivalent
 
   if cmpAE "$raOurs" "$ra" && cmpAE "$deOurs" "$de" && cmpAE "$rollOurs" "$roll"; then
     echo "TEST: [SUCCESS]: ATT All clear!"
+    totalAttCorrect=$(( $totalAttCorrect + 1 ))
   else
     echo "TEST: [ERROR ATT]: Incorrect attitude calculation!"
-    # exit 1
+    totalAttIncorrect=$(( $totalAttIncorrect + 1 ))
   fi
 
   if ((num_correct_stars > 0 && num_incorrect_stars == 0)); then
     echo "TEST: [SUCCESS]: All clear!"
+    totalCorrect=$(( $totalCorrect + 1 ))
   elif ((num_correct_stars == 0)); then
     echo "TEST: [ERROR]: No correct stars identified!"
-    echo "Values: $ra, $de, $roll"
+    # echo "Values: $ra, $de, $roll"
+    totalNoStars=$(( $totalNoStars + 1 ))
     # exit 1
   elif ((num_incorrect_stars > 0)); then
     echo "TEST: [ERROR]: Incorrect stars identified!"
-    echo "Values: $ra, $de, $roll"
+    # echo "Values: $ra, $de, $roll"
+    totalIncorrect=$(( $totalIncorrect + 1 ))
     # exit 1
   else
     echo "TEST: [ERROR]: Unknown error!"
     exit 1
   fi
 done
+
+echo "Total n = $n"
+echo "Total correct: $totalCorrect"
+echo "Total incorrect: $totalIncorrect"
+echo "Total no stars: $totalNoStars"
+
+echo "Total attitude correct: $totalAttCorrect"
+echo "Total attitude incorrect: $totalAttIncorrect"

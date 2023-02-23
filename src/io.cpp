@@ -542,7 +542,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness/exposureTime)*2*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
-                             catalogStar.magnitude);
+                             -catalogStar.magnitude);
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
 
             // don't add false stars to centroids or star ids

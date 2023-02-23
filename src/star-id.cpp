@@ -114,6 +114,14 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   StarIdentifiers result;
   std::cout << "TETRA" << std::endl;
 
+  std::cout << "centroids size: " << stars.size() << std::endl;
+  // for (int i = 0; i < stars.size(); i++) {
+  //   std::cout << i << ": " << stars[i].position << " star mag = " << stars[i].magnitude
+  //             << std::endl;
+  // }
+
+  ////////////////////////////////////////////////////////
+
   MultiDatabase multiDatabase(database);
   const unsigned char *databaseBuffer =
       multiDatabase.SubDatabasePointer(TetraDatabase::kMagicValue);
@@ -138,6 +146,12 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
   std::stable_sort(centroidIndices.begin(), centroidIndices.end(),
                    [&stars](int a, int b) { return stars[a].magnitude > stars[b].magnitude; });
+
+  // TODO: remove testing
+  // for (int i = 0; i < centroidIndices.size(); i++) {
+  //   int cInd = centroidIndices[i];
+  //   std::cout << cInd << ": " << stars[cInd].position << " star mag= " << stars[cInd].magnitude << std::endl;
+  // }
 
   // TODO: implement the generator function
   // Currently doing a naive way,  just taking the first 4 centroids
