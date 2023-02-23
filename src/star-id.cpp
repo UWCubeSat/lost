@@ -1,4 +1,3 @@
-#include <limits>
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
@@ -6,6 +5,7 @@
 #include <algorithm>
 
 #include "star-id.hpp"
+#include "star-id-private.hpp"
 #include "databases.hpp"
 #include "attitude-utils.hpp"
 
@@ -246,55 +246,50 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
     return result;
 }
 
-/// unidentified centroid used in IdentifyRemainingStarsPairDistance
-/// The "angles" through here are "triangular angles". A triangular angle is a 2D angle in a triangle formed by three centroids.
-class IRUnidentifiedCentroid {
-public:
-    IRUnidentifiedCentroid(const Star &star)
-        : bestAngleFrom90(std::numeric_limits<float>::max()), // should be infinity
-          bestStar1(0,0), bestStar2(0,0),
-          star(star) { }
+float IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(float v1, float v2) {
+    return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
+}
 
-    float bestAngleFrom90; /// For the pair of other centroids forming the triangular angle closest to 90 degrees, how far from 90 degrees it is (in radians)
-    StarIdentifier bestStar1; /// One star corresponding to bestAngleFrom90
-    StarIdentifier bestStar2; /// The other star corresponding to bestAngleFrom90
-    int16_t index; /// Index into list of all centroids
-    const Star &star;
+void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
+    const Star &otherStar = stars[starId.starIndex];
+    Vec2 positionDifference = otherStar.position - star->position;
+    float angleFromVertical = atan2(positionDifference.y, positionDifference.x);
 
-private:
-    // possible improvement: Use a tree map here to allow binary search
-    std::vector<std::pair<float, StarIdentifier>> identifiedStarsInRange;
-
-private:
-    float VerticalAnglesToAngleFrom90(float v1, float v2) {
-        return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
-    }
-
-public:
-    /**
-     * When a centroid within range of this centroid is identified, call this function. This
-     * function does /not/ check whether the centroid is within range.
-     */
-    void AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
-        const Star &otherStar = stars[starId.starIndex];
-        Vec2 positionDifference = otherStar.position - star.position;
-        float angleFromVertical = atan2(positionDifference.y, positionDifference.x);
-
-        for (const auto &otherPair : identifiedStarsInRange) {
-            float curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
-            if (curAngleFrom90 < bestAngleFrom90) {
-                bestAngleFrom90 = curAngleFrom90;
-                bestStar1 = starId;
-                bestStar2 = otherPair.second;
-            }
+    for (const auto &otherPair : identifiedStarsInRange) {
+        float curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
+        if (curAngleFrom90 < bestAngleFrom90) {
+            bestAngleFrom90 = curAngleFrom90;
+            bestStar1 = starId;
+            bestStar2 = otherPair.second;
         }
-
-        identifiedStarsInRange.emplace_back(angleFromVertical, starId);
     }
-};
 
-std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(std::vector<IRUnidentifiedCentroid> *centroids, const Star &star, float minDistance, float maxDistance) {
-    // std::vector<IRUnidentifiedCentroid *> result;
+    identifiedStarsInRange.emplace_back(angleFromVertical, starId);
+}
+
+/**
+ * Return all the unidentified centroids within the requested distance bounds from `star`
+ *
+ * The returned vector has pointers into the vector passed as an argument. Thus, it's important not to modify the `centroids` argument after calling.
+ */
+std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(
+    std::vector<IRUnidentifiedCentroid> *centroids, const Star &star, const Camera &camera,
+    float minDistance, float maxDistance) {
+
+    Vec3 ourSpatial = camera.CameraToSpatial(star.position);
+
+    std::vector<IRUnidentifiedCentroid *> result;
+    for (IRUnidentifiedCentroid &centroid : *centroids) {
+        Vec3 theirSpatial = camera.CameraToSpatial(centroid.star->position);
+        float angle = Angle(ourSpatial, theirSpatial);
+        if (angle >= minDistance && angle <= maxDistance) {
+            result.push_back(&centroid);
+        }
+    }
+
+    return result;
+
+    // TODO: optimize by sorting on x-coordinate (like in tracking), or maybe even kd-tree
 
     // // Find the first centroid that is within range of the given centroid.
     // auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x - maxDistance,
@@ -315,8 +310,6 @@ std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(std::vect
     //         result.push_back(&*it);
     //     }
     // }
-
-    return result;
 }
 
 /**
@@ -327,7 +320,7 @@ void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &st
                                    std::vector<IRUnidentifiedCentroid> *unidentifiedCentroids,
                                    float minDistance, float maxDistance,
                                    const Camera &camera) {
-    for (IRUnidentifiedCentroid *centroid : FindUnidentifiedCentroidsInRange(unidentifiedCentroids, stars[starId.starIndex], minDistance, maxDistance)) {
+    for (IRUnidentifiedCentroid *centroid : FindUnidentifiedCentroidsInRange(unidentifiedCentroids, stars[starId.starIndex], camera, minDistance, maxDistance)) {
         centroid->AddIdentifiedStar(starId, stars);
     }
 }
@@ -352,7 +345,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     // sort unidentified centroids by x coordinate
     std::sort(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
         [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
-            return a.star.position.x < b.star.position.x;
+            return a.star->position.x < b.star->position.x;
         });
 
     // for each identified star, add it to the list of identified stars for each unidentified centroid within range
@@ -378,7 +371,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
         const IRUnidentifiedCentroid &bestUnidentifiedCentroid = *bestUnidentifiedCentroidIt;
 
         // Project best stars to 3d, find angle between them and current unidentified centroid
-        Vec3 unidentifiedSpatial = camera.CameraToSpatial(bestUnidentifiedCentroid.star.position);
+        Vec3 unidentifiedSpatial = camera.CameraToSpatial(bestUnidentifiedCentroid.star->position);
         float d1 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar1.starIndex].position), unidentifiedSpatial);
         float d2 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar2.starIndex].position), unidentifiedSpatial);
 
