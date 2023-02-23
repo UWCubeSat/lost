@@ -294,27 +294,27 @@ public:
 };
 
 std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(std::vector<IRUnidentifiedCentroid> *centroids, const Star &star, float minDistance, float maxDistance) {
-    std::vector<IRUnidentifiedCentroid *> result;
+    // std::vector<IRUnidentifiedCentroid *> result;
 
-    // Find the first centroid that is within range of the given centroid.
-    auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x - maxDistance,
-        [](const IRUnidentifiedCentroid &centroid, float x) {
-            return centroid.star.position.x < x;
-        });
+    // // Find the first centroid that is within range of the given centroid.
+    // auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x - maxDistance,
+    //     [](const IRUnidentifiedCentroid &centroid, float x) {
+    //         return centroid.star.position.x < x;
+    //     });
 
-    // Find the first centroid that is not within range of the given centroid.
-    auto firstNotInRange = std::lower_bound(firstInRange, centroids->end(), star.position.x + maxDistance,
-        [](const IRUnidentifiedCentroid &centroid, float x) {
-            return centroid.star.position.x <= x;
-        });
+    // // Find the first centroid that is not within range of the given centroid.
+    // auto firstNotInRange = std::lower_bound(firstInRange, centroids->end(), star.position.x + maxDistance,
+    //     [](const IRUnidentifiedCentroid &centroid, float x) {
+    //         return centroid.star.position.x <= x;
+    //     });
 
-    // Copy the pointers to the stars into the result vector.
-    for (auto it = firstInRange; it != firstNotInRange; ++it) {
-        float distance = Distance(star.position, it->star.position);
-        if (distance >= minDistance && distance <= maxDistance) {
-            result.push_back(&*it);
-        }
-    }
+    // // Copy the pointers to the stars into the result vector.
+    // for (auto it = firstInRange; it != firstNotInRange; ++it) {
+    //     float distance = Distance(star.position, it->star.position);
+    //     if (distance >= minDistance && distance <= maxDistance) {
+    //         result.push_back(&*it);
+    //     }
+    // }
 
     return result;
 }
@@ -340,7 +340,6 @@ void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &st
  */
 int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
                                         const Stars &stars,
-                                        const Catalog &catalog,
                                         const PairDistanceKVectorDatabase &db,
                                         const Camera &camera,
                                         float tolerance) {
