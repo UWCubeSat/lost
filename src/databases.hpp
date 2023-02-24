@@ -12,7 +12,7 @@ namespace lost {
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
- * A data structure enabling constant-time range queries into fixed numerica data.
+ * A data structure enabling constant-time range queries into fixed numerical data.
  * 
  * @note Not an instantiable database on its own -- used in other databases
  */

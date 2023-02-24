@@ -250,6 +250,10 @@ float IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(float v1, float v2) {
     return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
 }
 
+/**
+ * When a centroid within range of this centroid is identified, call this function. This function
+ * does /not/ check whether the centroid is within range.
+ */
 void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
     const Star &otherStar = stars[starId.starIndex];
     Vec2 positionDifference = otherStar.position - star->position;
@@ -270,7 +274,8 @@ void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, con
 /**
  * Return all the unidentified centroids within the requested distance bounds from `star`
  *
- * The returned vector has pointers into the vector passed as an argument. Thus, it's important not to modify the `centroids` argument after calling.
+ * The returned vector has pointers into the vector passed as an argument. Thus, it's important not
+ * to modify the `centroids` argument after calling.
  */
 std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(
     std::vector<IRUnidentifiedCentroid> *centroids, const Star &star, const Camera &camera,
@@ -326,16 +331,69 @@ void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &st
 }
 
 /**
+ * Given two already-identified centroids, and the distance from each to an as-yet unidentified
+ * third centroid, return a list of candidate catalog stars that could be the third centroid.
+ *
+ * The order in which the two centroids are passed in /does/ matter wrt spectral-ness. If the first
+ * supplied catalog star is `a`, second is `b`, and the unidentified is `c`, then (`a` crossproduct
+ * `b`) dot `c` will be positive for all returned `c`. Intuitively, if the triangle is fairly small
+ * on the surface of the sphere, then viewed from the origin, the vertices `a`, `b`, and `c` should
+ * be clockwise (then, the cross product of `a` and `b` will point mostly towards `c`, and a little
+ * outwards, so that dot product with `c` captures that positive outward part).
+ */
+std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
+                                       const Catalog &catalog,
+                                       int16_t catalogIndex1, int16_t catalogIndex2,
+                                       float distance1, float distance2,
+                                       float tolerance) {
+
+    const int16_t *query1End, *query2End;
+    const int16_t *query1 = db.FindPairsExact(catalog, distance1-tolerance, distance1+tolerance, &query1End);
+    const int16_t *query2 = db.FindPairsExact(catalog, distance2-tolerance, distance2+tolerance, &query2End);
+
+    // Use PairDistanceInvolvingIterator to find catalog candidates for the unidentified centroid from both sides.
+    PairDistanceInvolvingIterator it1(query1, query1End, catalogIndex1);
+    PairDistanceInvolvingIterator it2(query2, query2End, catalogIndex2);
+
+    // find all the catalog stars that are in both annuli
+    std::vector<int16_t> candidates1 = ConsumeInvolvingIterator(it1);
+    std::vector<int16_t> candidates2 = ConsumeInvolvingIterator(it2);
+    std::sort(candidates1.begin(), candidates1.end());
+    std::sort(candidates2.begin(), candidates2.end());
+    std::vector<int16_t> candidatesIntersection;
+    std::set_intersection(candidates1.begin(), candidates1.end(), candidates2.begin(), candidates2.end(), std::back_inserter(candidatesIntersection));
+
+    // check spectrality
+    const Vec3 &spatial1 = catalog[catalogIndex1].spatial;
+    const Vec3 &spatial2 = catalog[catalogIndex2].spatial;
+    const Vec3 cross = spatial1.CrossProduct(spatial2);
+    // generally shouldn't be many stars in here, so it's okay to remove from the vector in place
+    for (auto it = candidatesIntersection.begin(); it != candidatesIntersection.end(); ) {
+        float spectralTorch = cross * catalog[*it].spatial;
+        // if they are nearly coplanar, don't need to check spectrality
+        // TODO: Implement ^^. Not high priority, since always checking spectrality is conservative.
+        if (spectralTorch <= 0) {
+            it = candidatesIntersection.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    return candidatesIntersection;
+}
+
+/**
  * Given some identified stars, attempt to identify the rest.
  *
  * Requires a pair distance database to be present. Iterates through the unidentified centroids in
  * an intelligent order, identifying them one by one.
  */
 int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
-                                        const Stars &stars,
-                                        const PairDistanceKVectorDatabase &db,
-                                        const Camera &camera,
-                                        float tolerance) {
+                                       const Stars &stars,
+                                       const PairDistanceKVectorDatabase &db,
+                                       const Catalog &catalog,
+                                       const Camera &camera,
+                                       float tolerance) {
     // initialize all unidentified centroids
     std::vector<IRUnidentifiedCentroid> unidentifiedCentroids;
     for (const Star &star : stars) {
@@ -375,29 +433,20 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
         float d1 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar1.starIndex].position), unidentifiedSpatial);
         float d2 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar2.starIndex].position), unidentifiedSpatial);
 
-        const int16_t *query1End, *query2End;
-        const int16_t *query1 = db.FindPairsLiberal(d1-tolerance, d1+tolerance, &query1End);
-        const int16_t *query2 = db.FindPairsLiberal(d2-tolerance, d2+tolerance, &query2End);
-
-        // Use PairDistanceInvolvingIterator to find catalog candidates for the unidentified centroid from both sides.
-        PairDistanceInvolvingIterator it1(query1, query1End, bestUnidentifiedCentroid.bestStar1.catalogIndex);
-        PairDistanceInvolvingIterator it2(query2, query2End, bestUnidentifiedCentroid.bestStar2.catalogIndex);
-
         // find all the catalog stars that are in both annuli
-        std::vector<int16_t> candidates1 = ConsumeInvolvingIterator(it1);
-        std::vector<int16_t> candidates2 = ConsumeInvolvingIterator(it2);
-        std::sort(candidates1.begin(), candidates1.end());
-        std::sort(candidates2.begin(), candidates2.end());
-        std::vector<int16_t> candidatesIntersection;
-        std::set_intersection(candidates1.begin(), candidates1.end(), candidates2.begin(), candidates2.end(), std::back_inserter(candidatesIntersection));
+        std::vector<int16_t> candidates = IdentifyThirdStar(db,
+                                                            catalog,
+                                                            bestUnidentifiedCentroid.bestStar1.catalogIndex,
+                                                            bestUnidentifiedCentroid.bestStar2.catalogIndex,
+                                                            d1, d2, tolerance);
 
-        if (candidatesIntersection.size() != 1) { // if there is not exactly one candidate, we can't identify the star. Just remove it from the list.
-            if (candidatesIntersection.size() > 1) {
+        if (candidates.size() != 1) { // if there is not exactly one candidate, we can't identify the star. Just remove it from the list.
+            if (candidates.size() > 1) {
                 std::cerr << "WARNING: Multiple catalog stars matched during identify remaining stars. This should be rare." << std::endl;
             }
         } else {
             // identify the centroid
-            identifiers->emplace_back(bestUnidentifiedCentroid.index, candidatesIntersection[0]);
+            identifiers->emplace_back(bestUnidentifiedCentroid.index, candidates[0]);
 
             // update nearby unidentified centroids with the new identified star
             AddToAllUnidentifiedCentroids(identifiers->back(), stars, &unidentifiedCentroids, db.MinDistance(), db.MaxDistance(), camera);

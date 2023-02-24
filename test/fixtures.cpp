@@ -6,7 +6,10 @@
 #include "attitude-utils.hpp"
 #include "camera.hpp"
 
-using namespace lost; // NOLINT
+#include "fixtures.hpp"
+
+// TODO: here and in utils.cpp, probably shouldn't actually be putting stuff into the lost namespace.
+namespace lost {
 
 // three stars that should be easy to identify based on their distances to each other
 Catalog tripleCatalog = {
@@ -31,7 +34,7 @@ Catalog harderQuadrupleCatalog = {
 };
 
 Catalog integralCatalog = {
-    CatalogStar(0, 0, 3.0, 42), // (0,0,0)
+    CatalogStar(0, 0, 3.0, 42), // (1,0,0)
     CatalogStar(M_PI_4, 0, 3.0, 43), // (.707,.707,0)
     CatalogStar(M_PI_2, 0, 3.0, 44), // (0,1,0)
     CatalogStar(3 * M_PI_4, 0, 3.0, 45), // (-.707,.707,0)
@@ -49,6 +52,12 @@ Catalog integralCatalog = {
     CatalogStar(3 * M_PI_4, -M_PI_4, 3.0, 57), // (-.5,.5,-.707)
 
     CatalogStar(0, -M_PI_2, 3.0, 58), // (0,0,-1)
+};
+
+Catalog nearlyColinearCatalog = {
+    CatalogStar(0, 0, 3.0, 42), // (1,0,0)
+    CatalogStar(0, DegToRad(1.0), 3.0, 43), // little bit above
+    CatalogStar(DegToRad(0.01), DegToRad(2.0), 3.0, 44), // above and a bit to the right
 };
 
 Camera smolCamera(FovToFocalLength(DegToRad(36.0), 256), 256, 256);
@@ -84,3 +93,5 @@ StarIdentifiers elevenStarIds = {
     StarIdentifier(10, 10, 1),
     StarIdentifier(11, 11, 1),
 };
+
+}

@@ -104,7 +104,7 @@ long SerializeLengthCatalog(const Catalog &, bool inclMagnitude, bool inclName);
 void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName, unsigned char *buffer);
 // sets magnited and name to whether the catalog in the database contained magnitude and name
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn);
-const CatalogStar *FindNamedStar(const Catalog &, int name);
+Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
 // TODO: make maxStars work right, need to sort by magnitude before filter! maxMagnitude is 10^-2
 // (so 523 = 5.23)

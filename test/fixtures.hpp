@@ -11,6 +11,7 @@ extern Catalog tripleCatalog;
 extern Catalog quadrupleCatalog;
 extern Catalog harderQuadrupleCatalog;
 extern Catalog integralCatalog;
+extern Catalog nearlyColinearCatalog;
 
 extern Camera smolCamera;
 extern Camera smolCameraOff;

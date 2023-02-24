@@ -4,20 +4,9 @@
 #include "io.hpp"
 #include "attitude-utils.hpp"
 
+#include "utils.hpp"
+
 using namespace lost; // NOLINT
-
-static unsigned char *BuildPairDistanceKVectorDatabase(
-    const Catalog &catalog, long *length, float minDistance, float maxDistance, long numBins) {
-
-    long dummyLength;
-    if (length == NULL)
-        length = &dummyLength;
-
-    *length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
-    unsigned char *result = new unsigned char[*length];
-    SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, result);
-    return result;
-}
 
 TEST_CASE("Kvector full database stuff", "[kvector]") {
     long length;

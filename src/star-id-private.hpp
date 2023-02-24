@@ -33,12 +33,14 @@ private:
     float VerticalAnglesToAngleFrom90(float v1, float v2);
 
 public:
-    /**
-     * When a centroid within range of this centroid is identified, call this function. This
-     * function does /not/ check whether the centroid is within range.
-     */
     void AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars);
 };
+
+std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
+                                       const Catalog &catalog,
+                                       int16_t catalogIndex1, int16_t catalogIndex2,
+                                       float distance1, float distance2,
+                                       float tolerance);
 
 int IdentifyRemainingStarsPairDistance(StarIdentifiers *,
                                        const Stars &,

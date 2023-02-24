@@ -274,6 +274,28 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     return &pairs[lowerIndex * 2];
 }
 
+const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalog,
+                                                           float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+    long liberalUpperIndex;
+    long liberalLowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &liberalUpperIndex);
+    // now we need to find the first and last index that actually matches the query
+    // step the lower index forward
+    while (liberalLowerIndex < liberalUpperIndex
+             && AngleUnit(catalog[pairs[liberalLowerIndex*2]].spatial,
+                          catalog[pairs[liberalLowerIndex*2+1]].spatial) < minQueryDistance
+        )
+    { liberalLowerIndex++; }
+    // step the upper index backward
+    while (liberalLowerIndex < liberalUpperIndex
+           && AngleUnit(catalog[pairs[liberalUpperIndex*2]].spatial,
+                        catalog[pairs[liberalUpperIndex*2+1]].spatial) > maxQueryDistance
+        )
+    { liberalUpperIndex--; }
+
+    *end = &pairs[liberalUpperIndex * 2];
+    return &pairs[liberalLowerIndex * 2];
+}
+
 /// Number of star pairs stored in the database
 long PairDistanceKVectorDatabase::NumPairs() const {
     return index.NumValues();
