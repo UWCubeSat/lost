@@ -396,8 +396,8 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
                                        float tolerance) {
     // initialize all unidentified centroids
     std::vector<IRUnidentifiedCentroid> unidentifiedCentroids;
-    for (const Star &star : stars) {
-        unidentifiedCentroids.push_back(IRUnidentifiedCentroid(star));
+    for (size_t i = 0; i < stars.size(); i++) {
+        unidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
     }
 
     // sort unidentified centroids by x coordinate

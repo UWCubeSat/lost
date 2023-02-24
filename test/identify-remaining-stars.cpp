@@ -1,5 +1,7 @@
 #include <catch.hpp>
 
+#include <random>
+
 #include "star-id.hpp"
 #include "star-id-private.hpp"
 
@@ -9,7 +11,7 @@
 using namespace lost; // NOLINT
 
 TEST_CASE("IRUnidentifiedCentroid simple orthogonal", "[identify-remaining] [fast]") {
-    IRUnidentifiedCentroid centroid(elevenStars[3]);
+    IRUnidentifiedCentroid centroid(elevenStars[3], 0);
     REQUIRE(centroid.bestAngleFrom90 > 9e9);
     centroid.AddIdentifiedStar(elevenStarIds[1], elevenStars);
     // one star is not enough to get angle
@@ -28,7 +30,7 @@ TEST_CASE("IRUnidentifiedCentroid simple orthogonal", "[identify-remaining] [fas
 }
 
 TEST_CASE("IRUnidentifiedCentroid not orthogonal until they are", "[identify-remaining] [fast]") {
-    IRUnidentifiedCentroid centroid(elevenStars[3]);
+    IRUnidentifiedCentroid centroid(elevenStars[3], 0);
     centroid.AddIdentifiedStar(elevenStarIds[1], elevenStars);
     centroid.AddIdentifiedStar(elevenStarIds[0], elevenStars);
     REQUIRE(centroid.bestAngleFrom90 == Approx(M_PI_4));
@@ -39,7 +41,7 @@ TEST_CASE("IRUnidentifiedCentroid not orthogonal until they are", "[identify-rem
 }
 
 TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") {
-    IRUnidentifiedCentroid centroid(elevenStars[3]);
+    IRUnidentifiedCentroid centroid(elevenStars[3], 0);
     centroid.AddIdentifiedStar(elevenStarIds[1], elevenStars);
     centroid.AddIdentifiedStar(elevenStarIds[6], elevenStars);
     REQUIRE(centroid.bestAngleFrom90 == Approx(M_PI_4));
@@ -125,3 +127,54 @@ TEST_CASE("IdentifyThirdStar just out of tolerance", "[identify-remaining] [fast
 //     REQUIRE(nearlyColinearCatalog[stars3[0]].name == 44);
 // }
 
+#define kIdentifyRemainingNumImages 10
+
+TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fast]") {
+
+    // generate a whole bunch of centroids, project all to 3d to create a fake catalog, create
+    // kvector,then choose a few randomly to pre-identify, and then ensure the rest are all
+    // identified. To ensure there's no ambiguity, we always increment the x-value. This results in
+    // a weird triangular distribution of stars, but that's better than nothing!
+    int numFakeStars = 100;
+
+    std::cout << "new scenario" << std::endl;
+
+    std::default_random_engine rng(GENERATE(take(kIdentifyRemainingNumImages, random(0, 1000000))));
+    std::uniform_real_distribution<float> yDist(0.0, 256.0);
+    std::uniform_int_distribution<int> starIndexDist(0, numFakeStars - 1);
+
+    Stars fakeCentroids;
+    StarIdentifiers fakeStarIds;
+    Catalog fakeCatalog;
+    for (int i = 0; i < numFakeStars; i++) {
+        // smolCamera has width 256
+        float x = i * 256.0 / numFakeStars;
+        float y = yDist(rng);
+        fakeCentroids.emplace_back(x, y, 1);
+        fakeCatalog.emplace_back(smolCamera.CameraToSpatial({x, y}).Normalize(), 1, i);
+        fakeStarIds.emplace_back(i, i);
+    }
+
+    // can't just do resize because there's no default constructor for StarIdentifier
+    StarIdentifiers fakeStarIdsCopy = fakeStarIds;
+    std::shuffle(fakeStarIdsCopy.begin(), fakeStarIdsCopy.end(), rng);
+    StarIdentifiers someFakeStarIds;
+    someFakeStarIds.push_back(fakeStarIdsCopy[0]);
+    someFakeStarIds.push_back(fakeStarIdsCopy[1]);
+
+    unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(fakeCatalog, NULL, 0, M_PI, 1000);
+    PairDistanceKVectorDatabase db(dbBytes);
+
+    int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-6);
+
+    REQUIRE(numIdentified == numFakeStars - 2);
+    REQUIRE(AreStarIdentifiersEquivalent(fakeStarIds, someFakeStarIds));
+
+    delete[] dbBytes;
+}
+
+// TODO: Test if kvector MaxDistance is substantially less than FOV
+
+// TODO: Test when some stars can't be identified.
+
+// TODO: Test with false stars.

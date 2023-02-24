@@ -54,6 +54,7 @@ public:
     explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
+    const int16_t *FindPairsExact(const Catalog &, float min, float max, const int16_t **end) const;
     std::vector<float> StarDistances(int16_t star, const Catalog &) const;
 
     /// Upper bound on stored star pair distances

@@ -14,9 +14,10 @@ namespace lost {
 /// The "angles" through here are "triangular angles". A triangular angle is a 2D angle in a triangle formed by three centroids.
 class IRUnidentifiedCentroid {
 public:
-    IRUnidentifiedCentroid(const Star &star)
+    IRUnidentifiedCentroid(const Star &star, int16_t index)
         : bestAngleFrom90(std::numeric_limits<float>::max()), // should be infinity
           bestStar1(0,0), bestStar2(0,0),
+          index(index),
           star(&star) { }
 
     float bestAngleFrom90; /// For the pair of other centroids forming the triangular angle closest to 90 degrees, how far from 90 degrees it is (in radians)
@@ -45,6 +46,7 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
 int IdentifyRemainingStarsPairDistance(StarIdentifiers *,
                                        const Stars &,
                                        const PairDistanceKVectorDatabase &,
+                                       const Catalog &,
                                        const Camera &,
                                        float tolerance);
 
