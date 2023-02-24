@@ -65,21 +65,40 @@ TEST_CASE("Tighter tolerance test", "[kvector]") {
     // buckets (intentionally), so that we can do the "form a partition" test. Here, however, a
     // request may intersect a bucket, in which case things slightly outside the requested range should
     // be returned.
-    bool outsideRangeReturned = false;
-    for (float i = DegToRad(0.6); i < DegToRad(4.9); i += DegToRad(0.1228)) {
-        const int16_t *end;
-        const int16_t *pairs = db.FindPairsLiberal(i - delta, i + delta, &end);
-        for (const int16_t *pair = pairs; pair != end; pair += 2) {
-            float distance = AngleUnit(catalog[pair[0]].spatial, catalog[pair[1]].spatial);
-            // only need to check one side, since we're only looking for one exception.
-            if (i - delta > distance) {
-                outsideRangeReturned = true;
+    SECTION("liberal") {
+        bool outsideRangeReturned = false;
+        for (float i = DegToRad(0.6); i < DegToRad(4.9); i += DegToRad(0.1228)) {
+            const int16_t *end;
+            const int16_t *pairs = db.FindPairsLiberal(i - delta, i + delta, &end);
+            for (const int16_t *pair = pairs; pair != end; pair += 2) {
+                float distance = AngleUnit(catalog[pair[0]].spatial, catalog[pair[1]].spatial);
+                // only need to check one side, since we're only looking for one exception.
+                if (i - delta > distance) {
+                    outsideRangeReturned = true;
+                }
+                CHECK(i - epsilon <= distance);
+                CHECK(distance<= i + epsilon);
             }
-            CHECK(i - epsilon <=distance);
-            CHECK(distance<= i + epsilon);
         }
+        CHECK(outsideRangeReturned);
     }
-    CHECK(outsideRangeReturned);
+    SECTION("exact") {
+        bool outsideRangeReturned = false;
+        for (float i = DegToRad(0.6); i < DegToRad(4.9); i += DegToRad(0.1228)) {
+            const int16_t *end;
+            const int16_t *pairs = db.FindPairsExact(catalog, i - delta, i + delta, &end);
+            for (const int16_t *pair = pairs; pair != end; pair += 2) {
+                float distance = AngleUnit(catalog[pair[0]].spatial, catalog[pair[1]].spatial);
+                // only need to check one side, since we're only looking for one exception.
+                if (i - delta > distance) {
+                    outsideRangeReturned = true;
+                }
+                CHECK(i - epsilon <= distance);
+                CHECK(distance <= i + epsilon);
+            }
+        }
+        CHECK(!outsideRangeReturned);
+    }
 
     delete[] dbBytes;
 }
@@ -94,12 +113,24 @@ TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
     PairDistanceKVectorDatabase db(dbBytes);
     REQUIRE(db.NumPairs() == 3);
 
-    float distances[] = {0.038823101, 0.157079488, 0.177976221};
-    for (float distance : distances) {
-        const int16_t *end;
-        const int16_t *pairs = db.FindPairsLiberal(distance - 0.001, distance + 0.001, &end);
-        REQUIRE(end - pairs == 2);
-        CHECK(AngleUnit(tripleCatalog[pairs[0]].spatial, tripleCatalog[pairs[1]].spatial) == Approx(distance));
+    float distances[] = {0.038825754, 0.15707963, 0.177976474};
+    SECTION("liberal") {
+        for (float distance : distances) {
+            const int16_t *end;
+            const int16_t *pairs = db.FindPairsLiberal(distance - 1e-6, distance + 1e-6, &end);
+            REQUIRE(end - pairs == 2);
+            CHECK(AngleUnit(tripleCatalog[pairs[0]].spatial, tripleCatalog[pairs[1]].spatial) == Approx(distance).epsilon(1e-4));
+        }
+    }
+
+    // also serves as a regression test for an off-by-one error that used to be present in exact, where it assumed the end index was inclusive instead of "off-the-end"
+    SECTION("exact") {
+        for (float distance : distances) {
+            const int16_t *end;
+            const int16_t *pairs = db.FindPairsExact(tripleCatalog, distance - 1e-4, distance + 1e-4, &end);
+            REQUIRE(end - pairs == 2);
+            CHECK(AngleUnit(tripleCatalog[pairs[0]].spatial, tripleCatalog[pairs[1]].spatial) == Approx(distance).epsilon(1e-4));
+        }
     }
 
     delete[] dbBytes;

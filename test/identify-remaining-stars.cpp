@@ -129,15 +129,13 @@ TEST_CASE("IdentifyThirdStar just out of tolerance", "[identify-remaining] [fast
 
 #define kIdentifyRemainingNumImages 10
 
-TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fast]") {
+TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
 
     // generate a whole bunch of centroids, project all to 3d to create a fake catalog, create
     // kvector,then choose a few randomly to pre-identify, and then ensure the rest are all
     // identified. To ensure there's no ambiguity, we always increment the x-value. This results in
     // a weird triangular distribution of stars, but that's better than nothing!
     int numFakeStars = 100;
-
-    std::cout << "new scenario" << std::endl;
 
     std::default_random_engine rng(GENERATE(take(kIdentifyRemainingNumImages, random(0, 1000000))));
     std::uniform_real_distribution<float> yDist(0.0, 256.0);
@@ -167,10 +165,10 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fast]") {
 
     int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-6);
 
+    delete[] dbBytes;
+
     REQUIRE(numIdentified == numFakeStars - 2);
     REQUIRE(AreStarIdentifiersEquivalent(fakeStarIds, someFakeStarIds));
-
-    delete[] dbBytes;
 }
 
 // TODO: Test if kvector MaxDistance is substantially less than FOV

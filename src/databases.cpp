@@ -287,8 +287,9 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalo
     { liberalLowerIndex++; }
     // step the upper index backward
     while (liberalLowerIndex < liberalUpperIndex
-           && AngleUnit(catalog[pairs[liberalUpperIndex*2]].spatial,
-                        catalog[pairs[liberalUpperIndex*2+1]].spatial) > maxQueryDistance
+           // the liberalUpperIndex is past the end of the logically returned range, so we need to subtract 1
+           && AngleUnit(catalog[pairs[(liberalUpperIndex-1)*2]].spatial,
+                        catalog[pairs[(liberalUpperIndex-1)*2+1]].spatial) > maxQueryDistance
         )
     { liberalUpperIndex--; }
 

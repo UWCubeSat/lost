@@ -413,6 +413,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
                 unidentifiedCentroids.erase(it);
             } else {
                 AddToAllUnidentifiedCentroids(starId, stars, &unidentifiedCentroids, db.MinDistance(), db.MaxDistance(), camera);
+                ++it;
             }
         }
     }
@@ -430,15 +431,26 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
 
         // Project best stars to 3d, find angle between them and current unidentified centroid
         Vec3 unidentifiedSpatial = camera.CameraToSpatial(bestUnidentifiedCentroid.star->position);
-        float d1 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar1.starIndex].position), unidentifiedSpatial);
-        float d2 = Angle(camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar2.starIndex].position), unidentifiedSpatial);
+        Vec3 spatial1 = camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar1.starIndex].position);
+        Vec3 spatial2 = camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar2.starIndex].position);
+        float d1 = Angle(spatial1, unidentifiedSpatial);
+        float d2 = Angle(spatial2, unidentifiedSpatial);
+        float spectralTorch = spatial1.CrossProduct(spatial2) * unidentifiedSpatial;
 
         // find all the catalog stars that are in both annuli
-        std::vector<int16_t> candidates = IdentifyThirdStar(db,
-                                                            catalog,
-                                                            bestUnidentifiedCentroid.bestStar1.catalogIndex,
-                                                            bestUnidentifiedCentroid.bestStar2.catalogIndex,
-                                                            d1, d2, tolerance);
+        // flip arguments for appropriate spectrality.
+        std::vector<int16_t> candidates =
+            spectralTorch > 0
+            ? IdentifyThirdStar(db,
+                                catalog,
+                                bestUnidentifiedCentroid.bestStar1.catalogIndex,
+                                bestUnidentifiedCentroid.bestStar2.catalogIndex,
+                                d1, d2, tolerance)
+            : IdentifyThirdStar(db,
+                                catalog,
+                                bestUnidentifiedCentroid.bestStar2.catalogIndex,
+                                bestUnidentifiedCentroid.bestStar1.catalogIndex,
+                                d2, d1, tolerance);
 
         if (candidates.size() != 1) { // if there is not exactly one candidate, we can't identify the star. Just remove it from the list.
             if (candidates.size() > 1) {
@@ -458,70 +470,6 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     }
 
     return numExtraIdentifiedStars;
-}
-
-/// After some stars have been identified, try to idenify the rest using a faster algorithm.
-void PyramidIdentifyRemainingStars(StarIdentifiers *identifiers,
-                                   const Stars &stars,
-                                   const Catalog &catalog,
-                                   const PairDistanceKVectorDatabase &db,
-                                   const Camera &camera,
-                                   float tolerance) {
-
-    assert(identifiers->size() == 4);
-    StarIdentifiers pyramidIdentifiers = *identifiers; // copy with only the pyramid's high confidence stars
-    Vec3 pyramidActualSpatials[4];
-    for (int l = 0; l < 4; l++) {
-        pyramidActualSpatials[l] = camera.CameraToSpatial(stars[pyramidIdentifiers[l].starIndex].position).Normalize();
-    }
-
-    for (int p = 0; p < (int)stars.size(); p++) {
-        // ensure this star isn't in the pyramid
-        bool pInPyramid = false;
-        for (const StarIdentifier &id : pyramidIdentifiers) {
-            if (id.starIndex == p) {
-                pInPyramid = true;
-                break;
-            }
-        }
-        if (pInPyramid) {
-            continue;
-        }
-
-        Vec3 pSpatial = camera.CameraToSpatial(stars[p].position).Normalize();
-        float ipDist = AngleUnit(pyramidActualSpatials[0], pSpatial);
-        const int16_t *ipEnd;
-        const int16_t *ipPairs = db.FindPairsLiberal(ipDist - tolerance, ipDist + tolerance, &ipEnd);
-        PairDistanceInvolvingIterator pIterator(ipPairs, ipEnd, pyramidIdentifiers[0].catalogIndex);
-
-        std::vector<int16_t> pCandidates; // collect them all in the loop, at the end only identify
-                                          // the star if unique
-        while (pIterator.HasValue()) {
-            bool ok = true;
-            for (int l = 1; l < 4; l++) {
-                float actualDist = AngleUnit(pSpatial, pyramidActualSpatials[l]);
-                float expectedDist = AngleUnit(catalog[*pIterator].spatial,
-                                               catalog[pyramidIdentifiers[l].catalogIndex].spatial);
-                if (actualDist < expectedDist - tolerance || actualDist > expectedDist + tolerance) {
-                    ok = false;
-                }
-            }
-            if (ok) {
-                pCandidates.push_back(*pIterator);
-            }
-            ++pIterator;
-        }
-
-        if (pCandidates.size() == 1) {
-            identifiers->push_back(StarIdentifier(p, pCandidates[0]));
-        }
-        if (pCandidates.size() > 1) {
-            std::cerr << "duplicate other star??" << std::endl;
-            for (int16_t c : pCandidates) {
-                std::cerr << catalog[c].name << std::endl;
-            }
-        }
-    }
 }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
@@ -715,8 +663,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         identified.push_back(StarIdentifier(k, kMatch));
                         identified.push_back(StarIdentifier(r, rMatch));
 
-                        PyramidIdentifyRemainingStars(&identified, stars, catalog, vectorDatabase, camera, tolerance);
-                        printf("Identified an additional %d stars\n", (int)identified.size() - 4);
+                        int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
+                        printf("Identified an additional %d stars\n", numAdditionallyIdentified);
 
                         return identified;
                     }
