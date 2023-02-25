@@ -20,6 +20,11 @@ public:
           index(index),
           star(&star) { }
 
+    // "null" has index=-1
+    IRUnidentifiedCentroid()
+        : bestStar1(0,0), bestStar2(0,0),
+          index(-1) { }
+
     float bestAngleFrom90; /// For the pair of other centroids forming the triangular angle closest to 90 degrees, how far from 90 degrees it is (in radians)
     StarIdentifier bestStar1; /// One star corresponding to bestAngleFrom90
     StarIdentifier bestStar2; /// The other star corresponding to bestAngleFrom90

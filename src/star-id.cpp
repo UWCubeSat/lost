@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -277,18 +278,18 @@ void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, con
  * The returned vector has pointers into the vector passed as an argument. Thus, it's important not
  * to modify the `centroids` argument after calling.
  */
-std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(
+std::vector<std::vector<IRUnidentifiedCentroid>::iterator> FindUnidentifiedCentroidsInRange(
     std::vector<IRUnidentifiedCentroid> *centroids, const Star &star, const Camera &camera,
     float minDistance, float maxDistance) {
 
     Vec3 ourSpatial = camera.CameraToSpatial(star.position);
 
-    std::vector<IRUnidentifiedCentroid *> result;
-    for (IRUnidentifiedCentroid &centroid : *centroids) {
-        Vec3 theirSpatial = camera.CameraToSpatial(centroid.star->position);
+    std::vector<std::vector<IRUnidentifiedCentroid>::iterator> result;
+    for (auto it = centroids->begin(); it != centroids->end(); ++it) {
+        Vec3 theirSpatial = camera.CameraToSpatial(it->star->position);
         float angle = Angle(ourSpatial, theirSpatial);
         if (angle >= minDistance && angle <= maxDistance) {
-            result.push_back(&centroid);
+            result.push_back(it);
         }
     }
 
@@ -318,16 +319,34 @@ std::vector<IRUnidentifiedCentroid *> FindUnidentifiedCentroidsInRange(
 }
 
 /**
- * Given a newly identified centroid and a list of unidentifed centroids, update all the
- * unidentified centroids which are within range.
+ * Given a list of unidentified centroids not yet at the soft threshold, and a list of unidentified
+ * centroids already below the soft threshold, appropriately add the given centroid to all the
+ * unidentified centroids still above the threshold, and perhaps move them to the below threshold
+ * list.
+ *
+ * @param angleFrom90Threshold Once an IRUnidentifiedCentroid's best angle from 90 goes below this threshold
  */
 void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &stars,
-                                   std::vector<IRUnidentifiedCentroid> *unidentifiedCentroids,
+                                   std::vector<IRUnidentifiedCentroid> *aboveThresholdCentroids,
+                                   std::vector<IRUnidentifiedCentroid> *belowThresholdCentroids,
                                    float minDistance, float maxDistance,
+                                   float angleFrom90Threshold,
                                    const Camera &camera) {
-    for (IRUnidentifiedCentroid *centroid : FindUnidentifiedCentroidsInRange(unidentifiedCentroids, stars[starId.starIndex], camera, minDistance, maxDistance)) {
-        centroid->AddIdentifiedStar(starId, stars);
+
+    std::vector<int16_t> nowBelowThreshold; // centroid indices newly moved above the threshold
+    // don't need to iterate through the centroids that are already below the threshold, for performance.
+    for (auto centroidIt : FindUnidentifiedCentroidsInRange(aboveThresholdCentroids, stars[starId.starIndex], camera, minDistance, maxDistance)) {
+        centroidIt->AddIdentifiedStar(starId, stars);
+        if (centroidIt->bestAngleFrom90 <= angleFrom90Threshold) {
+            belowThresholdCentroids->push_back(*centroidIt);
+            nowBelowThreshold.push_back(centroidIt->index);
+        }
     }
+    // remove all centroids with indices in nowBelowThreshold from aboveThresholdCentroids
+    aboveThresholdCentroids->erase(std::remove_if(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
+        [&nowBelowThreshold](const IRUnidentifiedCentroid &centroid) {
+            return std::find(nowBelowThreshold.begin(), nowBelowThreshold.end(), centroid.index) != nowBelowThreshold.end();
+        }), aboveThresholdCentroids->end());
 }
 
 /**
@@ -382,6 +401,32 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
     return candidatesIntersection;
 }
 
+IRUnidentifiedCentroid SelectNextUnidentifiedCentroid(std::vector<IRUnidentifiedCentroid> *aboveThresholdCentroids,
+                                                      std::vector<IRUnidentifiedCentroid> *belowThresholdCentroids) {
+    if (!belowThresholdCentroids->empty()) {
+        auto result = belowThresholdCentroids->back();
+        belowThresholdCentroids->pop_back();
+        return result;
+    }
+
+    // need to find the best in aboveThreshold, if any
+    auto bestAboveThreshold = std::min_element(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
+        [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
+            return a.bestAngleFrom90 < b.bestAngleFrom90;
+        });
+
+    // 10 is arbitrary; but really it should be less than M_PI_2 when set
+    if (bestAboveThreshold != aboveThresholdCentroids->end() && bestAboveThreshold->bestAngleFrom90 < 10) {
+        auto result = *bestAboveThreshold;
+        aboveThresholdCentroids->erase(bestAboveThreshold);
+        return result;
+    }
+
+    return IRUnidentifiedCentroid();
+}
+
+const float kAngleFrom90SoftThreshold = M_PI_4; // TODO: tune this
+
 /**
  * Given some identified stars, attempt to identify the rest.
  *
@@ -394,45 +439,60 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
                                        const Catalog &catalog,
                                        const Camera &camera,
                                        float tolerance) {
+#ifdef LOST_DEBUG_PERFORMANCE
+    auto startTimestamp = std::chrono::steady_clock::now();
+#endif
     // initialize all unidentified centroids
-    std::vector<IRUnidentifiedCentroid> unidentifiedCentroids;
+    std::vector<IRUnidentifiedCentroid> aboveThresholdUnidentifiedCentroids;
+    std::vector<IRUnidentifiedCentroid> belowThresholdUnidentifiedCentroids;
     for (size_t i = 0; i < stars.size(); i++) {
-        unidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
+        aboveThresholdUnidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
     }
 
     // sort unidentified centroids by x coordinate
-    std::sort(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
-        [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
-            return a.star->position.x < b.star->position.x;
-        });
+    // Don't need this until we fix the Find thing
+    // std::sort(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
+    //     [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
+    //         return a.star->position.x < b.star->position.x;
+    //     });
 
     // for each identified star, add it to the list of identified stars for each unidentified centroid within range
     for (const auto &starId : *identifiers) {
-        for (auto it = unidentifiedCentroids.begin(); it != unidentifiedCentroids.end();) {
+        for (auto it = aboveThresholdUnidentifiedCentroids.begin(); it != aboveThresholdUnidentifiedCentroids.end();) {
             if (starId.starIndex == it->index) {
-                unidentifiedCentroids.erase(it);
+                it = aboveThresholdUnidentifiedCentroids.erase(it);
             } else {
-                AddToAllUnidentifiedCentroids(starId, stars, &unidentifiedCentroids, db.MinDistance(), db.MaxDistance(), camera);
                 ++it;
             }
         }
+        for (auto it = belowThresholdUnidentifiedCentroids.begin(); it != belowThresholdUnidentifiedCentroids.end();) {
+            if (starId.starIndex == it->index) {
+                it = belowThresholdUnidentifiedCentroids.erase(it);
+            } else {
+                ++it;
+            }
+        }
+        AddToAllUnidentifiedCentroids(starId, stars,
+                                      &aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids,
+                                      db.MinDistance(), db.MaxDistance(),
+                                      kAngleFrom90SoftThreshold,
+                                      camera);
     }
 
     int numExtraIdentifiedStars = 0;
 
     // keep getting the best unidentified centroid and identifying it
-    while (!unidentifiedCentroids.empty()) {
-        // find the best unidentified centroid
-        auto bestUnidentifiedCentroidIt = std::min_element(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
-            [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
-                return a.bestAngleFrom90 < b.bestAngleFrom90;
-            });
-        const IRUnidentifiedCentroid &bestUnidentifiedCentroid = *bestUnidentifiedCentroidIt;
+    while (!belowThresholdUnidentifiedCentroids.empty() || !aboveThresholdUnidentifiedCentroids.empty()) {
+        IRUnidentifiedCentroid nextUnidentifiedCentroid
+            = SelectNextUnidentifiedCentroid(&aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids);
+        if (nextUnidentifiedCentroid.index == -1) {
+            break;
+        }
 
-        // Project best stars to 3d, find angle between them and current unidentified centroid
-        Vec3 unidentifiedSpatial = camera.CameraToSpatial(bestUnidentifiedCentroid.star->position);
-        Vec3 spatial1 = camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar1.starIndex].position);
-        Vec3 spatial2 = camera.CameraToSpatial(stars[bestUnidentifiedCentroid.bestStar2.starIndex].position);
+        // Project next stars to 3d, find angle between them and current unidentified centroid
+        Vec3 unidentifiedSpatial = camera.CameraToSpatial(nextUnidentifiedCentroid.star->position);
+        Vec3 spatial1 = camera.CameraToSpatial(stars[nextUnidentifiedCentroid.bestStar1.starIndex].position);
+        Vec3 spatial2 = camera.CameraToSpatial(stars[nextUnidentifiedCentroid.bestStar2.starIndex].position);
         float d1 = Angle(spatial1, unidentifiedSpatial);
         float d2 = Angle(spatial2, unidentifiedSpatial);
         float spectralTorch = spatial1.CrossProduct(spatial2) * unidentifiedSpatial;
@@ -443,13 +503,13 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
             spectralTorch > 0
             ? IdentifyThirdStar(db,
                                 catalog,
-                                bestUnidentifiedCentroid.bestStar1.catalogIndex,
-                                bestUnidentifiedCentroid.bestStar2.catalogIndex,
+                                nextUnidentifiedCentroid.bestStar1.catalogIndex,
+                                nextUnidentifiedCentroid.bestStar2.catalogIndex,
                                 d1, d2, tolerance)
             : IdentifyThirdStar(db,
                                 catalog,
-                                bestUnidentifiedCentroid.bestStar2.catalogIndex,
-                                bestUnidentifiedCentroid.bestStar1.catalogIndex,
+                                nextUnidentifiedCentroid.bestStar2.catalogIndex,
+                                nextUnidentifiedCentroid.bestStar1.catalogIndex,
                                 d2, d1, tolerance);
 
         if (candidates.size() != 1) { // if there is not exactly one candidate, we can't identify the star. Just remove it from the list.
@@ -458,16 +518,24 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
             }
         } else {
             // identify the centroid
-            identifiers->emplace_back(bestUnidentifiedCentroid.index, candidates[0]);
+            identifiers->emplace_back(nextUnidentifiedCentroid.index, candidates[0]);
 
             // update nearby unidentified centroids with the new identified star
-            AddToAllUnidentifiedCentroids(identifiers->back(), stars, &unidentifiedCentroids, db.MinDistance(), db.MaxDistance(), camera);
+            AddToAllUnidentifiedCentroids(identifiers->back(), stars,
+                                          &aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids,
+                                          db.MinDistance(), db.MaxDistance(),
+                                          // TODO should probably tune this:
+                                          kAngleFrom90SoftThreshold,
+                                          camera);
 
             ++numExtraIdentifiedStars;
         }
-        // remove the centroid from the list of unidentified centroids
-        unidentifiedCentroids.erase(bestUnidentifiedCentroidIt);
     }
+
+#ifdef LOST_DEBUG_PERFORMANCE
+    auto endTimestamp = std::chrono::steady_clock::now();
+    std::cout << "IdentifyRemainingStarsPairDistance took " << std::chrono::duration_cast<std::chrono::microseconds>(endTimestamp - startTimestamp).count() << "us" << std::endl;
+#endif
 
     return numExtraIdentifiedStars;
 }
@@ -664,7 +732,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         identified.push_back(StarIdentifier(r, rMatch));
 
                         int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
-                        printf("Identified an additional %d stars\n", numAdditionallyIdentified);
+                        printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
+                        assert(numAdditionallyIdentified == (int)identified.size()-4);
 
                         return identified;
                     }

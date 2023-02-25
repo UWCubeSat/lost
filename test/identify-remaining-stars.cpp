@@ -140,6 +140,7 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     std::default_random_engine rng(GENERATE(take(kIdentifyRemainingNumImages, random(0, 1000000))));
     std::uniform_real_distribution<float> yDist(0.0, 256.0);
     std::uniform_int_distribution<int> starIndexDist(0, numFakeStars - 1);
+    std::uniform_int_distribution<int> moreStartingStars(0, 1);
 
     Stars fakeCentroids;
     StarIdentifiers fakeStarIds;
@@ -159,6 +160,10 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     StarIdentifiers someFakeStarIds;
     someFakeStarIds.push_back(fakeStarIdsCopy[0]);
     someFakeStarIds.push_back(fakeStarIdsCopy[1]);
+    if (moreStartingStars(rng)) {
+        someFakeStarIds.push_back(fakeStarIdsCopy[2]);
+        someFakeStarIds.push_back(fakeStarIdsCopy[3]);
+    }
 
     unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(fakeCatalog, NULL, 0, M_PI, 1000);
     PairDistanceKVectorDatabase db(dbBytes);
