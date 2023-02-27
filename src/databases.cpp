@@ -333,6 +333,7 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 
 ///////////////////// Tetra database //////////////////////
 
+// TODO: duplicate code in star-id.cpp, move
 int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
   const long long MAGIC_RAND = 2654435761;
   long index = 0;

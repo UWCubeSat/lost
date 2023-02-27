@@ -58,6 +58,7 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int ma
 
     // if (std::all_of(tableRow.begin(), tableRow.end(), [](int ele) { return ele == 0; })) {
     if (tableRow[0] == 0 && tableRow[1] == 0) {
+      // TODO: comment/uncomment for testing collision rate
       std::cout << "c: " << c << std::endl;
       break;
     } else {
@@ -165,10 +166,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
   // TODO: cap this at some number of combinations, maybe 10 or so
   while (GetCentroidCombination(&chosenCentroidIndices, numPattStars, centroidIndices.size())) {
-    for (const int &e : chosenCentroidIndices) {
-      std::cout << centroidIndices[e] << ", ";
-    }
-    std::cout << std::endl;
+    // TODO: remove after testing
+    // for (const int &e : chosenCentroidIndices) {
+    //   std::cout << centroidIndices[e] << ", ";
+    // }
+    // std::cout << std::endl;
 
     // Index in centroid indices list
     std::vector<int> chosenIndices;  // TODO: rename
@@ -193,7 +195,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
       // CameraToSpatial produces different vector but also works out in the end
       // TODO: examine why the math works this way
       Vec3 spatialVec = camera.CameraToSpatial(star.position);
-      pattStarVecs.push_back(spatialVec);
+      pattStarVecs.push_back(spatialVec.Normalize());
+      // pattStarVecs.push_back(spatialVec);
     }
 
     // Compute angle between each pair of stars chosen to be in the Pattern
@@ -213,7 +216,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     }
 
     if (!angleAcceptable) {
-      std::cout << "Error: some angle is greater than maxFov" << std::endl;
+      // std::cout << "Error: some angle is greater than maxFov" << std::endl;
       continue;
       // TODO: probably continue (try again) instead of returning, change
       // after implementing generator function
@@ -283,7 +286,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
       std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, catLength, tetraDatabase);
 
       if ((int)matches.size() == 0) {
-        std::cout << "Alert: matches size = 0, continuing" << std::endl;
+        // std::cout << "Alert: matches size = 0, continuing" << std::endl;
         continue;
       }
 
@@ -395,7 +398,10 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     }
   }
 
-  std::cout << "FAIL" << std::endl;
+  std::cout << "TETRA FAIL" << std::endl;
+
+  // TODO: remove line
+  result.clear();
 
   return result;
 }
