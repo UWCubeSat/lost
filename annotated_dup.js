@@ -35,6 +35,7 @@ var annotated_dup =
       [ "StarIdComparison", "structlost_1_1_star_id_comparison.html", "structlost_1_1_star_id_comparison" ],
       [ "Pipeline", "classlost_1_1_pipeline.html", "classlost_1_1_pipeline" ],
       [ "DatabaseOptions", "classlost_1_1_database_options.html", null ],
+      [ "IRUnidentifiedCentroid", "classlost_1_1_i_r_unidentified_centroid.html", "classlost_1_1_i_r_unidentified_centroid" ],
       [ "PairDistanceInvolvingIterator", "classlost_1_1_pair_distance_involving_iterator.html", "classlost_1_1_pair_distance_involving_iterator" ],
       [ "StarIdAlgorithm", "classlost_1_1_star_id_algorithm.html", "classlost_1_1_star_id_algorithm" ],
       [ "DummyStarIdAlgorithm", "classlost_1_1_dummy_star_id_algorithm.html", "classlost_1_1_dummy_star_id_algorithm" ],

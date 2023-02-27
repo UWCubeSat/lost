@@ -1,6 +1,5 @@
 <map id="lost::PairDistanceKVectorDatabase::FindPairsLiberal" name="lost::PairDistanceKVectorDatabase::FindPairsLiberal">
-<area shape="rect" id="node1" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="564,64,759,105"/>
-<area shape="rect" id="node2" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="308,5,497,47"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,101,241,127"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,123,516,164"/>
+<area shape="rect" id="node1" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="289,35,484,76"/>
+<area shape="rect" id="node2" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="29,5,218,47"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,71,241,98"/>
 </map>

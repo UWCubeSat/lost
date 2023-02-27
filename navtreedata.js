@@ -64,8 +64,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classlost_1_1_star_identifier.html#ad0ad99d3e7f46b46101983f2bfc05898",
-"star-id_8hpp_source.html"
+"classlost_1_1_star.html#a609af663e28795ba0ea2752fad193f8b",
+"namespacelost.html#af0b05482238f0a180d5906f0e43ac3e2"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -25,6 +25,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "io.hpp", "io_8hpp.html", "io_8hpp" ],
     [ "main.cpp", "main_8cpp.html", "main_8cpp" ],
     [ "pipeline-options.hpp", "pipeline-options_8hpp.html", null ],
+    [ "star-id-private.hpp", "star-id-private_8hpp.html", "star-id-private_8hpp" ],
     [ "star-id.cpp", "star-id_8cpp.html", "star-id_8cpp" ],
     [ "star-id.hpp", "star-id_8hpp.html", [
       [ "StarIdAlgorithm", "classlost_1_1_star_id_algorithm.html", "classlost_1_1_star_id_algorithm" ],

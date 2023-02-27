@@ -18,6 +18,7 @@ var hierarchy =
     [ "lost::DatabaseOptions", "classlost_1_1_database_options.html", null ],
     [ "lost::EulerAngles", "classlost_1_1_euler_angles.html", null ],
     [ "lost::Image", "classlost_1_1_image.html", null ],
+    [ "lost::IRUnidentifiedCentroid", "classlost_1_1_i_r_unidentified_centroid.html", null ],
     [ "lost::IWCoGParams", "structlost_1_1_i_w_co_g_params.html", null ],
     [ "lost::KVectorIndex", "classlost_1_1_k_vector_index.html", null ],
     [ "lost::KVectorPair", "structlost_1_1_k_vector_pair.html", null ],

@@ -8,6 +8,7 @@ var attitude_utils_8cpp =
     [ "DegToRad", "attitude-utils_8cpp.html#abf3a90819d379c9a4d0c48f385f52613", null ],
     [ "DeserializeVec3", "attitude-utils_8cpp.html#a268223937ff19ee72a713631586557d3", null ],
     [ "Distance", "attitude-utils_8cpp.html#a862ea58cf013ca5df18ab749fd563a2d", null ],
+    [ "FloatModulo", "attitude-utils_8cpp.html#a01c855b3690f601ec92a40471aa05ebd", null ],
     [ "QuaternionToDCM", "attitude-utils_8cpp.html#a08209cdf2c6b9415866d576343c35bf2", null ],
     [ "RadToArcSec", "attitude-utils_8cpp.html#a86999ae9a82ae57b98cb14dd1654c3f3", null ],
     [ "RadToDeg", "attitude-utils_8cpp.html#adc5108f643b7657a835838c7f6411aa7", null ],

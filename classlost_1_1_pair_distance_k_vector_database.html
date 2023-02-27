@@ -105,6 +105,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8d2180c0b5a9900a967dfadac71e17b6"><td class="memItemLeft" align="right" valign="top">const int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6">FindPairsLiberal</a> (float min, float max, const int16_t **end) const</td></tr>
 <tr class="memdesc:a8d2180c0b5a9900a967dfadac71e17b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return at least all the star pairs whose inter-star distance is between min and max.  <a href="classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6">More...</a><br /></td></tr>
 <tr class="separator:a8d2180c0b5a9900a967dfadac71e17b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a892b10b967cbbad63625f807b8a73fa2"><td class="memItemLeft" align="right" valign="top">const int16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pair_distance_k_vector_database.html#a892b10b967cbbad63625f807b8a73fa2">FindPairsExact</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, float min, float max, const int16_t **end) const</td></tr>
+<tr class="separator:a892b10b967cbbad63625f807b8a73fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a203c5b10c6490adaf102d016a160b3f9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9">StarDistances</a> (int16_t star, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;) const</td></tr>
 <tr class="memdesc:a203c5b10c6490adaf102d016a160b3f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the distances from the given star to each star it's paired with in the database (for debugging).  <a href="classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9">More...</a><br /></td></tr>
 <tr class="separator:a203c5b10c6490adaf102d016a160b3f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,6 +173,68 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a892b10b967cbbad63625f807b8a73fa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a892b10b967cbbad63625f807b8a73fa2">&#9670;&nbsp;</a></span>FindPairsExact()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int16_t * lost::PairDistanceKVectorDatabase::FindPairsExact </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
+          <td class="paramname"><em>catalog</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int16_t **&#160;</td>
+          <td class="paramname"><em>end</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00279">279</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_cgraph.png" border="0" usemap="#aclasslost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_cgraph" alt=""/></div>
+<map name="aclasslost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_cgraph" id="aclasslost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_cgraph">
+<area shape="rect" title=" " alt="" coords="5,5,192,47"/>
+<area shape="rect" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="240,5,380,47"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_icgraph.png" border="0" usemap="#aclasslost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_icgraph" alt=""/></div>
+<map name="aclasslost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_icgraph" id="aclasslost_1_1_pair_distance_k_vector_database_a892b10b967cbbad63625f807b8a73fa2_icgraph">
+<area shape="rect" title=" " alt="" coords="755,5,941,47"/>
+<area shape="rect" href="namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="544,13,707,39"/>
+<area shape="rect" href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,47"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,39"/>
+</map>
+</div>
+
+</div>
+</div>
 <a id="a8d2180c0b5a9900a967dfadac71e17b6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8d2180c0b5a9900a967dfadac71e17b6">&#9670;&nbsp;</a></span>FindPairsLiberal()</h2>
 
@@ -227,10 +291,9 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pair_distance_k_vector_database_a8d2180c0b5a9900a967dfadac71e17b6_icgraph.png" border="0" usemap="#aclasslost_1_1_pair_distance_k_vector_database_a8d2180c0b5a9900a967dfadac71e17b6_icgraph" alt=""/></div>
 <map name="aclasslost_1_1_pair_distance_k_vector_database_a8d2180c0b5a9900a967dfadac71e17b6_icgraph" id="aclasslost_1_1_pair_distance_k_vector_database_a8d2180c0b5a9900a967dfadac71e17b6_icgraph">
-<area shape="rect" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="564,64,759,105"/>
-<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="308,5,497,47"/>
-<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,101,241,127"/>
-<area shape="rect" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d" title="After some stars have been identified, try to idenify the rest using a faster algorithm." alt="" coords="289,123,516,164"/>
+<area shape="rect" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="289,35,484,76"/>
+<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="29,5,218,47"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,71,241,98"/>
 </map>
 </div>
 
@@ -261,7 +324,7 @@ Here is the caller graph for this function:</div>
 
 <p>Upper bound on stored star pair distances. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00060">60</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00061">61</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -269,6 +332,16 @@ Here is the call graph for this function:</div>
 <map name="aclasslost_1_1_pair_distance_k_vector_database_a74b37c794ec625196a5bed9326501332_cgraph" id="aclasslost_1_1_pair_distance_k_vector_database_a74b37c794ec625196a5bed9326501332_cgraph">
 <area shape="rect" title="Upper bound on stored star pair distances." alt="" coords="5,5,191,47"/>
 <area shape="rect" href="classlost_1_1_k_vector_index.html#ac4ec31ab1bc698759601c24fb2c5672e" title="Upper bound on elements." alt="" coords="239,13,415,39"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1_pair_distance_k_vector_database_a74b37c794ec625196a5bed9326501332_icgraph.png" border="0" usemap="#aclasslost_1_1_pair_distance_k_vector_database_a74b37c794ec625196a5bed9326501332_icgraph" alt=""/></div>
+<map name="aclasslost_1_1_pair_distance_k_vector_database_a74b37c794ec625196a5bed9326501332_icgraph" id="aclasslost_1_1_pair_distance_k_vector_database_a74b37c794ec625196a5bed9326501332_icgraph">
+<area shape="rect" title="Upper bound on stored star pair distances." alt="" coords="544,5,729,47"/>
+<area shape="rect" href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,47"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,39"/>
 </map>
 </div>
 
@@ -299,7 +372,7 @@ Here is the call graph for this function:</div>
 
 <p>Lower bound on stored star pair distances. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00062">62</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00063">63</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -307,6 +380,16 @@ Here is the call graph for this function:</div>
 <map name="aclasslost_1_1_pair_distance_k_vector_database_af7f18bf54bb9f86d7fc023f71b491178_cgraph" id="aclasslost_1_1_pair_distance_k_vector_database_af7f18bf54bb9f86d7fc023f71b491178_cgraph">
 <area shape="rect" title="Lower bound on stored star pair distances." alt="" coords="5,5,191,47"/>
 <area shape="rect" href="classlost_1_1_k_vector_index.html#a0afd6bf562595807812c947d5a39fbfe" title=" " alt="" coords="239,13,411,39"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1_pair_distance_k_vector_database_af7f18bf54bb9f86d7fc023f71b491178_icgraph.png" border="0" usemap="#aclasslost_1_1_pair_distance_k_vector_database_af7f18bf54bb9f86d7fc023f71b491178_icgraph" alt=""/></div>
+<map name="aclasslost_1_1_pair_distance_k_vector_database_af7f18bf54bb9f86d7fc023f71b491178_icgraph" id="aclasslost_1_1_pair_distance_k_vector_database_af7f18bf54bb9f86d7fc023f71b491178_icgraph">
+<area shape="rect" title="Lower bound on stored star pair distances." alt="" coords="544,5,729,47"/>
+<area shape="rect" href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,47"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,39"/>
 </map>
 </div>
 
@@ -330,7 +413,7 @@ Here is the call graph for this function:</div>
 <p>Exact number of stored pairs. </p>
 <p>Number of star pairs stored in the database. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00278">278</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00313">313</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -380,7 +463,7 @@ Here is the caller graph for this function:</div>
 
 <p>Return the distances from the given star to each star it's paired with in the database (for debugging). </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00283">283</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00318">318</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -418,7 +501,7 @@ Here is the call graph for this function:</div>
 
 <p>Magic value to use when storing inside a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00067">67</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00068">68</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -432,7 +515,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">PairDistanceKVectorDatabase</a></li>
-    <li class="footer">Generated on Thu Feb 23 2023 07:01:27 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Mon Feb 27 2023 22:14:49 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

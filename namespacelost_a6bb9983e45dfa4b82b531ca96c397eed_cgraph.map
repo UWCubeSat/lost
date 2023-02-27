@@ -4,10 +4,9 @@
 <area shape="rect" id="node3" href="$classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title="Get the column at index j." alt="" coords="241,56,386,83"/>
 <area shape="rect" id="node5" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="224,107,403,133"/>
 <area shape="rect" id="node6" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="233,157,393,184"/>
-<area shape="rect" id="node9" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="225,208,402,235"/>
+<area shape="rect" id="node8" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="225,208,402,235"/>
 <area shape="rect" id="node4" href="$classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="496,56,605,83"/>
 <area shape="rect" id="node7" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="469,157,632,184"/>
-<area shape="rect" id="node8" href="$classlost_1_1_vec3.html#a6ea27eb416b9c3475439a29b0e2bf82d" title="The square of the magnitude." alt="" coords="713,157,891,184"/>
-<area shape="rect" id="node10" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="451,208,651,235"/>
-<area shape="rect" id="node11" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="699,233,905,260"/>
+<area shape="rect" id="node9" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="451,208,651,235"/>
+<area shape="rect" id="node10" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="699,233,905,260"/>
 </map>

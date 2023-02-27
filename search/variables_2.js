@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['de_519',['de',['../classlost_1_1_euler_angles.html#acce7640ab1aa3431e04cc39037e538fe',1,'lost::EulerAngles']]],
-  ['delta_520',['delta',['../classlost_1_1_generated_star.html#a75214eb4d1e17681b3e3a116a88af29a',1,'lost::GeneratedStar']]],
-  ['distance_521',['distance',['../structlost_1_1_k_vector_pair.html#af099ea7e016e1e192592f9170a100453',1,'lost::KVectorPair']]]
+  ['catalog_548',['catalog',['../structlost_1_1_pipeline_output.html#a18bcd3f7aa001bd26cbc67a2ae3ffcca',1,'lost::PipelineOutput']]],
+  ['catalogindex_549',['catalogIndex',['../classlost_1_1_star_identifier.html#a9743c39504a863334c5cfb62263f22c8',1,'lost::StarIdentifier']]],
+  ['checkedindices_550',['checkedIndices',['../structlost_1_1_centroid_params.html#ae13910601515db040c7f164b8b1730f2',1,'lost::CentroidParams::checkedIndices()'],['../structlost_1_1_i_w_co_g_params.html#a95fa4a77be6b192d6d114f9d520cb061',1,'lost::IWCoGParams::checkedIndices()']]],
+  ['cutoff_551',['cutoff',['../structlost_1_1_centroid_params.html#a6cfd4e00ebf2a42f650c0fb3dc3e9786',1,'lost::CentroidParams::cutoff()'],['../structlost_1_1_i_w_co_g_params.html#acfe4b324c5b6ab473243fe552c7f80bf',1,'lost::IWCoGParams::cutoff()']]]
 ];

@@ -87,7 +87,8 @@ $(document).ready(function(){initNavTree('star-id_8cpp.html',''); initResizable(
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">star-id.cpp File Reference</div>  </div>
 </div><!--header-->
@@ -97,7 +98,9 @@ $(document).ready(function(){initNavTree('star-id_8cpp.html',''); initResizable(
 <code>#include &lt;assert.h&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;chrono&gt;</code><br />
 <code>#include &quot;<a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="star-id-private_8hpp_source.html">star-id-private.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="databases_8hpp_source.html">databases.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -105,21 +108,25 @@ Include dependency graph for star-id.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="star-id_8cpp__incl.png" border="0" usemap="#asrc_2star-id_8cpp" alt=""/></div>
 <map name="asrc_2star-id_8cpp" id="asrc_2star-id_8cpp">
-<area shape="rect" title=" " alt="" coords="481,5,595,32"/>
-<area shape="rect" title=" " alt="" coords="25,155,96,181"/>
-<area shape="rect" title=" " alt="" coords="676,80,744,107"/>
-<area shape="rect" title=" " alt="" coords="769,80,843,107"/>
-<area shape="rect" title=" " alt="" coords="213,304,276,331"/>
-<area shape="rect" title=" " alt="" coords="867,80,953,107"/>
-<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="451,80,543,107"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="552,304,687,331"/>
-<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="157,80,274,107"/>
-<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="435,155,558,181"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="283,229,391,256"/>
-<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="570,229,669,256"/>
-<area shape="rect" title=" " alt="" coords="466,229,546,256"/>
-<area shape="rect" title=" " alt="" coords="581,379,658,405"/>
-<area shape="rect" title=" " alt="" coords="172,155,259,181"/>
+<area shape="rect" title=" " alt="" coords="535,5,649,32"/>
+<area shape="rect" title=" " alt="" coords="43,229,114,256"/>
+<area shape="rect" title=" " alt="" coords="655,80,723,107"/>
+<area shape="rect" title=" " alt="" coords="748,80,823,107"/>
+<area shape="rect" title=" " alt="" coords="295,379,358,405"/>
+<area shape="rect" title=" " alt="" coords="847,80,932,107"/>
+<area shape="rect" title=" " alt="" coords="956,80,1023,107"/>
+<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="521,155,613,181"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="659,379,794,405"/>
+<area shape="rect" href="star-id-private_8hpp.html" title=" " alt="" coords="349,80,491,107"/>
+<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="160,155,277,181"/>
+<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="427,229,549,256"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="545,304,653,331"/>
+<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="677,304,776,331"/>
+<area shape="rect" title=" " alt="" coords="389,304,469,331"/>
+<area shape="rect" title=" " alt="" coords="688,453,765,480"/>
+<area shape="rect" title=" " alt="" coords="437,155,496,181"/>
+<area shape="rect" title=" " alt="" coords="353,155,413,181"/>
+<area shape="rect" title=" " alt="" coords="190,229,277,256"/>
 </map>
 </div>
 </div>
@@ -144,9 +151,27 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a265e8b6bd7adea4aaae5b46433bc997d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d">lost::PyramidIdentifyRemainingStars</a> (StarIdentifiers *identifiers, const Stars &amp;stars, const Catalog &amp;catalog, const PairDistanceKVectorDatabase &amp;db, const Camera &amp;camera, float tolerance)</td></tr>
-<tr class="memdesc:a265e8b6bd7adea4aaae5b46433bc997d"><td class="mdescLeft">&#160;</td><td class="mdescRight">After some stars have been identified, try to idenify the rest using a faster algorithm.  <a href="namespacelost.html#a265e8b6bd7adea4aaae5b46433bc997d">More...</a><br /></td></tr>
-<tr class="separator:a265e8b6bd7adea4aaae5b46433bc997d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a686a62724d40abe3ccef8aa0b2d77afe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a686a62724d40abe3ccef8aa0b2d77afe">lost::ConsumeInvolvingIterator</a> (PairDistanceInvolvingIterator it)</td></tr>
+<tr class="separator:a686a62724d40abe3ccef8aa0b2d77afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f709f580bfbe3bd0196b50226f22683"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; IRUnidentifiedCentroid * &gt;::iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a0f709f580bfbe3bd0196b50226f22683">lost::FindUnidentifiedCentroidsInRange</a> (std::vector&lt; IRUnidentifiedCentroid * &gt; *centroids, const Star &amp;star, const Camera &amp;camera, float minDistance, float maxDistance)</td></tr>
+<tr class="memdesc:a0f709f580bfbe3bd0196b50226f22683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return all the unidentified centroids within the requested distance bounds from <code>star</code>  <a href="namespacelost.html#a0f709f580bfbe3bd0196b50226f22683">More...</a><br /></td></tr>
+<tr class="separator:a0f709f580bfbe3bd0196b50226f22683"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e9642f2c2d486db201514b9ff579811"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a1e9642f2c2d486db201514b9ff579811">lost::AddToAllUnidentifiedCentroids</a> (const StarIdentifier &amp;starId, const Stars &amp;stars, std::vector&lt; IRUnidentifiedCentroid * &gt; *aboveThresholdCentroids, std::vector&lt; IRUnidentifiedCentroid * &gt; *belowThresholdCentroids, float minDistance, float maxDistance, float angleFrom90Threshold, const Camera &amp;camera)</td></tr>
+<tr class="memdesc:a1e9642f2c2d486db201514b9ff579811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a list of unidentified centroids not yet at the soft threshold, and a list of unidentified centroids already below the soft threshold, appropriately add the given centroid to all the unidentified centroids still above the threshold, and perhaps move them to the below threshold list.  <a href="namespacelost.html#a1e9642f2c2d486db201514b9ff579811">More...</a><br /></td></tr>
+<tr class="separator:a1e9642f2c2d486db201514b9ff579811"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6271e89ec246219f15d27942b98c8877"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6271e89ec246219f15d27942b98c8877">lost::IdentifyThirdStar</a> (const PairDistanceKVectorDatabase &amp;db, const Catalog &amp;catalog, int16_t catalogIndex1, int16_t catalogIndex2, float distance1, float distance2, float tolerance)</td></tr>
+<tr class="memdesc:a6271e89ec246219f15d27942b98c8877"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given two already-identified centroids, and the distance from each to an as-yet unidentified third centroid, return a list of candidate catalog stars that could be the third centroid.  <a href="namespacelost.html#a6271e89ec246219f15d27942b98c8877">More...</a><br /></td></tr>
+<tr class="separator:a6271e89ec246219f15d27942b98c8877"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4b38998ddebb02241ed73fec6af8f4f"><td class="memItemLeft" align="right" valign="top">IRUnidentifiedCentroid *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af4b38998ddebb02241ed73fec6af8f4f">lost::SelectNextUnidentifiedCentroid</a> (std::vector&lt; IRUnidentifiedCentroid * &gt; *aboveThresholdCentroids, std::vector&lt; IRUnidentifiedCentroid * &gt; *belowThresholdCentroids)</td></tr>
+<tr class="separator:af4b38998ddebb02241ed73fec6af8f4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb9048b631cf1af6c33af2b0dca53c41"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41">lost::IdentifyRemainingStarsPairDistance</a> (StarIdentifiers *identifiers, const Stars &amp;stars, const PairDistanceKVectorDatabase &amp;db, const Catalog &amp;catalog, const Camera &amp;camera, float tolerance)</td></tr>
+<tr class="memdesc:adb9048b631cf1af6c33af2b0dca53c41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given some identified stars, attempt to identify the rest.  <a href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41">More...</a><br /></td></tr>
+<tr class="separator:adb9048b631cf1af6c33af2b0dca53c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a63a44b3abbcb5580d3ed71f1294f7bcd"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a63a44b3abbcb5580d3ed71f1294f7bcd">lost::kAngleFrom90SoftThreshold</a> = M_PI_4</td></tr>
+<tr class="separator:a63a44b3abbcb5580d3ed71f1294f7bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a969aaf4a776c8d744d94c1c6972b7a77"></a>
@@ -173,7 +198,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="star-id_8cpp.html">star-id.cpp</a></li>
-    <li class="footer">Generated on Thu Feb 23 2023 07:01:27 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Mon Feb 27 2023 22:14:49 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
