@@ -453,12 +453,21 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     std::vector<IRUnidentifiedCentroid> allUnidentifiedCentroids;
     std::vector<IRUnidentifiedCentroid *> aboveThresholdUnidentifiedCentroids;
     std::vector<IRUnidentifiedCentroid *> belowThresholdUnidentifiedCentroids;
+    allUnidentifiedCentroids.reserve(stars.size());
     for (size_t i = 0; i < stars.size(); i++) {
         allUnidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
     }
     // add everything from allUnidentifiedCentroids to above threshold
+    aboveThresholdUnidentifiedCentroids.reserve(allUnidentifiedCentroids.size());
     for (size_t i = 0; i < allUnidentifiedCentroids.size(); i++) {
-        aboveThresholdUnidentifiedCentroids.push_back(&allUnidentifiedCentroids[i]);
+        // only add if index is not equal to any starIndex in identifiers already
+        if (std::find_if(identifiers->begin(), identifiers->end(),
+            [&allUnidentifiedCentroids, i](const StarIdentifier &identifier) {
+                return identifier.starIndex == allUnidentifiedCentroids[i].index;
+            }) == identifiers->end()) {
+
+            aboveThresholdUnidentifiedCentroids.push_back(&allUnidentifiedCentroids[i]);
+        }
     }
 
     // sort unidentified centroids by x coordinate
@@ -470,20 +479,6 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
 
     // for each identified star, add it to the list of identified stars for each unidentified centroid within range
     for (const auto &starId : *identifiers) {
-        for (auto it = aboveThresholdUnidentifiedCentroids.begin(); it != aboveThresholdUnidentifiedCentroids.end();) {
-            if (starId.starIndex == (*it)->index) {
-                it = aboveThresholdUnidentifiedCentroids.erase(it);
-            } else {
-                ++it;
-            }
-        }
-        for (auto it = belowThresholdUnidentifiedCentroids.begin(); it != belowThresholdUnidentifiedCentroids.end();) {
-            if (starId.starIndex == (*it)->index) {
-                it = belowThresholdUnidentifiedCentroids.erase(it);
-            } else {
-                ++it;
-            }
-        }
         AddToAllUnidentifiedCentroids(starId, stars,
                                       &aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids,
                                       db.MinDistance(), db.MaxDistance(),
@@ -543,6 +538,9 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
             ++numExtraIdentifiedStars;
         }
     }
+
+    // Select() should always empty out this list
+    assert(belowThresholdUnidentifiedCentroids.empty());
 
 #ifdef LOST_DEBUG_PERFORMANCE
     auto endTimestamp = std::chrono::steady_clock::now();

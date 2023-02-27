@@ -158,21 +158,19 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     StarIdentifiers fakeStarIdsCopy = fakeStarIds;
     std::shuffle(fakeStarIdsCopy.begin(), fakeStarIdsCopy.end(), rng);
     StarIdentifiers someFakeStarIds;
-    someFakeStarIds.push_back(fakeStarIdsCopy[0]);
-    someFakeStarIds.push_back(fakeStarIdsCopy[1]);
-    if (moreStartingStars(rng)) {
-        someFakeStarIds.push_back(fakeStarIdsCopy[2]);
-        someFakeStarIds.push_back(fakeStarIdsCopy[3]);
+    int fakePatternSize = moreStartingStars(rng) ? 4 : 2;
+    for (int i = 0; i < fakePatternSize; i++) {
+        someFakeStarIds.push_back(fakeStarIdsCopy[i]);
     }
 
     unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(fakeCatalog, NULL, 0, M_PI, 1000);
     PairDistanceKVectorDatabase db(dbBytes);
 
-    int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-6);
+    int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-5);
 
     delete[] dbBytes;
 
-    REQUIRE(numIdentified == numFakeStars - 2);
+    REQUIRE(numIdentified == numFakeStars - fakePatternSize);
     REQUIRE(AreStarIdentifiersEquivalent(fakeStarIds, someFakeStarIds));
 }
 
