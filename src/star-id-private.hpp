@@ -3,10 +3,12 @@
 #ifndef STAR_ID_PRIVATE_H
 #define STAR_ID_PRIVATE_H
 
+#include <limits>
+#include <utility>
+#include <vector>
+
 #include "star-id.hpp"
 #include "databases.hpp"
-
-#include <limits>
 
 namespace lost {
 
@@ -19,7 +21,7 @@ public:
           bestStar1(0,0), bestStar2(0,0),
           index(index),
           star(&star) {
-        identifiedStarsInRange.reserve(10);
+        identifiedStarsInRange.reserve(10); // this does quite measurably improve performance, at least on desktop
     }
 
     // "null" has index=-1

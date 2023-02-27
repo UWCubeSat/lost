@@ -1,6 +1,6 @@
-#include <catch.hpp>
-
 #include <random>
+
+#include <catch.hpp>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -49,7 +49,7 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 
 // TODO: Tests for FindAllInRange if we ever make the logic more complicated
 
-std::vector<int16_t> IdentifyThirdStarTest(Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
+std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
                                            float dist1, float dist2, float tolerance) {
     unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(integralCatalog, NULL, 0, M_PI, 1000);
     auto cs1 = FindNamedStar(catalog, catalogName1);
