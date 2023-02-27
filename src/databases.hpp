@@ -12,7 +12,7 @@ namespace lost {
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
- * A data structure enabling constant-time range queries into fixed numerica data.
+ * A data structure enabling constant-time range queries into fixed numerical data.
  * 
  * @note Not an instantiable database on its own -- used in other databases
  */
@@ -54,6 +54,7 @@ public:
     explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
+    const int16_t *FindPairsExact(const Catalog &, float min, float max, const int16_t **end) const;
     std::vector<float> StarDistances(int16_t star, const Catalog &) const;
 
     /// Upper bound on stored star pair distances

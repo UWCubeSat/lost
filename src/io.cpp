@@ -996,6 +996,10 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
     sort(expectedSorted.begin(), expectedSorted.end(), StarIdCompare);
     sort(actualSorted.begin(), actualSorted.end(), StarIdCompare);
+    // throw an error if any duplicates in actualSorted
+    for (int i = 1; i < (int)actualSorted.size(); i++) {
+        assert(actualSorted[i].starIndex != actualSorted[i-1].starIndex);
+    }
 
     auto currActual = actualSorted.cbegin();
     for (const StarIdentifier &currExpected : expectedSorted) {

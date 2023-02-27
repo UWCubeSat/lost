@@ -34,13 +34,13 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.
-const CatalogStar *FindNamedStar(const Catalog &catalog, int name) {
-    for (const CatalogStar &catalogStar : catalog) {
-        if (catalogStar.name == name) {
-            return &catalogStar;
+Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
+    for (auto it = catalog.cbegin(); it != catalog.cend(); ++it) {
+        if (it->name == name) {
+            return it;
         }
     }
-    return NULL;
+    return catalog.cend();
 }
 
 /// @sa SerializeCatalogStar

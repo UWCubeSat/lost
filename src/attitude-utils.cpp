@@ -155,22 +155,28 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
+float FloatModulo(float x, float mod) {
+    // first but not last chatgpt generated code in lost:
+    float result = x - mod * floor(x / mod);
+    return result >= 0 ? result : result + mod;
+}
+
 /// The square of the magnitude
 float Vec3::MagnitudeSq() const {
-    return x*x+y*y+z*z;
+    return fma(x,x,fma(y,y, z*z));
 }
 
 /// The square of the magnitude
 float Vec2::MagnitudeSq() const {
-    return x*x+y*y;
+    return fma(x,x, y*y);
 }
 
 float Vec3::Magnitude() const {
-    return sqrt(MagnitudeSq());
+    return hypot(hypot(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
 }
 
 float Vec2::Magnitude() const {
-    return sqrt(MagnitudeSq());
+    return hypot(x, y);
 }
 
 /// Create a vector pointing in the same direction with magnitude 1
@@ -183,7 +189,7 @@ Vec3 Vec3::Normalize() const {
 
 /// Dot product
 float Vec3::operator*(const Vec3 &other) const {
-    return x*other.x + y*other.y + z*other.z;
+    return fma(x,other.x, fma(y,other.y, z*other.z));
 }
 
 /// Dot product
