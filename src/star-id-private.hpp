@@ -18,7 +18,9 @@ public:
         : bestAngleFrom90(std::numeric_limits<float>::max()), // should be infinity
           bestStar1(0,0), bestStar2(0,0),
           index(index),
-          star(&star) { }
+          star(&star) {
+        identifiedStarsInRange.reserve(10);
+    }
 
     // "null" has index=-1
     IRUnidentifiedCentroid()
