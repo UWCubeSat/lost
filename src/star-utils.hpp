@@ -135,6 +135,9 @@ Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 std::pair<Catalog, std::vector<short>> TetraPreparePattCat(
     const Catalog &, const float maxFovDeg);
 
+int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex);
+
+
 }  // namespace lost
 
 #endif

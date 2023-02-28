@@ -334,16 +334,16 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 ///////////////////// Tetra database //////////////////////
 
 // TODO: duplicate code in star-id.cpp, move
-int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
-  const long long MAGIC_RAND = 2654435761;
-  long index = 0;
-  for (int i = 0; i < (int)key.size(); i++) {
-    index += key[i] * std::pow(binFactor, i);
-  }
-  // return (index * MAGIC_RAND) % maxIndex;
-  // std::cout << (index % maxIndex) << " * " << (MAGIC_RAND % maxIndex) << std::endl;
-  return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
-}
+// int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
+//   const long long MAGIC_RAND = 2654435761;
+//   long index = 0;
+//   for (int i = 0; i < (int)key.size(); i++) {
+//     index += key[i] * std::pow(binFactor, i);
+//   }
+//   // return (index * MAGIC_RAND) % maxIndex;
+//   // std::cout << (index % maxIndex) << " * " << (MAGIC_RAND % maxIndex) << std::endl;
+//   return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
+// }
 
 // typedef std::array<short, 3> ShortVec3;
 // typedef std::array<float, 3> FloatVec3;

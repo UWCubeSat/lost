@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include <iostream> // TODO: remove
+#include <vector>
 
 #include <algorithm>
 
@@ -39,6 +40,16 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
   }
 
   return result;
+}
+
+int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
+  const long long MAGIC_RAND = 2654435761;
+  long index = 0;
+  for (int i = 0; i < (int)key.size(); i++) {
+    index += key[i] * std::pow(binFactor, i);
+  }
+
+  return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
 }
 
 // TODO: make static or declare in header file or move

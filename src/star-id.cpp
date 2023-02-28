@@ -1,11 +1,11 @@
 #include "star-id.hpp"
+#include "star-utils.hpp"
 
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
 #include <algorithm>
-#include <fstream>  // remove after integrating database for Tetra
 #include <set>
 #include <utility>  // std::pair
 
@@ -16,50 +16,19 @@ namespace lost {
 
 static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids);
 
-// TODO: duplicate in databases.cpp
-int TetraStarIdAlgorithm::KeyToIndex(std::vector<int> key, int binFactor,
-                                     long long maxIndex) const {
-  // key = 5-tuple of binned edge ratios
-  // Outputs a row of the Pattern Catalog
-  long index = 0;
-  for (int i = 0; i < (int)key.size(); i++) {
-    index += key[i] * std::pow(binFactor, i);
-  }
-  // return (index * MAGIC_RAND) % maxIndex;
-  return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
-}
-
-// std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index,
-// TetraDatabase db) const{
-// std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(
-//     int index, std::ifstream &pattCatFile) const {
-
 std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int maxIndex,
                                                                const TetraDatabase &db) const {
   // Returns a list of rows (4-tuples) from the Pattern Catalog
   // Does quadratic probing
-  // std::ifstream pattCatFile("pattCat.bin", std::ios_base::binary);
 
   std::vector<std::vector<int>> res;
   for (int c = 0;; c++) {
     int i = (index + c * c) % maxIndex;
 
-    // std::vector<int> tableRow = db.pattCatalog[i];
-    // std::vector<int> tableRow;
     std::vector<int> tableRow = db.GetPattern(i);
 
-    // short *row = new short[numPattStars];
-    // pattCatFile.seekg(sizeof(short) * numPattStars * i, std::ios::beg);
-    // pattCatFile.read((char *)row, sizeof(short) * numPattStars);
-
-    // for (int j = 0; j < numPattStars; j++) {
-    //     tableRow.push_back(int(row[j]));
-    // }
-
-    // if (std::all_of(tableRow.begin(), tableRow.end(), [](int ele) { return ele == 0; })) {
     if (tableRow[0] == 0 && tableRow[1] == 0) {
-      // TODO: comment/uncomment for testing collision rate
-      std::cout << "c: " << c << std::endl;
+      // std::cout << "c: " << c << std::endl;
       break;
     } else {
       res.push_back(tableRow);

@@ -55,7 +55,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
    * @param maxIndex Number of rows in pattern catalog
    * @return int
    */
-  int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) const;
+  // int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) const;
 
   /**
    * @brief Get all possible matching patterns starting from given index
