@@ -75,9 +75,18 @@ private:
 
 long SerializeTetraDatabase(const Catalog &, float maxFov,
                             unsigned char *buffer,
-                            const std::vector<short> &pattStars, bool ser);
+                            const std::vector<short> &pattStars,
+                            const std::vector<short> &catIndices, bool ser);
 
 class TetraDatabase {
+    /*
+    maxFov (float)
+    number of patterns in pattern catalog (int)
+    All patterns (number of patterns * 4 * sizeof(short))
+
+    NOW we want to add centroid indices into the database
+
+    */
    public:
     explicit TetraDatabase(const unsigned char *buffer);
 
@@ -90,6 +99,9 @@ class TetraDatabase {
 
     // Get the 4-tuple pattern at row=index, 0-based
     std::vector<int> GetPattern(int index) const;
+
+    short GetTrueCatInd(int tetraIndex) const;
+    // TODO: should probably have a field describing number of indices for future updates to db
 
 
     // TODO: choose a different value

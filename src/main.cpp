@@ -42,10 +42,11 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
     auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
-    narrowedCatalog = tetraStuff.first;
+    // narrowedCatalog = tetraStuff.first;
+    std::vector<short> catIndices = tetraStuff.first;
     std::vector<short> pattStars = tetraStuff.second;
 
-    std::cerr << "Tetra processed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+    std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
     std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
 
     MultiDatabaseBuilder builder;
@@ -56,11 +57,11 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
     if (values.tetra) {
-      GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars);
+      GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars, catIndices);
       std::cout << "Generated TETRA database with " << builder.BufferLength()
                 << " bytes" << std::endl;
     }
-
+    // TODO: comment that DO NOT make this an if...else
     if(values.kvector){
       GenerateDatabases(&builder, narrowedCatalog, values);
       std::cout << "Generated kvector database with " << builder.BufferLength()

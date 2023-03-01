@@ -262,29 +262,31 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
   assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
-TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer){
-  maxAngle_ = *(float*)buffer;
+TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer) {
+  maxAngle_ = *(float *)buffer;
   buffer += sizeof(float);
-  catalogSize_ = *(int*)buffer;
+  catalogSize_ = *(int *)buffer;
   std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
 }
 
-float TetraDatabase::MaxAngle() const{
-  return maxAngle_;
-}
+float TetraDatabase::MaxAngle() const { return maxAngle_; }
 
-int TetraDatabase::Size() const{
-  return catalogSize_;
-}
+int TetraDatabase::Size() const { return catalogSize_; }
 
-std::vector<int> TetraDatabase::GetPattern(int index) const{
+std::vector<int> TetraDatabase::GetPattern(int index) const {
   std::vector<int> res;
-  const unsigned char* p = buffer_ + headerSize;
-  for(int i = 0; i < 4; i++){
-    res.push_back(*((short*)p + 4*index + i));
+  const unsigned char *p = buffer_ + headerSize;
+  for (int i = 0; i < 4; i++) {
+    res.push_back(*((short *)p + 4 * index + i));
   }
 
   return res;
+}
+
+short TetraDatabase::GetTrueCatInd(int tetraInd) const{
+  // TODO: don't harcode this 4
+  const unsigned char *p = buffer_ + headerSize + Size() * 4 * sizeof(short);
+  return *((short*)p + tetraInd);
 }
 
 /// Create the database from a serialized buffer.
@@ -349,14 +351,19 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 // typedef std::array<float, 3> FloatVec3;
 
 long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
-                            const std::vector<short> &pattStars, bool ser) {
-
+                            const std::vector<short> &pattStars,
+                            const std::vector<short> &catIndices, bool ser) {
   const float maxFov = DegToRad(maxFovDeg);
   // TODO: default is 25
   const short pattBins = 50;
   const int tempBins = 4;
 
   std::cout << "serializing" << std::endl;
+
+  Catalog tetraCatalog;
+  for (short ind : catIndices) {
+    tetraCatalog.push_back(catalog[ind]);
+  }
 
   // TODO: unorderd_map might be better
   std::map<Vec3, std::vector<short>> tempCoarseSkyMap;
@@ -369,7 +376,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     //   (short)((catalog[starID].spatial.y + 1) * tempBins),
     //   (short)((catalog[starID].spatial.z + 1) * tempBins)
     // };
-    Vec3 v(catalog[starID].spatial);
+    Vec3 v(tetraCatalog[starID].spatial);
 
     Vec3 hash{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
               short((v.z + 1) * tempBins)};
@@ -382,7 +389,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
   // Return a list of stars that are nearby
   // yay lambda expression
-  auto tempGetNearbyStars = [&tempCoarseSkyMap, &catalog](const Vec3 &vec, float radius) {
+  auto tempGetNearbyStars = [&tempCoarseSkyMap, &tetraCatalog](const Vec3 &vec, float radius) {
     std::vector<float> components{vec.x, vec.y, vec.z};
 
     std::vector<std::vector<int>> hcSpace;
@@ -410,7 +417,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
           // For each star j in partition with key=code,
           // see if our star and j have angle < radius. If so, they are nearby
           for (short starID : tempCoarseSkyMap[code]) {
-            float dotProd = vec * catalog[starID].spatial;
+            float dotProd = vec * tetraCatalog[starID].spatial;
             if (dotProd > std::cos(radius)) {
               nearbyStarIDs.push_back(starID);
             }
@@ -427,7 +434,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     }
 
     return nearbyStarIDs;
-  }; // end of function
+  };  // end of function
 
   const int pattSize = 4;
   // TODO: might switch to vector
@@ -443,7 +450,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     // FloatVec3 firstStarVec = {catalog[firstStarID].spatial.x, catalog[firstStarID].spatial.y,
     //                           catalog[firstStarID].spatial.z};
 
-    Vec3 v(catalog[firstStarID].spatial);
+    Vec3 v(tetraCatalog[firstStarID].spatial);
     Vec3 hashCode{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
                   short((v.z + 1) * tempBins)};
 
@@ -477,7 +484,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
           bool pattFits = true;
           for (int pair1 = 0; pair1 < pattSize; pair1++) {
             for (int pair2 = pair1 + 1; pair2 < pattSize; pair2++) {
-              float dotProd = catalog[patt[pair1]].spatial * catalog[patt[pair2]].spatial;
+              float dotProd = tetraCatalog[patt[pair1]].spatial * tetraCatalog[patt[pair2]].spatial;
               //   float dotProd = catalog[patt[pair1]].spatial.x * catalog[patt[pair2]].spatial.x +
               //                   catalog[patt[pair1]].spatial.y * catalog[patt[pair2]].spatial.y +
               //                   catalog[patt[pair1]].spatial.z * catalog[patt[pair2]].spatial.z;
@@ -500,17 +507,18 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
   std::cout << "Found " << pattList.size() << " patterns" << std::endl;
 
   // Load factor of 0.5
+  // TODO: change confusing name, this should be patternCatalogLength
   long long catalogLength = 2 * (int)pattList.size();
   std::vector<Pattern> pattCatalog(catalogLength);
 
-
+  // TODO: can use the ConstructPattern function here...
   for (Pattern patt : pattList) {
     std::vector<float> pattEdgeLengths;
     for (int i = 0; i < pattSize; i++) {
-      CatalogStar star1 = catalog[patt[i]];
+      CatalogStar star1 = tetraCatalog[patt[i]];
       for (int j = i + 1; j < pattSize; j++) {
         // calculate distance between vectors
-        CatalogStar star2 = catalog[patt[j]];
+        CatalogStar star2 = tetraCatalog[patt[j]];
         // float edgeLen = std::sqrt(std::pow(star2.spatial.x - star1.spatial.x, 2) +
         //                           std::pow(star2.spatial.y - star1.spatial.y, 2) +
         //                           std::pow(star2.spatial.z - star1.spatial.z, 2));
@@ -547,7 +555,6 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     }
   }
 
-
   // Done with everything, write to buffer
 
   if (ser) {
@@ -562,9 +569,18 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
         buffer += sizeof(short);
       }
     }
+
+    for (short ind : catIndices) {
+      *((short *)buffer) = ind;
+      buffer += sizeof(short);
+    }
+
     return -1;
   } else {
-    return sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize;
+    // std::cout << "original size: " << sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize << std::endl;
+    // std::cout << "new size: " << catIndices.size() * sizeof(short) << std::endl;
+    return sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize +
+           catIndices.size() * sizeof(short);
   }
 }
 

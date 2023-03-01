@@ -133,7 +133,9 @@ Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 
 // TODO: should not modify the original catalog
 // Keep the original catalog as-is, just return a list of indices
-std::pair<Catalog, std::vector<short>> TetraPreparePattCat(
+// std::pair<Catalog, std::vector<short>> TetraPreparePattCat(
+//     const Catalog &, const float maxFovDeg);
+std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(
     const Catalog &, const float maxFovDeg);
 
 int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex);

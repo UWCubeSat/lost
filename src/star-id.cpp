@@ -290,8 +290,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         std::vector<int> catStarIDs;
         std::vector<Vec3> catStarVecs;
         for (int star : matchRow) {
-          Vec3 catVec = catalog[star].spatial;
-          catStarIDs.push_back(catalog[star].name);
+          CatalogStar catStar = catalog[tetraDatabase.GetTrueCatInd(star)];
+          // Vec3 catVec = catalog[star].spatial;
+          Vec3 catVec = catStar.spatial;
+          // catStarIDs.push_back(catalog[star].name);
+          catStarIDs.push_back(catStar.name);
 
           catStarVecs.push_back(catVec);
         }

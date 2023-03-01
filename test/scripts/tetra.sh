@@ -7,7 +7,7 @@
 th="0.5"
 
 totalTime=0
-n=2000
+n=200
 totalCorrect=0
 totalIncorrect=0
 totalNoStars=0
@@ -74,14 +74,14 @@ for _ in $(seq "${1:-$n}"); do
       --generate 1 \
       --generate-x-resolution 1024 \
       --generate-y-resolution 1024 \
-      --fov 12 \
+      --fov "$fov" \
       --generate-reference-brightness 100 \
       --generate-spread-stddev 1 \
       --generate-read-noise-stddev 0.05 \
       --generate-ra "$ra" \
       --generate-de "$de" \
       --generate-roll "$roll" \
-      --database my-database-small.dat \
+      --database my-database-small-2.dat \
       --centroid-mag-filter 5 \
       --star-id-algo tetra \
       --compare-star-ids \
@@ -98,7 +98,7 @@ for _ in $(seq "${1:-$n}"); do
   deOurs=$(grep -oP "(?<=attitude_de )[-+]?[0-9]*\.?[0-9]*[eE]?[-+]?[0-9]*" <<<"$lost_output")
   rollOurs=$(grep -oP "(?<=attitude_roll )[-+]?[0-9]*\.?[0-9]*[eE]?[-+]?[0-9]*" <<<"$lost_output")
 
-  # echo "Fov: $fov"
+  echo "Fov: $fov"
   echo "Real: $ra, $de, $roll vs Calculated: $raOurs, $deOurs, $rollOurs"
 
   # TODO: 360 and 0 should be deemed equivalent

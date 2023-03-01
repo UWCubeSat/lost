@@ -53,9 +53,10 @@ int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
 }
 
 // TODO: make static or declare in header file or move
-std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
+// std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
+//                                                            const float maxFovDeg) {
+std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
                                                            const float maxFovDeg) {
-
   // TODO: these should scale based on FOV
   // Larger FOV should allow more patterns
   // 10, 20 for maxFovDeg=20ish seemed to work
@@ -152,13 +153,15 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
     }
   }
 
-  Catalog finalCat;
+  // Catalog finalCat;
+  std::vector<short> finalCatIndices;
   std::vector<short> pattStars;
 
   // finalCat is the final version of the star table
   for (int i = 0; i < (int)keepForVerifying.size(); i++) {
     if (keepForVerifying[i]) {
-      finalCat.push_back(catalog[i]);
+      // finalCat.push_back(catalog[i]);
+      finalCatIndices.push_back(i);
     }
   }
 
@@ -173,8 +176,8 @@ std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalo
       pattStars.push_back(cumulativeSum);
     }
   }
-
-  return std::pair<Catalog, std::vector<short>>{finalCat, pattStars};
+  return std::pair<std::vector<short>, std::vector<short>>{finalCatIndices, pattStars};
+  // return std::pair<Catalog, std::vector<short>>{finalCat, pattStars};
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.
