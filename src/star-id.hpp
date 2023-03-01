@@ -2,6 +2,7 @@
 #define STAR_ID_H
 
 #include <vector>
+#include <set>
 
 #include "centroiders.hpp"
 #include "star-utils.hpp"
@@ -78,6 +79,8 @@ public:
 private:
     float tolerance;
     float maxDistance;
+    std::set<int> nonStars; // Case II results
+    // static array for ordering in Case II
 };
 
 

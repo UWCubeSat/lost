@@ -522,6 +522,80 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
 StarIdentifiers StarNDAlgorithm::Go(const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
     StarIdentifiers result;
+
+    MultiDatabase multiDatabase(database);
+    const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(KVectorND::kMagicValue);
+    if (databaseBuffer == NULL || stars.size() < 4) {
+        std::cerr << "Not enough stars, or database missing." << std::endl;
+        return result;
+    }
+    KVectorND kVectorND(databaseBuffer);
+
+    Stars copy = stars;
+    // Sort copy as distrance from center (Case III)
+
+    // Choosing Star
+    Star central = copy.at(0);
+
+    auto comparator = [&](Star a, Star b) -> bool
+    {
+        return Angle(camera.CameraToSpatial(a.position), camera.CameraToSpatial(central.position)) <
+                Angle(camera.CameraToSpatial(b.position), camera.CameraToSpatial(central.position));
+    };
+
+    while(copy.size() > 4) {
+        // sort stars according to angular distance from central star
+        std::sort(copy.begin(), copy.end(), comparator);
+        for(int k = 3; k <= 5; k++) {
+            for(int i = 1; i <= 3; i++) {
+                for(int j = i + 1; j < k; j++) {
+                    Vec3 central = camera.CameraToSpatial(copy.at(0).position).Normalize();
+                    std::vector<Vec3> others = 
+                    {
+                    camera.CameraToSpatial(copy.at(i).position).Normalize(),
+                    camera.CameraToSpatial(copy.at(j).position).Normalize(),
+                    camera.CameraToSpatial(copy.at(k).position).Normalize()
+                    };
+                    float errors[6] = {2 * tolerance * std::sin(AngleUnit(others[0], central)),
+                                       2 * tolerance * std::sin(AngleUnit(others[1], central)),
+                                       2 * tolerance * std::sin(AngleUnit(others[2], central)),
+                                       2 * tolerance * std::sin(AngleUnit(others[0], others[1])),
+                                       2 * tolerance * std::sin(AngleUnit(others[0], others[2])),
+                                       2 * tolerance * std::sin(AngleUnit(others[1], others[3]))};
+
+                    float minParamB = StarParameterB(central * others[0] + errors[0], central * others[1] - errors[1], central * others[2] - errors[2]);
+                    float maxParamB = StarParameterB(central * others[0] - errors[0], central * others[1] + errors[1], central * others[2] + errors[2]);
+
+                    if(maxParamB < minParamB) {
+                        float temp = minParamB;
+                        minParamB = maxParamB;
+                        maxParamB = temp;
+                    }
+
+                    float paramsMin[4] = {StarParameterA(central * others[0] - errors[0], central * others[1] - errors[1], others[0] * others[1] + errors[3]),
+                                          StarParameterA(central * others[0] - errors[0], central * others[2] - errors[2], others[0] * others[2] + errors[4]),
+                                          StarParameterA(central * others[1] - errors[1], central * others[2] - errors[2], others[1] * others[2] + errors[5]),
+                                          minParamB};
+                    
+                    float paramsMax[4] = {StarParameterA(central * others[0] + errors[0], central * others[1] + errors[1], others[0] * others[1] - errors[3]),
+                                          StarParameterA(central * others[0] + errors[0], central * others[2] + errors[2], others[0] * others[2] - errors[4]),
+                                          StarParameterA(central * others[1] + errors[1], central * others[2] + errors[2], others[1] * others[2] - errors[5]),
+                                          maxParamB};
+                    
+                    std::vector<int16_t *> searchResult = kVectorND.RangeSearch(paramsMax, paramsMin);
+                    if(searchResult.size() == 0) {
+                        continue;
+                    }
+                    // Prelim, for now
+                    result.push_back(StarIdentifier(0, searchResult.at(0)[0]));
+                    result.push_back(StarIdentifier(i, searchResult.at(0)[1]));
+                    result.push_back(StarIdentifier(j, searchResult.at(0)[2]));
+                    result.push_back(StarIdentifier(k, searchResult.at(0)[3]));
+                }
+            }
+        }
+    }
+    return result;
     /*
     Stars starsCopy = copyOf(stars);
     Array of Star Patterns (0, 1, 2, 3, 4, 5);

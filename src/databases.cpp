@@ -296,9 +296,9 @@ KVectorND::KVectorND(const unsigned char *buffer) {
 }
 
 KVectorND::~KVectorND() {
-    delete[] min; // Would free() be better here?
-    delete[] max;
-    delete[] binWidth;
+    free(min);
+    free(max);
+    free(binWidth);
 }
 
 unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, float* max, long numBins, unsigned char *buffer, int entries) {
@@ -332,8 +332,8 @@ unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, fl
 }
 
 void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIndex, int16_t starIndex) {
-    int size = sizeof(quad);
-    for(int i = 0; i < sizeof(quad); i++) {
+    int size = quad.size();
+    for(int i = 0; i < quad.size(); i++) {
         int dist1 = AngleUnit(catalog[centralIndex].spatial, catalog[i].spatial);
         int dist2 = AngleUnit(catalog[centralIndex].spatial, catalog[starIndex].spatial);
         if(dist2 < dist1) {
@@ -341,18 +341,49 @@ void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIn
             break;
         }
     }
-    if(sizeof(quad) - size == 0) {
+    if(quad.size() - size == 0) {
         quad.push_back(starIndex);
     }
 }
 
+
+
+/** 
+ * Produces a parameter characterising a star pattern of 3 stars given 3 dot products
+ * @param centralToOne, centralToTwo, and oneToTwo are the dot products between 3 stars
+ * @param centralToOneError, centralToTwoError, and oneToTwo error are the approximate errors of the above parameters
+ * @return The modified Liebe parameter charactising this star triplet
+ */ 
 float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo) {
     return (1 - oneToTwo) / (2 - centralToOne - centralToTwo);
 }
 
+/**
+ * Produces a parameter characterising a star pattern of 4 stars given 3 dot products
+ * @param centralToOne, centralToTwo, and centralToThree are dot products between 4 stars
+ * @param centralToOneError, centralToTwoError, and centralToThree error are the approximate errors of the above parameters
+ * @note Using this error style does not give the true errors, but rather give a larger error radius than is real
+ * @return The modified Liebe parameter characterising this star quadruple
+*/
 float StarParameterB(float centralToOne, float centralToTwo, float centralToThree) {
     return (centralToTwo - centralToOne) / (centralToOne - centralToThree);
 }
+
+float* StarParameterSet(Vec3 central, std::vector<Vec3> stars) {
+    float result[4];
+    for(int i = 0; i <= 1; i++) {
+        for(int j = i + 1; j <= 2; i++) {
+                result[i + j - 1] = StarParameterA(central * stars.at(i), 
+                        central * stars.at(j), 
+                        stars.at(i) * stars.at(j));
+        }
+    }
+    result[3] = StarParameterB(central * stars.at(0), 
+                    central * stars.at(1), 
+                    central * stars.at(2));
+    return result;
+}
+
 
 std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance) {
     std::vector<KVectorQuad> result;
@@ -368,21 +399,8 @@ std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float mi
         }
         assert(sizeof(quad) == 3);
         if(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial) > minDistance && AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial) < maxDistance) {
-            float pa1 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
-                AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
-                AngleUnit(catalog[0].spatial, catalog[quad[1]].spatial));
-            float pa2 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
-                    AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
-                    AngleUnit(catalog[1].spatial, catalog[quad[2]].spatial));
-            float pa3 = StarParameterA(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
-                    AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial), 
-                    AngleUnit(catalog[0].spatial, catalog[quad[2]].spatial));
-            float pb = StarParameterB(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial), 
-                    AngleUnit(catalog[i].spatial, catalog[quad[1]].spatial), 
-                    AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial));
             int16_t stars[] = {i, quad.at(0), quad.at(1), quad.at(2)};
-            float parameters[] = {pa1, pa2, pa3, pb};
-            result.push_back({stars, parameters});
+            result.push_back({stars, StarParameterSet(catalog[i].spatial, {catalog[quad[0]].spatial, catalog[quad[1]].spatial, catalog[quad[2]].spatial})});
         }
             
     }
@@ -477,7 +495,7 @@ void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, 
 int16_t *KVectorND::GetEntry(const long index) const {
     int16_t stars[] = {0, 0, 0, 0};
     int i = 0;
-    for(const int16_t *ptr = quads; ptr < quads + 4; ptr++) {
+    for(const int16_t *ptr = quads + 4 * index; ptr < quads + 4 + 4 * index; ptr++) {
         stars[i] = *ptr;
         i++;
     }
@@ -511,7 +529,7 @@ std::vector<int16_t *> KVectorND::RangeSearch(const float *maxParameter, const f
             for(int i = 0; i <= maxBins[1] - minBins[1]; i++) {
                 long begin = b0 + i * numBins + j * numBins * numBins + k * numBins * numBins * numBins;
                 long end = begin + difference;
-                for(begin; begin < end; begin++) {
+                for(; begin < end; begin++) {
                     result.push_back(GetEntry(begin));
                 }
             }

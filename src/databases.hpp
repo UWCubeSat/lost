@@ -51,7 +51,8 @@ void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxD
 std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance);
 void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 long SerializeLengthQuadStarKVectorND(int numEntries, int bins);
-
+float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo);
+float StarParameterB(float centralToOne, float centralToTwo, float centralToThree);
 /**
  * A database storing distances between pairs of stars.
  * Supports fast range queries to find all pairs of stars separated by approximately a certain distance.
@@ -92,8 +93,6 @@ public:
     std::vector<int16_t *> RangeSearch(const float *maxParameter, const float *minParameter) const;
     int16_t *GetEntry(const long index) const;
 
-    const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
-
     /// Upper bound parameter corresponding to axis i
     float MaxParameter(int i) const { return max[i]; };
     /// Lower bound parameter corresponding to axis i
@@ -108,6 +107,8 @@ public:
     long NumValues() const { return numValues; };
     // Number of bins on each axis
     long NumBins() const { return numBins; };
+
+    
 private:
     // Total Entries
     long numValues;
