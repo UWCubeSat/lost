@@ -94,9 +94,9 @@ for _ in $(seq "${1:-$n}"); do
   num_incorrect_stars=$(grep -oP "(?<=starid_num_incorrect )\\d+" <<<"$lost_output")
   num_correct_stars=$(grep -4oP "(?<=starid_num_correct )\\d+" <<<"$lost_output")
 
-  raOurs=$(grep -oP "(?<=attitude_ra )[-+]?[0-9]*\.?[0-9]+" <<<"$lost_output")
-  deOurs=$(grep -oP "(?<=attitude_de )[-+]?[0-9]*\.?[0-9]+" <<<"$lost_output")
-  rollOurs=$(grep -oP "(?<=attitude_roll )[-+]?[0-9]*\.?[0-9]+" <<<"$lost_output")
+  raOurs=$(grep -oP "(?<=attitude_ra )[-+]?[0-9]*\.?[0-9]*[eE]?[-+]?[0-9]*" <<<"$lost_output")
+  deOurs=$(grep -oP "(?<=attitude_de )[-+]?[0-9]*\.?[0-9]*[eE]?[-+]?[0-9]*" <<<"$lost_output")
+  rollOurs=$(grep -oP "(?<=attitude_roll )[-+]?[0-9]*\.?[0-9]*[eE]?[-+]?[0-9]*" <<<"$lost_output")
 
   # echo "Fov: $fov"
   echo "Real: $ra, $de, $roll vs Calculated: $raOurs, $deOurs, $rollOurs"
