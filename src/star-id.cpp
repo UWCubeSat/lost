@@ -1,5 +1,4 @@
 #include "star-id.hpp"
-#include "star-utils.hpp"
 
 #include <assert.h>
 #include <math.h>
@@ -11,10 +10,31 @@
 
 #include "attitude-utils.hpp"
 #include "databases.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
 static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids);
+
+static std::vector<float> ConstructPattern(const std::vector<Vec3> &spats);
+
+static std::vector<float> ConstructPattern(const std::vector<Vec3>& spats) {
+  std::vector<float> edgeLengths;
+  for (int i = 0; i < (int)spats.size(); i++) {
+    for (int j = i + 1; j < (int)spats.size(); j++) {
+      Vec3 diff = spats[i] - spats[j];
+      edgeLengths.push_back(diff.Magnitude());
+    }
+  }
+
+  float largestEdge = *std::max_element(edgeLengths.begin(), edgeLengths.end());
+
+  std::vector<float> edgeRatios;  // size() = C(numPattStars, 2) - 1
+  for (int i = 0; i < (int)edgeLengths.size() - 1; i++) {
+    edgeRatios.push_back(edgeLengths[i] / largestEdge);
+  }
+  return edgeRatios;
+}
 
 std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int maxIndex,
                                                                const TetraDatabase &db) const {
@@ -120,7 +140,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   // TODO: remove testing
   // for (int i = 0; i < centroidIndices.size(); i++) {
   //   int cInd = centroidIndices[i];
-  //   std::cout << cInd << ": " << stars[cInd].position << " star mag= " << stars[cInd].magnitude << std::endl;
+  //   std::cout << cInd << ": " << stars[cInd].position << " star mag= " << stars[cInd].magnitude
+  //   << std::endl;
   // }
 
   // TODO: implement the generator function
@@ -195,24 +216,27 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     // Since each Pattern consists of size==numPattStars stars, there will be
     // C(numPattStars, 2) edges For default 4-star Patterns, calculate C(4,
     // 2) = 6 edge lengths
-    std::vector<float> pattEdgeLengths;  // default size = 6
-    for (int i = 0; i < (int)pattStarVecs.size(); i++) {
-      for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
-        Vec3 diff = pattStarVecs[i] - pattStarVecs[j];
-        pattEdgeLengths.push_back(diff.Magnitude());
-      }
-    }
-    std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
-    float pattLargestEdge =
-        pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1];  // largest edge value
+
+    // std::vector<float> pattEdgeLengths;  // default size = 6
+    // for (int i = 0; i < (int)pattStarVecs.size(); i++) {
+    //   for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
+    //     Vec3 diff = pattStarVecs[i] - pattStarVecs[j];
+    //     pattEdgeLengths.push_back(diff.Magnitude());
+    //   }
+    // }
+    // std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
+    // float pattLargestEdge =
+    //     pattEdgeLengths[(int)(pattEdgeLengths.size()) - 1];  // largest edge value
 
     // Divide each edge length by pattLargestEdge for edge ratios
     // size() = C(numPattStars, 2) - 1
     // We don't calculate ratio for largest edge, which would just be 1
-    std::vector<float> pattEdgeRatios;
-    for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) {
-      pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
-    }
+    // std::vector<float> pattEdgeRatios;
+    // for (int i = 0; i < (int)pattEdgeLengths.size() - 1; i++) {
+    //   pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
+    // }
+
+    std::vector<float> pattEdgeRatios = ConstructPattern(pattStarVecs);
 
     // Binning step - discretize values so they can be used for hashing
     // We account for potential error in calculated values by testing hash codes
@@ -272,20 +296,21 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         }
 
         // Make the Catalog Pattern
-        std::vector<float> catEdgeLengths;
-        for (int i = 0; i < (int)catStarVecs.size(); i++) {
-          for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
-            Vec3 diff = catStarVecs[i] - catStarVecs[j];
-            catEdgeLengths.push_back(diff.Magnitude());
-          }
-        }
-        std::sort(catEdgeLengths.begin(), catEdgeLengths.end());
-        float catLargestEdge = catEdgeLengths[(int)(catEdgeLengths.size()) - 1];
+        // std::vector<float> catEdgeLengths;
+        // for (int i = 0; i < (int)catStarVecs.size(); i++) {
+        //   for (int j = i + 1; j < (int)catStarVecs.size(); j++) {
+        //     Vec3 diff = catStarVecs[i] - catStarVecs[j];
+        //     catEdgeLengths.push_back(diff.Magnitude());
+        //   }
+        // }
+        // std::sort(catEdgeLengths.begin(), catEdgeLengths.end());
+        // float catLargestEdge = catEdgeLengths[(int)(catEdgeLengths.size()) - 1];
 
-        std::vector<float> catEdgeRatios;  // size() = C(numPattStars, 2) - 1
-        for (int i = 0; i < (int)catEdgeLengths.size() - 1; i++) {
-          catEdgeRatios.push_back(catEdgeLengths[i] / catLargestEdge);
-        }
+        // std::vector<float> catEdgeRatios;  // size() = C(numPattStars, 2) - 1
+        // for (int i = 0; i < (int)catEdgeLengths.size() - 1; i++) {
+        //   catEdgeRatios.push_back(catEdgeLengths[i] / catLargestEdge);
+        // }
+        std::vector<float> catEdgeRatios = ConstructPattern(catStarVecs);
 
         bool skipMatchRow = false;
         for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
@@ -297,17 +322,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
           }
         }
 
-        // TODO: this is a fairly naive way to check error, especially checking ratios (which should
-        // be replaced later) Maybe fine as prelim check, but definitely should use a more
-        // mathematically robust way (Kabsch, etc.)
-
         // Very common to skip here, database Pattern is NOT a match to ours
         if (skipMatchRow) {
           // std::cout << "Alert: Match Row skipped!!!" << std::endl;
           continue;
         }
-
-        // std::cout << "fine match" << std::endl;
 
         Vec3 pattCentroid(0, 0, 0);
         for (Vec3 pattStarVec : pattStarVecs) {
@@ -320,9 +339,10 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
           pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
         }
 
-        std::vector<int> sortedCentroidIndices = ArgsortVector<int>(chosenIndices, pattRadii);
+        std::vector<int> sortedCentroidIndices =
+            ArgsortVector<int, float>(chosenIndices, pattRadii);
 
-        std::vector<Vec3> pattSortedVecs = ArgsortVector<Vec3>(pattStarVecs, pattRadii);
+        std::vector<Vec3> pattSortedVecs = ArgsortVector<Vec3, float>(pattStarVecs, pattRadii);
 
         Vec3 catCentroid(0, 0, 0);
         for (Vec3 catStarVec : catStarVecs) {
@@ -335,8 +355,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
           catRadii.push_back((catStarVec - catCentroid).Magnitude());
         }
 
-        std::vector<int> catSortedStarIDs = ArgsortVector<int>(catStarIDs, catRadii);
-        std::vector<Vec3> catSortedVecs = ArgsortVector<Vec3>(catStarVecs, catRadii);
+        std::vector<int> catSortedStarIDs = ArgsortVector<int, float>(catStarIDs, catRadii);
+        std::vector<Vec3> catSortedVecs = ArgsortVector<Vec3, float>(catStarVecs, catRadii);
 
         for (int i = 0; i < numPattStars; i++) {
           int centroidIndex = sortedCentroidIndices[i];

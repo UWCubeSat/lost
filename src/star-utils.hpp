@@ -131,12 +131,12 @@ int FindCatalogStarIndex(const Catalog &, int name);
 // maxMagnitude is 10^-2 (so 523 = 5.23)
 Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 
-// Just for Tetra,
+// TODO: should not modify the original catalog
+// Keep the original catalog as-is, just return a list of indices
 std::pair<Catalog, std::vector<short>> TetraPreparePattCat(
     const Catalog &, const float maxFovDeg);
 
 int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex);
-
 
 }  // namespace lost
 

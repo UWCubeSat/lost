@@ -187,9 +187,9 @@ float RadToArcSec(float);
 float ArcSecToRad(float);
 
 // Argsort function - Tetra
-// Sort first vector based on values of second float vector
-template <class T>
-std::vector<T> ArgsortVector(std::vector<T> arr, std::vector<float> cmp) {
+// Sort first vector based on values of second vector (asc)
+template <class T, class U>
+std::vector<T> ArgsortVector(std::vector<T> arr, std::vector<U> cmp) {
     std::vector<T> res;
     std::vector<int> indices(arr.size());
     std::iota(indices.begin(), indices.end(), 0);
