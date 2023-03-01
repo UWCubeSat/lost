@@ -27,7 +27,8 @@ static std::vector<float> ConstructPattern(const std::vector<Vec3>& spats) {
     }
   }
 
-  float largestEdge = *std::max_element(edgeLengths.begin(), edgeLengths.end());
+  std::sort(edgeLengths.begin(), edgeLengths.end());
+  float largestEdge = edgeLengths[(int)(edgeLengths.size()) - 1];  // largest edge value
 
   std::vector<float> edgeRatios;  // size() = C(numPattStars, 2) - 1
   for (int i = 0; i < (int)edgeLengths.size() - 1; i++) {
