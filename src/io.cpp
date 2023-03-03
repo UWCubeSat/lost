@@ -797,7 +797,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         if (catalogBuffer != NULL) {
             result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
         } else {
-            std::cerr << "Warning: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
+            std::cerr << "WARNING: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
             result.catalog = input.GetCatalog();
         }
     } else {
@@ -820,6 +820,9 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         // centroids instead of our new centroids.
         inputStarIds = NULL;
         result.starIds = NULL;
+    } else if (centroidAlgorithm) {
+        std::cerr << "ERROR: Centroid algorithm specified, but no input image to run it on." << std::endl;
+        exit(1);
     }
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
@@ -827,12 +830,18 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
             starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
         inputStarIds = result.starIds.get();
+    } else if (starIdAlgorithm) {
+        std::cerr << "ERROR: Star ID algorithm specified but cannot run because database, centroids, or camera are missing." << std::endl;
+        exit(1);
     }
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         result.attitude = std::unique_ptr<Attitude>(
             new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
+    } else if (attitudeEstimationAlgorithm) {
+        std::cerr << "ERROR: Attitude estimation algorithm set, but either star IDs or camera are missing. One reason this can happen: Setting a centroid algorithm and attitude algorithm, but no star-id algorithm -- that can't work because the input star-ids won't properly correspond to the output centroids!" << std::endl;
+        exit(1);
     }
 
     return result;

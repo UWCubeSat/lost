@@ -25,4 +25,7 @@ echo 'Comparator assertions'
 ./lost pipeline --generate 1 --plot-output /dev/null 2>&1 | grep -Fe '--plot-output' || exit 1
 ./lost pipeline --generate 1 --centroid-algo cog --plot-output /dev/null 2>&1 | grep -Fe '--plot-output' && exit 1
 
+echo 'Issue #36: Cog and Attitude without Star-ID'
+./lost pipeline --generate 1 --centroid-algo cog --attitude-algo triad && exit 1
+
 exit 0
