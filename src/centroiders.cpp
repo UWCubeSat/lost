@@ -50,9 +50,9 @@ struct Functor {
   int values() const { return m_values; }
 };
 
-struct LSGF1DFunctor : Functor<double> {
+struct LSGF1DXFunctor : Functor<double> {
  public:
-  LSGF1DFunctor(const Eigen::VectorXd X, int x0, int y0, int w, int h, const unsigned char *image)
+  LSGF1DXFunctor(const Eigen::VectorXd X, int x0, int y0, int w, int h, const unsigned char *image)
       : Functor<double>(3, 3), X(X), x0(x0), y0(y0), w(w), h(h), image(image) {}
 
   int operator()(const Eigen::VectorXd &params, Eigen::VectorXd &fvec) const {
@@ -71,6 +71,7 @@ struct LSGF1DFunctor : Functor<double> {
   const int nb = 2;
   const int x0, y0;  // coordinates of centroid window
   const int w, h;    // w = number of pixels in width, h = number of pixels in height
+  // TODO: h is unused here
   const unsigned char *image;
 
   // Get value of pixel at universal coordinates (x, y)
@@ -96,6 +97,53 @@ struct LSGF1DFunctor : Functor<double> {
   }
 };
 
+struct LSGF1DYFunctor : Functor<double> {
+ public:
+  LSGF1DYFunctor(const Eigen::VectorXd X, int x0, int y0, int w, int h, const unsigned char *image)
+      : Functor<double>(3, 3), X(X), x0(x0), y0(y0), w(w), h(h), image(image) {}
+
+  int operator()(const Eigen::VectorXd &params, Eigen::VectorXd &fvec) const {
+    double a = params(0);
+    int yb = params(1);
+    double sigma = params(2);
+    for (int i = 0; i < X.size(); i++) {
+      fvec(i) = YMarginal(X(i)) - Model(X(i), a, yb, sigma);
+    }
+    return 0;
+  }
+
+ private:
+  const Eigen::VectorXd X;
+  // Eigen::VectorXd Y; // Don't need, calculate Y_i = V_{m, x_i}
+  const int nb = 2;
+  const int x0, y0;  // coordinates of centroid window
+  const int w, h;    // w = number of pixels in width, h = number of pixels in height
+  const unsigned char *image;
+
+  // Get value of pixel at universal coordinates (x, y)
+  // TODO: is this correct representation?
+  // TODO: will need to deal with case where on boundary of acceptable nb
+  unsigned char Get(int x, int y) const {
+    // int ind = i * w + j;
+    int ind = x + y * w;
+    return image[ind];
+  }
+
+  // Assuming 0, 0 is the center
+  int YMarginal(int y) const {
+    int res = 0;
+    for (int j = -nb; j <= nb; j++) {
+      res += Get(x0 + j, y0 + y);
+    }
+    return res;
+  }
+
+  double Model(int yi, double a, int yb, double sigma) const {
+    // Technically sigma_y
+    return a * exp(-1 * (yi - yb) * (yi - yb) / (2 * sigma * sigma));
+  }
+};
+
 typedef std::vector<int> Point;
 
 // TODO: duplicate, factor out better
@@ -104,7 +152,7 @@ unsigned char Get(int x, int y, unsigned char *image, int w, int h) {
   return image[ind];
 }
 
-void InitialGuess(int x, int y, unsigned char *image, int w, int h, double *a, int *xb,
+void InitialGuess(int x, int y, unsigned char *image, int w, int h, double *a, int *xb, int *yb,
                  double *sigma) {
   // a is set to max intensity value in the window
   // (xb, yb) = coordinates of pixel with max intensity value
@@ -115,6 +163,7 @@ void InitialGuess(int x, int y, unsigned char *image, int w, int h, double *a, i
       int pixelValue = Get(x + i, y + j, image, w, h);
       if (pixelValue > max) {
         *xb = x + i;
+        *yb = y + j;
         max = pixelValue;
       }
     }
@@ -155,37 +204,59 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
       std::vector<int> xs;
       std::vector<int> ys;
       Eigen::VectorXd X(2 * cb + 1);
+      Eigen::VectorXd Y(2 * cb + 1);
       for (int i = -cb; i <= cb; i++) {
         xs.push_back(x + cb);
         X << (x + cb);
         ys.push_back(y + cb);
+        Y << (y + cb);
       }
 
       // LSGF1DFunctor(const Eigen::VectorXd X, int x0, int y0, int w, int h,
       //               const unsigned char *image)
       //     : X(X), x0(x0), y0(y0), w(w), h(h), image(image) {}
 
-      Eigen::VectorXd beta(3);  // initial guess
-      double a, sigma;
-      int xb;
-      InitialGuess(x, y, image, imageWidth, imageHeight, &a, &xb, &sigma);
-      // TODO: fill beta with described values
-      beta << a, xb, sigma;
+      Eigen::VectorXd betaX(3);  // initial guess
+      Eigen::VectorXd betaY(3);  // initial guess
 
-      LSGF1DFunctor functor(X, x, y, imageWidth, imageHeight, image);
-      Eigen::NumericalDiff<LSGF1DFunctor> numDiff(functor);
-      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF1DFunctor>, double> lm(numDiff);
+      double a, sigma;
+      int xb, yb;
+      InitialGuess(x, y, image, imageWidth, imageHeight, &a, &xb, &yb, &sigma);
+      // TODO: fill beta with described values
+      betaX << a, xb, sigma;
+      betaY << a, yb, sigma;
+
+      LSGF1DXFunctor functorX(X, x, y, imageWidth, imageHeight, image);
+      Eigen::NumericalDiff<LSGF1DXFunctor> numDiffX(functorX);
+      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF1DXFunctor>, double> lm(numDiffX);
 
       lm.parameters.maxfev = 1000;
       lm.parameters.xtol = 1.0e-10;
 
-      lm.minimize(beta);
+      lm.minimize(betaX);
 
-      a = beta(0);
-      xb = beta(1);
-      sigma = beta(2);
+      xb = betaX(1);
 
-      std::cout << a << ", " << xb << ", " << sigma << std::endl;
+      LSGF1DYFunctor functorY(X, x, y, imageWidth, imageHeight, image);
+      Eigen::NumericalDiff<LSGF1DYFunctor> numDiffY(functorY);
+      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF1DYFunctor>, double> lmY(numDiffY);
+
+      lmY.parameters.maxfev = 1000;
+      lmY.parameters.xtol = 1.0e-10;
+
+      lmY.minimize(betaY);
+
+      yb = betaY(1);
+
+      a = betaX(0);
+      sigma = betaX(2);
+
+      std::cout << a << ", " << xb << ", " << yb << ", " << sigma << std::endl;
+
+      // Add new centroid to result
+      // result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter)) / 2.0f,
+      //                       ((float)(yDiameter)) / 2.0f, p.checkedIndices.size() - sizeBefore));
+      result.push_back(Star(xb, yb, sigma, sigma, a));
     }
   }
 
