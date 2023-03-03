@@ -1315,173 +1315,191 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l01328"></a><span class="lineno"><a class="line" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc"> 1328</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">PipelineComparison</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
 <div class="line"><a name="l01329"></a><span class="lineno"> 1329</span>&#160;                        <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
 <div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160;                        <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values) {</div>
-<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160;    assert(expected.size() == actual.size() &amp;&amp; expected.size() &gt; 0);</div>
-<div class="line"><a name="l01332"></a><span class="lineno"> 1332</span>&#160; </div>
-<div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160;    <span class="comment">// TODO: Remove the asserts and print out more reasonable error messages.</span></div>
-<div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160; </div>
-<div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160;<span class="preprocessor">#define LOST_PIPELINE_COMPARE(comparator, path, isBinary) do {          \</span></div>
-<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160;<span class="preprocessor">        UserSpecifiedOutputStream pos(path, isBinary);                       \</span></div>
-<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160;<span class="preprocessor">        comparator(pos.Stream(), expected, actual, values);             \</span></div>
-<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160;<span class="preprocessor">    } while (0)</span></div>
+<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160;    <span class="keywordflow">if</span> (actual.size() == 0) {</div>
+<div class="line"><a name="l01332"></a><span class="lineno"> 1332</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: No \&quot;comparator\&quot;/output action was specified. I.e., the star identification is all done, but you didn&#39;t specify how to return the results to you! Try --plot-output &lt;filepath&gt;, perhaps.&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160;        exit(1);</div>
+<div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160;    }</div>
+<div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160; </div>
+<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160;    assert(expected.size() == actual.size() &amp;&amp; expected.size() &gt; 0);</div>
+<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160; </div>
+<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160;    <span class="comment">// TODO: Remove the asserts and print out more reasonable error messages.</span></div>
 <div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160; </div>
-<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;    <span class="keywordflow">if</span> (values.plotRawInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;        assert(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1);</div>
-<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#a8557cba951933582593cd557f9cd98ad">PipelineComparatorPlotRawInput</a>, values.plotRawInput, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;    }</div>
-<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160; </div>
-<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;    <span class="keywordflow">if</span> (values.plotInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;        assert(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1 &amp;&amp; expected[0]-&gt;InputStars());</div>
-<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#a800beb5e9d3cc8ace23094b253a2a397">PipelineComparatorPlotInput</a>, values.plotInput, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;    }</div>
-<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;    <span class="keywordflow">if</span> (values.plotOutput != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;        assert(actual.size() == 1 &amp;&amp; (actual[0].stars || actual[0].starIds));</div>
-<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#aca0bcc5fdf17cecfb9020c897b3bb5d0">PipelineComparatorPlotOutput</a>, values.plotOutput, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;    }</div>
-<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;    <span class="keywordflow">if</span> (values.printCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;        assert(actual[0].stars &amp;&amp; actual.size() == 1);</div>
-<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#adf2b017d7891344d689081bf5fbe70bf">PipelineComparatorPrintCentroids</a>, values.printCentroids, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;    }</div>
-<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;    <span class="keywordflow">if</span> (values.compareCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;        assert(actual[0].stars &amp;&amp; expected[0]-&gt;ExpectedStars() &amp;&amp; values.centroidCompareThreshold);</div>
-<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#a280cc4fd6b73771d018721ff55db89d7">PipelineComparatorCentroids</a>, values.compareCentroids, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;<span class="preprocessor">#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary) do { \</span></div>
+<div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;<span class="preprocessor">        if (precondition) {                                             \</span></div>
+<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;<span class="preprocessor">            UserSpecifiedOutputStream pos(path, isBinary);              \</span></div>
+<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;<span class="preprocessor">            comparator(pos.Stream(), expected, actual, values);         \</span></div>
+<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160;<span class="preprocessor">        } else {                                                        \</span></div>
+<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;<span class="preprocessor">            std::cerr &lt;&lt; &quot;ERROR: Comparator not applicable: &quot;</span> &lt;&lt; errmsg &lt;&lt; std::endl; \</div>
+<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;            exit(1);                                                    \</div>
+<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;        }                                                               \</div>
+<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;    } while (0)</div>
+<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160; </div>
+<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;    <span class="keywordflow">if</span> (values.plotRawInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1,</div>
+<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;                              <span class="stringliteral">&quot;--plot-raw-input requires exactly 1 input image, but &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many were provided.&quot;</span>,</div>
+<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;                              <a class="code" href="namespacelost.html#a8557cba951933582593cd557f9cd98ad">PipelineComparatorPlotRawInput</a>, values.plotRawInput, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;    }</div>
+<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160; </div>
+<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;    <span class="keywordflow">if</span> (values.plotInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1 &amp;&amp; expected[0]-&gt;InputStars(),</div>
+<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;                              <span class="stringliteral">&quot;--plot-input requires exactly 1 input image, and for centroids to be available on that input image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many input images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;                              <a class="code" href="namespacelost.html#a800beb5e9d3cc8ace23094b253a2a397">PipelineComparatorPlotInput</a>, values.plotInput, <span class="keyword">true</span>);</div>
 <div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;    }</div>
-<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;    <span class="keywordflow">if</span> (values.compareStarIds != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;        assert(expected[0]-&gt;ExpectedStarIds() &amp;&amp; actual[0].starIds);</div>
-<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#adfc11912c9b3ba49aa7a32cee07ba3b8">PipelineComparatorStarIds</a>, values.compareStarIds, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;    }</div>
-<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;    <span class="keywordflow">if</span> (values.printAttitude != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;        assert(actual[0].attitude &amp;&amp; actual.size() == 1);</div>
-<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#a8ab6e86fca2857fcbc77fdf2d9a9d82b">PipelineComparatorPrintAttitude</a>, values.printAttitude, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;    }</div>
-<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;    <span class="keywordflow">if</span> (values.compareAttitudes != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;        assert(actual[0].attitude &amp;&amp; expected[0]-&gt;ExpectedAttitude() &amp;&amp; values.attitudeCompareThreshold);</div>
-<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;        <a class="code" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(<a class="code" href="namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6">PipelineComparatorAttitude</a>, values.compareAttitudes, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;    }</div>
-<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160; </div>
-<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;<span class="preprocessor">#undef LOST_PIPELINE_COMPARE</span></div>
-<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;}</div>
-<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160; </div>
-<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;<span class="comment">// TODO: Add CLI options for all the inspectors!</span></div>
-<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160; </div>
-<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;<span class="comment">// typedef void (*CatalogInspector)(const Catalog &amp;);</span></div>
-<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160; </div>
-<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;<span class="comment">// static std::vector&lt;const CatalogStar *&gt; PromptCatalogStars(const Catalog &amp;catalog, int howMany) {</span></div>
-<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;<span class="comment">//     std::vector&lt;const CatalogStar *&gt; result;</span></div>
-<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;<span class="comment">//     for (int i = 0; i &lt; howMany; i++) {</span></div>
-<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;<span class="comment">//         int name = Prompt&lt;int&gt;(&quot;Catalog name of &quot; + std::to_string(i) + &quot;-th star&quot;);</span></div>
-<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;<span class="comment">//         const CatalogStar *star = findNamedStar(catalog, name);</span></div>
-<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;<span class="comment">//         if (star == NULL) {</span></div>
-<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;<span class="comment">//             std::cerr &lt;&lt; &quot;Star not found!&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;<span class="comment">//             exit(1);</span></div>
-<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;<span class="comment">//         }</span></div>
-<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;<span class="comment">//         result.push_back(star);</span></div>
-<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;<span class="comment">//     return result;</span></div>
-<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;    <span class="keywordflow">if</span> (values.plotOutput != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual.size() == 1 &amp;&amp; (actual[0].stars || actual[0].starIds),</div>
+<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;                              <span class="stringliteral">&quot;--plot-output requires exactly 1 output image, and for either centroids or star IDs to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;                              <a class="code" href="namespacelost.html#aca0bcc5fdf17cecfb9020c897b3bb5d0">PipelineComparatorPlotOutput</a>, values.plotOutput, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;    }</div>
+<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;    <span class="keywordflow">if</span> (values.printCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].stars &amp;&amp; actual.size() == 1,</div>
+<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;                              <span class="stringliteral">&quot;--print-centroids requires exactly 1 output image, and for centroids to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;                              <a class="code" href="namespacelost.html#adf2b017d7891344d689081bf5fbe70bf">PipelineComparatorPrintCentroids</a>, values.printCentroids, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;    }</div>
+<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;    <span class="keywordflow">if</span> (values.compareCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].stars &amp;&amp; expected[0]-&gt;ExpectedStars() &amp;&amp; values.centroidCompareThreshold,</div>
+<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;                              <span class="stringliteral">&quot;--compare-centroids requires at least 1 output image, and for expected centroids to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;                              <a class="code" href="namespacelost.html#a280cc4fd6b73771d018721ff55db89d7">PipelineComparatorCentroids</a>, values.compareCentroids, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;    }</div>
+<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;    <span class="keywordflow">if</span> (values.compareStarIds != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;ExpectedStarIds() &amp;&amp; actual[0].starIds,</div>
+<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;                              <span class="stringliteral">&quot;--compare-star-ids requires at least 1 output image, and for expected star IDs to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;                              <a class="code" href="namespacelost.html#adfc11912c9b3ba49aa7a32cee07ba3b8">PipelineComparatorStarIds</a>, values.compareStarIds, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;    }</div>
+<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;    <span class="keywordflow">if</span> (values.printAttitude != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].attitude &amp;&amp; actual.size() == 1,</div>
+<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;                              <span class="stringliteral">&quot;--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;                              <a class="code" href="namespacelost.html#a8ab6e86fca2857fcbc77fdf2d9a9d82b">PipelineComparatorPrintAttitude</a>, values.printAttitude, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;    }</div>
+<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;    <span class="keywordflow">if</span> (values.compareAttitudes != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].attitude &amp;&amp; expected[0]-&gt;ExpectedAttitude() &amp;&amp; values.attitudeCompareThreshold,</div>
+<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;                              <span class="stringliteral">&quot;--compare-attitudes requires at least 1 output image, and for expected attitude to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;                              <a class="code" href="namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6">PipelineComparatorAttitude</a>, values.compareAttitudes, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;    }</div>
+<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160; </div>
+<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;<span class="preprocessor">#undef LOST_PIPELINE_COMPARE</span></div>
+<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;}</div>
 <div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160; </div>
-<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;<span class="comment">// void InspectPairDistance(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 2);</span></div>
-<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160; </div>
-<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;<span class="comment">//     // TODO: not cout, prompt for an ostream in inspect and pass argument</span></div>
-<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="comment">//     std::cout &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160; </div>
-<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;<span class="comment">// void InspectPyramidDistances(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 4);</span></div>
-<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160; </div>
-<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_01 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_02 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_03 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_12 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_13 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_23 &quot; &lt;&lt; Angle(stars[2]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;<span class="comment">// TODO: Add CLI options for all the inspectors!</span></div>
+<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160; </div>
+<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;<span class="comment">// typedef void (*CatalogInspector)(const Catalog &amp;);</span></div>
+<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160; </div>
+<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="comment">// static std::vector&lt;const CatalogStar *&gt; PromptCatalogStars(const Catalog &amp;catalog, int howMany) {</span></div>
+<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;<span class="comment">//     std::vector&lt;const CatalogStar *&gt; result;</span></div>
+<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;<span class="comment">//     for (int i = 0; i &lt; howMany; i++) {</span></div>
+<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;<span class="comment">//         int name = Prompt&lt;int&gt;(&quot;Catalog name of &quot; + std::to_string(i) + &quot;-th star&quot;);</span></div>
+<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;<span class="comment">//         const CatalogStar *star = findNamedStar(catalog, name);</span></div>
+<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;<span class="comment">//         if (star == NULL) {</span></div>
+<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;<span class="comment">//             std::cerr &lt;&lt; &quot;Star not found!&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;<span class="comment">//             exit(1);</span></div>
+<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;<span class="comment">//         }</span></div>
+<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;<span class="comment">//         result.push_back(star);</span></div>
+<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;<span class="comment">//     return result;</span></div>
 <div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;<span class="comment">// }</span></div>
 <div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160; </div>
-<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;<span class="comment">// void InspectTripleAngle(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 3);</span></div>
+<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;<span class="comment">// void InspectPairDistance(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 2);</span></div>
 <div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160; </div>
-<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;<span class="comment">//     // TODO</span></div>
-<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160; </div>
-<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;<span class="comment">// void InspectFindStar(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;<span class="comment">//     std::string raStr = PromptLine(&quot;Right Ascension&quot;);</span></div>
-<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160; </div>
-<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;<span class="comment">//     float raRadians;</span></div>
-<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160; </div>
-<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;<span class="comment">//     int raHours, raMinutes;</span></div>
-<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;<span class="comment">//     float raSeconds;</span></div>
-<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;<span class="comment">//     int raFormatTime = sscanf(raStr.c_str(), &quot;%dh %dm %fs&quot;, &amp;raHours, &amp;raMinutes, &amp;raSeconds);</span></div>
-<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160; </div>
-<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;<span class="comment">//     float raDeg;</span></div>
-<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;<span class="comment">//     int raFormatDeg = sscanf(raStr.c_str(), &quot;%f&quot;, &amp;raDeg);</span></div>
+<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;<span class="comment">//     // TODO: not cout, prompt for an ostream in inspect and pass argument</span></div>
+<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;<span class="comment">//     std::cout &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160; </div>
+<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;<span class="comment">// void InspectPyramidDistances(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 4);</span></div>
+<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160; </div>
+<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_01 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_02 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_03 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_12 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_13 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_23 &quot; &lt;&lt; Angle(stars[2]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;<span class="comment">// }</span></div>
 <div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160; </div>
-<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;<span class="comment">//     if (raFormatTime == 3) {</span></div>
-<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;<span class="comment">//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);</span></div>
-<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;<span class="comment">//     } else if (raFormatDeg == 1) {</span></div>
-<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;<span class="comment">//         raRadians = DegToRad(raFormatDeg);</span></div>
-<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;<span class="comment">//     } else {</span></div>
-<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid right ascension format. Do \&quot;09h 38m 29.8754s\&quot; or a number of degrees.&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;<span class="comment">//         exit(1);</span></div>
-<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;<span class="comment">// void InspectTripleAngle(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 3);</span></div>
+<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160; </div>
+<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;<span class="comment">//     // TODO</span></div>
+<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160; </div>
+<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;<span class="comment">// void InspectFindStar(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;<span class="comment">//     std::string raStr = PromptLine(&quot;Right Ascension&quot;);</span></div>
 <div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160; </div>
-<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;<span class="comment">//     std::string deStr = PromptLine(&quot;Declination&quot;);</span></div>
+<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;<span class="comment">//     float raRadians;</span></div>
 <div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160; </div>
-<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;<span class="comment">//     float deRadians;</span></div>
-<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160; </div>
-<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;<span class="comment">//     int deDegPart, deMinPart;</span></div>
-<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;<span class="comment">//     float deSecPart;</span></div>
-<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;<span class="comment">//     char dummy[8];</span></div>
-<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;<span class="comment">//     int deFormatParts = sscanf(deStr.c_str(), &quot;%d%s %d%s %f%s&quot;, &amp;deDegPart, dummy, &amp;deMinPart, dummy, &amp;deSecPart, dummy);</span></div>
+<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;<span class="comment">//     int raHours, raMinutes;</span></div>
+<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;<span class="comment">//     float raSeconds;</span></div>
+<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;<span class="comment">//     int raFormatTime = sscanf(raStr.c_str(), &quot;%dh %dm %fs&quot;, &amp;raHours, &amp;raMinutes, &amp;raSeconds);</span></div>
+<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160; </div>
+<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;<span class="comment">//     float raDeg;</span></div>
+<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;<span class="comment">//     int raFormatDeg = sscanf(raStr.c_str(), &quot;%f&quot;, &amp;raDeg);</span></div>
 <div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160; </div>
-<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;<span class="comment">//     float deDeg;</span></div>
-<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;<span class="comment">//     int deFormatDeg = sscanf(deStr.c_str(), &quot;%f&quot;, &amp;deDeg);</span></div>
-<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160; </div>
-<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;<span class="comment">//     if (deFormatParts == 6) {</span></div>
-<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;<span class="comment">//         deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);</span></div>
-<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;<span class="comment">//     } else if (deFormatDeg == 1) {</span></div>
-<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;<span class="comment">//         deRadians = DegToRad(deFormatDeg);</span></div>
-<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;<span class="comment">//     } else {</span></div>
-<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid declination format.&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;<span class="comment">//         exit(1);</span></div>
-<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160; </div>
-<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;<span class="comment">//     // find the star</span></div>
-<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160; </div>
-<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;<span class="comment">//     float tolerance = 0.001;</span></div>
-<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;<span class="comment">//     Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);</span></div>
-<div class="line"><a name="l01465"></a><span class="lineno"> 1465</span>&#160;<span class="comment">//     int i = 0;</span></div>
-<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160;<span class="comment">//     for (const CatalogStar &amp;curStar : catalog) {</span></div>
-<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;<span class="comment">//         if ((curStar.spatial - userSpatial).Magnitude() &lt; tolerance) {</span></div>
-<div class="line"><a name="l01468"></a><span class="lineno"> 1468</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;found_star_&quot; &lt;&lt; i &lt;&lt; &quot; &quot;  &lt;&lt; curStar.name &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;fonud_star_magnitude_&quot; &lt;&lt; i &lt;&lt; &quot; &quot; &lt;&lt; curStar.magnitude &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01470"></a><span class="lineno"> 1470</span>&#160;<span class="comment">//             i++;</span></div>
-<div class="line"><a name="l01471"></a><span class="lineno"> 1471</span>&#160;<span class="comment">//         }</span></div>
-<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;<span class="comment">//     if (i == 0) {</span></div>
-<div class="line"><a name="l01474"></a><span class="lineno"> 1474</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;No stars found&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160; </div>
-<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160;<span class="comment">// void InspectPrintStar(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 1);</span></div>
-<div class="line"><a name="l01480"></a><span class="lineno"> 1480</span>&#160;<span class="comment">//     float ra, de;</span></div>
-<div class="line"><a name="l01481"></a><span class="lineno"> 1481</span>&#160;<span class="comment">//     SpatialToSpherical(stars[0]-&gt;spatial, &amp;ra, &amp;de);</span></div>
-<div class="line"><a name="l01482"></a><span class="lineno"> 1482</span>&#160; </div>
-<div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_ra &quot; &lt;&lt; RadToDeg(ra) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_de &quot; &lt;&lt; RadToDeg(de) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01486"></a><span class="lineno"> 1486</span>&#160; </div>
-<div class="line"><a name="l01487"></a><span class="lineno"> 1487</span>&#160;<span class="comment">// void InspectCatalog() {</span></div>
-<div class="line"><a name="l01488"></a><span class="lineno"> 1488</span>&#160;<span class="comment">//     InteractiveChoice&lt;CatalogInspector&gt; inspectorChoice;</span></div>
-<div class="line"><a name="l01489"></a><span class="lineno"> 1489</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pair_distance&quot;, &quot;pair distance angle&quot;, InspectPairDistance);</span></div>
-<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pyramid_distances&quot;, &quot;all pair distances in pyramid&quot;, InspectPyramidDistances);</span></div>
-<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;triple_angle&quot;, &quot;inner angle of a triangle&quot;, InspectTripleAngle);</span></div>
-<div class="line"><a name="l01492"></a><span class="lineno"> 1492</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;find_star&quot;, &quot;find a star name based on ra/de&quot;, InspectFindStar);</span></div>
-<div class="line"><a name="l01493"></a><span class="lineno"> 1493</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;print_star&quot;, &quot;print coordinates of a star&quot;, InspectPrintStar);</span></div>
-<div class="line"><a name="l01494"></a><span class="lineno"> 1494</span>&#160;<span class="comment">//     (*inspectorChoice.Prompt(&quot;Inspect the catalog&quot;))(CatalogRead());</span></div>
-<div class="line"><a name="l01495"></a><span class="lineno"> 1495</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01496"></a><span class="lineno"> 1496</span>&#160; </div>
-<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;} <span class="comment">// namespace lost</span></div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;<span class="comment">//     if (raFormatTime == 3) {</span></div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;<span class="comment">//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);</span></div>
+<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;<span class="comment">//     } else if (raFormatDeg == 1) {</span></div>
+<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;<span class="comment">//         raRadians = DegToRad(raFormatDeg);</span></div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;<span class="comment">//     } else {</span></div>
+<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid right ascension format. Do \&quot;09h 38m 29.8754s\&quot; or a number of degrees.&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;<span class="comment">//         exit(1);</span></div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160; </div>
+<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;<span class="comment">//     std::string deStr = PromptLine(&quot;Declination&quot;);</span></div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160; </div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;<span class="comment">//     float deRadians;</span></div>
+<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160; </div>
+<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160;<span class="comment">//     int deDegPart, deMinPart;</span></div>
+<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;<span class="comment">//     float deSecPart;</span></div>
+<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;<span class="comment">//     char dummy[8];</span></div>
+<div class="line"><a name="l01465"></a><span class="lineno"> 1465</span>&#160;<span class="comment">//     int deFormatParts = sscanf(deStr.c_str(), &quot;%d%s %d%s %f%s&quot;, &amp;deDegPart, dummy, &amp;deMinPart, dummy, &amp;deSecPart, dummy);</span></div>
+<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160; </div>
+<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;<span class="comment">//     float deDeg;</span></div>
+<div class="line"><a name="l01468"></a><span class="lineno"> 1468</span>&#160;<span class="comment">//     int deFormatDeg = sscanf(deStr.c_str(), &quot;%f&quot;, &amp;deDeg);</span></div>
+<div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160; </div>
+<div class="line"><a name="l01470"></a><span class="lineno"> 1470</span>&#160;<span class="comment">//     if (deFormatParts == 6) {</span></div>
+<div class="line"><a name="l01471"></a><span class="lineno"> 1471</span>&#160;<span class="comment">//         deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);</span></div>
+<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;<span class="comment">//     } else if (deFormatDeg == 1) {</span></div>
+<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;<span class="comment">//         deRadians = DegToRad(deFormatDeg);</span></div>
+<div class="line"><a name="l01474"></a><span class="lineno"> 1474</span>&#160;<span class="comment">//     } else {</span></div>
+<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid declination format.&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;<span class="comment">//         exit(1);</span></div>
+<div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160; </div>
+<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;<span class="comment">//     // find the star</span></div>
+<div class="line"><a name="l01480"></a><span class="lineno"> 1480</span>&#160; </div>
+<div class="line"><a name="l01481"></a><span class="lineno"> 1481</span>&#160;<span class="comment">//     float tolerance = 0.001;</span></div>
+<div class="line"><a name="l01482"></a><span class="lineno"> 1482</span>&#160;<span class="comment">//     Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);</span></div>
+<div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;<span class="comment">//     int i = 0;</span></div>
+<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;<span class="comment">//     for (const CatalogStar &amp;curStar : catalog) {</span></div>
+<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;<span class="comment">//         if ((curStar.spatial - userSpatial).Magnitude() &lt; tolerance) {</span></div>
+<div class="line"><a name="l01486"></a><span class="lineno"> 1486</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;found_star_&quot; &lt;&lt; i &lt;&lt; &quot; &quot;  &lt;&lt; curStar.name &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01487"></a><span class="lineno"> 1487</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;fonud_star_magnitude_&quot; &lt;&lt; i &lt;&lt; &quot; &quot; &lt;&lt; curStar.magnitude &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01488"></a><span class="lineno"> 1488</span>&#160;<span class="comment">//             i++;</span></div>
+<div class="line"><a name="l01489"></a><span class="lineno"> 1489</span>&#160;<span class="comment">//         }</span></div>
+<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160;<span class="comment">//     if (i == 0) {</span></div>
+<div class="line"><a name="l01492"></a><span class="lineno"> 1492</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;No stars found&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01493"></a><span class="lineno"> 1493</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01494"></a><span class="lineno"> 1494</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01495"></a><span class="lineno"> 1495</span>&#160; </div>
+<div class="line"><a name="l01496"></a><span class="lineno"> 1496</span>&#160;<span class="comment">// void InspectPrintStar(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 1);</span></div>
+<div class="line"><a name="l01498"></a><span class="lineno"> 1498</span>&#160;<span class="comment">//     float ra, de;</span></div>
+<div class="line"><a name="l01499"></a><span class="lineno"> 1499</span>&#160;<span class="comment">//     SpatialToSpherical(stars[0]-&gt;spatial, &amp;ra, &amp;de);</span></div>
+<div class="line"><a name="l01500"></a><span class="lineno"> 1500</span>&#160; </div>
+<div class="line"><a name="l01501"></a><span class="lineno"> 1501</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_ra &quot; &lt;&lt; RadToDeg(ra) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01502"></a><span class="lineno"> 1502</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_de &quot; &lt;&lt; RadToDeg(de) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01503"></a><span class="lineno"> 1503</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01504"></a><span class="lineno"> 1504</span>&#160; </div>
+<div class="line"><a name="l01505"></a><span class="lineno"> 1505</span>&#160;<span class="comment">// void InspectCatalog() {</span></div>
+<div class="line"><a name="l01506"></a><span class="lineno"> 1506</span>&#160;<span class="comment">//     InteractiveChoice&lt;CatalogInspector&gt; inspectorChoice;</span></div>
+<div class="line"><a name="l01507"></a><span class="lineno"> 1507</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pair_distance&quot;, &quot;pair distance angle&quot;, InspectPairDistance);</span></div>
+<div class="line"><a name="l01508"></a><span class="lineno"> 1508</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pyramid_distances&quot;, &quot;all pair distances in pyramid&quot;, InspectPyramidDistances);</span></div>
+<div class="line"><a name="l01509"></a><span class="lineno"> 1509</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;triple_angle&quot;, &quot;inner angle of a triangle&quot;, InspectTripleAngle);</span></div>
+<div class="line"><a name="l01510"></a><span class="lineno"> 1510</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;find_star&quot;, &quot;find a star name based on ra/de&quot;, InspectFindStar);</span></div>
+<div class="line"><a name="l01511"></a><span class="lineno"> 1511</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;print_star&quot;, &quot;print coordinates of a star&quot;, InspectPrintStar);</span></div>
+<div class="line"><a name="l01512"></a><span class="lineno"> 1512</span>&#160;<span class="comment">//     (*inspectorChoice.Prompt(&quot;Inspect the catalog&quot;))(CatalogRead());</span></div>
+<div class="line"><a name="l01513"></a><span class="lineno"> 1513</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01514"></a><span class="lineno"> 1514</span>&#160; </div>
+<div class="line"><a name="l01515"></a><span class="lineno"> 1515</span>&#160;} <span class="comment">// namespace lost</span></div>
 <div class="ttc" id="aattitude-estimators_8hpp_html"><div class="ttname"><a href="attitude-estimators_8hpp.html">attitude-estimators.hpp</a></div></div>
 <div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
 <div class="ttc" id="aclasslost_1_1_attitude_estimation_algorithm_html"><div class="ttname"><a href="classlost_1_1_attitude_estimation_algorithm.html">lost::AttitudeEstimationAlgorithm</a></div><div class="ttdoc">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8hpp_source.html#l00015">attitude-estimators.hpp:15</a></div></div>
@@ -1564,7 +1582,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="ttc" id="aclasslost_1_1_vec3_html_a97adb523973ae539a5d8963d78569618"><div class="ttname"><a href="classlost_1_1_vec3.html#a97adb523973ae539a5d8963d78569618">lost::Vec3::x</a></div><div class="ttdeci">float x</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8hpp_source.html#l00033">attitude-utils.hpp:33</a></div></div>
 <div class="ttc" id="adatabases_8hpp_html"><div class="ttname"><a href="databases_8hpp.html">databases.hpp</a></div></div>
 <div class="ttc" id="aio_8cpp_html_a1628471efc4a0d438d497c67d641c6c4"><div class="ttname"><a href="io_8cpp.html#a1628471efc4a0d438d497c67d641c6c4">DEFAULT_BSC_PATH</a></div><div class="ttdeci">#define DEFAULT_BSC_PATH</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00084">io.cpp:84</a></div></div>
-<div class="ttc" id="aio_8cpp_html_a49e06153f8958c0defbe28fa01ff76ec"><div class="ttname"><a href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a></div><div class="ttdeci">#define LOST_PIPELINE_COMPARE(comparator, path, isBinary)</div></div>
+<div class="ttc" id="aio_8cpp_html_aa20cea40f78380bdd173e9636fe1f442"><div class="ttname"><a href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a></div><div class="ttdeci">#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary)</div></div>
 <div class="ttc" id="aio_8hpp_html"><div class="ttname"><a href="io_8hpp.html">io.hpp</a></div></div>
 <div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8cpp_source.html#l00005">attitude-estimators.cpp:5</a></div></div>
 <div class="ttc" id="anamespacelost_html_a0fe01051c958fa8ced02e772aefdc991"><div class="ttname"><a href="namespacelost.html#a0fe01051c958fa8ced02e772aefdc991">lost::CentroidComparisonsCombine</a></div><div class="ttdeci">CentroidComparison CentroidComparisonsCombine(std::vector&lt; CentroidComparison &gt; comparisons)</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00945">io.cpp:945</a></div></div>
@@ -1636,7 +1654,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Fri Mar 3 2023 05:04:44 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Mar 3 2023 05:21:20 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
