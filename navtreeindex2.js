@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb":[2,0,0,111],
 "namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6":[2,0,0,44],
 "namespacelost.html#af0b05482238f0a180d5906f0e43ac3e2":[2,0,0,88],
 "namespacelost.html#af4b38998ddebb02241ed73fec6af8f4f":[2,0,0,115],

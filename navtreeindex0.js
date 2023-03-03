@@ -221,10 +221,6 @@ var NAVTREEINDEX0 =
 "classlost_1_1_png_pipeline_input.html#a75645fe6b18c9de509b72ffbbe64cf3e":[3,0,0,29,3],
 "classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe":[3,0,0,29,0],
 "classlost_1_1_png_pipeline_input.html#ae1db3bb642d9b4410c641c9f7db92097":[3,0,0,29,2],
-"classlost_1_1_prompted_output_stream.html":[3,0,0,24],
-"classlost_1_1_prompted_output_stream.html#aa882b4720973a24822434a6f626e6e1a":[3,0,0,24,0],
-"classlost_1_1_prompted_output_stream.html#ae35516532496d3bb29c7af566adcf12a":[3,0,0,24,2],
-"classlost_1_1_prompted_output_stream.html#aed30bbdfdab26313b6293ca949dabf37":[3,0,0,24,1],
 "classlost_1_1_pyramid_star_id_algorithm.html":[3,0,0,39],
 "classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a":[3,0,0,39,1],
 "classlost_1_1_pyramid_star_id_algorithm.html#af49d0a219e84d31fccdc927aa7476d50":[3,0,0,39,0],
@@ -249,5 +245,9 @@ var NAVTREEINDEX0 =
 "classlost_1_1_quaternion.html#af91fd942679a1445421c93c4db9628b2":[3,0,0,8,14],
 "classlost_1_1_quest_algorithm.html":[3,0,0,3],
 "classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23":[3,0,0,3,0],
-"classlost_1_1_star.html":[3,0,0,41]
+"classlost_1_1_star.html":[3,0,0,41],
+"classlost_1_1_star.html#a609af663e28795ba0ea2752fad193f8b":[3,0,0,41,0],
+"classlost_1_1_star.html#a63e85dbeb2f271e63b2d975cf83ae1b3":[3,0,0,41,2],
+"classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea":[3,0,0,41,4],
+"classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf":[3,0,0,41,3]
 };

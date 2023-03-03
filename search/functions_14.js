@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['yresolution_538',['YResolution',['../classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70',1,'lost::Camera']]]
+  ['xresolution_537',['XResolution',['../classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d',1,'lost::Camera']]]
 ];

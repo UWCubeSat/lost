@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classlost_1_1_quaternion.html" title="A quaternion is a common way to represent a 3d rotation." alt="" coords="5,5,132,32"/>
+<area shape="rect" id="node1" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="5,5,85,32"/>
+<area shape="rect" id="node2" href="$classlost_1_1_generated_star.html" title="A star used in simulated image generation. Contains extra data about how to simulate the star." alt="" coords="133,5,281,32"/>
 </map>

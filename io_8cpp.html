@@ -178,8 +178,8 @@ Namespaces</h2></td></tr>
 Macros</h2></td></tr>
 <tr class="memitem:a1628471efc4a0d438d497c67d641c6c4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="io_8cpp.html#a1628471efc4a0d438d497c67d641c6c4">DEFAULT_BSC_PATH</a>&#160;&#160;&#160;&quot;bright-star-catalog.tsv&quot;</td></tr>
 <tr class="separator:a1628471efc4a0d438d497c67d641c6c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a937f2e21f952506ada65ec07c482220a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="io_8cpp.html#a937f2e21f952506ada65ec07c482220a">LOST_PIPELINE_COMPARE</a>(comparator,  path)</td></tr>
-<tr class="separator:a937f2e21f952506ada65ec07c482220a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49e06153f8958c0defbe28fa01ff76ec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="io_8cpp.html#a49e06153f8958c0defbe28fa01ff76ec">LOST_PIPELINE_COMPARE</a>(comparator,  path,  isBinary)</td></tr>
+<tr class="separator:a49e06153f8958c0defbe28fa01ff76ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -300,8 +300,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a937f2e21f952506ada65ec07c482220a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a937f2e21f952506ada65ec07c482220a">&#9670;&nbsp;</a></span>LOST_PIPELINE_COMPARE</h2>
+<a id="a49e06153f8958c0defbe28fa01ff76ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49e06153f8958c0defbe28fa01ff76ec">&#9670;&nbsp;</a></span>LOST_PIPELINE_COMPARE</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -316,7 +316,13 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">path&#160;</td>
+          <td class="paramname">path, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">isBinary&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -325,9 +331,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        <span class="keywordflow">do</span> {            \</div>
-<div class="line">        PromptedOutputStream pos(path);                         \</div>
-<div class="line">        comparator(pos.Stream(), expected, actual, values);     \</div>
+<b>Value:</b><div class="fragment"><div class="line">        <span class="keywordflow">do</span> {          \</div>
+<div class="line">        UserSpecifiedOutputStream pos(path, isBinary);                       \</div>
+<div class="line">        comparator(pos.Stream(), expected, actual, values);             \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
 </div>
@@ -338,7 +344,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Fri Mar 3 2023 04:53:04 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Mar 3 2023 05:04:44 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

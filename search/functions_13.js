@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['xresolution_537',['XResolution',['../classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d',1,'lost::Camera']]]
+  ['vector_536',['Vector',['../classlost_1_1_quaternion.html#a2eace9c3a35569109c949b7d8f1bc96e',1,'lost::Quaternion']]]
 ];

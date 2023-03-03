@@ -1,6 +1,6 @@
 var io_8hpp =
 [
-    [ "PromptedOutputStream", "classlost_1_1_prompted_output_stream.html", "classlost_1_1_prompted_output_stream" ],
+    [ "UserSpecifiedOutputStream", "classlost_1_1_user_specified_output_stream.html", "classlost_1_1_user_specified_output_stream" ],
     [ "Image", "classlost_1_1_image.html", "classlost_1_1_image" ],
     [ "PipelineOptions", "classlost_1_1_pipeline_options.html", null ],
     [ "PipelineInput", "classlost_1_1_pipeline_input.html", "classlost_1_1_pipeline_input" ],

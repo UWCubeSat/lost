@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['vec2_280',['Vec2',['../structlost_1_1_vec2.html',1,'lost']]],
-  ['vec3_281',['Vec3',['../classlost_1_1_vec3.html',1,'lost']]],
-  ['vector_282',['Vector',['../classlost_1_1_quaternion.html#a2eace9c3a35569109c949b7d8f1bc96e',1,'lost::Quaternion']]]
+  ['userspecifiedoutputstream_279',['UserSpecifiedOutputStream',['../classlost_1_1_user_specified_output_stream.html',1,'lost::UserSpecifiedOutputStream'],['../classlost_1_1_user_specified_output_stream.html#a4dcbbf27cfacdc73f038e06532a73301',1,'lost::UserSpecifiedOutputStream::UserSpecifiedOutputStream()']]]
 ];

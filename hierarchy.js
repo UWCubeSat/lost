@@ -34,7 +34,6 @@ var hierarchy =
     ] ],
     [ "lost::PipelineOptions", "classlost_1_1_pipeline_options.html", null ],
     [ "lost::PipelineOutput", "structlost_1_1_pipeline_output.html", null ],
-    [ "lost::PromptedOutputStream", "classlost_1_1_prompted_output_stream.html", null ],
     [ "lost::Quaternion", "classlost_1_1_quaternion.html", null ],
     [ "lost::Star", "classlost_1_1_star.html", [
       [ "lost::GeneratedStar", "classlost_1_1_generated_star.html", null ]
@@ -46,6 +45,7 @@ var hierarchy =
     ] ],
     [ "lost::StarIdComparison", "structlost_1_1_star_id_comparison.html", null ],
     [ "lost::StarIdentifier", "classlost_1_1_star_identifier.html", null ],
+    [ "lost::UserSpecifiedOutputStream", "classlost_1_1_user_specified_output_stream.html", null ],
     [ "lost::Vec2", "structlost_1_1_vec2.html", null ],
     [ "lost::Vec3", "classlost_1_1_vec3.html", null ]
 ];

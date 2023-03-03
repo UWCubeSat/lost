@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['weight_283',['weight',['../classlost_1_1_star_identifier.html#afaace9db445eee4b7ff239fbb71bba57',1,'lost::StarIdentifier']]],
-  ['width_284',['width',['../classlost_1_1_image.html#af450eb35614041beeb2bec120aac739e',1,'lost::Image']]]
+  ['vec2_280',['Vec2',['../structlost_1_1_vec2.html',1,'lost']]],
+  ['vec3_281',['Vec3',['../classlost_1_1_vec3.html',1,'lost']]],
+  ['vector_282',['Vector',['../classlost_1_1_quaternion.html#a2eace9c3a35569109c949b7d8f1bc96e',1,'lost::Quaternion']]]
 ];

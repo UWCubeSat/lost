@@ -24,7 +24,7 @@ var namespacelost =
     [ "MultiDatabaseBuilder", "classlost_1_1_multi_database_builder.html", "classlost_1_1_multi_database_builder" ],
     [ "GeneratedStar", "classlost_1_1_generated_star.html", "classlost_1_1_generated_star" ],
     [ "CentroidComparison", "classlost_1_1_centroid_comparison.html", "classlost_1_1_centroid_comparison" ],
-    [ "PromptedOutputStream", "classlost_1_1_prompted_output_stream.html", "classlost_1_1_prompted_output_stream" ],
+    [ "UserSpecifiedOutputStream", "classlost_1_1_user_specified_output_stream.html", "classlost_1_1_user_specified_output_stream" ],
     [ "Image", "classlost_1_1_image.html", "classlost_1_1_image" ],
     [ "PipelineOptions", "classlost_1_1_pipeline_options.html", null ],
     [ "PipelineInput", "classlost_1_1_pipeline_input.html", "classlost_1_1_pipeline_input" ],

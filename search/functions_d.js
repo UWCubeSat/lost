@@ -15,7 +15,6 @@ var searchData=
   ['pipelinecomparatorstarids_489',['PipelineComparatorStarIds',['../namespacelost.html#adfc11912c9b3ba49aa7a32cee07ba3b8',1,'lost']]],
   ['pipelinecomparison_490',['PipelineComparison',['../namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc',1,'lost']]],
   ['pngpipelineinput_491',['PngPipelineInput',['../classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe',1,'lost::PngPipelineInput']]],
-  ['promptedoutputstream_492',['PromptedOutputStream',['../classlost_1_1_prompted_output_stream.html#aa882b4720973a24822434a6f626e6e1a',1,'lost::PromptedOutputStream']]],
-  ['promptnarrowedcatalog_493',['PromptNarrowedCatalog',['../namespacelost.html#ac4570f4908321a43be0af54805ca9044',1,'lost']]],
-  ['pyramidstaridalgorithm_494',['PyramidStarIdAlgorithm',['../classlost_1_1_pyramid_star_id_algorithm.html#af49d0a219e84d31fccdc927aa7476d50',1,'lost::PyramidStarIdAlgorithm']]]
+  ['promptnarrowedcatalog_492',['PromptNarrowedCatalog',['../namespacelost.html#ac4570f4908321a43be0af54805ca9044',1,'lost']]],
+  ['pyramidstaridalgorithm_493',['PyramidStarIdAlgorithm',['../classlost_1_1_pyramid_star_id_algorithm.html#af49d0a219e84d31fccdc927aa7476d50',1,'lost::PyramidStarIdAlgorithm']]]
 ];
