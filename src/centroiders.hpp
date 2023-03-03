@@ -21,6 +21,13 @@ public:
     virtual ~CentroidAlgorithm() { };
 };
 
+class LeastSquaresGaussianFit1D : public CentroidAlgorithm{
+public:
+    explicit LeastSquaresGaussianFit1D() {};
+    Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
+
+
 /// A centroid algorithm for debugging that returns random centroids.
 class DummyCentroidAlgorithm: public CentroidAlgorithm {
 public:
