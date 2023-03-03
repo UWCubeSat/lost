@@ -1328,47 +1328,65 @@ void PipelineComparatorAttitude(std::ostream &os,
 void PipelineComparison(const PipelineInputList &expected,
                         const std::vector<PipelineOutput> &actual,
                         const PipelineOptions &values) {
+    if (actual.size() == 0) {
+        std::cerr << "ERROR: No \"comparator\"/output action was specified. I.e., the star identification is all done, but you didn't specify how to return the results to you! Try --plot-output <filepath>, perhaps." << std::endl;
+        exit(1);
+    }
+
     assert(expected.size() == actual.size() && expected.size() > 0);
 
     // TODO: Remove the asserts and print out more reasonable error messages.
 
-#define LOST_PIPELINE_COMPARE(comparator, path, isBinary) do {          \
-        UserSpecifiedOutputStream pos(path, isBinary);                       \
-        comparator(pos.Stream(), expected, actual, values);             \
+#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary) do { \
+        if (precondition) {                                             \
+            UserSpecifiedOutputStream pos(path, isBinary);              \
+            comparator(pos.Stream(), expected, actual, values);         \
+        } else {                                                        \
+            std::cerr << "ERROR: Comparator not applicable: " << errmsg << std::endl; \
+            exit(1);                                                    \
+        }                                                               \
     } while (0)
 
     if (values.plotRawInput != "") {
-        assert(expected[0]->InputImage() && expected.size() == 1);
-        LOST_PIPELINE_COMPARE(PipelineComparatorPlotRawInput, values.plotRawInput, true);
+        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1,
+                              "--plot-raw-input requires exactly 1 input image, but " + std::to_string(expected.size()) + " many were provided.",
+                              PipelineComparatorPlotRawInput, values.plotRawInput, true);
     }
 
     if (values.plotInput != "") {
-        assert(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars());
-        LOST_PIPELINE_COMPARE(PipelineComparatorPlotInput, values.plotInput, true);
+        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars(),
+                              "--plot-input requires exactly 1 input image, and for centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPlotInput, values.plotInput, true);
     }
     if (values.plotOutput != "") {
-        assert(actual.size() == 1 && (actual[0].stars || actual[0].starIds));
-        LOST_PIPELINE_COMPARE(PipelineComparatorPlotOutput, values.plotOutput, true);
+        LOST_PIPELINE_COMPARE(actual.size() == 1 && (actual[0].stars || actual[0].starIds),
+                              "--plot-output requires exactly 1 output image, and for either centroids or star IDs to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorPlotOutput, values.plotOutput, true);
     }
     if (values.printCentroids != "") {
-        assert(actual[0].stars && actual.size() == 1);
-        LOST_PIPELINE_COMPARE(PipelineComparatorPrintCentroids, values.printCentroids, false);
+        LOST_PIPELINE_COMPARE(actual[0].stars && actual.size() == 1,
+                              "--print-centroids requires exactly 1 output image, and for centroids to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorPrintCentroids, values.printCentroids, false);
     }
     if (values.compareCentroids != "") {
-        assert(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold);
-        LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids, false);
+        LOST_PIPELINE_COMPARE(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold,
+                              "--compare-centroids requires at least 1 output image, and for expected centroids to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorCentroids, values.compareCentroids, false);
     }
     if (values.compareStarIds != "") {
-        assert(expected[0]->ExpectedStarIds() && actual[0].starIds);
-        LOST_PIPELINE_COMPARE(PipelineComparatorStarIds, values.compareStarIds, false);
+        LOST_PIPELINE_COMPARE(expected[0]->ExpectedStarIds() && actual[0].starIds,
+                              "--compare-star-ids requires at least 1 output image, and for expected star IDs to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorStarIds, values.compareStarIds, false);
     }
     if (values.printAttitude != "") {
-        assert(actual[0].attitude && actual.size() == 1);
-        LOST_PIPELINE_COMPARE(PipelineComparatorPrintAttitude, values.printAttitude, false);
+        LOST_PIPELINE_COMPARE(actual[0].attitude && actual.size() == 1,
+                              "--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorPrintAttitude, values.printAttitude, false);
     }
     if (values.compareAttitudes != "") {
-        assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold);
-        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitudes, false);
+        LOST_PIPELINE_COMPARE(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold,
+                              "--compare-attitudes requires at least 1 output image, and for expected attitude to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorAttitude, values.compareAttitudes, false);
     }
 
 #undef LOST_PIPELINE_COMPARE

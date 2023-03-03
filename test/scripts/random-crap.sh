@@ -18,4 +18,11 @@ script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids 
 # `script` captures stderr by default
 script -c './lost pipeline --generate 1 --plot-raw-input -' /dev/null | grep 'WARNING' || exit 1
 
+echo 'Issue #32: Unenlightening error message when neither --generate nor --png is passed to pipeline'
+./lost pipeline 2>&1 | grep ERROR || exit 1
+
+echo 'Comparator assertions'
+./lost pipeline --generate 1 --plot-output /dev/null 2>&1 | grep -Fe '--plot-output' || exit 1
+./lost pipeline --generate 1 --centroid-algo cog --plot-output /dev/null 2>&1 | grep -Fe '--plot-output' && exit 1
+
 exit 0
