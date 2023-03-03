@@ -31,10 +31,10 @@ namespace lost {
 const char kNoDefaultArgument = 0;
 
 /// An output stream which might be a file or stdout
-class PromptedOutputStream {
+class UserSpecifiedOutputStream {
 public:
-    explicit PromptedOutputStream(std::string filePath);
-    ~PromptedOutputStream();
+    explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
+    ~UserSpecifiedOutputStream();
 
     /// return the inner output stream, suitable for use with <<
     std::ostream &Stream() { return *stream; };

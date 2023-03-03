@@ -11,4 +11,11 @@ echo 'Issue #44: Throw an error if there are multiple ways to compute the FOV'
 ./lost pipeline --generate 1 --pixel-size 5 2>/dev/null && exit 1
 ./lost pipeline --generate 1 --focal-length 100 2>/dev/null && exit 1
 
+echo 'Issue #73: Allow printing compare outputs to terminal'
+# General test that it only allow non-binary outputs to be printed to terminal
+script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids -' /dev/null | grep missing_stars || exit 1
+script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout' /dev/null | grep missing_stars || exit 1
+# `script` captures stderr by default
+script -c './lost pipeline --generate 1 --plot-raw-input -' /dev/null | grep 'WARNING' || exit 1
+
 exit 0

@@ -28,8 +28,8 @@
 namespace lost {
 
 /// Create a PromptedOutputStream which will output to the given file.
-PromptedOutputStream::PromptedOutputStream(std::string filePath) {
-    if (isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
+UserSpecifiedOutputStream::UserSpecifiedOutputStream(std::string filePath, bool isBinary) {
+    if (isBinary && isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
         std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
         filePath = "/dev/null";
     }
@@ -45,7 +45,7 @@ PromptedOutputStream::PromptedOutputStream(std::string filePath) {
     }
 }
 
-PromptedOutputStream::~PromptedOutputStream() {
+UserSpecifiedOutputStream::~UserSpecifiedOutputStream() {
     if (isFstream) {
         delete stream;
     }
@@ -1332,43 +1332,43 @@ void PipelineComparison(const PipelineInputList &expected,
 
     // TODO: Remove the asserts and print out more reasonable error messages.
 
-#define LOST_PIPELINE_COMPARE(comparator, path) do {            \
-        PromptedOutputStream pos(path);                         \
-        comparator(pos.Stream(), expected, actual, values);     \
+#define LOST_PIPELINE_COMPARE(comparator, path, isBinary) do {          \
+        UserSpecifiedOutputStream pos(path, isBinary);                       \
+        comparator(pos.Stream(), expected, actual, values);             \
     } while (0)
 
     if (values.plotRawInput != "") {
         assert(expected[0]->InputImage() && expected.size() == 1);
-        LOST_PIPELINE_COMPARE(PipelineComparatorPlotRawInput, values.plotRawInput);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotRawInput, values.plotRawInput, true);
     }
 
     if (values.plotInput != "") {
         assert(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars());
-        LOST_PIPELINE_COMPARE(PipelineComparatorPlotInput, values.plotInput);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotInput, values.plotInput, true);
     }
     if (values.plotOutput != "") {
         assert(actual.size() == 1 && (actual[0].stars || actual[0].starIds));
-        LOST_PIPELINE_COMPARE(PipelineComparatorPlotOutput, values.plotOutput);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPlotOutput, values.plotOutput, true);
     }
     if (values.printCentroids != "") {
         assert(actual[0].stars && actual.size() == 1);
-        LOST_PIPELINE_COMPARE(PipelineComparatorPrintCentroids, values.printCentroids);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPrintCentroids, values.printCentroids, false);
     }
     if (values.compareCentroids != "") {
         assert(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold);
-        LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids);
+        LOST_PIPELINE_COMPARE(PipelineComparatorCentroids, values.compareCentroids, false);
     }
     if (values.compareStarIds != "") {
         assert(expected[0]->ExpectedStarIds() && actual[0].starIds);
-        LOST_PIPELINE_COMPARE(PipelineComparatorStarIds, values.compareStarIds);
+        LOST_PIPELINE_COMPARE(PipelineComparatorStarIds, values.compareStarIds, false);
     }
     if (values.printAttitude != "") {
         assert(actual[0].attitude && actual.size() == 1);
-        LOST_PIPELINE_COMPARE(PipelineComparatorPrintAttitude, values.printAttitude);
+        LOST_PIPELINE_COMPARE(PipelineComparatorPrintAttitude, values.printAttitude, false);
     }
     if (values.compareAttitudes != "") {
         assert(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold);
-        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitudes);
+        LOST_PIPELINE_COMPARE(PipelineComparatorAttitude, values.compareAttitudes, false);
     }
 
 #undef LOST_PIPELINE_COMPARE
