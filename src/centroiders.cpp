@@ -7,11 +7,11 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/NonLinearOptimization>
+#include <eigen3/unsupported/Eigen/NumericalDiff>
 #include <iostream>
 #include <set>  // TODO: remove later, this is just lazy to implement hash for unordered_set
 #include <unordered_map>
 #include <unordered_set>
-#include <eigen3/unsupported/Eigen/NumericalDiff>
 #include <vector>
 
 namespace lost {
@@ -32,19 +32,35 @@ struct CentroidParams {
   std::unordered_set<int> checkedIndices;
 };
 
-// TODO: function prototypes for the helper functions, please!
+// Generic functor
+template <typename _Scalar, int NX = Eigen::Dynamic, int NY = Eigen::Dynamic>
+struct Functor {
+  typedef _Scalar Scalar;
+  enum { InputsAtCompileTime = NX, ValuesAtCompileTime = NY };
+  typedef Eigen::Matrix<Scalar, InputsAtCompileTime, 1> InputType;
+  typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, 1> ValueType;
+  typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, InputsAtCompileTime> JacobianType;
 
-class LSGF1DFunctor {
+  int m_inputs, m_values;
+
+  Functor() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}
+  Functor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
+
+  int inputs() const { return m_inputs; }
+  int values() const { return m_values; }
+};
+
+struct LSGF1DFunctor : Functor<double> {
  public:
   LSGF1DFunctor(const Eigen::VectorXd X, int x0, int y0, int w, int h, const unsigned char *image)
-      : X(X), x0(x0), y0(y0), w(w), h(h), image(image) {}
+      : Functor<double>(3, 3), X(X), x0(x0), y0(y0), w(w), h(h), image(image) {}
 
-  int operator()(const Eigen::VectorXd &params, Eigen::VectorXd &residuals) const {
-    float a = params(0);
+  int operator()(const Eigen::VectorXd &params, Eigen::VectorXd &fvec) const {
+    double a = params(0);
     int xb = params(1);
-    float sigma = params(2);
+    double sigma = params(2);
     for (int i = 0; i < X.size(); i++) {
-      residuals(i) = XMarginal(X(i)) - Model(X(i), a, xb, sigma);
+      fvec(i) = XMarginal(X(i)) - Model(X(i), a, xb, sigma);
     }
     return 0;
   }
@@ -75,12 +91,49 @@ class LSGF1DFunctor {
     return res;
   }
 
-  float Model(int xi, float a, int xb, float sigma) const {
+  double Model(int xi, double a, int xb, double sigma) const {
     return a * exp(-1 * (xi - xb) * (xi - xb) / (2 * sigma * sigma));
   }
 };
 
 typedef std::vector<int> Point;
+
+// TODO: duplicate, factor out better
+unsigned char Get(int x, int y, unsigned char *image, int w, int h) {
+  int ind = x + y * w;
+  return image[ind];
+}
+
+void InitialGuess(int x, int y, unsigned char *image, int w, int h, double *a, int *xb,
+                 double *sigma) {
+  // a is set to max intensity value in the window
+  // (xb, yb) = coordinates of pixel with max intensity value
+  const int nb = 2;
+  int max = -1;
+  for (int i = -nb; i <= nb; i++) {
+    for (int j = -nb; j <= nb; j++) {
+      int pixelValue = Get(x + i, y + j, image, w, h);
+      if (pixelValue > max) {
+        *xb = x + i;
+        max = pixelValue;
+      }
+    }
+  }
+  *a = max;
+  // Sigma is kinda complicated
+  // sigma = f_whm / (2 * \sqrt{2log(2)})
+  // f_whm \approx sqrt of number of pixels with intensity > 0.5 * a
+  int halfCount = 0;
+  for (int i = -nb; i <= nb; i++) {
+    for (int j = -nb; j <= nb; j++) {
+      if(Get(x + i, y + j, image, w, h) > *a / 2){
+        halfCount++;
+      }
+    }
+  }
+  double fwhm = std::sqrt(halfCount);
+  *sigma = fwhm / (2 * std::sqrt(2 * std::log(2)));
+}
 
 std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageWidth,
                                                 int imageHeight) const {
@@ -94,41 +147,45 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
     int x = i / imageWidth;
     int y = i % imageHeight;
     Point p{x, y};
-    if(x-cb < 0 || x+cb >= imageWidth || y-cb < 0 || y+cb >= imageHeight) continue;
+    if (x - cb < 0 || x + cb >= imageWidth || y - cb < 0 || y + cb >= imageHeight) continue;
+    // TODO: check that entire window is not in checkedPoints? - no, just check the point itself
     if (image[i] >= cutoff && checkedPoints.count(p) == 0) {
-
       checkedPoints.insert(p);
 
       std::vector<int> xs;
       std::vector<int> ys;
-      Eigen::VectorXd X(2*cb + 1);
-      for(int i = -cb; i <= cb; i++){
-        xs.push_back(x+cb);
-        X << (x+cb);
-        ys.push_back(y+cb);
+      Eigen::VectorXd X(2 * cb + 1);
+      for (int i = -cb; i <= cb; i++) {
+        xs.push_back(x + cb);
+        X << (x + cb);
+        ys.push_back(y + cb);
       }
 
       // LSGF1DFunctor(const Eigen::VectorXd X, int x0, int y0, int w, int h,
       //               const unsigned char *image)
       //     : X(X), x0(x0), y0(y0), w(w), h(h), image(image) {}
 
-      Eigen::VectorXd beta(3); // initial guess
+      Eigen::VectorXd beta(3);  // initial guess
+      double a, sigma;
+      int xb;
+      InitialGuess(x, y, image, imageWidth, imageHeight, &a, &xb, &sigma);
       // TODO: fill beta with described values
-      beta << 1, 1, 1;
+      beta << a, xb, sigma;
 
       LSGF1DFunctor functor(X, x, y, imageWidth, imageHeight, image);
       Eigen::NumericalDiff<LSGF1DFunctor> numDiff(functor);
-      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF1DFunctor>, float> lm(numDiff);
+      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF1DFunctor>, double> lm(numDiff);
 
       lm.parameters.maxfev = 1000;
       lm.parameters.xtol = 1.0e-10;
 
       lm.minimize(beta);
 
-      float a = beta(0);
-      int xb = beta(1);
-      float sigma = beta(2);
+      a = beta(0);
+      xb = beta(1);
+      sigma = beta(2);
 
+      std::cout << a << ", " << xb << ", " << sigma << std::endl;
     }
   }
 
