@@ -293,6 +293,17 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
  * This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras.
  */
 float FocalLengthFromOptions(const PipelineOptions &values) {
+    if ((values.pixelSize != -1) ^ (values.focalLength != 0)) {
+        std::cerr << "ERROR: Exactly one of --pixel-size or --focal-length were set." << std::endl;
+        exit(1);
+    }
+
+    // no surefire way to see if the fov was set on command line, so we just check if it was changed from default.
+    if (values.pixelSize != -1 && values.fov != 20) {
+        std::cerr << "ERROR: Both focal length and FOV were provided. We only need one of the two methods (pixel size + focal length, or fov) to determine fov, please only provide one." << std::endl;
+        exit(1);
+    }
+
     if (values.pixelSize == -1) {
         return FovToFocalLength(DegToRad(values.fov), values.generateXRes);
     } else {
