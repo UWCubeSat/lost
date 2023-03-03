@@ -435,6 +435,9 @@ Functions</h2></td></tr>
 <tr class="separator:adb9048b631cf1af6c33af2b0dca53c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a686a62724d40abe3ccef8aa0b2d77afe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a686a62724d40abe3ccef8aa0b2d77afe">ConsumeInvolvingIterator</a> (<a class="el" href="classlost_1_1_pair_distance_involving_iterator.html">PairDistanceInvolvingIterator</a> it)</td></tr>
 <tr class="separator:a686a62724d40abe3ccef8aa0b2d77afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd73775fd6b5bb0f4c48bfab3bc1552c"><td class="memItemLeft" align="right" valign="top">std::unordered_multimap&lt; int16_t, int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#acd73775fd6b5bb0f4c48bfab3bc1552c">PairDistanceQueryToMap</a> (const int16_t *pairs, const int16_t *end)</td></tr>
+<tr class="memdesc:acd73775fd6b5bb0f4c48bfab3bc1552c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars that appeared with it in the query.  <a href="namespacelost.html#acd73775fd6b5bb0f4c48bfab3bc1552c">More...</a><br /></td></tr>
+<tr class="separator:acd73775fd6b5bb0f4c48bfab3bc1552c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f709f580bfbe3bd0196b50226f22683"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classlost_1_1_i_r_unidentified_centroid.html">IRUnidentifiedCentroid</a> * &gt;::iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a0f709f580bfbe3bd0196b50226f22683">FindUnidentifiedCentroidsInRange</a> (std::vector&lt; <a class="el" href="classlost_1_1_i_r_unidentified_centroid.html">IRUnidentifiedCentroid</a> * &gt; *centroids, const <a class="el" href="classlost_1_1_star.html">Star</a> &amp;star, const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;camera, float minDistance, float maxDistance)</td></tr>
 <tr class="memdesc:a0f709f580bfbe3bd0196b50226f22683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return all the unidentified centroids within the requested distance bounds from <code>star</code>  <a href="namespacelost.html#a0f709f580bfbe3bd0196b50226f22683">More...</a><br /></td></tr>
 <tr class="separator:a0f709f580bfbe3bd0196b50226f22683"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -709,7 +712,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00332">332</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00349">349</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1530,7 +1533,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00242">242</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00243">243</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1538,15 +1541,6 @@ Here is the call graph for this function:</div>
 <map name="anamespacelost_a686a62724d40abe3ccef8aa0b2d77afe_cgraph" id="anamespacelost_a686a62724d40abe3ccef8aa0b2d77afe_cgraph">
 <area shape="rect" title=" " alt="" coords="5,13,228,39"/>
 <area shape="rect" href="classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="276,5,471,47"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a686a62724d40abe3ccef8aa0b2d77afe_icgraph.png" border="0" usemap="#anamespacelost_a686a62724d40abe3ccef8aa0b2d77afe_icgraph" alt=""/></div>
-<map name="anamespacelost_a686a62724d40abe3ccef8aa0b2d77afe_icgraph" id="anamespacelost_a686a62724d40abe3ccef8aa0b2d77afe_icgraph">
-<area shape="rect" title=" " alt="" coords="289,5,512,32"/>
-<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,5,241,32"/>
 </map>
 </div>
 
@@ -1953,7 +1947,7 @@ Here is the caller graph for this function:</div>
 <p>Return all the unidentified centroids within the requested distance bounds from <code>star</code> </p>
 <p>The returned vector has pointers into the vector passed as an argument. Thus, it's important not to modify the <code>centroids</code> argument after calling. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00281">281</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00298">298</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2426,7 +2420,7 @@ Here is the caller graph for this function:</div>
 <p>Given some identified stars, attempt to identify the rest. </p>
 <p>Requires a pair distance database to be present. Iterates through the unidentified centroids in an intelligent order, identifying them one by one. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00443">443</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00460">460</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2524,7 +2518,7 @@ Here is the caller graph for this function:</div>
 <p>Given two already-identified centroids, and the distance from each to an as-yet unidentified third centroid, return a list of candidate catalog stars that could be the third centroid. </p>
 <p>The order in which the two centroids are passed in /does/ matter wrt spectral-ness. If the first supplied catalog star is <code>a</code>, second is <code>b</code>, and the unidentified is <code>c</code>, then (<code>a</code> crossproduct <code>b</code>) dot <code>c</code> will be positive for all returned <code>c</code>. Intuitively, if the triangle is fairly small on the surface of the sphere, then viewed from the origin, the vertices <code>a</code>, <code>b</code>, and <code>c</code> should be clockwise (then, the cross product of <code>a</code> and <code>b</code> will point mostly towards <code>c</code>, and a little outwards, so that dot product with <code>c</code> captures that positive outward part). </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00366">366</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00383">383</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2816,6 +2810,48 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00039">39</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+
+</div>
+</div>
+<a id="acd73775fd6b5bb0f4c48bfab3bc1552c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd73775fd6b5bb0f4c48bfab3bc1552c">&#9670;&nbsp;</a></span>PairDistanceQueryToMap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_multimap&lt;int16_t, int16_t&gt; lost::PairDistanceQueryToMap </td>
+          <td>(</td>
+          <td class="paramtype">const int16_t *&#160;</td>
+          <td class="paramname"><em>pairs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int16_t *&#160;</td>
+          <td class="paramname"><em>end</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars that appeared with it in the query. </p>
+<p>The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then star A is also in the map for star B. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00258">258</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_acd73775fd6b5bb0f4c48bfab3bc1552c_icgraph.png" border="0" usemap="#anamespacelost_acd73775fd6b5bb0f4c48bfab3bc1552c_icgraph" alt=""/></div>
+<map name="anamespacelost_acd73775fd6b5bb0f4c48bfab3bc1552c_icgraph" id="anamespacelost_acd73775fd6b5bb0f4c48bfab3bc1552c_icgraph">
+<area shape="rect" title="Given the result of a pair&#45;distance kvector query, build a hashmultimap of stars to other stars that ..." alt="" coords="289,5,505,32"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,5,241,32"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -3832,7 +3868,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00411">411</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00428">428</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -4923,7 +4959,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00435">435</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00452">452</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 
 </div>
 </div>
@@ -5038,7 +5074,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li>
-    <li class="footer">Generated on Mon Feb 27 2023 22:14:49 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Mar 3 2023 03:25:32 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

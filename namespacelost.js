@@ -97,6 +97,7 @@ var namespacelost =
     [ "operator<<", "namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c", null ],
     [ "OstreamPlotter", "namespacelost.html#a1a6f9a38b109664a4205cdf5b83588cc", null ],
     [ "OtsusThreshold", "namespacelost.html#a1c383b038ea9376eacf4858247d765be", null ],
+    [ "PairDistanceQueryToMap", "namespacelost.html#acd73775fd6b5bb0f4c48bfab3bc1552c", null ],
     [ "PipelineComparatorAttitude", "namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6", null ],
     [ "PipelineComparatorCentroids", "namespacelost.html#a280cc4fd6b73771d018721ff55db89d7", null ],
     [ "PipelineComparatorPlotIndexes", "namespacelost.html#a1a2e75eb2f0a5b4feda0aef165289a76", null ],

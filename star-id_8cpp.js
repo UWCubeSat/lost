@@ -7,6 +7,7 @@ var star_id_8cpp =
     [ "FindUnidentifiedCentroidsInRange", "star-id_8cpp.html#a0f709f580bfbe3bd0196b50226f22683", null ],
     [ "IdentifyRemainingStarsPairDistance", "star-id_8cpp.html#adb9048b631cf1af6c33af2b0dca53c41", null ],
     [ "IdentifyThirdStar", "star-id_8cpp.html#a6271e89ec246219f15d27942b98c8877", null ],
+    [ "PairDistanceQueryToMap", "star-id_8cpp.html#acd73775fd6b5bb0f4c48bfab3bc1552c", null ],
     [ "SelectNextUnidentifiedCentroid", "star-id_8cpp.html#af4b38998ddebb02241ed73fec6af8f4f", null ],
     [ "kAngleFrom90SoftThreshold", "star-id_8cpp.html#a63a44b3abbcb5580d3ed71f1294f7bcd", null ]
 ];
