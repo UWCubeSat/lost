@@ -127,29 +127,11 @@ struct Functor {
   int values() const { return m_values; }
 };
 
-// struct my_functor : Functor<double> {
-//   // First param = number of parameters in your model
-//   // Second param = number of data points you want to test over
-//   // for us, = 2 * nb + 1
-//   my_functor(void) : Functor<double>(2, 2) {}
-//   int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-//     // Implement y = 10*(x0+3)^2 + (x1-5)^2
-//     fvec(0) = 10.0 * pow(x(0) + 3.0, 2) + pow(x(1) - 5.0, 2);
-//     fvec(1) = 0;
-
-//     return 0;
-//   }
-// };
-
-// void foo(int (*f)(int, int, int, unsigned char *, int), ) {
-//   std::cout << f
-// }
 
 struct LSGFFunctor : Functor<double> {
   // First param = number of parameters in your model
   // Second param = number of data points you want to test over
   // for us, = 2 * nb + 1
-  // LSGFFunctor(void) : Functor<double>(2, 2) {}
   LSGFFunctor(const int nb, const int marg, Eigen::VectorXd X, const unsigned char *image,
               const int w, const int x0, const int y0)
       : Functor<double>(3, 2 * nb + 1),
@@ -166,9 +148,7 @@ struct LSGFFunctor : Functor<double> {
   fvec = residual (one for every data point, of size = 2*nb+1)
   */
   int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-    // // Implement y = 10*(x0+3)^2 + (x1-5)^2
-    // fvec(0) = 10.0 * pow(x(0) + 3.0, 2) + pow(x(1) - 5.0, 2);
-    // fvec(1) = 0;
+
     int a = x(0);
     int xb = x(1);
     double sigma = x(2);
@@ -180,27 +160,21 @@ struct LSGFFunctor : Functor<double> {
         marginal = YMarginal(x0, X(i), nb, image, w);
       fvec(i) = marginal - FitModel(X(i), a, xb, sigma);
     }
-    //     double a = params(0);
-    //     int xb = params(1);
-    //     double sigma = params(2);
-    //     for (int i = 0; i < X.size(); i++) {
-    //       fvec(i) = XMarginal(X(i)) - Model(X(i), a, xb, sigma);
-    //     }
 
     return 0;
   }
 
+  // Window size is (2*nb + 1) x (2*nb + 1)
   const int nb;
+  // Flag for which marginal to use (0 = X, 1 = Y)
   const int marg;
+  // Data points (set of x or y coordinates)
   Eigen::VectorXd X;
   const unsigned char *image;
-  const int w;
+  const int w; // image width in pixels
+  // Center coordinates (x0, y0) of this window
   const int x0, y0;
 
-  // Flag for XMarginal or YMarginal functor
-  // Field for data X
-  // Field for image, imageWidth
-  // Field for center coordinates (x0, y0) of this window
 };
 
 typedef std::vector<int> Point;
@@ -214,13 +188,13 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
   std::set<Point> checkedPoints;
 
   int cutoff = BasicThreshold(image, imageWidth, imageHeight);
-  for (int i = 0; i < imageHeight * imageWidth; i++) {
-    int x = i / imageWidth;
-    int y = i % imageHeight;
+  // TODO: increased step size to 10. Is this fine?
+  // If we just increment by 1, it's possible for a big star to contribute many centroids
+  for (int i = 0; i < imageHeight * imageWidth; i+=10) {
+    int x = i % imageWidth;
+    int y = i / imageWidth;
     Point p{x, y};
     if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
-    //   // TODO: check that entire window is not in checkedPoints? - no, just check the point
-    //   itself
     if (image[i] >= cutoff && checkedPoints.count(p) == 0) {
       checkedPoints.insert(p);
 
@@ -266,11 +240,11 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
       a = betaX(0);
       sigma = betaX(2);
 
-      // std::cout << a << ", " << xb << ", " << yb << ", " << sigma << std::endl;
-
       result.push_back(Star(xb, yb, sigma, sigma, a));
     }
   }
+
+  std::cout << "Number of centroids: " << result.size() << std::endl;
 
   return result;
 }

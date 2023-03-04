@@ -21,6 +21,11 @@ public:
     virtual ~CentroidAlgorithm() { };
 };
 
+/**
+ * @brief Least Squares Gaussian Fit 1D centroiding algorithm
+ * Uses Levenberg-Marquardt to solve nonlinear least-squares
+ *
+ */
 class LeastSquaresGaussianFit1D : public CentroidAlgorithm{
 public:
     explicit LeastSquaresGaussianFit1D() {};
