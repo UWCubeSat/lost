@@ -283,10 +283,10 @@ std::vector<int> TetraDatabase::GetPattern(int index) const {
   return res;
 }
 
-short TetraDatabase::GetTrueCatInd(int tetraInd) const{
+short TetraDatabase::GetTrueCatInd(int tetraInd) const {
   // TODO: don't harcode this 4
   const unsigned char *p = buffer_ + headerSize + Size() * 4 * sizeof(short);
-  return *((short*)p + tetraInd);
+  return *((short *)p + tetraInd);
 }
 
 /// Create the database from a serialized buffer.
@@ -308,48 +308,57 @@ float Clamp(float num, float low, float high) { return num < low ? low : num > h
  * integers, each of which is a catalog index. (you must increment the pointer twice to get to the
  * next pair).
  */
-const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
-    float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(float minQueryDistance,
+                                                             float maxQueryDistance,
+                                                             const int16_t **end) const {
+  assert(maxQueryDistance <= M_PI);
 
-    assert(maxQueryDistance <= M_PI);
-
-    long upperIndex = -1;
-    long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
-    *end = &pairs[upperIndex * 2];
-    return &pairs[lowerIndex * 2];
+  long upperIndex = -1;
+  long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
+  *end = &pairs[upperIndex * 2];
+  return &pairs[lowerIndex * 2];
 }
 
 const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalog,
-                                                           float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+                                                           float minQueryDistance,
+                                                           float maxQueryDistance,
+                                                           const int16_t **end) const {
+  // Instead of computing the angle for every pair in the database, we pre-compute the /cosines/
+  // of the min and max query distances so that we can compare against dot products directly! As
+  // angle increases, cosine decreases, up to M_PI (and queries larger than that don't really make
+  // sense anyway)
+  assert(maxQueryDistance <= M_PI);
 
-    // Instead of computing the angle for every pair in the database, we pre-compute the /cosines/
-    // of the min and max query distances so that we can compare against dot products directly! As
-    // angle increases, cosine decreases, up to M_PI (and queries larger than that don't really make
-    // sense anyway)
-    assert(maxQueryDistance <= M_PI);
+  float maxQueryCos = cos(minQueryDistance);
+  float minQueryCos = cos(maxQueryDistance);
 
-    float maxQueryCos = cos(minQueryDistance);
-    float minQueryCos = cos(maxQueryDistance);
+  long liberalUpperIndex;
+  long liberalLowerIndex =
+      index.QueryLiberal(minQueryDistance, maxQueryDistance, &liberalUpperIndex);
+  // now we need to find the first and last index that actually matches the query
+  // step the lower index forward
+  // There's no good reason to be using >= and <= for the comparison against max/min, but the tests
+  // fail otherwise (because they use angle, with its acos, instead of forward cos like us). It's an
+  // insignificant difference.
+  while (liberalLowerIndex < liberalUpperIndex &&
+         catalog[pairs[liberalLowerIndex * 2]].spatial *
+                 catalog[pairs[liberalLowerIndex * 2 + 1]].spatial >=
+             maxQueryCos) {
+    liberalLowerIndex++;
+  }
 
-    long liberalUpperIndex;
-    long liberalLowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &liberalUpperIndex);
-    // now we need to find the first and last index that actually matches the query
-    // step the lower index forward
-    // There's no good reason to be using >= and <= for the comparison against max/min, but the tests fail otherwise (because they use angle, with its acos, instead of forward cos like us). It's an insignificant difference.
-    while (liberalLowerIndex < liberalUpperIndex
-           && catalog[pairs[liberalLowerIndex*2]].spatial * catalog[pairs[liberalLowerIndex*2+1]].spatial >= maxQueryCos
-        )
-    { liberalLowerIndex++; }
+  // step the upper index backward
+  while (liberalLowerIndex < liberalUpperIndex
+         // the liberalUpperIndex is past the end of the logically returned range, so we need to
+         // subtract 1
+         && catalog[pairs[(liberalUpperIndex - 1) * 2]].spatial *
+                    catalog[pairs[(liberalUpperIndex - 1) * 2 + 1]].spatial <=
+                minQueryCos) {
+    liberalUpperIndex--;
+  }
 
-    // step the upper index backward
-    while (liberalLowerIndex < liberalUpperIndex
-           // the liberalUpperIndex is past the end of the logically returned range, so we need to subtract 1
-           && catalog[pairs[(liberalUpperIndex-1)*2]].spatial * catalog[pairs[(liberalUpperIndex-1)*2+1]].spatial <= minQueryCos
-        )
-    { liberalUpperIndex--; }
-
-    *end = &pairs[liberalUpperIndex * 2];
-    return &pairs[liberalLowerIndex * 2];
+  *end = &pairs[liberalUpperIndex * 2];
+  return &pairs[liberalLowerIndex * 2];
 }
 
 /// Number of star pairs stored in the database
@@ -370,60 +379,29 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 
 ///////////////////// Tetra database //////////////////////
 
-// TODO: duplicate code in star-id.cpp, move
-// int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
-//   const long long MAGIC_RAND = 2654435761;
-//   long index = 0;
-//   for (int i = 0; i < (int)key.size(); i++) {
-//     index += key[i] * std::pow(binFactor, i);
-//   }
-//   // return (index * MAGIC_RAND) % maxIndex;
-//   // std::cout << (index % maxIndex) << " * " << (MAGIC_RAND % maxIndex) << std::endl;
-//   return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
-// }
-
-// typedef std::array<short, 3> ShortVec3;
-// typedef std::array<float, 3> FloatVec3;
-
 long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
                             const std::vector<short> &pattStars,
                             const std::vector<short> &catIndices, bool ser) {
   const float maxFov = DegToRad(maxFovDeg);
-  // TODO: default is 25
+
   const short pattBins = 50;
   const int tempBins = 4;
-
-  std::cout << "serializing" << std::endl;
 
   Catalog tetraCatalog;
   for (short ind : catIndices) {
     tetraCatalog.push_back(catalog[ind]);
   }
 
-  // TODO: unorderd_map might be better
   std::map<Vec3, std::vector<short>> tempCoarseSkyMap;
 
-  //  // std::map<ShortVec3, std::set<short>> tempCoarseSkyMap;
-
   for (const short starID : pattStars) {
-    // ShortVec3 hash = {
-    //   (short)((catalog[starID].spatial.x + 1) * tempBins),
-    //   (short)((catalog[starID].spatial.y + 1) * tempBins),
-    //   (short)((catalog[starID].spatial.z + 1) * tempBins)
-    // };
     Vec3 v(tetraCatalog[starID].spatial);
-
     Vec3 hash{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
               short((v.z + 1) * tempBins)};
-
-    // Vec3 hash{(short)((catalog[starID].spatial.x + 1) * tempBins),
-    //                   (short)((catalog[starID].spatial.y + 1) * tempBins),
-    //                   (short)((catalog[starID].spatial.z + 1) * tempBins)};
     tempCoarseSkyMap[hash].push_back(starID);
   }
 
   // Return a list of stars that are nearby
-  // yay lambda expression
   auto tempGetNearbyStars = [&tempCoarseSkyMap, &tetraCatalog](const Vec3 &vec, float radius) {
     std::vector<float> components{vec.x, vec.y, vec.z};
 
@@ -446,7 +424,6 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
       for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
         for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
-          //   ShortVec3 code{short(a), short(b), short(c)};
           Vec3 code{short(a), short(b), short(c)};
 
           // For each star j in partition with key=code,
@@ -456,23 +433,15 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
             if (dotProd > std::cos(radius)) {
               nearbyStarIDs.push_back(starID);
             }
-
-            // float dotProd = vec[0] * catalog[starID].spatial.x +
-            //                 vec[1] * catalog[starID].spatial.y + vec[2] *
-            //                 catalog[starID].spatial.z;
-            // if (dotProd > std::cos(radius)) {
-            //   nearbyStarIDs.push_back(starID);
-            // }
           }
         }
       }
     }
 
     return nearbyStarIDs;
-  };  // end of function
+  };
 
   const int pattSize = 4;
-  // TODO: might switch to vector
   typedef std::array<short, pattSize> Pattern;
   std::vector<Pattern> pattList;
   Pattern patt{0, 0, 0, 0};
@@ -482,20 +451,10 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     short firstStarID = pattStars[ind];
     patt[0] = firstStarID;
 
-    // FloatVec3 firstStarVec = {catalog[firstStarID].spatial.x, catalog[firstStarID].spatial.y,
-    //                           catalog[firstStarID].spatial.z};
-
     Vec3 v(tetraCatalog[firstStarID].spatial);
     Vec3 hashCode{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
                   short((v.z + 1) * tempBins)};
 
-    // ShortVec3 hashCode = {
-    //     short((firstStarVec[0] + 1) * (float)tempBins),
-    //     short((firstStarVec[1] + 1) * (float)tempBins),
-    //     short((firstStarVec[2] + 1) * (float)tempBins),
-    // };
-
-    // tempCoarseSkyMap[hashCode].erase(patt[0]);
     // Remove star i from its sky map partition
     auto removeIt = std::find(tempCoarseSkyMap[hashCode].begin(), tempCoarseSkyMap[hashCode].end(),
                               firstStarID);
@@ -506,8 +465,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     tempCoarseSkyMap[hashCode].erase(removeIt);
 
     auto nearbyStars = tempGetNearbyStars(v, maxFov);
-    // TODO: either don't cast or use explicit casts
-    const int n = (int)nearbyStars.size();
+    const int n = nearbyStars.size();
 
     for (int i = 0; i < n; i++) {
       for (int j = i + 1; j < n; j++) {
@@ -520,18 +478,14 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
           for (int pair1 = 0; pair1 < pattSize; pair1++) {
             for (int pair2 = pair1 + 1; pair2 < pattSize; pair2++) {
               float dotProd = tetraCatalog[patt[pair1]].spatial * tetraCatalog[patt[pair2]].spatial;
-              //   float dotProd = catalog[patt[pair1]].spatial.x * catalog[patt[pair2]].spatial.x +
-              //                   catalog[patt[pair1]].spatial.y * catalog[patt[pair2]].spatial.y +
-              //                   catalog[patt[pair1]].spatial.z * catalog[patt[pair2]].spatial.z;
               if (dotProd <= std::cos(maxFov)) {
                 pattFits = false;
                 break;
               }
             }
           }
-          // end of for loop
+
           if (pattFits) {
-            // TODO: is it possible for this to not copy? probably not, just check to be sure
             pattList.push_back(patt);
           }
         }
@@ -542,11 +496,9 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
   std::cout << "Found " << pattList.size() << " patterns" << std::endl;
 
   // Load factor of 0.5
-  // TODO: change confusing name, this should be patternCatalogLength
-  long long catalogLength = 2 * (int)pattList.size();
-  std::vector<Pattern> pattCatalog(catalogLength);
+  long long pattCatalogLength = 2 * (int)pattList.size();
+  std::vector<Pattern> pattCatalog(pattCatalogLength);
 
-  // TODO: can use the ConstructPattern function here...
   for (Pattern patt : pattList) {
     std::vector<float> pattEdgeLengths;
     for (int i = 0; i < pattSize; i++) {
@@ -554,9 +506,6 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
       for (int j = i + 1; j < pattSize; j++) {
         // calculate distance between vectors
         CatalogStar star2 = tetraCatalog[patt[j]];
-        // float edgeLen = std::sqrt(std::pow(star2.spatial.x - star1.spatial.x, 2) +
-        //                           std::pow(star2.spatial.y - star1.spatial.y, 2) +
-        //                           std::pow(star2.spatial.z - star1.spatial.z, 2));
         float edgeLen = (star2.spatial - star1.spatial).Magnitude();
         pattEdgeLengths.push_back(edgeLen);
       }
@@ -564,7 +513,6 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
 
     float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size() - 1)];
-    // Length = 5 = C(4,2) - 1
     std::vector<float> pattEdgeRatios;
     for (int i = 0; i < (int)pattEdgeLengths.size() - 1;
          i++) {  // size()-1, since we ignore the largest edge
@@ -576,12 +524,11 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
       key.push_back(int(edgeRatio * pattBins));
     }
 
-    int hashIndex = KeyToIndex(key, pattBins, catalogLength);
-    // std::cout << "hash index: " << hashIndex << std::endl;
+    int hashIndex = KeyToIndex(key, pattBins, pattCatalogLength);
     long long offset = 0;
     // Quadratic probing to find next available bucket for element with key=hashIndex
     while (true) {
-      int index = int(hashIndex + std::pow(offset, 2)) % catalogLength;
+      int index = int(hashIndex + std::pow(offset, 2)) % pattCatalogLength;
       offset++;
       if (pattCatalog[index][0] == 0 && pattCatalog[index][1] == 0) {
         pattCatalog[index] = patt;
@@ -591,6 +538,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
   }
 
   // Done with everything, write to buffer
+  // See TetraDatabase for layout of db
 
   if (ser) {
     *((float *)buffer) = maxFovDeg;
@@ -612,8 +560,6 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
     return -1;
   } else {
-    // std::cout << "original size: " << sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize << std::endl;
-    // std::cout << "new size: " << catIndices.size() * sizeof(short) << std::endl;
     return sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize +
            catIndices.size() * sizeof(short);
   }

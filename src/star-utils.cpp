@@ -3,10 +3,9 @@
 #include <assert.h>
 #include <math.h>
 
-#include <iostream> // TODO: remove
-#include <vector>
-
 #include <algorithm>
+#include <iostream>  // TODO: remove
+#include <vector>
 
 namespace lost {
 
@@ -52,13 +51,12 @@ int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
   return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
 }
 
-
 std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
-                                                           const float maxFovDeg) {
+                                                                      const float maxFovDeg) {
   // Would not recommend changing these parameters!
   // Currently optimal to generate many patterns with smaller FOV
-  // If you make the maxFOV of Tetra database larger, you need to scale the following 2 parameters up
-  // note that this will cause number of patterns to grow exponentially
+  // If you make the maxFOV of Tetra database larger, you need to scale the following 2 parameters
+  // up note that this will cause number of patterns to grow exponentially
   const int pattStarsPerFOV = 10;
   const int verificationStarsPerFOV = 20;
 
@@ -171,12 +169,12 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
 
 /// Return a pointer to the star with the given name, or NULL if not found.
 Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
-    for (auto it = catalog.cbegin(); it != catalog.cend(); ++it) {
-        if (it->name == name) {
-            return it;
-        }
+  for (auto it = catalog.cbegin(); it != catalog.cend(); ++it) {
+    if (it->name == name) {
+      return it;
     }
-    return catalog.cend();
+  }
+  return catalog.cend();
 }
 
 /// Get index of a CatalogStar in catalog given name

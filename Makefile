@@ -1,4 +1,5 @@
-# Copyright (c) 2020 Mark Polyakov, Karen Haining, Edward Zhang (If you edit the file, add your name here!)
+# Copyright (c) 2020 Mark Polyakov, Karen Haining, Edward Zhang
+# (If you edit the file, add your name here!)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

@@ -257,7 +257,6 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
 
 void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float maxAngle,
                         const std::vector<short> &pattStars, const std::vector<short> &catIndices) {
-  //    const float maxFov = 12.00; // degrees, TODO: don't hardcode it, see star-id
   long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, catIndices, false);
   unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
   if (buffer == nullptr) {
@@ -278,15 +277,10 @@ void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalo
 void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
                        const DatabaseOptions &values) {
   if (values.kvector) {
-    // TODO: change to allow Tetra or kvector
     float minDistance = DegToRad(values.kvectorMinDistance);
     float maxDistance = DegToRad(values.kvectorMaxDistance);
     long numBins = values.kvectorNumDistanceBins;
     BuildPairDistanceKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
-
-    // values contains stuff from CLI, think about if any constants can be passed there (maybe
-    // maxFov)
-    // TODO: question is, how to get pattStars into BuildTetraDatabase?
   } else {
     std::cerr << "No database builder selected -- no database generated." << std::endl;
     exit(1);
@@ -780,7 +774,6 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars,
                                    values.maxMismatchProb, 1000));
   } else if (values.idAlgo == "tetra") {
-    // TODO: change this
     result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TetraStarIdAlgorithm());
   } else if (values.idAlgo != "") {
     std::cout << "Illegal id algorithm." << std::endl;
