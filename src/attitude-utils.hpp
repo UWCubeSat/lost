@@ -185,6 +185,9 @@ float RadToDeg(float);
 float DegToRad(float);
 float RadToArcSec(float);
 float ArcSecToRad(float);
+/// Given a float, find it "modulo" another float, in the true mathematical sense (not remainder).
+/// Always returns something in [0,mod) Eg -0.8 mod 0.6 = 0.4
+float FloatModulo(float x, float mod);
 
 // Argsort function - Tetra
 // Sort first vector based on values of second vector (asc)

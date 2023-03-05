@@ -308,13 +308,48 @@ float Clamp(float num, float low, float high) { return num < low ? low : num > h
  * integers, each of which is a catalog index. (you must increment the pointer twice to get to the
  * next pair).
  */
-const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(float minQueryDistance,
-                                                             float maxQueryDistance,
-                                                             const int16_t **end) const {
-  long upperIndex;
-  long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
-  *end = &pairs[upperIndex * 2];
-  return &pairs[lowerIndex * 2];
+const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
+    float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+
+    assert(maxQueryDistance <= M_PI);
+
+    long upperIndex = -1;
+    long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
+    *end = &pairs[upperIndex * 2];
+    return &pairs[lowerIndex * 2];
+}
+
+const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalog,
+                                                           float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+
+    // Instead of computing the angle for every pair in the database, we pre-compute the /cosines/
+    // of the min and max query distances so that we can compare against dot products directly! As
+    // angle increases, cosine decreases, up to M_PI (and queries larger than that don't really make
+    // sense anyway)
+    assert(maxQueryDistance <= M_PI);
+
+    float maxQueryCos = cos(minQueryDistance);
+    float minQueryCos = cos(maxQueryDistance);
+
+    long liberalUpperIndex;
+    long liberalLowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &liberalUpperIndex);
+    // now we need to find the first and last index that actually matches the query
+    // step the lower index forward
+    // There's no good reason to be using >= and <= for the comparison against max/min, but the tests fail otherwise (because they use angle, with its acos, instead of forward cos like us). It's an insignificant difference.
+    while (liberalLowerIndex < liberalUpperIndex
+           && catalog[pairs[liberalLowerIndex*2]].spatial * catalog[pairs[liberalLowerIndex*2+1]].spatial >= maxQueryCos
+        )
+    { liberalLowerIndex++; }
+
+    // step the upper index backward
+    while (liberalLowerIndex < liberalUpperIndex
+           // the liberalUpperIndex is past the end of the logically returned range, so we need to subtract 1
+           && catalog[pairs[(liberalUpperIndex-1)*2]].spatial * catalog[pairs[(liberalUpperIndex-1)*2+1]].spatial <= minQueryCos
+        )
+    { liberalUpperIndex--; }
+
+    *end = &pairs[liberalUpperIndex * 2];
+    return &pairs[liberalLowerIndex * 2];
 }
 
 /// Number of star pairs stored in the database

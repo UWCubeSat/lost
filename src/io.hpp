@@ -30,10 +30,10 @@ namespace lost {
 const char kNoDefaultArgument = 0;
 
 /// An output stream which might be a file or stdout
-class PromptedOutputStream {
- public:
-  explicit PromptedOutputStream(std::string filePath);
-  ~PromptedOutputStream();
+class UserSpecifiedOutputStream {
+public:
+    explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
+    ~UserSpecifiedOutputStream();
 
   /// return the inner output stream, suitable for use with <<
   std::ostream &Stream() { return *stream; };
@@ -155,8 +155,9 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
 /// A pipeline input created by reading a PNG from a file on disk.
 class PngPipelineInput : public PipelineInput {
- public:
-  PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
+public:
+    PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
+    ~PngPipelineInput();
 
   const Image *InputImage() const { return &image; };
   const Camera *InputCamera() const { return &camera; };

@@ -68,7 +68,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
                 << " bytes" << std::endl;
     }
 
-    PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
+    UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
     pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
 
 }

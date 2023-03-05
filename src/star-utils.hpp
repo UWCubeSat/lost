@@ -104,6 +104,18 @@ class StarIdentifier {
     StarIdentifier(int starIndex, int catalogIndex)
         : StarIdentifier(starIndex, catalogIndex, 1.0f){};
 
+    // does not check weight
+    bool operator==(const StarIdentifier& other) const {
+        return starIndex == other.starIndex &&
+            catalogIndex == other.catalogIndex;
+    }
+
+    // does not check weight
+    bool operator==(const StarIdentifier& other) const {
+        return starIndex == other.starIndex &&
+            catalogIndex == other.catalogIndex;
+    }
+
     /// An index into an array of Star objects.
     int starIndex;
     /// An index into an array of CatalogStar objects.
@@ -123,7 +135,7 @@ void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName,
 // magnitude and name
 Catalog DeserializeCatalog(const unsigned char *buffer,
                            bool *inclMagnitudeReturn, bool *inclNameReturn);
-const CatalogStar *FindNamedStar(const Catalog &, int name);
+Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
 int FindCatalogStarIndex(const Catalog &, int name);
 

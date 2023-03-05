@@ -16,9 +16,14 @@ test and benchmark things quickly.
 
 ## Local installation
 
-- Linux or Mac. If you have Windows, I recommend installing the Windows Subsystem for Linux.
-- A C compiler, such as GCC. On Debian, `apt install gcc`
+You need Linux or macOS. On Windows, we recommend installing the Windows Subsystem for Linux, then following the Linux instructions
+
+### Linux Prerequisites
+
+- A C++ compiler, such as g++. On Debian, `apt install g++`
 - GNU Make. On Debian, `apt install make`
+- Groff, to generate help text. `apt install groff`
+- (Recommended) ASAN (Address Sanitizer). We use this to catch memory errors early. `apt install libasan`. (If you wish to use LOST without the address sanitizer, build it with `make LOST_DISABLE_ASAN=1`, or set `export LOST_DISABLE_ASAN=1` in your `~/.bashrc` file to disable it every time you build).
 - Git. On Debian, `apt install git`
 - Cairo, to read and write PNGs as well as draw on them for debugging and demo purposes. You won't
   need this on your CubeSat. On Debian, `apt install libcairo2-dev`. Elsewhere, follow the
@@ -27,6 +32,15 @@ test and benchmark things quickly.
   libeigen3-dev`. Elsewhere, download the latest stable release from https://eigen.tuxfamily.org/.
   You can install it system-wide, or just extract it so that the main folder is in
   `vendor/eigen3/Eigen` under the LOST repository.
+  
+### macOS Prerequisites
+
+- Download [Homebrew](https://brew.sh/), run `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` in terminal
+- Install [cairo](https://formulae.brew.sh/formula/cairo#default) via homebrew `brew install cairo`
+- Install [Eigen]("https://formulae.brew.sh/formula/eigen#default") via homebrew `brew install eigen`
+    - Locate Eigen files and move them to `vendor/eigen3/Eigen` under the LOST repository
+	
+### Building
 
 Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd lost`, then
 `make` will compile everything. Then you can just run `./lost` and play around with the options!
@@ -34,21 +48,22 @@ Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd 
 If you're developing LOST, you need to re-run `make` every time you edit any of the source code
 before running `./lost`.
 
-## Using Docker
+<!-- ## Using Docker -->
 
-This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies
-in a container.
+<!-- This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies in a container. -->
 
-- Get [Docker](https://www.docker.com/get-started/) onto your system (Docker Desktop, an installation that provides a
-  graphical interface, is recommended for most users)
-- Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd lost`
-- Run `docker-compose up` to build and start the container. Use this command or `docker-compose start` any time you want
-  to start it up again later.
-- Connect to the container with `docker attach {name of docker process}` or use the terminal button in Docker Desktop.
-- Once inside the container, cd into the `/lost` directory (if necessary) and use `make` to compile LOST and run it
-  with `./lost`
-  - Be sure to run `make` again after you edit the source code
-- Close the container with `docker-compose stop`. You can also close and remove the container with `docker-compose down`
+<!-- Docker is best if you just want to *run* LOST. If you want to help develop LOST, local installation is preferred. -->
+
+<!-- - Get [Docker](https://www.docker.com/get-started/) onto your system (Docker Desktop, an installation that provides a -->
+<!--   graphical interface, is recommended for most users) -->
+<!-- - Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd lost` -->
+<!-- - Run `docker-compose up` to build and start the container. Use this command or `docker-compose start` any time you want -->
+<!--   to start it up again later. -->
+<!-- - Connect to the container with `docker attach {name of docker process}` or use the terminal button in Docker Desktop. -->
+<!-- - Once inside the container, cd into the `/lost` directory (if necessary) and use `make` to compile LOST and run it -->
+<!--   with `./lost` -->
+<!--   - Be sure to run `make` again after you edit the source code -->
+<!-- - Close the container with `docker-compose stop`. You can also close and remove the container with `docker-compose down` -->
 
 # Usage
 
@@ -140,66 +155,66 @@ noisiness of your images. If the output file has many centroids (red boxes) wher
 visible stars, then the filter should be increased. If there are many stars without centroids, the
 filter should be decreased.
 
-# Parts of a Star Tracking System
+<!-- # Parts of a Star Tracking System -->
 
-- **Undistortion or cropping:** It's critical for captured images to be "flat". Unfortunately, real-world lenses make
-  things look a little less than flat. Algorithms can undistort images or simply
-  crop out the edges to remove the areas where distortion is the worst.
+<!-- - **Undistortion or cropping:** It's critical for captured images to be "flat". Unfortunately, real-world lenses make -->
+<!--   things look a little less than flat. Algorithms can undistort images or simply -->
+<!--   crop out the edges to remove the areas where distortion is the worst. -->
 
-  **Our framework does...**
-  - [ ] Undistortion Routines (probably should happen after centroiding)
-  - [ ] Cropping Routines (that keep track of how FOV changes due to crop)
-  - [ ] Noise removal (median of images from many angles)
-- **Centroiding:** Each star in the photo should be reduced to a single point, with sub-pixel
-  accuracy. Auxiliary data, such as star brightness or the likelihood it is a binary star, can be
-  collected too.
+<!--   **Our framework does...** -->
+<!--   - [ ] Undistortion Routines (probably should happen after centroiding) -->
+<!--   - [ ] Cropping Routines (that keep track of how FOV changes due to crop) -->
+<!--   - [ ] Noise removal (median of images from many angles) -->
+<!-- - **Centroiding:** Each star in the photo should be reduced to a single point, with sub-pixel -->
+<!--   accuracy. Auxiliary data, such as star brightness or the likelihood it is a binary star, can be -->
+<!--   collected too. -->
 
-  **Our framework does...**
-  - [X] Simple centroiding
-  - [ ] Iterative weighted centroiding
-  - [ ] 2D Gaussian fit centroiding
-  - [ ] Gaussian Grid centroiding
-  - [X] Coordinate Conversion (between pixel and spherical/angular)
-- **Catalog Building:** This happens on the ground. The format of this catalog depends a lot on the
-  Star Identification algorithm used. It might contain information about distances to adjacent
-  stars, expected brightness, etc. One thing all catalogs have in common is the actual spherical
-  coordinates of the stars, so that once the stars have been identified, the spacecraft's actual
-  attitude can be determined.
+<!--   **Our framework does...** -->
+<!--   - [X] Simple centroiding -->
+<!--   - [ ] Iterative weighted centroiding -->
+<!--   - [ ] 2D Gaussian fit centroiding -->
+<!--   - [ ] Gaussian Grid centroiding -->
+<!--   - [X] Coordinate Conversion (between pixel and spherical/angular) -->
+<!-- - **Catalog Building:** This happens on the ground. The format of this catalog depends a lot on the -->
+<!--   Star Identification algorithm used. It might contain information about distances to adjacent -->
+<!--   stars, expected brightness, etc. One thing all catalogs have in common is the actual spherical -->
+<!--   coordinates of the stars, so that once the stars have been identified, the spacecraft's actual -->
+<!--   attitude can be determined. -->
 
-  **Our framework does...**
-  - [X] Downloading a star catalog and converting to an internal format
-  - [X] Database-building routines for common Star-ID algorithms.
-- **Star Identification:** The "main" step of star tracking: Going from a list of star positions (and
-  possibly magnitudes or other info)
+<!--   **Our framework does...** -->
+<!--   - [X] Downloading a star catalog and converting to an internal format -->
+<!--   - [X] Database-building routines for common Star-ID algorithms. -->
+<!-- - **Star Identification:** The "main" step of star tracking: Going from a list of star positions (and -->
+<!--   possibly magnitudes or other info) -->
 
-  **Our framework does...**
-  - [ ] Padgett Grid identification method with variations:
-    - [ ] Flower Method
-    - [ ] Sequential Sum method
-  - [X] Pyramid method
-  - [X] Geometric Voting
-  - [ ] Uncalibrated K-vectory method
-  - [ ] Star-ND or Liebe
-  - [ ] LIS, Tracking, and Uncalibrated modes
-- **Attitude Determination:** Once enough stars have been identified, they can be combined with
-  information on camera parameters to determine the attitude.
+<!--   **Our framework does...** -->
+<!--   - [ ] Padgett Grid identification method with variations: -->
+<!--     - [ ] Flower Method -->
+<!--     - [ ] Sequential Sum method -->
+<!--   - [X] Pyramid method -->
+<!--   - [X] Geometric Voting -->
+<!--   - [ ] Uncalibrated K-vectory method -->
+<!--   - [ ] Star-ND or Liebe -->
+<!--   - [ ] LIS, Tracking, and Uncalibrated modes -->
+<!-- - **Attitude Determination:** Once enough stars have been identified, they can be combined with -->
+<!--   information on camera parameters to determine the attitude. -->
 
-  **Our framework does...**
-  - [X] Davenport Q method
-  - [X] TRIAD
-  - [X] QUEST
-  - [ ] ESOQ
+<!--   **Our framework does...** -->
+<!--   - [X] Davenport Q method -->
+<!--   - [X] TRIAD -->
+<!--   - [X] QUEST -->
+<!--   - [ ] ESOQ -->
 
-## Other things LOST can do
+<!-- ## Other things LOST can do -->
 
-Other parts of our framework that are not essential parts of a star-tracking system:
+<!-- Other parts of our framework that are not essential parts of a star-tracking system: -->
 
-- [X] Centroiding and Star-ID Results Visualization
-- [X] Simulated image generation
-- [ ] Re-projection of stars after fix visualization
-- [ ] Benchmarking against reference images
-- [ ] Demo App that acquires a fix, calibrates the camera, then tracks, with real-time
-  visualizations. Would be really cool to make it work on a phone!
-- [ ] Automatic corruption of images to test noise tolerance. Star removal, false star adding,
-  moon and earth and sun adding, optical offset, focal length mismatch.
+<!-- - [X] Centroiding and Star-ID Results Visualization -->
+<!-- - [X] Simulated image generation -->
+<!-- - [ ] Re-projection of stars after fix visualization -->
+<!-- - [ ] Benchmarking against reference images -->
+<!-- - [ ] Demo App that acquires a fix, calibrates the camera, then tracks, with real-time -->
+<!--   visualizations. Would be really cool to make it work on a phone! -->
+<!-- - [ ] Automatic corruption of images to test noise tolerance. Star removal, false star adding, -->
+<!--   moon and earth and sun adding, optical offset, focal length mismatch. -->
 

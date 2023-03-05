@@ -181,13 +181,13 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.
-const CatalogStar *FindNamedStar(const Catalog &catalog, int name) {
-  for (const CatalogStar &catalogStar : catalog) {
-    if (catalogStar.name == name) {
-      return &catalogStar;
+Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
+    for (auto it = catalog.cbegin(); it != catalog.cend(); ++it) {
+        if (it->name == name) {
+            return it;
+        }
     }
-  }
-  return NULL;
+    return catalog.cend();
 }
 
 // TODO: ok? Seems kinda stupid, anyways here's a function to get index of a CatalogStar in catalog
