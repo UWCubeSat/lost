@@ -2,12 +2,11 @@
 
 # Tetra testing
 
-# TODO: get average attitude error
-
 th="0.5"
 
 totalTime=0
-n=200
+# CHANGE THIS, n = number of images to try
+n=20
 totalCorrect=0
 totalIncorrect=0
 totalNoStars=0

@@ -137,13 +137,16 @@ int FindCatalogStarIndex(const Catalog &, int name);
 // maxMagnitude is 10^-2 (so 523 = 5.23)
 Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
 
-// TODO: should not modify the original catalog
-// Keep the original catalog as-is, just return a list of indices
-// std::pair<Catalog, std::vector<short>> TetraPreparePattCat(
-//     const Catalog &, const float maxFovDeg);
+/*
+Pre-processing for Tetra star-id algorithm
+Return:
+(a) List of stars we can use for Tetra
+(b) Subset of (a) that we use to generate Tetra star patterns
+*/
 std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(
     const Catalog &, const float maxFovDeg);
 
+/// Hash function, convert from star pattern representation into index in pattern catalog
 int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex);
 
 }  // namespace lost

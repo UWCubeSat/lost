@@ -52,19 +52,16 @@ int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
   return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
 }
 
-// TODO: make static or declare in header file or move
-// std::pair<Catalog, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
-//                                                            const float maxFovDeg) {
+
 std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
                                                            const float maxFovDeg) {
-  // TODO: these should scale based on FOV
-  // Larger FOV should allow more patterns
-  // 10, 20 for maxFovDeg=20ish seemed to work
+  // Would not recommend changing these parameters!
+  // Currently optimal to generate many patterns with smaller FOV
+  // If you make the maxFOV of Tetra database larger, you need to scale the following 2 parameters up
+  // note that this will cause number of patterns to grow exponentially
   const int pattStarsPerFOV = 10;
   const int verificationStarsPerFOV = 20;
-  // 25, 25
-  // const int pattStarsPerFOV = 20;
-  // const int verificationStarsPerFOV = 30;
+
   // To eliminate double stars, specify that star must be > 0.05 degrees apart
   const float starMinSep = 0.05;
 
@@ -84,7 +81,7 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
   keepForVerifying[0] = true;
 
   for (int i = 1; i < numEntries; i++) {
-    // vec representing new star
+    // Spatial vector representing new star
     Vec3 vec = catalog[i].spatial;
 
     bool angsPatternsOK = true;
@@ -95,11 +92,9 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
     // Stop early if:
     // a) double star: angle < min separation allowed
     // b) Number of stars in region maxFov/2 >= pattStarsPerFOV
-    // std::vector<float> angsToPatterns;
     for (int j = 0; j < i; j++) {
       if (keepForPatterns[j]) {
         float dotProd = vec * catalog[j].spatial;
-        // angsToPatterns.push_back(dotProd);
         if (dotProd >= std::cos(DegToRad(starMinSep))) {
           angsPatternsOK = false;
           break;
@@ -137,9 +132,6 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
         }
         if (dotProd > std::cos(maxFOV / 2)) {
           numVerStarsInFov++;
-          // Not really a bug, more like mistake on my part
-          // verificationStarsPerFOV is still low, so when FOV is big,
-          // very few patterns are generated
           if (numVerStarsInFov >= verificationStarsPerFOV) {
             angsVerifyingOK = false;
             break;
@@ -153,14 +145,12 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
     }
   }
 
-  // Catalog finalCat;
   std::vector<short> finalCatIndices;
   std::vector<short> pattStars;
 
   // finalCat is the final version of the star table
   for (int i = 0; i < (int)keepForVerifying.size(); i++) {
     if (keepForVerifying[i]) {
-      // finalCat.push_back(catalog[i]);
       finalCatIndices.push_back(i);
     }
   }
@@ -177,7 +167,6 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
     }
   }
   return std::pair<std::vector<short>, std::vector<short>>{finalCatIndices, pattStars};
-  // return std::pair<Catalog, std::vector<short>>{finalCat, pattStars};
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.
@@ -190,8 +179,7 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
     return catalog.cend();
 }
 
-// TODO: ok? Seems kinda stupid, anyways here's a function to get index of a CatalogStar in catalog
-// given name
+/// Get index of a CatalogStar in catalog given name
 int FindCatalogStarIndex(const Catalog &catalog, int name) {
   for (int i = 0; i < (int)catalog.size(); i++) {
     if (catalog[i].name == name) {

@@ -31,31 +31,12 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
                      const Camera &) const;
 
  private:
-
-  // TODO: I feel these should be held constant, cannot be changed
-  // TODO: maybe numPattBins should be passed in CLI, suspect this is causing
-  // high rate of hash collision
+  // Do NOT modify these parameters unless you know what you're doing
   const int numPattStars = 4;
-  // TODO: changed
   const int numPattBins = 50;
-  // TODO: investigate pattMaxError, default 0.005
-  // 0.002 is the best right now
   const float pattMaxError = 0.002;
-  // const float pattMaxError = 0.000005;
-  const long long MAGIC_RAND = 2654435761;
 
-  /**
-   * @brief Hash function, convert from star pattern representation into index in pattern catalog
-   *
-   * A pattern is represented by a sorted, 5-element vector of edge ratios (divided by largest edge)
-   * Technically of dimension C(numPattStars, 2) - 1
-   *
-   * @param key 5-element vector, sorted, of pattern edge ratios
-   * @param binFactor
-   * @param maxIndex Number of rows in pattern catalog
-   * @return int
-   */
-  // int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) const;
+  const long long MAGIC_RAND = 2654435761;
 
   /**
    * @brief Get all possible matching patterns starting from given index

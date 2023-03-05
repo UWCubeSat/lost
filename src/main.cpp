@@ -29,16 +29,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag * 100), values.maxStars);
 
     // Default minMag is 100
-    // So min magnitude is 7 right now
-    // Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), 700, 999999);
-    std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
-    // 9050 stars
-
-
-    // pattern catalog generation for tetra needs to modify catalog another time
-    // TODO: Tetra - only return catalog indices, not modify the entire catalog
-    // TODO: our final modification to star table also needs to pass pattStars to here for db generation
-    // TODO: edit CLI, but this should do for now
+    std::cout << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
@@ -50,18 +41,18 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     if (values.tetra) {
       std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
       auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
-      // narrowedCatalog = tetraStuff.first;
       std::vector<short> catIndices = tetraStuff.first;
       std::vector<short> pattStars = tetraStuff.second;
 
-      std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+      std::cout << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
       std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
 
       GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars, catIndices);
       std::cout << "Generated TETRA database with " << builder.BufferLength()
                 << " bytes" << std::endl;
     }
-    // TODO: comment that DO NOT make this an if...else
+    // We should allow for multiple databases at the same tme
+    // Do NOT make this an if...else if...else
     if(values.kvector){
       GenerateDatabases(&builder, narrowedCatalog, values);
       std::cout << "Generated kvector database with " << builder.BufferLength()
