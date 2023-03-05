@@ -110,12 +110,6 @@ class StarIdentifier {
             catalogIndex == other.catalogIndex;
     }
 
-    // does not check weight
-    bool operator==(const StarIdentifier& other) const {
-        return starIndex == other.starIndex &&
-            catalogIndex == other.catalogIndex;
-    }
-
     /// An index into an array of Star objects.
     int starIndex;
     /// An index into an array of CatalogStar objects.

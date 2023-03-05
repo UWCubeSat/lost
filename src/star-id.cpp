@@ -5,25 +5,25 @@
 #include <stdlib.h>
 
 #include <algorithm>
-#include <set>
-#include <utility>  // std::pair
 #include <chrono>
+#include <set>
 #include <unordered_map>
+#include <utility>  // std::pair
 
-#include "star-id.hpp"
-#include "star-id-private.hpp"
-#include "databases.hpp"
 #include "attitude-utils.hpp"
 #include "databases.hpp"
+#include "star-id-private.hpp"
+#include "star-id.hpp"
 #include "star-utils.hpp"
 
 namespace lost {
 
-static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids);
+static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids,
+                                   bool firstTime, std::vector<int> &indices);
 
 static std::vector<float> ConstructPattern(const std::vector<Vec3> &spats);
 
-static std::vector<float> ConstructPattern(const std::vector<Vec3>& spats) {
+static std::vector<float> ConstructPattern(const std::vector<Vec3> &spats) {
   std::vector<float> edgeLengths;
   for (int i = 0; i < (int)spats.size(); i++) {
     for (int j = i + 1; j < (int)spats.size(); j++) {
@@ -63,12 +63,13 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int ma
   return res;
 }
 
-static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids) {
+static bool GetCentroidCombination(std::vector<int> *const res, int pattSize, int numCentroids,
+                                   bool firstTime, std::vector<int> &indices) {
   if (numCentroids < pattSize) {
     return false;
   }
-  static bool firstTime = true;
-  static std::vector<int> indices;
+  // static bool firstTime = true;
+  // static std::vector<int> indices;
   if (firstTime) {
     firstTime = false;
     indices.push_back(-1);
@@ -160,8 +161,13 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
   // Index of centroid indices list
   std::vector<int> chosenCentroidIndices(numPattStars);
 
+  bool firstTime = true;
+  std::vector<int> cenIndices;
+
   // TODO: cap this at some number of combinations, maybe 10 or so
-  while (GetCentroidCombination(&chosenCentroidIndices, numPattStars, centroidIndices.size())) {
+  while (GetCentroidCombination(&chosenCentroidIndices, numPattStars, centroidIndices.size(),
+                                firstTime, cenIndices)) {
+    firstTime = false;
     // TODO: remove after testing
     // for (const int &e : chosenCentroidIndices) {
     //   std::cout << centroidIndices[e] << ", ";
@@ -379,9 +385,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
           // use the given catalog, we can just give the actual index
           // TODO: specifically, "star" is the catalog index
           int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
-
-          // const CatalogStar *catStar = FindNamedStar(catalog,
-          // resultStarID);
 
           result.push_back(StarIdentifier(centroidIndex, catalogIndex));
         }
@@ -636,11 +639,11 @@ class PairDistanceInvolvingIterator {
 };
 
 std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) {
-    std::vector<int16_t> result;
-    for (; it.HasValue(); ++it) {
-        result.push_back(*it);
-    }
-    return result;
+  std::vector<int16_t> result;
+  for (; it.HasValue(); ++it) {
+    result.push_back(*it);
+  }
+  return result;
 }
 
 /**
@@ -650,17 +653,18 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */
-std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
-    std::unordered_multimap<int16_t, int16_t> result;
-    for (const int16_t *p = pairs; p != end; p += 2) {
-        result.emplace(p[0], p[1]);
-        result.emplace(p[1], p[0]);
-    }
-    return result;
+std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs,
+                                                                 const int16_t *end) {
+  std::unordered_multimap<int16_t, int16_t> result;
+  for (const int16_t *p = pairs; p != end; p += 2) {
+    result.emplace(p[0], p[1]);
+    result.emplace(p[1], p[0]);
+  }
+  return result;
 }
 
 float IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(float v1, float v2) {
-    return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
+  return abs(FloatModulo(v1 - v2, M_PI) - M_PI_2);
 }
 
 /**
@@ -668,20 +672,20 @@ float IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(float v1, float v2) {
  * does /not/ check whether the centroid is within range.
  */
 void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
-    const Star &otherStar = stars[starId.starIndex];
-    Vec2 positionDifference = otherStar.position - star->position;
-    float angleFromVertical = atan2(positionDifference.y, positionDifference.x);
+  const Star &otherStar = stars[starId.starIndex];
+  Vec2 positionDifference = otherStar.position - star->position;
+  float angleFromVertical = atan2(positionDifference.y, positionDifference.x);
 
-    for (const auto &otherPair : identifiedStarsInRange) {
-        float curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
-        if (curAngleFrom90 < bestAngleFrom90) {
-            bestAngleFrom90 = curAngleFrom90;
-            bestStar1 = starId;
-            bestStar2 = otherPair.second;
-        }
+  for (const auto &otherPair : identifiedStarsInRange) {
+    float curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
+    if (curAngleFrom90 < bestAngleFrom90) {
+      bestAngleFrom90 = curAngleFrom90;
+      bestStar1 = starId;
+      bestStar2 = otherPair.second;
     }
+  }
 
-    identifiedStarsInRange.emplace_back(angleFromVertical, starId);
+  identifiedStarsInRange.emplace_back(angleFromVertical, starId);
 }
 
 /**
@@ -693,44 +697,45 @@ void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, con
 std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCentroidsInRange(
     std::vector<IRUnidentifiedCentroid *> *centroids, const Star &star, const Camera &camera,
     float minDistance, float maxDistance) {
+  Vec3 ourSpatial = camera.CameraToSpatial(star.position).Normalize();
 
-    Vec3 ourSpatial = camera.CameraToSpatial(star.position).Normalize();
+  float minCos = cos(maxDistance);
+  float maxCos = cos(minDistance);
 
-    float minCos = cos(maxDistance);
-    float maxCos = cos(minDistance);
-
-    std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> result;
-    for (auto it = centroids->begin(); it != centroids->end(); ++it) {
-        Vec3 theirSpatial = camera.CameraToSpatial((*it)->star->position).Normalize();
-        float angleCos = ourSpatial * theirSpatial;
-        if (angleCos >= minCos && angleCos <= maxCos) {
-            result.push_back(it);
-        }
+  std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> result;
+  for (auto it = centroids->begin(); it != centroids->end(); ++it) {
+    Vec3 theirSpatial = camera.CameraToSpatial((*it)->star->position).Normalize();
+    float angleCos = ourSpatial * theirSpatial;
+    if (angleCos >= minCos && angleCos <= maxCos) {
+      result.push_back(it);
     }
+  }
 
-    return result;
+  return result;
 
-    // TODO: optimize by sorting on x-coordinate (like in tracking), or maybe even kd-tree
+  // TODO: optimize by sorting on x-coordinate (like in tracking), or maybe even kd-tree
 
-    // // Find the first centroid that is within range of the given centroid.
-    // auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x - maxDistance,
-    //     [](const IRUnidentifiedCentroid &centroid, float x) {
-    //         return centroid.star.position.x < x;
-    //     });
+  // // Find the first centroid that is within range of the given centroid.
+  // auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x -
+  // maxDistance,
+  //     [](const IRUnidentifiedCentroid &centroid, float x) {
+  //         return centroid.star.position.x < x;
+  //     });
 
-    // // Find the first centroid that is not within range of the given centroid.
-    // auto firstNotInRange = std::lower_bound(firstInRange, centroids->end(), star.position.x + maxDistance,
-    //     [](const IRUnidentifiedCentroid &centroid, float x) {
-    //         return centroid.star.position.x <= x;
-    //     });
+  // // Find the first centroid that is not within range of the given centroid.
+  // auto firstNotInRange = std::lower_bound(firstInRange, centroids->end(), star.position.x +
+  // maxDistance,
+  //     [](const IRUnidentifiedCentroid &centroid, float x) {
+  //         return centroid.star.position.x <= x;
+  //     });
 
-    // // Copy the pointers to the stars into the result vector.
-    // for (auto it = firstInRange; it != firstNotInRange; ++it) {
-    //     float distance = Distance(star.position, it->star.position);
-    //     if (distance >= minDistance && distance <= maxDistance) {
-    //         result.push_back(&*it);
-    //     }
-    // }
+  // // Copy the pointers to the stars into the result vector.
+  // for (auto it = firstInRange; it != firstNotInRange; ++it) {
+  //     float distance = Distance(star.position, it->star.position);
+  //     if (distance >= minDistance && distance <= maxDistance) {
+  //         result.push_back(&*it);
+  //     }
+  // }
 }
 
 /**
@@ -739,29 +744,33 @@ std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCen
  * unidentified centroids still above the threshold, and perhaps move them to the below threshold
  * list.
  *
- * @param angleFrom90Threshold Once an IRUnidentifiedCentroid's best angle from 90 goes below this threshold
+ * @param angleFrom90Threshold Once an IRUnidentifiedCentroid's best angle from 90 goes below this
+ * threshold
  */
 void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &stars,
                                    std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
                                    std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids,
-                                   float minDistance, float maxDistance,
-                                   float angleFrom90Threshold,
+                                   float minDistance, float maxDistance, float angleFrom90Threshold,
                                    const Camera &camera) {
-
-    std::vector<int16_t> nowBelowThreshold; // centroid indices newly moved above the threshold
-    // don't need to iterate through the centroids that are already below the threshold, for performance.
-    for (auto centroidIt : FindUnidentifiedCentroidsInRange(aboveThresholdCentroids, stars[starId.starIndex], camera, minDistance, maxDistance)) {
-        (*centroidIt)->AddIdentifiedStar(starId, stars);
-        if ((*centroidIt)->bestAngleFrom90 <= angleFrom90Threshold) {
-            belowThresholdCentroids->push_back(*centroidIt);
-            nowBelowThreshold.push_back((*centroidIt)->index);
-        }
+  std::vector<int16_t> nowBelowThreshold;  // centroid indices newly moved above the threshold
+  // don't need to iterate through the centroids that are already below the threshold, for
+  // performance.
+  for (auto centroidIt : FindUnidentifiedCentroidsInRange(
+           aboveThresholdCentroids, stars[starId.starIndex], camera, minDistance, maxDistance)) {
+    (*centroidIt)->AddIdentifiedStar(starId, stars);
+    if ((*centroidIt)->bestAngleFrom90 <= angleFrom90Threshold) {
+      belowThresholdCentroids->push_back(*centroidIt);
+      nowBelowThreshold.push_back((*centroidIt)->index);
     }
-    // remove all centroids with indices in nowBelowThreshold from aboveThresholdCentroids
-    aboveThresholdCentroids->erase(std::remove_if(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
-        [&nowBelowThreshold](const IRUnidentifiedCentroid *centroid) {
-            return std::find(nowBelowThreshold.begin(), nowBelowThreshold.end(), centroid->index) != nowBelowThreshold.end();
-        }), aboveThresholdCentroids->end());
+  }
+  // remove all centroids with indices in nowBelowThreshold from aboveThresholdCentroids
+  aboveThresholdCentroids->erase(
+      std::remove_if(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
+                     [&nowBelowThreshold](const IRUnidentifiedCentroid *centroid) {
+                       return std::find(nowBelowThreshold.begin(), nowBelowThreshold.end(),
+                                        centroid->index) != nowBelowThreshold.end();
+                     }),
+      aboveThresholdCentroids->end());
 }
 
 /**
@@ -776,75 +785,76 @@ void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &st
  * outwards, so that dot product with `c` captures that positive outward part).
  */
 std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
-                                       const Catalog &catalog,
-                                       int16_t catalogIndex1, int16_t catalogIndex2,
-                                       float distance1, float distance2,
+                                       const Catalog &catalog, int16_t catalogIndex1,
+                                       int16_t catalogIndex2, float distance1, float distance2,
                                        float tolerance) {
+  const int16_t *query1End;
+  const int16_t *query1 =
+      db.FindPairsExact(catalog, distance1 - tolerance, distance1 + tolerance, &query1End);
 
-    const int16_t *query1End;
-    const int16_t *query1 = db.FindPairsExact(catalog, distance1-tolerance, distance1+tolerance, &query1End);
+  const Vec3 &spatial1 = catalog[catalogIndex1].spatial;
+  const Vec3 &spatial2 = catalog[catalogIndex2].spatial;
+  const Vec3 cross = spatial1.CrossProduct(spatial2);
 
-    const Vec3 &spatial1 = catalog[catalogIndex1].spatial;
-    const Vec3 &spatial2 = catalog[catalogIndex2].spatial;
-    const Vec3 cross = spatial1.CrossProduct(spatial2);
+  // Use PairDistanceInvolvingIterator to find catalog candidates for the unidentified centroid from
+  // both sides.
 
-    // Use PairDistanceInvolvingIterator to find catalog candidates for the unidentified centroid from both sides.
+  std::vector<int16_t> result;
+  // find all the catalog stars that are in both annuli
+  for (PairDistanceInvolvingIterator candidateIt(query1, query1End, catalogIndex1);
+       candidateIt.HasValue(); ++candidateIt) {
+    Vec3 candidateSpatial = catalog[*candidateIt].spatial;
 
-    std::vector<int16_t> result;
-    // find all the catalog stars that are in both annuli
-    for (PairDistanceInvolvingIterator candidateIt(query1, query1End, catalogIndex1);
-         candidateIt.HasValue();
-         ++candidateIt) {
+    float angle2 = AngleUnit(candidateSpatial, spatial2);
 
-        Vec3 candidateSpatial = catalog[*candidateIt].spatial;
+    // check distance to second star
+    if (!(angle2 >= distance2 - tolerance && angle2 <= distance2 + tolerance)) {
+      continue;
+    }
 
-        float angle2 = AngleUnit(candidateSpatial, spatial2);
-
-        // check distance to second star
-        if (!(angle2 >= distance2-tolerance && angle2 <= distance2+tolerance)) {
-            continue;
-        }
-
-        // check spectrality
-        float spectralTorch = cross * candidateSpatial;
-        // if they are nearly coplanar, don't need to check spectrality
-        // TODO: Implement ^^. Not high priority, since always checking spectrality is conservative.
-        if (spectralTorch <= 0) {
-            continue;
-        }
+    // check spectrality
+    float spectralTorch = cross * candidateSpatial;
+    // if they are nearly coplanar, don't need to check spectrality
+    // TODO: Implement ^^. Not high priority, since always checking spectrality is conservative.
+    if (spectralTorch <= 0) {
+      continue;
+    }
 
     // we've made it through the gauntlet!
-        result.push_back(*candidateIt);
-    }
+    result.push_back(*candidateIt);
+  }
 
-    return result;
+  return result;
 }
 
-IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
-                                                      std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids) {
-    if (!belowThresholdCentroids->empty()) {
+IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(
+    std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
+    std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids) {
+  if (!belowThresholdCentroids->empty()) {
     auto result = belowThresholdCentroids->back();
-        belowThresholdCentroids->pop_back();
+    belowThresholdCentroids->pop_back();
     return result;
+  }
+
+  // need to find the best in aboveThreshold, if any
+  auto bestAboveThreshold =
+      std::min_element(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
+                       [](const IRUnidentifiedCentroid *a, const IRUnidentifiedCentroid *b) {
+                         return a->bestAngleFrom90 < b->bestAngleFrom90;
+                       });
+
+  // 10 is arbitrary; but really it should be less than M_PI_2 when set
+  if (bestAboveThreshold != aboveThresholdCentroids->end() &&
+      (*bestAboveThreshold)->bestAngleFrom90 < 10) {
+    auto result = *bestAboveThreshold;
+    aboveThresholdCentroids->erase(bestAboveThreshold);
+    return result;
+  }
+
+  return NULL;
 }
 
-    // need to find the best in aboveThreshold, if any
-    auto bestAboveThreshold = std::min_element(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
-    [](const IRUnidentifiedCentroid *a, const IRUnidentifiedCentroid *b) {
-            return a->bestAngleFrom90 < b->bestAngleFrom90;
-        });
-
-    // 10 is arbitrary; but really it should be less than M_PI_2 when set
-    if (bestAboveThreshold != aboveThresholdCentroids->end() && (*bestAboveThreshold)->bestAngleFrom90 < 10) {
-        auto result = *bestAboveThreshold;
-        aboveThresholdCentroids->erase(bestAboveThreshold);
-        return result;
-    }
-
-    return NULL;
-}
-
-const float kAngleFrom90SoftThreshold = M_PI_4; // TODO: tune this
+const float kAngleFrom90SoftThreshold = M_PI_4;  // TODO: tune this
 
 /**
  * Given some identified stars, attempt to identify the rest.
@@ -852,114 +862,113 @@ const float kAngleFrom90SoftThreshold = M_PI_4; // TODO: tune this
  * Requires a pair distance database to be present. Iterates through the unidentified centroids in
  * an intelligent order, identifying them one by one.
  */
-int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
-                                       const Stars &stars,
+int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers, const Stars &stars,
                                        const PairDistanceKVectorDatabase &db,
-                                       const Catalog &catalog,
-                                       const Camera &camera,
+                                       const Catalog &catalog, const Camera &camera,
                                        float tolerance) {
 #ifdef LOST_DEBUG_PERFORMANCE
-    auto startTimestamp = std::chrono::steady_clock::now();
+  auto startTimestamp = std::chrono::steady_clock::now();
 #endif
-    // initialize all unidentified centroids
-    std::vector<IRUnidentifiedCentroid> allUnidentifiedCentroids;
-    std::vector<IRUnidentifiedCentroid *> aboveThresholdUnidentifiedCentroids;
-    std::vector<IRUnidentifiedCentroid *> belowThresholdUnidentifiedCentroids;
-    allUnidentifiedCentroids.reserve(stars.size());
-    for (size_t i = 0; i < stars.size(); i++) {
-        allUnidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
+  // initialize all unidentified centroids
+  std::vector<IRUnidentifiedCentroid> allUnidentifiedCentroids;
+  std::vector<IRUnidentifiedCentroid *> aboveThresholdUnidentifiedCentroids;
+  std::vector<IRUnidentifiedCentroid *> belowThresholdUnidentifiedCentroids;
+  allUnidentifiedCentroids.reserve(stars.size());
+  for (size_t i = 0; i < stars.size(); i++) {
+    allUnidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
+  }
+  // add everything from allUnidentifiedCentroids to above threshold
+  aboveThresholdUnidentifiedCentroids.reserve(allUnidentifiedCentroids.size());
+  for (size_t i = 0; i < allUnidentifiedCentroids.size(); i++) {
+    // only add if index is not equal to any starIndex in identifiers already
+    if (std::find_if(identifiers->begin(), identifiers->end(),
+                     [&allUnidentifiedCentroids, i](const StarIdentifier &identifier) {
+                       return identifier.starIndex == allUnidentifiedCentroids[i].index;
+                     }) == identifiers->end()) {
+      aboveThresholdUnidentifiedCentroids.push_back(&allUnidentifiedCentroids[i]);
     }
-    // add everything from allUnidentifiedCentroids to above threshold
-    aboveThresholdUnidentifiedCentroids.reserve(allUnidentifiedCentroids.size());
-    for (size_t i = 0; i < allUnidentifiedCentroids.size(); i++) {
-        // only add if index is not equal to any starIndex in identifiers already
-        if (std::find_if(identifiers->begin(), identifiers->end(),
-            [&allUnidentifiedCentroids, i](const StarIdentifier &identifier) {
-                return identifier.starIndex == allUnidentifiedCentroids[i].index;
-            }) == identifiers->end()) {
+  }
 
-            aboveThresholdUnidentifiedCentroids.push_back(&allUnidentifiedCentroids[i]);
-        }
-    }
+  // sort unidentified centroids by x coordinate
+  // Don't need this until we fix the Find thing
+  // std::sort(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
+  //     [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
+  //         return a.star->position.x < b.star->position.x;
+  //     });
 
-    // sort unidentified centroids by x coordinate
-    // Don't need this until we fix the Find thing
-    // std::sort(unidentifiedCentroids.begin(), unidentifiedCentroids.end(),
-    //     [](const IRUnidentifiedCentroid &a, const IRUnidentifiedCentroid &b) {
-    //         return a.star->position.x < b.star->position.x;
-    //     });
+  // for each identified star, add it to the list of identified stars for each unidentified centroid
+  // within range
+  for (const auto &starId : *identifiers) {
+    AddToAllUnidentifiedCentroids(starId, stars, &aboveThresholdUnidentifiedCentroids,
+                                  &belowThresholdUnidentifiedCentroids, db.MinDistance(),
+                                  db.MaxDistance(), kAngleFrom90SoftThreshold, camera);
+  }
 
-    // for each identified star, add it to the list of identified stars for each unidentified centroid within range
-    for (const auto &starId : *identifiers) {
-        AddToAllUnidentifiedCentroids(starId, stars,
-                                      &aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids,
-                                      db.MinDistance(), db.MaxDistance(),
-                                      kAngleFrom90SoftThreshold,
-                                      camera);
-    }
+  int numExtraIdentifiedStars = 0;
 
-    int numExtraIdentifiedStars = 0;
-
-    // keep getting the best unidentified centroid and identifying it
-    while (!belowThresholdUnidentifiedCentroids.empty() || !aboveThresholdUnidentifiedCentroids.empty()) {
-        IRUnidentifiedCentroid *nextUnidentifiedCentroid
-            = SelectNextUnidentifiedCentroid(&aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids);
-        if (nextUnidentifiedCentroid == NULL) {
-            break;
-        }
-
-        // Project next stars to 3d, find angle between them and current unidentified centroid
-        Vec3 unidentifiedSpatial = camera.CameraToSpatial(nextUnidentifiedCentroid->star->position);
-        Vec3 spatial1 = camera.CameraToSpatial(stars[nextUnidentifiedCentroid->bestStar1.starIndex].position);
-        Vec3 spatial2 = camera.CameraToSpatial(stars[nextUnidentifiedCentroid->bestStar2.starIndex].position);
-        float d1 = Angle(spatial1, unidentifiedSpatial);
-        float d2 = Angle(spatial2, unidentifiedSpatial);
-        float spectralTorch = spatial1.CrossProduct(spatial2) * unidentifiedSpatial;
-
-        // find all the catalog stars that are in both annuli
-        // flip arguments for appropriate spectrality.
-        std::vector<int16_t> candidates =
-            spectralTorch > 0
-            ? IdentifyThirdStar(db,
-                                catalog,
-                                nextUnidentifiedCentroid->bestStar1.catalogIndex,
-                                nextUnidentifiedCentroid->bestStar2.catalogIndex,
-                                d1, d2, tolerance)
-            : IdentifyThirdStar(db,
-                                catalog,
-                                nextUnidentifiedCentroid->bestStar2.catalogIndex,
-                                nextUnidentifiedCentroid->bestStar1.catalogIndex,
-                                d2, d1, tolerance);
-
-        if (candidates.size() != 1) { // if there is not exactly one candidate, we can't identify the star. Just remove it from the list.
-            if (candidates.size() > 1) {
-                std::cerr << "WARNING: Multiple catalog stars matched during identify remaining stars. This should be rare." << std::endl;
-            }
-        } else {
-            // identify the centroid
-            identifiers->emplace_back(nextUnidentifiedCentroid->index, candidates[0]);
-
-            // update nearby unidentified centroids with the new identified star
-            AddToAllUnidentifiedCentroids(identifiers->back(), stars,
-                                          &aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids,
-                                          db.MinDistance(), db.MaxDistance(),
-                                          // TODO should probably tune this:
-                                          kAngleFrom90SoftThreshold,
-                                          camera);
-
-            ++numExtraIdentifiedStars;
-        }
+  // keep getting the best unidentified centroid and identifying it
+  while (!belowThresholdUnidentifiedCentroids.empty() ||
+         !aboveThresholdUnidentifiedCentroids.empty()) {
+    IRUnidentifiedCentroid *nextUnidentifiedCentroid = SelectNextUnidentifiedCentroid(
+        &aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids);
+    if (nextUnidentifiedCentroid == NULL) {
+      break;
     }
 
-    // Select() should always empty out this list
-    assert(belowThresholdUnidentifiedCentroids.empty());
+    // Project next stars to 3d, find angle between them and current unidentified centroid
+    Vec3 unidentifiedSpatial = camera.CameraToSpatial(nextUnidentifiedCentroid->star->position);
+    Vec3 spatial1 =
+        camera.CameraToSpatial(stars[nextUnidentifiedCentroid->bestStar1.starIndex].position);
+    Vec3 spatial2 =
+        camera.CameraToSpatial(stars[nextUnidentifiedCentroid->bestStar2.starIndex].position);
+    float d1 = Angle(spatial1, unidentifiedSpatial);
+    float d2 = Angle(spatial2, unidentifiedSpatial);
+    float spectralTorch = spatial1.CrossProduct(spatial2) * unidentifiedSpatial;
+
+    // find all the catalog stars that are in both annuli
+    // flip arguments for appropriate spectrality.
+    std::vector<int16_t> candidates =
+        spectralTorch > 0
+            ? IdentifyThirdStar(db, catalog, nextUnidentifiedCentroid->bestStar1.catalogIndex,
+                                nextUnidentifiedCentroid->bestStar2.catalogIndex, d1, d2, tolerance)
+            : IdentifyThirdStar(db, catalog, nextUnidentifiedCentroid->bestStar2.catalogIndex,
+                                nextUnidentifiedCentroid->bestStar1.catalogIndex, d2, d1,
+                                tolerance);
+
+    if (candidates.size() != 1) {  // if there is not exactly one candidate, we can't identify the
+                                   // star. Just remove it from the list.
+      if (candidates.size() > 1) {
+        std::cerr << "WARNING: Multiple catalog stars matched during identify remaining stars. "
+                     "This should be rare."
+                  << std::endl;
+      }
+    } else {
+      // identify the centroid
+      identifiers->emplace_back(nextUnidentifiedCentroid->index, candidates[0]);
+
+      // update nearby unidentified centroids with the new identified star
+      AddToAllUnidentifiedCentroids(
+          identifiers->back(), stars, &aboveThresholdUnidentifiedCentroids,
+          &belowThresholdUnidentifiedCentroids, db.MinDistance(), db.MaxDistance(),
+          // TODO should probably tune this:
+          kAngleFrom90SoftThreshold, camera);
+
+      ++numExtraIdentifiedStars;
+    }
+  }
+
+  // Select() should always empty out this list
+  assert(belowThresholdUnidentifiedCentroids.empty());
 
 #ifdef LOST_DEBUG_PERFORMANCE
-    auto endTimestamp = std::chrono::steady_clock::now();
-    std::cout << "IdentifyRemainingStarsPairDistance took " << std::chrono::duration_cast<std::chrono::microseconds>(endTimestamp - startTimestamp).count() << "us" << std::endl;
+  auto endTimestamp = std::chrono::steady_clock::now();
+  std::cout << "IdentifyRemainingStarsPairDistance took "
+            << std::chrono::duration_cast<std::chrono::microseconds>(endTimestamp - startTimestamp)
+                   .count()
+            << "us" << std::endl;
 #endif
 
-    return numExtraIdentifiedStars;
+  return numExtraIdentifiedStars;
 }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars,
@@ -1073,77 +1082,80 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const 
           _CHECK_DISTANCE(krDist);
 #undef _CHECK_DISTANCE
 
-                    const int16_t *ijEnd, *ikEnd, *irEnd;
-                    const int16_t *const ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
-                    const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
-                    const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
+          const int16_t *ijEnd, *ikEnd, *irEnd;
+          const int16_t *const ijQuery =
+              vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
+          const int16_t *const ikQuery =
+              vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
+          const int16_t *const irQuery =
+              vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
-                    std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
-                    std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
+          std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
+          std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
 
-                    int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
-                    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
-                        int iCandidate = *iCandidateQuery;
-                        // depending on parity, the first or second star in the pair is the "other" one
-                        int jCandidate = (iCandidateQuery - ijQuery) % 2 == 0
-                            ? iCandidateQuery[1]
-                            : iCandidateQuery[-1];
+          int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
+          for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd;
+               iCandidateQuery++) {
+            int iCandidate = *iCandidateQuery;
+            // depending on parity, the first or second star in the pair is the "other" one
+            int jCandidate =
+                (iCandidateQuery - ijQuery) % 2 == 0 ? iCandidateQuery[1] : iCandidateQuery[-1];
 
-                        const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
-                        const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
+            const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
+            const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
 
-                        Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
+            Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
 
-                        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
-                            // kCandidate.first is iterator, then ->second is the value (other star)
-                            int kCandidate = kCandidateIt.first->second;
-                            Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
-                            bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
-                            // checking the spectral-ity early to fail fast
-                            if (candidateSpectralTorch != spectralTorch) {
-                                continue;
-                            }
+            for (auto kCandidateIt = ikMap.equal_range(iCandidate);
+                 kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+              // kCandidate.first is iterator, then ->second is the value (other star)
+              int kCandidate = kCandidateIt.first->second;
+              Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
+              bool candidateSpectralTorch = ijCandidateCross * kCandidateSpatial > 0;
+              // checking the spectral-ity early to fail fast
+              if (candidateSpectralTorch != spectralTorch) {
+                continue;
+              }
 
-                            // small optimization: We can calculate jk before iterating through r, so we will!
-                            float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
-                            if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
-                                continue;
-                            }
+              // small optimization: We can calculate jk before iterating through r, so we will!
+              float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+              if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
+                continue;
+              }
 
-                            // TODO: if there are no jr matches, there's no reason to
-                            // continue iterating through all the other k-s. Possibly
-                            // enumarete all r matches, according to ir, before this loop
-                            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
-                                int rCandidate = rCandidateIt.first->second;
-                                const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
-                                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
-                                float krCandidateDist;
-                                if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
-                                    continue;
-                                }
-                                krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
-                                if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
-                                    continue;
-                                }
+              // TODO: if there are no jr matches, there's no reason to
+              // continue iterating through all the other k-s. Possibly
+              // enumarete all r matches, according to ir, before this loop
+              for (auto rCandidateIt = irMap.equal_range(iCandidate);
+                   rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
+                int rCandidate = rCandidateIt.first->second;
+                const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
+                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
+                float krCandidateDist;
+                if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
+                  continue;
+                }
+                krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
+                if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
+                  continue;
+                }
 
-                                // we have a match!
+                // we have a match!
 
-                                if (iMatch == -1) {
-                                    iMatch = iCandidate;
-                                    jMatch = jCandidate;
-                                    kMatch = kCandidate;
-                                    rMatch = rCandidate;
-                                } else {
-                                    // uh-oh, stinky!
-                                    // TODO: test duplicate detection, it's hard to cause it in the real catalog...
-                                    std::cerr << "Pyramid not unique, skipping..." << std::endl;
-                                    goto sensorContinue;
-                                }
-                            }
-                        }
-
-
-                    }
+                if (iMatch == -1) {
+                  iMatch = iCandidate;
+                  jMatch = jCandidate;
+                  kMatch = kCandidate;
+                  rMatch = rCandidate;
+                } else {
+                  // uh-oh, stinky!
+                  // TODO: test duplicate detection, it's hard to cause it in the real catalog...
+                  std::cerr << "Pyramid not unique, skipping..." << std::endl;
+                  goto sensorContinue;
+                }
+              }
+            }
+          }
 
           if (iMatch != -1) {
             printf(
@@ -1155,9 +1167,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const 
             identified.push_back(StarIdentifier(k, kMatch));
             identified.push_back(StarIdentifier(r, rMatch));
 
-                        int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
-                        printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
-                        assert(numAdditionallyIdentified == (int)identified.size()-4);
+            int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(
+                &identified, stars, vectorDatabase, catalog, camera, tolerance);
+            printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
+            assert(numAdditionallyIdentified == (int)identified.size() - 4);
 
             return identified;
           }
