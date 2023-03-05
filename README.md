@@ -32,14 +32,14 @@ You need Linux or macOS. On Windows, we recommend installing the Windows Subsyst
   libeigen3-dev`. Elsewhere, download the latest stable release from https://eigen.tuxfamily.org/.
   You can install it system-wide, or just extract it so that the main folder is in
   `vendor/eigen3/Eigen` under the LOST repository.
-  
+
 ### macOS Prerequisites
 
 - Download [Homebrew](https://brew.sh/), run `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` in terminal
 - Install [cairo](https://formulae.brew.sh/formula/cairo#default) via homebrew `brew install cairo`
 - Install [Eigen]("https://formulae.brew.sh/formula/eigen#default") via homebrew `brew install eigen`
     - Locate Eigen files and move them to `vendor/eigen3/Eigen` under the LOST repository
-	
+
 ### Building
 
 Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd lost`, then
@@ -129,7 +129,7 @@ Here's how to identify a real image:
   --centroid-algo cog \
   --centroid-mag-filter 5 \
   --database my-database.dat \
-  --star-id-algo tetra \
+  --star-id-algo py \
   --angular-tolerance 0.05 \
   --false-stars 1000 \
   --max-mismatch-prob 0.0001 \
