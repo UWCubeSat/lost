@@ -24,9 +24,11 @@ test -e pyramid-incorrect.dat || ./lost database \
   --kvector-distance-bins 10000 \
   --output pyramid-incorrect.dat
 
-for _ in $(seq "${1:-10}"); do
-  x_res=$(rand_int 100 1000)
-  y_res=$(rand_int 100 1000)
+for _ in $(seq "${1:-100}"); do
+  # x_res=$(rand_int 100 1000)
+  # y_res=$(rand_int 100 1000)
+  x_res=1000
+  y_res=1000
   fov=$(rand_int 5 70)
   ra=$(rand_int 0 359)
   de=$(rand_int -89 89)

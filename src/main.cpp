@@ -40,15 +40,6 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     // TODO: our final modification to star table also needs to pass pattStars to here for db generation
     // TODO: edit CLI, but this should do for now
 
-    std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
-    auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
-    // narrowedCatalog = tetraStuff.first;
-    std::vector<short> catIndices = tetraStuff.first;
-    std::vector<short> pattStars = tetraStuff.second;
-
-    std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
-    std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
-
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
     unsigned char
@@ -57,6 +48,15 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
     if (values.tetra) {
+      std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
+      auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
+      // narrowedCatalog = tetraStuff.first;
+      std::vector<short> catIndices = tetraStuff.first;
+      std::vector<short> pattStars = tetraStuff.second;
+
+      std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+      std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
+
       GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars, catIndices);
       std::cout << "Generated TETRA database with " << builder.BufferLength()
                 << " bytes" << std::endl;
