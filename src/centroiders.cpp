@@ -183,20 +183,21 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
                                                 int imageHeight) const {
   std::vector<Star> result;
 
-  // const int cb = 2;
-  const int nb = 2;
+  const int nb = 4;
+  const int step = 5;
+
   std::set<Point> checkedPoints;
 
   int cutoff = BasicThreshold(image, imageWidth, imageHeight);
   // TODO: increased step size to 10. Is this fine?
   // If we just increment by 1, it's possible for a big star to contribute many centroids
-  for (int i = 0; i < imageHeight * imageWidth; i+=10) {
+  for (int i = 0; i < imageHeight * imageWidth; i+=step) {
     int x = i % imageWidth;
     int y = i / imageWidth;
     Point p{x, y};
     if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
     if (image[i] >= cutoff && checkedPoints.count(p) == 0) {
-      checkedPoints.insert(p);
+      // checkedPoints.insert(p);
 
       Eigen::VectorXd X(2 * nb + 1);
       Eigen::VectorXd Y(2 * nb + 1);
@@ -239,6 +240,15 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
       yb = betaY(1);
       a = betaX(0);
       sigma = betaX(2);
+
+      // TODO: place all points in the window to checkedPoints
+      for(int xr = xb - nb; xr <= xb + nb; xr++){
+        for(int yr = yb - nb; yr <= yb + nb; yr++){
+          if(xr < 0 || xr >= imageWidth || yr < 0 || yr >= imageHeight) continue;
+          Point cp{xr, yr};
+          checkedPoints.insert(cp);
+        }
+      }
 
       result.push_back(Star(xb, yb, sigma, sigma, a));
     }
