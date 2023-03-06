@@ -6,6 +6,9 @@
 *.png
 *.dat
 *.txt
+*.bin
+
+BSC5
 
 /documentation/man-*.h
 
