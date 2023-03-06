@@ -8,7 +8,7 @@ var searchData=
   ['catalog_33',['Catalog',['../namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6',1,'lost']]],
   ['catalog_34',['catalog',['../structlost_1_1_pipeline_output.html#a18bcd3f7aa001bd26cbc67a2ae3ffcca',1,'lost::PipelineOutput']]],
   ['catalogindex_35',['catalogIndex',['../classlost_1_1_star_identifier.html#a9743c39504a863334c5cfb62263f22c8',1,'lost::StarIdentifier']]],
-  ['catalogread_36',['CatalogRead',['../namespacelost.html#abf120394836bcbb600f135de6fea84b0',1,'lost']]],
+  ['catalogread_36',['CatalogRead',['../namespacelost.html#a41f5bb669129790c12bd70e1d641441f',1,'lost']]],
   ['catalogstar_37',['CatalogStar',['../classlost_1_1_catalog_star.html#a8d74d0477614cda6ab24a4732b33227e',1,'lost::CatalogStar::CatalogStar(Vec3 spatial, int magnitude, int name)'],['../classlost_1_1_catalog_star.html#a28fd3c23a616ecd193b93dc030b7cc68',1,'lost::CatalogStar::CatalogStar(float raj2000, float dej2000, int magnitude, int name)'],['../classlost_1_1_catalog_star.html#af2f1fc27b7b16f497e652a1fd1caa00e',1,'lost::CatalogStar::CatalogStar()=default'],['../classlost_1_1_catalog_star.html',1,'lost::CatalogStar']]],
   ['catalogstarmagnitudecompare_38',['CatalogStarMagnitudeCompare',['../namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035',1,'lost']]],
   ['catalogtopairdistances_39',['CatalogToPairDistances',['../namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c',1,'lost']]],

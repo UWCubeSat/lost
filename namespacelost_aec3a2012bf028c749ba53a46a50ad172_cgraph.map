@@ -1,6 +1,6 @@
 <map id="lost::GetGeneratedPipelineInput" name="lost::GetGeneratedPipelineInput">
 <area shape="rect" id="node1" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="5,74,203,115"/>
-<area shape="rect" id="node2" href="$namespacelost.html#abf120394836bcbb600f135de6fea84b0" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="289,5,427,32"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="289,5,427,32"/>
 <area shape="rect" id="node4" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="731,56,849,83"/>
 <area shape="rect" id="node5" href="$namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="251,107,465,133"/>
 <area shape="rect" id="node7" href="$namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1" title=" " alt="" coords="258,157,458,184"/>

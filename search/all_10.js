@@ -4,7 +4,7 @@ var searchData=
   ['pairdistancekvectordatabase_189',['PairDistanceKVectorDatabase',['../classlost_1_1_pair_distance_k_vector_database.html',1,'lost::PairDistanceKVectorDatabase'],['../classlost_1_1_pair_distance_k_vector_database.html#a50d3f4dd6d53a9d20bf9fb282a99c81b',1,'lost::PairDistanceKVectorDatabase::PairDistanceKVectorDatabase()']]],
   ['pairdistancequerytomap_190',['PairDistanceQueryToMap',['../namespacelost.html#acd73775fd6b5bb0f4c48bfab3bc1552c',1,'lost']]],
   ['peakbrightness_191',['peakBrightness',['../classlost_1_1_generated_star.html#aadcacbb1bf27616e20db9b86cde2e691',1,'lost::GeneratedStar']]],
-  ['pipeline_192',['Pipeline',['../classlost_1_1_pipeline.html',1,'lost::Pipeline'],['../classlost_1_1_pipeline.html#a3a135d2c7d1ab3ed8a05006fe5c7daa8',1,'lost::Pipeline::Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *)'],['../classlost_1_1_pipeline.html#ab99f650efd24207ed56ae9d52399cff2',1,'lost::Pipeline::Pipeline()=default']]],
+  ['pipeline_192',['Pipeline',['../classlost_1_1_pipeline.html',1,'lost::Pipeline'],['../classlost_1_1_pipeline.html#ab99f650efd24207ed56ae9d52399cff2',1,'lost::Pipeline::Pipeline()=default'],['../classlost_1_1_pipeline.html#a3a135d2c7d1ab3ed8a05006fe5c7daa8',1,'lost::Pipeline::Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *)']]],
   ['pipeline_2doptions_2ehpp_193',['pipeline-options.hpp',['../pipeline-options_8hpp.html',1,'']]],
   ['pipelinecomparator_194',['PipelineComparator',['../namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2',1,'lost']]],
   ['pipelinecomparatorattitude_195',['PipelineComparatorAttitude',['../namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6',1,'lost']]],
@@ -24,6 +24,5 @@ var searchData=
   ['pipelineoutput_209',['PipelineOutput',['../structlost_1_1_pipeline_output.html',1,'lost']]],
   ['pngpipelineinput_210',['PngPipelineInput',['../classlost_1_1_png_pipeline_input.html',1,'lost::PngPipelineInput'],['../classlost_1_1_png_pipeline_input.html#adee57652282fb256ea2deeb737b81afe',1,'lost::PngPipelineInput::PngPipelineInput()']]],
   ['position_211',['position',['../classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea',1,'lost::Star']]],
-  ['promptnarrowedcatalog_212',['PromptNarrowedCatalog',['../namespacelost.html#ac4570f4908321a43be0af54805ca9044',1,'lost']]],
-  ['pyramidstaridalgorithm_213',['PyramidStarIdAlgorithm',['../classlost_1_1_pyramid_star_id_algorithm.html',1,'lost::PyramidStarIdAlgorithm'],['../classlost_1_1_pyramid_star_id_algorithm.html#af49d0a219e84d31fccdc927aa7476d50',1,'lost::PyramidStarIdAlgorithm::PyramidStarIdAlgorithm()']]]
+  ['pyramidstaridalgorithm_212',['PyramidStarIdAlgorithm',['../classlost_1_1_pyramid_star_id_algorithm.html',1,'lost::PyramidStarIdAlgorithm'],['../classlost_1_1_pyramid_star_id_algorithm.html#af49d0a219e84d31fccdc927aa7476d50',1,'lost::PyramidStarIdAlgorithm::PyramidStarIdAlgorithm()']]]
 ];

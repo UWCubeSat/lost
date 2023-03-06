@@ -6,7 +6,7 @@
 <area shape="rect" id="node8" href="$namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,157,676,184"/>
 <area shape="rect" id="node9" href="$namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="724,208,907,235"/>
 <area shape="rect" id="node10" href="$namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6" title="Compare the actual and expected attitudes." alt="" coords="724,259,907,301"/>
-<area shape="rect" id="node4" href="$namespacelost.html#abf120394836bcbb600f135de6fea84b0" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="500,107,637,133"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="500,107,637,133"/>
 <area shape="rect" id="node7" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,157,408,184"/>
 <area shape="rect" id="node6" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,128,168,155"/>
 <area shape="rect" id="node11" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="477,267,661,293"/>

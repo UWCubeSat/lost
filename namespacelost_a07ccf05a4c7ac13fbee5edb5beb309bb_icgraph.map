@@ -1,12 +1,13 @@
 <map id="lost::AngleUnit" name="lost::AngleUnit">
-<area shape="rect" id="node1" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1495,239,1613,266"/>
+<area shape="rect" id="node1" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1495,265,1613,291"/>
 <area shape="rect" id="node2" href="$namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="1298,122,1389,149"/>
 <area shape="rect" id="node3" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="993,5,1182,47"/>
 <area shape="rect" id="node4" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="699,181,935,207"/>
-<area shape="rect" id="node8" href="$namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="1240,294,1447,321"/>
-<area shape="rect" id="node13" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1258,345,1429,371"/>
+<area shape="rect" id="node8" href="$namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="1240,290,1447,317"/>
+<area shape="rect" id="node13" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1258,341,1429,367"/>
 <area shape="rect" id="node21" href="$namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1262,185,1425,211"/>
-<area shape="rect" id="node22" href="$classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="1251,396,1436,437"/>
+<area shape="rect" id="node22" href="$namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="1268,391,1419,418"/>
+<area shape="rect" id="node23" href="$classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="1251,443,1436,484"/>
 <area shape="rect" id="node5" href="$namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="984,173,1191,215"/>
 <area shape="rect" id="node6" href="$namespacelost.html#a8875d32fb29c2da7475913fabc3ce8f6" title="Compare the actual and expected attitudes." alt="" coords="468,105,651,147"/>
 <area shape="rect" id="node7" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,291,189,318"/>

@@ -92,156 +92,179 @@ $(document).ready(function(){initNavTree('star-utils_8cpp_source.html',''); init
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;math.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;assert.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacelost.html">lost</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">// brightest star first</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">   10</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">CatalogStarMagnitudeCompare</a>(<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;a, <span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;b) {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordflow">return</span> a.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a> &lt; b.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a>;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="namespacelost.html#a8a1ecb78b66d778ff4de71f1b60b7309">   21</a></span>&#160;<a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> <a class="code" href="namespacelost.html#a8a1ecb78b66d778ff4de71f1b60b7309">NarrowCatalog</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">int</span> maxMagnitude, <span class="keywordtype">int</span> maxStars) {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> result;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)catalog.size(); i++) {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordflow">if</span> (catalog[i].magnitude &lt;= maxMagnitude) {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            result.push_back(catalog[i]);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    }</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">if</span> (maxStars &lt; (<span class="keywordtype">int</span>)result.size()) {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        std::sort(result.begin(), result.end(), <a class="code" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">CatalogStarMagnitudeCompare</a>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        result.resize(maxStars);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    }</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacelost.html">lost</a> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">// brightest star first</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">   11</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">CatalogStarMagnitudeCompare</a>(<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;a, <span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;b) {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordflow">return</span> a.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a> &lt; b.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a>;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;}</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">   15</a></span>&#160;<a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> <a class="code" href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">NarrowCatalog</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">int</span> maxMagnitude, <span class="keywordtype">int</span> maxStars, <span class="keywordtype">float</span> minSeparation) {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> result;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)catalog.size(); i++) {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">if</span> (catalog[i].magnitude &lt;= maxMagnitude) {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            result.push_back(catalog[i]);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        }</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    }</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="comment">// remove stars that are too close to each other</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    std::set&lt;int&gt; tooCloseIndices;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="comment">// filter out stars that are too close together</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="comment">// easy enough to n^2 brute force, the catalog isn&#39;t that big</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)result.size(); i++) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = i+1; j &lt; (int)result.size(); j++) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb">AngleUnit</a>(result[i].spatial, result[j].spatial) &lt; minSeparation) {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                tooCloseIndices.insert(i);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                tooCloseIndices.insert(j);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        }</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">   37</a></span>&#160;Catalog::const_iterator <a class="code" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">FindNamedStar</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">int</span> name) {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = catalog.cbegin(); it != catalog.cend(); ++it) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordflow">if</span> (it-&gt;name == name) {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <span class="keywordflow">return</span> it;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        }</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">return</span> catalog.cend();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">   47</a></span>&#160;<span class="keywordtype">long</span> <a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(<span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">long</span> starSize = <a class="code" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a>();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span> (inclMagnitude) {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        starSize += <span class="keyword">sizeof</span>(float);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (inclName) {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        starSize += <span class="keyword">sizeof</span>(int16_t);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> starSize;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">   65</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">SerializeCatalogStar</a>(<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;catalogStar, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer) {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">SerializeVec3</a>(catalogStar.<a class="code" href="classlost_1_1_catalog_star.html#abd0b2df829476183297af1ac072c0802">spatial</a>, buffer);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    buffer += <a class="code" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a>();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">if</span> (inclMagnitude) {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        *(<span class="keywordtype">float</span> *)buffer = catalogStar.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        buffer += <span class="keyword">sizeof</span>(<span class="keywordtype">float</span>);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">if</span> (inclName) {</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="comment">// TODO: double check that bools aren&#39;t some special bitwise thing in C++</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        *(int16_t *)buffer = catalogStar.<a class="code" href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">name</a>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        buffer += <span class="keyword">sizeof</span>(int16_t);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">   84</a></span>&#160;<a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> <a class="code" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">DeserializeCatalogStar</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> result;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    result.<a class="code" href="classlost_1_1_catalog_star.html#abd0b2df829476183297af1ac072c0802">spatial</a> = <a class="code" href="namespacelost.html#a268223937ff19ee72a713631586557d3">DeserializeVec3</a>(buffer);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    buffer += <a class="code" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a>();</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">if</span> (inclMagnitude) {</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a> = *(<span class="keywordtype">float</span> *)buffer;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        buffer += <span class="keyword">sizeof</span>(float);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a> = -424242; <span class="comment">// TODO, what to do about special values, since there&#39;s no good ones for ints.</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordflow">if</span> (inclName) {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">name</a> = *(int16_t *)buffer;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        buffer += <span class="keyword">sizeof</span>(int16_t);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">name</a> = -1;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    }</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">  104</a></span>&#160;<span class="keywordtype">long</span> <a class="code" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">SerializeLengthCatalog</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName) {</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">sizeof</span>(int16_t) + <span class="keyword">sizeof</span>(int8_t) + catalog.size()*<a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(inclMagnitude, inclName);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="namespacelost.html#a71348982edf43778012c9682bfa99521">  113</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#a71348982edf43778012c9682bfa99521">SerializeCatalog</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer) {</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *bufferStart = buffer;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="comment">// size</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    *(int16_t *)buffer = catalog.size();</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    buffer += <span class="keyword">sizeof</span>(int16_t);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="comment">// flags</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    int8_t flags = (inclMagnitude) | (inclName &lt;&lt; 1);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    *(int8_t *)buffer = flags;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    buffer += <span class="keyword">sizeof</span>(int8_t);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordtype">long</span> catalogStarLength = <a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(inclMagnitude, inclName);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;catalogStar : catalog) {</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <a class="code" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">SerializeCatalogStar</a>(catalogStar, inclMagnitude, inclName, buffer);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        buffer += catalogStarLength;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="comment">// Erase all the stars whose indices are in tooCloseIndices from the result.</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="comment">// Loop backwards so indices don&#39;t get messed up as we iterate.</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        result.erase(result.begin() + *it);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="comment">// and finally limit to n brightest stars</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">if</span> (maxStars &lt; (<span class="keywordtype">int</span>)result.size()) {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::sort(result.begin(), result.end(), <a class="code" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">CatalogStarMagnitudeCompare</a>);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        result.resize(maxStars);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">   52</a></span>&#160;Catalog::const_iterator <a class="code" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">FindNamedStar</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">int</span> name) {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = catalog.cbegin(); it != catalog.cend(); ++it) {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">if</span> (it-&gt;name == name) {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordflow">return</span> it;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> catalog.cend();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">   62</a></span>&#160;<span class="keywordtype">long</span> <a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(<span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName) {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">long</span> starSize = <a class="code" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a>();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">if</span> (inclMagnitude) {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        starSize += <span class="keyword">sizeof</span>(float);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">if</span> (inclName) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        starSize += <span class="keyword">sizeof</span>(int16_t);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">return</span> starSize;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">   80</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">SerializeCatalogStar</a>(<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;catalogStar, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer) {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">SerializeVec3</a>(catalogStar.<a class="code" href="classlost_1_1_catalog_star.html#abd0b2df829476183297af1ac072c0802">spatial</a>, buffer);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    buffer += <a class="code" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a>();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordflow">if</span> (inclMagnitude) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        *(<span class="keywordtype">float</span> *)buffer = catalogStar.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        buffer += <span class="keyword">sizeof</span>(<span class="keywordtype">float</span>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">if</span> (inclName) {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="comment">// TODO: double check that bools aren&#39;t some special bitwise thing in C++</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        *(int16_t *)buffer = catalogStar.<a class="code" href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">name</a>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        buffer += <span class="keyword">sizeof</span>(int16_t);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">   99</a></span>&#160;<a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> <a class="code" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">DeserializeCatalogStar</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName) {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> result;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    result.<a class="code" href="classlost_1_1_catalog_star.html#abd0b2df829476183297af1ac072c0802">spatial</a> = <a class="code" href="namespacelost.html#a268223937ff19ee72a713631586557d3">DeserializeVec3</a>(buffer);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    buffer += <a class="code" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a>();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">if</span> (inclMagnitude) {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a> = *(<span class="keywordtype">float</span> *)buffer;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        buffer += <span class="keyword">sizeof</span>(float);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a> = -424242; <span class="comment">// TODO, what to do about special values, since there&#39;s no good ones for ints.</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    }</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">if</span> (inclName) {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">name</a> = *(int16_t *)buffer;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        buffer += <span class="keyword">sizeof</span>(int16_t);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        result.<a class="code" href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">name</a> = -1;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">  119</a></span>&#160;<span class="keywordtype">long</span> <a class="code" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">SerializeLengthCatalog</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">sizeof</span>(int16_t) + <span class="keyword">sizeof</span>(int8_t) + catalog.size()*<a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(inclMagnitude, inclName);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="namespacelost.html#a71348982edf43778012c9682bfa99521">  128</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#a71348982edf43778012c9682bfa99521">SerializeCatalog</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <span class="keywordtype">bool</span> inclMagnitude, <span class="keywordtype">bool</span> inclName, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer) {</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *bufferStart = buffer;</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    assert(buffer-bufferStart == <a class="code" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">SerializeLengthCatalog</a>(catalog, inclMagnitude, inclName));</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="comment">// TODO (longer term): don&#39;t deserialize the catalog, store it on disk using the in-memory format so</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment">// we can just copy it to memory then cast</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">  141</a></span>&#160;<a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> <a class="code" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">DeserializeCatalog</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer, <span class="keywordtype">bool</span> *inclMagnitudeReturn, <span class="keywordtype">bool</span> *inclNameReturn) {</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">bool</span> inclName, inclMagnitude;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> result;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    int16_t numStars = *(int16_t *)buffer;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    buffer += <span class="keyword">sizeof</span>(int16_t);</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    int8_t flags = *(int8_t *)buffer;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    inclMagnitude = (flags) &amp; 1;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    inclName = (flags&gt;&gt;1) &amp; 1;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordflow">if</span> (inclMagnitudeReturn != NULL) {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        *inclMagnitudeReturn = inclMagnitude;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    }</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordflow">if</span> (inclNameReturn != NULL) {</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        *inclNameReturn = inclName;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    }</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    buffer += <span class="keyword">sizeof</span>(int8_t);</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordtype">int</span> catalogStarLength = <a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(inclMagnitude, inclName);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; numStars; i++) {</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        result.push_back(<a class="code" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">DeserializeCatalogStar</a>(buffer, inclMagnitude, inclName));</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        buffer += catalogStarLength;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;}</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="comment">// size</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    *(int16_t *)buffer = catalog.size();</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    buffer += <span class="keyword">sizeof</span>(int16_t);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="comment">// flags</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    int8_t flags = (inclMagnitude) | (inclName &lt;&lt; 1);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    *(int8_t *)buffer = flags;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    buffer += <span class="keyword">sizeof</span>(int8_t);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordtype">long</span> catalogStarLength = <a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(inclMagnitude, inclName);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;catalogStar : catalog) {</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <a class="code" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">SerializeCatalogStar</a>(catalogStar, inclMagnitude, inclName, buffer);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        buffer += catalogStarLength;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    }</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    assert(buffer-bufferStart == <a class="code" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">SerializeLengthCatalog</a>(catalog, inclMagnitude, inclName));</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="comment">// TODO (longer term): don&#39;t deserialize the catalog, store it on disk using the in-memory format so</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">// we can just copy it to memory then cast</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">  156</a></span>&#160;<a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> <a class="code" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">DeserializeCatalog</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *buffer, <span class="keywordtype">bool</span> *inclMagnitudeReturn, <span class="keywordtype">bool</span> *inclNameReturn) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordtype">bool</span> inclName, inclMagnitude;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> result;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    int16_t numStars = *(int16_t *)buffer;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    buffer += <span class="keyword">sizeof</span>(int16_t);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    int8_t flags = *(int8_t *)buffer;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    inclMagnitude = (flags) &amp; 1;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    inclName = (flags&gt;&gt;1) &amp; 1;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">if</span> (inclMagnitudeReturn != NULL) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        *inclMagnitudeReturn = inclMagnitude;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keywordflow">if</span> (inclNameReturn != NULL) {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        *inclNameReturn = inclName;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    buffer += <span class="keyword">sizeof</span>(int8_t);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordtype">int</span> catalogStarLength = <a class="code" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a>(inclMagnitude, inclName);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; numStars; i++) {</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        result.push_back(<a class="code" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">DeserializeCatalogStar</a>(buffer, inclMagnitude, inclName));</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        buffer += catalogStarLength;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    }</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;}</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;}</div>
 <div class="ttc" id="aclasslost_1_1_catalog_star_html"><div class="ttname"><a href="classlost_1_1_catalog_star.html">lost::CatalogStar</a></div><div class="ttdoc">A star from the Bright Star Catalog.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00011">star-utils.hpp:11</a></div></div>
 <div class="ttc" id="aclasslost_1_1_catalog_star_html_a72d3cdf9c85caa2fc2819644862e26ee"><div class="ttname"><a href="classlost_1_1_catalog_star.html#a72d3cdf9c85caa2fc2819644862e26ee">lost::CatalogStar::name</a></div><div class="ttdeci">int name</div><div class="ttdoc">A unique number which unambiguously identifies the catalog star.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00041">star-utils.hpp:41</a></div></div>
 <div class="ttc" id="aclasslost_1_1_catalog_star_html_aac362b166dd1a5cfe95e33a7e2d18e3a"><div class="ttname"><a href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">lost::CatalogStar::magnitude</a></div><div class="ttdeci">int magnitude</div><div class="ttdoc">The magnitude of the star, with the decimal point shifted two places right.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00036">star-utils.hpp:36</a></div></div>
 <div class="ttc" id="aclasslost_1_1_catalog_star_html_abd0b2df829476183297af1ac072c0802"><div class="ttname"><a href="classlost_1_1_catalog_star.html#abd0b2df829476183297af1ac072c0802">lost::CatalogStar::spatial</a></div><div class="ttdeci">Vec3 spatial</div><div class="ttdoc">The point on the unit sphere where the star lies.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00031">star-utils.hpp:31</a></div></div>
 <div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8cpp_source.html#l00005">attitude-estimators.cpp:5</a></div></div>
-<div class="ttc" id="anamespacelost_html_a18edb7eda27b641f898fe6bcd9a37dc0"><div class="ttname"><a href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">lost::SerializeLengthCatalogStar</a></div><div class="ttdeci">long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName)</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00047">star-utils.cpp:47</a></div></div>
+<div class="ttc" id="anamespacelost_html_a07ccf05a4c7ac13fbee5edb5beb309bb"><div class="ttname"><a href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb">lost::AngleUnit</a></div><div class="ttdeci">float AngleUnit(const Vec3 &amp;vec1, const Vec3 &amp;vec2)</div><div class="ttdoc">Calculate the inner angle, in radians, between two /unit/ vectors.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00465">attitude-utils.cpp:465</a></div></div>
+<div class="ttc" id="anamespacelost_html_a18edb7eda27b641f898fe6bcd9a37dc0"><div class="ttname"><a href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">lost::SerializeLengthCatalogStar</a></div><div class="ttdeci">long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName)</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00062">star-utils.cpp:62</a></div></div>
 <div class="ttc" id="anamespacelost_html_a268223937ff19ee72a713631586557d3"><div class="ttname"><a href="namespacelost.html#a268223937ff19ee72a713631586557d3">lost::DeserializeVec3</a></div><div class="ttdeci">Vec3 DeserializeVec3(const unsigned char *buffer)</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00446">attitude-utils.cpp:446</a></div></div>
-<div class="ttc" id="anamespacelost_html_a3b88c74fe43dd671f14f98525c7d4ae8"><div class="ttname"><a href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">lost::SerializeCatalogStar</a></div><div class="ttdeci">void SerializeCatalogStar(const CatalogStar &amp;catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer)</div><div class="ttdoc">Serialize a CatalogStar into a byte buffer.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00065">star-utils.cpp:65</a></div></div>
-<div class="ttc" id="anamespacelost_html_a5c01d4154fbfefd3af1f3c081a372035"><div class="ttname"><a href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">lost::CatalogStarMagnitudeCompare</a></div><div class="ttdeci">bool CatalogStarMagnitudeCompare(const CatalogStar &amp;a, const CatalogStar &amp;b)</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00010">star-utils.cpp:10</a></div></div>
+<div class="ttc" id="anamespacelost_html_a3b88c74fe43dd671f14f98525c7d4ae8"><div class="ttname"><a href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">lost::SerializeCatalogStar</a></div><div class="ttdeci">void SerializeCatalogStar(const CatalogStar &amp;catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer)</div><div class="ttdoc">Serialize a CatalogStar into a byte buffer.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00080">star-utils.cpp:80</a></div></div>
+<div class="ttc" id="anamespacelost_html_a5c01d4154fbfefd3af1f3c081a372035"><div class="ttname"><a href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">lost::CatalogStarMagnitudeCompare</a></div><div class="ttdeci">bool CatalogStarMagnitudeCompare(const CatalogStar &amp;a, const CatalogStar &amp;b)</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00011">star-utils.cpp:11</a></div></div>
 <div class="ttc" id="anamespacelost_html_a65578753ccfdbffee5d561e99c7ccf19"><div class="ttname"><a href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">lost::SerializeVec3</a></div><div class="ttdeci">void SerializeVec3(const Vec3 &amp;vec, unsigned char *buffer)</div><div class="ttdoc">Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00439">attitude-utils.cpp:439</a></div></div>
-<div class="ttc" id="anamespacelost_html_a71348982edf43778012c9682bfa99521"><div class="ttname"><a href="namespacelost.html#a71348982edf43778012c9682bfa99521">lost::SerializeCatalog</a></div><div class="ttdeci">void SerializeCatalog(const Catalog &amp;catalog, bool inclMagnitude, bool inclName, unsigned char *buffer)</div><div class="ttdoc">Serialize the catalog to buffer.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00113">star-utils.cpp:113</a></div></div>
-<div class="ttc" id="anamespacelost_html_a8a1ecb78b66d778ff4de71f1b60b7309"><div class="ttname"><a href="namespacelost.html#a8a1ecb78b66d778ff4de71f1b60b7309">lost::NarrowCatalog</a></div><div class="ttdeci">Catalog NarrowCatalog(const Catalog &amp;catalog, int maxMagnitude, int maxStars)</div><div class="ttdoc">Remove dim stars from a catalog.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00021">star-utils.cpp:21</a></div></div>
+<div class="ttc" id="anamespacelost_html_a71348982edf43778012c9682bfa99521"><div class="ttname"><a href="namespacelost.html#a71348982edf43778012c9682bfa99521">lost::SerializeCatalog</a></div><div class="ttdeci">void SerializeCatalog(const Catalog &amp;catalog, bool inclMagnitude, bool inclName, unsigned char *buffer)</div><div class="ttdoc">Serialize the catalog to buffer.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00128">star-utils.cpp:128</a></div></div>
 <div class="ttc" id="anamespacelost_html_abe88691626edfb0955f7fe04bcec9375"><div class="ttname"><a href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">lost::SerializeLengthVec3</a></div><div class="ttdeci">long SerializeLengthVec3()</div><div class="ttdoc">The length that a Vec3 will take up when serialized.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00434">attitude-utils.cpp:434</a></div></div>
-<div class="ttc" id="anamespacelost_html_ac0b24b666a681eccbaacf52b37c6b09b"><div class="ttname"><a href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">lost::SerializeLengthCatalog</a></div><div class="ttdeci">long SerializeLengthCatalog(const Catalog &amp;catalog, bool inclMagnitude, bool inclName)</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00104">star-utils.cpp:104</a></div></div>
-<div class="ttc" id="anamespacelost_html_ac722314f3b14385ade7e5f05699ef006"><div class="ttname"><a href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">lost::FindNamedStar</a></div><div class="ttdeci">Catalog::const_iterator FindNamedStar(const Catalog &amp;catalog, int name)</div><div class="ttdoc">Return a pointer to the star with the given name, or NULL if not found.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00037">star-utils.cpp:37</a></div></div>
-<div class="ttc" id="anamespacelost_html_ae9238a92be7c82c102f015c90ce10536"><div class="ttname"><a href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">lost::DeserializeCatalogStar</a></div><div class="ttdeci">CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitude, bool inclName)</div><div class="ttdoc">Deserialize a catalog star.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00084">star-utils.cpp:84</a></div></div>
+<div class="ttc" id="anamespacelost_html_ac0b24b666a681eccbaacf52b37c6b09b"><div class="ttname"><a href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">lost::SerializeLengthCatalog</a></div><div class="ttdeci">long SerializeLengthCatalog(const Catalog &amp;catalog, bool inclMagnitude, bool inclName)</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00119">star-utils.cpp:119</a></div></div>
+<div class="ttc" id="anamespacelost_html_ac722314f3b14385ade7e5f05699ef006"><div class="ttname"><a href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">lost::FindNamedStar</a></div><div class="ttdeci">Catalog::const_iterator FindNamedStar(const Catalog &amp;catalog, int name)</div><div class="ttdoc">Return a pointer to the star with the given name, or NULL if not found.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00052">star-utils.cpp:52</a></div></div>
+<div class="ttc" id="anamespacelost_html_ae9238a92be7c82c102f015c90ce10536"><div class="ttname"><a href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">lost::DeserializeCatalogStar</a></div><div class="ttdeci">CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitude, bool inclName)</div><div class="ttdoc">Deserialize a catalog star.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00099">star-utils.cpp:99</a></div></div>
 <div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00099">star-utils.hpp:99</a></div></div>
-<div class="ttc" id="anamespacelost_html_af4b650ecb61d27c188477fc9fbf4c886"><div class="ttname"><a href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">lost::DeserializeCatalog</a></div><div class="ttdeci">Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn)</div><div class="ttdoc">Deserialize a catalog.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00141">star-utils.cpp:141</a></div></div>
+<div class="ttc" id="anamespacelost_html_af37c1bfa9d31aeb6fcd705fffd13497c"><div class="ttname"><a href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">lost::NarrowCatalog</a></div><div class="ttdeci">Catalog NarrowCatalog(const Catalog &amp;catalog, int maxMagnitude, int maxStars, float minSeparation)</div><div class="ttdoc">Remove unwanted stars from an unfiltered catalog.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00015">star-utils.cpp:15</a></div></div>
+<div class="ttc" id="anamespacelost_html_af4b650ecb61d27c188477fc9fbf4c886"><div class="ttname"><a href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">lost::DeserializeCatalog</a></div><div class="ttdeci">Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn)</div><div class="ttdoc">Deserialize a catalog.</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8cpp_source.html#l00156">star-utils.cpp:156</a></div></div>
 <div class="ttc" id="astar-utils_8hpp_html"><div class="ttname"><a href="star-utils_8hpp.html">star-utils.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
@@ -249,7 +272,7 @@ $(document).ready(function(){initNavTree('star-utils_8cpp_source.html',''); init
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="star-utils_8cpp.html">star-utils.cpp</a></li>
-    <li class="footer">Generated on Mon Mar 6 2023 00:10:15 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Mon Mar 6 2023 23:05:12 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

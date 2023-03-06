@@ -11,7 +11,7 @@ var io_8cpp =
     [ "StarIdAlgorithmFactory", "io_8cpp.html#a106f3da2d75b2af268f5e9abfc7ea681", null ],
     [ "BscParse", "io_8cpp.html#a2de388cdf7e0c6b9c572903605480568", null ],
     [ "BuildPairDistanceKVectorDatabase", "io_8cpp.html#a7affa1b0e82efc2065dbd3b1e83326e7", null ],
-    [ "CatalogRead", "io_8cpp.html#abf120394836bcbb600f135de6fea84b0", null ],
+    [ "CatalogRead", "io_8cpp.html#a41f5bb669129790c12bd70e1d641441f", null ],
     [ "CentroidComparisonsCombine", "io_8cpp.html#a0fe01051c958fa8ced02e772aefdc991", null ],
     [ "CentroidsCompare", "io_8cpp.html#afd017fba4090829c28c431509c4cfc1c", null ],
     [ "FocalLengthFromOptions", "io_8cpp.html#a1187da9a83232a720a84bef1b99c5b58", null ],
