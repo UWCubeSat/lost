@@ -4,13 +4,20 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <set>
 
 #include <vector>
+#include <deque>
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace lost {
+
+int Get(int x, int y, const unsigned char *image, int w) {
+  int ind = y * w + x;
+  return image[ind];
+}
 
 // DUMMY
 
@@ -151,6 +158,86 @@ void CogHelper(CentroidParams *p, long i, unsigned char *image, int imageWidth, 
         CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
         CogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
     }
+}
+
+std::vector<Star> GreedyCentroidAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+    std::vector<Star> result;
+
+    int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    int step = 5;
+
+    for(long i = 0; i < imageHeight * imageWidth; i += step){
+        int x = i % imageWidth;
+        int y = i / imageWidth;
+        if(image[i] >= cutoff){
+            result.push_back(Star(x, y, 1));
+        }
+    }
+
+    return result;
+}
+
+std::vector<Star> FloodfillCentroidAlgorithm::Go(unsigned char *image, int imageWidth,
+                                              int imageHeight) const {
+
+    typedef std::vector<int> Point;
+
+    std::vector<Star> result;
+    std::set<Point> checkedPoints;
+
+    int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+
+    for (long i = 0; i < imageHeight * imageWidth; i++) {
+        int x = i % imageWidth;
+        int y = i / imageWidth;
+        Point pCurr{x, y};
+        if (image[i] >= cutoff && checkedPoints.count(pCurr) == 0) {
+            // Floodfill from this point (x, y)
+            std::vector<Point> pts;
+            std::deque<Point> queue;
+
+            queue.push_back(pCurr);
+            while(!queue.size() == 0){
+                Point p = queue[0];
+                queue.pop_front();
+
+                // TODO: make Point a struct
+                int px = p[0];
+                int py = p[1];
+                if(px < 0 || px >= imageWidth || py < 0 || py >= imageHeight) continue;
+                if(Get(px, py, image, imageWidth) < cutoff) continue;
+                if(checkedPoints.count(p) != 0) continue;
+
+                // Add this point to pts and checkedPoints
+                // We can add to checkedPoints since cutoff is global - ensure no 2 fills collide
+                pts.push_back(p);
+                checkedPoints.insert(p);
+
+                // Add all 8 adjacent points to the queue
+                for (int dx = -1; dx <= 1; dx++) {
+                  for (int dy = -1; dy <= 1; dy++) {
+                    queue.push_back({px + dx, py + dy});
+                  }
+                }
+            }
+
+            // Cool, our flood is now done
+            // Calculate center (x0, y0) = (average of all xs, average of all ys)
+            int x0 = 0;
+            int y0 = 0;
+            for(const Point &p : pts){
+                x0 += p[0];
+                y0 += p[1];
+            }
+            x0 /= pts.size();
+            y0 /= pts.size();
+
+            result.push_back(Star(x0, y0, 1));
+
+        }
+    }
+
+    return result;
 }
 
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {

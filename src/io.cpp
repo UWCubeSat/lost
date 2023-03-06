@@ -729,6 +729,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "iwcog") {
         result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo == "greedy"){
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new GreedyCentroidAlgorithm());
+    } else if (values.centroidAlgo == "flood"){
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new FloodfillCentroidAlgorithm());
     } else if (values.centroidAlgo != "") {
         std::cout << "Illegal centroid algorithm." << std::endl;
         exit(1);
