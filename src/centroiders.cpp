@@ -67,7 +67,7 @@ int YMarginal(int x0, int y, int nb, const unsigned char *image, int w) {
 /*
 Can be used as f(xi, beta) or f(yi, beta)
 */
-int FitModel(int xi, int a, int xb, float sigma) {
+float FitModel(float xi, float a, float xb, float sigma) {
   return a * exp(-1 * (xi - xb) * (xi - xb) / (2 * sigma * sigma));
 }
 
@@ -78,8 +78,8 @@ a = max intensity value
 (xb, yb) = coordinates of pixel with max intensity
 sigma = standard deviation (sigmaX = sigmaY)
 */
-void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, int *a, int *xb,
-                  int *yb, double *sigma) {
+void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a, float *xb,
+                  float *yb, double *sigma) {
   // a is set to max intensity value in the window
   // (xb, yb) = coordinates of pixel with max intensity value
   int max = -1;
@@ -149,8 +149,8 @@ struct LSGFFunctor : Functor<double> {
   */
   int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
 
-    int a = x(0);
-    int xb = x(1);
+    float a = x(0);
+    float xb = x(1);
     double sigma = x(2);
     for (int i = 0; i < X.size(); i++) {
       int marginal;
@@ -183,8 +183,8 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
                                                 int imageHeight) const {
   std::vector<Star> result;
 
-  const int nb = 4;
-  const int step = 5;
+  const int nb = 2;
+  const int step = 1;
 
   std::set<Point> checkedPoints;
 
@@ -208,8 +208,8 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         vInd++;
       }
 
-      int a;
-      int xb, yb;
+      float a;
+      float xb, yb;
       double sigma;
       InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigma);
 
@@ -245,12 +245,18 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
       for(int xr = xb - nb; xr <= xb + nb; xr++){
         for(int yr = yb - nb; yr <= yb + nb; yr++){
           if(xr < 0 || xr >= imageWidth || yr < 0 || yr >= imageHeight) continue;
-          Point cp{xr, yr};
-          checkedPoints.insert(cp);
+          // std::cout << xr << ", " << yr << std::endl;
+          // Point cp{xr, yr};
+          // checkedPoints.insert(cp);
+          checkedPoints.insert({xr, yr});
         }
       }
 
-      result.push_back(Star(xb, yb, sigma, sigma, a));
+      std::cout << "Original: " << x << ", " << y << std::endl;
+      std::cout << "final: " << xb << ", " << yb << std::endl;
+      // result.push_back(Star(xb, yb, sigma, sigma, a));
+      result.push_back(Star(xb, yb, 0));
+      // result.push_back(Star(x, y, 0));
     }
   }
 
