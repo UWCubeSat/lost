@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <deque>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/unsupported/Eigen/NonLinearOptimization>
@@ -17,7 +18,76 @@
 
 namespace lost {
 
+typedef std::vector<int> Point;
+
+int Get(int x, int y, const unsigned char *image, int w);
+
+std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
+
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight);
+
+std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight) {
+  std::vector<Point> res;
+  std::set<Point> checkedPoints;
+
+  int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+
+  for (long i = 0; i < imageHeight * imageWidth; i++) {
+    int x = i % imageWidth;
+    int y = i / imageWidth;
+    Point pCurr{x, y};
+    if (image[i] >= cutoff && checkedPoints.count(pCurr) == 0) {
+      // Floodfill from this point (x, y)
+      // Obtain coordinates (x0, y0) of pixel with largest magnitude in the floodfill
+      std::vector<Point> pts;
+      std::deque<Point> queue;
+
+      int maxMag = -1;
+      int x0 = x;
+      int y0 = y;
+
+      queue.push_back(pCurr);
+      while (!queue.size() == 0) {
+        Point p = queue[0];
+        queue.pop_front();
+
+        // TODO: make Point a struct probably
+        int px = p[0];
+        int py = p[1];
+        if (px < 0 || px >= imageWidth || py < 0 || py >= imageHeight) continue;
+        if (checkedPoints.count(p) != 0) continue;
+
+        int mag = Get(px, py, image, imageWidth);
+        if (mag < cutoff) continue;
+
+        // Add this point to pts and checkedPoints
+        // We can add to checkedPoints since cutoff is global - ensure no 2 fills collide
+        pts.push_back(p);
+        checkedPoints.insert(p);
+
+        // Update max pixel value in fill
+        if (mag > maxMag) {
+          maxMag = mag;
+          x0 = px;
+          y0 = py;
+        }
+
+        // Add all 8 adjacent points to the queue
+        for (int dx = -1; dx <= 1; dx++) {
+          for (int dy = -1; dy <= 1; dy++) {
+            queue.push_back({px + dx, py + dy});
+          }
+        }
+      }
+
+      // Cool, our flood is done
+      res.push_back({x0, y0});
+    }
+  }
+
+  std::cout << "Floodfill preprocessing: found " << res.size() << " total points" << std::endl;
+  return res;
+}
 
 // TODO: documentation!
 struct CentroidParams {
@@ -78,8 +148,8 @@ a = max intensity value
 (xb, yb) = coordinates of pixel with max intensity
 sigma = standard deviation (sigmaX = sigmaY)
 */
-void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a, float *xb,
-                  float *yb, double *sigma) {
+void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
+                  float *xb, float *yb, double *sigma) {
   // a is set to max intensity value in the window
   // (xb, yb) = coordinates of pixel with max intensity value
   int max = -1;
@@ -127,7 +197,6 @@ struct Functor {
   int values() const { return m_values; }
 };
 
-
 struct LSGFFunctor : Functor<double> {
   // First param = number of parameters in your model
   // Second param = number of data points you want to test over
@@ -148,7 +217,6 @@ struct LSGFFunctor : Functor<double> {
   fvec = residual (one for every data point, of size = 2*nb+1)
   */
   int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-
     float a = x(0);
     float xb = x(1);
     double sigma = x(2);
@@ -160,6 +228,7 @@ struct LSGFFunctor : Functor<double> {
         marginal = YMarginal(x0, X(i), nb, image, w);
       fvec(i) = marginal - FitModel(X(i), a, xb, sigma);
     }
+    std::cout << fvec(0) << std::endl;
 
     return 0;
   }
@@ -171,93 +240,71 @@ struct LSGFFunctor : Functor<double> {
   // Data points (set of x or y coordinates)
   Eigen::VectorXd X;
   const unsigned char *image;
-  const int w; // image width in pixels
+  const int w;  // image width in pixels
   // Center coordinates (x0, y0) of this window
   const int x0, y0;
-
 };
-
-typedef std::vector<int> Point;
 
 std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageWidth,
                                                 int imageHeight) const {
   std::vector<Star> result;
 
   const int nb = 2;
-  const int step = 1;
 
-  std::set<Point> checkedPoints;
+  // std::set<Point> checkedPoints;
 
-  int cutoff = BasicThreshold(image, imageWidth, imageHeight);
-  // TODO: increased step size to 10. Is this fine?
-  // If we just increment by 1, it's possible for a big star to contribute many centroids
-  for (int i = 0; i < imageHeight * imageWidth; i+=step) {
-    int x = i % imageWidth;
-    int y = i / imageWidth;
-    Point p{x, y};
+  std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
+
+  for (const Point &pt : candidatePts) {
+    int x = pt[0];
+    int y = pt[1];
     if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
-    if (image[i] >= cutoff && checkedPoints.count(p) == 0) {
-      // checkedPoints.insert(p);
 
-      Eigen::VectorXd X(2 * nb + 1);
-      Eigen::VectorXd Y(2 * nb + 1);
-      int vInd = 0;
-      for (int i = -nb; i <= nb; i++) {
-        X(vInd) = x + i;
-        Y(vInd) = y + i;
-        vInd++;
-      }
-
-      float a;
-      float xb, yb;
-      double sigma;
-      InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigma);
-
-      Eigen::VectorXd betaX(3);
-      betaX << a, xb, sigma;
-
-      Eigen::VectorXd betaY(3);
-      betaY << a, yb, sigma;
-
-      LSGFFunctor functorX(nb, 0, X, image, imageWidth, x, y);
-      Eigen::NumericalDiff<LSGFFunctor> numDiffX(functorX);
-      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmX(numDiffX);
-
-      lmX.parameters.maxfev = 2000;
-      lmX.parameters.xtol = 1.0e-10;
-
-      LSGFFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
-      Eigen::NumericalDiff<LSGFFunctor> numDiffY(functorY);
-      Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmY(numDiffY);
-
-      lmY.parameters.maxfev = 2000;
-      lmY.parameters.xtol = 1.0e-10;
-
-      lmX.minimize(betaX);
-      lmY.minimize(betaY);
-
-      xb = betaX(1);
-      yb = betaY(1);
-      a = betaX(0);
-      sigma = betaX(2);
-
-      // TODO: place all points in the window to checkedPoints
-      for(int xr = xb - nb; xr <= xb + nb; xr++){
-        for(int yr = yb - nb; yr <= yb + nb; yr++){
-          if(xr < 0 || xr >= imageWidth || yr < 0 || yr >= imageHeight) continue;
-          // std::cout << xr << ", " << yr << std::endl;
-          // Point cp{xr, yr};
-          // checkedPoints.insert(cp);
-          checkedPoints.insert({xr, yr});
-        }
-      }
-
-      std::cout << "Original: " << x << ", " << y << std::endl;
-      std::cout << "final: " << xb << ", " << yb << std::endl;
-      // result.push_back(Star(xb, yb, sigma, sigma, a));
-      result.push_back(Star(xb, yb, 0));
-      // result.push_back(Star(x, y, 0));
+    Eigen::VectorXd X(2 * nb + 1);
+    Eigen::VectorXd Y(2 * nb + 1);
+    int vInd = 0;
+    for (int i = -nb; i <= nb; i++) {
+      X(vInd) = x + i;
+      Y(vInd) = y + i;
+      vInd++;
     }
+
+    float a;
+    float xb, yb;
+    double sigma;
+    InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigma);
+
+    Eigen::VectorXd betaX(3);
+    betaX << a, xb, sigma;
+
+    Eigen::VectorXd betaY(3);
+    betaY << a, yb, sigma;
+
+    LSGFFunctor functorX(nb, 0, X, image, imageWidth, x, y);
+    Eigen::NumericalDiff<LSGFFunctor> numDiffX(functorX);
+    Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmX(numDiffX);
+
+    lmX.parameters.maxfev = 2000;
+    lmX.parameters.xtol = 1.0e-10;
+
+    LSGFFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
+    Eigen::NumericalDiff<LSGFFunctor> numDiffY(functorY);
+    Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmY(numDiffY);
+
+    lmY.parameters.maxfev = 2000;
+    lmY.parameters.xtol = 1.0e-10;
+
+    lmX.minimize(betaX);
+    lmY.minimize(betaY);
+
+    xb = betaX(1);
+    yb = betaY(1);
+    a = betaX(0);
+    sigma = betaX(2);
+
+    // std::cout << "Original: " << x << ", " << y << std::endl;
+    // std::cout << "final: " << xb << ", " << yb << std::endl;
+    result.push_back(Star(xb, yb, 0));
   }
 
   std::cout << "Number of centroids: " << result.size() << std::endl;
