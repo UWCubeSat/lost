@@ -734,6 +734,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     BestPyramidAtStar bestPyramid(-1);
     while (bestPyramid = pyramidIterator.Next(), !bestPyramid.isNull()) {
 
+#if LOST_DEBUG > 2
+        // print distance sum
+        std::cout << "Current pyramid distance sum: " << bestPyramid.distancesSum << std::endl;
+#endif
         int i = bestPyramid.centroidIndices[0],
             j = bestPyramid.centroidIndices[1],
             k = bestPyramid.centroidIndices[2],
