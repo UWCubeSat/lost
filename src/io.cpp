@@ -85,7 +85,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
 #endif
 
 /// Read and parse the full catalog from disk. If called multiple times, will re-use the first result.
-std::vector<CatalogStar> &CatalogRead() {
+const Catalog &CatalogRead() {
     static bool readYet = false;
     static std::vector<CatalogStar> catalog;
 

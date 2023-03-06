@@ -10,7 +10,7 @@ using namespace lost; // NOLINT
 
 TEST_CASE("Kvector full database stuff", "[kvector]") {
     long length;
-    Catalog &catalog = CatalogRead();
+    const Catalog &catalog = CatalogRead();
     unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(catalog, &length, DegToRad(1.0), DegToRad(2.0), 100);
     REQUIRE(length < 999999);
     PairDistanceKVectorDatabase db(dbBytes);
@@ -53,7 +53,7 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
 
 TEST_CASE("Tighter tolerance test", "[kvector]") {
     long length;
-    Catalog &catalog = CatalogRead();
+    const Catalog &catalog = CatalogRead();
     unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(catalog, &length, DegToRad(0.5), DegToRad(5.0), 1000);
     REQUIRE(length < 999999);
     PairDistanceKVectorDatabase db(dbBytes);
