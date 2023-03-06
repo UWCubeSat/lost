@@ -196,6 +196,8 @@ std::vector<Star> FloodfillCentroidAlgorithm::Go(unsigned char *image, int image
             std::vector<Point> pts;
             std::deque<Point> queue;
 
+            int maxMag = -1;
+
             queue.push_back(pCurr);
             while(!queue.size() == 0){
                 Point p = queue[0];
@@ -205,13 +207,18 @@ std::vector<Star> FloodfillCentroidAlgorithm::Go(unsigned char *image, int image
                 int px = p[0];
                 int py = p[1];
                 if(px < 0 || px >= imageWidth || py < 0 || py >= imageHeight) continue;
-                if(Get(px, py, image, imageWidth) < cutoff) continue;
-                if(checkedPoints.count(p) != 0) continue;
+                if (checkedPoints.count(p) != 0) continue;
+
+                int mag = Get(px, py, image, imageWidth);
+                if (mag < cutoff) continue;
 
                 // Add this point to pts and checkedPoints
                 // We can add to checkedPoints since cutoff is global - ensure no 2 fills collide
                 pts.push_back(p);
                 checkedPoints.insert(p);
+
+                // Update max pixel value in fill
+                if(mag > maxMag) maxMag = mag;
 
                 // Add all 8 adjacent points to the queue
                 for (int dx = -1; dx <= 1; dx++) {
@@ -223,8 +230,9 @@ std::vector<Star> FloodfillCentroidAlgorithm::Go(unsigned char *image, int image
 
             // Cool, our flood is now done
             // Calculate center (x0, y0) = (average of all xs, average of all ys)
-            int x0 = 0;
-            int y0 = 0;
+            float x0 = 0;
+            float y0 = 0;
+
             for(const Point &p : pts){
                 x0 += p[0];
                 y0 += p[1];
@@ -232,7 +240,19 @@ std::vector<Star> FloodfillCentroidAlgorithm::Go(unsigned char *image, int image
             x0 /= pts.size();
             y0 /= pts.size();
 
-            result.push_back(Star(x0, y0, 1));
+            float radX = 0;
+            float radY = 0;
+            for(const Point &p : pts){
+                radX = std::max(radX, std::abs(p[0] - x0));
+                radY = std::max(radY, std::abs(p[1] - y0));
+            }
+
+            // std::cout << "Original: " << x << ", " << y << std::endl;
+            // std::cout << "final: " << x0 << ", " << y0 << std::endl;
+
+            // result.push_back(Star(x0, y0, 0)); // 0 to see exact center
+            result.push_back(Star(x0, y0, radX, radY, maxMag));
+            // result.push_back(Star(x, y, 0)); // BAD
 
         }
     }
