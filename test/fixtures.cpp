@@ -94,4 +94,25 @@ StarIdentifiers elevenStarIds = {
     StarIdentifier(11, 11, 1),
 };
 
+// "clusters" is for normies
+Stars starCloisters = {
+    // four stars all fairly near each other
+    // vary the distances a bit so that we get a deterministic ordering
+    Star(1,1,1), // 0
+    Star(0,1,1), // 1
+    Star(1.1,0,1), // 2
+    Star(2.2,1,0), // 3
+
+    //four stars a bit further away from each other
+    Star(10,10,1), // 4
+    Star(8,10,1), // 5
+    Star(10.1,8,1), // 6
+    Star(12.2,10,0), // 7
+
+    // and now a remaining cluster of three stars, which shouldn't be attempted after the first two, at least not without switching to an alternate strategy
+    Star(20,20,1), // 8
+    Star(20,17,1), // 9
+    Star(17,20,1), // 10
+};
+
 }

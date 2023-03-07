@@ -567,48 +567,6 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     return numExtraIdentifiedStars;
 }
 
-/**
- * The best pyramid "starting from" a certain star. The "other" stars are ordered by their distance
- * from the main star for this struct.
- *
- * "Distance" in this class is actually 2D distance, because it's not super important to do
- * everything exactly right -- it's just iteration order!
- *
- * If distancesSum is nonpositive, no suitable pyramid exists for this star.
- */
-class BestPyramidAtStar {
-public:
-    int16_t centroidIndices[4];
-
-    float distancesSum;
-
-    BestPyramidAtStar(int16_t centroidIndex0, int16_t centroidIndex1, int16_t centroidIndex2, int16_t centroidIndex3,
-                      float distancesSum)
-        : distancesSum(distancesSum) {
-        centroidIndices[0] = centroidIndex0;
-        centroidIndices[1] = centroidIndex1;
-        centroidIndices[2] = centroidIndex2;
-        centroidIndices[3] = centroidIndex3;
-    }
-
-    // "no suitable pyramid" constructor
-    BestPyramidAtStar(int16_t mainCentroidIndex)
-        : distancesSum(-1) {
-        centroidIndices[0] = mainCentroidIndex;
-        centroidIndices[1] = -1;
-        centroidIndices[2] = -1;
-        centroidIndices[3] = -1;
-    }
-
-    bool operator<(const BestPyramidAtStar &other) const {
-        return distancesSum > 0 && distancesSum < other.distancesSum;
-    }
-
-    bool isNull() const {
-        return distancesSum <= 0;
-    }
-};
-
 std::vector<BestPyramidAtStar> ComputeBestPyramids(const Stars &allCentroids,
                                                    const std::vector<int16_t> &centroidIndices,
                                                    float minDistance,
@@ -629,7 +587,7 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const Stars &allCentroids,
             }
             float curDistance = (allCentroids[centroidIndices[i]].position - allCentroids[centroidIndices[j]].position).Magnitude();
             if (curDistance >= minDistance && curDistance <= maxDistance) {
-                distances.emplace_back(curDistance, j);
+                distances.emplace_back(curDistance, centroidIndices[j]);
             }
         }
 
@@ -639,7 +597,7 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const Stars &allCentroids,
             continue;
         }
 
-        std::sort(distances.begin(), distances.end());
+        std::sort(distances.begin(), distances.end()); // operator< is defined on pairs to sort by first element
 
         // Compute the sum of the distances between the 3 closest centroids
         float distancesSum = 0;
@@ -648,70 +606,50 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const Stars &allCentroids,
         }
 
         // Add the best pyramid starting from this centroid to the result
-        result.emplace_back(i, distances[0].second, distances[1].second, distances[2].second, distancesSum);
+        result.emplace_back(centroidIndices[i], distances[0].second, distances[1].second, distances[2].second, distancesSum);
     }
 
     return result;
 }
 
-/**
- * Keep finding the best pyramid to attempt to identify next.
- *
- * Rough strategy is to find the overall best pyramid first, then remove all the stars in that
- * pyramid and find the next best one (the idea being that if identification failed for the first
- * pyramid, there is likely a false star in it, so we want to try and identify different stars next
- * for highest chance of success).
- *
- * Of course, it's possible that we'll exhaust all stars using this strategy and still won't have
- * found a valid pyramid, even though valid pyramids totally exist. In that case, we'll just resort
- * to doing something worse TODO.
- */
-class PyramidIterator {
-public:
-    /// Please ensure that `centroids` outlives the PyramidIterator!
-    PyramidIterator(const Stars &centroids) : allCentroids(centroids) {
-        for (int i = 0; i < (int)centroids.size(); i++) {
-            untriedCentroidIndices.push_back(i);
-        }
+// see star-id-private.hpp for docs on PyramidIterator
+PyramidIterator::PyramidIterator(const Stars &centroids) : allCentroids(centroids) {
+    for (int i = 0; i < (int)centroids.size(); i++) {
+        untriedCentroidIndices.push_back(i);
+    }
+}
+
+BestPyramidAtStar PyramidIterator::Next() {
+    if (untriedCentroidIndices.size() < 4) {
+        return BestPyramidAtStar(-1);
     }
 
-    /// Returns the next best pyramid, or a "no pyramid" pyramid.
-    BestPyramidAtStar Next() {
-        if (untriedCentroidIndices.size() < 4) {
-            return BestPyramidAtStar(-1);
-        }
+    // Find the best pyramid
+    std::vector<BestPyramidAtStar> bestPyramids = ComputeBestPyramids(allCentroids, untriedCentroidIndices,
+                                                                      // TODO before PR merge: Fix this shit:
+                                                                      0, std::numeric_limits<float>::max());
+    assert(!bestPyramids.empty());
 
-        // Find the best pyramid
-        std::vector<BestPyramidAtStar> bestPyramids = ComputeBestPyramids(allCentroids, untriedCentroidIndices,
-                                                                          0, std::numeric_limits<float>::max());
-        assert(!bestPyramids.empty());
+    // Find the best pyramid
+    auto minIt = std::min_element(bestPyramids.begin(), bestPyramids.end());
+    assert(minIt != bestPyramids.end());
+    BestPyramidAtStar bestPyramid = *minIt;
 
-        // Find the best pyramid
-        auto minIt = std::min_element(bestPyramids.begin(), bestPyramids.end());
-        assert(minIt != bestPyramids.end());
-        BestPyramidAtStar bestPyramid = *minIt;
-
-        if (bestPyramid.distancesSum < 0) {
-            // No suitable pyramid exists
-            return BestPyramidAtStar(-1);
-        }
-
-        // Remove all the stars in the best pyramid from the list of untried stars
-        for (int i = 0; i < 4; i++) {
-            // Possible to optimize this using remove_if, or otherwise doing all the removal at once.
-            untriedCentroidIndices.erase(std::remove(untriedCentroidIndices.begin(), untriedCentroidIndices.end(),
-                                                     bestPyramid.centroidIndices[i]),
-                                         untriedCentroidIndices.end());
-        }
-
-        return bestPyramid;
+    if (bestPyramid.distancesSum < 0) {
+        // No suitable pyramid exists
+        return BestPyramidAtStar(-1);
     }
 
-private:
-    // once length of this is less than 4, we switch to alternate strategy:
-    const Stars &allCentroids;
-    std::vector<int16_t> untriedCentroidIndices;
-};
+    // Remove all the stars in the best pyramid from the list of untried stars
+    for (int i = 0; i < 4; i++) {
+        // Possible to optimize this using remove_if, or otherwise doing all the removal at once.
+        untriedCentroidIndices.erase(std::remove(untriedCentroidIndices.begin(), untriedCentroidIndices.end(),
+                                                 bestPyramid.centroidIndices[i]),
+                                     untriedCentroidIndices.end());
+    }
+
+    return bestPyramid;
+}
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
@@ -737,6 +675,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 #if LOST_DEBUG > 2
         // print distance sum
         std::cout << "Current pyramid distance sum: " << bestPyramid.distancesSum << std::endl;
+        // print out each centroid index
+        std::cout << bestPyramid.centroidIndices[0] << " " << bestPyramid.centroidIndices[1] << " " << bestPyramid.centroidIndices[2] << " " << bestPyramid.centroidIndices[3] << std::endl;
 #endif
         int i = bestPyramid.centroidIndices[0],
             j = bestPyramid.centroidIndices[1],
@@ -795,9 +735,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 #undef _CHECK_DISTANCE
 
         const int16_t *ijEnd, *ikEnd, *irEnd;
-        const int16_t *const ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
-        const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
-        const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
+        const int16_t *const ijQuery = vectorDatabase.FindPairsExact(catalog, ijDist - tolerance, ijDist + tolerance, &ijEnd);
+        const int16_t *const ikQuery = vectorDatabase.FindPairsExact(catalog, ikDist - tolerance, ikDist + tolerance, &ikEnd);
+        const int16_t *const irQuery = vectorDatabase.FindPairsExact(catalog, irDist - tolerance, irDist + tolerance, &irEnd);
 
         std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
         std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
