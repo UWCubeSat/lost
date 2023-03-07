@@ -228,6 +228,11 @@ Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. 
 Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
+\fB--plot-centroid-indices\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Plot output to PNG, but instead of labeling the stars
+with the catalog star they were identified as, labels them with their centroid index.
+
+.TP
 \fB--print-actual-centroids\fP [\fIpath\fP]
 Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
 \fIpath\fP. If star identification was also performed, print which catalog star each centroid was

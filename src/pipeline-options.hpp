@@ -36,6 +36,7 @@ LOST_CLI_OPTION("centroid-compare-threshold", float      , centroidCompareThresh
 LOST_CLI_OPTION("attitude-compare-threshold", float      , attitudeCompareThreshold, 1 , atof(optarg), kNoDefaultArgument)
 LOST_CLI_OPTION("plot-raw-input"            , std::string, plotRawInput            , "", optarg      , "-")
 LOST_CLI_OPTION("plot-input"                , std::string, plotInput               , "", optarg      , "-")
+LOST_CLI_OPTION("plot-centroid-indices"     , std::string, plotCentroidIndices     , "", optarg      , "-")
 LOST_CLI_OPTION("plot-output"               , std::string, plotOutput              , "", optarg      , "-")
 LOST_CLI_OPTION("print-expected-centroids"  , std::string, printExpectedCentroids  , "", optarg      , "-")
 LOST_CLI_OPTION("print-actual-centroids"    , std::string, printActualCentroids    , "", optarg      , "-")
