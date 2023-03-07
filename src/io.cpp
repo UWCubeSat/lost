@@ -1145,18 +1145,19 @@ void PipelineComparatorPrintCentroids(std::ostream &os,
     }
 }
 
-// TODO: add a CLI option to use this!
 /// Plot an annotated image where centroids are annotated with their centroid index. For debugging.
-void PipelineComparatorPlotIndexes(std::ostream &os,
-                                   const PipelineInputList &expected,
-                                   const std::vector<PipelineOutput> &actual) {
+void PipelineComparatorPlotCentroidIndices(std::ostream &os,
+                                           const PipelineInputList &expected,
+                                           const std::vector<PipelineOutput> &actual,
+                                           const PipelineOptions &) {
+    const Stars &stars = actual[0].stars ? *actual[0].stars : *expected[0]->ExpectedStars();
     StarIdentifiers identifiers;
-    for (int i = 0; i < (int)actual[0].stars->size(); i++) {
+    for (int i = 0; i < (int)stars.size(); i++) {
         identifiers.push_back(StarIdentifier(i, i));
     }
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
-                actual[0].stars ? *actual[0].stars : *expected[0]->ExpectedStars(),
+                stars,
                 &identifiers,
                 &actual[0].catalog,
                 NULL,
@@ -1357,13 +1358,13 @@ void PipelineComparison(const PipelineInputList &expected,
     } while (0)
 
     if (values.plotRawInput != "") {
-        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1,
+        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->InputImage(),
                               "--plot-raw-input requires exactly 1 input image, but " + std::to_string(expected.size()) + " many were provided.",
                               PipelineComparatorPlotRawInput, values.plotRawInput, true);
     }
 
     if (values.plotInput != "") {
-        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars(),
+        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->InputImage() && expected[0]->InputStars(),
                               "--plot-input requires exactly 1 input image, and for centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
                               PipelineComparatorPlotInput, values.plotInput, true);
     }
@@ -1371,6 +1372,11 @@ void PipelineComparison(const PipelineInputList &expected,
         LOST_PIPELINE_COMPARE(actual.size() == 1 && (actual[0].stars || actual[0].starIds),
                               "--plot-output requires exactly 1 output image, and for either centroids or star IDs to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPlotOutput, values.plotOutput, true);
+    }
+    if (values.plotCentroidIndices != "") {
+        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->InputImage(),
+                              "--plot-centroid-indices requires exactly 1 input with image. " + std::to_string(expected.size()) + " many inputs were provided.",
+                              PipelineComparatorPlotCentroidIndices, values.plotCentroidIndices, true);
     }
     if (values.printCentroids != "") {
         LOST_PIPELINE_COMPARE(actual[0].stars && actual.size() == 1,
