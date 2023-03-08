@@ -5,8 +5,8 @@
 
 #include "camera.hpp"
 #include "centroiders.hpp"
-#include "star-utils.hpp"
 #include "databases.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -16,47 +16,46 @@ namespace lost {
  * and then determines which centroids corresponds to which catalog stars.
  */
 class StarIdAlgorithm {
- public:
-  /// Actualy perform the star idenification. This is the "main" function for StarIdAlgorithm
-  virtual StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
-                             const Camera &) const = 0;
+   public:
+    /// Actualy perform the star idenification. This is the "main" function for StarIdAlgorithm
+    virtual StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
+                               const Camera &) const = 0;
 
-  virtual ~StarIdAlgorithm(){};
+    virtual ~StarIdAlgorithm(){};
 };
 
-
 class TetraStarIdAlgorithm : public StarIdAlgorithm {
- public:
-  StarIdentifiers Go(const unsigned char *database, const Stars &centroids, const Catalog &catalog,
-                     const Camera &) const;
+   public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &centroids,
+                       const Catalog &catalog, const Camera &) const;
 
- private:
-  // Do NOT modify these parameters unless you know what you're doing
-  const int numPattStars = 4;
-  const int numPattBins = 50;
-  const float pattMaxError = 0.002;
+   private:
+    // Do NOT modify these parameters unless you know what you're doing
+    const int numPattStars = 4;
+    const int numPattBins = 50;
+    const float pattMaxError = 0.002;
 
-  const long long MAGIC_RAND = 2654435761;
+    const long long MAGIC_RAND = 2654435761;
 
-  /**
-   * @brief Get all possible matching patterns starting from given index
-   *
-   * Perform quadratic probing
-   *
-   * @param index
-   * @param pattCatFile
-   * @return std::vector<std::vector<int>> List of 4-star patterns that could be matches
-   */
+    /**
+     * @brief Get all possible matching patterns starting from given index
+     *
+     * Perform quadratic probing
+     *
+     * @param index
+     * @param pattCatFile
+     * @return std::vector<std::vector<int>> List of 4-star patterns that could be matches
+     */
 
-    std::vector<std::vector<int>> GetAtIndex(int index, int maxIndex, const TetraDatabase &db) const;
-
+    std::vector<std::vector<int>> GetAtIndex(int index, int maxIndex,
+                                             const TetraDatabase &db) const;
 };
 
 /// A star-id algorithm that returns random results. For debugging.
 class DummyStarIdAlgorithm final : public StarIdAlgorithm {
- public:
-  StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
-                     const Camera &) const;
+   public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
+                       const Camera &) const;
 };
 
 /**
@@ -67,18 +66,18 @@ class DummyStarIdAlgorithm final : public StarIdAlgorithm {
  * to idenify images with few stars.
  */
 class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
- public:
-  StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
-                     const Camera &) const;
+   public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
+                       const Camera &) const;
 
-  /**
-   * @param tolerance Angular tolerance (Two inter-star distances are considered the same if within
-   * this many radians)
-   */
-  explicit GeometricVotingStarIdAlgorithm(float tolerance) : tolerance(tolerance){};
+    /**
+     * @param tolerance Angular tolerance (Two inter-star distances are considered the same if
+     * within this many radians)
+     */
+    explicit GeometricVotingStarIdAlgorithm(float tolerance) : tolerance(tolerance){};
 
- private:
-  float tolerance;
+   private:
+    float tolerance;
 };
 
 /**
@@ -89,30 +88,30 @@ class GeometricVotingStarIdAlgorithm : public StarIdAlgorithm {
  * holds true if the camera is calibrated and has low centroid error.
  */
 class PyramidStarIdAlgorithm final : public StarIdAlgorithm {
- public:
-  StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
-                     const Camera &) const;
-  /**
-   * @param tolerance Angular tolerance (Two inter-star distances are considered the same if within
-   * this many radians)
-   * @param numFalseStars an estimate of the number of false stars in the whole celestial sphere
-   * (not just the field of view). Eg, if you estimate 10 dead pixels in a 40 degree FOV, you'd
-   * want to multiply that up to a hundred-something numFalseStars.
-   * @param maxMismatchProbability The maximum allowable probability for any star to be mis-id'd.
-   * @param cutoff Maximum number of pyramids to iterate through before giving up.
-   */
-  PyramidStarIdAlgorithm(float tolerance, int numFalseStars, float maxMismatchProbability,
-                         long cutoff)
-      : tolerance(tolerance),
-        numFalseStars(numFalseStars),
-        maxMismatchProbability(maxMismatchProbability),
-        cutoff(cutoff){};
+   public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
+                       const Camera &) const;
+    /**
+     * @param tolerance Angular tolerance (Two inter-star distances are considered the same if
+     * within this many radians)
+     * @param numFalseStars an estimate of the number of false stars in the whole celestial sphere
+     * (not just the field of view). Eg, if you estimate 10 dead pixels in a 40 degree FOV, you'd
+     * want to multiply that up to a hundred-something numFalseStars.
+     * @param maxMismatchProbability The maximum allowable probability for any star to be mis-id'd.
+     * @param cutoff Maximum number of pyramids to iterate through before giving up.
+     */
+    PyramidStarIdAlgorithm(float tolerance, int numFalseStars, float maxMismatchProbability,
+                           long cutoff)
+        : tolerance(tolerance),
+          numFalseStars(numFalseStars),
+          maxMismatchProbability(maxMismatchProbability),
+          cutoff(cutoff){};
 
- private:
-  float tolerance;
-  int numFalseStars;
-  float maxMismatchProbability;
-  long cutoff;
+   private:
+    float tolerance;
+    int numFalseStars;
+    float maxMismatchProbability;
+    long cutoff;
 };
 
 }  // namespace lost

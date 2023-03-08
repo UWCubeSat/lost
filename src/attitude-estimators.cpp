@@ -120,7 +120,7 @@ float QuestCharPoly(float x, float a, float b, float c, float d, float s) {retur
 float QuestCharPolyPrime(float x, float a, float b, float c) {return 4*pow(x,3) - 2*(a+b)*x - c;}
 
 /**
- * Approximates roots of a real function using the Newton-Raphson algorithm 
+ * Approximates roots of a real function using the Newton-Raphson algorithm
  * @see https://www.geeksforgeeks.org/program-for-newton-raphson-method/
  */
 float QuestEigenvalueEstimator(float guess, float a, float b, float c, float d, float s) {

@@ -1,11 +1,11 @@
 #ifndef ATTITUDE_UTILS_H
 #define ATTITUDE_UTILS_H
 
-#include <memory>
-#include <fstream>
-#include <vector>
-#include <numeric> // iota
 #include <algorithm>
+#include <fstream>
+#include <memory>
+#include <numeric>  // iota
+#include <vector>
 
 namespace lost {
 
@@ -31,17 +31,17 @@ struct Vec2 {
     friend std::ostream &operator<<(std::ostream &output, const Vec2 &vec);
 };
 
-class Mat3; // define above so we can use in Vec3 class
+class Mat3;  // define above so we can use in Vec3 class
 
 /// Three dimensional vector with floating point components
 class Vec3 {
-public:
+   public:
     float x;
     float y;
     float z;
 
     Vec3(){};
-    Vec3(float x, float y, float z): x(x), y(y), z(z) {};
+    Vec3(float x, float y, float z) : x(x), y(y), z(z){};
 
     float Magnitude() const;
     float MagnitudeSq() const;
@@ -53,18 +53,16 @@ public:
     Vec3 operator*(const float &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
-    Vec3 operator+ (const Vec3 &) const;
+    Vec3 operator+(const Vec3 &) const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
 
-    friend std::ostream& operator<< (std::ostream &output, const Vec3 &vec);
-
-
+    friend std::ostream &operator<<(std::ostream &output, const Vec3 &vec);
 };
 
 /// 3x3 vector with floating point components
 class Mat3 {
-public:
+   public:
     float x[9];
 
     float At(int i, int j) const;
@@ -91,17 +89,18 @@ float Distance(const Vec3 &, const Vec3 &);
 
 /**
  * A "human-readable" way to represent a 3d rotation or orientation.
- * Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans to understand.
- * There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles.
+ * Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans
+ * to understand. There's no one single way to store Euler angles. We use z-y'-x'' angles, according
+ * to the notation used on the wikipedia page for euler angles.
  */
 class EulerAngles {
-public:
-    EulerAngles(float ra, float de, float roll)
-        : ra(ra), de(de), roll(roll) { };
+   public:
+    EulerAngles(float ra, float de, float roll) : ra(ra), de(de), roll(roll){};
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
     float ra;
-    /// Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw.
+    /// Declination. How far we pitch up (or down if negative). Pitch is performed second, after
+    /// yaw.
     float de;
     /// How far we roll counterclockwise. Roll is performed last (after yaw and pitch).
     float roll;
@@ -109,13 +108,12 @@ public:
 
 /// A quaternion is a common way to represent a 3d rotation.
 class Quaternion {
-public:
+   public:
     Quaternion() = default;
     explicit Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, float);
 
-    Quaternion(float real, float i, float j, float k)
-        : real(real), i(i), j(j), k(k) { };
+    Quaternion(float real, float i, float j, float k) : real(real), i(i), j(j), k(k){};
 
     Quaternion operator*(const Quaternion &other) const;
     Quaternion Conjugate() const;
@@ -137,15 +135,16 @@ public:
 //
 /**
  * The attitude (orientation) of a spacecraft.
- * The Attitude object stores either a rotation matrix (direction cosine matrix) or a quaternion, and converts automatically to the other format when needed.
- * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt to
- * either quaternions or DCMs exclusively, depending on the natural output format of whatever
+ * The Attitude object stores either a rotation matrix (direction cosine matrix) or a quaternion,
+ * and converts automatically to the other format when needed.
+ * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt
+ * to either quaternions or DCMs exclusively, depending on the natural output format of whatever
  * attitude estimation algorithm you're using.
  */
 class Attitude {
-public:
+   public:
     Attitude() = default;
-    explicit Attitude(const Quaternion &); // NOLINT
+    explicit Attitude(const Quaternion &);  // NOLINT
     explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
@@ -153,7 +152,7 @@ public:
     EulerAngles ToSpherical() const;
     Vec3 Rotate(const Vec3 &) const;
 
-private:
+   private:
     enum AttitudeType {
         NullType,
         QuaternionType,
@@ -161,7 +160,7 @@ private:
     };
 
     Quaternion quaternion;
-    Mat3 dcm; // direction cosine matrix
+    Mat3 dcm;  // direction cosine matrix
     AttitudeType type;
 };
 
@@ -207,6 +206,6 @@ std::vector<T> ArgsortVector(std::vector<T> arr, std::vector<U> cmp) {
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
-}
+}  // namespace lost
 
 #endif

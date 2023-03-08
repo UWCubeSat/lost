@@ -31,16 +31,16 @@ const char kNoDefaultArgument = 0;
 
 /// An output stream which might be a file or stdout
 class UserSpecifiedOutputStream {
-public:
+   public:
     explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
     ~UserSpecifiedOutputStream();
 
-  /// return the inner output stream, suitable for use with <<
-  std::ostream &Stream() { return *stream; };
+    /// return the inner output stream, suitable for use with <<
+    std::ostream &Stream() { return *stream; };
 
- private:
-  bool isFstream;
-  std::ostream *stream;
+   private:
+    bool isFstream;
+    std::ostream *stream;
 };
 
 // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
@@ -59,17 +59,17 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width,
 
 /// An 8-bit grayscale 2d image
 class Image {
- public:
-  /**
-   * The raw pixel data in the image.
-   * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte is
-   * pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits may
-   * be added in the future.
-   */
-  unsigned char *image;
+   public:
+    /**
+     * The raw pixel data in the image.
+     * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte
+     * is pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits
+     * may be added in the future.
+     */
+    unsigned char *image;
 
-  int width;
-  int height;
+    int width;
+    int height;
 };
 
 ////////////////////
@@ -78,7 +78,7 @@ class Image {
 
 /// The command line options passed when running a pipeline
 class PipelineOptions {
- public:
+   public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) type prop = defaultVal;
 #include "./pipeline-options.hpp"
 #undef LOST_CLI_OPTION
@@ -96,24 +96,24 @@ class PipelineOptions {
  * trying to intentionally introduce error into the inputs.
  */
 class PipelineInput {
- public:
-  virtual ~PipelineInput(){};
+   public:
+    virtual ~PipelineInput(){};
 
-  virtual const Image *InputImage() const { return NULL; };
-  /// The catalog to which catalog indexes returned from other methods refer.
-  virtual const Catalog &GetCatalog() const = 0;
-  virtual const Stars *InputStars() const { return NULL; };
-  virtual const StarIdentifiers *InputStarIds() const { return NULL; };
-  /// Only used in tracking mode, in which case it is an estimate of the current attitude based on
-  /// the last attitude, IMU info, etc.
-  virtual const Attitude *InputAttitude() const { return NULL; };
-  virtual const Camera *InputCamera() const { return NULL; };
-  /// Convert the InputImage() output into a cairo surface
-  cairo_surface_t *InputImageSurface() const;
+    virtual const Image *InputImage() const { return NULL; };
+    /// The catalog to which catalog indexes returned from other methods refer.
+    virtual const Catalog &GetCatalog() const = 0;
+    virtual const Stars *InputStars() const { return NULL; };
+    virtual const StarIdentifiers *InputStarIds() const { return NULL; };
+    /// Only used in tracking mode, in which case it is an estimate of the current attitude based on
+    /// the last attitude, IMU info, etc.
+    virtual const Attitude *InputAttitude() const { return NULL; };
+    virtual const Camera *InputCamera() const { return NULL; };
+    /// Convert the InputImage() output into a cairo surface
+    cairo_surface_t *InputImageSurface() const;
 
-  virtual const Stars *ExpectedStars() const { return InputStars(); };
-  virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
-  virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
+    virtual const Stars *ExpectedStars() const { return InputStars(); };
+    virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
+    virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 };
 
 /**
@@ -123,30 +123,30 @@ class PipelineInput {
  * methods are available.
  */
 class GeneratedPipelineInput : public PipelineInput {
- public:
-  // TODO: correct params
-  GeneratedPipelineInput(const Catalog &, Attitude, Camera, float observedReferenceBrightness,
-                         float starSpreadStdDev, float sensitivity, float darkCurrent,
-                         float readNoiseStdDev, Attitude motionBlurDirection, float exposureTime,
-                         float readoutTime, bool shotNoise, int oversampling, int numFalseStars,
-                         int falseMinMagnitude, int falseMaxMagnitude, int seed);
+   public:
+    // TODO: correct params
+    GeneratedPipelineInput(const Catalog &, Attitude, Camera, float observedReferenceBrightness,
+                           float starSpreadStdDev, float sensitivity, float darkCurrent,
+                           float readNoiseStdDev, Attitude motionBlurDirection, float exposureTime,
+                           float readoutTime, bool shotNoise, int oversampling, int numFalseStars,
+                           int falseMinMagnitude, int falseMaxMagnitude, int seed);
 
-  const Image *InputImage() const { return &image; };
-  const Stars *InputStars() const { return &stars; };
-  const Camera *InputCamera() const { return &camera; };
-  const StarIdentifiers *InputStarIds() const { return &starIds; };
-  bool InputStarsIdentified() const { return true; };
-  const Attitude *InputAttitude() const { return &attitude; };
-  const Catalog &GetCatalog() const { return catalog; };
+    const Image *InputImage() const { return &image; };
+    const Stars *InputStars() const { return &stars; };
+    const Camera *InputCamera() const { return &camera; };
+    const StarIdentifiers *InputStarIds() const { return &starIds; };
+    bool InputStarsIdentified() const { return true; };
+    const Attitude *InputAttitude() const { return &attitude; };
+    const Catalog &GetCatalog() const { return catalog; };
 
- private:
-  std::vector<unsigned char> imageData;
-  Image image;
-  Stars stars;
-  Camera camera;
-  Attitude attitude;
-  const Catalog &catalog;
-  StarIdentifiers starIds;
+   private:
+    std::vector<unsigned char> imageData;
+    Image image;
+    Stars stars;
+    Camera camera;
+    Attitude attitude;
+    const Catalog &catalog;
+    StarIdentifiers starIds;
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
@@ -155,18 +155,18 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
 /// A pipeline input created by reading a PNG from a file on disk.
 class PngPipelineInput : public PipelineInput {
-public:
+   public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
     ~PngPipelineInput();
 
-  const Image *InputImage() const { return &image; };
-  const Camera *InputCamera() const { return &camera; };
-  const Catalog &GetCatalog() const { return catalog; };
+    const Image *InputImage() const { return &image; };
+    const Camera *InputCamera() const { return &camera; };
+    const Catalog &GetCatalog() const { return catalog; };
 
- private:
-  Image image;
-  Camera camera;
-  const Catalog &catalog;
+   private:
+    Image image;
+    Camera camera;
+    const Catalog &catalog;
 };
 
 /////////////////////
@@ -178,35 +178,35 @@ public:
  * @details Also stores intermediate outputs, not just the final attitude.
  */
 struct PipelineOutput {
-  std::unique_ptr<Stars> stars;
-  std::unique_ptr<StarIdentifiers> starIds;
-  std::unique_ptr<Attitude> attitude;
+    std::unique_ptr<Stars> stars;
+    std::unique_ptr<StarIdentifiers> starIds;
+    std::unique_ptr<Attitude> attitude;
 
-  /**
-   * @brief The catalog that the indices in starIds refer to
-   * @todo Don't store it here
-   */
-  Catalog catalog;
+    /**
+     * @brief The catalog that the indices in starIds refer to
+     * @todo Don't store it here
+     */
+    Catalog catalog;
 };
 
 /// The result of comparing an actual star identification with the true star idenification, used for
 /// testing and benchmarking.
 struct StarIdComparison {
-  /// The number of centroids which were identified as the correct catalog star.
-  int numCorrect;
+    /// The number of centroids which were identified as the correct catalog star.
+    int numCorrect;
 
-  /// The number of centroids which were identified, but as the wrong catalog star.
-  int numIncorrect;
+    /// The number of centroids which were identified, but as the wrong catalog star.
+    int numIncorrect;
 
-  /// The total number of true stars in the image (the number the ideal star-id algorithm would
-  /// identify)
-  int numTotal;
+    /// The total number of true stars in the image (the number the ideal star-id algorithm would
+    /// identify)
+    int numTotal;
 
-  /// numCorrect/numTotal
-  float fractionCorrect;
+    /// numCorrect/numTotal
+    float fractionCorrect;
 
-  /// numIncorrect/numTotal
-  float fractionIncorrect;
+    /// numIncorrect/numTotal
+    float fractionIncorrect;
 };
 
 std::ostream &operator<<(std::ostream &, const Camera &);
@@ -229,20 +229,21 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
  * on the centroids and identified stars.
  */
 class Pipeline {
-  friend Pipeline SetPipeline(const PipelineOptions &values);
+    friend Pipeline SetPipeline(const PipelineOptions &values);
 
- public:
-  Pipeline() = default;
-  Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
-  PipelineOutput Go(const PipelineInput &);
-  std::vector<PipelineOutput> Go(const PipelineInputList &);
+   public:
+    Pipeline() = default;
+    Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *,
+             unsigned char *);
+    PipelineOutput Go(const PipelineInput &);
+    std::vector<PipelineOutput> Go(const PipelineInputList &);
 
- private:
-  std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
-  int centroidMinMagnitude = 0;
-  std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
-  std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
-  std::unique_ptr<unsigned char[]> database;
+   private:
+    std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
+    int centroidMinMagnitude = 0;
+    std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
+    std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+    std::unique_ptr<unsigned char[]> database;
 };
 
 Pipeline SetPipeline(const PipelineOptions &values);
@@ -260,7 +261,7 @@ Catalog PromptNarrowedCatalog(const Catalog &);
 
 /// Commannd line options when using the `database` command.
 class DatabaseOptions {
- public:
+   public:
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) type prop = defaultVal;
 #include "database-options.hpp"
 #undef LOST_CLI_OPTION
