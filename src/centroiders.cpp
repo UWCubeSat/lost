@@ -135,6 +135,13 @@ float FitModel(float x, float a, float xb, float sigma) {
     return a * exp(-1 * (x - xb) * (x - xb) / (2 * sigma * sigma));
 }
 
+///
+float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY){
+    float term1 = exp(-1 * (x - xb) * (x - xb) / (2 * sigmaX * sigmaX));
+    float term2 = exp(-1 * (y - yb) * (y - yb) / (2 * sigmaY * sigmaY));
+    return a * term1 * term2;
+}
+
 
 void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
                   float *xb, float *yb, double *sigma) {
@@ -206,8 +213,8 @@ struct LSGFFunctor : Functor<double> {
     TODO: this isn't great?? We're just fitting 5 data points
     */
     int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-        float a = x(0);
-        float xb = x(1);
+        double a = x(0);
+        double xb = x(1);
         double sigma = x(2);
         for (int i = 0; i < X.size(); i++) {
             int marginal;
@@ -217,7 +224,6 @@ struct LSGFFunctor : Functor<double> {
                 marginal = YMarginal(x0, X(i), nb, image, w);
             fvec(i) = marginal - FitModel(X(i), a, xb, sigma);
         }
-        std::cout << fvec(0) << std::endl;
 
         return 0;
     }
@@ -234,9 +240,69 @@ struct LSGFFunctor : Functor<double> {
     const int x0, y0;
 };
 
+/// Functor for 2D Least-squares Gaussian Fit algo
+struct LSGF2DFunctor : Functor<double> {
+    // We now have 5 params, beta = (a, xb, yb, sigmaX, sigmaY)
+    // Let entire window be (np x np) pixels
+    // We have np^2 data points
+    LSGF2DFunctor(const int nb, const unsigned char *image,
+                const int w, const int x0, const int y0)
+        : Functor<double>(5, (2 * nb + 1) * (2 * nb + 1)),
+          nb(nb),
+          image(image),
+          w(w),
+          x0(x0),
+          y0(y0) {}
+
+    /*
+    x = parameters (a, xb, yb, sigmaX, sigmaY)
+    */
+    int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
+        double a = x(0);
+        double xb = x(1);
+        double yb = x(2);
+        double sigmaX = x(3);
+        double sigmaY = x(4);
+
+        // for (int i = 0; i < X.size(); i++) {
+        //     int marginal;
+        //     if (marg == 0)
+        //         marginal = XMarginal(X(i), y0, nb, image, w);
+        //     else
+        //         marginal = YMarginal(x0, X(i), nb, image, w);
+        //     fvec(i) = marginal - FitModel(X(i), a, xb, sigma);
+        // }
+
+        int ind = 0;
+        for(int i = -nb; i <= nb; i++){
+            for(int j = -nb; j <= nb; j++){
+                int xi = x0 + i;
+                int yi = y0 + j;
+                float yPred = Get(xi, yi, image, w);
+                float modelPred = FitModel2D(xi, yi, a, xb, yb, sigmaX, sigmaY);
+                fvec(ind) = yPred - modelPred;
+
+                ind++;
+            }
+        }
+
+        return 0;
+    }
+
+    // Window size is (2*nb + 1) x (2*nb + 1)
+    const int nb;
+
+    const unsigned char *image;
+    const int w;  // image width in pixels
+    // Center coordinates (x0, y0) of this window
+    const int x0, y0;
+};
+
 std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageWidth,
                                                 int imageHeight) const {
     std::vector<Star> result;
+
+    std::cout << "1D Gaussian Fit" << std::endl;
 
     const int nb = 2;
 
@@ -286,10 +352,67 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         lmX.minimize(betaX);
         lmY.minimize(betaY);
 
+        a = betaX(0);
+
         xb = betaX(1);
         yb = betaY(1);
-        a = betaX(0);
+
         sigma = betaX(2);
+
+        // std::cout << "Original: " << x << ", " << y << std::endl;
+        // std::cout << "final: " << xb << ", " << yb << std::endl;
+        result.push_back(Star(xb, yb, 0));
+        // result.push_back(Star(x, y, 0));
+    }
+
+    std::cout << "Number of centroids: " << result.size() << std::endl;
+
+    return result;
+}
+
+std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageWidth,
+                                                int imageHeight) const {
+    std::vector<Star> result;
+
+    std::cout << "2D GAUSSIAN FIT" << std::endl;
+
+    const int nb = 2;
+    const int np = 2 * nb + 1;
+
+    // std::set<Point> checkedPoints;
+
+    std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
+
+    for (const Point &pt : candidatePts) {
+        int x = pt[0];
+        int y = pt[1];
+        if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
+
+        float a;
+        float xb, yb;
+        double sigmaX, sigmaY;
+        InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigmaX);
+
+        sigmaY = sigmaX;
+
+        Eigen::VectorXd beta(5);
+        beta << a, xb, yb, sigmaX, sigmaY;
+
+        // LSGF2DFunctor functor(nb, 0, X, image, imageWidth, x, y);
+        LSGF2DFunctor functor(nb, image, imageWidth, x, y);
+        Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
+        Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF2DFunctor>, double> lm(numDiff);
+
+        lm.parameters.maxfev = 2000;
+        lm.parameters.xtol = 1.0e-10;
+
+        lm.minimize(beta);
+
+        a = beta(0);
+        xb = beta(1);
+        yb = beta(2);
+        sigmaX = beta(3);
+        sigmaY = beta(4);
 
         // std::cout << "Original: " << x << ", " << y << std::endl;
         // std::cout << "final: " << xb << ", " << yb << std::endl;

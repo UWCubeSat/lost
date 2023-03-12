@@ -724,6 +724,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.centroidAlgo == "lsgf1d") {
         result.centroidAlgorithm =
             std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit1D());
+    } else if (values.centroidAlgo == "lsgf2d") {
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit2D());
     } else if (values.centroidAlgo != "") {
         std::cout << "Illegal centroid algorithm." << std::endl;
         exit(1);

@@ -32,6 +32,15 @@ public:
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
+/**
+ * @brief Least Squares Gaussian Fit 2D centroiding algorithm
+ *
+ */
+class LeastSquaresGaussianFit2D : public CentroidAlgorithm {
+   public:
+    explicit LeastSquaresGaussianFit2D(){};
+    Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
 
 /// A centroid algorithm for debugging that returns random centroids.
 class DummyCentroidAlgorithm: public CentroidAlgorithm {
