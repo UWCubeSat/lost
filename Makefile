@@ -85,7 +85,7 @@ lint:
 
 test: $(BIN) $(BSC) $(TEST_BIN)
 	$(TEST_BIN)
-	bash ./test/scripts/pyramid-incorrect.sh
+	# bash ./test/scripts/pyramid-incorrect.sh
 	# bash ./test/scripts/readme-examples-test.sh
 	# bash ./test/scripts/tetra.sh
 

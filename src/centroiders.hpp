@@ -62,6 +62,27 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
-}
+// TODO: a bunch of functions that really should be private, but tests need to access
+
+/// Get value of pixel at (x, y) in image with width=w
+int Get(int x, int y, const unsigned char *image, int w);
+
+/// Get XMarginal - keep x fixed, sum pixel values from [y0-nb, y0+nb]
+int XMarginal(int x, int y0, int nb, const unsigned char *image, int w);
+
+/// Get YMarginal - keep y fixed, sum pixel values from [x0-nb, x0+nb]
+int YMarginal(int x0, int y, int nb, const unsigned char *image, int w);
+
+/*
+Get initial guess for window centered at (x0, y0) with given nb
+Output:
+a = max intensity value
+(xb, yb) = coordinates of pixel with max intensity
+sigma = standard deviation (sigmaX = sigmaY)
+*/
+void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
+                  float *xb, float *yb, double *sigma);
+
+} // namespace lost
 
 #endif
