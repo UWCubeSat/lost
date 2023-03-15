@@ -162,12 +162,12 @@ float FloatModulo(float x, float mod) {
 }
 
 std::ostream& operator<< (std::ostream& output, const Vec2 &vec){
-    output << "x: " << vec.x << "   y: " << vec.y;
+    output << "Vec2(x: " << vec.x << ", y: " << vec.y << ")";
     return output;
 }
 
 std::ostream& operator<< (std::ostream& output, const Vec3 &vec){
-    output << "x: " << vec.x << "   y: " << vec.y << "  z: " << vec.z;
+    output << "Vec3(x: " << vec.x << ", y: " << vec.y << ", z: " << vec.z << ")";
     return output;
 }
 
@@ -214,7 +214,7 @@ Vec2 Vec2::operator*(const float &other) const {
     return { x*other, y*other };
 }
 
-/// Vector-Scalar multiplication
+/// Vector-scalar multiplication
 Vec3 Vec3::operator*(const float &other) const {
     return { x*other, y*other, z*other };
 }

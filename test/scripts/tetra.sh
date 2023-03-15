@@ -6,7 +6,7 @@ th="0.5"
 
 totalTime=0
 # CHANGE THIS, n = number of images to try
-n=20
+n=1000
 totalCorrect=0
 totalIncorrect=0
 totalNoStars=0
@@ -80,7 +80,7 @@ for _ in $(seq "${1:-$n}"); do
       --generate-ra "$ra" \
       --generate-de "$de" \
       --generate-roll "$roll" \
-      --database my-database-small-2.dat \
+      --database my-database-small-3.dat \
       --centroid-mag-filter 5 \
       --star-id-algo tetra \
       --compare-star-ids \
