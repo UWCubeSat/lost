@@ -26,11 +26,8 @@ namespace lost {
 
 /// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog =
-        NarrowCatalog(CatalogRead(), (int)(values.minMag * 100), values.maxStars);
-
-    // Default minMag is 100
-    std::cout << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
+    std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
