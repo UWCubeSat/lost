@@ -31,6 +31,7 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
     std::set<Point> checkedPoints;
 
     int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    std::cout << "cutoff: " << cutoff << std::endl;
 
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         int x = i % imageWidth;
@@ -47,7 +48,7 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
             int y0 = y;
 
             queue.push_back(pCurr);
-            while (!queue.size() == 0) {
+            while (queue.size() != 0) {
                 Point p = queue[0];
                 queue.pop_front();
 
@@ -264,20 +265,12 @@ struct LSGF2DFunctor : Functor<double> {
         double sigmaX = x(3);
         double sigmaY = x(4);
 
-        // for (int i = 0; i < X.size(); i++) {
-        //     int marginal;
-        //     if (marg == 0)
-        //         marginal = XMarginal(X(i), y0, nb, image, w);
-        //     else
-        //         marginal = YMarginal(x0, X(i), nb, image, w);
-        //     fvec(i) = marginal - FitModel(X(i), a, xb, sigma);
-        // }
-
         int ind = 0;
         for(int i = -nb; i <= nb; i++){
             for(int j = -nb; j <= nb; j++){
                 int xi = x0 + i;
                 int yi = y0 + j;
+                // TODO: other way around, yPred is our modelPred, yActual is our pixel intensity
                 float yPred = Get(xi, yi, image, w);
                 float modelPred = FitModel2D(xi, yi, a, xb, yb, sigmaX, sigmaY);
                 fvec(ind) = yPred - modelPred;
@@ -383,6 +376,9 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
+    // TODO: remove, testing
+    int same = 0;
+
     for (const Point &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
@@ -415,12 +411,16 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         sigmaY = beta(4);
 
         // std::cout << "Original: " << x << ", " << y << std::endl;
-        // std::cout << "final: " << xb << ", " << yb << std::endl;
-        result.push_back(Star(xb, yb, 0));
-        // result.push_back(Star(x, y, 0));
+        std::cout << xb << ", " << yb << std::endl;
+        if(x == xb && y == yb) same++;
+        result.push_back(Star(xb, yb, nb));
+
+
+        // result.push_back(Star(x, y, nb));
     }
 
     std::cout << "Number of centroids: " << result.size() << std::endl;
+    std::cout << "same: " << same << std::endl;
 
     return result;
 }
@@ -591,6 +591,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                 result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter)) / 2.0f,
                                       ((float)(yDiameter)) / 2.0f,
                                       p.checkedIndices.size() - sizeBefore));
+
+                // std::cout << result.back().position.x << ", " << result.back().position.y << std::endl;
             }
         }
     }
