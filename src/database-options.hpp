@@ -4,7 +4,7 @@
 
 LOST_CLI_OPTION("min-mag"              , float      , minMag                , 100   , atof(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("max-stars"            , int        , maxStars              , 10000 , atoi(optarg)   , kNoDefaultArgument)
-LOST_CLI_OPTION("min-separation"       , float      , minSeparation         , 0.08  , atof(optarg)   , kNoDefaultArgument)
+LOST_CLI_OPTION("min-separation"       , float      , minSeparation         , 0.05  , atof(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("kvector"              , bool       , kvector               , false , atobool(optarg), true)
 LOST_CLI_OPTION("kvector-min-distance" , float      , kvectorMinDistance    , 0.5   , atof(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("kvector-max-distance" , float      , kvectorMaxDistance    , 15    , atof(optarg)   , kNoDefaultArgument)

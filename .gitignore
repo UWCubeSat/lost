@@ -104,8 +104,3 @@ pyramid-incorrect.dat
 
 # macOS
 .DS_Store
-
-# Tetra stuff
-table.txt
-BSC5
-*.bin

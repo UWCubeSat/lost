@@ -79,6 +79,15 @@ class PairDistanceKVectorDatabase {
     const int16_t *pairs;
 };
 
+/*
+Pre-processing for Tetra star-id algorithm
+Return:
+(a) List of stars we can use for Tetra
+(b) Subset of (a) that we use to generate Tetra star patterns
+*/
+std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &,
+                                                                      const float maxFovDeg);
+
 long SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
                             const std::vector<short> &pattStars,
                             const std::vector<short> &catIndices, bool ser);

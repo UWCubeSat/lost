@@ -35,7 +35,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
     const int numPattBins = 50;
     const float pattMaxError = 0.002;
 
-    const long long MAGIC_RAND = 2654435761;
+   //  const long long MAGIC_RAND = 2654435761;
 
     /**
      * @brief Get all possible matching patterns starting from given index

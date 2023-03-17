@@ -26,25 +26,28 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, fl
     // TODO: sort regardless?
     std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
 
+    // TODO: bug? Why remove both i and j
+    // std::cout << "min sep: " << minSeparation << std::endl;
 
-    // remove stars that are too close to each other
-    std::set<int> tooCloseIndices;
-    // filter out stars that are too close together
-    // easy enough to n^2 brute force, the catalog isn't that big
-    for (int i = 0; i < (int)result.size(); i++) {
-        for (int j = i+1; j < (int)result.size(); j++) {
-            if (AngleUnit(result[i].spatial, result[j].spatial) < minSeparation) {
-                tooCloseIndices.insert(i);
-                tooCloseIndices.insert(j);
-            }
-        }
-    }
 
-    // Erase all the stars whose indices are in tooCloseIndices from the result.
-    // Loop backwards so indices don't get messed up as we iterate.
-    for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
-        result.erase(result.begin() + *it);
-    }
+    // // remove stars that are too close to each other
+    // std::set<int> tooCloseIndices;
+    // // filter out stars that are too close together
+    // // easy enough to n^2 brute force, the catalog isn't that big
+    // for (int i = 0; i < (int)result.size(); i++) {
+    //     for (int j = i + 1; j < (int)result.size(); j++) {
+    //         if (AngleUnit(result[i].spatial.Normalize(), result[j].spatial.Normalize()) < minSeparation) {
+    //             tooCloseIndices.insert(i);
+    //             tooCloseIndices.insert(j);
+    //         }
+    //     }
+    // }
+
+    // // Erase all the stars whose indices are in tooCloseIndices from the result.
+    // // Loop backwards so indices don't get messed up as we iterate.
+    // for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
+    //     result.erase(result.begin() + *it);
+    // }
 
     // and finally limit to n brightest stars
     if (maxStars < (int)result.size()) {
@@ -63,122 +66,6 @@ int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
     }
 
     return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
-}
-
-std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
-                                                                      const float maxFovDeg) {
-    // Would not recommend changing these parameters!
-    // Currently optimal to generate many patterns with smaller FOV
-    // If you make the maxFOV of Tetra database larger, you need to scale the following 2 parameters
-    // up note that this will cause number of patterns to grow exponentially
-    const int pattStarsPerFOV = 10;
-    const int verificationStarsPerFOV = 20;
-
-    // To eliminate double stars, specify that star must be > 0.05 degrees apart
-    const float starMinSep = 0.05;
-
-    const float maxFOV = DegToRad(maxFovDeg);
-
-    int numEntries = catalog.size();
-    int keepForPattCount = 1;
-    std::vector<bool> keepForPatterns(numEntries, false);
-    std::vector<bool> keepForVerifying(numEntries, false);
-
-    // NOTE: pattern set will always be a subset of verification set
-    // We technically don't even need the verification set unless we plan
-    // to calculate probability of mismatch - (which we probably should)
-
-    // Definitely keep the first star
-    keepForPatterns[0] = true;
-    keepForVerifying[0] = true;
-
-    for (int i = 1; i < numEntries; i++) {
-        // Spatial vector representing new star
-        Vec3 vec = catalog[i].spatial;
-
-        bool angsPatternsOK = true;
-        int numPattStarsInFov = 0;
-
-        // We should test each new star's angular distance to all stars
-        // we've already selected to be kept for pattern construction
-        // Stop early if:
-        // a) double star: angle < min separation allowed
-        // b) Number of stars in region maxFov/2 >= pattStarsPerFOV
-        for (int j = 0; j < i; j++) {
-            if (keepForPatterns[j]) {
-                float dotProd = vec * catalog[j].spatial;
-                if (dotProd >= std::cos(DegToRad(starMinSep))) {
-                    angsPatternsOK = false;
-                    break;
-                }
-                // If angle between new star i and old star j is less than maxFov/2, OK
-                if (dotProd > std::cos(maxFOV / 2)) {
-                    numPattStarsInFov++;
-                    if (numPattStarsInFov >= pattStarsPerFOV) {
-                        angsPatternsOK = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (angsPatternsOK) {
-            keepForPatterns[i] = true;
-            keepForVerifying[i] = true;
-            keepForPattCount++;
-            continue;
-        }
-
-        bool angsVerifyingOK = true;
-        int numVerStarsInFov = 0;
-
-        // Same thing here, we should test each new star's angular distance to all
-        // stars we've already selected to be kept for verification
-        // std::vector<float> angsVerifying;
-        for (int j = 0; j < i; j++) {
-            if (keepForVerifying[j]) {
-                float dotProd = vec * catalog[j].spatial;
-                if (dotProd >= std::cos(DegToRad(starMinSep))) {
-                    angsVerifyingOK = false;
-                    break;
-                }
-                if (dotProd > std::cos(maxFOV / 2)) {
-                    numVerStarsInFov++;
-                    if (numVerStarsInFov >= verificationStarsPerFOV) {
-                        angsVerifyingOK = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (angsVerifyingOK) {
-            keepForVerifying[i] = true;
-        }
-    }
-
-    std::vector<short> finalCatIndices;
-    std::vector<short> pattStars;
-
-    // finalCat is the final version of the star table
-    for (int i = 0; i < (int)keepForVerifying.size(); i++) {
-        if (keepForVerifying[i]) {
-            finalCatIndices.push_back(i);
-        }
-    }
-
-    // Pretty clever way of finding which stars in the FINAL star table
-    // should be used for pattern construction later in Tetra's database generation step
-    short cumulativeSum = -1;
-    for (int i = 0; i < (int)keepForVerifying.size(); i++) {
-        if (keepForVerifying[i]) {
-            cumulativeSum++;
-        }
-        if (keepForPatterns[i]) {
-            pattStars.push_back(cumulativeSum);
-        }
-    }
-    return std::pair<std::vector<short>, std::vector<short>>{finalCatIndices, pattStars};
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.

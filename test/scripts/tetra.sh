@@ -6,7 +6,7 @@ th="0.5"
 
 totalTime=0
 # CHANGE THIS, n = number of images to try
-n=1000
+n=100
 totalCorrect=0
 totalIncorrect=0
 totalNoStars=0
