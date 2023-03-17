@@ -24,6 +24,10 @@ class StarIdAlgorithm {
     virtual ~StarIdAlgorithm(){};
 };
 
+/**
+ * Tetra star identification algorithm based on the one originally proposed by Brown & Stubis
+ * Utilizes hashing of 4-star patterns for quick lookup time, decently high accuracy
+ */
 class TetraStarIdAlgorithm : public StarIdAlgorithm {
    public:
     StarIdentifiers Go(const unsigned char *database, const Stars &centroids,

@@ -19,16 +19,16 @@
 namespace lost {
 
 /**
- * @brief Get indices of centroids forming new star pattern, store in res
+ * @brief Tetra only: get indices of centroids for new star pattern, store in res
  *
  * Assumes that your centroids have already been sorted in descending order of brightness
  * Bright stars tend to have lower centroiding error
  */
-static bool GetCentroidCombination(int pattSize, int numCentroids, bool firstTime,
+static bool TetraGetCentroidCombo(int pattSize, int numCentroids, bool firstTime,
                                    std::vector<int> &indices, std::vector<int> *const res);
 
 /**
- * @brief Construct a star pattern from spatial vectors
+ * @brief Tetra only: construct a Tetra star pattern from spatial vectors
  *
  * This is one possible way to represent the pattern, somewhat naive but good in practice
  * For each pair of spatial vectors, calculate the magnitude of their difference, the "edge length"
@@ -36,9 +36,9 @@ static bool GetCentroidCombination(int pattSize, int numCentroids, bool firstTim
  * Divide all edge lengths by the largest edge (except the LE itself) to get edge ratios
  * Return the pattern = vector of edge ratios in sorted order
  */
-static std::vector<float> ConstructPattern(const std::vector<Vec3> &spats);
+static std::vector<float> TetraConstructPattern(const std::vector<Vec3> &spats);
 
-static std::vector<float> ConstructPattern(const std::vector<Vec3> &spats) {
+static std::vector<float> TetraConstructPattern(const std::vector<Vec3> &spats) {
     std::vector<float> edgeLengths;
     // C(numPattStars, 2) edge lengths calculated
     for (int i = 0; i < (int)spats.size(); i++) {
@@ -81,7 +81,7 @@ std::vector<std::vector<int>> TetraStarIdAlgorithm::GetPatternMatches(
     return res;
 }
 
-static bool GetCentroidCombination(int pattSize, int numCentroids, bool firstTime,
+static bool TetraGetCentroidCombo(int pattSize, int numCentroids, bool firstTime,
                                    std::vector<int> &indices, std::vector<int> *const res) {
     if (numCentroids < pattSize) {
         return false;
@@ -113,15 +113,6 @@ static bool GetCentroidCombination(int pattSize, int numCentroids, bool firstTim
     return true;
 }
 
-/**
- * @brief Identifies stars using Tetra Star Identification Algorithm
- *
- * @param database
- * @param stars List of star centroids detected from image
- * @param catalog Star table
- * @param camera
- * @return StarIdentifiers
- */
 StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars,
                                          const Catalog &catalog, const Camera &camera) const {
     // Result format: (centroidIndex, catalogIndex)
@@ -151,7 +142,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
     // Sort centroided stars by brightness, high to low. Larger is brighter
 
-    std::stable_sort(centroidIndices.begin(), centroidIndices.end(),
+    std::sort(centroidIndices.begin(), centroidIndices.end(),
                      [&stars](int a, int b) { return stars[a].magnitude > stars[b].magnitude; });
 
     // Index of centroid indices list
@@ -161,7 +152,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     std::vector<int> cen;
 
     // In practice, maybe cap this at some number of combinations, maybe 10 or so
-    while (GetCentroidCombination(numPattStars, centroidIndices.size(), firstTime, cen,
+    while (TetraGetCentroidCombo(numPattStars, centroidIndices.size(), firstTime, cen,
                                   &chosenCentroidIndices)) {
         firstTime = false;
 
@@ -204,7 +195,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             continue;
         }
 
-        std::vector<float> pattEdgeRatios = ConstructPattern(pattStarVecs);
+        std::vector<float> pattEdgeRatios = TetraConstructPattern(pattStarVecs);
 
         // Binning step - discretize values so they can be used for hashing
         // We account for potential error in calculated values by testing hash codes
@@ -259,7 +250,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
                     catStarVecs.push_back(catVec);
                 }
 
-                std::vector<float> catEdgeRatios = ConstructPattern(catStarVecs);
+                std::vector<float> catEdgeRatios = TetraConstructPattern(catStarVecs);
 
                 bool skipMatchRow = false;
                 for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
