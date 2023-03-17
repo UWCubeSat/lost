@@ -517,8 +517,8 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
 
     for (const uint16_t starID : pattStarIndices) {
         Vec3 v(tetraCatalog[starID].spatial);
-        Vec3 hash{uint16_t((v.x + 1) * tempBins), uint16_t((v.y + 1) * tempBins),
-                  uint16_t((v.z + 1) * tempBins)};
+        Vec3 hash{floor((v.x + 1) * tempBins), floor((v.y + 1) * tempBins),
+                  floor((v.z + 1) * tempBins)};
         tempCoarseSkyMap[hash].push_back(starID);
     }
 
@@ -545,7 +545,7 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
         for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
             for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
                 for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
-                    Vec3 code{uint16_t(a), uint16_t(b), uint16_t(c)};
+                    Vec3 code{static_cast<float>(a), static_cast<float>(b), static_cast<float>(c)};
 
                     // For each star j in partition with key=code,
                     // see if our star and j have angle < radius. If so, they are nearby
@@ -573,8 +573,8 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
         patt[0] = firstStarID;
 
         Vec3 v(tetraCatalog[firstStarID].spatial);
-        Vec3 hashCode{uint16_t((v.x + 1) * tempBins), uint16_t((v.y + 1) * tempBins),
-                      uint16_t((v.z + 1) * tempBins)};
+        Vec3 hashCode{floor((v.x + 1) * tempBins), floor((v.y + 1) * tempBins),
+                      floor((v.z + 1) * tempBins)};
 
         // Remove star i from its sky map partition
         auto removeIt = std::find(tempCoarseSkyMap[hashCode].begin(),
