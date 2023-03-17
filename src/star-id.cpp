@@ -734,6 +734,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
         _CHECK_DISTANCE(krDist);
 #undef _CHECK_DISTANCE
 
+#if LOST_DEBUG > 2
+        std::cerr << "Passed distance checks for pyramid" << std::endl;
+#endif
+
         const int16_t *ijEnd, *ikEnd, *irEnd;
         const int16_t *const ijQuery = vectorDatabase.FindPairsExact(catalog, ijDist - tolerance, ijDist + tolerance, &ijEnd);
         const int16_t *const ikQuery = vectorDatabase.FindPairsExact(catalog, ikDist - tolerance, ikDist + tolerance, &ikEnd);
@@ -750,6 +754,12 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                 ? iCandidateQuery[1]
                 : iCandidateQuery[-1];
 
+            // if debug>4, print the candidates
+#if LOST_DEBUG > 3
+            std::cerr << "iCandidate: " << *iCandidateQuery << std::endl;
+            std::cerr << "jCandidate: " << jCandidate << std::endl;
+#endif
+
             const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
             const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
 
@@ -762,6 +772,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                 bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
                 // checking the spectral-ity early to fail fast
                 if (candidateSpectralTorch != spectralTorch) {
+#if LOST_DEBUG > 3
+                    std::cerr << "skipping candidate " << iCandidate << " " << jCandidate << " " << kCandidate << " because spectral-ity mismatch" << std::endl;
+#endif
                     continue;
                 }
 
