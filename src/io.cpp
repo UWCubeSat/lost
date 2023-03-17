@@ -259,7 +259,8 @@ void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catal
 }
 
 void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float maxAngle,
-                        const std::vector<short> &pattStars, const std::vector<short> &catIndices) {
+                        const std::vector<uint16_t> &pattStars,
+                        const std::vector<uint16_t> &catIndices) {
     long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, catIndices, false);
     unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
     if (buffer == nullptr) {
@@ -269,8 +270,8 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, f
 }
 
 void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                            const DatabaseOptions &values, std::vector<short> &pattStars,
-                            std::vector<short> &catIndices) {
+                            const DatabaseOptions &values, std::vector<uint16_t> &pattStars,
+                            std::vector<uint16_t> &catIndices) {
     float maxAngle = values.tetraMaxAngle;
     BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
 }

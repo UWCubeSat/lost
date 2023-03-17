@@ -271,7 +271,7 @@ void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOp
 
 // TODO:  can we avoid the split?
 void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,
-                            std::vector<short> &pattStars, std::vector<short> &catIndices);
+                            std::vector<uint16_t> &pattStars, std::vector<uint16_t> &catIndices);
 
 /////////////////////
 // INSPECT CATALOG //

@@ -85,12 +85,12 @@ Return:
 (a) List of stars we can use for Tetra
 (b) Subset of (a) that we use to generate Tetra star patterns
 */
-std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &,
-                                                                      const float maxFovDeg);
+std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &,
+                                                                            const float maxFovDeg);
 
 long SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
-                            const std::vector<short> &pattStars,
-                            const std::vector<short> &catIndices, bool ser);
+                            const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &catIndices, bool ser);
 
 /*
 Layout:
@@ -99,7 +99,7 @@ Layout:
 - Max FOV (float)
 - Number of patterns in pattern catalog (int)
 ////////////////////////////////////////////////////////
-- All patterns (number of patterns * 4 * sizeof(short))
+- All patterns (number of patterns * 4 * sizeof(uint16_t))
 - List of Catalog indices to use for Tetra star ID algo
 /////////////////////////////////////////////////////////
 
@@ -118,7 +118,7 @@ class TetraDatabase {
     // Get the 4-tuple pattern at row=index, 0-based
     std::vector<int> GetPattern(int index) const;
 
-    short GetTrueCatInd(int tetraIndex) const;
+    uint16_t GetTrueCatInd(int tetraIndex) const;
     // TODO: should probably have a field describing number of indices for future updates to db
 
     /// Magic value to use when storing inside a MultiDatabase

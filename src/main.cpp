@@ -38,8 +38,8 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     if (values.tetra) {
         std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
         auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
-        std::vector<short> catIndices = tetraStuff.first;
-        std::vector<short> pattStars = tetraStuff.second;
+        std::vector<uint16_t> catIndices = tetraStuff.first;
+        std::vector<uint16_t> pattStars = tetraStuff.second;
 
         std::cout << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
         std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;

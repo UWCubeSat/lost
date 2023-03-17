@@ -262,8 +262,8 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
-std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Catalog &catalog,
-                                                                      const float maxFovDeg) {
+std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &catalog,
+                                                                            const float maxFovDeg) {
     // Would not recommend changing these parameters!
     // Currently optimal to generate many patterns with smaller FOV
     // If you make the maxFOV of Tetra database larger, you need to scale the following 2 parameters
@@ -354,8 +354,8 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
         }
     }
 
-    std::vector<short> finalCatIndices;
-    std::vector<short> pattStars;
+    std::vector<uint16_t> finalCatIndices;
+    std::vector<uint16_t> pattStars;
 
     // finalCat is the final version of the star table
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
@@ -366,7 +366,7 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
 
     // Pretty clever way of finding which stars in the FINAL star table
     // should be used for pattern construction later in Tetra's database generation step
-    short cumulativeSum = -1;
+    uint16_t cumulativeSum = -1;
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
         if (keepForVerifying[i]) {
             cumulativeSum++;
@@ -375,7 +375,7 @@ std::pair<std::vector<short>, std::vector<short>> TetraPreparePattCat(const Cata
             pattStars.push_back(cumulativeSum);
         }
     }
-    return std::pair<std::vector<short>, std::vector<short>>{finalCatIndices, pattStars};
+    return std::pair<std::vector<uint16_t>, std::vector<uint16_t>>{finalCatIndices, pattStars};
 }
 
 TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer) {
@@ -393,16 +393,16 @@ std::vector<int> TetraDatabase::GetPattern(int index) const {
     std::vector<int> res;
     const unsigned char *p = buffer_ + headerSize;
     for (int i = 0; i < 4; i++) {
-        res.push_back(*((short *)p + 4 * index + i));
+        res.push_back(*((uint16_t *)p + 4 * index + i));
     }
 
     return res;
 }
 
-short TetraDatabase::GetTrueCatInd(int tetraInd) const {
+uint16_t TetraDatabase::GetTrueCatInd(int tetraInd) const {
     // TODO: don't harcode this 4
-    const unsigned char *p = buffer_ + headerSize + Size() * 4 * sizeof(short);
-    return *((short *)p + tetraInd);
+    const unsigned char *p = buffer_ + headerSize + Size() * 4 * sizeof(uint16_t);
+    return *((uint16_t *)p + tetraInd);
 }
 
 /// Create the database from a serialized buffer.
@@ -497,24 +497,24 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 ///////////////////// Tetra database //////////////////////
 
 long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
-                            const std::vector<short> &pattStars,
-                            const std::vector<short> &catIndices, bool ser) {
+                            const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &catIndices, bool ser) {
     const float maxFov = DegToRad(maxFovDeg);
 
-    const short pattBins = 50;
+    const uint16_t pattBins = 50;
     const int tempBins = 4;
 
     Catalog tetraCatalog;
-    for (short ind : catIndices) {
+    for (uint16_t ind : catIndices) {
         tetraCatalog.push_back(catalog[ind]);
     }
 
-    std::map<Vec3, std::vector<short>> tempCoarseSkyMap;
+    std::map<Vec3, std::vector<uint16_t>> tempCoarseSkyMap;
 
-    for (const short starID : pattStars) {
+    for (const uint16_t starID : pattStars) {
         Vec3 v(tetraCatalog[starID].spatial);
-        Vec3 hash{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
-                  short((v.z + 1) * tempBins)};
+        Vec3 hash{uint16_t((v.x + 1) * tempBins), uint16_t((v.y + 1) * tempBins),
+                  uint16_t((v.z + 1) * tempBins)};
         tempCoarseSkyMap[hash].push_back(starID);
     }
 
@@ -536,16 +536,16 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
         // hashcode space has 3 ranges, one for each of [x, y, z]
 
-        std::vector<short> nearbyStarIDs;
+        std::vector<uint16_t> nearbyStarIDs;
 
         for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
             for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
                 for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
-                    Vec3 code{short(a), short(b), short(c)};
+                    Vec3 code{uint16_t(a), uint16_t(b), uint16_t(c)};
 
                     // For each star j in partition with key=code,
                     // see if our star and j have angle < radius. If so, they are nearby
-                    for (short starID : tempCoarseSkyMap[code]) {
+                    for (uint16_t starID : tempCoarseSkyMap[code]) {
                         float dotProd = vec * tetraCatalog[starID].spatial;
                         if (dotProd > std::cos(radius)) {
                             nearbyStarIDs.push_back(starID);
@@ -559,18 +559,18 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     };
 
     const int pattSize = 4;
-    typedef std::array<short, pattSize> Pattern;
+    typedef std::array<uint16_t, pattSize> Pattern;
     std::vector<Pattern> pattList;
     Pattern patt{0, 0, 0, 0};
 
     // Construct all possible patterns
     for (int ind = 0; ind < (int)pattStars.size(); ind++) {
-        short firstStarID = pattStars[ind];
+        uint16_t firstStarID = pattStars[ind];
         patt[0] = firstStarID;
 
         Vec3 v(tetraCatalog[firstStarID].spatial);
-        Vec3 hashCode{short((v.x + 1) * tempBins), short((v.y + 1) * tempBins),
-                      short((v.z + 1) * tempBins)};
+        Vec3 hashCode{uint16_t((v.x + 1) * tempBins), uint16_t((v.y + 1) * tempBins),
+                      uint16_t((v.z + 1) * tempBins)};
 
         // Remove star i from its sky map partition
         auto removeIt = std::find(tempCoarseSkyMap[hashCode].begin(),
@@ -666,20 +666,20 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
         for (Pattern patt : pattCatalog) {
             for (int i = 0; i < pattSize; i++) {
-                *((short *)buffer) = patt[i];
-                buffer += sizeof(short);
+                *((uint16_t *)buffer) = patt[i];
+                buffer += sizeof(uint16_t);
             }
         }
 
-        for (short ind : catIndices) {
-            *((short *)buffer) = ind;
-            buffer += sizeof(short);
+        for (uint16_t ind : catIndices) {
+            *((uint16_t *)buffer) = ind;
+            buffer += sizeof(uint16_t);
         }
 
         return -1;
     } else {
-        return sizeof(float) + sizeof(int) + sizeof(short) * pattCatalog.size() * pattSize +
-               catIndices.size() * sizeof(short);
+        return sizeof(float) + sizeof(int) + sizeof(uint16_t) * pattCatalog.size() * pattSize +
+               catIndices.size() * sizeof(uint16_t);
     }
 }
 
