@@ -89,8 +89,8 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
                                                                             const float maxFovDeg);
 
 long SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
-                            const std::vector<uint16_t> &pattStars,
-                            const std::vector<uint16_t> &catIndices, bool ser);
+                            const std::vector<uint16_t> &,
+                            const std::vector<uint16_t> &, bool ser);
 
 /*
 Layout:

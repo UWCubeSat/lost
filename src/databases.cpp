@@ -293,7 +293,7 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         // Spatial vector representing new star
         Vec3 vec = catalog[i].spatial;
 
-        bool angsPatternsOK = true;
+        bool anglesForPattOK = true;
         int numPattStarsInFov = 0;
 
         // We should test each new star's angular distance to all stars
@@ -303,30 +303,42 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         // b) Number of stars in region maxFov/2 >= pattStarsPerFOV
         for (int j = 0; j < i; j++) {
             if (keepForPatterns[j]) {
-                float dotProd = vec * catalog[j].spatial;
-                if (dotProd >= std::cos(DegToRad(starMinSep))) {
-                    angsPatternsOK = false;
+                // float dotProd = vec * catalog[j].spatial;
+                // if (dotProd >= std::cos(DegToRad(starMinSep))) {
+                //     anglesForPattOK = false;
+                //     break;
+                // }
+                float angle = Angle(vec, catalog[j].spatial);
+                if(angle < DegToRad(starMinSep)){
+                    anglesForPattOK = false;
                     break;
                 }
                 // If angle between new star i and old star j is less than maxFov/2, OK
-                if (dotProd > std::cos(maxFOV / 2)) {
+                // if (dotProd > std::cos(maxFOV / 2)) {
+                //     numPattStarsInFov++;
+                //     if (numPattStarsInFov >= pattStarsPerFOV) {
+                //         anglesForPattOK = false;
+                //         break;
+                //     }
+                // }
+                if(angle < maxFOV/2){
                     numPattStarsInFov++;
                     if (numPattStarsInFov >= pattStarsPerFOV) {
-                        angsPatternsOK = false;
+                        anglesForPattOK = false;
                         break;
                     }
                 }
             }
         }
 
-        if (angsPatternsOK) {
+        if (anglesForPattOK) {
             keepForPatterns[i] = true;
             keepForVerifying[i] = true;
             keepForPattCount++;
             continue;
         }
 
-        bool angsVerifyingOK = true;
+        bool anglesForVerifOK = true;
         int numVerStarsInFov = 0;
 
         // Same thing here, we should test each new star's angular distance to all
@@ -334,28 +346,35 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         // std::vector<float> angsVerifying;
         for (int j = 0; j < i; j++) {
             if (keepForVerifying[j]) {
-                float dotProd = vec * catalog[j].spatial;
-                if (dotProd >= std::cos(DegToRad(starMinSep))) {
-                    angsVerifyingOK = false;
+                // float dotProd = vec * catalog[j].spatial;
+                float angle = Angle(vec, catalog[j].spatial);
+                // if (dotProd >= std::cos(DegToRad(starMinSep))) {
+                if(angle < DegToRad(starMinSep)){
+                    anglesForVerifOK = false;
                     break;
                 }
-                if (dotProd > std::cos(maxFOV / 2)) {
+                // if (dotProd > std::cos(maxFOV / 2)) {
+                if(angle < maxFOV/2){
                     numVerStarsInFov++;
                     if (numVerStarsInFov >= verificationStarsPerFOV) {
-                        angsVerifyingOK = false;
+                        anglesForVerifOK = false;
                         break;
                     }
                 }
             }
         }
 
-        if (angsVerifyingOK) {
+        if (anglesForVerifOK) {
             keepForVerifying[i] = true;
         }
     }
 
+    // List of indices, track which stars in our star catalog are OK for Tetra to use
     std::vector<uint16_t> finalCatIndices;
-    std::vector<uint16_t> pattStars;
+    // List of indices, indexing into finalCatIndices
+    // Track which stars in the final star table should be used for pattern construction
+    // later in Tetra's database generation step
+    std::vector<uint16_t> pattStarIndices;
 
     // finalCat is the final version of the star table
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
@@ -364,7 +383,7 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         }
     }
 
-    // Pretty clever way of finding which stars in the FINAL star table
+    // Pretty clever way of finding which stars in the final star table
     // should be used for pattern construction later in Tetra's database generation step
     uint16_t cumulativeSum = -1;
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
@@ -372,10 +391,10 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
             cumulativeSum++;
         }
         if (keepForPatterns[i]) {
-            pattStars.push_back(cumulativeSum);
+            pattStarIndices.push_back(cumulativeSum);
         }
     }
-    return std::pair<std::vector<uint16_t>, std::vector<uint16_t>>{finalCatIndices, pattStars};
+    return std::pair<std::vector<uint16_t>, std::vector<uint16_t>>{finalCatIndices, pattStarIndices};
 }
 
 TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer) {
@@ -497,7 +516,7 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 ///////////////////// Tetra database //////////////////////
 
 long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
-                            const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &pattStarIndices,
                             const std::vector<uint16_t> &catIndices, bool ser) {
     const float maxFov = DegToRad(maxFovDeg);
 
@@ -511,7 +530,7 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
     std::map<Vec3, std::vector<uint16_t>> tempCoarseSkyMap;
 
-    for (const uint16_t starID : pattStars) {
+    for (const uint16_t starID : pattStarIndices) {
         Vec3 v(tetraCatalog[starID].spatial);
         Vec3 hash{uint16_t((v.x + 1) * tempBins), uint16_t((v.y + 1) * tempBins),
                   uint16_t((v.z + 1) * tempBins)};
@@ -564,8 +583,8 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     Pattern patt{0, 0, 0, 0};
 
     // Construct all possible patterns
-    for (int ind = 0; ind < (int)pattStars.size(); ind++) {
-        uint16_t firstStarID = pattStars[ind];
+    for (int ind = 0; ind < (int)pattStarIndices.size(); ind++) {
+        uint16_t firstStarID = pattStarIndices[ind];
         patt[0] = firstStarID;
 
         Vec3 v(tetraCatalog[firstStarID].spatial);
