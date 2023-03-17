@@ -303,24 +303,12 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         // b) Number of stars in region maxFov/2 >= pattStarsPerFOV
         for (int j = 0; j < i; j++) {
             if (keepForPatterns[j]) {
-                // float dotProd = vec * catalog[j].spatial;
-                // if (dotProd >= std::cos(DegToRad(starMinSep))) {
-                //     anglesForPattOK = false;
-                //     break;
-                // }
                 float angle = Angle(vec, catalog[j].spatial);
                 if(angle < DegToRad(starMinSep)){
                     anglesForPattOK = false;
                     break;
                 }
                 // If angle between new star i and old star j is less than maxFov/2, OK
-                // if (dotProd > std::cos(maxFOV / 2)) {
-                //     numPattStarsInFov++;
-                //     if (numPattStarsInFov >= pattStarsPerFOV) {
-                //         anglesForPattOK = false;
-                //         break;
-                //     }
-                // }
                 if(angle < maxFOV/2){
                     numPattStarsInFov++;
                     if (numPattStarsInFov >= pattStarsPerFOV) {
@@ -346,14 +334,11 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         // std::vector<float> angsVerifying;
         for (int j = 0; j < i; j++) {
             if (keepForVerifying[j]) {
-                // float dotProd = vec * catalog[j].spatial;
                 float angle = Angle(vec, catalog[j].spatial);
-                // if (dotProd >= std::cos(DegToRad(starMinSep))) {
                 if(angle < DegToRad(starMinSep)){
                     anglesForVerifOK = false;
                     break;
                 }
-                // if (dotProd > std::cos(maxFOV / 2)) {
                 if(angle < maxFOV/2){
                     numVerStarsInFov++;
                     if (numVerStarsInFov >= verificationStarsPerFOV) {
@@ -398,9 +383,9 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
 }
 
 TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer) {
-    maxAngle_ = *(float *)buffer;
+    maxAngle_ = *(float*)buffer;
     buffer += sizeof(float);
-    catalogSize_ = *(int *)buffer;
+    catalogSize_ = *(int32_t *)buffer;
     std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
 }
 
@@ -515,7 +500,7 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 
 ///////////////////// Tetra database //////////////////////
 
-long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
+static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
                             const std::vector<uint16_t> &pattStarIndices,
                             const std::vector<uint16_t> &catIndices, bool ser) {
     const float maxFov = DegToRad(maxFovDeg);
@@ -680,8 +665,8 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
     if (ser) {
         *((float *)buffer) = maxFovDeg;
         buffer += sizeof(float);
-        *((int *)buffer) = (int)pattCatalog.size();
-        buffer += sizeof(int);
+        *((int32_t *)buffer) = (int)pattCatalog.size();
+        buffer += sizeof(int32_t);
 
         for (Pattern patt : pattCatalog) {
             for (int i = 0; i < pattSize; i++) {
@@ -697,9 +682,21 @@ long SerializeTetraDatabase(const Catalog &catalog, float maxFovDeg, unsigned ch
 
         return -1;
     } else {
-        return sizeof(float) + sizeof(int) + sizeof(uint16_t) * pattCatalog.size() * pattSize +
+        return sizeof(float) + sizeof(int32_t) + sizeof(uint16_t) * pattCatalog.size() * pattSize +
                catIndices.size() * sizeof(uint16_t);
     }
+}
+
+long SerializeLengthTetraDatabase(const Catalog &cat, float maxFov,
+                                  const std::vector<uint16_t> &pattStarIndices,
+                                  const std::vector<uint16_t> &catIndices) {
+    return SerializeTetraHelper(cat, maxFov, nullptr, pattStarIndices, catIndices, false);
+}
+
+void SerializeTetraDatabase(const Catalog &cat, float maxFov, unsigned char *buffer,
+                            const std::vector<uint16_t> &pattStarIndices,
+                            const std::vector<uint16_t> &catIndices) {
+    SerializeTetraHelper(cat, maxFov, buffer, pattStarIndices, catIndices, true);
 }
 
 /**

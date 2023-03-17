@@ -88,9 +88,17 @@ Return:
 std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &,
                                                                             const float maxFovDeg);
 
-long SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
+// long SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
+//                             const std::vector<uint16_t> &,
+//                             const std::vector<uint16_t> &, bool ser);
+
+long SerializeLengthTetraDatabase(const Catalog &, float maxFov,
                             const std::vector<uint16_t> &,
-                            const std::vector<uint16_t> &, bool ser);
+                            const std::vector<uint16_t> &);
+
+void SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
+                            const std::vector<uint16_t> &,
+                            const std::vector<uint16_t> &);
 
 /*
 Layout:
@@ -123,12 +131,12 @@ class TetraDatabase {
 
     /// Magic value to use when storing inside a MultiDatabase
     static const int32_t kMagicValue = 0xDEADBEEF;
-    static const int headerSize = sizeof(float) + sizeof(int);
+    static const int headerSize = sizeof(float) + sizeof(int32_t);
 
    private:
     const unsigned char *buffer_;
     float maxAngle_;
-    int catalogSize_;
+    int32_t catalogSize_;
 };
 
 // /**

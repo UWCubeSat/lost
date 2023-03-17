@@ -35,8 +35,6 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
     const int numPattBins = 50;
     const float pattMaxError = 0.002;
 
-   //  const long long MAGIC_RAND = 2654435761;
-
     /**
      * @brief Get all possible matching patterns starting from given index
      *
@@ -47,7 +45,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
      * @return std::vector<std::vector<int>> List of 4-star patterns that could be matches
      */
 
-    std::vector<std::vector<int>> GetAtIndex(int index, int maxIndex,
+    std::vector<std::vector<int>> GetPatternMatches(int index, int maxIndex,
                                              const TetraDatabase &db) const;
 };
 

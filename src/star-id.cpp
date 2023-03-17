@@ -64,8 +64,8 @@ static std::vector<float> ConstructPattern(const std::vector<Vec3> &spats) {
 Returns a list of rows (4-tuples) from the Pattern Catalog
 Start from index and does quadratic probing
 */
-std::vector<std::vector<int>> TetraStarIdAlgorithm::GetAtIndex(int index, int maxIndex,
-                                                               const TetraDatabase &db) const {
+std::vector<std::vector<int>> TetraStarIdAlgorithm::GetPatternMatches(
+    int index, int maxIndex, const TetraDatabase &db) const {
     std::vector<std::vector<int>> res;
     for (int c = 0;; c++) {
         int i = (index + c * c) % maxIndex;
@@ -240,7 +240,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             int hashIndex = KeyToIndex(code, numPattBins, catLength);
             // Get a list of Pattern Catalog rows with hash code == hashIndex
             // One of these Patterns in the database could be a match to our constructed Pattern
-            std::vector<std::vector<int>> matches = GetAtIndex(hashIndex, catLength, tetraDatabase);
+            std::vector<std::vector<int>> matches =
+                GetPatternMatches(hashIndex, catLength, tetraDatabase);
 
             if ((int)matches.size() == 0) {
                 // std::cout << "Alert: matches size = 0, continuing" << std::endl;
