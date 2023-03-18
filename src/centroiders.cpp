@@ -20,8 +20,6 @@ namespace lost {
 
 typedef std::vector<int> Point;
 
-// int Get(int x, int y, const unsigned char *image, int w);
-
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
 
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight);
@@ -175,6 +173,19 @@ void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int 
     *sigma = fwhm / (2 * std::sqrt(2 * std::log(2)));
 }
 
+float InitialGuess2(int x0, int y0, int maxMag, const int nb, const unsigned char *image, int w){
+    float halfCount = 0;
+    for(int i = -nb; i <= nb; i++){
+        for(int j = -nb; j <+ nb; j++){
+            if(Get(x0+i, y0+j, image, w) > maxMag / 2){
+                halfCount++;
+            }
+        }
+    }
+    float fwhm = std::sqrt(halfCount);
+    return fwhm / (2 * std::sqrt(2 * std::log(2)));
+}
+
 // Generic functor
 template <typename _Scalar, int NX = Eigen::Dynamic, int NY = Eigen::Dynamic>
 struct Functor {
@@ -271,9 +282,9 @@ struct LSGF2DFunctor : Functor<double> {
                 int xi = x0 + i;
                 int yi = y0 + j;
                 // TODO: other way around, yPred is our modelPred, yActual is our pixel intensity
-                float yPred = Get(xi, yi, image, w);
-                float modelPred = FitModel2D(xi, yi, a, xb, yb, sigmaX, sigmaY);
-                fvec(ind) = yPred - modelPred;
+                float yPred = FitModel2D(xi, yi, a, xb, yb, sigmaX, sigmaY);
+                float yActual = Get(xi, yi, image, w);
+                fvec(ind) = yPred - yActual;
 
                 ind++;
             }
@@ -384,15 +395,12 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         int y = pt[1];
         if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
 
-        float a;
-        float xb, yb;
-        double sigmaX, sigmaY;
-        InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigmaX);
-
-        sigmaY = sigmaX;
+        float a = Get(x, y, image, imageWidth);
+        double sigma = InitialGuess2(x, y, a, nb, image, imageWidth);
+        // InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigmaX);
 
         Eigen::VectorXd beta(5);
-        beta << a, xb, yb, sigmaX, sigmaY;
+        beta << a, x, y, sigma, sigma;
 
         // LSGF2DFunctor functor(nb, 0, X, image, imageWidth, x, y);
         LSGF2DFunctor functor(nb, image, imageWidth, x, y);
@@ -405,15 +413,15 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         lm.minimize(beta);
 
         a = beta(0);
-        xb = beta(1);
-        yb = beta(2);
-        sigmaX = beta(3);
-        sigmaY = beta(4);
+        float xRes = beta(1);
+        float yRes = beta(2);
+        float sigmaX = beta(3);
+        float sigmaY = beta(4);
 
         // std::cout << "Original: " << x << ", " << y << std::endl;
-        std::cout << xb << ", " << yb << std::endl;
-        if(x == xb && y == yb) same++;
-        result.push_back(Star(xb, yb, nb));
+        std::cout << xRes << ", " << yRes << ": " << a << " " << sigmaX << std::endl;
+        if(x == xRes && y == yRes) same++;
+        result.push_back(Star(xRes, yRes, nb));
 
 
         // result.push_back(Star(x, y, nb));

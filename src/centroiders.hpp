@@ -92,6 +92,10 @@ sigma = standard deviation (sigmaX = sigmaY)
 void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
                   float *xb, float *yb, double *sigma);
 
+// TODO: rename
+// Basically initial guess for window, done after Floodfill preprocessing
+float InitialGuess2(int x0, int y0, int maxMag, const int nb, const unsigned char *image, int w);
+
 } // namespace lost
 
 #endif
