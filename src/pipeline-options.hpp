@@ -26,7 +26,7 @@ LOST_CLI_OPTION("database"                 , std::string, databasePath          
 LOST_CLI_OPTION("star-id-algo"             , std::string, idAlgo                 , ""  , optarg       , "pyramid")
 LOST_CLI_OPTION("prev-attitude"            , std::string, prevAttitudeString     , ""  , optarg       , kNoDefaultArgument)
 LOST_CLI_OPTION("uncertainty "             , float      , uncertainty            , 0.001  , atof(optarg)  , kNoDefaultArgument)
-LOST_CLI_OPTION("tracking-compare-threshold", float     , trackingCompareThreshold, 0.0001 , atof(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("tracking-compare-threshold", float     , trackingCompareThreshold, 0.001 , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("angular-tolerance"        , float      , angularTolerance       , .04 , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("false-stars-estimate"     , int        , estimatedNumFalseStars , 500 , atoi(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("max-mismatch-probability" , float      , maxMismatchProb        , .001, atof(optarg) , kNoDefaultArgument)

@@ -79,7 +79,7 @@ For tracking mode. \fIradius\fP gives the boundary for how much the field of vie
 
 .TP
 \fB--tracking-compare-threshold\fP \fIthreshold\fP
-\fIthreshold\fP is the threshold for comparing floats for tracking mode. Defaults to 0.0001 if no value is given.
+\fIthreshold\fP is the threshold for comparing floats for tracking mode. Defaults to 0.001 if no value is given.
 
 .TP
 \fB--attitude-algo\fP \fIalgo\fP
