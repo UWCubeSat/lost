@@ -505,6 +505,8 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
                             const std::vector<uint16_t> &catIndices, bool ser) {
     const float maxFov = DegToRad(maxFovDeg);
 
+    // TODO: pattBins here and numPattBins in TetraStarIDAlgorithm::numPattBins should be the same
+    // Otherwise we break things
     const uint16_t pattBins = 50;
     const int tempBins = 4;
 

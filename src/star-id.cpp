@@ -124,7 +124,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     MultiDatabase multiDatabase(database);
     const unsigned char *databaseBuffer =
         multiDatabase.SubDatabasePointer(TetraDatabase::kMagicValue);
-    if (databaseBuffer == NULL) {
+    if (databaseBuffer == nullptr) {
         std::cerr << "Could not get to Tetra database" << std::endl;
         return result;
     }

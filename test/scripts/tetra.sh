@@ -6,7 +6,7 @@ th="0.5"
 
 totalTime=0
 # CHANGE THIS, n = number of images to try
-n=100
+n=1
 totalCorrect=0
 totalIncorrect=0
 totalNoStars=0
@@ -57,14 +57,15 @@ function rand_int {
 #   --output tetra-incorrect.dat
 
 for _ in $(seq "${1:-$n}"); do
-  ra=$(rand_int 0 359)
-  de=$(rand_int -89 89)
-  roll=$(rand_int 0 359)
-  fov=$(rand_int 10 60)
+  # ra=$(rand_int 0 359)
+  # de=$(rand_int -89 89)
+  # roll=$(rand_int 0 359)
+  # fov=$(rand_int 10 60)
 
-  # ra=141
-  # de=-48
-  # roll=122
+  fov=16
+  ra=218
+  de=12
+  roll=302
 
   # TODO: separate image generation and actual pipeline run for accurate timing
   # set -x
