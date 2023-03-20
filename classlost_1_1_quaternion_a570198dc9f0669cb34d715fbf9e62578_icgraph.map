@@ -1,15 +1,13 @@
 <map id="lost::Quaternion::Rotate" name="lost::Quaternion::Rotate">
-<area shape="rect" id="node1" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1375,158,1552,185"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1156,82,1327,109"/>
-<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="644,129,851,171"/>
-<area shape="rect" id="node11" href="$namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="1156,183,1327,210"/>
-<area shape="rect" id="node13" href="$classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf" title="Convert a vector from the reference frame to the body frame." alt="" coords="925,234,1082,261"/>
-<area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="899,82,1108,109"/>
-<area shape="rect" id="node5" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="653,78,841,105"/>
-<area shape="rect" id="node6" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="468,78,596,105"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a1a2e75eb2f0a5b4feda0aef165289a76" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,5,420,47"/>
-<area shape="rect" id="node8" href="$namespacelost.html#a800beb5e9d3cc8ace23094b253a2a397" title="Plot the annotated input image to os" alt="" coords="237,71,420,112"/>
-<area shape="rect" id="node10" href="$namespacelost.html#aca0bcc5fdf17cecfb9020c897b3bb5d0" title="Plot the image annotated with output data computed by the star tracking algorithms." alt="" coords="237,136,420,177"/>
-<area shape="rect" id="node9" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,111,189,138"/>
-<area shape="rect" id="node12" href="$classlost_1_1_attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="919,183,1087,210"/>
+<area shape="rect" id="node1" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1375,93,1552,119"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1156,17,1327,43"/>
+<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="644,64,851,105"/>
+<area shape="rect" id="node9" href="$namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="1156,118,1327,145"/>
+<area shape="rect" id="node11" href="$classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf" title="Convert a vector from the reference frame to the body frame." alt="" coords="925,169,1082,195"/>
+<area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="899,17,1108,43"/>
+<area shape="rect" id="node5" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="653,13,841,39"/>
+<area shape="rect" id="node6" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="468,13,596,39"/>
+<area shape="rect" id="node7" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,5,420,47"/>
+<area shape="rect" id="node8" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,13,189,39"/>
+<area shape="rect" id="node10" href="$classlost_1_1_attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="919,118,1087,145"/>
 </map>

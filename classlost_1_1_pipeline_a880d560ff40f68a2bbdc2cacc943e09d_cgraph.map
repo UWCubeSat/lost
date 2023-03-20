@@ -5,7 +5,7 @@
 <area shape="rect" id="node8" href="$classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="385,82,523,123"/>
 <area shape="rect" id="node9" href="$classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785" title=" " alt="" coords="385,147,523,189"/>
 <area shape="rect" id="node10" href="$classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="385,213,523,254"/>
-<area shape="rect" id="node11" href="$classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title=" " alt="" coords="385,278,523,319"/>
+<area shape="rect" id="node11" href="$classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="385,278,523,319"/>
 <area shape="rect" id="node12" href="$classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486" title=" " alt="" coords="385,343,523,385"/>
 <area shape="rect" id="node13" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="373,409,535,450"/>
 <area shape="rect" id="node4" href="$namespacelost.html#ae9238a92be7c82c102f015c90ce10536" title="Deserialize a catalog star." alt="" coords="605,5,807,32"/>

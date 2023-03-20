@@ -1,15 +1,13 @@
 <map id="lost::Vec3::CrossProduct" name="lost::Vec3::CrossProduct">
-<area shape="rect" id="node1" title="Usual vector cross product." alt="" coords="1404,139,1583,166"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1185,63,1356,90"/>
-<area shape="rect" id="node11" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="644,143,880,170"/>
-<area shape="rect" id="node12" href="$namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="929,165,1136,207"/>
-<area shape="rect" id="node13" href="$namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1189,215,1352,242"/>
-<area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="928,63,1137,90"/>
-<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="659,12,865,53"/>
-<area shape="rect" id="node5" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="668,78,856,105"/>
-<area shape="rect" id="node6" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="468,78,596,105"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a1a2e75eb2f0a5b4feda0aef165289a76" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,5,420,47"/>
-<area shape="rect" id="node8" href="$namespacelost.html#a800beb5e9d3cc8ace23094b253a2a397" title="Plot the annotated input image to os" alt="" coords="237,71,420,112"/>
-<area shape="rect" id="node10" href="$namespacelost.html#aca0bcc5fdf17cecfb9020c897b3bb5d0" title="Plot the image annotated with output data computed by the star tracking algorithms." alt="" coords="237,136,420,177"/>
-<area shape="rect" id="node9" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,111,189,138"/>
+<area shape="rect" id="node1" title="Usual vector cross product." alt="" coords="1404,133,1583,159"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1185,57,1356,83"/>
+<area shape="rect" id="node9" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="644,137,880,163"/>
+<area shape="rect" id="node10" href="$namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="929,159,1136,200"/>
+<area shape="rect" id="node11" href="$namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1189,209,1352,235"/>
+<area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="928,57,1137,83"/>
+<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="659,5,865,47"/>
+<area shape="rect" id="node5" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="668,71,856,98"/>
+<area shape="rect" id="node6" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="468,71,596,98"/>
+<area shape="rect" id="node7" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,64,420,105"/>
+<area shape="rect" id="node8" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,71,189,98"/>
 </map>

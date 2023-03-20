@@ -1,6 +1,0 @@
-<map id="lost::StarIdCompare" name="lost::StarIdCompare">
-<area shape="rect" id="node1" title=" " alt="" coords="675,13,825,39"/>
-<area shape="rect" id="node2" href="$namespacelost.html#aa614a4c5a8d13a9909d14773cf29b294" title="Compare expected and actual star identifications." alt="" coords="468,13,627,39"/>
-<area shape="rect" id="node3" href="$namespacelost.html#adfc11912c9b3ba49aa7a32cee07ba3b8" title="Compare the expected and actual star identifiers." alt="" coords="237,5,420,47"/>
-<area shape="rect" id="node4" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,13,189,39"/>
-</map>

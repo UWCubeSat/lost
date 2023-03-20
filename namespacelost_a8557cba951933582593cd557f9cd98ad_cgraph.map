@@ -1,4 +1,0 @@
-<map id="lost::PipelineComparatorPlotRawInput" name="lost::PipelineComparatorPlotRawInput">
-<area shape="rect" id="node1" title="Plots the input image with no annotation to os" alt="" coords="5,5,188,47"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a1a6f9a38b109664a4205cdf5b83588cc" title="Plotter suitable for cairo_surface_write_to_png_stream which simply writes to an std::ostream." alt="" coords="236,13,389,39"/>
-</map>

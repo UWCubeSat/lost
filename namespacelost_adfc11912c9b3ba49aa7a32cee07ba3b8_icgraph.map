@@ -1,4 +1,0 @@
-<map id="lost::PipelineComparatorStarIds" name="lost::PipelineComparatorStarIds">
-<area shape="rect" id="node1" title="Compare the expected and actual star identifiers." alt="" coords="237,5,420,47"/>
-<area shape="rect" id="node2" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,13,189,39"/>
-</map>
