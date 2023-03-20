@@ -62,7 +62,7 @@ Finally, information about the pipeline run can be printed. LOST can:
 .IP \[bu] 2
 Plot images visualizing star identification (\fB--plot-input\fP, \fB--plot-output\fP, and \fB--plot-raw-input\fP).
 .IP \[bu] 2
-Print the raw output of each stage (\fB--print-centroids\fP, \fB--print-attitude\fP).
+Print the raw output of each stage (\fB--print-actual-centroids\fP, \fB--print-expected-centroids\fP, \fB--print-attitude\fP).
 .IP \[bu] 2
 (Generated images only), compare the output of each stage with the expected output (\fB--compare-*\fP), making it easy to evaluate various algorithms for various parts of the pipeline.
 .LP
@@ -228,8 +228,17 @@ Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. 
 Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
-\fB--print-centroids\fP [\fIpath\fP]
-Argument is optional. Print list of centroids to \fIpath\fP. If star identification was also performed, print which catalog star each centroid was identified as. Defaults to stdout.
+\fB--print-actual-centroids\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
+\fIpath\fP. If star identification was also performed, print which catalog star each centroid was
+identified as. Defaults to stdout.
+
+.TP
+\fB--print-expected-centroids\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Print list of "expected" centroids from the pipeline
+input to \fIpath\fP. Also prints out expected star identifications for those stars, if present. This
+only works for generated images. Generally you should use \fB--print-actual-centroids\fP instead,
+and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
 
 .TP
 \fB--print-attitude\fP [\fIpath\fP]
