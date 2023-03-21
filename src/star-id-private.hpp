@@ -66,8 +66,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *,
  * The best pyramid "starting from" a certain star. The "other" stars are ordered by their distance
  * from the main star for this struct.
  *
- * "Distance" in this class is actually 2D distance, because it's not super important to do
- * everything exactly right -- it's just iteration order!
+ * "Distance" in this class is angular distance, as usual.
  *
  * If distancesSum is nonpositive, no suitable pyramid exists for this star.
  */
@@ -87,7 +86,7 @@ public:
     }
 
     // "no suitable pyramid" constructor
-    BestPyramidAtStar(int16_t mainCentroidIndex)
+    explicit BestPyramidAtStar(int16_t mainCentroidIndex)
         : distancesSum(-1) {
         centroidIndices[0] = mainCentroidIndex;
         centroidIndices[1] = -1;
@@ -119,7 +118,7 @@ public:
 class PyramidIterator {
 public:
     /// Please ensure that `centroids` outlives the PyramidIterator! Also, minDistance and maxDistance are exact, we don't offset by tolerance, you probably want to do that!
-    PyramidIterator(const Stars &centroids, float minDistance, float maxDistance);
+    PyramidIterator(const std::vector<Vec3> &centroidSpatials, float minDistance, float maxDistance);
 
     /// Returns the next best pyramid, or a "no pyramid" pyramid.
     BestPyramidAtStar Next();
@@ -127,7 +126,7 @@ public:
 private:
     float minDistance, maxDistance;
     // once length of this is less than 4, we switch to alternate strategy:
-    const Stars &allCentroids;
+    const std::vector<Vec3> &allCentroidSpatials;
     std::vector<int16_t> untriedCentroidIndices;
 };
 

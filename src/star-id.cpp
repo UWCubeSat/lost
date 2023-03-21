@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
+#include <utility>
 #include <map>
 
 #include "star-id.hpp"
@@ -571,55 +572,64 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     return numExtraIdentifiedStars;
 }
 
-std::vector<BestPyramidAtStar> ComputeBestPyramids(const Stars &allCentroids,
+// allCentroidSpatials should be unit vectors
+std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allCentroidSpatials,
                                                    const std::vector<int16_t> &centroidIndices,
                                                    float minDistance,
                                                    float maxDistance) {
     assert(centroidIndices.size() >= 4);
-    assert(allCentroids.size() >= centroidIndices.size());
+    assert(allCentroidSpatials.size() >= centroidIndices.size());
+    assert(minDistance < maxDistance);
+    if (allCentroidSpatials.size() > 0) {
+        // the only way this can happen by chance is if it's right on the boresight. Some test will catch it :)
+        assert(abs(allCentroidSpatials[0].Magnitude() - 1) < 0.0001);
+    }
 
     std::vector<BestPyramidAtStar> result;
-
+    float maxCos = cos(minDistance);
+    float minCos = cos(maxDistance);
     for (int i = 0; i < (int)centroidIndices.size(); i++) {
         // Find the 3 closest centroids to this centroid
-        std::vector<std::pair<float, int16_t>> distances;
+        std::vector<std::pair<float, int16_t>> cosines;
 
         // TODO: optimize this using a sorted centroids list
         for (int j = 0; j < (int)centroidIndices.size(); j++) {
             if (i == j) {
                 continue;
             }
-            float curDistance = (allCentroids[centroidIndices[i]].position - allCentroids[centroidIndices[j]].position).Magnitude();
-            if (curDistance >= minDistance && curDistance <= maxDistance) {
-                distances.emplace_back(curDistance, centroidIndices[j]);
+            float curCos = allCentroidSpatials[centroidIndices[i]] * allCentroidSpatials[centroidIndices[j]];
+            // float curDistance = (allCentroids[centroidIndices[i]].position - allCentroids[centroidIndices[j]].position).Magnitude();
+            if (minCos <= curCos && curCos <= maxCos) {
+                // emplace the NEGATIVE cosine so that the sort will be smallest angle first.
+                cosines.emplace_back(-curCos, centroidIndices[j]);
             }
         }
 
-        if (distances.size() < 3) {
+        if (cosines.size() < 3) {
             // Not enough centroids to make a pyramid
             result.emplace_back(i);
             continue;
         }
 
-        std::sort(distances.begin(), distances.end()); // operator< is defined on pairs to sort by first element
+        std::partial_sort(cosines.begin(), cosines.begin()+4, cosines.end()); // operator< is defined on pairs to sort by first element
 
         // Compute the sum of the distances between the 3 closest centroids
         float distancesSum = 0;
         for (int j = 0; j < 3; j++) {
-            distancesSum += distances[j].first;
+            distancesSum += acos(-cosines[j].first);
         }
 
         // Add the best pyramid starting from this centroid to the result
-        result.emplace_back(centroidIndices[i], distances[0].second, distances[1].second, distances[2].second, distancesSum);
+        result.emplace_back(centroidIndices[i], cosines[0].second, cosines[1].second, cosines[2].second, distancesSum);
     }
 
     return result;
 }
 
 // see star-id-private.hpp for docs on PyramidIterator
-PyramidIterator::PyramidIterator(const Stars &centroids, float minDistance, float maxDistance)
-    : minDistance(minDistance), maxDistance(maxDistance), allCentroids(centroids) {
-    for (int i = 0; i < (int)centroids.size(); i++) {
+PyramidIterator::PyramidIterator(const std::vector<Vec3> &centroidSpatials, float minDistance, float maxDistance)
+    : minDistance(minDistance), maxDistance(maxDistance), allCentroidSpatials(centroidSpatials) {
+    for (int i = 0; i < (int)centroidSpatials.size(); i++) {
         untriedCentroidIndices.push_back(i);
     }
 }
@@ -630,9 +640,8 @@ BestPyramidAtStar PyramidIterator::Next() {
     }
 
     // Find the best pyramid
-    std::vector<BestPyramidAtStar> bestPyramids = ComputeBestPyramids(allCentroids, untriedCentroidIndices,
-                                                                      // TODO before PR merge: Fix this shit:
-                                                                      10, std::numeric_limits<float>::max());
+    std::vector<BestPyramidAtStar> bestPyramids = ComputeBestPyramids(allCentroidSpatials, untriedCentroidIndices,
+                                                                      minDistance, maxDistance);
     assert(!bestPyramids.empty());
 
     // Find the best pyramid
@@ -693,6 +702,12 @@ IdentifyPyramidResult IdentifyPyramid(const PairDistanceKVectorDatabase &db,
     const int16_t *const ikQuery = db.FindPairsExact(catalog, ikDist - tolerance, ikDist + tolerance, &ikEnd);
     const int16_t *const irQuery = db.FindPairsExact(catalog, irDist - tolerance, irDist + tolerance, &irEnd);
 
+    // TODO: theoretically, it's fastest to relabel j,k,r to put the shortest one first (probably).
+    // But since we're not even sure of that, we'll just leave them alone for now.
+
+#if LOST_DEBUG > 3
+    std::cerr << "Number of ij pairs: " << (ijEnd-ijQuery)/2 << std::endl;
+#endif
     std::multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
     std::multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
 
@@ -781,13 +796,17 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
         return identified;
     }
     PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
+    std::vector<Vec3> starSpatials;
+    for (const Star &star : stars) {
+        starSpatials.push_back(camera.CameraToSpatial(star.position).Normalize());
+    }
 
     // smallest normal single-precision float is around 10^-38 so we should be all good. See
     // Analytic_Star_Pattern_Probability on the HSL wiki for details.
     float expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
 
     // keep iterating through pyramids
-    PyramidIterator pyramidIterator(stars,
+    PyramidIterator pyramidIterator(starSpatials,
                                     vectorDatabase.MinDistance() + tolerance,
                                     vectorDatabase.MaxDistance() - tolerance);
     BestPyramidAtStar bestPyramid(-1);
@@ -807,9 +826,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
         assert(i != j && j != k && k != r && i != k && i != r && j != r);
 
         // TODO: move this out of the loop?
-        Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
-        Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
-        Vec3 kSpatial = camera.CameraToSpatial(stars[k].position).Normalize();
+        Vec3 iSpatial = starSpatials[i];
+        Vec3 jSpatial = starSpatials[j];
+        Vec3 kSpatial = starSpatials[k];
 
         float ijDist = AngleUnit(iSpatial, jSpatial);
 
@@ -830,7 +849,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
             continue;
         }
 
-        Vec3 rSpatial = camera.CameraToSpatial(stars[r].position).Normalize();
+        Vec3 rSpatial = starSpatials[r];
 
         int iMatch, jMatch, kMatch, rMatch;
         IdentifyPyramidResult identifyResult

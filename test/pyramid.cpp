@@ -1,8 +1,5 @@
 #include <catch.hpp>
 
-#include <random>
-#include <assert.h>
-
 #include "attitude-utils.hpp"
 #include "io.hpp"
 #include "star-id.hpp"
@@ -15,7 +12,7 @@ using namespace lost; // NOLINT
 TEST_CASE("Never don't identify a pyramid", "[pyramid]") {
     float minDistance = DegToRad(0.5);
     float maxDistance = DegToRad(10.0);
-    float tolerance = DegToRad(0.1);
+    float tolerance = DegToRad(0.05);
     // What fraction of the pyramids must be /uniquely/ identified. The test always requires that at
     // least one identification be made for each pyramid, but sometimes there are multiple.
     float minFractionUniquelyIdentified = 0.75;
@@ -50,7 +47,7 @@ TEST_CASE("Never don't identify a pyramid", "[pyramid]") {
         std::vector<int> catalogIndices{startIndex};
         for (int j = 1; catalogIndices.size() < 4; j++) {
             // There should always be three other stars within 20 degrees!
-            assert(j <= (int)catalog.size());
+            REQUIRE(j <= (int)catalog.size());
 
             int otherIndex = j * multiplier2 % modulus;
             if (otherIndex > (int)catalog.size()) {
