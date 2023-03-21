@@ -253,7 +253,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     if(min / subdivisions < 10) {
         divisions = min / 10;
     }
-    // Make an array-map of centroids
+    // Make an array-map of thresholds
     std::vector<int> localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
 
     // Tells us if certian numbers in the below array are part of the same component
