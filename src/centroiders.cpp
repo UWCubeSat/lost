@@ -253,43 +253,53 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     if(min / subdivisions < 10) {
         divisions = min / 10;
     }
-    // Make an array-map of stars
+    // Make an array-map of centroids
     std::vector<int> localCutoff = LocalThresholding(image, imageWidth, imageHeight, divisions);
+
+    // Tells us if certian numbers in the below array are part of the same component
     std::unordered_map<int, int> equivalencies;
     
-    // Does this ensure 0/null based values?
+    // make an array with the same dimensions of the image, but it shows connected components using numbers
     unsigned char *stars = (unsigned char *) std::malloc(imageWidth * imageHeight * sizeof(unsigned char));
     stars[0] = (image[0] >= localCutoff.at(0)) ? 1 : 0;
     int L = stars[0];
 
+    // Initial labeling of centroids
     for(long i = 1; i < imageHeight * imageWidth; i++) {
+        // This is specific to the centroiding algo, which tests if this is even part of a centroid
         if(image[i] >= localCutoff.at(FindSubdivision(i, imageWidth, imageHeight, divisions))) {
+
+            // The indicies of the entries to the left and above i
             int up = i - imageWidth;
             int left = i - 1;
+
+            // Tests to see if the upper or left entry is a valid component (part of a star aka it was initialized
+            // with a L value at some point)
             bool leftEq = stars[left] != 0;
             bool upEq = stars[up] != 0;
-            if(i / imageWidth == 0) {
-                if(leftEq) {
+
+            if(i / imageWidth == 0) { // If i is part of a top pixel, test only the left pixel
+                if(leftEq) { // If the left pixel is part of a centroid, it must be part of the same star as i, if not, mark with new L value
                     stars[i] = stars[left];
                 } else {
                     stars[i] = ++L;
                 }
-            } else if(i % imageWidth == 0) {
-                if(upEq) {
+            } else if(i % imageWidth == 0) { // If i is part of a left pixel, test only the upper pixel
+                if(upEq) { // If the upper pixel is part of a centroid, it must be part of the same star as i, if not, mark with new L value
                     stars[i] = stars[up];
                 } else {
                     stars[i] = ++L;
                 }
-            } else {
-                if(leftEq && upEq && stars[left] == stars[up]) {
+            } else { // Tests for general case
+                if(leftEq && upEq && stars[left] == stars[up]) { // If the top and left pixels are part of centroid with the same L value, i is connected to them with the same L value
                     stars[i] = stars[left];
-                } else if(leftEq && upEq && stars[left] != stars[up]) {
+                } else if(leftEq && upEq && stars[left] != stars[up]) { // The above, but if the left and top pixels have different L values, those different values are also part of the same centroid
                     stars[i] = std::min(stars[left], stars[up]);
                     equivalencies.insert(std::pair<int, int>(int(std::max(stars[left], stars[up])), int(stars[i])));
                     assert(equivalencies.find(stars[i]) == equivalencies.end());
-                } else if(leftEq) {
+                } else if(leftEq) { // From here, we get a copy of the first two if/else if statements
                     stars[i] = stars[left];
-                } else if(upEq) {
+                } else if(upEq) { 
                     stars[i] = stars[up];
                 } else {
                     stars[i] = ++L;
@@ -297,13 +307,17 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             }
         }
     }
-     // Get statistics of each star
+
+    // Get statistics of each star. This is when we process the above info
+    // into groups based on the pixels having the same number (or equivalent numebers via the map)
+    // params is a mapping of these centroid numbers (L values) to each "group" of pixels with statistics
+    // shown in Centroid params.
     std::unordered_map<int, CentroidParams> params; // Star # to param
-   for(int i = 0; i < imageWidth * imageHeight; i++) {
+    for(int i = 0; i < imageWidth * imageHeight; i++) {
         if(stars[i] != 0) {
             int starNumber = equivalencies.find(stars[i]) == equivalencies.end() ? 
                     stars[i] : equivalencies.find(stars[i]) -> second;
-            if(params.find(starNumber) == params.end()) {
+            if(params.find(starNumber) == params.end()) { // If the entry with the L value given at stars[i] is not yet in params, then initialze one
                 CentroidParams p;
                 p.magnitude = 0;
                 p.magSum = 0;
@@ -316,6 +330,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                 p.isValid = true;
                 params.insert(std::pair<int, CentroidParams>(starNumber, p));
             }
+            // Obtain and update the statistics for the centroid corresponding to the L value at stars[i] or the equivalent L value
             CentroidParams *centroid_ptr = &params.at(starNumber);
             int row = i / imageWidth;
             int col = i % imageWidth;
@@ -343,7 +358,9 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
         }
    }
 
-    // Now we actually make stars
+    // Now we actually make stars. This is the last step, and is when we validate each CentroidParam,
+    // make sure it is a valid centroid and that the param entry is a valid one (Not 0). Then we use
+    // our CentroidParams to initialize an actual centroid (Star)
     std::vector<Star> result;
     for(auto itr = params.begin(); itr != params.end(); itr++) {
         if(itr -> second.isValid && itr -> first != 0) {
