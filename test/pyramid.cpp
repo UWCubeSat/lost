@@ -65,28 +65,27 @@ TEST_CASE("Never don't identify a pyramid", "[pyramid]") {
         nextOtherIndex:;
         }
 
-        int a, b, c, d;
-        IdentifyPyramidResult matchResult
-            = IdentifyPyramid(db,
-                              catalog,
-                              tolerance,
-                              catalog[catalogIndices[0]].spatial,
-                              catalog[catalogIndices[1]].spatial,
-                              catalog[catalogIndices[2]].spatial,
-                              catalog[catalogIndices[3]].spatial,
-                              &a, &b, &c, &d);
-        CHECK((matchResult == IdentifyPyramidResult::MatchedUniquely
-               || matchResult == IdentifyPyramidResult::MatchedAmbiguously));
-        if (matchResult == IdentifyPyramidResult::MatchedUniquely) {
+        int matchedIndices[4];
+        const Vec3 spatials[4] = {
+            catalog[catalogIndices[0]].spatial,
+            catalog[catalogIndices[1]].spatial,
+            catalog[catalogIndices[2]].spatial,
+            catalog[catalogIndices[3]].spatial
+        };
+        int numMatches = IdentifyPatternPairDistance<4>(db, catalog, tolerance, spatials, matchedIndices);
+        CHECK(numMatches >= 1);
+        if (numMatches == 1) {
             numUniquelyIdentified++;
-            CHECK(a == catalogIndices[0]);
-            CHECK(b == catalogIndices[1]);
-            CHECK(c == catalogIndices[2]);
-            CHECK(d == catalogIndices[3]);
+            CHECK(matchedIndices[0] == catalogIndices[0]);
+            CHECK(matchedIndices[1] == catalogIndices[1]);
+            CHECK(matchedIndices[2] == catalogIndices[2]);
+            CHECK(matchedIndices[3] == catalogIndices[3]);
         }
     }
 
     CHECK((float)numUniquelyIdentified / numPyramidsToTry >= minFractionUniquelyIdentified);
+
+    delete[] dbBytes;
 }
 
 // TODO: one where spectrality is nearly zero, and thus needs to be ignored. Might be tested by above test already, but unsure.

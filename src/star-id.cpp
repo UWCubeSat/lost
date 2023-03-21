@@ -665,125 +665,126 @@ BestPyramidAtStar PyramidIterator::Next() {
     return bestPyramid;
 }
 
-IdentifyPyramidResult IdentifyPyramid(const PairDistanceKVectorDatabase &db,
-                                      const Catalog &catalog,
-                                      float tolerance,
-                                      const Vec3 &iSpatial, const Vec3 &jSpatial, const Vec3 &kSpatial, const Vec3 &rSpatial,
-                                      int *a, int *b, int *c, int *d) {
+// IdentifyPyramidResult IdentifyPyramid(const PairDistanceKVectorDatabase &db,
+//                                       const Catalog &catalog,
+//                                       float tolerance,
+//                                       const Vec3 &iSpatial, const Vec3 &jSpatial, const Vec3 &kSpatial, const Vec3 &rSpatial,
+//                                       int *a, int *b, int *c, int *d) {
 
-    // sign of determinant, to detect flipped patterns
-    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
+//     // sign of determinant, to detect flipped patterns
+//     bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
 
-    float ijDist = AngleUnit(iSpatial, jSpatial);
-    float ikDist = AngleUnit(iSpatial, kSpatial);
-    float irDist = AngleUnit(iSpatial, rSpatial);
-    float jkDist = AngleUnit(jSpatial, kSpatial);
-    float jrDist = AngleUnit(jSpatial, rSpatial);
-    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
-    // check krDist, if k has been
-    // verified by i and j it's fine.
+//     float ijDist = AngleUnit(iSpatial, jSpatial);
+//     float ikDist = AngleUnit(iSpatial, kSpatial);
+//     float irDist = AngleUnit(iSpatial, rSpatial);
+//     float jkDist = AngleUnit(jSpatial, kSpatial);
+//     float jrDist = AngleUnit(jSpatial, rSpatial);
+//     float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
+//     // check krDist, if k has been
+//     // verified by i and j it's fine.
 
-    // we check the distances with the extra tolerance requirement to ensure that
-    // there isn't some pyramid that's just outside the database's bounds, but
-    // within measurement tolerance of the observed pyramid, since that would
-    // possibly cause a non-unique pyramid to be identified as unique.
-#define _CHECK_DISTANCE(_dist) if (_dist < db.MinDistance() + tolerance || _dist > db.MaxDistance() - tolerance) { std::cerr << _dist << std::endl; return IdentifyPyramidResult::CannotPossiblyIdentify; }
-    _CHECK_DISTANCE(ijDist);
-    _CHECK_DISTANCE(ikDist);
-    _CHECK_DISTANCE(irDist);
-#undef _CHECK_DISTANCE
+//     // we check the distances with the extra tolerance requirement to ensure that
+//     // there isn't some pyramid that's just outside the database's bounds, but
+//     // within measurement tolerance of the observed pyramid, since that would
+//     // possibly cause a non-unique pyramid to be identified as unique.
+// #define _CHECK_DISTANCE(_dist) if (_dist < db.MinDistance() + tolerance || _dist > db.MaxDistance() - tolerance) { std::cerr << _dist << std::endl; return IdentifyPyramidResult::CannotPossiblyIdentify; }
+//     _CHECK_DISTANCE(ijDist);
+//     _CHECK_DISTANCE(ikDist);
+//     _CHECK_DISTANCE(irDist);
+// #undef _CHECK_DISTANCE
 
-#if LOST_DEBUG > 2
-    std::cerr << "Passed distance checks for pyramid" << std::endl;
-#endif
+// #if LOST_DEBUG > 2
+//     std::cerr << "Passed distance checks for pyramid" << std::endl;
+// #endif
 
-    const int16_t *ijEnd, *ikEnd, *irEnd;
-    const int16_t *const ijQuery = db.FindPairsExact(catalog, ijDist - tolerance, ijDist + tolerance, &ijEnd);
-    const int16_t *const ikQuery = db.FindPairsExact(catalog, ikDist - tolerance, ikDist + tolerance, &ikEnd);
-    const int16_t *const irQuery = db.FindPairsExact(catalog, irDist - tolerance, irDist + tolerance, &irEnd);
+//     const int16_t *ijEnd, *ikEnd, *irEnd;
+//     const int16_t *const ijQuery = db.FindPairsExact(catalog, ijDist - tolerance, ijDist + tolerance, &ijEnd);
+//     const int16_t *const ikQuery = db.FindPairsExact(catalog, ikDist - tolerance, ikDist + tolerance, &ikEnd);
+//     const int16_t *const irQuery = db.FindPairsExact(catalog, irDist - tolerance, irDist + tolerance, &irEnd);
 
-    // TODO: theoretically, it's fastest to relabel j,k,r to put the shortest one first (probably).
-    // But since we're not even sure of that, we'll just leave them alone for now.
+//     // TODO: theoretically, it's fastest to relabel j,k,r to put the shortest one first (probably).
+//     // But since we're not even sure of that, we'll just leave them alone for now.
 
-#if LOST_DEBUG > 3
-    std::cerr << "Number of ij pairs: " << (ijEnd-ijQuery)/2 << std::endl;
-#endif
-    std::multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
-    std::multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
+// #if LOST_DEBUG > 3
+//     std::cerr << "Number of ij pairs: " << (ijEnd-ijQuery)/2 << std::endl;
+// #endif
+//     std::multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
+//     std::multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
 
-    bool foundMatchYet = false;
-    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
-        int iCandidate = *iCandidateQuery;
-        // depending on parity, the first or second star in the pair is the "other" one
-        int jCandidate = (iCandidateQuery - ijQuery) % 2 == 0
-            ? iCandidateQuery[1]
-            : iCandidateQuery[-1];
+//     bool foundMatchYet = false;
+//     for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+//         int iCandidate = *iCandidateQuery;
+//         // depending on parity, the first or second star in the pair is the "other" one
+//         int jCandidate = (iCandidateQuery - ijQuery) % 2 == 0
+//             ? iCandidateQuery[1]
+//             : iCandidateQuery[-1];
 
-        // if debug>4, print the candidates
-#if LOST_DEBUG > 3
-        std::cerr << "iCandidate: " << *iCandidateQuery << std::endl;
-        std::cerr << "jCandidate: " << jCandidate << std::endl;
-#endif
+//         // if debug>4, print the candidates
+// #if LOST_DEBUG > 3
+//         std::cerr << "iCandidate: " << *iCandidateQuery << std::endl;
+//         std::cerr << "jCandidate: " << jCandidate << std::endl;
+// #endif
 
-        const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
-        const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
+//         const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
+//         const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
 
-        Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
+//         Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
 
-        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
-            // kCandidate.first is iterator, then ->second is the value (other star)
-            int kCandidate = kCandidateIt.first->second;
-            Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
-            bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
-            // checking the spectral-ity early to fail fast
-            if (candidateSpectralTorch != spectralTorch) {
-#if LOST_DEBUG > 3
-                std::cerr << "skipping candidate " << iCandidate << " " << jCandidate << " " << kCandidate << " because spectral-ity mismatch" << std::endl;
-#endif
-                continue;
-            }
+//         for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+//             // kCandidate.first is iterator, then ->second is the value (other star)
+//             int kCandidate = kCandidateIt.first->second;
+//             Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
+//             bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
+//             // checking the spectral-ity early to fail fast
+//             if (candidateSpectralTorch != spectralTorch) {
+// #if LOST_DEBUG > 3
+//                 std::cerr << "skipping candidate " << iCandidate << " " << jCandidate << " " << kCandidate << " because spectral-ity mismatch" << std::endl;
+// #endif
+//                 continue;
+//             }
 
-            // small optimization: We can calculate jk before iterating through r, so we will!
-            float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
-            if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
-                continue;
-            }
+//             // small optimization: We can calculate jk before iterating through r, so we will!
+//             float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+//             if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
+//                 continue;
+//             }
 
-            // TODO: if there are no jr matches, there's no reason to
-            // continue iterating through all the other k-s. Possibly
-            // enumarete all r matches, according to ir, before this loop
-            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
-                int rCandidate = rCandidateIt.first->second;
-                const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
-                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
-                float krCandidateDist;
-                if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
-                    continue;
-                }
-                krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
-                if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
-                    continue;
-                }
+//             // TODO: if there are no jr matches, there's no reason to
+//             // continue iterating through all the other k-s. Possibly
+//             // enumarete all r matches, according to ir, before this loop
+//             // However, on 2023-03-21, I tried this, and according to callgrind under -O3 it didn't improve anything.
+//             for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
+//                 int rCandidate = rCandidateIt.first->second;
+//                 const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
+//                 float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
+//                 float krCandidateDist;
+//                 if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
+//                     continue;
+//                 }
+//                 krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
+//                 if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
+//                     continue;
+//                 }
 
-                // we have a match!
-                if (!foundMatchYet) {
-                    *a = iCandidate;
-                    *b = jCandidate;
-                    *c = kCandidate;
-                    *d = rCandidate;
-                    foundMatchYet = true;
-                } else {
-                    // not unique!
-                    return IdentifyPyramidResult::MatchedAmbiguously;
-                }
-            }
-        }
-    }
-    return foundMatchYet
-        ? IdentifyPyramidResult::MatchedUniquely
-        : IdentifyPyramidResult::NoMatch;
+//                 // we have a match!
+//                 if (!foundMatchYet) {
+//                     *a = iCandidate;
+//                     *b = jCandidate;
+//                     *c = kCandidate;
+//                     *d = rCandidate;
+//                     foundMatchYet = true;
+//                 } else {
+//                     // not unique!
+//                     return IdentifyPyramidResult::MatchedAmbiguously;
+//                 }
+//             }
+//         }
+//     }
+//     return foundMatchYet
+//         ? IdentifyPyramidResult::MatchedUniquely
+//         : IdentifyPyramidResult::NoMatch;
 
-}
+// }
 
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
@@ -852,28 +853,28 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
         Vec3 rSpatial = starSpatials[r];
 
         int iMatch, jMatch, kMatch, rMatch;
-        IdentifyPyramidResult identifyResult
-            = IdentifyPyramid(vectorDatabase, catalog, tolerance,
-                              iSpatial, jSpatial, kSpatial, rSpatial,
-                              &iMatch, &jMatch, &kMatch, &rMatch);
+        // int numMatches = identifyResult
+        //     = IdentifyPyramid(vectorDatabase, catalog, tolerance,
+        //                       iSpatial, jSpatial, kSpatial, rSpatial,
+        //                       &iMatch, &jMatch, &kMatch, &rMatch);
 
-        switch (identifyResult) {
-        case IdentifyPyramidResult::CannotPossiblyIdentify:
-        case IdentifyPyramidResult::NoMatch:
-        case IdentifyPyramidResult::MatchedAmbiguously:
-            continue;
-        case IdentifyPyramidResult::MatchedUniquely:
-            identified.push_back(StarIdentifier(i, iMatch));
-            identified.push_back(StarIdentifier(j, jMatch));
-            identified.push_back(StarIdentifier(k, kMatch));
-            identified.push_back(StarIdentifier(r, rMatch));
+        // switch (identifyResult) {
+        // case IdentifyPyramidResult::CannotPossiblyIdentify:
+        // case IdentifyPyramidResult::NoMatch:
+        // case IdentifyPyramidResult::MatchedAmbiguously:
+        //     continue;
+        // case IdentifyPyramidResult::MatchedUniquely:
+        //     identified.push_back(StarIdentifier(i, iMatch));
+        //     identified.push_back(StarIdentifier(j, jMatch));
+        //     identified.push_back(StarIdentifier(k, kMatch));
+        //     identified.push_back(StarIdentifier(r, rMatch));
 
-            int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
-            printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
-            assert(numAdditionallyIdentified == (int)identified.size()-4);
+        //     int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
+        //     printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
+        //     assert(numAdditionallyIdentified == (int)identified.size()-4);
 
-            return identified;
-        }
+        //     return identified;
+        // }
     }
 
     std::cerr << "Tried all pyramids; none matched." << std::endl;

@@ -6,6 +6,7 @@
 #include <limits>
 #include <utility>
 #include <vector>
+#include <map>
 
 #include "star-utils.hpp"
 #include "star-id.hpp"
@@ -130,26 +131,144 @@ private:
     std::vector<int16_t> untriedCentroidIndices;
 };
 
-enum class IdentifyPyramidResult {
-    /// Won't even attempt identification of the given pyramid, not possible to identify for some reason (eg inter-star distances out of k-vector range)
-    CannotPossiblyIdentify = -1,
-    NoMatch = 0, /// Did not find any match
-    MatchedUniquely = 1, /// Matched uniquely, this is the only "successful" result
-    MatchedAmbiguously = 2, /// Multiple matches, you shouldn't use any of them
-};
 
 /**
- * Try to identify a pattern of four stars.
+ * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
+ * that appeared with it in the query.
  *
- * Pass it four 3D spatials, and it will try to find 4 catalog stars which match.
- * @param a,b,c,d Catalog indices of the identified stars, if uniquely matched.
- * @return see IdentifyPyramidResult. You can also sorta treat it like a number, though: "how many matches" were there?
+ * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
+ * star A is also in the map for star B.
  */
-IdentifyPyramidResult IdentifyPyramid(const PairDistanceKVectorDatabase &,
-                                      const Catalog &,
-                                      float tolerance,
-                                      const Vec3 &, const Vec3 &, const Vec3 &, const Vec3 &,
-                                      int *a, int *b, int *c, int *d);
+std::multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end);
+
+/**
+ * Try to identify a pattern of starts using pair distances.
+ *
+ * Pass it 3D spatials, and it will try to match catalog indices
+ * @return the "number" of matches. -1 if it cannot possibly match because the inter-star distances are outside the allowable range. 0 if just no match. 1 if unique match (this is the only case you can rely on the values of matchedCatalogIndices). Or, if not a unique match, the number of matches.
+ */
+template <int numPatternStars>
+int IdentifyPatternPairDistance(const PairDistanceKVectorDatabase &db,
+                                const Catalog &catalog,
+                                float tolerance,
+                                const Vec3 spatials[numPatternStars],
+                                int matchedCatalogIndices[numPatternStars]) {
+    static_assert(numPatternStars >= 3, "Cannot identify patterns w/ less than 3 stars");
+
+    // double check that spatials are unit vectors
+    assert(abs(spatials[0].MagnitudeSq() - 1) < 0.0001);
+
+    const Vec3 &iSpatial = spatials[0];
+    const Vec3 &jSpatial = spatials[1];
+    const Vec3 &kSpatial = spatials[2];
+
+    // sign of determinant, to detect flipped patterns
+    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
+
+    // 2D array of distances between stars
+    float distances[numPatternStars][numPatternStars];
+    for (int i = 0; i < numPatternStars; i++) {
+        for (int j = i+1; j < numPatternStars; j++) {
+            distances[i][j] = AngleUnit(spatials[i], spatials[j]);
+            distances[j][i] = distances[i][j]; // don't really need symmetry, but why not?
+
+            // the first star is the one we do the actual db queries on, so we want the other distances to be in range
+            if (i == 0 &&
+                (distances[i][j] < db.MinDistance() + tolerance
+                 || distances[i][j] > db.MaxDistance() - tolerance)) {
+                return -1;
+            }
+        }
+    }
+
+    std::multimap<int16_t, int16_t> pairDistanceMaps[numPatternStars];
+    // we'll build the maps lazily, so record which ones have been built.
+    bool builtMaps[numPatternStars] = {false};
+
+    const int16_t *ijEnd, *ikEnd;
+    const int16_t *const ijQuery = db.FindPairsExact(catalog, distances[0][1] - tolerance, distances[0][1] + tolerance, &ijEnd);
+    const int16_t *const ikQuery = db.FindPairsExact(catalog, distances[0][2] - tolerance, distances[0][2] + tolerance, &ikEnd);
+    pairDistanceMaps[2] = PairDistanceQueryToMap(ikQuery, ikEnd);
+    builtMaps[2] = true;
+
+    int numMatches = 0;
+
+    Vec3 candidateSpatials[numPatternStars];
+    int16_t candidateCatalogIndices[numPatternStars];
+    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+        candidateCatalogIndices[0] = *iCandidateQuery;
+        // depending on parity, the first or second star in the pair is the "other" one
+        candidateCatalogIndices[1] = (iCandidateQuery - ijQuery) % 2 == 0
+            ? iCandidateQuery[1]
+            : iCandidateQuery[-1];
+
+        candidateSpatials[0] = catalog[candidateCatalogIndices[0]].spatial;
+        candidateSpatials[1] = catalog[candidateCatalogIndices[1]].spatial;
+
+        Vec3 ijCandidateCross = candidateSpatials[0].CrossProduct(candidateSpatials[1]);
+
+        for (auto kCandidateIt = pairDistanceMaps[2].equal_range(candidateCatalogIndices[0]); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+            // kCandidate.first is iterator, then ->second is the value (other star)
+            candidateCatalogIndices[2] = kCandidateIt.first->second;
+            candidateSpatials[2] = catalog[candidateCatalogIndices[2]].spatial;
+            bool candidateSpectralTorch = ijCandidateCross*candidateSpatials[2] > 0;
+            // checking the spectral-ity early to fail fast
+            if (candidateSpectralTorch != spectralTorch) {
+#if LOST_DEBUG > 3
+                std::cerr << "skipping candidate " << iCandidate << " " << jCandidate << " " << kCandidate << " because spectral-ity mismatch" << std::endl;
+#endif
+                continue;
+            }
+
+            float jkCandidateDist = AngleUnit(candidateSpatials[1], candidateSpatials[2]);
+            if (jkCandidateDist < distances[1][2] - tolerance || jkCandidateDist > distances[1][2] + tolerance) {
+                continue;
+            }
+
+            // now draw the rest of the fucking owl
+            for (int l = 3; l < numPatternStars; l++) {
+                if (!builtMaps[l]) {
+                    const int16_t *lrEnd;
+                    const int16_t *const lrQuery = db.FindPairsExact(catalog, distances[l][0] - tolerance, distances[l][0] + tolerance, &lrEnd);
+                    pairDistanceMaps[l] = PairDistanceQueryToMap(lrQuery, lrEnd);
+                    builtMaps[l] = true;
+                }
+
+                auto lCandidateIt = pairDistanceMaps[l].equal_range(candidateCatalogIndices[0]);
+                // break fast to the top if there are no matches for this star
+                if (lCandidateIt.first == lCandidateIt.second) {
+                    // no matches for this star
+                    goto nextICandidate;
+                }
+                for (; lCandidateIt.first != lCandidateIt.second; lCandidateIt.first++) {
+                    // lCandidate.first is iterator, then ->second is the value (other star)
+                    candidateCatalogIndices[l] = lCandidateIt.first->second;
+                    candidateSpatials[l] = catalog[candidateCatalogIndices[l]].spatial;
+
+                    // check distances against all other stars, except 0, because that's part of the query
+                    for (int m = 1; m < l; m++) {
+                        float lmCandidateDist = AngleUnit(candidateSpatials[l], candidateSpatials[m]);
+                        if (lmCandidateDist < distances[l][m] - tolerance || lmCandidateDist > distances[l][m] + tolerance) {
+                            goto nextLCandidate;
+                        }
+                    }
+
+                    // if we get here, we have a match!
+                    numMatches++;
+                    // if there are multiple matches, the matched indices are undefined anyway, so just set them unconditionally
+                    for (int m = 0; m < numPatternStars; m++) {
+                        matchedCatalogIndices[m] = candidateCatalogIndices[m];
+                    }
+
+                nextLCandidate:;
+                }
+            }
+        }
+    nextICandidate:;
+    }
+
+    return numMatches;
+}
 
 } // namespace lost
 
