@@ -12,8 +12,10 @@
 // Emacs, try `evil-lion`. With your cursor inside any of the blocks, type `glip,` to aLign the
 // Inside of the current Paragraph to comma.
 
+#include <string>
+
 // CAMERA
-LOST_CLI_OPTION("png"          , std::string, png         , "" , optarg, kNoDefaultArgument)
+LOST_CLI_OPTION("png"          , std::string, png         , "" , optarg       , kNoDefaultArgument)
 LOST_CLI_OPTION("focal-length" , float      , focalLength , 0  , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("pixel-size"   , float      , pixelSize   , -1 , atof(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("fov"          , float      , fov         , 20 , atof(optarg) , kNoDefaultArgument)
@@ -37,8 +39,10 @@ LOST_CLI_OPTION("centroid-compare-threshold", float      , centroidCompareThresh
 LOST_CLI_OPTION("attitude-compare-threshold", float      , attitudeCompareThreshold, 1 , atof(optarg), kNoDefaultArgument)
 LOST_CLI_OPTION("plot-raw-input"            , std::string, plotRawInput            , "", optarg      , "-")
 LOST_CLI_OPTION("plot-input"                , std::string, plotInput               , "", optarg      , "-")
+LOST_CLI_OPTION("plot-centroid-indices"     , std::string, plotCentroidIndices     , "", optarg      , "-")
 LOST_CLI_OPTION("plot-output"               , std::string, plotOutput              , "", optarg      , "-")
-LOST_CLI_OPTION("print-centroids"           , std::string, printCentroids          , "", optarg      , "-")
+LOST_CLI_OPTION("print-expected-centroids"  , std::string, printExpectedCentroids  , "", optarg      , "-")
+LOST_CLI_OPTION("print-actual-centroids"    , std::string, printActualCentroids    , "", optarg      , "-")
 LOST_CLI_OPTION("print-attitude"            , std::string, printAttitude           , "", optarg      , "-")
 LOST_CLI_OPTION("compare-centroids"         , std::string, compareCentroids        , "", optarg      , "-")
 LOST_CLI_OPTION("compare-star-ids"          , std::string, compareStarIds          , "", optarg      , "-")

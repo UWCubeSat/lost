@@ -1,12 +1,19 @@
+/**
+ * LOST starting point
+ *
+ * Reads in CLI arguments/flags and starts the appropriate pipelines
+ */
+
+#include <assert.h>
+#include <unistd.h>
+#include <getopt.h>
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <getopt.h>
 #include <cstring>
 #include <map>
-#include <unistd.h>
-#include <assert.h>
 
 #include "databases.hpp"
 #include "centroiders.hpp"
@@ -16,24 +23,28 @@
 
 namespace lost {
 
+/// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int)(values.minMag*100), values.maxStars);
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
-    unsigned char *catalogBuffer = builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
+    unsigned char
+        *catalogBuffer =
+        builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
-    GenerateDatabases(builder, narrowedCatalog, values);
+    GenerateDatabases(&builder, narrowedCatalog, values);
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
-    PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
-    pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
+    UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
+    pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
 
 }
 
+/// Run a star-tracking pipeline (possibly including generating inputs and analyzing outputs) based on command line options in \p values.
 static void PipelineRun(const PipelineOptions &values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
@@ -87,6 +98,7 @@ static void PipelineRun(const PipelineOptions &values) {
 //     std::cout << "camera_identified false" << std::endl;
 // }
 
+/// Convert string to boolean
 bool atobool(const char *cstr) {
     std::string str(cstr);
     if (str == "1" || str == "true") {
@@ -96,24 +108,27 @@ bool atobool(const char *cstr) {
         return false;
     }
     assert(false);
-    return false;
 }
 
-// https://stackoverflow.com/a/69177115
+/**
+ * Handle optional CLI arguments
+ * https://stackoverflow.com/a/69177115
+ */
 #define LOST_OPTIONAL_OPTARG()                                   \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
      ? (bool) (optarg = argv[optind++])                          \
      : (optarg != NULL))
 
-// Wrapped so that we are in lost namespace.
+// This is separate from `main` just because it's in the `lost` namespace
 static int LostMain(int argc, char **argv) {
 
     if (argc == 1) {
-        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
+        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
+                  << "Use --help flag on those commands for further help" << std::endl;
         return 0;
-    } 
+    }
 
-    std::string command (argv[1]);
+    std::string command(argv[1]);
     optind = 2;
 
     if (command == "database") {
@@ -125,17 +140,16 @@ static int LostMain(int argc, char **argv) {
             help
         };
 
-        static struct option long_options[] =
-        {
+        static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
              0,                                                         \
              (int)DatabaseCliOption::prop},
-#include "database-options.hpp"
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
-            {"help",  no_argument, 0, (int)DatabaseCliOption::help},
-            {0}
+                {"help", no_argument, 0, (int) DatabaseCliOption::help},
+                {0}
         };
 
         DatabaseOptions databaseOptions;
@@ -156,18 +170,15 @@ static int LostMain(int argc, char **argv) {
                         }                                       \
                     }                                           \
             break;
-#include "database-options.hpp"
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
-            case (int)DatabaseCliOption::help :
-                std::cout << documentation_database_txt << std::endl;
-                return 0;
-                break;
-            default :
-                std::cout << "Illegal flag" << std::endl;
-                exit(1);
+                case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
+                    return 0;
+                    break;
+                default :std::cout << "Illegal flag" << std::endl;
+                    exit(1);
             }
         }
-
 
         lost::DatabaseBuild(databaseOptions);
 
@@ -180,25 +191,24 @@ static int LostMain(int argc, char **argv) {
             help
         };
 
-        static struct option long_options[] =
-        {
+        static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
             {name,                                                      \
              defaultArg == 0 ? required_argument : optional_argument, \
              0,                                                         \
              (int)PipelineCliOption::prop},
-#include "pipeline-options.hpp"
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
 
-            // DATABASES
-            {"help",            no_argument, 0, (int)PipelineCliOption::help},
-            {0, 0, 0, 0}
+                // DATABASES
+                {"help", no_argument, 0, (int) PipelineCliOption::help},
+                {0, 0, 0, 0}
         };
 
         lost::PipelineOptions pipelineOptions;
         int index;
         int option;
-        
+
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
@@ -213,23 +223,21 @@ static int LostMain(int argc, char **argv) {
                         }                                       \
                     }                                           \
             break;
-#include "pipeline-options.hpp"
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
-            case (int)PipelineCliOption::help : 
-                std::cout << documentation_pipeline_txt << std::endl;
-                return 0;
-                break;
-            default :
-                std::cout << "Illegal flag" << std::endl;
-                exit(1);
+                case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
+                    return 0;
+                    break;
+                default :std::cout << "Illegal flag" << std::endl;
+                    exit(1);
             }
         }
-
 
         lost::PipelineRun(pipelineOptions);
 
     } else {
-        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl << "Use --help flag on those commands for further help" << std::endl; 
+        std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
+                  << "Use --help flag on those commands for further help" << std::endl;
     }
     return 0;
 }

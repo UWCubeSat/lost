@@ -1,0 +1,23 @@
+name: Publish Docs
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: ⬇️ Install Doxygen
+      run: sudo apt install -y doxygen graphviz
+    - name: ⚙️ Run Doxygen
+      run: doxygen
+    - name: 🚀 Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: documentation/doxygen/html

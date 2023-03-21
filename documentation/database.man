@@ -6,24 +6,63 @@ database \- builds a database
 
 .SH SYNOPSIS
 
-\fBdatabase\fP [--mag \fImax-magnitude\fP | --stars \fInum-stars\fP] [--kvector --kvector-min-distance \fImin\fP --kvector-max-distance \fImax\fP --kvector-distance-bins \fInum-bins\fP] [--output \fIoutput-path\fP]
+\fBdatabase\fP [CATALOG OPTIONS...] [[DATABASE SPECIFIC OPTIONS...]] [--output \fIoutput-path\fP] [--help]
 .br
 
 .SH DESCRIPTION
 
-\fBdatabase\fP generates a database (a subset of the star catalog), which is used to compare unidentified stars against. The greater star catalog contains about 9000 stars, which
-can be limited in the database by filtering the stars out with a \fImax-magnitude\fP or by getting the \fInum-stars\fP brightest stars in the catalog. There are several different methods of
-constructing a database. This database is then generated into the file \fIoutput-path\fP.
+First, some terminology:
+.IP \[bu] 2
+\fBCatalog\fP: A simple list of all stars we might want to ever identify, with basic information such as their position in the celestial sphere and magnitude.
+.IP \[bu] 2
+\fBDatabase\fP: A more complex data structure built from the catalog. Databases are optimized to
+answer certain types of queries quickly. Different star-id algorithms may need different databases.
+.LP
 
-.SS Options
+Every star-id algorithm needs the catalog, and all currently implemented algorithms also need a database.
+
+Databases generation can be somewhat slow, so database generation is usually performed on the
+ground. That being said, some types of databases aren't \fIthat\fP slow to build, so if you're
+worried about radiation corrupting the database, at least for some database types it may be
+acceptable to re-generate the database periodically during a mission.
+
+The LOST database file format is actually a "multi-database", which can store multiple databases as
+well as the catalog. The different database types contain a key which the star identification
+algorithms use to automatically select the correct sub-database in a multi-database. It's presently
+impossible to include two different databases of the same type in a multi-database.
+
+.SH STAR IDENTIFICATION ALGO <-> DATABASE TYPE
+
+Different star identification algorithms require different databases:
+.IP \[bu] 2
+\fBPyramid\fP: Catalog + Pair-distance KVector.
+.IP \[bu] 2
+\fBGeometric Voting\fP: Catalog + Pair-distance KVector.
+.LP
+
+.SH CATALOG NARROWING OPTIONS
+
+These options allow you to limit the stars that get added to the catalog. Generally you'll want to
+narrow down the catalog so that it only contains stars that your imaging system is likely to
+actually pick up, because any extra stars just slow down matching algorithms and increase the
+likelihood of a bad match.
 
 .TP
 \fB--min-mag\fP \fIminimum-magnitude\fP
-Limits database to stars with magnitude less than \minimum-magnitude\fP (brighter stars have lower magnitudes).
+Narrows catalog to stars with magnitude less than \minimum-magnitude\fP (brighter stars have lower magnitudes).
 
 .TP
 \fB--max-stars\fP \fInum-stars\fP
-Limits database to the \fInum-stars\fP brightest stars in the catalog.
+Limits catalog to the \fInum-stars\fP brightest stars in the catalog.
+
+.TP
+\fB--min-separation\fP \fIminimum-separation\fP
+Removes stars from the catalog that are within \fIminimum-separation\fP degrees of another catalog star. The default option is probably good enough for you.
+
+.SH PAIR-DISTANCE KVECTOR DATABASE OPTIONS
+
+The pair-distance KVector database allows fast (constant time) queries to find all pairs of stars
+with an angular distance between them being in a certain range.
 
 .TP
 \fB--kvector\fP
@@ -35,11 +74,13 @@ Sets the minimum distance bin in the kvector building method to \fImin\fP (degre
 
 .TP
 \fB--kvector-max-distance\fP \fImax\fP
-Sets the maximum distance bin in the kvector building method to \fImax\fP (degrees). Defaults to 15 if option is not selected.
+Sets the maximum distance \fImax\fP (degrees). Defaults to 15 if option is not selected. Should be set to no larger than your camera's FOV, otherwise you're just wasting time and space.
 
 .TP
 \fB--kvector-distance-bins\fP \fInum-bins\fP
-Sets the number of distance bins in the kvector building method to \fInum-bins\fP.  Defaults to 10000 if option is not selected.
+Sets the number of distance bins in the kvector building method to \fInum-bins\fP.  Defaults to 10000 if option is not selected, which is pretty reasonable for most cases.
+
+.SH OTHER OPTIONS
 
 .TP
 \fB--tracking\fP
@@ -51,7 +92,7 @@ The file to output the database to. Defaults to stdout.
 
 .TP
 \fB--help\fP
-Prints the contents of the manual entry for the command to the terminal.
+Prints this page to the terminal.
 
 .SH SEE ALSO
 pipeline(3)

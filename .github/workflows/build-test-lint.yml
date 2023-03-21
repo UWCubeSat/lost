@@ -1,0 +1,30 @@
+name: Build, Test, and Lint
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container: huskysat/lost:latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: CXXFLAGS=-Werror make -j$(($(nproc)+1))
+    - name: Test
+      run: CXXFLAGS=-Werror make test -j$(($(nproc)+1))
+  
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+    - run: pip install cpplint
+    - name: Lint
+      run: make lint
+    - name: Line Endings
+      uses: erclu/check-crlf@v1
