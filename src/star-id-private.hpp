@@ -118,17 +118,39 @@ public:
  */
 class PyramidIterator {
 public:
-    /// Please ensure that `centroids` outlives the PyramidIterator!
-    PyramidIterator(const Stars &centroids);
+    /// Please ensure that `centroids` outlives the PyramidIterator! Also, minDistance and maxDistance are exact, we don't offset by tolerance, you probably want to do that!
+    PyramidIterator(const Stars &centroids, float minDistance, float maxDistance);
 
     /// Returns the next best pyramid, or a "no pyramid" pyramid.
     BestPyramidAtStar Next();
 
 private:
+    float minDistance, maxDistance;
     // once length of this is less than 4, we switch to alternate strategy:
     const Stars &allCentroids;
     std::vector<int16_t> untriedCentroidIndices;
 };
+
+enum class IdentifyPyramidResult {
+    /// Won't even attempt identification of the given pyramid, not possible to identify for some reason (eg inter-star distances out of k-vector range)
+    CannotPossiblyIdentify = -1,
+    NoMatch = 0, /// Did not find any match
+    MatchedUniquely = 1, /// Matched uniquely, this is the only "successful" result
+    MatchedAmbiguously = 2, /// Multiple matches, you shouldn't use any of them
+};
+
+/**
+ * Try to identify a pattern of four stars.
+ *
+ * Pass it four 3D spatials, and it will try to find 4 catalog stars which match.
+ * @param a,b,c,d Catalog indices of the identified stars, if uniquely matched.
+ * @return see IdentifyPyramidResult. You can also sorta treat it like a number, though: "how many matches" were there?
+ */
+IdentifyPyramidResult IdentifyPyramid(const PairDistanceKVectorDatabase &,
+                                      const Catalog &,
+                                      float tolerance,
+                                      const Vec3 &, const Vec3 &, const Vec3 &, const Vec3 &,
+                                      int *a, int *b, int *c, int *d);
 
 } // namespace lost
 
