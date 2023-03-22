@@ -12,8 +12,11 @@ namespace lost {
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 struct KVectorQuad {
-    int16_t* stars;
-    float* parameters;
+    // Star Indexes in this quad
+    std::vector<int16_t> stars;
+
+    // Parameters for this quad
+    std::vector<float> parameters;
 };
 
 /**
@@ -49,7 +52,7 @@ private:
 long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
 void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance);
-void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
+void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned char *buffer);
 long SerializeLengthQuadStarKVectorND(int numEntries, int bins);
 float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo);
 float StarParameterB(float centralToOne, float centralToTwo, float centralToThree);

@@ -301,7 +301,7 @@ KVectorND::~KVectorND() {
     free(binWidth);
 }
 
-unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, float* max, long numBins, unsigned char *buffer, int entries) {
+unsigned char* SerializeQuadKVectorIndex(const std::vector<int32_t> &kVector, float* min, float* max, long numBins, unsigned char *buffer, int entries) {
 
     unsigned char *bufferStart = buffer;
     // metadata fields
@@ -320,18 +320,18 @@ unsigned char* SerializeQuadKVectorIndex(const int32_t kVector[], float* min, fl
     buffer += sizeof(int32_t);
 
     // kvector index field
-    for (int i = 0; i < sizeof(kVector); i++) {
+    for (int i = 0; i < kVector.size(); i++) {
         *(int32_t *)buffer = kVector[i];
         buffer += sizeof(int32_t);
     }
 
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
+    // TODO: verify length. Here is code for the normal KVector
+    assert(buffer - bufferStart == SerializeLengthKVectorNDIndex(numBins * numBins * numBins * numBins));
 
     return buffer;
 }
 
-void Insert(const Catalog &catalog, std::vector<int16_t> quad, int16_t centralIndex, int16_t starIndex) {
+void Insert(const Catalog &catalog, std::vector<int16_t> &quad, int16_t centralIndex, int16_t starIndex) {
     int size = quad.size();
     for(int i = 0; i < quad.size(); i++) {
         int dist1 = AngleUnit(catalog[centralIndex].spatial, catalog[i].spatial);
@@ -369,97 +369,107 @@ float StarParameterB(float centralToOne, float centralToTwo, float centralToThre
     return (centralToTwo - centralToOne) / (centralToOne - centralToThree);
 }
 
-float* StarParameterSet(Vec3 central, std::vector<Vec3> stars) {
-    float result[4];
+std::vector<float> StarParameterSet(Vec3 central, std::vector<Vec3> stars) {
+    std::vector<float> result;
     for(int i = 0; i <= 1; i++) {
-        for(int j = i + 1; j <= 2; i++) {
-                result[i + j - 1] = StarParameterA(central * stars.at(i), 
+        for(int j = i + 1; j <= 2; j++) {
+                result.push_back(StarParameterA(central * stars.at(i), 
                         central * stars.at(j), 
-                        stars.at(i) * stars.at(j));
+                        stars.at(i) * stars.at(j)));
         }
     }
-    result[3] = StarParameterB(central * stars.at(0), 
+    result.push_back(StarParameterB(central * stars.at(0), 
                     central * stars.at(1), 
-                    central * stars.at(2));
+                    central * stars.at(2)));
     return result;
 }
 
 
 std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance) {
+    // Holds both the indexes and the corresponding vectors of stars
     std::vector<KVectorQuad> result;
+
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
+
+        // Holds indexes of stars
         std::vector<int16_t> quad;
         for (int16_t j = 0; j < (int16_t)catalog.size(); j++) {
             if(i != j) {
                 Insert(catalog, quad, i, j);
-                if(sizeof(quad) > 3) {
+                if(quad.size() > 3) {
                     quad.resize(3);
                 }
             }
         }
-        assert(sizeof(quad) == 3);
-        if(AngleUnit(catalog[i].spatial, catalog[quad[0]].spatial) > minDistance && AngleUnit(catalog[i].spatial, catalog[quad[2]].spatial) < maxDistance) {
-            int16_t stars[] = {i, quad.at(0), quad.at(1), quad.at(2)};
-            result.push_back({stars, StarParameterSet(catalog[i].spatial, {catalog[quad[0]].spatial, catalog[quad[1]].spatial, catalog[quad[2]].spatial})});
+        assert(quad.size() == 3);
+        if(AngleUnit(catalog[i].spatial, catalog[quad.at(0)].spatial) > minDistance && AngleUnit(catalog[i].spatial, catalog[quad.at(2)].spatial) < maxDistance) {
+            std::vector<float> parameters = StarParameterSet(catalog[i].spatial, {catalog[quad.at(0)].spatial, catalog[quad.at(1)].spatial, catalog[quad.at(2)].spatial});
+            result.push_back({{i, quad.at(0), quad.at(1), quad.at(2)}, parameters});
         }
-            
     }
+    // Returns a list of star patterns of 4 stars where each pattern contains the indexes and then the 
+    // modified Liebe parameter sets
     return result;
 }
 
 
-int BinFunctionND(float* parameters, float* offset, float* scale, int* product) {
+long BinFunctionND(const std::vector<float> &parameters, float* offset, float* scale, int* product) {
     int bin = 0;
     for(int i = 0; i < 4; i++) {
-        bin += std::floor(scale[i] * (parameters[i] - offset[i])) * product[i];
+        if(std::floor(scale[i] * (parameters[i] - offset[i])) == product[1]) {
+            bin += ((int)product[1] - 1) * product[i];
+        } else {
+            bin += std::floor(scale[i] * (parameters[i] - offset[i])) * product[i];
+        }
     }
+    assert(bin < product[4]);
+    assert(bin > 0);
     return bin;
 }
 
-void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
-    assert(sizeof(quads) > 0);
+void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned char *buffer) {
+    assert(quads.size() > 0);
 
     // TODO: Statistics Printout
 
-    // Preprocessing: Finding boundaries along axes
-    float min[] = {quads[0].parameters[0], quads[0].parameters[1], quads[0].parameters[2], quads[0].parameters[3]};
-    float max[] = {quads[0].parameters[0], quads[0].parameters[1], quads[0].parameters[2], quads[0].parameters[3]};
-    for(int i = 1; i < sizeof(quads); i++) {
-        KVectorQuad quad = quads[i];
+    // Preprocessing: Finding boundaries along axes (min and max parameters A and B)
+    float min[4] = {quads.at(0).parameters.at(0), quads.at(0).parameters.at(1), quads.at(0).parameters.at(2), quads.at(0).parameters.at(3)};
+    float max[4] = {quads.at(0).parameters.at(0), quads.at(0).parameters.at(1), quads.at(0).parameters.at(2), quads.at(0).parameters.at(3)};
+    for(int i = 1; i < quads.size(); i++) {
         for(int j = 0; j < 4; j++) {
-            float param = quad.parameters[i];
-            if(param < min[i]) {
-                min[i] = param;
+            float param = quads.at(i).parameters.at(j);
+            if(param < min[j]) {
+                min[j] = param;
             }
-            if(param > max[i]) {
-                max[i] = param;
+            if(param > max[j]) {
+                max[j] = param;
             }
         }
     }
     
     // Preprocessing: Calculating scaling factors
     float scale[4];
-    int product[] = {1, 1, 1, 1, 1};
+    int product[5] = {1, 1, 1, 1, 1};
     for(int i = 0; i < 4; i++) {
         scale[i] = numBins / (max[i] - min[i]);
         product[i + 1] = product[i] * numBins;
     }
     
     // Preprocessing: Finding bins for all elements
-    KVectorQuad* pointers[sizeof(quads)];
-    int bins[sizeof(quads)];
-    for(int i = 0; i < sizeof(quads); i++) {
+    KVectorQuad* pointers[(int)quads.size()];
+    long bins[(int)quads.size()];
+    for(int i = 0; i < quads.size(); i++) {
         pointers[i] = &quads[i];
         bins[i] = BinFunctionND(quads[i].parameters, min, scale, product);
     }
 
     // KVector Positions
-    int32_t kVector[product[4] + 1];
-    for(int i = 0; i < product[4]; i++) {
+    std::vector<int32_t> kVector((int)product[4] + 1);
+    for(int i = 0; i < quads.size(); i++) {
         kVector[bins[i]]++;
     }
     int32_t sum = 0;
-    for(int i = 0; i < sizeof(kVector); i++) {
+    for(int i = 0; i < product[4] + 1; i++) {
         int32_t temp = kVector[i];
         kVector[i] = sum;
         sum += temp;
@@ -467,9 +477,12 @@ void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, 
     kVector[product[4]] = sum;
 
     // Sorting all elements
-    KVectorQuad* sortedPointers[sizeof(pointers)];
-    int positions[product[4]];
-    for(int i = 0; i < sizeof(sortedPointers); i++) {
+    KVectorQuad* sortedPointers[(int)product[4]];
+    int positions[(int)product[4]];
+    for(int i = 0; i < product[4]; i++) {
+        positions[i] = 0;
+    }
+    for(int i = 0; i < quads.size(); i++) {
         int bin = bins[i];
         sortedPointers[kVector[bin] + positions[bin]] = pointers[i];
         positions[bin]++;
@@ -477,18 +490,18 @@ void SerializeKVectorND(const Catalog &catalog, std::vector<KVectorQuad> quads, 
     
     // Metadata and KVector Positions
     unsigned char *bufferStart = buffer;
-    buffer = SerializeQuadKVectorIndex(kVector, min, max, numBins, buffer, sizeof(quads));
-
+    buffer = SerializeQuadKVectorIndex(kVector, min, max, numBins, buffer, quads.size());
+    
     // indexes for each quad entry
-    for (int i = 0; i < sizeof(sortedPointers); i++) {
+    for (int i = 0; i < quads.size(); i++) {
         for(int j = 0; j < 4; j++) {
-            *(int16_t *)buffer = sortedPointers[i]->stars[i];
+            *(int16_t *)buffer = sortedPointers[i]->stars[j];
             buffer += sizeof(int16_t);
         }
     }
 
     // TODO: verify length
-    // assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
+    assert(buffer - bufferStart == SerializeLengthQuadStarKVectorND(quads.size(), numBins * numBins * numBins * numBins));
 
 }
 

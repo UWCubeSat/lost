@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Mark Polyakov (If you edit the file, add your name here!)
+# Copyright (c) 2020 Mark Polyakov, Karen Haining (If you edit the file, add your name here!)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,25 @@ BSC  := bright-star-catalog.tsv
 
 LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
+RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
+# debug flags:
+CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
+ifndef LOST_DISABLE_ASAN
+	CXXFLAGS := $(CXXFLAGS) -fsanitize=address
+endif
+
+RELEASE_LDFLAGS := $(LDFLAGS)
+
+# debug link flags:
+ifndef LOST_DISABLE_ASAN
+	LDFLAGS := $(LDFLAGS) -fsanitize=address
+endif
 
 all: $(BIN) $(BSC)
+
+release: CXXFLAGS := $(RELEASE_CXXFLAGS)
+release: LDFLAGS := $(RELEASE_LDFLAGS)
+release: all
 
 $(BSC): download-bsc.sh
 	./download-bsc.sh
@@ -48,6 +65,7 @@ $(BIN): $(OBJS)
 
 documentation/%.txt: documentation/%.man
 	groff -mandoc -Tascii $< > $@
+	printf '\0' >> $@
 
 documentation/man-%.h: documentation/%.txt
 	xxd -i $< > $@
@@ -69,6 +87,7 @@ test: $(BIN) $(BSC) $(TEST_BIN)
 	$(TEST_BIN)
 	# bash ./test/scripts/pyramid-incorrect.sh
 	bash ./test/scripts/readme-examples-test.sh
+	bash ./test/scripts/random-crap.sh
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
