@@ -766,6 +766,136 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
+/**
+ * Try to identify a pattern of starts using pair distances.
+ *
+ * Pass it 3D spatials, and it will try to match catalog indices
+ * @return the "number" of matches. -1 if it cannot possibly match because the inter-star distances are outside the allowable range. 0 if just no match. 1 if unique match (this is the only case you can rely on the values of matchedCatalogIndices). Or, if not a unique match, the number of matches.
+ */
+template <int numPatternStars>
+std::vector<std::vector<int16_t>> IdentifyPatternPairDistance(const PairDistanceKVectorDatabase &db,
+                                                                  const Catalog &catalog,
+                                                                  float tolerance,
+                                                                  const Vec3 spatials[numPatternStars]) {
+    static_assert(numPatternStars >= 3, "Cannot identify patterns w/ less than 3 stars");
+
+    // double check that spatials are unit vectors
+    assert(abs(spatials[0].MagnitudeSq() - 1) < 0.0001);
+
+    const Vec3 &iSpatial = spatials[0];
+    const Vec3 &jSpatial = spatials[1];
+    const Vec3 &kSpatial = spatials[2];
+
+    // sign of determinant, to detect flipped patterns
+    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
+
+    // 2D array of distances between stars
+    float distances[numPatternStars][numPatternStars];
+    for (int i = 0; i < numPatternStars; i++) {
+        for (int j = i+1; j < numPatternStars; j++) {
+            distances[i][j] = AngleUnit(spatials[i], spatials[j]);
+            distances[j][i] = distances[i][j]; // don't really need symmetry, but why not?
+
+            // the first star is the one we do the actual db queries on, so we want the other distances to be in range
+            if (i == 0 &&
+                (distances[i][j] < db.MinDistance() + tolerance
+                 || distances[i][j] > db.MaxDistance() - tolerance)) {
+                return {};
+            }
+        }
+    }
+
+    std::unordered_multimap<int16_t, int16_t> pairDistanceMaps[numPatternStars];
+    // we'll build the maps lazily, so record which ones have been built.
+    bool builtMaps[numPatternStars] = {false};
+
+    const int16_t *ijEnd, *ikEnd;
+    const int16_t *const ijQuery = db.FindPairsExact(catalog, distances[0][1] - tolerance, distances[0][1] + tolerance, &ijEnd);
+    const int16_t *const ikQuery = db.FindPairsExact(catalog, distances[0][2] - tolerance, distances[0][2] + tolerance, &ikEnd);
+    pairDistanceMaps[2] = PairDistanceQueryToMap(ikQuery, ikEnd);
+    builtMaps[2] = true;
+
+    std::vector<std::vector<int16_t>> result;
+
+    Vec3 candidateSpatials[numPatternStars];
+    int16_t candidateCatalogIndices[numPatternStars];
+    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+        candidateCatalogIndices[0] = *iCandidateQuery;
+        // depending on parity, the first or second star in the pair is the "other" one
+        candidateCatalogIndices[1] = (iCandidateQuery - ijQuery) % 2 == 0
+            ? iCandidateQuery[1]
+            : iCandidateQuery[-1];
+
+        candidateSpatials[0] = catalog[candidateCatalogIndices[0]].spatial;
+        candidateSpatials[1] = catalog[candidateCatalogIndices[1]].spatial;
+
+        Vec3 ijCandidateCross = candidateSpatials[0].CrossProduct(candidateSpatials[1]);
+
+        for (auto kCandidateIt = pairDistanceMaps[2].equal_range(candidateCatalogIndices[0]); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+            // kCandidate.first is iterator, then ->second is the value (other star)
+            candidateCatalogIndices[2] = kCandidateIt.first->second;
+            candidateSpatials[2] = catalog[candidateCatalogIndices[2]].spatial;
+            bool candidateSpectralTorch = ijCandidateCross*candidateSpatials[2] > 0;
+            // checking the spectral-ity early to fail fast
+            if (candidateSpectralTorch != spectralTorch) {
+#if LOST_DEBUG > 3
+                std::cerr << "skipping candidate " << iCandidate << " " << jCandidate << " " << kCandidate << " because spectral-ity mismatch" << std::endl;
+#endif
+                continue;
+            }
+
+            float jkCandidateDist = AngleUnit(candidateSpatials[1], candidateSpatials[2]);
+            if (jkCandidateDist < distances[1][2] - tolerance || jkCandidateDist > distances[1][2] + tolerance) {
+                continue;
+            }
+
+            {
+                std::vector<int16_t> currentMatch;
+                std::copy(candidateCatalogIndices, candidateCatalogIndices + numPatternStars, std::back_inserter(currentMatch));
+                result.push_back(currentMatch);
+            }
+            // now draw the rest of the fucking owl. Idea: For every remaining star, find stars that
+            // distance away from the 0-th star using a hashmap (just like we did for the 2nd star),
+            // then verify its distances to all other stars.
+            for (int l = 3; l < numPatternStars; l++) {
+                if (!builtMaps[l]) {
+                    const int16_t *lrEnd;
+                    const int16_t *const lrQuery = db.FindPairsExact(catalog, distances[l][0] - tolerance, distances[l][0] + tolerance, &lrEnd);
+                    pairDistanceMaps[l] = PairDistanceQueryToMap(lrQuery, lrEnd);
+                    builtMaps[l] = true;
+                }
+
+                auto lCandidateIt = pairDistanceMaps[l].equal_range(candidateCatalogIndices[0]);
+                // break fast to the top if there are no matches for this star
+                if (lCandidateIt.first == lCandidateIt.second) {
+                    // no matches for this star
+                    goto nextICandidate;
+                }
+                for (; lCandidateIt.first != lCandidateIt.second; lCandidateIt.first++) {
+                    // lCandidate.first is iterator, then ->second is the value (other star)
+                    candidateCatalogIndices[l] = lCandidateIt.first->second;
+                    candidateSpatials[l] = catalog[candidateCatalogIndices[l]].spatial;
+
+                    // check distances against all other stars, except 0, because that's part of the query hence already checked
+                    for (int m = 1; m < l; m++) {
+                        float lmCandidateDist = AngleUnit(candidateSpatials[l], candidateSpatials[m]);
+                        if (lmCandidateDist < distances[l][m] - tolerance || lmCandidateDist > distances[l][m] + tolerance) {
+                            goto nextLCandidate;
+                        }
+                    }
+
+                    // if there are multiple matches, the matched indices are undefined anyway, so just set them unconditionally
+
+                nextLCandidate:;
+                }
+            }
+        }
+    nextICandidate:;
+    }
+
+    return result;
+}
+
 BayesianStarIdAlgorithm::BayesianStarIdAlgorithm(
     float tolerance, int numFalseStars,
     float softConfidenceThreshold, float hardConfidenceThreshold,
@@ -1044,6 +1174,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
     };
     CentroidSearchMode searchMode = CentroidSearchMode::Found;
     while (searchMode != CentroidSearchMode::DireStraits) {
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
         const int numCentroidsExplored = exploredCentroids.size();
         int minNumNeighbors;
         if (searchMode == CentroidSearchMode::Found) {
@@ -1223,52 +1354,64 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 newPossibility.probability = possibility.probability/smallestArea * probScale;
 
                 if (possibility.NumTrueStars() == 2) {
-                    // i is the new star, j and k are the existing stars.
-                    const float ijDist = AngleUnit(starSpatials[curCentroid],
-                                                   starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]]);
-                    const float ikDist = AngleUnit(starSpatials[curCentroid],
-                                                   starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]]);
-                    const float jkDist = AngleUnit(starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]],
-                                                   starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]]);
-                    const int16_t *ijEnd, *ikEnd;
-                    const int16_t *const ijQuery = kvector.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
-                    const int16_t *const ikQuery = kvector.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
-
-                        
-                    std::vector<bool> iSeen(catalog.size(), false);
-                    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
-                        int iCandidate = *iCandidateQuery;
-                        if (iSeen[iCandidate]) {
-                            continue;
-                        }
-                        iSeen[iCandidate] = true;
-
-                        PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd, iCandidate);
-                        PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd, iCandidate);
-                        std::vector<int16_t> jCandidates;
-                        std::vector<int16_t> kCandidates;
-                        while (jIterator.hasValue()) {
-                            jCandidates.push_back(*jIterator);
-                            ++jIterator;
-                        }
-                        while (kIterator.hasValue()) {
-                            kCandidates.push_back(*kIterator);
-                            ++kIterator;
-                        }
-                        for (int16_t jCandidate : jCandidates) {
-                            for (int16_t kCandidate : kCandidates) {
-                                const float jkCatalogDist = abs(AngleUnit(catalog[jCandidate].spatial, catalog[kCandidate].spatial));
-                                if (abs(jkCatalogDist - jkDist) <= tolerance) {
-                                    // TODO: check spectral
-
-                                    // this is a match! Add the possibility
-                                    newPossibility.catalogIndices.push_back(jCandidate);
-                                    newPossibility.catalogIndices.push_back(kCandidate);
-                                    newPossibility.catalogIndices.push_back(iCandidate);
-                                }
-                            }
+                    const Vec3 spatials[3] = {
+                        starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]],
+                        starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]],
+                        starSpatials[curCentroid]
+                    };
+                    auto matchedConfigurations = IdentifyPatternPairDistance<3>(kvector, catalog, tolerance, spatials);
+                    std::cerr << matchedConfigurations.size() << std::endl;
+                    for (auto &matchedConfiguration : matchedConfigurations) {
+                        for (int16_t catalogIndex : matchedConfiguration) {
+                            newPossibility.catalogIndices.push_back(catalogIndex);
                         }
                     }
+                    // // i is the new star, j and k are the existing stars.
+                    // const float ijDist = AngleUnit(starSpatials[curCentroid],
+                    //                                starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]]);
+                    // const float ikDist = AngleUnit(starSpatials[curCentroid],
+                    //                                starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]]);
+                    // const float jkDist = AngleUnit(starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]],
+                    //                                starSpatials[possibility.centroidIndices[*lastNeighborIndexIndex]]);
+                    // const int16_t *ijEnd, *ikEnd;
+                    // const int16_t *const ijQuery = kvector.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
+                    // const int16_t *const ikQuery = kvector.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
+
+                        
+                    // std::vector<bool> iSeen(catalog.size(), false);
+                    // for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+                    //     int iCandidate = *iCandidateQuery;
+                    //     if (iSeen[iCandidate]) {
+                    //         continue;
+                    //     }
+                    //     iSeen[iCandidate] = true;
+
+                    //     PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd, iCandidate);
+                    //     PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd, iCandidate);
+                    //     std::vector<int16_t> jCandidates;
+                    //     std::vector<int16_t> kCandidates;
+                    //     while (jIterator.HasValue()) {
+                    //         jCandidates.push_back(*jIterator);
+                    //         ++jIterator;
+                    //     }
+                    //     while (kIterator.HasValue()) {
+                    //         kCandidates.push_back(*kIterator);
+                    //         ++kIterator;
+                    //     }
+                    //     for (int16_t jCandidate : jCandidates) {
+                    //         for (int16_t kCandidate : kCandidates) {
+                    //             const float jkCatalogDist = abs(AngleUnit(catalog[jCandidate].spatial, catalog[kCandidate].spatial));
+                    //             if (abs(jkCatalogDist - jkDist) <= tolerance) {
+                    //                 // TODO: check spectral
+
+                    //                 // this is a match! Add the possibility
+                    //                 newPossibility.catalogIndices.push_back(jCandidate);
+                    //                 newPossibility.catalogIndices.push_back(kCandidate);
+                    //                 newPossibility.catalogIndices.push_back(iCandidate);
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 } else {
                     // >2
                     assert(possibility.NumTrueStars() > 2);
@@ -1277,15 +1420,15 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                                                    starSpatials[possibility.centroidIndices[*firstNeighborIndexIndex]]);
                     const int16_t *ijEnd;
                     const int16_t *const ijQuery = kvector.FindPairsLiberal(ijDist-tolerance, ijDist+tolerance, &ijEnd);
+                    // TODO: it still may be faster to use an involving iterator if there are only a small number of configurations, just because building the map is expensive.
+                    std::unordered_multimap<int16_t, int16_t> ijMap = PairDistanceQueryToMap(ijQuery, ijEnd);
 
                     for (int conf = 0; conf < possibility.NumConfigurations(catalog); conf++) {
                         // first, narrow down to stars that are compatible with the first star
                         // in the configuration. Should only be a handful.
                         auto catalogIndexIt = possibility.catalogIndices.begin() + conf*possibility.NumTrueStars();
-                        PairDistanceInvolvingIterator iIterator(ijQuery, ijEnd, catalogIndexIt[*firstNeighborIndexIndex]);
-                        while (iIterator.hasValue()) {
-                            int iCandidate = *iIterator;
-                            ++iIterator;
+                        for (auto iIterator = ijMap.equal_range(catalogIndexIt[*firstNeighborIndexIndex]); iIterator.first != iIterator.second; iIterator.first++) {
+                            int16_t iCandidate = iIterator.first->second;
 
                             // verify its distance against all other stars in the configuration
                             // TODO: spectral check too
@@ -1360,6 +1503,8 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
             assert(!prior.empty());
             backProbability = prior.back().TotalProbability(catalog);
         }
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        std::cerr << "Took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us" << std::endl;
         std::cerr << "Trimmed from " << originalNumPossibilities << " to " << prior.size() << " possibilities." << std::endl;
         DebugPrintBayesPriorSummary(DebugCalculateBayesPriorSummary(prior, catalog));
 

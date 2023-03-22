@@ -756,6 +756,14 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+    } else if (values.idAlgo == "bayes") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
+            new BayesianStarIdAlgorithm(DegToRad(values.angularTolerance),
+                                        values.estimatedNumFalseStars,
+                                        values.bayesSoftConfidenceThreshold,
+                                        values.bayesHardConfidenceThreshold,
+                                        values.bayesIgnoredProbability)
+            );
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);

@@ -21,15 +21,18 @@ LOST_CLI_OPTION("pixel-size"   , float      , pixelSize   , -1 , atof(optarg) , 
 LOST_CLI_OPTION("fov"          , float      , fov         , 20 , atof(optarg) , kNoDefaultArgument)
 
 // PIPELINE STAGES
-LOST_CLI_OPTION("centroid-algo"            , std::string, centroidAlgo           , ""  , optarg       , "cog")
-LOST_CLI_OPTION("centroid-dummy-stars"     , int        , centroidDummyNumStars  , 5   , atoi(optarg) , kNoDefaultArgument)
-LOST_CLI_OPTION("centroid-mag-filter"      , float      , centroidMagFilter      , -1  , atof(optarg) , 5)
-LOST_CLI_OPTION("database"                 , std::string, databasePath           , ""  , optarg       , kNoDefaultArgument)
-LOST_CLI_OPTION("star-id-algo"             , std::string, idAlgo                 , ""  , optarg       , "pyramid")
-LOST_CLI_OPTION("angular-tolerance"        , float      , angularTolerance       , .04 , atof(optarg) , kNoDefaultArgument)
-LOST_CLI_OPTION("false-stars-estimate"     , int        , estimatedNumFalseStars , 500 , atoi(optarg) , kNoDefaultArgument)
-LOST_CLI_OPTION("max-mismatch-probability" , float      , maxMismatchProb        , .001, atof(optarg) , kNoDefaultArgument)
-LOST_CLI_OPTION("attitude-algo"            , std::string, attitudeAlgo           , ""  , optarg       , "dqm")
+LOST_CLI_OPTION("centroid-algo"            , std::string, centroidAlgo                 , ""   , optarg       , "cog")
+LOST_CLI_OPTION("centroid-dummy-stars"     , int        , centroidDummyNumStars        , 5    , atoi(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("centroid-mag-filter"      , float      , centroidMagFilter            , -1   , atof(optarg) , 5)
+LOST_CLI_OPTION("database"                 , std::string, databasePath                 , ""   , optarg       , kNoDefaultArgument)
+LOST_CLI_OPTION("star-id-algo"             , std::string, idAlgo                       , ""   , optarg       , "pyramid")
+LOST_CLI_OPTION("angular-tolerance"        , float      , angularTolerance             , .04  , atof(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("false-stars-estimate"     , int        , estimatedNumFalseStars       , 500  , atoi(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("bayes-soft-threshold"     , float      , bayesSoftConfidenceThreshold , 0.999, atof(optarg), kNoDefaultArgument)
+LOST_CLI_OPTION("bayes-hard-threshold"     , float      , bayesHardConfidenceThreshold , 0.99 , atof(optarg), kNoDefaultArgument)
+LOST_CLI_OPTION("bayes-ignored-probability", float      , bayesIgnoredProbability      , 0.001, atof(optarg), kNoDefaultArgument)
+LOST_CLI_OPTION("max-mismatch-probability" , float      , maxMismatchProb              , .001 , atof(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("attitude-algo"            , std::string, attitudeAlgo                 , ""   , optarg       , "dqm")
 
 // OUTPUT COMPARISON
 LOST_CLI_OPTION("centroid-compare-threshold", float      , centroidCompareThreshold, 1 , atof(optarg), kNoDefaultArgument)
