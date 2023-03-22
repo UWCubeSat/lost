@@ -25,7 +25,7 @@ namespace lost {
 
 /// Create a database and write it to a file based on the command line options in \p values
 static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars);
+    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseBuilder builder;
@@ -39,7 +39,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
 
-    PromptedOutputStream pos = PromptedOutputStream(values.outputPath);
+    UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
     pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
 
 }

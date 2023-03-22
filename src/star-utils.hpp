@@ -106,9 +106,23 @@ void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName, unsign
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn);
 Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
-// TODO: make maxStars work right, need to sort by magnitude before filter! maxMagnitude is 10^-2
-// (so 523 = 5.23)
-Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars);
+/**
+ * Remove unwanted stars from an unfiltered catalog.
+ *
+ * @param maxMagnitude Should be 100*(magnitude), just like CatalogStar::magnitude. The narrowed
+ * catalog will only contain stars at least as bright as that (i.e., lower magnitude). Pass
+ * something like 9999 to not filter based on magnitude.
+ *
+ * @param maxStars No more than maxStars many stars will be in the narrowed catalog (prefers
+ * brightest). Pass something like 99999 to not filter maxStars.
+ *
+ * @param minDistance Any star which is within minDistance of another star is removed from the
+ * catalog. Pass something like -1 to not filter based on minDistance. TODO: In the future, some
+ * provision may be made so that instead of being removed, these stars get a special distinguishing
+ * mark, so that star-id algorithms can reason about them instead of thinking they are false stars,
+ * but no such provision is made yet.
+ */
+Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, float minSeparation);
 
 }
 

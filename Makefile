@@ -86,8 +86,8 @@ lint:
 test: $(BIN) $(BSC) $(TEST_BIN)
 	$(TEST_BIN)
 	# bash ./test/scripts/pyramid-incorrect.sh
-	# bash ./test/scripts/readme-examples-test.sh
-	# bash ./test/scripts/tetra.sh
+	bash ./test/scripts/readme-examples-test.sh
+	bash ./test/scripts/random-crap.sh
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)

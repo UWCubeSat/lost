@@ -3,6 +3,7 @@
 #include <math.h>
 #include <assert.h>
 #include <algorithm>
+#include <set>
 
 namespace lost {
 
@@ -11,20 +12,34 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
 }
 
-/**
- * Remove dim stars from a catalog.
- * @param catalog Original catalog. Not mutated.
- * @param maxMagnitude Stars dimmer than this (greater numerical magnitude) are removed.
- * @param maxStars If there are greater than `maxStars` many stars left after filtering by `maxMagnitude`, only the `maxStars` brightest of them are kept.
- * @return Newly constructed catalog containing only the sufficiently bright stars.
- */
-Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars) {
+Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, float minSeparation) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
         if (catalog[i].magnitude <= maxMagnitude) {
             result.push_back(catalog[i]);
         }
     }
+
+    // remove stars that are too close to each other
+    std::set<int> tooCloseIndices;
+    // filter out stars that are too close together
+    // easy enough to n^2 brute force, the catalog isn't that big
+    for (int i = 0; i < (int)result.size(); i++) {
+        for (int j = i+1; j < (int)result.size(); j++) {
+            if (AngleUnit(result[i].spatial, result[j].spatial) < minSeparation) {
+                tooCloseIndices.insert(i);
+                tooCloseIndices.insert(j);
+            }
+        }
+    }
+
+    // Erase all the stars whose indices are in tooCloseIndices from the result.
+    // Loop backwards so indices don't get messed up as we iterate.
+    for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
+        result.erase(result.begin() + *it);
+    }
+
+    // and finally limit to n brightest stars
     if (maxStars < (int)result.size()) {
         std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
         result.resize(maxStars);

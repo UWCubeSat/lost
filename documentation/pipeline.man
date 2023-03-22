@@ -6,24 +6,69 @@ pipeline \- builds a pipeline of the star identification process
 
 .SH SYNOPSIS
 
-\fBpipeline\fP --png \fIfilepath\fP (--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP [--centroid-algo \fIalgo\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP]
-[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--angular-tolerance \fI[tolerance]\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--print-attitude \fI[path]\fB] [--plot-output \fI[path]\fB]
+\fBpipeline\fP --png \fIfilepath\fP ((--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP) [CENTROID OPTIONS...] [--centroid-mag-filter \fImin-mag\fP] [--database \fIfilename\fP] [STAR-ID OPTIONS...] [ATTITUDE DET OPTIONS...] [COMPARATORS...]
 .br
-\fBpipeline\fP --generate \fInum-images\fP [--generate-x-resolution \fIpixels\fP] [--generate-y-resolution \fIpixels\fP] [--fov \fIdegrees\fP] [--generate-reference-brightness \fImag\fP] [--generate-spread-stddev \fIstddev\fP] [--generate-read-noise-stddev \fIstddev\fP] [--generate-ra \fIdegrees\fP] [--generate-de \fIdegrees\fP] [--generate-roll \fIdegrees\fP]
-[--centroid-algo \fIalgo\fP [--centroid-dummy-stars \fInum-stars\fP]] [--centroid-mag-filter \fImin-mag\fP]
-[--database \fIfilename\fP] [--star-id-algo \fIalgo\fP (--angular-tolerance \fI[tolerance]\fP --false-stars \fInum\fP --max-mismatch-prob \fIprobability\fP)] [--attitude-algo \fIalgo\fP] [--plot-raw-input \fI[path]\fB] [--plot-input \fI[path]\fB]
+\fBpipeline\fP --generate \fInum-images\fP [(--focal-length \fIlength\fP --pixel-size \fIsize\fP) | --fov \fIdegrees\fP] [GENERATE OPTIONS...] [CENTROID OPTIONS...] [--centroid-mag-filter \fImin-mag\fP] [--database \fIfilename\fP] [STAR-ID OPTIONS...] [ATTITUDE DET OPTIONS...] [COMPARATORS...]
 
 .SH DESCRIPTION
 
-\fBpipeline\fP is the command to set the different stages of the star identification pipeline. An image can be
-taken in as input from \fIfilepath\fP, or image(s) can be generated according to various parameters. There are five main stages to the pipeline:
---centroid, --centroid-mag-filter, --id, --database, and --attitude. The --centroid option allows the user to
-choose which centroiding algorithm to use, while the --centroid-mag-filter option allows the user to filter out candidate
-centroids below a certain magnitude. The --database option allows the user to specificy which file to use as the database.
-The --id option runs the star identification algorithm, and the --attitude option determines the orientation of the
-cubesat in space.
+\fBpipeline\fP is the command to set the different stages of the star identification pipeline. An
+image can be taken in as input from \fIfilepath\fP, or image(s) can be procedurally generated. The pipeline has
+the following stages:
+.IP \[bu] 2
+Centroiding: Determine star center positions.
+.IP \[bu] 8
+(Mini-stage after centroiding): Centroid magnitude filter: Remove centroids with too low of a magnitude.
+.IP \[bu] 2
+Star identification: Determine which star is which.
+.IP \[bu] 2
+Attitude determination: Use star identifiers to compute a best-fit orientation/attitude.
+.LP
 
-.SS Options
+The command line specifies, mainly, three things: How input should be provided to the pipeline (from
+an image file or randomly generated?), how the different stages of the pipeline should be executed
+(which algorithms to use? What config options for those algorithms?), and what should be done with
+the output of the pipeline (Visualize the star-id? Figure out what percentage of stars were
+correctly identified?).
+
+.SS Pipeline Input
+
+Presently there are two ways to provide pipeline input:
+.IP \[bu] 2
+Image file on disk: Use the \fB--png\fP option to specify the file path to a png to read.
+.IP \[bu] 2
+Generated image: Use the \fB--generate\fP option to specify how many false images to generate.
+.LP
+
+For both input modes, you'll probably want to specify how "zoomed-in" the camera is; this can be
+done by providing both the \fB--focal-length\fP and \fB--pixel-size\fP options, or just the
+\fB--fov\fP option.
+
+When \fB--generate\fP is used, LOST keeps track of what the "true" centroids, star identifiers, and
+attitude are, since it has absolute knowledge of the generated image. These intermediate results can
+be compared against pipeline outputs later to evaluate individual pipeline stages.
+
+.SS Pipeline itself
+
+Options can be specified to select algorithms and configuration for each pipeline stage. When using
+a generated image, it is not necessary to specify every stage of the pipeline, because the generated
+image contains enough information to run each pipeline stage individually. For example, if only the
+attitude estimation algorithm is specified, the exact centroids and star identifiers that the image
+generator created will be used as input.
+
+.SS Pipeline Output (Comparators)
+
+Finally, information about the pipeline run can be printed. LOST can:
+.IP \[bu] 2
+Plot images visualizing star identification (\fB--plot-input\fP, \fB--plot-output\fP, and \fB--plot-raw-input\fP).
+.IP \[bu] 2
+Print the raw output of each stage (\fB--print-actual-centroids\fP, \fB--print-expected-centroids\fP, \fB--print-attitude\fP).
+.IP \[bu] 2
+(Generated images only), compare the output of each stage with the expected output (\fB--compare-*\fP), making it easy to evaluate various algorithms for various parts of the pipeline.
+.LP
+
+
+.SH BASIC OPTIONS
 
 .TP
 \fB--png\fP \fIfilepath\fP
@@ -41,6 +86,22 @@ The pixel size of the camera that took the picture (in micrometers).
 \fB--fov\fP \fIdegrees\fP
 The field of view of the camera that took the picture (in degrees). Defaults to 20 deg if option is not selected.
 
+.SH MISC PIPELINE OPTIONS
+
+.TP
+\fB--centroid-mag-filter\fP \fImin-mag\fP
+Will not consider centroids with magnitude below \fImin-mag\fP.
+
+.TP
+\fB--database\fP \fIfilename\fP
+Chooses \fIfilename\fP as the database to use during star identification.
+
+.TP
+\fB--help\fI
+Prints the contents of the manual entry for the command to the terminal.
+
+.SH CENTROID OPTIONS
+
 .TP
 \fB--centroid-algo\fP \fIalgo\fP
 Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random centroid algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity).  Defaults to dummy if option is not selected.
@@ -49,9 +110,7 @@ Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random
 \fB--centroid-dummy-stars\fP \fInum-stars\fP
 Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-stars\fP stars centroided. Defaults to 5 if option is not selected.
 
-.TP
-\fB--centroid-mag-filter\fP \fImin-mag\fP
-Will not consider candidate as centroid if its magnitude is below \fImin-mag\fP.
+.SH STAR IDENTIFICATION OPTIONS
 
 .TP
 \fB--star-id-algo\fP \fIalgo\fP
@@ -69,9 +128,13 @@ used in some star id algorithms, to \fItolerance\fP degrees. Defaults to 0.04 de
 \fB--max-mismatch-prob\fP \fIprobability\fP
 \fIprobability\fP is the maximum allowable probability of an incorrect star identification, for star id algorithms which support it. Defaults to 0.001.
 
+.SH ATTITUDE DETERMINATION OPTIONS
+
 .TP
 \fB--attitude-algo\fP \fIalgo\fP
 Runs the \fIalgo\fP algorithm for the attitude stage of the pipeline. Current options are "dqm" (Davenport Q), "triad", and "quest". Defaults to dqm.
+
+.SH IMAGE GENERATION OPTIONS
 
 .TP
 \fB--generate\fP \fInum-images\fP
@@ -139,59 +202,72 @@ The maximum (strongest) magnitude that generated false stars should have. Defaul
 
 .TP
 \fB--generate-oversampling\fP \fInum-samples\fP
-Peform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
+Perform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
 
 .TP
 \fB--generate-seed\fP \fIseed\fP
 An integer seed to pass to the random number generator used during image generation.
 
+.SH COMPARATOR OPTIONS
+
+The options that speak of an "expected" something will only work on generated images. In a generated
+image, the "ideal" output of each stage is already known because we created the image to begin with!
+For example, we know exactly where each centroid should be. So we have an "expected" output for each
+stage we can conveniently compare against!
+
 .TP
 \fB--plot-raw-input\fP [\fIpath\fP]
-Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Defaults to stdout if if \fIpath\fP is not given.
+Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
 \fB--plot-input\fP [\fIpath\fP]
-Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
 \fB--plot-output\fP [\fIpath\fP]
-Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
-\fB--print-centroids\fP [\fIpath\fP]
-Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+\fB--plot-centroid-indices\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Plot output to PNG, but instead of labeling the stars
+with the catalog star they were identified as, labels them with their centroid index.
 
 .TP
-\fB--compare-centroids\fP [\fIpath\fP]
-Argument is optional. Print list of centroids to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+\fB--print-actual-centroids\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
+\fIpath\fP. If star identification was also performed, print which catalog star each centroid was
+identified as. Defaults to stdout.
 
 .TP
-\fB--compare-stars\fP [\fIpath\fP]
-Argument is optional. Compare lists of identified stars. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+\fB--print-expected-centroids\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Print list of "expected" centroids from the pipeline
+input to \fIpath\fP. Also prints out expected star identifications for those stars, if present. This
+only works for generated images. Generally you should use \fB--print-actual-centroids\fP instead,
+and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
 
 .TP
 \fB--print-attitude\fP [\fIpath\fP]
-Argument is optional. Print the determined ra, de, and roll to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+Argument is optional. Print the determined right ascension, declination, and roll to \fIpath\fP. TODO: Option to print as quaternion. Defaults to stdout.
 
 .TP
-\fB--compare-attitude\fP [\fIpath\fP]
-Argument is optional. Compare expected to actual attitude. Prints to \fIpath\fP. Defaults to stdout if \fIpath\fP is not given.
+\fB--compare-centroids\fP [\fIpath\fP]
+Argument is option. Compare expected to actual centroids. Prints to \fIpath\fP. Defaults to stdout.
+
+.TP
+\fB--compare-stars\fP [\fIpath\fP]
+Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout.
+
+.TP
+\fB--compare-attitudes\fP [\fIpath\fP]
+Argument is optional. Compare expected to actual attitude. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
 \fB--centroid-compare-threshold\fP \fIthreshold\fP
-Sets the threshold for the centroid comparing algorithms
+Sets the threshold (in pixels) to consider two centroids equal (cf \fB--compare-centroids\fP).
 
 .TP
 \fB--attitude-compare-threshold\fP \fIthreshold\fP
-Sets the threshold for the attitude comparing algorithms
-
-.TP
-\fB--database\fP \fIfilename\fP
-Chooses \fIfilename\fP as the database to compare stars against.
-
-.TP
-\fB--help\fI
-Prints the contents of the manual entry for the command to the terminal.
+Sets the threshold (in degrees) to consider two attitudes equal (cf \fB--compare-attitudes\fP).
 
 .SH SEE ALSO
 database(3)

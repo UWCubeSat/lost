@@ -31,10 +31,10 @@ namespace lost {
 const char kNoDefaultArgument = 0;
 
 /// An output stream which might be a file or stdout
-class PromptedOutputStream {
+class UserSpecifiedOutputStream {
 public:
-    explicit PromptedOutputStream(std::string filePath);
-    ~PromptedOutputStream();
+    explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
+    ~UserSpecifiedOutputStream();
 
     /// return the inner output stream, suitable for use with <<
     std::ostream &Stream() { return *stream; };
@@ -45,7 +45,7 @@ private:
 };
 
 // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
-std::vector<CatalogStar> &CatalogRead();
+const Catalog &CatalogRead();
 // Convert a cairo surface to array of grayscale bytes
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
@@ -97,6 +97,8 @@ public:
     /// The catalog to which catalog indexes returned from other methods refer.
     virtual const Catalog &GetCatalog() const = 0;
     virtual const Stars *InputStars() const { return NULL; };
+    /// The centroid indices in the StarIdentifiers returned from InputStarIds should be indices
+    /// into InputStars(), not ExpectedStars(), when present, because otherwise it's useless.
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
     /// Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.
     virtual const Attitude *InputAttitude() const { return NULL; };
@@ -105,6 +107,11 @@ public:
     cairo_surface_t *InputImageSurface() const;
 
     virtual const Stars *ExpectedStars() const { return InputStars(); };
+    /// Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into
+    /// ExpectedStars(), /not/ InputStars(). This is in contrast to InputStarIds. If you need to
+    /// compare ExpectedStarIds against the input stars, then you should use some function which
+    /// uses simple heuristics to match the input stars and expected stars (eg based on distance).
+    /// Cf how the star-ID comparator works for a reference implementation.
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
 };
@@ -203,12 +210,6 @@ struct StarIdComparison {
 
 std::ostream &operator<<(std::ostream &, const Camera &);
 
-// actualStars is optional, in which case it's assumed that expectedStars was passed to the star-id
-StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
-                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                float centroidThreshold,
-                                const Stars *expectedStars, const Stars *actualStars);
-
 //////////////
 // PIPELINE //
 //////////////
@@ -244,9 +245,6 @@ void PipelineComparison(const PipelineInputList &expected,
 ////////////////
 // DB BUILDER //
 ////////////////
-
-// TODO: rename
-Catalog PromptNarrowedCatalog(const Catalog &);
 
 /// Commannd line options when using the `database` command.
 class DatabaseOptions {

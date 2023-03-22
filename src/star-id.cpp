@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
+#include <unordered_map>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -243,6 +244,22 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
     std::vector<int16_t> result;
     for (; it.HasValue(); ++it) {
         result.push_back(*it);
+    }
+    return result;
+}
+
+/**
+ * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
+ * that appeared with it in the query.
+ * 
+ * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
+ * star A is also in the map for star B.
+ */
+std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
+    std::unordered_multimap<int16_t, int16_t> result;
+    for (const int16_t *p = pairs; p != end; p += 2) {
+        result.emplace(p[0], p[1]);
+        result.emplace(p[1], p[0]);
     }
     return result;
 }
@@ -658,80 +675,71 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
                     const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
+                    std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
+                    std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
-                    std::vector<bool> iSeen(catalog.size(), false);
                     for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
                         int iCandidate = *iCandidateQuery;
-                        if (iSeen[iCandidate]) {
-                            continue;
-                        }
-                        iSeen[iCandidate] = true;
+                        // depending on parity, the first or second star in the pair is the "other" one
+                        int jCandidate = (iCandidateQuery - ijQuery) % 2 == 0
+                            ? iCandidateQuery[1]
+                            : iCandidateQuery[-1];
 
                         const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
+                        const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
 
-                        // TODO: caching these iterator results into vectors can improve
-                        // performance, but at the cost of memory. It would be best to put some kind
-                        // of guarantee on the memory usage, and then switch to using the iterator
-                        // without caching if that memory limit is exceeded.
-                        PairDistanceInvolvingIterator jIterator(ijQuery, ijEnd, iCandidate);
-                        PairDistanceInvolvingIterator kIterator(ikQuery, ikEnd, iCandidate);
-                        PairDistanceInvolvingIterator rIterator(irQuery, irEnd, iCandidate);
-                        std::vector<int16_t> jCandidates = ConsumeInvolvingIterator(jIterator);
-                        std::vector<int16_t> kCandidates = ConsumeInvolvingIterator(kIterator);
-                        std::vector<int16_t> rCandidates = ConsumeInvolvingIterator(rIterator);
-                        // TODO: break fast if any of the iterators are empty, if it's any
-                        // significant performance improvement.
-                        for (int16_t jCandidate : jCandidates) {
-                            const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
-                            Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
+                        Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
 
-                            for (int16_t kCandidate : kCandidates) {
-                                Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
-                                bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
-                                // checking the spectral-ity early to fail fast
-                                if (candidateSpectralTorch != spectralTorch) {
-                                    continue;
-                                }
-
-                                // small optimization: We can calculate jk before iterating through r, so we will!
-                                float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
-                                if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
-                                    continue;
-                                }
-
-                                // TODO: if there are no jr matches, there's no reason to
-                                // continue iterating through all the other k-s. Possibly
-                                // enumarete all r matches, according to ir, before this loop
-                                for (int16_t rCandidate : rCandidates) {
-                                    const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
-                                    float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
-                                    float krCandidateDist;
-                                    if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
-                                        continue;
-                                    }
-                                    krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
-                                    if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
-                                        continue;
-                                    }
-
-                                    // we have a match!
-
-                                    if (iMatch == -1) {
-                                        iMatch = iCandidate;
-                                        jMatch = jCandidate;
-                                        kMatch = kCandidate;
-                                        rMatch = rCandidate;
-                                    } else {
-                                        // uh-oh, stinky!
-                                        // TODO: test duplicate detection, it's hard to cause it in the real catalog...
-                                        std::cerr << "Pyramid not unique, skipping..." << std::endl;
-                                        goto sensorContinue;
-                                    }
-                                }
+                        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+                            // kCandidate.first is iterator, then ->second is the value (other star)
+                            int kCandidate = kCandidateIt.first->second;
+                            Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
+                            bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
+                            // checking the spectral-ity early to fail fast
+                            if (candidateSpectralTorch != spectralTorch) {
+                                continue;
                             }
 
+                            // small optimization: We can calculate jk before iterating through r, so we will!
+                            float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+                            if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
+                                continue;
+                            }
+
+                            // TODO: if there are no jr matches, there's no reason to
+                            // continue iterating through all the other k-s. Possibly
+                            // enumarete all r matches, according to ir, before this loop
+                            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
+                                int rCandidate = rCandidateIt.first->second;
+                                const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
+                                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
+                                float krCandidateDist;
+                                if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
+                                    continue;
+                                }
+                                krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
+                                if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
+                                    continue;
+                                }
+
+                                // we have a match!
+
+                                if (iMatch == -1) {
+                                    iMatch = iCandidate;
+                                    jMatch = jCandidate;
+                                    kMatch = kCandidate;
+                                    rMatch = rCandidate;
+                                } else {
+                                    // uh-oh, stinky!
+                                    // TODO: test duplicate detection, it's hard to cause it in the real catalog...
+                                    std::cerr << "Pyramid not unique, skipping..." << std::endl;
+                                    goto sensorContinue;
+                                }
+                            }
                         }
+
+
                     }
 
                     if (iMatch != -1) {
