@@ -222,7 +222,6 @@ struct LSGFFunctor : Functor<double> {
     /*
     x = parameters (a, xb, sigma)
     fvec = residual (one for every data point, of size = 2*nb+1)
-    TODO: this isn't great?? We're just fitting 5 data points
     */
     int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
         double a = x(0);
@@ -287,6 +286,37 @@ struct LSGF2DFunctor : Functor<double> {
                 fvec(ind) = yPred - yActual;
 
                 ind++;
+            }
+        }
+
+        return 0;
+    }
+
+    int df(const Eigen::VectorXd &x, Eigen::MatrixXd &fjac) const{
+        double a = x(0);
+        double xb = x(1);
+        double yb = x(2);
+        double sigmaX = x(3);
+        double sigmaY = x(4);
+
+        for (int i = -nb; i <= nb; i++) {
+            for (int j = -nb; j <= nb; j++) {
+                int xi = x0 + i;
+                int yj = y0 + j;
+
+                float yActual = Get(xi, yj, image, w);
+                float yPred = FitModel2D(xi, yj, a, xb, yb, sigmaX, sigmaY);
+                float ei = yActual - yPred;
+
+                float expX = exp(-1 * (xi - xb) * (xi - xb) / (2 * sigmaX * sigmaX));
+                float expY = exp(-1 * (yj - yb) * (yj - yb) / (2 * sigmaY * sigmaY));
+
+                int row = i + nb;
+                fjac(row, 0) = -expX * expY;
+                fjac(row, 1) = -a * expY * (xi - xb) / (sigmaX * sigmaX) * expX;
+                fjac(row, 2) = -a * expX * (yj - yb) / (sigmaY * sigmaY) * expY;
+                fjac(row, 3) = -a * expX * expY * std::pow(xi - xb, 2) / (std::pow(sigmaX, 3));
+                fjac(row, 4) = -a * expX * expY * std::pow(yj - yb, 2) / (std::pow(sigmaY, 3));
             }
         }
 
@@ -404,8 +434,9 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
 
         // LSGF2DFunctor functor(nb, 0, X, image, imageWidth, x, y);
         LSGF2DFunctor functor(nb, image, imageWidth, x, y);
-        Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
-        Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF2DFunctor>, double> lm(numDiff);
+        // Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
+        // Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF2DFunctor>, double> lm(numDiff);
+        Eigen::LevenbergMarquardt<LSGF2DFunctor, double> lm(functor);
 
         lm.parameters.maxfev = 2000;
         lm.parameters.xtol = 1.0e-10;
@@ -419,9 +450,9 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         float sigmaY = beta(4);
 
         // std::cout << "Original: " << x << ", " << y << std::endl;
-        std::cout << xRes << ", " << yRes << ": " << a << " " << sigmaX << std::endl;
-        if(x == xRes && y == yRes) same++;
-        result.push_back(Star(xRes, yRes, nb));
+        std::cout << xRes << ", " << yRes << std::endl;
+        // if(x == xRes && y == yRes) same++;
+        result.push_back(Star(xRes+0.5, yRes+0.5, 0));
 
 
         // result.push_back(Star(x, y, nb));
