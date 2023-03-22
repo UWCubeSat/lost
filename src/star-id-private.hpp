@@ -225,7 +225,9 @@ int IdentifyPatternPairDistance(const PairDistanceKVectorDatabase &db,
                 continue;
             }
 
-            // now draw the rest of the fucking owl
+            // now draw the rest of the fucking owl. Idea: For every remaining star, find stars that
+            // distance away from the 0-th star using a hashmap (just like we did for the 2nd star),
+            // then verify its distances to all other stars.
             for (int l = 3; l < numPatternStars; l++) {
                 if (!builtMaps[l]) {
                     const int16_t *lrEnd;
@@ -245,7 +247,7 @@ int IdentifyPatternPairDistance(const PairDistanceKVectorDatabase &db,
                     candidateCatalogIndices[l] = lCandidateIt.first->second;
                     candidateSpatials[l] = catalog[candidateCatalogIndices[l]].spatial;
 
-                    // check distances against all other stars, except 0, because that's part of the query
+                    // check distances against all other stars, except 0, because that's part of the query hence already checked
                     for (int m = 1; m < l; m++) {
                         float lmCandidateDist = AngleUnit(candidateSpatials[l], candidateSpatials[m]);
                         if (lmCandidateDist < distances[l][m] - tolerance || lmCandidateDist > distances[l][m] + tolerance) {

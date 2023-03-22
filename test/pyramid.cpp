@@ -12,10 +12,11 @@ using namespace lost; // NOLINT
 TEST_CASE("Never don't identify a pyramid", "[pyramid]") {
     float minDistance = DegToRad(0.5);
     float maxDistance = DegToRad(10.0);
-    float tolerance = DegToRad(0.05);
+    float tolerance = DegToRad(0.06);
     // What fraction of the pyramids must be /uniquely/ identified. The test always requires that at
     // least one identification be made for each pyramid, but sometimes there are multiple.
     float minFractionUniquelyIdentified = 0.75;
+    float maxFractionUniquelyIdentified = 0.90;
 
     long length;
     const Catalog catalog = NarrowCatalog(CatalogRead(), 9999, 9999, DegToRad(0.5));
@@ -83,7 +84,10 @@ TEST_CASE("Never don't identify a pyramid", "[pyramid]") {
         }
     }
 
-    CHECK((float)numUniquelyIdentified / numPyramidsToTry >= minFractionUniquelyIdentified);
+    float fractionUniquelyIdentified = (float)numUniquelyIdentified / numPyramidsToTry;
+    CHECK(fractionUniquelyIdentified >= minFractionUniquelyIdentified);
+    // just to make sure it doesn't always return 1 or sth
+    CHECK(fractionUniquelyIdentified <= maxFractionUniquelyIdentified);
 
     delete[] dbBytes;
 }
