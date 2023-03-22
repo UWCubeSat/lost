@@ -3,6 +3,8 @@
 #ifndef IO_H
 #define IO_H
 
+#include <cairo/cairo.h>
+
 #include <vector>
 #include <map>
 #include <utility>
@@ -11,7 +13,6 @@
 #include <iostream>
 #include <memory>
 
-#include <cairo/cairo.h>
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
@@ -27,150 +28,102 @@
 
 namespace lost {
 
-extern bool isDebug;
+const char kNoDefaultArgument = 0;
 
-void RegisterCliArgs(int, char **);
-bool HasNextCliArg();
-std::string NextCliArg();
-
-template <typename S>
-S Prompt(const std::string &prompt) {
-    S result;
-    std::cerr << prompt << ": ";
-    if (HasNextCliArg()) {
-        std::string nextArg = NextCliArg();
-        std::cerr << nextArg << std::endl;
-        std::stringstream(nextArg) >> result;
-    } else {
-        std::cin >> result;
-    }
-    return result;
-}
-
-std::string PromptLine(const std::string &prompt);
-
-template <typename S>
-class InteractiveChoiceOption {
+/// An output stream which might be a file or stdout
+class UserSpecifiedOutputStream {
 public:
-    InteractiveChoiceOption(std::string shortName, std::string longName, S value)
-        : shortName(shortName), longName(longName), value(value) { };
+    explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
+    ~UserSpecifiedOutputStream();
 
-    std::string shortName;
-    std::string longName;
-    S value;
-};
-
-// can prompt the user between multiple options.
-template <typename S>
-class InteractiveChoice {
-public:
-    // prompt the user until they enter a valid option
-    S Prompt(const std::string &) const;
-    void Register(std::string, std::string, S);
-private:
-    std::vector<InteractiveChoiceOption<S>> options;
-};
-
-template <typename S>
-void InteractiveChoice<S>::Register(std::string shortKey, std::string longKey, S value) {
-    options.push_back(InteractiveChoiceOption<S>(shortKey, longKey, value));
-}
-
-template <typename S>
-S InteractiveChoice<S>::Prompt(const std::string &prompt) const {
-    std::string userChoice;
-    bool useCli = HasNextCliArg();
-    while (1) {
-        if (!useCli) {
-            for (const auto &option : options) {
-                std::cerr << "(" << option.shortName << ") " << option.longName << std::endl;
-            }
-        }
-        userChoice = lost::Prompt<std::string>(prompt);
-
-        auto found = options.begin();
-        while (found != options.end() && found->shortName != userChoice) {
-            found++;
-        }
-
-        if (found == options.end()) {
-            std::cerr << "Peace was never an option." << std::endl;
-            if (useCli) {
-                exit(1);
-            }
-        } else {
-            return found->value;
-        }
-    }
-
-}
-
-class PromptedOutputStream {
-public:
-    PromptedOutputStream();
-    ~PromptedOutputStream();
+    /// return the inner output stream, suitable for use with <<
     std::ostream &Stream() { return *stream; };
+
 private:
     bool isFstream;
     std::ostream *stream;
 };
 
-// prompts for an output stream, then calls the given function with it.
-void WithOutputStream(void (*)(std::ostream *));
-
 // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
-std::vector<CatalogStar> &CatalogRead();
+const Catalog &CatalogRead();
 // Convert a cairo surface to array of grayscale bytes
 unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
 
 // take an astrometry download from the bash script, and parse it into stuff.
-// void v_astrometry_parse(std::string 
+// void v_astrometry_parse(std::string
 //                         cairo_surface_t **pcairoSurface,   // image data
 //                         Star      **ppx_centroids, // centroids according to astrometry
 //                         int             *pi_centroids_length); // TODO: fov, actual angle, etc
 
 // type for functions that create a centroid algorithm (by prompting the user usually)
 
+/// An 8-bit grayscale 2d image
 class Image {
 public:
+    /**
+     * The raw pixel data in the image.
+     * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte is pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits may be added in the future.
+     */
     unsigned char *image;
+
     int width;
     int height;
 };
-
-std::ostream &operator<<(std::ostream &, const Camera &);
 
 ////////////////////
 // PIPELINE INPUT //
 ////////////////////
 
-// represents the input and expected outputs of a pipeline run.
+/// The command line options passed when running a pipeline
+class PipelineOptions {
+public:
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+    type prop = defaultVal;
+#include "./pipeline-options.hpp"
+#undef LOST_CLI_OPTION
+};
+
+/**
+ * Represents the input and expected outputs of a pipeline run.
+ * This is all the data about the pipeline we are about to run that can be gathered without actually running the pipeline. The "input" members return the things that will be fed into the pipeline. The "expected" methods return the "correct" outputs, i.e. what a perfect star tracking algorithm would output (this is only meaningful whe the image is generated, otherwise we don't know the correct output!). The "expected" methods are used to evaluate the quality of our algorithms. Some of the methods (both input and expected) may return NULL for certain subclasses.
+ * By default, the "expected" methods return the corresponding inputs, which is reasonable behavior unless you are trying to intentionally introduce error into the inputs.
+ */
 class PipelineInput {
 public:
-    virtual ~PipelineInput() { };
+    virtual ~PipelineInput(){};
+
     virtual const Image *InputImage() const { return NULL; };
+    /// The catalog to which catalog indexes returned from other methods refer.
     virtual const Catalog &GetCatalog() const = 0;
     virtual const Stars *InputStars() const { return NULL; };
-    // whether the input stars have identification information.
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
-    // for tracking
+    /// Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.
     virtual const Attitude *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
+    /// Convert the InputImage() output into a cairo surface
+    cairo_surface_t *InputImageSurface() const;
 
     virtual const Stars *ExpectedStars() const { return InputStars(); };
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
-
-    cairo_surface_t *InputImageSurface() const;
 };
 
+/**
+ * A pipeline input which is generated (fake image).
+ * Uses a pretty decent image generation algorithm to create a fake image as the basis for a pipeline input. Since we know everything about the generated image, all of the input and expected methods are available.
+ */
 class GeneratedPipelineInput : public PipelineInput {
 public:
     // TODO: correct params
     GeneratedPipelineInput(const Catalog &, Attitude, Camera,
-                           int referenceBrightness, float brightnessDeviation,
-                           float noiseDeviation);
+                           float observedReferenceBrightness, float starSpreadStdDev,
+                           float sensitivity, float darkCurrent, float readNoiseStdDev,
+                           Attitude motionBlurDirection, float exposureTime, float readoutTime,
+                           bool shotNoise, int oversampling,
+                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
+                           int seed);
+
 
     const Image *InputImage() const { return &image; };
     const Stars *InputStars() const { return &stars; };
@@ -179,9 +132,9 @@ public:
     bool InputStarsIdentified() const { return true; };
     const Attitude *InputAttitude() const { return &attitude; };
     const Catalog &GetCatalog() const { return catalog; };
+
 private:
-    // we don't use an Image here because we want to 
-    std::unique_ptr<unsigned char[]> imageData;
+    std::vector<unsigned char> imageData;
     Image image;
     Stars stars;
     Camera camera;
@@ -192,19 +145,18 @@ private:
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
 
-PipelineInputList PromptPipelineInput();
-PipelineInputList PromptPngPipelineInput();
-PipelineInputList PromptGeneratedPipelineInput();
+PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
+/// A pipeline input created by reading a PNG from a file on disk.
 class PngPipelineInput : public PipelineInput {
 public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
+    ~PngPipelineInput();
 
     const Image *InputImage() const { return &image; };
     const Camera *InputCamera() const { return &camera; };
     const Catalog &GetCatalog() const { return catalog; };
 
-    void SetCamera(const Camera &camera) { this->camera = camera; };
 private:
     Image image;
     Camera camera;
@@ -215,21 +167,41 @@ private:
 // PIPELINE OUTPUT //
 /////////////////////
 
+/**
+ * @brief The result of running a pipeline.
+ * @details Also stores intermediate outputs, not just the final attitude.
+ */
 struct PipelineOutput {
     std::unique_ptr<Stars> stars;
     std::unique_ptr<StarIdentifiers> starIds;
     std::unique_ptr<Attitude> attitude;
-    Catalog catalog; // the catalog that the indices in starIds refer to. TODO: don't store it here
-    bool nice;
+
+    /**
+     * @brief The catalog that the indices in starIds refer to
+     * @todo Don't store it here
+     */
+    Catalog catalog;
 };
 
+/// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
+    /// The number of centroids which were identified as the correct catalog star.
     int numCorrect;
+
+    /// The number of centroids which were identified, but as the wrong catalog star.
     int numIncorrect;
+
+    /// The total number of true stars in the image (the number the ideal star-id algorithm would identify)
     int numTotal;
+
+    /// numCorrect/numTotal
     float fractionCorrect;
+
+    /// numIncorrect/numTotal
     float fractionIncorrect;
 };
+
+std::ostream &operator<<(std::ostream &, const Camera &);
 
 // actualStars is optional, in which case it's assumed that expectedStars was passed to the star-id
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
@@ -241,46 +213,51 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE //
 //////////////
 
-class Santa {
-public:
-    virtual bool Go(const PipelineOutput &) const = 0;
-    virtual ~Santa() { };
-};
-
-// a pipeline is a set of algorithms that describes all or part of the star-tracking "pipeline"
-
+/**
+ * @brief A set of algorithms that describes all or part of the star-tracking "pipeline"
+ * @details A centroiding algorithm identifies the (x,y) pixel coordinates of each star detected in the raw image. The star id algorithm then determines which centroid corresponds to which catalog star. Finally, the attitude estimation algorithm determines the orientation of the camera based on the centroids and identified stars.
+ */
 class Pipeline {
-    friend Pipeline PromptPipeline();
+    friend Pipeline SetPipeline(const PipelineOptions &values);
+
 public:
-    // pointers just so they're nullable
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
     std::vector<PipelineOutput> Go(const PipelineInputList &);
+
 private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
     int centroidMinMagnitude = 0;
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
-    std::unique_ptr<Santa> santa;
     std::unique_ptr<unsigned char[]> database;
 };
 
-Pipeline PromptPipeline();
+Pipeline SetPipeline(const PipelineOptions &values);
 
-// ask the user what to do with actual and expected outputs
-void PromptPipelineComparison(const PipelineInputList &expected,
-                              const std::vector<PipelineOutput> &actual);
+// TODO: rename. Do something with the output
+void PipelineComparison(const PipelineInputList &expected,
+                        const std::vector<PipelineOutput> &actual,
+                        const PipelineOptions &values);
 
 ////////////////
 // DB BUILDER //
 ////////////////
 
-Catalog PromptNarrowedCatalog(const Catalog &);
+/// Commannd line options when using the `database` command.
+class DatabaseOptions {
+public:
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+    type prop = defaultVal;
+#include "database-options.hpp"
+#undef LOST_CLI_OPTION
+};
 
-// unlike the other algorithm prompters, db builders aren't a 
-typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
+// unlike the other algorithm prompters, db builders aren't a
+// typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
+void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values);
+// void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
 
 /////////////////////
 // INSPECT CATALOG //

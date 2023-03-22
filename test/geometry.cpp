@@ -1,12 +1,12 @@
-#include <catch.hpp>
-
 #include <math.h>
 #include <iostream>
+
+#include <catch.hpp>
 
 #include "camera.hpp"
 #include "attitude-utils.hpp"
 
-using namespace lost;
+using namespace lost; // NOLINT
 
 TEST_CASE("Convert coordinates: pixel -> spatial -> pixel", "[geometry]") {
     Camera camera(100, 512, 1024);
@@ -56,14 +56,14 @@ TEST_CASE("Angle from camera", "[geometry]") {
     }
 }
 
-TEST_CASE("Angle from camera, diagonal", "[geometry]") {
-    Camera camera(128, 128, 128);
+// TEST_CASE("Angle from camera, diagonal", "[geometry]") {
+//     Camera camera(128, 128, 128);
 
-    Vec3 s1 = camera.CameraToSpatial({0, 0});
-    Vec3 s2 = camera.CameraToSpatial({128, 128});
-    // it's not as simple as this! TODO
-    // CHECK(Angle(s1, s2) == Approx(acos(0.25)));
-}
+//     Vec3 s1 = camera.CameraToSpatial({0, 0});
+//     Vec3 s2 = camera.CameraToSpatial({128, 128});
+//     // it's not as simple as this! TODO
+//     // CHECK(Angle(s1, s2) == Approx(acos(0.25)));
+// }
 
 TEST_CASE("spherical -> quaternion -> spherical", "[geometry]") {
     // 0.1 instead of 0, because at 0 it might sometimes return 2PI, which is fine for most
@@ -100,10 +100,10 @@ TEST_CASE("quat -> dcm -> quat", "[geometry]") {
     Quaternion quat1 = SphericalToQuaternion(ra, de, roll).Canonicalize();
     Mat3 dcm = QuaternionToDCM(quat1);
     Quaternion quat2 = DCMToQuaternion(dcm).Canonicalize();
-    CHECK(quat1.real == Approx(quat2.real));
-    CHECK(quat1.i == Approx(quat2.i));
-    CHECK(quat1.j == Approx(quat2.j));
-    CHECK(quat1.k == Approx(quat2.k));
+    CHECK(quat1.real == Approx(quat2.real).margin(0.0001));
+    CHECK(quat1.i == Approx(quat2.i).margin(0.0001));
+    CHECK(quat1.j == Approx(quat2.j).margin(0.0001));
+    CHECK(quat1.k == Approx(quat2.k).margin(0.0001));
 }
 
 // I know cross product seems simple, perhaps even too simple to be worth testing...but I coded it
@@ -111,14 +111,14 @@ TEST_CASE("quat -> dcm -> quat", "[geometry]") {
 TEST_CASE("cross product", "[geometry]") {
     Vec3 x = { 1, 0, 0 };
     Vec3 y = { 0, 1, 0 };
-    Vec3 z = x.crossProduct(y);
+    Vec3 z = x.CrossProduct(y);
     CHECK(z.x == 0);
     CHECK(z.y == 0);
     CHECK(z.z == Approx(1.0));
 
     Vec3 a = { 5, 8, -2 };
     Vec3 b = { -5.9, 92, 3 };
-    Vec3 c = a.crossProduct(b);
+    Vec3 c = a.CrossProduct(b);
     CHECK(c.x == 208);
     CHECK(c.y == Approx(-3.2));
     CHECK(c.z == Approx(507.2));

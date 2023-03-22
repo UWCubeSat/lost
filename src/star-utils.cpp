@@ -3,6 +3,7 @@
 #include <math.h>
 #include <assert.h>
 #include <algorithm>
+#include <set>
 
 namespace lost {
 
@@ -11,7 +12,7 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
 }
 
-Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, float minDistance) {
+Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, float minSeparation) {
     Catalog result;
 
     // filter out by hard magnitude cutoff
@@ -21,23 +22,22 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, fl
         }
     }
 
-    std::vector<int> tooCloseIndices;
+    // remove stars that are too close to each other
+    std::set<int> tooCloseIndices;
     // filter out stars that are too close together
     // easy enough to n^2 brute force, the catalog isn't that big
-    // TODO: don't remove the too-close-together stars entirely, just mark them.
     for (int i = 0; i < (int)result.size(); i++) {
         for (int j = i+1; j < (int)result.size(); j++) {
-            if (AngleUnit(result[i].spatial, result[j].spatial) < minDistance) {
-                tooCloseIndices.push_back(i);
-                tooCloseIndices.push_back(j);
+            if (AngleUnit(result[i].spatial, result[j].spatial) < minSeparation) {
+                tooCloseIndices.insert(i);
+                tooCloseIndices.insert(j);
             }
         }
     }
 
-    // loop through tooCloseIndices from largest to smallest. That way, removals 
-    std::sort(tooCloseIndices.begin(), tooCloseIndices.end(), std::greater<int>());
-    auto uniqueEnd = std::unique(tooCloseIndices.begin(), tooCloseIndices.end());
-    for (auto it = tooCloseIndices.begin(); it != uniqueEnd; it++) {
+    // Erase all the stars whose indices are in tooCloseIndices from the result.
+    // Loop backwards so indices don't get messed up as we iterate.
+    for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
         result.erase(result.begin() + *it);
     }
 
@@ -50,15 +50,17 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, fl
     return result;
 }
 
-const CatalogStar *findNamedStar(const Catalog &catalog, int name) {
-    for (const CatalogStar &catalogStar : catalog) {
-        if (catalogStar.name == name) {
-            return &catalogStar;
+/// Return a pointer to the star with the given name, or NULL if not found.
+Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
+    for (auto it = catalog.cbegin(); it != catalog.cend(); ++it) {
+        if (it->name == name) {
+            return it;
         }
     }
-    return NULL;
+    return catalog.cend();
 }
 
+/// @sa SerializeCatalogStar
 long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     long starSize = SerializeLengthVec3();
     if (inclMagnitude) {
@@ -70,6 +72,13 @@ long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     return starSize;
 }
 
+/**
+ * Serialize a CatalogStar into a byte buffer.
+ * Use SerializeLengthCatalogStar() to determine how many bytes to allocate in `buffer`
+ * @param inclMagnitude Whether to include the magnitude of the star.
+ * @param inclName Whether to include the (numerical) name of the star.
+ * @param buffer[out] Where the serialized star is stored.
+ */
 void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer) {
     SerializeVec3(catalogStar.spatial, buffer);
     buffer += SerializeLengthVec3();
@@ -84,6 +93,11 @@ void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bo
     }
 }
 
+/**
+ * Deserialize a catalog star.
+ * @warn The `inclMagnitude` and `inclName` parameters must be the same as passed to SerializeCatalogStar()
+ * @sa SerializeCatalogStar
+ */
 CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitude, bool inclName) {
     CatalogStar result;
     result.spatial = DeserializeVec3(buffer);
@@ -103,10 +117,16 @@ CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitu
     return result;
 }
 
+/// @sa SerializeCatalog
 long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName) {
     return sizeof(int16_t) + sizeof(int8_t) + catalog.size()*SerializeLengthCatalogStar(inclMagnitude, inclName);
 }
 
+/**
+ * Serialize the catalog to `buffer`.
+ * Use SerializeLengthCatalog() to determine how many bytes to allocate in `buffer`
+ * @param inclMagnitude,inclName See SerializeCatalogStar()
+ */
 void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName, unsigned char *buffer) {
     unsigned char *bufferStart = buffer;
 
@@ -115,7 +135,7 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
     buffer += sizeof(int16_t);
 
     // flags
-    int8_t flags = (inclMagnitude) | (inclName<<1);
+    int8_t flags = (inclMagnitude) | (inclName << 1);
     *(int8_t *)buffer = flags;
     buffer += sizeof(int8_t);
 
@@ -130,6 +150,11 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
 
 // TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so
 // we can just copy it to memory then cast
+
+/**
+ * Deserialize a catalog.
+ * @param[out] inclMagnitudeReturn,inclNameReturn Will store whether `inclMagnitude` and `inclNameReturn` were set in the corresponding SerializeCatalog() call.
+ */
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn) {
     bool inclName, inclMagnitude;
     Catalog result;

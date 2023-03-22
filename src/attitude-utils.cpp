@@ -6,6 +6,7 @@
 
 namespace lost {
 
+/// Multiply two quaternions using the usual definition of quaternion multiplication (effectively composes rotations)
 Quaternion Quaternion::operator*(const Quaternion &other) const {
     return Quaternion(
         real*other.real - i*other.i - j*other.j - k*other.k,
@@ -14,21 +15,30 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
+/// Effectively computes a quaternion representing the inverse rotation of the original.
 Quaternion Quaternion::Conjugate() const {
     return Quaternion(real, -i, -j, -k);
 }
 
+/// The vector formed by imaginary components of the quaternion. The axis of the represented rotation.
 Vec3 Quaternion::Vector() const {
     return { i, j, k };
 }
 
-Quaternion::Quaternion(const Vec3 &input) {
-    real = 0;
-    i = input.x;
-    j = input.y;
-    k = input.z;
+/// Set imaginary components.
+void Quaternion::SetVector(const Vec3 &vec) {
+    i = vec.x;
+    j = vec.y;
+    k = vec.z;
 }
 
+/// Creates a "pure quaternion" with the given vector for imaginary parts and zero for real part.
+Quaternion::Quaternion(const Vec3 &input) {
+    real = 0;
+    SetVector(input);
+}
+
+/// Create a quaternion which represents a rotation of theta around the axis input
 Quaternion::Quaternion(const Vec3 &input, float theta) {
     real = cos(theta/2);
     // the compiler will optimize it. Right?
@@ -37,18 +47,25 @@ Quaternion::Quaternion(const Vec3 &input, float theta) {
     k = input.z * sin(theta/2);
 }
 
+/// Rotate a 3d vector according to the rotation represented by the quaternion.
 Vec3 Quaternion::Rotate(const Vec3 &input) const {
     // TODO: optimize
     return ((*this)*Quaternion(input)*Conjugate()).Vector();
 }
 
+/// How many radians the rotation represented by this quaternion has.
 float Quaternion::Angle() const {
-    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in
-    // AngleUnit)
     if (real <= -1) {
         return 0; // 180*2=360=0
     }
+    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
     return (real >= 1 ? 0 : acos(real))*2;
+}
+
+/// Change the amount of rotation in a quaternion, keeping that rotation around the same axis.
+void Quaternion::SetAngle(float newAngle) {
+    real = cos(newAngle/2);
+    SetVector(Vector().Normalize() * sin(newAngle/2));
 }
 
 EulerAngles Quaternion::ToSpherical() const {
@@ -89,10 +106,14 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
     return result;
 }
 
+/// Whether the quaternion is a unit quaternion. All quaternions representing rotations should be units.
 bool Quaternion::IsUnit(float tolerance) const {
     return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
+/**
+ * Ensure that the quaternion's real part is nonnegative. Does not change the rotation represented by the quaternion.
+ */
 Quaternion Quaternion::Canonicalize() const {
     if (real >= 0) {
         return *this;
@@ -101,6 +122,7 @@ Quaternion Quaternion::Canonicalize() const {
     return Quaternion(-real, -i, -j, -k);
 }
 
+/// Convert from right ascension & declination to a 3d point on the unit sphere.
 Vec3 SphericalToSpatial(float ra, float de) {
     return {
         cos(ra)*cos(de),
@@ -109,6 +131,7 @@ Vec3 SphericalToSpatial(float ra, float de) {
     };
 }
 
+/// Convert from a 3d point on the unit sphere to right ascension & declination.
 void SpatialToSpherical(const Vec3 &vec, float *ra, float *de) {
     *ra = atan2(vec.y, vec.x);
     if (*ra < 0)
@@ -132,22 +155,31 @@ float ArcSecToRad(float arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
-float Vec2::MagnitudeSq() const {
-    return x*x+y*y;
+float FloatModulo(float x, float mod) {
+    // first but not last chatgpt generated code in lost:
+    float result = x - mod * floor(x / mod);
+    return result >= 0 ? result : result + mod;
 }
 
-float Vec2::Magnitude() const {
-    return sqrt(MagnitudeSq());
-}
-
+/// The square of the magnitude
 float Vec3::MagnitudeSq() const {
-    return x*x+y*y+z*z;
+    return fma(x,x,fma(y,y, z*z));
+}
+
+/// The square of the magnitude
+float Vec2::MagnitudeSq() const {
+    return fma(x,x, y*y);
 }
 
 float Vec3::Magnitude() const {
-    return sqrt(MagnitudeSq());
+    return hypot(hypot(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
 }
 
+float Vec2::Magnitude() const {
+    return hypot(x, y);
+}
+
+/// Create a vector pointing in the same direction with magnitude 1
 Vec3 Vec3::Normalize() const {
     float mag = Magnitude();
     return {
@@ -155,19 +187,38 @@ Vec3 Vec3::Normalize() const {
     };
 }
 
+/// Dot product
 float Vec3::operator*(const Vec3 &other) const {
-    return x*other.x + y*other.y + z*other.z;
+    return fma(x,other.x, fma(y,other.y, z*other.z));
 }
 
+/// Dot product
+Vec2 Vec2::operator*(const float &other) const {
+    return { x*other, y*other };
+}
+
+/// Vector-Scalar multiplication
+Vec3 Vec3::operator*(const float &other) const {
+    return { x*other, y*other, z*other };
+}
+
+/// Usual vector addition
+Vec2 Vec2::operator+(const Vec2 &other) const {
+    return {x + other.x, y + other.y };
+}
+
+/// Usual vector addition
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
 
+/// Usual vector subtraction
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
-Vec3 Vec3::crossProduct(const Vec3 &other) const {
+/// Usual vector cross product
+Vec3 Vec3::CrossProduct(const Vec3 &other) const {
     return {
         y*other.z - z*other.y,
         -(x*other.z - z*other.x),
@@ -175,18 +226,49 @@ Vec3 Vec3::crossProduct(const Vec3 &other) const {
     };
 }
 
+/// The outer product of two vectors
+Mat3 Vec3::OuterProduct(const Vec3 &other) const {
+    return {
+        x*other.x, x*other.y, x*other.z,
+        y*other.x, y*other.y, y*other.z,
+        z*other.x, z*other.y, z*other.z
+    };
+}
+
+/// Vector-matrix multiplication, where the vector is transposed
+Vec3 Vec3::operator*(const Mat3 &other) const {
+    return {
+        x*other.At(0,0) + y*other.At(0,1) + z*other.At(0,2),
+        x*other.At(1,0) + y*other.At(1,1) + z*other.At(1,2),
+        x*other.At(2,0) + y*other.At(2,1) + z*other.At(2,2),
+    };
+}
+
+/// Access the i,j-th element of the matrix
 float Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
+/// Get the column at index j
 Vec3 Mat3::Column(int j) const {
     return {At(0,j), At(1,j), At(2,j)};
 }
 
+/// Get the row at index i
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
 }
 
+/// Normal matrix addition
+Mat3 Mat3::operator+(const Mat3 &other) const {
+    return {
+        At(0,0)+other.At(0,0), At(0,1)+other.At(0,1), At(0,2)+other.At(0,2),
+        At(1,0)+other.At(1,0), At(1,1)+other.At(1,1), At(1,2)+other.At(1,2),
+        At(2,0)+other.At(2,0), At(2,1)+other.At(2,1), At(2,2)+other.At(2,2)
+    };
+}
+
+/// Naive matrix multiplication.
 Mat3 Mat3::operator*(const Mat3 &other) const {
 #define _MATMUL_ENTRY(row, col) At(row,0)*other.At(0,col) + At(row,1)*other.At(1,col) + At(row,2)*other.At(2,col)
     return {
@@ -197,6 +279,7 @@ Mat3 Mat3::operator*(const Mat3 &other) const {
 #undef _MATMUL_ENTRY
 }
 
+/// Matrix-Vector multiplication
 Vec3 Mat3::operator*(const Vec3 &vec) const {
     return {
         vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2),
@@ -205,6 +288,16 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     };
 }
 
+/// Matrix-Scalar multiplication
+Mat3 Mat3::operator*(const float &s) const {
+    return {
+        s*At(0,0), s*At(0,1), s*At(0,2),
+        s*At(1,0), s*At(1,1), s*At(1,2),
+        s*At(2,0), s*At(2,1), s*At(2,2)
+    };
+}
+
+/// Transpose of a matrix
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
@@ -213,12 +306,42 @@ Mat3 Mat3::Transpose() const {
     };
 }
 
+/// Trace of a matrix
+float Mat3::Trace() const {
+    return At(0,0) + At(1,1) + At(2,2);
+}
+
+/// Determinant of a matrix
+float Mat3::Det() const {
+    return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
+}
+
+/// Inverse of a matrix
+Mat3 Mat3::Inverse() const {
+    // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
+    float scalar = 1 / Det();
+
+    Mat3 res = {
+        At(1,1)*At(2,2) - At(1,2)*At(2,1), At(0,2)*At(2,1) - At(0,1)*At(2,2), At(0,1)*At(1,2) - At(0,2)*At(1,1),
+        At(1,2)*At(2,0) - At(1,0)*At(2,2), At(0,0)*At(2,2) - At(0,2)*At(2,0), At(0,2)*At(1,0) - At(0,0)*At(1,2),
+        At(1,0)*At(2,1) - At(1,1)*At(2,0), At(0,1)*At(2,0) - At(0,0)*At(2,1), At(0,0)*At(1,1) - At(0,1)*At(1,0)
+    };
+
+    return res * scalar;
+}
+
+/// 3x3 identity matrix
+ const Mat3 kIdentityMat3 = {1,0,0,
+                     0,1,0,
+                     0,0,1};
+
 Attitude::Attitude(const Quaternion &quat)
-    : quaternion(quat), type(QuaternionType) { }
+    : quaternion(quat), type(QuaternionType) {}
 
 Attitude::Attitude(const Mat3 &matrix)
-    : dcm(matrix), type(DCMType) { }
+    : dcm(matrix), type(DCMType) {}
 
+/// Convert a quaternion to a rotation matrix (Direction Cosine Matrix)
 Mat3 QuaternionToDCM(const Quaternion &quat) {
     Vec3 x = quat.Rotate({1, 0, 0});
     Vec3 y = quat.Rotate({0, 1, 0});
@@ -230,13 +353,14 @@ Mat3 QuaternionToDCM(const Quaternion &quat) {
     };
 }
 
+/// Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation.
 Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // Make a quaternion that rotates the reference frame X-axis into the dcm's X-axis, just like
     // the DCM itself does
     Vec3 oldXAxis = Vec3({1, 0, 0});
     Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
     assert(abs(newXAxis.Magnitude()-1) < 0.001);
-    Vec3 xAlignAxis = oldXAxis.crossProduct(newXAxis).Normalize();
+    Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
     float xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
 
@@ -246,7 +370,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // we still need to take the cross product, because acos returns a value in [0,pi], and thus we
     // need to know which direction to rotate before we rotate. We do this by checking if the cross
     // product of old and new y axes is in the same direction as the new X axis.
-    bool rotateClockwise = oldYAxis.crossProduct(newYAxis) * newXAxis > 0; // * is dot product
+    bool rotateClockwise = oldYAxis.CrossProduct(newYAxis) * newXAxis > 0; // * is dot product
     Quaternion yAlign({1, 0, 0}, AngleUnit(oldYAxis, newYAxis) * (rotateClockwise ? 1 : -1));
 
     // We're done! There's no need to worry about the Z-axis because the handed-ness of the
@@ -258,54 +382,60 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     return xAlign*yAlign;
 }
 
+/// Get the quaternion representing the attitude, converting from whatever format is stored.
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
-    case QuaternionType:
-        return quaternion;
-    case DCMType:
-        return DCMToQuaternion(dcm);
-    default:
-        assert(false);
+        case QuaternionType:
+            return quaternion;
+        case DCMType:
+            return DCMToQuaternion(dcm);
+        default:
+            assert(false);
     }
 }
 
+/// Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever format is stored.
 Mat3 Attitude::GetDCM() const {
     switch (type) {
-    case DCMType:
-        return dcm;
-    case QuaternionType:
-        return QuaternionToDCM(quaternion);
-    default:
-        assert(false);
+        case DCMType:
+            return dcm;
+        case QuaternionType:
+            return QuaternionToDCM(quaternion);
+        default:
+            assert(false);
     }
 }
 
+/// Convert a vector from the reference frame to the body frame.
 Vec3 Attitude::Rotate(const Vec3 &vec) const {
     switch (type) {
-    case DCMType:
-        return dcm*vec;
-    case QuaternionType:
-        return quaternion.Rotate(vec);
-    default:
-        assert(false);
+        case DCMType:
+            return dcm*vec;
+        case QuaternionType:
+            return quaternion.Rotate(vec);
+        default:
+            assert(false);
     }
 }
 
+/// Get the euler angles from the attitude, converting from whatever format is stored.
 EulerAngles Attitude::ToSpherical() const {
     switch (type) {
-    case DCMType:
-        return GetQuaternion().ToSpherical();
-    case QuaternionType:
-        return quaternion.ToSpherical();
-    default:
-        assert(false);
+        case DCMType:
+            return GetQuaternion().ToSpherical();
+        case QuaternionType:
+            return quaternion.ToSpherical();
+        default:
+            assert(false);
     }
 }
 
+/// The length that a Vec3 will take up when serialized
 long SerializeLengthVec3() {
     return sizeof(float)*3;
 }
 
+/// Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3
 void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
     float *fBuffer = (float *)buffer;
     *fBuffer++ = vec.x;
@@ -322,16 +452,23 @@ Vec3 DeserializeVec3(const unsigned char *buffer) {
     return result;
 }
 
+/// Calculate the inner angle, in radians, between two vectors.
 float Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }
 
+/**
+ * Calculate the inner angle, in radians, between two /unit/ vectors.
+ * Slightly faster than Angle()
+ * @warn If the vectors are not already unit vectors, will return the wrong result!
+ */
 float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
     float dot = vec1*vec2;
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
     return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }
 
+/// The distance between two vectors, according to the usual distance formula.
 float Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
 }
