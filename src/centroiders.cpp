@@ -299,24 +299,23 @@ struct LSGF2DFunctor : Functor<double> {
         double sigmaX = x(3);
         double sigmaY = x(4);
 
+        int ind = 0;
+
         for (int i = -nb; i <= nb; i++) {
             for (int j = -nb; j <= nb; j++) {
                 int xi = x0 + i;
                 int yj = y0 + j;
 
-                float yActual = Get(xi, yj, image, w);
-                float yPred = FitModel2D(xi, yj, a, xb, yb, sigmaX, sigmaY);
-                float ei = yActual - yPred;
-
                 float expX = exp(-1 * (xi - xb) * (xi - xb) / (2 * sigmaX * sigmaX));
                 float expY = exp(-1 * (yj - yb) * (yj - yb) / (2 * sigmaY * sigmaY));
 
-                int row = i + nb;
-                fjac(row, 0) = -expX * expY;
-                fjac(row, 1) = -a * expY * (xi - xb) / (sigmaX * sigmaX) * expX;
-                fjac(row, 2) = -a * expX * (yj - yb) / (sigmaY * sigmaY) * expY;
-                fjac(row, 3) = -a * expX * expY * std::pow(xi - xb, 2) / (std::pow(sigmaX, 3));
-                fjac(row, 4) = -a * expX * expY * std::pow(yj - yb, 2) / (std::pow(sigmaY, 3));
+                fjac(ind, 0) = expX * expY;
+                fjac(ind, 1) = a * expX * expY * (xi - xb) / (sigmaX * sigmaX);
+                fjac(ind, 2) = a * expX * expY * (yj - yb) / (sigmaY * sigmaY);
+                fjac(ind, 3) = a * expX * expY * std::pow(xi - xb, 2) / (std::pow(sigmaX, 3));
+                fjac(ind, 4) = a * expX * expY * std::pow(yj - yb, 2) / (std::pow(sigmaY, 3));
+
+                ind++;
             }
         }
 
@@ -417,9 +416,6 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
-    // TODO: remove, testing
-    int same = 0;
-
     for (const Point &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
@@ -443,23 +439,20 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
 
         lm.minimize(beta);
 
-        a = beta(0);
-        float xRes = beta(1);
-        float yRes = beta(2);
-        float sigmaX = beta(3);
-        float sigmaY = beta(4);
+        double aRes = beta(0);
+        double xRes = beta(1);
+        double yRes = beta(2);
+        double sigmaX = beta(3);
+        double sigmaY = beta(4);
 
-        // std::cout << "Original: " << x << ", " << y << std::endl;
-        std::cout << xRes << ", " << yRes << std::endl;
-        // if(x == xRes && y == yRes) same++;
-        result.push_back(Star(xRes+0.5, yRes+0.5, 0));
+        // std::cout << xRes+0.5 << ", " << yRes+0.5 << std::endl;
+        // result.push_back(Star(xRes+0.5, yRes+0.5, 0));
+        // TODO: not sure how much we care about making the radius/brightness accurate
+        result.push_back(Star(xRes+0.5, yRes+0.5, sigmaX, sigmaY, aRes));
 
-
-        // result.push_back(Star(x, y, nb));
     }
 
     std::cout << "Number of centroids: " << result.size() << std::endl;
-    std::cout << "same: " << same << std::endl;
 
     return result;
 }
