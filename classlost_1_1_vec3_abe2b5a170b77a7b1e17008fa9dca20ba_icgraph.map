@@ -5,7 +5,7 @@
 <area shape="rect" id="node10" href="$namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="929,159,1136,200"/>
 <area shape="rect" id="node11" href="$namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1189,209,1352,235"/>
 <area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="928,57,1137,83"/>
-<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="659,5,865,47"/>
+<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#a62d8e2732e4dbf3542d725df5c546a5d" title="Create a generated pipeline input." alt="" coords="659,5,865,47"/>
 <area shape="rect" id="node5" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="668,71,856,98"/>
 <area shape="rect" id="node6" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="468,71,596,98"/>
 <area shape="rect" id="node7" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,64,420,105"/>

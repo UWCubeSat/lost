@@ -1,5 +1,5 @@
 <map id="lost::Camera::YResolution" name="lost::Camera::YResolution">
 <area shape="rect" id="node1" title="Height of the sensor in pixels." alt="" coords="260,42,451,69"/>
-<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html#ae42da2b91465ad6050ef8945cad03b5c" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html#a62d8e2732e4dbf3542d725df5c546a5d" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
 <area shape="rect" id="node3" href="$namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="43,71,174,98"/>
 </map>

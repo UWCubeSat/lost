@@ -140,7 +140,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Represents the input and expected outputs of a pipeline run. </p>
 <p>This is all the data about the pipeline we are about to run that can be gathered without actually running the pipeline. The "input" members return the things that will be fed into the pipeline. The "expected" methods return the "correct" outputs, i.e. what a perfect star tracking algorithm would output (this is only meaningful whe the image is generated, otherwise we don't know the correct output!). The "expected" methods are used to evaluate the quality of our algorithms. Some of the methods (both input and expected) may return NULL for certain subclasses. By default, the "expected" methods return the corresponding inputs, which is reasonable behavior unless you are trying to intentionally introduce error into the inputs. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00092">92</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00093">93</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab766f2ef88e9d036c7bb7780d35306f3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab766f2ef88e9d036c7bb7780d35306f3">&#9670;&nbsp;</a></span>~PipelineInput()</h2>
@@ -165,7 +165,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00094">94</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00095">95</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -193,7 +193,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00116">116</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00117">117</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -232,7 +232,7 @@ Here is the call graph for this function:</div>
 <p>Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars()</a>, /not/ <a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">InputStars()</a>. </p>
 <p>This is in contrast to InputStarIds. If you need to compare ExpectedStarIds against the input stars, then you should use some function which uses simple heuristics to match the input stars and expected stars (eg based on distance). Cf how the star-ID comparator works for a reference implementation. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00115">115</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00116">116</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -268,7 +268,7 @@ Here is the call graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00109">109</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00110">110</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -347,7 +347,7 @@ Here is the caller graph for this function:</div>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00104">104</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00105">105</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -385,7 +385,7 @@ Here is the caller graph for this function:</div>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a75645fe6b18c9de509b72ffbbe64cf3e">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#af5c60e7bfee6a569710a8cc7c40ccbac">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00105">105</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00106">106</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -424,7 +424,7 @@ Here is the caller graph for this function:</div>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a57f55058c0dcc5822f9c133210342111">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00096">96</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00097">97</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -499,7 +499,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a6c16727bf2582645ae537c50e6fa589c">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00102">102</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00103">103</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -539,7 +539,7 @@ Here is the caller graph for this function:</div>
 
 <p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">lost::GeneratedPipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00099">99</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00100">100</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -564,7 +564,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_pipeline_input.html">PipelineInput</a></li>
-    <li class="footer">Generated on Mon Mar 20 2023 07:58:02 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Thu Mar 23 2023 21:35:23 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
