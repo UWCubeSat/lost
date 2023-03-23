@@ -19,6 +19,12 @@ struct KVectorQuad {
     std::vector<float> parameters;
 };
 
+struct KVectorPair {
+    int16_t index1;
+    int16_t index2;
+    float distance;
+};
+
 /**
  * A data structure enabling constant-time range queries into fixed numerica data.
  * 
@@ -93,7 +99,7 @@ public:
     explicit KVectorND(const unsigned char *);
     ~KVectorND();
 
-    std::vector<int16_t *> RangeSearch(const float *maxParameter, const float *minParameter) const;
+    std::vector<int16_t *> RangeSearch(const float *, const float *) const;
     int16_t *GetEntry(const long index) const;
 
     /// Upper bound parameter corresponding to axis i
@@ -113,6 +119,8 @@ public:
 
     
 private:
+    // A function that converts from the kVector mapping to a star index
+    int32_t KVectorToStarQuadIndex(const long index) const;
     // Total Entries
     long numValues;
     // Maximum and Minimum Parameter Values on each Axis

@@ -13,12 +13,6 @@
 
 namespace lost {
 
-struct KVectorPair {
-    int16_t index1;
-    int16_t index2;
-    float distance;
-};
-
 bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
     return p1.distance < p2.distance;
 }
@@ -246,13 +240,28 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
     assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
-// Obtains the size of the buffer with just the metadata and KVector number fields
+/**
+ * Obtains the size of the buffer with just the metadata and KVectorND number fields
+ * 
+ * @param totalBins The total number of bins stored in this KVectorND
+ * 
+ * @return The size, in bits, of the KVectorND with just the metadata fields
+ * as well as the index numbers that map to the beginning of each bin
+ * */
 long SerializeLengthKVectorNDIndex(int totalBins) {
     return sizeof(int32_t) + 4 * sizeof(float) + 4 * sizeof(float) 
             + sizeof(int32_t) + sizeof(int32_t) * (totalBins + 1);
 }
 
-// Obtains the size of an entire KVectorND database
+/**
+ * Obtains the size of an entire KVectorND in bits
+ * 
+ * @param numEntries The number of star patterns (quadruples) stored in a given KVectorND
+ * @param bins The number of bins that are stored in a given KVectorND
+ * 
+ * @return The size, in bits, of the KVector with a given number of star patterns (quadruples)
+ * and bins given by the parameters
+*/
 long SerializeLengthQuadStarKVectorND(int numEntries, int bins) {
     return SerializeLengthKVectorNDIndex(bins) + 4 * sizeof(int16_t) * numEntries;
 }
@@ -266,6 +275,17 @@ PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *bu
     pairs = (const int16_t *)buffer;
 }
 
+/**
+ * Creates a new KVectorND from a given buffer that holds that information
+ * 
+ * @param buffer The string buffer which holds the KVectorND information
+ * 
+ * @note Creates a KVectorND based off of the information stored in the buffer
+ * 
+ * @pre Requires that the buffer points to the beginning of the KVectorND
+ * @warning Precondition: Will create an incorrect KVectorND if buffer does not point to the beginning
+ * of the KVectorND
+*/
 KVectorND::KVectorND(const unsigned char *buffer) {
     numValues = *(int32_t *)buffer; // Entries
     buffer += sizeof(int32_t);
@@ -295,12 +315,39 @@ KVectorND::KVectorND(const unsigned char *buffer) {
     quads = (int16_t *)buffer;
 }
 
+/**
+ * Destroys a KVectorND
+ * 
+ * @post Destroys this
+ * 
+*/
 KVectorND::~KVectorND() {
     free(min);
     free(max);
     free(binWidth);
 }
 
+/**
+ * Initializes the metadata fields and the index mapping from bins to entries and stores them into a buffer
+ * for a given KVectorND
+ * 
+ * @param kVector The vector which holds the mappings from bins to star pattern entries
+ * @param min The array that holds the minimum value of each axis defined by the KVector. In this case, it
+ * is the minimum value obtained from each of the 4 star parameters.
+ * @param max The array that holds the maximum value of each axis defined by the KVector. In this case, it
+ * is the maximum value obtained from each of the 4 star parameters.
+ * @param numBins The number of bins at each axis.
+ * @param buffer The buffer to store the metadata and index mappings into
+ * @param entries The number of entries found in a given KVectorND
+ * 
+ * @return The buffer position that points to the next empty slot after the metadata fields and index mappings
+ * have been stored
+ * 
+ * @note buffer is mutated, storing the metadata fields (Number of Entries, Axis Bounds, Number of Bins at Each Bound)
+ * and then the index mappings
+ * 
+ * @post buffer now contains metadata fields and index mappings for the given KVectorND
+*/
 unsigned char* SerializeQuadKVectorIndex(const std::vector<int32_t> &kVector, float* min, float* max, long numBins, unsigned char *buffer, int entries) {
 
     unsigned char *bufferStart = buffer;
@@ -331,7 +378,21 @@ unsigned char* SerializeQuadKVectorIndex(const std::vector<int32_t> &kVector, fl
     return buffer;
 }
 
+/**
+ * Assistant function to CatalogToQuadDistances, which inserts a given star into a vector, such that
+ * the vector's entries are ordered by increasing distance away from a central star
+ * 
+ * @param catalog The catalog of stars that the indexes are based off of
+ * @param quad The vector containing star indexes, sorted in increasing order from the central star
+ * @param centralIndex The index corresponding to the star in catalog that is the central star
+ * @param starIndex THe index corresponding to a star in catalog that will be inserted
+ * 
+ * @note quad is altered such that it includes starIndex, while preserving the original ordering of quad,
+ * which is to say that quad still is sorted from increasing distance from the star of centralIndex
+*/
 void Insert(const Catalog &catalog, std::vector<int16_t> &quad, int16_t centralIndex, int16_t starIndex) {
+    assert(centralIndex > 0 && centralIndex < catalog.size());
+    assert(starIndex > 0 && starIndex < catalog.size());
     int size = quad.size();
     for(int i = 0; i < quad.size(); i++) {
         int dist1 = AngleUnit(catalog[centralIndex].spatial, catalog[i].spatial);
@@ -349,27 +410,52 @@ void Insert(const Catalog &catalog, std::vector<int16_t> &quad, int16_t centralI
 
 
 /** 
- * Produces a parameter characterising a star pattern of 3 stars given 3 dot products
- * @param centralToOne, centralToTwo, and oneToTwo are the dot products between 3 stars
- * @param centralToOneError, centralToTwoError, and oneToTwo error are the approximate errors of the above parameters
- * @return The modified Liebe parameter charactising this star triplet
+ * Produces a star parameter characterising a star pattern of 3 stars given 3 dot products
+ * 
+ * @param centralToOne,centralToTwo,oneToTwo The dot products between 3 stars
+ * 
+ * @return The modified Liebe star parameter charactising this star triplet
+ * 
+ * @pre centralToOne + centralToTwo != 2
+ * @warning Precondition: Precondition: centralToOne + centralToTwo != 2
  */ 
 float StarParameterA(float centralToOne, float centralToTwo, float oneToTwo) {
+    assert(centralToOne + centralToTwo != 2);
     return (1 - oneToTwo) / (2 - centralToOne - centralToTwo);
 }
 
 /**
- * Produces a parameter characterising a star pattern of 4 stars given 3 dot products
- * @param centralToOne, centralToTwo, and centralToThree are dot products between 4 stars
- * @param centralToOneError, centralToTwoError, and centralToThree error are the approximate errors of the above parameters
- * @note Using this error style does not give the true errors, but rather give a larger error radius than is real
- * @return The modified Liebe parameter characterising this star quadruple
+ * Produces a star parameter characterising a star pattern of 4 stars given 3 dot products
+ * 
+ * @param centralToOne,centralToTwo,centralToThree The dot products between 4 stars
+ * 
+ * @return The modified Liebe star parameter characterising this star quadruple
+ * 
+ * @pre centralToOne != centralToThree
+ * @warning Precondition: centralToOne != centralToThree
 */
 float StarParameterB(float centralToOne, float centralToTwo, float centralToThree) {
+    assert(centralToOne != centralToThree);
     return (centralToTwo - centralToOne) / (centralToOne - centralToThree);
 }
 
+/**
+ * Produces the star parameter set for a given star quadruple
+ * 
+ * @param central The vector of the central star
+ * @param stars The vector of the 3 other stars
+ * 
+ * @return A vector holding the 4 star parameters corresponding to the given star quadruple.
+ * If we call the central star 0, and the others 1, 2, and 3, in order of increasing
+ * angular distance from 0, then the star parameters originate from the following patterns,
+ * in this exact order:
+ * (0, 1, 2), (0, 1, 3), (0, 2, 3), (0, 1, 2, 3)
+ * 
+ * @pre central != null && stars != null && entries in stars are not null && stars.size() == 3
+ * @warning Precondition: central != null && stars != null && entries in stars are not null && stars.size() == 3
+*/
 std::vector<float> StarParameterSet(Vec3 central, std::vector<Vec3> stars) {
+    assert(stars.size() == 3);
     std::vector<float> result;
     for(int i = 0; i <= 1; i++) {
         for(int j = i + 1; j <= 2; j++) {
@@ -381,10 +467,27 @@ std::vector<float> StarParameterSet(Vec3 central, std::vector<Vec3> stars) {
     result.push_back(StarParameterB(central * stars.at(0), 
                     central * stars.at(1), 
                     central * stars.at(2)));
+    assert(result.size() == 4);
     return result;
 }
 
-
+/**
+ * Calculates all star patterns (quadruples) for a KVectorND that follow the requirements:
+ *      1. Each pattern has 3 stars surrounding a central star, where those 3 stars are the 
+ *         closest out of all stars to the central one
+ *      2. In each pattern, the closest star to the central one has a distance greater than
+ *         the specified minimum distance
+ *      3. In each pattern, the farthest star from the central one has a distance less than
+ *         the specified maximum distance
+ * 
+ * @param catalog The catalog of stars to generate the patterns from
+ * @param minDistance The specified minimum distance used as specified above
+ * @param maxDistance The specified maximum distance used as specified above
+ * 
+ * @return A vector of KVectorQuad structures, which hold all the star patterns obeying the rules
+ * above with their indicies corresponding to catalog and their corresponding star parameter set.
+ * 
+*/
 std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float minDistance, float maxDistance) {
     // Holds both the indexes and the corresponding vectors of stars
     std::vector<KVectorQuad> result;
@@ -408,18 +511,32 @@ std::vector<KVectorQuad> CatalogToQuadDistances(const Catalog &catalog, float mi
         }
     }
     // Returns a list of star patterns of 4 stars where each pattern contains the indexes and then the 
-    // modified Liebe parameter sets
+    // modified Liebe star parameter sets
     return result;
 }
 
-
-long BinFunctionND(const std::vector<float> &parameters, float* offset, float* scale, int* product) {
+/**
+ * Provides the bin value for the a given set of values corresponding to a star quadruple
+ * 
+ * @param values The vector holding the star parameter set for a given star quadruple
+ * @param offset The offset to apply to each star parameter in the star parameter set
+ * @param scale The scaling value for each axis (corresponding to each star parameter)
+ * @param product The vector holding the progressive number of bins as the axis progress
+ * 
+ * @return The bin value for a star quadruple with the given values
+ * 
+ * @pre values.size() == 4
+ * @warning Precondition: values.size() == 4
+ * 
+*/
+long BinFunctionND(const std::vector<float> &values, float* offset, float* scale, int* product) {
+    assert(values.size() == 4);
     int bin = 0;
     for(int i = 0; i < 4; i++) {
-        if(std::floor(scale[i] * (parameters[i] - offset[i])) == product[1]) {
+        if(std::floor(scale[i] * (values[i] - offset[i])) == product[1]) {
             bin += ((int)product[1] - 1) * product[i];
         } else {
-            bin += std::floor(scale[i] * (parameters[i] - offset[i])) * product[i];
+            bin += std::floor(scale[i] * (values[i] - offset[i])) * product[i];
         }
     }
     assert(bin < product[4]);
@@ -427,6 +544,25 @@ long BinFunctionND(const std::vector<float> &parameters, float* offset, float* s
     return bin;
 }
 
+/**
+ * Serializes an entire KVectorND into a buffer
+ * 
+ * @param quads The entries of star quadruples for a given KVectorND
+ * @param numBins The number of bins along each axis (corresponding to each star parameter type)
+ * @param buffer The buffer to place the data into
+ * 
+ * @pre quads.size() > 0
+ * @warning Precondition: quads.size() > 0
+ * 
+ * @note Modifies buffer by placing the data relavent to the KVectorND in the following order:
+ *      1. Number of Entries
+ *      2. Axis Bounds
+ *      3. Number of Bins at Each Bound
+ *      4. Index Mappings from Bin number to Entries
+ *      5. Star Quadruple Entries
+ * 
+ * @post buffer contains all information pertaining to the related KVectorND
+*/
 void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned char *buffer) {
     assert(quads.size() > 0);
 
@@ -447,7 +583,9 @@ void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned 
         }
     }
     
-    // Preprocessing: Calculating scaling factors
+    // Preprocessing: Calculating scaling factors and product,
+    // a measure of the progressive amount of bins as the
+    // user progresses through the axes
     float scale[4];
     int product[5] = {1, 1, 1, 1, 1};
     for(int i = 0; i < 4; i++) {
@@ -455,7 +593,7 @@ void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned 
         product[i + 1] = product[i] * numBins;
     }
     
-    // Preprocessing: Finding bins for all elements
+    // Preprocessing: Finding bins numbers for all elements
     KVectorQuad* pointers[(int)quads.size()];
     long bins[(int)quads.size()];
     for(int i = 0; i < quads.size(); i++) {
@@ -463,7 +601,9 @@ void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned 
         bins[i] = BinFunctionND(quads[i].parameters, min, scale, product);
     }
 
-    // KVector Positions
+    // Producing the mappings from bin numbers to
+    // index within array of star quadruples
+    // that will appear in buffer
     std::vector<int32_t> kVector((int)product[4] + 1);
     for(int i = 0; i < quads.size(); i++) {
         kVector[bins[i]]++;
@@ -476,7 +616,9 @@ void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned 
     }
     kVector[product[4]] = sum;
 
-    // Sorting all elements
+    
+    // Sorting all star quadruples in order of their bin
+    // number
     KVectorQuad* sortedPointers[(int)product[4]];
     int positions[(int)product[4]];
     for(int i = 0; i < product[4]; i++) {
@@ -488,11 +630,13 @@ void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned 
         positions[bin]++;
     }
     
-    // Metadata and KVector Positions
+    // For checking postcondition
     unsigned char *bufferStart = buffer;
+
+    // Store metadata and index mappings into the buffer
     buffer = SerializeQuadKVectorIndex(kVector, min, max, numBins, buffer, quads.size());
-    
-    // indexes for each quad entry
+
+    // Store star quadruple entries in order
     for (int i = 0; i < quads.size(); i++) {
         for(int j = 0; j < 4; j++) {
             *(int16_t *)buffer = sortedPointers[i]->stars[j];
@@ -500,11 +644,35 @@ void SerializeKVectorND(std::vector<KVectorQuad> &quads, long numBins, unsigned 
         }
     }
 
-    // TODO: verify length
+    // Verify postcondition
     assert(buffer - bufferStart == SerializeLengthQuadStarKVectorND(quads.size(), numBins * numBins * numBins * numBins));
 
 }
 
+/**
+ * Provides the mapping between a given bin number and a star pattern
+ * entry
+ * 
+ * @param binNumber The bin number for finding the corresponding star
+ * pattern in this
+ * 
+ * @return The index of the star pattern to look for
+*/
+int32_t KVectorND::KVectorToStarQuadIndex(const long binNumber) const {
+    const int32_t targetIndex = *(bins + (int32_t)binNumber);
+    assert(targetIndex > 0 && targetIndex < *((int32_t *)quads - 1));
+    return targetIndex;
+}
+
+/**
+ * Gets the complete star pattern for the star pattern at a given index
+ * 
+ * @param index The index of the star pattern in this
+ * 
+ * @return An array of length 4 that contains the indexes of all stars
+ * in the corresponding catalog for a given star pattern
+ * 
+*/
 int16_t *KVectorND::GetEntry(const long index) const {
     int16_t stars[] = {0, 0, 0, 0};
     int i = 0;
@@ -512,11 +680,27 @@ int16_t *KVectorND::GetEntry(const long index) const {
         stars[i] = *ptr;
         i++;
     }
+    assert(i == 4);
     return stars;
 }
 
-std::vector<int16_t *> KVectorND::RangeSearch(const float *maxParameter, const float *minParameter) const {
-    // Somehow assert or guarentee the size of each array
+/**
+ * Performs a range search on this KVectorND and finds all possible
+ * star patterns meeting the specified criterion
+ * 
+ * @param minParameter The array expressing all minimum star parameter values
+ * that the results must fit
+ * @param maxParameter The array expressing all maximum star parameter values
+ * that the results must fit
+ * 
+ * @return A vector containing all star patterns that fit the maximum and minimum
+ * star parameter bounds as specified by the parameters
+ * 
+ * @pre minParameter and maxParameter have lengths of 4
+ * @warning minParameter and maxParameter have lengths of 4
+*/
+std::vector<int16_t *> KVectorND::RangeSearch(const float *minParameter, const float *maxParameter) const {
+    // Somehow assert or guarentee the size of each array - We can't :(
     long* minBins = new long[4];
     long* maxBins = new long[4];
     std::vector<int16_t *> result;
@@ -531,19 +715,41 @@ std::vector<int16_t *> KVectorND::RangeSearch(const float *maxParameter, const f
 
     long b0 = 0;
     for(int i = 0; i < 4; i++) {
-        minBins[i] = std::floor(scale[i] * (minParameter[i] - min[i])) * product[i];
-        maxBins[i] = std::floor(scale[i] * (maxParameter[i] - min[i])) * product[i];
+        if(std::floor(scale[i] * (minParameter[i] - min[i])) == product[1]) {
+            minBins[i] = ((int)product[1] - 1) * product[i];
+        } else {
+            minBins[i] = std::floor(scale[i] * (minParameter[i] - min[i])) * product[i];
+        }
+        if(std::floor(scale[i] * (maxParameter[i] - min[i])) == product[1]) {
+            maxBins[i] = ((int)product[1] - 1) * product[i];
+        } else {
+            maxBins[i] = std::floor(scale[i] * (maxParameter[i] - min[i])) * product[i];
+        }
+        assert(maxBins[i] >= minBins[i]);
         b0 += minBins[i];
     }
+    assert(b0 <= product[4]);
+
     const long difference = maxBins[0] - minBins[0];
 
     for(int k = 0; k <= maxBins[3] - minBins[3]; k++) {
         for(int j = 0; j <= maxBins[2] - minBins[2]; j++) {
             for(int i = 0; i <= maxBins[1] - minBins[1]; i++) {
+
                 long begin = b0 + i * numBins + j * numBins * numBins + k * numBins * numBins * numBins;
+                assert(b0 <= product[4]);
+
                 long end = begin + difference;
-                for(; begin < end; begin++) {
-                    result.push_back(GetEntry(begin));
+                assert(end <= product[4]);
+                assert(begin <= end);
+
+                int32_t qBegin = KVectorToStarQuadIndex(begin);
+                int32_t qEnd = KVectorToStarQuadIndex(end);
+
+                assert(qBegin <= qEnd);
+
+                for(qBegin;  qBegin <= qEnd; qBegin++) {
+                    result.push_back(GetEntry(qBegin));
                 }
             }
         }

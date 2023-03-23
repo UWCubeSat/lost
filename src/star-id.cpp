@@ -582,7 +582,7 @@ StarIdentifiers StarNDAlgorithm::Go(const unsigned char *database, const Stars &
                                           StarParameterA(central * others[1] + errors[1], central * others[2] + errors[2], others[1] * others[2] - errors[5]),
                                           maxParamB};
                     
-                    std::vector<int16_t *> searchResult = kVectorND.RangeSearch(paramsMax, paramsMin);
+                    std::vector<int16_t *> searchResult = kVectorND.RangeSearch(paramsMin, paramsMax);
                     if(searchResult.size() != 0) {
                         result.push_back(StarIdentifier(0, searchResult.at(0)[0]));
                         result.push_back(StarIdentifier(i, searchResult.at(0)[1]));
