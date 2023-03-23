@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-#include <unordered_map>
+#include <map>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -255,8 +255,8 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */
-std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
-    std::unordered_multimap<int16_t, int16_t> result;
+std::multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
+    std::multimap<int16_t, int16_t> result;
     for (const int16_t *p = pairs; p != end; p += 2) {
         result.emplace(p[0], p[1]);
         result.emplace(p[1], p[0]);
@@ -675,8 +675,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
                     const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
-                    std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
-                    std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
+                    std::multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
+                    std::multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
@@ -805,7 +805,7 @@ std::vector<std::vector<int16_t>> IdentifyPatternPairDistance(const PairDistance
         }
     }
 
-    std::unordered_multimap<int16_t, int16_t> pairDistanceMaps[numPatternStars];
+    std::multimap<int16_t, int16_t> pairDistanceMaps[numPatternStars];
     // we'll build the maps lazily, so record which ones have been built.
     bool builtMaps[numPatternStars] = {false};
 
@@ -1232,7 +1232,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
         int origPriorLength = prior.size();
         for (int priorI = 0; priorI < origPriorLength; priorI++) {
             // safer to copy than make a reference, because prior.push_back can reallocate it
-            const BayesPossibility possibility = prior[priorI];
+            BayesPossibility possibility = prior[priorI];
             // // a more theoretically accurate way would not include possibilities where the current
             // // star must be true. Ie, any configuration that indicates a true star at the current
             // // location certainly shouldn't be included. TODO wouldn't be hard to improve
@@ -1309,7 +1309,7 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                 auto firstNeighborIndexIndex = closestCentroidIndicesIndices.end();
                 auto lastNeighborIndexIndex = closestCentroidIndicesIndices.end();
                 for (auto centroidIndexIt = closestCentroidIndicesIndices.begin(); centroidIndexIt != closestCentroidIndicesIndices.end(); centroidIndexIt++) {
-                    float dist = Angle(starSpatials[curCentroid], starSpatials[possibility.centroidIndices[*centroidIndexIt]]);
+                    float dist = AngleUnit(starSpatials[curCentroid], starSpatials[possibility.centroidIndices[*centroidIndexIt]]);
 
                     if (dist > kvector.MaxDistance()) {
                         break;
@@ -1421,14 +1421,18 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                     const int16_t *ijEnd;
                     const int16_t *const ijQuery = kvector.FindPairsLiberal(ijDist-tolerance, ijDist+tolerance, &ijEnd);
                     // TODO: it still may be faster to use an involving iterator if there are only a small number of configurations, just because building the map is expensive.
-                    std::unordered_multimap<int16_t, int16_t> ijMap = PairDistanceQueryToMap(ijQuery, ijEnd);
-
+                    // std::multimap<int16_t, int16_t> ijMap = PairDistanceQueryToMap(ijQuery, ijEnd);
+                    std::vector<int> oldConfigurationsToRemove;
                     for (int conf = 0; conf < possibility.NumConfigurations(catalog); conf++) {
                         // first, narrow down to stars that are compatible with the first star
                         // in the configuration. Should only be a handful.
                         auto catalogIndexIt = possibility.catalogIndices.begin() + conf*possibility.NumTrueStars();
-                        for (auto iIterator = ijMap.equal_range(catalogIndexIt[*firstNeighborIndexIndex]); iIterator.first != iIterator.second; iIterator.first++) {
-                            int16_t iCandidate = iIterator.first->second;
+                        // for (auto iIterator = ijMap.equal_range(catalogIndexIt[*firstNeighborIndexIndex]); iIterator.first != iIterator.second; iIterator.first++) {
+                        //     int16_t iCandidate = iIterator.first->second;
+                        PairDistanceInvolvingIterator iIterator(ijQuery, ijEnd, catalogIndexIt[*firstNeighborIndexIndex]);
+                        while (iIterator.HasValue()) {
+                            int16_t iCandidate = *iIterator;
+                            ++iIterator;
 
                             // verify its distance against all other stars in the configuration
                             // TODO: spectral check too
@@ -1453,6 +1457,11 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
                             }
 
                             // all star distances verified, add the new configuration!
+                            // but first, remove it from the old prior: TODO: consider whether this is theoretially justified
+                            // Let's be a bit more precise about what a possibility means.
+                            // A possibility with a set S of true stars means that the set S is all true, and the set of stars considered so far minus S is all false.
+                            // Since the current star "cannot" be false if it's in the same location as a true star, it is in fact correct to remove old configurations in situations like this.
+                            oldConfigurationsToRemove.push_back(conf);
                             // add all the stars from the old possibility
                             newPossibility.catalogIndices.insert(newPossibility.catalogIndices.end(),
                                                                  catalogIndexIt, catalogIndexIt + possibility.NumTrueStars());
@@ -1461,6 +1470,12 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
 
                         iContinue:;
                         }
+                    }
+
+                    // remove the old configurations
+                    for (int i = oldConfigurationsToRemove.size()-1; i >= 0; i--) {
+                        possibility.catalogIndices.erase(possibility.catalogIndices.begin() + oldConfigurationsToRemove[i]*possibility.NumTrueStars(),
+                                                         possibility.catalogIndices.begin() + (oldConfigurationsToRemove[i]+1)*possibility.NumTrueStars());
                     }
                 }
 
@@ -1492,10 +1507,11 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
         assert(!prior.empty()); // TODO: can this happen?
 
         std::cerr << "Debug before trim:" << std::endl;
-        DebugPrintBayesPriorSummary(DebugCalculateBayesPriorSummary(prior, catalog));
+        //DebugPrintBayesPriorSummary(DebugCalculateBayesPriorSummary(prior, catalog));
         // remove the least likely possibilities, ensuring that the probability of all the
         // removed possibilities doesn't sum to more than admissibleIgnoredProbability
         float discardedSum = 0;
+        // this will be zero if there are no configurations, which is good:
         float backProbability = prior.back().TotalProbability(catalog);
         while ((discardedSum + backProbability) / posteriorSum <= admissibleIgnoredProbability) {
             discardedSum += backProbability;
@@ -1506,7 +1522,9 @@ StarIdentifiers BayesianStarIdAlgorithm::Go(const unsigned char *database, const
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         std::cerr << "Took " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << "us" << std::endl;
         std::cerr << "Trimmed from " << originalNumPossibilities << " to " << prior.size() << " possibilities." << std::endl;
+#if LOST_DEBUG > 3
         DebugPrintBayesPriorSummary(DebugCalculateBayesPriorSummary(prior, catalog));
+#endif
 
         exploredCentroids.push_back(curCentroid);
     }
