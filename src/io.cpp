@@ -444,6 +444,8 @@ const int kMaxBrightness = 255;
 GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Attitude attitude,
                                                Camera camera,
+                                               std::default_random_engine *rng,
+
                                                float observedReferenceBrightness,
                                                float starSpreadStdDev,
                                                float sensitivity,
@@ -456,12 +458,10 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int oversampling,
                                                int numFalseStars,
                                                int falseStarMinMagnitude,
-                                               int falseStarMaxMagnitude,
-                                               int seed)
+                                               int falseStarMaxMagnitude)
     : camera(camera), attitude(attitude), catalog(catalog) {
 
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
-    std::default_random_engine rng(seed);
 
     // in photons
     float referenceBrightness = observedReferenceBrightness / sensitivity;
@@ -495,10 +495,10 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     std::uniform_real_distribution<float> uniformDistribution(0.0, 1.0);
     std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
     for (int i = 0; i < numFalseStars; i++) {
-        float ra = uniformDistribution(rng) * 2*M_PI;
+        float ra = uniformDistribution(*rng) * 2*M_PI;
         // to be uniform around sphere. Borel-Kolmogorov paradox is calling
-        float de = asin(uniformDistribution(rng)*2 - 1);
-        float magnitude = magnitudeDistribution(rng);
+        float de = asin(uniformDistribution(*rng)*2 - 1);
+        float magnitude = magnitudeDistribution(*rng);
 
         catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
     }
@@ -605,7 +605,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += darkCurrent;
 
         // read noise (Gaussian)
-        curBrightness += readNoiseDist(rng);
+        curBrightness += readNoiseDist(*rng);
 
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
@@ -620,7 +620,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 exit(1);
             }
             std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
-            quantizedPhotons = shotNoiseDist(rng);
+            quantizedPhotons = shotNoiseDist(*rng);
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }
@@ -632,44 +632,94 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     }
 }
 
+/**
+ * Generates a random attitude for coverage testing.
+ * Takes a random engine as a parameter.
+ */
+static Attitude RandomAttitude(std::default_random_engine* pReng) {
+    std::uniform_real_distribution<float> randomAngleDistribution(0, 1);
+
+    // normally the ranges of the Ra and Dec are:
+    // Dec: [-90 deg, 90 deg] --> [-pi/2 rad, pi/2 rad], where negative means south
+    // of the celestial equator and positive means north
+    // Ra: [0 deg, 360 deg] --> [0 rad, 2pi rad ]
+    // Roll: [0 rad, 2 pi rad]
+
+    float randomRa = 2 *  M_PI * randomAngleDistribution(*pReng);
+    float randomDec = (M_PI / 2) - acos(1 - 2 * randomAngleDistribution(*pReng)); //acos returns a float in range [0, pi]
+    float randomRoll = 2 *  M_PI * randomAngleDistribution(*pReng);
+
+    Attitude randAttitude = Attitude(SphericalToQuaternion(randomRa, randomDec, randomRoll));
+
+    return randAttitude;
+}
+
 /// Create a GeneratedPipelineInput based on the command line options in `values`
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
 
+    int seed;
+
+    // time based seed if option specified
+    if (values.timeSeed) {
+        seed = time(0);
+    } else {
+        seed = values.generateSeed;
+    }
+
+
+    std::default_random_engine rng(seed);
+
     // TODO: allow random angle generation?
     Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
-                                                         DegToRad(values.generateDe),
-                                                         DegToRad(values.generateRoll)));
+                                                       DegToRad(values.generateDe),
+                                                       DegToRad(values.generateRoll)));
+
     Attitude motionBlurDirection = Attitude(SphericalToQuaternion(DegToRad(values.generateBlurRa),
                                                                   DegToRad(values.generateBlurDe),
                                                                   DegToRad(values.generateBlurRoll)));
-
     PipelineInputList result;
 
     float focalLength = FocalLengthFromOptions(values);
 
-    for (int i = 0; i < values.generate; i++) {
-        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
-            CatalogRead(),
-            attitude,
-            Camera(focalLength, values.generateXRes, values.generateYRes),
-            values.generateRefBrightness,
-            values.generateSpreadStdDev,
-            values.generateSensitivity,
-            values.generateDarkCurrent,
-            values.generateReadNoiseStdDev,
-            motionBlurDirection,
-            values.generateExposure,
-            values.generateReadoutTime,
-            values.generateShotNoise,
-            values.generateOversampling,
-            values.generateNumFalseStars,
-            values.generateFalseMinMag,
-            values.generateFalseMaxMag,
-            values.generateSeed);
 
-        result.push_back(std::unique_ptr<PipelineInput>(curr));
+
+    for (int i = 0; i < values.generate; i++) {
+
+
+        Attitude inputAttitude;
+        if (values.generateRandomAttitudes) {
+            inputAttitude = RandomAttitude(&rng);
+        } else {
+            inputAttitude = attitude;
+        }
+
+        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
+                CatalogRead(),
+                inputAttitude,
+                Camera(focalLength, values.generateXRes, values.generateYRes),
+                &rng,
+
+                values.generateRefBrightness,
+                values.generateSpreadStdDev,
+                values.generateSensitivity,
+                values.generateDarkCurrent,
+                values.generateReadNoiseStdDev,
+                motionBlurDirection,
+                values.generateExposure,
+                values.generateReadoutTime,
+                values.generateShotNoise,
+                values.generateOversampling,
+                values.generateNumFalseStars,
+                values.generateFalseMinMag,
+                values.generateFalseMaxMag);
+
+            result.push_back(std::unique_ptr<PipelineInput>(curr));
+
+
     }
+
+
 
     return result;
 }
@@ -1269,6 +1319,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
+
     float angleThreshold = DegToRad(values.attitudeCompareThreshold);
 
     float attitudeErrorSum = 0.0f;
@@ -1279,6 +1330,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
         Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
         float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).Angle();
         assert(attitudeError >= 0);
+
         attitudeErrorSum += attitudeError;
         if (attitudeError <= angleThreshold) {
             numCorrect++;

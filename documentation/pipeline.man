@@ -177,6 +177,10 @@ Sets the standard deviation of Gaussian noise in the generated image(s) to \fIst
 Set the right ascension, declination, and roll of the generated image.
 
 .TP
+\fB--generate-random-attitudes\fP [\fIenable\fP]
+Generate a random attitude for each generated image. Ignores specified ra, de, and roll if set.
+
+.TP
 \fB--generate-exposure\fP \fIexposure-time\fP
 Controls the exposure time of generated images. Only useful wrt motion blur. Default is 0 (motion blur disabled).
 
@@ -214,6 +218,10 @@ The options that speak of an "expected" something will only work on generated im
 image, the "ideal" output of each stage is already known because we created the image to begin with!
 For example, we know exactly where each centroid should be. So we have an "expected" output for each
 stage we can conveniently compare against!
+
+.TP
+\fB--generate-time-based-seed\fP [\fIenable\fP]
+If true (the default), uses the current timestamp as a random seed. \fB--generate-seed\fP is ignored if time based seed is set.
 
 .TP
 \fB--plot-raw-input\fP [\fIpath\fP]
