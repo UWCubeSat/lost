@@ -76,8 +76,6 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
         Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 };
 
-// TODO: a bunch of functions that really should be private, but tests need to access
-
 /// Get value of pixel at (x, y) in image with width=w
 int Get(int x, int y, const unsigned char *image, int w);
 
@@ -87,6 +85,15 @@ int XMarginal(int x, int y0, int nb, const unsigned char *image, int w);
 /// Get value of y marginal - keep y fixed, sum pixel values from [x0-nb, x0+nb]
 int YMarginal(int x0, int y, int nb, const unsigned char *image, int w);
 
+/**
+ * @brief Given window centered at (x0, y0) in image with width=w, calculate initial guess for sigma
+ * parameter of Gaussian function
+ * Only used with Least Squares Gaussian Fit algorithms
+ */
+float FitInitialGuessSigma(int x0, int y0, int maxMag, const int nb, const unsigned char *image,
+                           int w);
+
+// DO NOT DELETE
 /*
 Get initial guess for window centered at (x0, y0) with given nb
 Output:
@@ -96,10 +103,6 @@ sigma = standard deviation (sigmaX = sigmaY)
 */
 // void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
 //                   float *xb, float *yb, double *sigma);
-
-// TODO: rename
-// Basically initial guess for window, done after Floodfill preprocessing
-float InitialGuess2(int x0, int y0, int maxMag, const int nb, const unsigned char *image, int w);
 
 } // namespace lost
 

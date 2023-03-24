@@ -18,10 +18,25 @@
 
 namespace lost {
 
+/**
+Prediction of 1D Gaussian model for 1D LSGF method
+Note: can be used as f(xi, beta) or f(yi, beta)
+*/
+static float FitModel(float x, float a, float xb, float sigma);
+
+/// Prediction of 2D Gaussian model for 2D LSGF method
+static float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY);
+
 typedef std::vector<int> Point;
 
+/**
+ * @brief Get a candidate point for each possible star cluster by running a floodfill through image
+ *
+ * Eliminates possibility of detecting multiple centroids for a single star
+ */
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
 
+/// A simple, but well tested thresholding algorithm that works well with star images
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight);
 
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight) {
@@ -29,7 +44,6 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
     std::set<Point> checkedPoints;
 
     int cutoff = BasicThreshold(image, imageWidth, imageHeight);
-    std::cout << "cutoff: " << cutoff << std::endl;
 
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         int x = i % imageWidth;
@@ -50,7 +64,6 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
                 Point p = queue[0];
                 queue.pop_front();
 
-                // TODO: make Point a struct probably
                 int px = p[0];
                 int py = p[1];
                 if (px < 0 || px >= imageWidth || py < 0 || py >= imageHeight) continue;
@@ -84,7 +97,7 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
         }
     }
 
-    std::cout << "Floodfill preprocessing: found " << res.size() << " total points" << std::endl;
+    // std::cout << "Floodfill preprocessing: found " << res.size() << " total points" << std::endl;
     return res;
 }
 
@@ -102,10 +115,6 @@ struct CentroidParams {
     std::unordered_set<int> checkedIndices;
 };
 
-/*
-Get pixel value at (x, y) where x and y are 0-based
-Note: top left is (0, 0)
-*/
 int Get(int x, int y, const unsigned char *image, int w) {
     int ind = y * w + x;
     return image[ind];
@@ -127,53 +136,49 @@ int YMarginal(int x0, int y, int nb, const unsigned char *image, int w) {
     return sum;
 }
 
-/*
-Can be used as f(xi, beta) or f(yi, beta)
-*/
-float FitModel(float x, float a, float xb, float sigma) {
+static float FitModel(float x, float a, float xb, float sigma) {
     return a * exp(-1 * (x - xb) * (x - xb) / (2 * sigma * sigma));
 }
 
-///
-float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY){
+static float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY){
     float term1 = exp(-1 * (x - xb) * (x - xb) / (2 * sigmaX * sigmaX));
     float term2 = exp(-1 * (y - yb) * (y - yb) / (2 * sigmaY * sigmaY));
     return a * term1 * term2;
 }
 
+// DO NO DELETE
+// void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
+//                   float *xb, float *yb, double *sigma) {
+//     // a is set to max intensity value in the window
+//     // (xb, yb) = coordinates of pixel with max intensity value
+//     int max = -1;
+//     for (int i = -nb; i <= nb; i++) {
+//         for (int j = -nb; j <= nb; j++) {
+//             int pixelValue = Get(x0 + i, y0 + j, image, w);
+//             if (pixelValue > max) {
+//                 *xb = x0 + i;
+//                 *yb = y0 + j;
+//                 max = pixelValue;
+//             }
+//         }
+//     }
+//     *a = max;
+//     // Sigma is a little complicated
+//     // sigma = f_whm / (2 * \sqrt{2log(2)})
+//     // f_whm \approx sqrt of number of pixels with intensity > 0.5 * a
+//     int halfCount = 0;
+//     for (int i = -nb; i <= nb; i++) {
+//         for (int j = -nb; j <= nb; j++) {
+//             if (Get(x0 + i, y0 + j, image, w) > *a / 2) {
+//                 halfCount++;
+//             }
+//         }
+//     }
+//     double fwhm = std::sqrt(halfCount);
+//     *sigma = fwhm / (2 * std::sqrt(2 * std::log(2)));
+// }
 
-void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
-                  float *xb, float *yb, double *sigma) {
-    // a is set to max intensity value in the window
-    // (xb, yb) = coordinates of pixel with max intensity value
-    int max = -1;
-    for (int i = -nb; i <= nb; i++) {
-        for (int j = -nb; j <= nb; j++) {
-            int pixelValue = Get(x0 + i, y0 + j, image, w);
-            if (pixelValue > max) {
-                *xb = x0 + i;
-                *yb = y0 + j;
-                max = pixelValue;
-            }
-        }
-    }
-    *a = max;
-    // Sigma is a little complicated
-    // sigma = f_whm / (2 * \sqrt{2log(2)})
-    // f_whm \approx sqrt of number of pixels with intensity > 0.5 * a
-    int halfCount = 0;
-    for (int i = -nb; i <= nb; i++) {
-        for (int j = -nb; j <= nb; j++) {
-            if (Get(x0 + i, y0 + j, image, w) > *a / 2) {
-                halfCount++;
-            }
-        }
-    }
-    double fwhm = std::sqrt(halfCount);
-    *sigma = fwhm / (2 * std::sqrt(2 * std::log(2)));
-}
-
-float InitialGuess2(int x0, int y0, int maxMag, const int nb, const unsigned char *image, int w){
+float FitInitialGuessSigma(int x0, int y0, int maxMag, const int nb, const unsigned char *image, int w){
     float halfCount = 0;
     for(int i = -nb; i <= nb; i++){
         for(int j = -nb; j <+ nb; j++){
@@ -195,7 +200,8 @@ struct Functor {
     typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, 1> ValueType;
     typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, InputsAtCompileTime> JacobianType;
 
-    int m_inputs, m_values;
+    int m_inputs; // Number of parameters in your model
+    int m_values; // Number of data points
 
     Functor() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}
     Functor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
@@ -204,11 +210,9 @@ struct Functor {
     int values() const { return m_values; }
 };
 
-struct LSGFFunctor : Functor<double> {
-    // First param = number of parameters in your model
-    // Second param = number of data points you want to test over
-    // for us, = 2 * nb + 1
-    LSGFFunctor(const int nb, const int marg, Eigen::VectorXd X, const unsigned char *image,
+/// Functor for 1D Least Squares Gaussian Fit
+struct LSGF1DFunctor : Functor<double> {
+    LSGF1DFunctor(const int nb, const int marg, Eigen::VectorXd X, const unsigned char *image,
                 const int w, const int x0, const int y0)
         : Functor<double>(3, 2 * nb + 1),
           nb(nb),
@@ -220,8 +224,8 @@ struct LSGFFunctor : Functor<double> {
           y0(y0) {}
 
     /*
+    Calculate residuals (error = prediction - actual)
     x = parameters (a, xb, sigma)
-    fvec = residual (one for every data point, of size = 2*nb+1)
     */
     int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
         double a = x(0);
@@ -239,6 +243,7 @@ struct LSGFFunctor : Functor<double> {
         return 0;
     }
 
+    // Calculate Jacobian
     int df(const Eigen::VectorXd &x, Eigen::MatrixXd &fjac) const {
         double a = x(0);
         double kb = x(1);
@@ -273,7 +278,7 @@ struct LSGFFunctor : Functor<double> {
     const int x0, y0;
 };
 
-/// Functor for 2D Least-squares Gaussian Fit algo
+/// Functor for 2D Least Squares Gaussian Fit
 struct LSGF2DFunctor : Functor<double> {
     // We now have 5 params, beta = (a, xb, yb, sigmaX, sigmaY)
     // Let entire window be (np x np) pixels
@@ -302,7 +307,6 @@ struct LSGF2DFunctor : Functor<double> {
             for(int j = -nb; j <= nb; j++){
                 int xi = x0 + i;
                 int yi = y0 + j;
-                // TODO: other way around, yPred is our modelPred, yActual is our pixel intensity
                 float yPred = FitModel2D(xi, yi, a, xb, yb, sigmaX, sigmaY);
                 float yActual = Get(xi, yi, image, w);
                 fvec(ind) = yPred - yActual;
@@ -361,8 +365,6 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
     const int nb = 2;
 
-    // std::set<Point> checkedPoints;
-
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
     for (const Point &pt : candidatePts) {
@@ -379,13 +381,8 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
             vInd++;
         }
 
-        // float a;
-        // float xb, yb;
-        // double sigma;
-        // InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigma);
-
         double a = Get(x, y, image, imageWidth);
-        double sigma = InitialGuess2(x, y, a, nb, image, imageWidth);
+        double sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
 
         Eigen::VectorXd betaX(3);
         betaX << a, x, sigma;
@@ -393,23 +390,15 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         Eigen::VectorXd betaY(3);
         betaY << a, y, sigma;
 
-        // LSGF2DFunctor functor(nb, image, imageWidth, x, y);
-        // // Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
-        // // Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF2DFunctor>, double> lm(numDiff);
-        // Eigen::LevenbergMarquardt<LSGF2DFunctor, double> lm(functor);
-
-        LSGFFunctor functorX(nb, 0, X, image, imageWidth, x, y);
-        // Eigen::NumericalDiff<LSGFFunctor> numDiffX(functorX);
-        Eigen::LevenbergMarquardt<LSGFFunctor, double> lmX(functorX);
+        LSGF1DFunctor functorX(nb, 0, X, image, imageWidth, x, y);
+        Eigen::LevenbergMarquardt<LSGF1DFunctor, double> lmX(functorX);
 
 
         lmX.parameters.maxfev = 2000;
         lmX.parameters.xtol = 1.0e-10;
 
-        LSGFFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
-        // Eigen::NumericalDiff<LSGFFunctor> numDiffY(functorY);
-        // Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmY(numDiffY);
-        Eigen::LevenbergMarquardt<LSGFFunctor, double> lmY(functorY);
+        LSGF1DFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
+        Eigen::LevenbergMarquardt<LSGF1DFunctor, double> lmY(functorY);
 
         lmY.parameters.maxfev = 2000;
         lmY.parameters.xtol = 1.0e-10;
@@ -424,13 +413,11 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
         sigma = betaX(2);
 
-        // std::cout << "Original: " << x << ", " << y << std::endl;
-        // std::cout << "final: " << xb << ", " << yb << std::endl;
+        // TODO: idk how much we care about making radius accurate
         result.push_back(Star(xb+0.5, yb+0.5, 0));
-        // result.push_back(Star(x, y, 0));
     }
 
-    std::cout << "Number of centroids: " << result.size() << std::endl;
+    // std::cout << "Number of centroids: " << result.size() << std::endl;
 
     return result;
 }
@@ -439,12 +426,10 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
                                                 int imageHeight) const {
     std::vector<Star> result;
 
-    std::cout << "2D GAUSSIAN FIT" << std::endl;
+    std::cout << "2D Gaussian Fit" << std::endl;
 
     const int nb = 2;
-    const int np = 2 * nb + 1;
-
-    // std::set<Point> checkedPoints;
+    // const int np = 2 * nb + 1;
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
@@ -454,16 +439,12 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
 
         float a = Get(x, y, image, imageWidth);
-        double sigma = InitialGuess2(x, y, a, nb, image, imageWidth);
-        // InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigmaX);
+        double sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
 
         Eigen::VectorXd beta(5);
         beta << a, x, y, sigma, sigma;
 
-        // LSGF2DFunctor functor(nb, 0, X, image, imageWidth, x, y);
         LSGF2DFunctor functor(nb, image, imageWidth, x, y);
-        // Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
-        // Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF2DFunctor>, double> lm(numDiff);
         Eigen::LevenbergMarquardt<LSGF2DFunctor, double> lm(functor);
 
         lm.parameters.maxfev = 2000;
@@ -477,14 +458,12 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         double sigmaX = beta(3);
         double sigmaY = beta(4);
 
-        // std::cout << xRes+0.5 << ", " << yRes+0.5 << std::endl;
-        // result.push_back(Star(xRes+0.5, yRes+0.5, 0));
         // TODO: not sure how much we care about making the radius/brightness accurate
         result.push_back(Star(xRes+0.5, yRes+0.5, sigmaX, sigmaY, aRes));
 
     }
 
-    std::cout << "Number of centroids: " << result.size() << std::endl;
+    // std::cout << "Number of centroids: " << result.size() << std::endl;
 
     return result;
 }
@@ -553,7 +532,6 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return level;
 }
 
-// a simple, but well tested thresholding algorithm that works well with star images
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
     float std = 0;
