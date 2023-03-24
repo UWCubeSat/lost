@@ -116,9 +116,9 @@ Collaboration diagram for lost::GeneratedPipelineInput:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a62d8e2732e4dbf3542d725df5c546a5d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a62d8e2732e4dbf3542d725df5c546a5d">GeneratedPipelineInput</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <a class="el" href="classlost_1_1_attitude.html">Attitude</a>, <a class="el" href="classlost_1_1_camera.html">Camera</a>, std::default_random_engine *, float observedReferenceBrightness, float starSpreadStdDev, float sensitivity, float darkCurrent, float readNoiseStdDev, <a class="el" href="classlost_1_1_attitude.html">Attitude</a> motionBlurDirection, float exposureTime, float readoutTime, bool shotNoise, int oversampling, int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude)</td></tr>
-<tr class="memdesc:a62d8e2732e4dbf3542d725df5c546a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a generated pipeline input.  <a href="classlost_1_1_generated_pipeline_input.html#a62d8e2732e4dbf3542d725df5c546a5d">More...</a><br /></td></tr>
-<tr class="separator:a62d8e2732e4dbf3542d725df5c546a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf86034246fde2b389c67c161fc2b3a9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#adf86034246fde2b389c67c161fc2b3a9">GeneratedPipelineInput</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <a class="el" href="classlost_1_1_attitude.html">Attitude</a>, <a class="el" href="classlost_1_1_camera.html">Camera</a>, std::default_random_engine *, float observedReferenceBrightness, float starSpreadStdDev, float sensitivity, float darkCurrent, float readNoiseStdDev, <a class="el" href="classlost_1_1_attitude.html">Attitude</a> motionBlurDirection, float exposureTime, float readoutTime, bool shotNoise, int oversampling, int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude, float perturbationStddev)</td></tr>
+<tr class="memdesc:adf86034246fde2b389c67c161fc2b3a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a generated pipeline input.  <a href="classlost_1_1_generated_pipeline_input.html#adf86034246fde2b389c67c161fc2b3a9">More...</a><br /></td></tr>
+<tr class="separator:adf86034246fde2b389c67c161fc2b3a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadf29204a91a120c3b1e712793aa8562"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562">InputImage</a> () const</td></tr>
 <tr class="separator:aadf29204a91a120c3b1e712793aa8562"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae27db0e671bb26836d66d39ddb46f149"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">InputStars</a> () const</td></tr>
@@ -156,8 +156,8 @@ Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00124">124</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a62d8e2732e4dbf3542d725df5c546a5d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62d8e2732e4dbf3542d725df5c546a5d">&#9670;&nbsp;</a></span>GeneratedPipelineInput()</h2>
+<a id="adf86034246fde2b389c67c161fc2b3a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf86034246fde2b389c67c161fc2b3a9">&#9670;&nbsp;</a></span>GeneratedPipelineInput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -262,7 +262,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>falseStarMaxMagnitude</em>&#160;</td>
+          <td class="paramname"><em>falseStarMaxMagnitude</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>perturbationStddev</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -279,8 +285,8 @@ Public Member Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classlost_1_1_generated_pipeline_input_a62d8e2732e4dbf3542d725df5c546a5d_cgraph.png" border="0" usemap="#aclasslost_1_1_generated_pipeline_input_a62d8e2732e4dbf3542d725df5c546a5d_cgraph" alt=""/></div>
-<map name="aclasslost_1_1_generated_pipeline_input_a62d8e2732e4dbf3542d725df5c546a5d_cgraph" id="aclasslost_1_1_generated_pipeline_input_a62d8e2732e4dbf3542d725df5c546a5d_cgraph">
+<div class="center"><img src="classlost_1_1_generated_pipeline_input_adf86034246fde2b389c67c161fc2b3a9_cgraph.png" border="0" usemap="#aclasslost_1_1_generated_pipeline_input_adf86034246fde2b389c67c161fc2b3a9_cgraph" alt=""/></div>
+<map name="aclasslost_1_1_generated_pipeline_input_adf86034246fde2b389c67c161fc2b3a9_cgraph" id="aclasslost_1_1_generated_pipeline_input_adf86034246fde2b389c67c161fc2b3a9_cgraph">
 <area shape="rect" title="Create a generated pipeline input." alt="" coords="5,226,212,267"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250" title="How many radians the rotation represented by this quaternion has." alt="" coords="286,56,457,83"/>
 <area shape="rect" href="classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="267,107,476,133"/>
@@ -522,7 +528,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_generated_pipeline_input.html">GeneratedPipelineInput</a></li>
-    <li class="footer">Generated on Thu Mar 23 2023 21:35:23 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Mar 24 2023 08:14:01 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

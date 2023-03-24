@@ -14,7 +14,7 @@
 <area shape="rect" id="node9" href="$namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="707,301,926,343"/>
 <area shape="rect" id="node10" href="$namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="468,309,651,335"/>
 <area shape="rect" id="node12" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="983,374,1192,401"/>
-<area shape="rect" id="node13" href="$classlost_1_1_generated_pipeline_input.html#a62d8e2732e4dbf3542d725df5c546a5d" title="Create a generated pipeline input." alt="" coords="713,367,920,408"/>
+<area shape="rect" id="node13" href="$classlost_1_1_generated_pipeline_input.html#adf86034246fde2b389c67c161fc2b3a9" title="Create a generated pipeline input." alt="" coords="713,367,920,408"/>
 <area shape="rect" id="node14" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="723,433,911,459"/>
 <area shape="rect" id="node15" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="495,433,623,459"/>
 <area shape="rect" id="node16" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,425,420,467"/>
