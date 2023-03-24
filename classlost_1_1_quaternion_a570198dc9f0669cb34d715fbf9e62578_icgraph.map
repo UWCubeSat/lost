@@ -1,7 +1,7 @@
 <map id="lost::Quaternion::Rotate" name="lost::Quaternion::Rotate">
 <area shape="rect" id="node1" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1375,93,1552,119"/>
 <area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1156,17,1327,43"/>
-<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#adf86034246fde2b389c67c161fc2b3a9" title="Create a generated pipeline input." alt="" coords="644,64,851,105"/>
+<area shape="rect" id="node4" href="$classlost_1_1_generated_pipeline_input.html#aff6876d882f1a4274505f73617827712" title="Create a generated pipeline input." alt="" coords="644,64,851,105"/>
 <area shape="rect" id="node9" href="$namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="1156,118,1327,145"/>
 <area shape="rect" id="node11" href="$classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf" title="Convert a vector from the reference frame to the body frame." alt="" coords="925,169,1082,195"/>
 <area shape="rect" id="node3" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="899,17,1108,43"/>

@@ -1,6 +1,6 @@
 var classlost_1_1_generated_pipeline_input =
 [
-    [ "GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html#adf86034246fde2b389c67c161fc2b3a9", null ],
+    [ "GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html#aff6876d882f1a4274505f73617827712", null ],
     [ "GetCatalog", "classlost_1_1_generated_pipeline_input.html#aa525af4b907a9ffd29b2b574f33fc53d", null ],
     [ "InputAttitude", "classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8", null ],
     [ "InputCamera", "classlost_1_1_generated_pipeline_input.html#af5c60e7bfee6a569710a8cc7c40ccbac", null ],
