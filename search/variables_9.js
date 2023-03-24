@@ -1,12 +1,7 @@
 var searchData=
 [
-  ['k_547',['k',['../classlost_1_1_quaternion.html#a94914610eb3c0ef3b32962505585130c',1,'lost::Quaternion']]],
-  ['kanglefrom90softthreshold_548',['kAngleFrom90SoftThreshold',['../namespacelost.html#a63a44b3abbcb5580d3ed71f1294f7bcd',1,'lost']]],
-  ['kcatalogmagicvalue_549',['kCatalogMagicValue',['../namespacelost.html#a280b11c878f729f878b2968037ccbc3d',1,'lost']]],
-  ['kidentitymat3_550',['kIdentityMat3',['../namespacelost.html#a66abb8e44054268322b5ccba535bb975',1,'lost']]],
-  ['kmagicvalue_551',['kMagicValue',['../classlost_1_1_pair_distance_k_vector_database.html#a6d5d477e5e2d9557f0e284e917361a54',1,'lost::PairDistanceKVectorDatabase']]],
-  ['kmaxbrightness_552',['kMaxBrightness',['../namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45',1,'lost']]],
-  ['kmultidatabasemaxdatabases_553',['kMultiDatabaseMaxDatabases',['../namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa',1,'lost']]],
-  ['kmultidatabasetoclength_554',['kMultiDatabaseTocLength',['../namespacelost.html#a9adbcdb10395a84290141accfd0377ce',1,'lost']]],
-  ['knodefaultargument_555',['kNoDefaultArgument',['../namespacelost.html#adbeb358ec7311bc89886a09aa017388c',1,'lost']]]
+  ['magnitude_553',['magnitude',['../classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a',1,'lost::CatalogStar::magnitude()'],['../classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf',1,'lost::Star::magnitude()']]],
+  ['magsum_554',['magSum',['../structlost_1_1_centroid_params.html#aedcfd69a00c255c1e9166508ee5e58ff',1,'lost::CentroidParams']]],
+  ['maxintensity_555',['maxIntensity',['../structlost_1_1_i_w_co_g_params.html#a0b8ea8754acc0d8d48f6ef9cb1cc326c',1,'lost::IWCoGParams']]],
+  ['meanerror_556',['meanError',['../classlost_1_1_centroid_comparison.html#ac1e005780ebb245a3baafde37654aafa',1,'lost::CentroidComparison']]]
 ];

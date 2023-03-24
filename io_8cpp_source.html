@@ -1100,504 +1100,502 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;        }</div>
 <div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;    }</div>
 <div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160; </div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    result.fractionCorrect = (float)result.numCorrect / result.numTotal;</div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;    result.fractionIncorrect = (<span class="keywordtype">float</span>)result.numIncorrect / result.numTotal;</div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;}</div>
 <div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160; </div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;}</div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160; </div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;<span class="comment">// PIPELINE OUTPUT //</span></div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l01114"></a><span class="lineno"><a class="line" href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2"> 1114</a></span>&#160;<span class="keyword">typedef</span> void (*<a class="code" href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2">PipelineComparator</a>)(std::ostream &amp;os,</div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;                                   <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;,</div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;                                   <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;,</div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;                                   <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;);</div>
-<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160; </div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="keyword">static</span> cairo_status_t OstreamPlotter(<span class="keywordtype">void</span> *closure, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length) {</div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;    std::ostream *os = (std::ostream *)closure;</div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;    os-&gt;write((<span class="keyword">const</span> <span class="keywordtype">char</span> *)data, length);</div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    <span class="keywordflow">return</span> CAIRO_STATUS_SUCCESS;</div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;}</div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160; </div>
-<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPlotRawInput(std::ostream &amp;os,</div>
-<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;                                    <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;                                    <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;,</div>
-<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;                                    <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160; </div>
-<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
-<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
-<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
-<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;}</div>
-<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160; </div>
-<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;<span class="comment">// TODO: should probably use Expected methods, not Input methods, because future PipelineInputs could add noise to the result of the Input methods.</span></div>
-<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPlotInput(std::ostream &amp;os,</div>
-<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;                                 <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;                                 <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;,</div>
-<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;                                 <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
-<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;    assert(expected[0]-&gt;InputStars() != NULL);</div>
-<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;    <a class="code" href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">SurfacePlot</a>(cairoSurface,</div>
-<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;                *expected[0]-&gt;InputStars(),</div>
-<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;                expected[0]-&gt;InputStarIds(),</div>
-<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;                &amp;expected[0]-&gt;GetCatalog(),</div>
-<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;                expected[0]-&gt;InputAttitude(),</div>
-<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;                <span class="comment">// green</span></div>
-<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;                0.0, 1.0, 0.0, 0.6);</div>
-<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
-<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
-<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;}</div>
-<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160; </div>
-<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorCentroids(std::ostream &amp;os,</div>
-<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;                                 <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;                                 <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;                                 <span class="keyword">const</span> PipelineOptions &amp;values) {</div>
-<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;    <span class="keywordtype">int</span> size = (int)expected.size();</div>
-<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160; </div>
-<div class="line"><a name="l01163"></a><span class="lineno"> 1163</span>&#160;    <span class="keywordtype">float</span> threshold = values.centroidCompareThreshold;</div>
-<div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160; </div>
-<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;    std::vector&lt;CentroidComparison&gt; comparisons;</div>
-<div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; size; i++) {</div>
-<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;        comparisons.push_back(<a class="code" href="namespacelost.html#afd017fba4090829c28c431509c4cfc1c">CentroidsCompare</a>(threshold,</div>
-<div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160;                                               *(expected[i]-&gt;ExpectedStars()),</div>
-<div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;                                               *(actual[i].stars)));</div>
-<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;    }</div>
-<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160; </div>
-<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;    CentroidComparison result = <a class="code" href="namespacelost.html#a0fe01051c958fa8ced02e772aefdc991">CentroidComparisonsCombine</a>(comparisons);</div>
-<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;extra_stars &quot;</span> &lt;&lt; result.numExtraStars &lt;&lt; std::endl</div>
-<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;       &lt;&lt; <span class="stringliteral">&quot;missing_stars &quot;</span> &lt;&lt; result.numMissingStars &lt;&lt; std::endl</div>
-<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;       &lt;&lt; <span class="stringliteral">&quot;mean_error &quot;</span> &lt;&lt; result.meanError &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;}</div>
-<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160; </div>
-<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PrintCentroids(<span class="keyword">const</span> std::string &amp;prefix,</div>
-<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;                           std::ostream &amp;os,</div>
-<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog,</div>
-<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars,</div>
-<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;                           <span class="comment">// may be null:</span></div>
-<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *starIds) {</div>
-<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;num_&quot;</span> &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroids &quot;</span> &lt;&lt; stars.size() &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)stars.size(); i++) {</div>
-<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;        os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroid_&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;_x &quot;</span> &lt;&lt; stars[i].position.x &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;        os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroid_&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;_y &quot;</span> &lt;&lt; stars[i].position.y &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;        <span class="keywordflow">if</span> (starIds) {</div>
-<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">const</span> StarIdentifier &amp;starId : *starIds) {</div>
-<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;                <span class="keywordflow">if</span> (starId.starIndex == i) {</div>
-<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;                    os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroid_&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;_id &quot;</span> &lt;&lt; catalog[starId.catalogIndex].name &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;                }</div>
-<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;            }</div>
-<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;        }</div>
-<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;    }</div>
-<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;}</div>
-<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160; </div>
-<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPrintExpectedCentroids(std::ostream &amp;os,</div>
-<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;                                                     <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;                                                     <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;, <span class="comment">// actual</span></div>
-<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;                                                     <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;    assert(expected.size() == 1);</div>
-<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;    assert(expected[0]-&gt;ExpectedStars());</div>
-<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160; </div>
-<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    PrintCentroids(<span class="stringliteral">&quot;expected&quot;</span>,</div>
-<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;                   os,</div>
-<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;                   expected[0]-&gt;GetCatalog(),</div>
-<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;                   *expected[0]-&gt;ExpectedStars(),</div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;                   expected[0]-&gt;ExpectedStarIds());</div>
-<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;}</div>
-<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160; </div>
-<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPrintActualCentroids(std::ostream &amp;os,</div>
-<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;                                                   <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;, <span class="comment">// expected</span></div>
-<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;                                                   <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;                                                   <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;    assert(actual.size() == 1);</div>
-<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;    assert(actual[0].stars);</div>
-<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160; </div>
-<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;    PrintCentroids(<span class="stringliteral">&quot;actual&quot;</span>,</div>
-<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;                   os,</div>
-<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;                   actual[0].catalog,</div>
-<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;                   *actual[0].stars,</div>
-<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;                   actual[0].starIds.get());</div>
-<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;}</div>
-<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160; </div>
-<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;<span class="comment">// TODO: add a CLI option to use this!</span></div>
-<div class="line"><a name="l01229"></a><span class="lineno"><a class="line" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311"> 1229</a></span>&#160;<span class="comment"></span><span class="keywordtype">void</span> <a class="code" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">PipelineComparatorPlotCentroidIndices</a>(std::ostream &amp;os,</div>
-<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;                                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;                                           <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;                                           <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;) {</div>
-<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars = actual[0].stars ? *actual[0].stars : *expected[0]-&gt;ExpectedStars();</div>
-<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;    <a class="code" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> identifiers;</div>
-<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)stars.size(); i++) {</div>
-<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;        identifiers.push_back(<a class="code" href="classlost_1_1_star_identifier.html">StarIdentifier</a>(i, i));</div>
-<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;    }</div>
-<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
-<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;    <a class="code" href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">SurfacePlot</a>(cairoSurface,</div>
-<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;                stars,</div>
-<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;                &amp;identifiers,</div>
-<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;                &amp;actual[0].catalog,</div>
-<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;                NULL,</div>
-<div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;                <span class="comment">// orange</span></div>
-<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;                1.0, 0.5, 0.0, 0.5,</div>
-<div class="line"><a name="l01246"></a><span class="lineno"> 1246</span>&#160;                <span class="comment">// don&#39;t resolve names</span></div>
-<div class="line"><a name="l01247"></a><span class="lineno"> 1247</span>&#160;                <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
-<div class="line"><a name="l01249"></a><span class="lineno"> 1249</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
-<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;}</div>
-<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160; </div>
-<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPlotOutput(std::ostream &amp;os,</div>
-<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;                                         <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;                                         <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;                                         <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;    <span class="comment">// don&#39;t need to worry about mutating the surface; InputImageSurface returns a fresh one</span></div>
-<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
-<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;    <a class="code" href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">SurfacePlot</a>(cairoSurface,</div>
-<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;                actual[0].stars ? *actual[0].stars : *expected[0]-&gt;ExpectedStars(),</div>
-<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;                actual[0].starIds.get(),</div>
-<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;                &amp;actual[0].catalog,</div>
-<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;                actual[0].attitude.get(),</div>
-<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;                <span class="comment">// red</span></div>
-<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;                1.0, 0.0, 0.0, 0.5);</div>
-<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
-<div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
-<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;}</div>
-<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160; </div>
-<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorStarIds(std::ostream &amp;os,</div>
-<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;                                      <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;                                      <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;                                      <span class="keyword">const</span> PipelineOptions &amp;values) {</div>
-<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;    <span class="keywordtype">float</span> centroidThreshold = actual[0].stars</div>
-<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;        ? values.centroidCompareThreshold</div>
-<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;        : 0.0f;</div>
-<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160; </div>
-<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;    std::vector&lt;StarIdComparison&gt; comparisons;</div>
-<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)expected.size(); i++) {</div>
-<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;        comparisons.push_back(</div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;<span class="comment">// PIPELINE OUTPUT //</span></div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l01111"></a><span class="lineno"><a class="line" href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2"> 1111</a></span>&#160;<span class="keyword">typedef</span> void (*<a class="code" href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2">PipelineComparator</a>)(std::ostream &amp;os,</div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;                                   <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;,</div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;                                   <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;,</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;                                   <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;);</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160; </div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;<span class="keyword">static</span> cairo_status_t OstreamPlotter(<span class="keywordtype">void</span> *closure, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> length) {</div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;    std::ostream *os = (std::ostream *)closure;</div>
+<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;    os-&gt;write((<span class="keyword">const</span> <span class="keywordtype">char</span> *)data, length);</div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;    <span class="keywordflow">return</span> CAIRO_STATUS_SUCCESS;</div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;}</div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160; </div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPlotRawInput(std::ostream &amp;os,</div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;                                    <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;                                    <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;,</div>
+<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;                                    <span class="keyword">const</span> PipelineOptions &amp;) {</div>
+<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160; </div>
+<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;}</div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160; </div>
+<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;<span class="comment">// TODO: should probably use Expected methods, not Input methods, because future PipelineInputs could add noise to the result of the Input methods.</span></div>
+<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPlotInput(std::ostream &amp;os,</div>
+<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;                                 <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;                                 <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;,</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;                                 <span class="keyword">const</span> PipelineOptions &amp;) {</div>
+<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
+<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;    assert(expected[0]-&gt;InputStars() != NULL);</div>
+<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;    <a class="code" href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">SurfacePlot</a>(cairoSurface,</div>
+<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;                *expected[0]-&gt;InputStars(),</div>
+<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;                expected[0]-&gt;InputStarIds(),</div>
+<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;                &amp;expected[0]-&gt;GetCatalog(),</div>
+<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;                expected[0]-&gt;InputAttitude(),</div>
+<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;                <span class="comment">// green</span></div>
+<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;                0.0, 1.0, 0.0, 0.6);</div>
+<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
+<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
+<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;}</div>
+<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160; </div>
+<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorCentroids(std::ostream &amp;os,</div>
+<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;                                 <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;                                 <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;                                 <span class="keyword">const</span> PipelineOptions &amp;values) {</div>
+<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    <span class="keywordtype">int</span> size = (int)expected.size();</div>
+<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160; </div>
+<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    <span class="keywordtype">float</span> threshold = values.centroidCompareThreshold;</div>
+<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160; </div>
+<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;    std::vector&lt;CentroidComparison&gt; comparisons;</div>
+<div class="line"><a name="l01163"></a><span class="lineno"> 1163</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; size; i++) {</div>
+<div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160;        comparisons.push_back(<a class="code" href="namespacelost.html#afd017fba4090829c28c431509c4cfc1c">CentroidsCompare</a>(threshold,</div>
+<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;                                               *(expected[i]-&gt;ExpectedStars()),</div>
+<div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;                                               *(actual[i].stars)));</div>
+<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;    }</div>
+<div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160; </div>
+<div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;    CentroidComparison result = <a class="code" href="namespacelost.html#a0fe01051c958fa8ced02e772aefdc991">CentroidComparisonsCombine</a>(comparisons);</div>
+<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;extra_stars &quot;</span> &lt;&lt; result.numExtraStars &lt;&lt; std::endl</div>
+<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;       &lt;&lt; <span class="stringliteral">&quot;missing_stars &quot;</span> &lt;&lt; result.numMissingStars &lt;&lt; std::endl</div>
+<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;       &lt;&lt; <span class="stringliteral">&quot;mean_error &quot;</span> &lt;&lt; result.meanError &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;}</div>
+<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160; </div>
+<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PrintCentroids(<span class="keyword">const</span> std::string &amp;prefix,</div>
+<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;                           std::ostream &amp;os,</div>
+<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog,</div>
+<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars,</div>
+<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;                           <span class="comment">// may be null:</span></div>
+<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *starIds) {</div>
+<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;num_&quot;</span> &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroids &quot;</span> &lt;&lt; stars.size() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)stars.size(); i++) {</div>
+<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;        os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroid_&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;_x &quot;</span> &lt;&lt; stars[i].position.x &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;        os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroid_&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;_y &quot;</span> &lt;&lt; stars[i].position.y &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;        <span class="keywordflow">if</span> (starIds) {</div>
+<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">const</span> StarIdentifier &amp;starId : *starIds) {</div>
+<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;                <span class="keywordflow">if</span> (starId.starIndex == i) {</div>
+<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;                    os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_centroid_&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;_id &quot;</span> &lt;&lt; catalog[starId.catalogIndex].name &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;                }</div>
+<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;            }</div>
+<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;        }</div>
+<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;    }</div>
+<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;}</div>
+<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160; </div>
+<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPrintExpectedCentroids(std::ostream &amp;os,</div>
+<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;                                                     <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;                                                     <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;, <span class="comment">// actual</span></div>
+<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;                                                     <span class="keyword">const</span> PipelineOptions &amp;) {</div>
+<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;    assert(expected.size() == 1);</div>
+<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;    assert(expected[0]-&gt;ExpectedStars());</div>
+<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160; </div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;    PrintCentroids(<span class="stringliteral">&quot;expected&quot;</span>,</div>
+<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;                   os,</div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;                   expected[0]-&gt;GetCatalog(),</div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;                   *expected[0]-&gt;ExpectedStars(),</div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;                   expected[0]-&gt;ExpectedStarIds());</div>
+<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;}</div>
+<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160; </div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPrintActualCentroids(std::ostream &amp;os,</div>
+<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;                                                   <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;, <span class="comment">// expected</span></div>
+<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;                                                   <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;                                                   <span class="keyword">const</span> PipelineOptions &amp;) {</div>
+<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;    assert(actual.size() == 1);</div>
+<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;    assert(actual[0].stars);</div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160; </div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;    PrintCentroids(<span class="stringliteral">&quot;actual&quot;</span>,</div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;                   os,</div>
+<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;                   actual[0].catalog,</div>
+<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;                   *actual[0].stars,</div>
+<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;                   actual[0].starIds.get());</div>
+<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;}</div>
+<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160; </div>
+<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;<span class="comment">// TODO: add a CLI option to use this!</span></div>
+<div class="line"><a name="l01226"></a><span class="lineno"><a class="line" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311"> 1226</a></span>&#160;<span class="comment"></span><span class="keywordtype">void</span> <a class="code" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">PipelineComparatorPlotCentroidIndices</a>(std::ostream &amp;os,</div>
+<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;                                           <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;                                           <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;                                           <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;) {</div>
+<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars = actual[0].stars ? *actual[0].stars : *expected[0]-&gt;ExpectedStars();</div>
+<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;    <a class="code" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> identifiers;</div>
+<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)stars.size(); i++) {</div>
+<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;        identifiers.push_back(<a class="code" href="classlost_1_1_star_identifier.html">StarIdentifier</a>(i, i));</div>
+<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;    }</div>
+<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
+<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;    <a class="code" href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">SurfacePlot</a>(cairoSurface,</div>
+<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;                stars,</div>
+<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;                &amp;identifiers,</div>
+<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;                &amp;actual[0].catalog,</div>
+<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;                NULL,</div>
+<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;                <span class="comment">// orange</span></div>
+<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;                1.0, 0.5, 0.0, 0.5,</div>
+<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;                <span class="comment">// don&#39;t resolve names</span></div>
+<div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;                <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
+<div class="line"><a name="l01246"></a><span class="lineno"> 1246</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
+<div class="line"><a name="l01247"></a><span class="lineno"> 1247</span>&#160;}</div>
+<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160; </div>
+<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPlotOutput(std::ostream &amp;os,</div>
+<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;                                         <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;                                         <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;                                         <span class="keyword">const</span> PipelineOptions &amp;) {</div>
+<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;    <span class="comment">// don&#39;t need to worry about mutating the surface; InputImageSurface returns a fresh one</span></div>
+<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;    cairo_surface_t *cairoSurface = expected[0]-&gt;InputImageSurface();</div>
+<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;    <a class="code" href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">SurfacePlot</a>(cairoSurface,</div>
+<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;                actual[0].stars ? *actual[0].stars : *expected[0]-&gt;ExpectedStars(),</div>
+<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;                actual[0].starIds.get(),</div>
+<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;                &amp;actual[0].catalog,</div>
+<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;                actual[0].attitude.get(),</div>
+<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;                <span class="comment">// red</span></div>
+<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;                1.0, 0.0, 0.0, 0.5);</div>
+<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &amp;os);</div>
+<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;    cairo_surface_destroy(cairoSurface);</div>
+<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;}</div>
+<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160; </div>
+<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorStarIds(std::ostream &amp;os,</div>
+<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;                                      <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;                                      <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;                                      <span class="keyword">const</span> PipelineOptions &amp;values) {</div>
+<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;    <span class="keywordtype">float</span> centroidThreshold = actual[0].stars</div>
+<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;        ? values.centroidCompareThreshold</div>
+<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;        : 0.0f;</div>
+<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160; </div>
+<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;    std::vector&lt;StarIdComparison&gt; comparisons;</div>
+<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;    <span class="keywordtype">int</span> numImagesCorrect = 0;</div>
+<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;    <span class="keywordtype">int</span> numImagesIncorrect = 0;</div>
+<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;    <span class="keywordtype">int</span> numImagesTotal = expected.size();</div>
+<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; numImagesTotal; i++) {</div>
+<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;        StarIdComparison comparison =</div>
 <div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;            StarIdsCompare(*expected[i]-&gt;ExpectedStarIds(), *actual[i].starIds,</div>
 <div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;                           expected[i]-&gt;GetCatalog(), actual[i].catalog,</div>
-<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;                           centroidThreshold, expected[i]-&gt;ExpectedStars(), actual[i].stars.get()));</div>
-<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;    }</div>
-<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160; </div>
-<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;    <span class="keywordflow">if</span> (comparisons.size() == 1) {</div>
-<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;starid_num_correct &quot;</span> &lt;&lt; comparisons[0].numCorrect &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;starid_num_incorrect &quot;</span> &lt;&lt; comparisons[0].numIncorrect &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;starid_num_total &quot;</span> &lt;&lt; comparisons[0].numTotal &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;    }</div>
-<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160; </div>
-<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;    <span class="keywordtype">float</span> fractionIncorrectSum = 0;</div>
-<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;    <span class="keywordtype">float</span> fractionCorrectSum = 0;</div>
-<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> StarIdComparison &amp;comparison : comparisons) {</div>
-<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;        fractionIncorrectSum += comparison.fractionIncorrect;</div>
-<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;        fractionCorrectSum += comparison.fractionCorrect;</div>
+<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;                           centroidThreshold, expected[i]-&gt;ExpectedStars(), actual[i].stars.get());</div>
+<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160; </div>
+<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;        <span class="keywordflow">if</span> (comparisons.size() == 1) {</div>
+<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;            os &lt;&lt; <span class="stringliteral">&quot;starid_num_correct &quot;</span> &lt;&lt; comparison.numCorrect &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;            os &lt;&lt; <span class="stringliteral">&quot;starid_num_incorrect &quot;</span> &lt;&lt; comparison.numIncorrect &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;            os &lt;&lt; <span class="stringliteral">&quot;starid_num_total &quot;</span> &lt;&lt; comparison.numTotal &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;        }</div>
+<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160; </div>
+<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160;        <span class="keywordflow">if</span> (comparison.numCorrect &gt; 0 &amp;&amp; comparison.numIncorrect == 0) {</div>
+<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;            numImagesCorrect++;</div>
+<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;        }</div>
+<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;        <span class="keywordflow">if</span> (comparison.numIncorrect &gt; 0) {</div>
+<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;            numImagesIncorrect++;</div>
+<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;        }</div>
 <div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;    }</div>
 <div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160; </div>
-<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160;    <span class="keywordtype">float</span> fractionIncorrectMean = fractionIncorrectSum / comparisons.size();</div>
-<div class="line"><a name="l01301"></a><span class="lineno"> 1301</span>&#160;    <span class="keywordtype">float</span> fractionCorrectMean = fractionCorrectSum / comparisons.size();</div>
-<div class="line"><a name="l01302"></a><span class="lineno"> 1302</span>&#160; </div>
-<div class="line"><a name="l01303"></a><span class="lineno"> 1303</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;starid_fraction_correct &quot;</span> &lt;&lt; fractionCorrectMean &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;starid_fraction_incorrect &quot;</span> &lt;&lt; fractionIncorrectMean &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01305"></a><span class="lineno"> 1305</span>&#160;}</div>
-<div class="line"><a name="l01306"></a><span class="lineno"> 1306</span>&#160; </div>
-<div class="line"><a name="l01308"></a><span class="lineno"> 1308</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPrintAttitude(std::ostream &amp;os,</div>
-<div class="line"><a name="l01309"></a><span class="lineno"> 1309</span>&#160;                                            <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;,</div>
-<div class="line"><a name="l01310"></a><span class="lineno"> 1310</span>&#160;                                            <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01311"></a><span class="lineno"> 1311</span>&#160;                                            <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01312"></a><span class="lineno"> 1312</span>&#160;    assert(actual.size() == 1);</div>
-<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;    assert(actual[0].attitude);</div>
-<div class="line"><a name="l01314"></a><span class="lineno"> 1314</span>&#160; </div>
-<div class="line"><a name="l01315"></a><span class="lineno"> 1315</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_real &quot; &lt;&lt; actual[0].attitude-&gt;real &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01316"></a><span class="lineno"> 1316</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_i &quot; &lt;&lt; actual[0].attitude-&gt;i &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01317"></a><span class="lineno"> 1317</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_j &quot; &lt;&lt; actual[0].attitude-&gt;j &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01318"></a><span class="lineno"> 1318</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_k &quot; &lt;&lt; actual[0].attitude-&gt;k &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01319"></a><span class="lineno"> 1319</span>&#160;    EulerAngles spherical = actual[0].attitude-&gt;ToSpherical();</div>
-<div class="line"><a name="l01320"></a><span class="lineno"> 1320</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_ra &quot;</span> &lt;&lt; <a class="code" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">RadToDeg</a>(spherical.ra) &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01321"></a><span class="lineno"> 1321</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_de &quot;</span> &lt;&lt; <a class="code" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">RadToDeg</a>(spherical.de) &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01322"></a><span class="lineno"> 1322</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_roll &quot;</span> &lt;&lt; <a class="code" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">RadToDeg</a>(spherical.roll) &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01323"></a><span class="lineno"> 1323</span>&#160;}</div>
-<div class="line"><a name="l01324"></a><span class="lineno"> 1324</span>&#160; </div>
-<div class="line"><a name="l01326"></a><span class="lineno"> 1326</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorAttitude(std::ostream &amp;os,</div>
-<div class="line"><a name="l01327"></a><span class="lineno"> 1327</span>&#160;                                       <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01328"></a><span class="lineno"> 1328</span>&#160;                                       <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01329"></a><span class="lineno"> 1329</span>&#160;                                       <span class="keyword">const</span> PipelineOptions &amp;values) {</div>
-<div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160; </div>
-<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160;    <span class="comment">// TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break</span></div>
-<div class="line"><a name="l01332"></a><span class="lineno"> 1332</span>&#160;    <span class="comment">// apart roll error from boresight error. This is just quick and dirty for testing</span></div>
+<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160;    <span class="comment">// A &quot;correct&quot; image is one where at least two stars are correctly id&#39;d and none are incorrectly id&#39;d</span></div>
+<div class="line"><a name="l01301"></a><span class="lineno"> 1301</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;starid_num_images_correct &quot;</span> &lt;&lt; numImagesCorrect &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01302"></a><span class="lineno"> 1302</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;starid_num_images_incorrect &quot;</span> &lt;&lt; numImagesIncorrect &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01303"></a><span class="lineno"> 1303</span>&#160;}</div>
+<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160; </div>
+<div class="line"><a name="l01306"></a><span class="lineno"> 1306</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorPrintAttitude(std::ostream &amp;os,</div>
+<div class="line"><a name="l01307"></a><span class="lineno"> 1307</span>&#160;                                            <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;,</div>
+<div class="line"><a name="l01308"></a><span class="lineno"> 1308</span>&#160;                                            <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01309"></a><span class="lineno"> 1309</span>&#160;                                            <span class="keyword">const</span> PipelineOptions &amp;) {</div>
+<div class="line"><a name="l01310"></a><span class="lineno"> 1310</span>&#160;    assert(actual.size() == 1);</div>
+<div class="line"><a name="l01311"></a><span class="lineno"> 1311</span>&#160;    assert(actual[0].attitude);</div>
+<div class="line"><a name="l01312"></a><span class="lineno"> 1312</span>&#160; </div>
+<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_real &quot; &lt;&lt; actual[0].attitude-&gt;real &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01314"></a><span class="lineno"> 1314</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_i &quot; &lt;&lt; actual[0].attitude-&gt;i &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01315"></a><span class="lineno"> 1315</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_j &quot; &lt;&lt; actual[0].attitude-&gt;j &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01316"></a><span class="lineno"> 1316</span>&#160;    <span class="comment">// os &lt;&lt; &quot;attitude_k &quot; &lt;&lt; actual[0].attitude-&gt;k &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01317"></a><span class="lineno"> 1317</span>&#160;    EulerAngles spherical = actual[0].attitude-&gt;ToSpherical();</div>
+<div class="line"><a name="l01318"></a><span class="lineno"> 1318</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_ra &quot;</span> &lt;&lt; <a class="code" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">RadToDeg</a>(spherical.ra) &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01319"></a><span class="lineno"> 1319</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_de &quot;</span> &lt;&lt; <a class="code" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">RadToDeg</a>(spherical.de) &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01320"></a><span class="lineno"> 1320</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_roll &quot;</span> &lt;&lt; <a class="code" href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">RadToDeg</a>(spherical.roll) &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01321"></a><span class="lineno"> 1321</span>&#160;}</div>
+<div class="line"><a name="l01322"></a><span class="lineno"> 1322</span>&#160; </div>
+<div class="line"><a name="l01324"></a><span class="lineno"> 1324</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PipelineComparatorAttitude(std::ostream &amp;os,</div>
+<div class="line"><a name="l01325"></a><span class="lineno"> 1325</span>&#160;                                       <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01326"></a><span class="lineno"> 1326</span>&#160;                                       <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01327"></a><span class="lineno"> 1327</span>&#160;                                       <span class="keyword">const</span> PipelineOptions &amp;values) {</div>
+<div class="line"><a name="l01328"></a><span class="lineno"> 1328</span>&#160; </div>
+<div class="line"><a name="l01329"></a><span class="lineno"> 1329</span>&#160;    <span class="comment">// TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break</span></div>
+<div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160;    <span class="comment">// apart roll error from boresight error. This is just quick and dirty for testing</span></div>
+<div class="line"><a name="l01331"></a><span class="lineno"> 1331</span>&#160; </div>
+<div class="line"><a name="l01332"></a><span class="lineno"> 1332</span>&#160;    <span class="keywordtype">float</span> angleThreshold = <a class="code" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613">DegToRad</a>(values.attitudeCompareThreshold);</div>
 <div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160; </div>
-<div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160;    <span class="keywordtype">float</span> angleThreshold = <a class="code" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613">DegToRad</a>(values.attitudeCompareThreshold);</div>
-<div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160; </div>
-<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160;    <span class="keywordtype">float</span> attitudeErrorSum = 0.0f;</div>
-<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160;    <span class="keywordtype">int</span> numCorrect = 0;</div>
-<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160; </div>
-<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)expected.size(); i++) {</div>
-<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;        Quaternion expectedQuaternion = expected[i]-&gt;ExpectedAttitude()-&gt;GetQuaternion();</div>
-<div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;        Quaternion actualQuaternion = actual[i].attitude-&gt;GetQuaternion();</div>
-<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;        <span class="keywordtype">float</span> attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).<a class="code" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">Angle</a>();</div>
-<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;        assert(attitudeError &gt;= 0);</div>
-<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160; </div>
-<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;        attitudeErrorSum += attitudeError;</div>
-<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;        <span class="keywordflow">if</span> (attitudeError &lt;= angleThreshold) {</div>
-<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;            numCorrect++;</div>
-<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;        }</div>
-<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;    }</div>
-<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160; </div>
-<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;    <span class="keywordtype">float</span> attitudeErrorMean = attitudeErrorSum / expected.size();</div>
-<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;    <span class="keywordtype">float</span> fractionCorrect = (float)numCorrect / expected.size();</div>
-<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160; </div>
-<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_error_mean &quot;</span> &lt;&lt; attitudeErrorMean &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_num_correct &quot;</span> &lt;&lt; numCorrect &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_fraction_correct &quot;</span> &lt;&lt; fractionCorrect &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;}</div>
-<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160; </div>
-<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;<span class="comment">// TODO: add these debug comparators back in!</span></div>
-<div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;<span class="comment">// void PipelineComparatorPrintPairDistance(std::ostream &amp;os,</span></div>
-<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;<span class="comment">//                                          const PipelineInputList &amp;expected,</span></div>
-<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;<span class="comment">//                                          const std::vector&lt;PipelineOutput&gt; &amp;actual) {</span></div>
-<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;<span class="comment">//     int index1 = Prompt&lt;int&gt;(&quot;Index of first star&quot;);</span></div>
-<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;<span class="comment">//     int index2 = Prompt&lt;int&gt;(&quot;Index of second star&quot;);</span></div>
-<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160; </div>
-<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;<span class="comment">//     const Camera &amp;camera = *expected[0]-&gt;InputCamera();</span></div>
-<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;<span class="comment">//     const Stars &amp;stars = *actual[0].stars;</span></div>
-<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160; </div>
-<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;<span class="comment">//     assert(index1 &gt;= 0 &amp;&amp; index2 &gt;= 0 &amp;&amp; index1 &lt; (int)stars.size() &amp;&amp; index2 &lt; (int)stars.size());</span></div>
-<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;<span class="comment">//     os &lt;&lt; &quot;pair_distance &quot; &lt;&lt; Angle(camera.CameraToSpatial(stars[index1].position),</span></div>
-<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;<span class="comment">//                                     camera.CameraToSpatial(stars[index2].position))</span></div>
-<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;<span class="comment">//        &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160; </div>
-<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;<span class="comment">// void PipelineComparatorPrintPyramidDistances(std::ostream &amp;os,</span></div>
-<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;<span class="comment">//                                              const PipelineInputList &amp;expected,</span></div>
-<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;<span class="comment">//                                              const std::vector&lt;PipelineOutput&gt; &amp;actual) {</span></div>
-<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;<span class="comment">//     int index1 = Prompt&lt;int&gt;(&quot;Catalog name/index of first star&quot;);</span></div>
-<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;<span class="comment">//     int index2 = Prompt&lt;int&gt;(&quot;Catalog name/index of second star&quot;);</span></div>
-<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;<span class="comment">//     int index3 = Prompt&lt;int&gt;(&quot;Catalog name/index of third star&quot;);</span></div>
-<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;<span class="comment">//     int index4 = Prompt&lt;int&gt;(&quot;Catalog name/index of four star&quot;);</span></div>
-<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160; </div>
-<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;<span class="comment">//     const Camera &amp;camera = *expected[0]-&gt;InputCamera();</span></div>
-<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;<span class="comment">//     const Stars &amp;stars = *actual[0].stars;</span></div>
-<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160; </div>
-<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;<span class="comment">//     Vec3 spatial1 = camera.CameraToSpatial(stars[index1].position);</span></div>
-<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;<span class="comment">//     Vec3 spatial2 = camera.CameraToSpatial(stars[index2].position);</span></div>
-<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;<span class="comment">//     Vec3 spatial3 = camera.CameraToSpatial(stars[index3].position);</span></div>
-<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;<span class="comment">//     Vec3 spatial4 = camera.CameraToSpatial(stars[index4].position);</span></div>
-<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160; </div>
-<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_12 &quot; &lt;&lt; Angle(spatial1, spatial2) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_13 &quot; &lt;&lt; Angle(spatial1, spatial3) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_14 &quot; &lt;&lt; Angle(spatial1, spatial4) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_23 &quot; &lt;&lt; Angle(spatial2, spatial3) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_24 &quot; &lt;&lt; Angle(spatial2, spatial4) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_34 &quot; &lt;&lt; Angle(spatial3, spatial4) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160; </div>
-<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="comment">// void PipelineComparatorPrintTripleAngle(std::ostream &amp;os,</span></div>
-<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;<span class="comment">//                                         const PipelineInputList &amp;expected,</span></div>
-<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;<span class="comment">//                                         const std::vector&lt;PipelineOutput&gt; &amp;actual) {</span></div>
-<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;<span class="comment">//     int index1 = Prompt&lt;int&gt;(&quot;Index of first star&quot;);</span></div>
-<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;<span class="comment">//     int index2 = Prompt&lt;int&gt;(&quot;Index of second star&quot;);</span></div>
-<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;<span class="comment">//     int index3 = Prompt&lt;int&gt;(&quot;Index of third star&quot;);</span></div>
-<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160; </div>
-<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;<span class="comment">//     const Camera &amp;camera = *expected[0]-&gt;InputCamera();</span></div>
-<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;<span class="comment">//     const Stars &amp;stars = *actual[0].stars;</span></div>
-<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160; </div>
-<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;<span class="comment">//     assert(index1 &gt;= 0 &amp;&amp; index1 &lt; (int)stars.size());</span></div>
-<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;<span class="comment">//     assert(index2 &gt;= 0 &amp;&amp; index2 &lt; (int)stars.size());</span></div>
-<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;<span class="comment">//     assert(index3 &gt;= 0 &amp;&amp; index3 &lt; (int)stars.size());</span></div>
-<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160; </div>
-<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;<span class="comment">//     // TODO, when merging with nondimensional branch</span></div>
-<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160; </div>
-<div class="line"><a name="l01420"></a><span class="lineno"><a class="line" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc"> 1420</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">PipelineComparison</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
-<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;                        <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
-<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;                        <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values) {</div>
-<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;    <span class="keywordflow">if</span> (actual.size() == 0) {</div>
-<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: No \&quot;comparator\&quot;/output action was specified. I.e., the star identification is all done, but you didn&#39;t specify how to return the results to you! Try --plot-output &lt;filepath&gt;, perhaps.&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;        exit(1);</div>
-<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;    }</div>
+<div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160;    <span class="keywordtype">float</span> attitudeErrorSum = 0.0f;</div>
+<div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160;    <span class="keywordtype">int</span> numCorrect = 0;</div>
+<div class="line"><a name="l01336"></a><span class="lineno"> 1336</span>&#160; </div>
+<div class="line"><a name="l01337"></a><span class="lineno"> 1337</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)expected.size(); i++) {</div>
+<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160;        Quaternion expectedQuaternion = expected[i]-&gt;ExpectedAttitude()-&gt;GetQuaternion();</div>
+<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;        Quaternion actualQuaternion = actual[i].attitude-&gt;GetQuaternion();</div>
+<div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;        <span class="keywordtype">float</span> attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).<a class="code" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">Angle</a>();</div>
+<div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;        assert(attitudeError &gt;= 0);</div>
+<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160; </div>
+<div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;        attitudeErrorSum += attitudeError;</div>
+<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160;        <span class="keywordflow">if</span> (attitudeError &lt;= angleThreshold) {</div>
+<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;            numCorrect++;</div>
+<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;        }</div>
+<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;    }</div>
+<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160; </div>
+<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;    <span class="keywordtype">float</span> attitudeErrorMean = attitudeErrorSum / expected.size();</div>
+<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;    <span class="keywordtype">float</span> fractionCorrect = (float)numCorrect / expected.size();</div>
+<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160; </div>
+<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_error_mean &quot;</span> &lt;&lt; attitudeErrorMean &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_num_correct &quot;</span> &lt;&lt; numCorrect &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_fraction_correct &quot;</span> &lt;&lt; fractionCorrect &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;}</div>
+<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160; </div>
+<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;<span class="comment">// TODO: add these debug comparators back in!</span></div>
+<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;<span class="comment">// void PipelineComparatorPrintPairDistance(std::ostream &amp;os,</span></div>
+<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;<span class="comment">//                                          const PipelineInputList &amp;expected,</span></div>
+<div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;<span class="comment">//                                          const std::vector&lt;PipelineOutput&gt; &amp;actual) {</span></div>
+<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;<span class="comment">//     int index1 = Prompt&lt;int&gt;(&quot;Index of first star&quot;);</span></div>
+<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;<span class="comment">//     int index2 = Prompt&lt;int&gt;(&quot;Index of second star&quot;);</span></div>
+<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160; </div>
+<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;<span class="comment">//     const Camera &amp;camera = *expected[0]-&gt;InputCamera();</span></div>
+<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;<span class="comment">//     const Stars &amp;stars = *actual[0].stars;</span></div>
+<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160; </div>
+<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;<span class="comment">//     assert(index1 &gt;= 0 &amp;&amp; index2 &gt;= 0 &amp;&amp; index1 &lt; (int)stars.size() &amp;&amp; index2 &lt; (int)stars.size());</span></div>
+<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;<span class="comment">//     os &lt;&lt; &quot;pair_distance &quot; &lt;&lt; Angle(camera.CameraToSpatial(stars[index1].position),</span></div>
+<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;<span class="comment">//                                     camera.CameraToSpatial(stars[index2].position))</span></div>
+<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;<span class="comment">//        &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160; </div>
+<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;<span class="comment">// void PipelineComparatorPrintPyramidDistances(std::ostream &amp;os,</span></div>
+<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;<span class="comment">//                                              const PipelineInputList &amp;expected,</span></div>
+<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;<span class="comment">//                                              const std::vector&lt;PipelineOutput&gt; &amp;actual) {</span></div>
+<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;<span class="comment">//     int index1 = Prompt&lt;int&gt;(&quot;Catalog name/index of first star&quot;);</span></div>
+<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;<span class="comment">//     int index2 = Prompt&lt;int&gt;(&quot;Catalog name/index of second star&quot;);</span></div>
+<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;<span class="comment">//     int index3 = Prompt&lt;int&gt;(&quot;Catalog name/index of third star&quot;);</span></div>
+<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;<span class="comment">//     int index4 = Prompt&lt;int&gt;(&quot;Catalog name/index of four star&quot;);</span></div>
+<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160; </div>
+<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;<span class="comment">//     const Camera &amp;camera = *expected[0]-&gt;InputCamera();</span></div>
+<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;<span class="comment">//     const Stars &amp;stars = *actual[0].stars;</span></div>
+<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160; </div>
+<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;<span class="comment">//     Vec3 spatial1 = camera.CameraToSpatial(stars[index1].position);</span></div>
+<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;<span class="comment">//     Vec3 spatial2 = camera.CameraToSpatial(stars[index2].position);</span></div>
+<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;<span class="comment">//     Vec3 spatial3 = camera.CameraToSpatial(stars[index3].position);</span></div>
+<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;<span class="comment">//     Vec3 spatial4 = camera.CameraToSpatial(stars[index4].position);</span></div>
+<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160; </div>
+<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_12 &quot; &lt;&lt; Angle(spatial1, spatial2) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_13 &quot; &lt;&lt; Angle(spatial1, spatial3) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_14 &quot; &lt;&lt; Angle(spatial1, spatial4) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_23 &quot; &lt;&lt; Angle(spatial2, spatial3) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_24 &quot; &lt;&lt; Angle(spatial2, spatial4) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_34 &quot; &lt;&lt; Angle(spatial3, spatial4) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160; </div>
+<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;<span class="comment">// void PipelineComparatorPrintTripleAngle(std::ostream &amp;os,</span></div>
+<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;<span class="comment">//                                         const PipelineInputList &amp;expected,</span></div>
+<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="comment">//                                         const std::vector&lt;PipelineOutput&gt; &amp;actual) {</span></div>
+<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;<span class="comment">//     int index1 = Prompt&lt;int&gt;(&quot;Index of first star&quot;);</span></div>
+<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;<span class="comment">//     int index2 = Prompt&lt;int&gt;(&quot;Index of second star&quot;);</span></div>
+<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;<span class="comment">//     int index3 = Prompt&lt;int&gt;(&quot;Index of third star&quot;);</span></div>
+<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160; </div>
+<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;<span class="comment">//     const Camera &amp;camera = *expected[0]-&gt;InputCamera();</span></div>
+<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;<span class="comment">//     const Stars &amp;stars = *actual[0].stars;</span></div>
+<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160; </div>
+<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;<span class="comment">//     assert(index1 &gt;= 0 &amp;&amp; index1 &lt; (int)stars.size());</span></div>
+<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;<span class="comment">//     assert(index2 &gt;= 0 &amp;&amp; index2 &lt; (int)stars.size());</span></div>
+<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;<span class="comment">//     assert(index3 &gt;= 0 &amp;&amp; index3 &lt; (int)stars.size());</span></div>
+<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160; </div>
+<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;<span class="comment">//     // TODO, when merging with nondimensional branch</span></div>
+<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160; </div>
+<div class="line"><a name="l01418"></a><span class="lineno"><a class="line" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc"> 1418</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">PipelineComparison</a>(<span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected,</div>
+<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;                        <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
+<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;                        <span class="keyword">const</span> <a class="code" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values) {</div>
+<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;    <span class="keywordflow">if</span> (actual.size() == 0) {</div>
+<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: No \&quot;comparator\&quot;/output action was specified. I.e., the star identification is all done, but you didn&#39;t specify how to return the results to you! Try --plot-output &lt;filepath&gt;, perhaps.&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;        exit(1);</div>
+<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;    }</div>
+<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160; </div>
+<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;    assert(expected.size() == actual.size() &amp;&amp; expected.size() &gt; 0);</div>
 <div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160; </div>
-<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;    assert(expected.size() == actual.size() &amp;&amp; expected.size() &gt; 0);</div>
+<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;    <span class="comment">// TODO: Remove the asserts and print out more reasonable error messages.</span></div>
 <div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160; </div>
-<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;    <span class="comment">// TODO: Remove the asserts and print out more reasonable error messages.</span></div>
-<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160; </div>
-<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;<span class="preprocessor">#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary) do { \</span></div>
-<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;<span class="preprocessor">        if (precondition) {                                             \</span></div>
-<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;<span class="preprocessor">            UserSpecifiedOutputStream pos(path, isBinary);              \</span></div>
-<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;<span class="preprocessor">            comparator(pos.Stream(), expected, actual, values);         \</span></div>
-<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;<span class="preprocessor">        } else {                                                        \</span></div>
-<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;<span class="preprocessor">            std::cerr &lt;&lt; &quot;ERROR: Comparator not applicable: &quot;</span> &lt;&lt; errmsg &lt;&lt; std::endl; \</div>
-<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;            exit(1);                                                    \</div>
-<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160;        }                                                               \</div>
-<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;    } while (0)</div>
-<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160; </div>
-<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;    <span class="keywordflow">if</span> (values.plotRawInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1,</div>
-<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;                              <span class="stringliteral">&quot;--plot-raw-input requires exactly 1 input image, but &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many were provided.&quot;</span>,</div>
-<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;                              PipelineComparatorPlotRawInput, values.plotRawInput, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;    }</div>
-<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160; </div>
-<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;    <span class="keywordflow">if</span> (values.plotInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1 &amp;&amp; expected[0]-&gt;InputStars(),</div>
-<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;                              <span class="stringliteral">&quot;--plot-input requires exactly 1 input image, and for centroids to be available on that input image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many input images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;                              PipelineComparatorPlotInput, values.plotInput, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;    }</div>
-<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;    <span class="keywordflow">if</span> (values.plotOutput != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual.size() == 1 &amp;&amp; (actual[0].stars || actual[0].starIds),</div>
-<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;                              <span class="stringliteral">&quot;--plot-output requires exactly 1 output image, and for either centroids or star IDs to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;                              PipelineComparatorPlotOutput, values.plotOutput, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;    }</div>
-<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;    <span class="keywordflow">if</span> (values.printExpectedCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected.size() == 1 &amp;&amp; expected[0]-&gt;ExpectedStars(),</div>
-<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;                              <span class="stringliteral">&quot;--print-expected-centroids requires exactly 1 input image, and for expected centroids to be available on that input image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many input images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;                              PipelineComparatorPrintExpectedCentroids, values.printExpectedCentroids, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160;    }</div>
-<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;    <span class="keywordflow">if</span> (values.printActualCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual.size() == 1 &amp;&amp; actual[0].stars,</div>
-<div class="line"><a name="l01465"></a><span class="lineno"> 1465</span>&#160;                              <span class="stringliteral">&quot;--print-actual-centroids requires exactly 1 output image, and for centroids to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160;                              PipelineComparatorPrintActualCentroids, values.printActualCentroids, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;    }</div>
-<div class="line"><a name="l01468"></a><span class="lineno"> 1468</span>&#160;    <span class="keywordflow">if</span> (values.plotCentroidIndices != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected.size() == 1 &amp;&amp; expected[0]-&gt;InputImage(),</div>
-<div class="line"><a name="l01470"></a><span class="lineno"> 1470</span>&#160;                              <span class="stringliteral">&quot;--plot-centroid-indices requires exactly 1 input with image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many inputs were provided.&quot;</span>,</div>
-<div class="line"><a name="l01471"></a><span class="lineno"> 1471</span>&#160;                              <a class="code" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">PipelineComparatorPlotCentroidIndices</a>, values.plotCentroidIndices, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;    }</div>
-<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;    <span class="keywordflow">if</span> (values.compareCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01474"></a><span class="lineno"> 1474</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].stars &amp;&amp; expected[0]-&gt;ExpectedStars() &amp;&amp; values.centroidCompareThreshold,</div>
-<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;                              <span class="stringliteral">&quot;--compare-centroids requires at least 1 output image, and for expected centroids to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;                              PipelineComparatorCentroids, values.compareCentroids, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160;    }</div>
-<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160;    <span class="keywordflow">if</span> (values.compareStarIds != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;ExpectedStarIds() &amp;&amp; actual[0].starIds,</div>
-<div class="line"><a name="l01480"></a><span class="lineno"> 1480</span>&#160;                              <span class="stringliteral">&quot;--compare-star-ids requires at least 1 output image, and for expected star IDs to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01481"></a><span class="lineno"> 1481</span>&#160;                              PipelineComparatorStarIds, values.compareStarIds, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01482"></a><span class="lineno"> 1482</span>&#160;    }</div>
-<div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;    <span class="keywordflow">if</span> (values.printAttitude != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].attitude &amp;&amp; actual.size() == 1,</div>
-<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;                              <span class="stringliteral">&quot;--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01486"></a><span class="lineno"> 1486</span>&#160;                              PipelineComparatorPrintAttitude, values.printAttitude, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01487"></a><span class="lineno"> 1487</span>&#160;    }</div>
-<div class="line"><a name="l01488"></a><span class="lineno"> 1488</span>&#160;    <span class="keywordflow">if</span> (values.compareAttitudes != <span class="stringliteral">&quot;&quot;</span>) {</div>
-<div class="line"><a name="l01489"></a><span class="lineno"> 1489</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].attitude &amp;&amp; expected[0]-&gt;ExpectedAttitude() &amp;&amp; values.attitudeCompareThreshold,</div>
-<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;                              <span class="stringliteral">&quot;--compare-attitudes requires at least 1 output image, and for expected attitude to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
-<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160;                              PipelineComparatorAttitude, values.compareAttitudes, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l01492"></a><span class="lineno"> 1492</span>&#160;    }</div>
-<div class="line"><a name="l01493"></a><span class="lineno"> 1493</span>&#160; </div>
-<div class="line"><a name="l01494"></a><span class="lineno"> 1494</span>&#160;<span class="preprocessor">#undef LOST_PIPELINE_COMPARE</span></div>
-<div class="line"><a name="l01495"></a><span class="lineno"> 1495</span>&#160;}</div>
+<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;<span class="preprocessor">#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary) do { \</span></div>
+<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;<span class="preprocessor">        if (precondition) {                                             \</span></div>
+<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;<span class="preprocessor">            UserSpecifiedOutputStream pos(path, isBinary);              \</span></div>
+<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;<span class="preprocessor">            comparator(pos.Stream(), expected, actual, values);         \</span></div>
+<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;<span class="preprocessor">        } else {                                                        \</span></div>
+<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;<span class="preprocessor">            std::cerr &lt;&lt; &quot;ERROR: Comparator not applicable: &quot;</span> &lt;&lt; errmsg &lt;&lt; std::endl; \</div>
+<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;            exit(1);                                                    \</div>
+<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;        }                                                               \</div>
+<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;    } while (0)</div>
+<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160; </div>
+<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;    <span class="keywordflow">if</span> (values.plotRawInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1,</div>
+<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;                              <span class="stringliteral">&quot;--plot-raw-input requires exactly 1 input image, but &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many were provided.&quot;</span>,</div>
+<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;                              PipelineComparatorPlotRawInput, values.plotRawInput, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;    }</div>
+<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160; </div>
+<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;    <span class="keywordflow">if</span> (values.plotInput != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;InputImage() &amp;&amp; expected.size() == 1 &amp;&amp; expected[0]-&gt;InputStars(),</div>
+<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;                              <span class="stringliteral">&quot;--plot-input requires exactly 1 input image, and for centroids to be available on that input image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many input images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;                              PipelineComparatorPlotInput, values.plotInput, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;    }</div>
+<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;    <span class="keywordflow">if</span> (values.plotOutput != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual.size() == 1 &amp;&amp; (actual[0].stars || actual[0].starIds),</div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;                              <span class="stringliteral">&quot;--plot-output requires exactly 1 output image, and for either centroids or star IDs to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;                              PipelineComparatorPlotOutput, values.plotOutput, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;    }</div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;    <span class="keywordflow">if</span> (values.printExpectedCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected.size() == 1 &amp;&amp; expected[0]-&gt;ExpectedStars(),</div>
+<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;                              <span class="stringliteral">&quot;--print-expected-centroids requires exactly 1 input image, and for expected centroids to be available on that input image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many input images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;                              PipelineComparatorPrintExpectedCentroids, values.printExpectedCentroids, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;    }</div>
+<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;    <span class="keywordflow">if</span> (values.printActualCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual.size() == 1 &amp;&amp; actual[0].stars,</div>
+<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;                              <span class="stringliteral">&quot;--print-actual-centroids requires exactly 1 output image, and for centroids to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;                              PipelineComparatorPrintActualCentroids, values.printActualCentroids, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01465"></a><span class="lineno"> 1465</span>&#160;    }</div>
+<div class="line"><a name="l01466"></a><span class="lineno"> 1466</span>&#160;    <span class="keywordflow">if</span> (values.plotCentroidIndices != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01467"></a><span class="lineno"> 1467</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected.size() == 1 &amp;&amp; expected[0]-&gt;InputImage(),</div>
+<div class="line"><a name="l01468"></a><span class="lineno"> 1468</span>&#160;                              <span class="stringliteral">&quot;--plot-centroid-indices requires exactly 1 input with image. &quot;</span> + std::to_string(expected.size()) + <span class="stringliteral">&quot; many inputs were provided.&quot;</span>,</div>
+<div class="line"><a name="l01469"></a><span class="lineno"> 1469</span>&#160;                              <a class="code" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">PipelineComparatorPlotCentroidIndices</a>, values.plotCentroidIndices, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l01470"></a><span class="lineno"> 1470</span>&#160;    }</div>
+<div class="line"><a name="l01471"></a><span class="lineno"> 1471</span>&#160;    <span class="keywordflow">if</span> (values.compareCentroids != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01472"></a><span class="lineno"> 1472</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].stars &amp;&amp; expected[0]-&gt;ExpectedStars() &amp;&amp; values.centroidCompareThreshold,</div>
+<div class="line"><a name="l01473"></a><span class="lineno"> 1473</span>&#160;                              <span class="stringliteral">&quot;--compare-centroids requires at least 1 output image, and for expected centroids to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01474"></a><span class="lineno"> 1474</span>&#160;                              PipelineComparatorCentroids, values.compareCentroids, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01475"></a><span class="lineno"> 1475</span>&#160;    }</div>
+<div class="line"><a name="l01476"></a><span class="lineno"> 1476</span>&#160;    <span class="keywordflow">if</span> (values.compareStarIds != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01477"></a><span class="lineno"> 1477</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(expected[0]-&gt;ExpectedStarIds() &amp;&amp; actual[0].starIds,</div>
+<div class="line"><a name="l01478"></a><span class="lineno"> 1478</span>&#160;                              <span class="stringliteral">&quot;--compare-star-ids requires at least 1 output image, and for expected star IDs to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01479"></a><span class="lineno"> 1479</span>&#160;                              PipelineComparatorStarIds, values.compareStarIds, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01480"></a><span class="lineno"> 1480</span>&#160;    }</div>
+<div class="line"><a name="l01481"></a><span class="lineno"> 1481</span>&#160;    <span class="keywordflow">if</span> (values.printAttitude != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01482"></a><span class="lineno"> 1482</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].attitude &amp;&amp; actual.size() == 1,</div>
+<div class="line"><a name="l01483"></a><span class="lineno"> 1483</span>&#160;                              <span class="stringliteral">&quot;--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01484"></a><span class="lineno"> 1484</span>&#160;                              PipelineComparatorPrintAttitude, values.printAttitude, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01485"></a><span class="lineno"> 1485</span>&#160;    }</div>
+<div class="line"><a name="l01486"></a><span class="lineno"> 1486</span>&#160;    <span class="keywordflow">if</span> (values.compareAttitudes != <span class="stringliteral">&quot;&quot;</span>) {</div>
+<div class="line"><a name="l01487"></a><span class="lineno"> 1487</span>&#160;        <a class="code" href="io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442">LOST_PIPELINE_COMPARE</a>(actual[0].attitude &amp;&amp; expected[0]-&gt;ExpectedAttitude() &amp;&amp; values.attitudeCompareThreshold,</div>
+<div class="line"><a name="l01488"></a><span class="lineno"> 1488</span>&#160;                              <span class="stringliteral">&quot;--compare-attitudes requires at least 1 output image, and for expected attitude to be available on the input image. &quot;</span> + std::to_string(actual.size()) + <span class="stringliteral">&quot; many output images were provided.&quot;</span>,</div>
+<div class="line"><a name="l01489"></a><span class="lineno"> 1489</span>&#160;                              PipelineComparatorAttitude, values.compareAttitudes, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l01490"></a><span class="lineno"> 1490</span>&#160;    }</div>
+<div class="line"><a name="l01491"></a><span class="lineno"> 1491</span>&#160; </div>
+<div class="line"><a name="l01492"></a><span class="lineno"> 1492</span>&#160;<span class="preprocessor">#undef LOST_PIPELINE_COMPARE</span></div>
+<div class="line"><a name="l01493"></a><span class="lineno"> 1493</span>&#160;}</div>
+<div class="line"><a name="l01494"></a><span class="lineno"> 1494</span>&#160; </div>
+<div class="line"><a name="l01495"></a><span class="lineno"> 1495</span>&#160;<span class="comment">// TODO: Add CLI options for all the inspectors!</span></div>
 <div class="line"><a name="l01496"></a><span class="lineno"> 1496</span>&#160; </div>
-<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;<span class="comment">// TODO: Add CLI options for all the inspectors!</span></div>
+<div class="line"><a name="l01497"></a><span class="lineno"> 1497</span>&#160;<span class="comment">// typedef void (*CatalogInspector)(const Catalog &amp;);</span></div>
 <div class="line"><a name="l01498"></a><span class="lineno"> 1498</span>&#160; </div>
-<div class="line"><a name="l01499"></a><span class="lineno"> 1499</span>&#160;<span class="comment">// typedef void (*CatalogInspector)(const Catalog &amp;);</span></div>
-<div class="line"><a name="l01500"></a><span class="lineno"> 1500</span>&#160; </div>
-<div class="line"><a name="l01501"></a><span class="lineno"> 1501</span>&#160;<span class="comment">// static std::vector&lt;const CatalogStar *&gt; PromptCatalogStars(const Catalog &amp;catalog, int howMany) {</span></div>
-<div class="line"><a name="l01502"></a><span class="lineno"> 1502</span>&#160;<span class="comment">//     std::vector&lt;const CatalogStar *&gt; result;</span></div>
-<div class="line"><a name="l01503"></a><span class="lineno"> 1503</span>&#160;<span class="comment">//     for (int i = 0; i &lt; howMany; i++) {</span></div>
-<div class="line"><a name="l01504"></a><span class="lineno"> 1504</span>&#160;<span class="comment">//         int name = Prompt&lt;int&gt;(&quot;Catalog name of &quot; + std::to_string(i) + &quot;-th star&quot;);</span></div>
-<div class="line"><a name="l01505"></a><span class="lineno"> 1505</span>&#160;<span class="comment">//         const CatalogStar *star = findNamedStar(catalog, name);</span></div>
-<div class="line"><a name="l01506"></a><span class="lineno"> 1506</span>&#160;<span class="comment">//         if (star == NULL) {</span></div>
-<div class="line"><a name="l01507"></a><span class="lineno"> 1507</span>&#160;<span class="comment">//             std::cerr &lt;&lt; &quot;Star not found!&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01508"></a><span class="lineno"> 1508</span>&#160;<span class="comment">//             exit(1);</span></div>
-<div class="line"><a name="l01509"></a><span class="lineno"> 1509</span>&#160;<span class="comment">//         }</span></div>
-<div class="line"><a name="l01510"></a><span class="lineno"> 1510</span>&#160;<span class="comment">//         result.push_back(star);</span></div>
-<div class="line"><a name="l01511"></a><span class="lineno"> 1511</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01512"></a><span class="lineno"> 1512</span>&#160;<span class="comment">//     return result;</span></div>
-<div class="line"><a name="l01513"></a><span class="lineno"> 1513</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01514"></a><span class="lineno"> 1514</span>&#160; </div>
-<div class="line"><a name="l01515"></a><span class="lineno"> 1515</span>&#160;<span class="comment">// void InspectPairDistance(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01516"></a><span class="lineno"> 1516</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 2);</span></div>
-<div class="line"><a name="l01517"></a><span class="lineno"> 1517</span>&#160; </div>
-<div class="line"><a name="l01518"></a><span class="lineno"> 1518</span>&#160;<span class="comment">//     // TODO: not cout, prompt for an ostream in inspect and pass argument</span></div>
-<div class="line"><a name="l01519"></a><span class="lineno"> 1519</span>&#160;<span class="comment">//     std::cout &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01520"></a><span class="lineno"> 1520</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01521"></a><span class="lineno"> 1521</span>&#160; </div>
-<div class="line"><a name="l01522"></a><span class="lineno"> 1522</span>&#160;<span class="comment">// void InspectPyramidDistances(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01523"></a><span class="lineno"> 1523</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 4);</span></div>
-<div class="line"><a name="l01524"></a><span class="lineno"> 1524</span>&#160; </div>
-<div class="line"><a name="l01525"></a><span class="lineno"> 1525</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_01 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01526"></a><span class="lineno"> 1526</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_02 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01527"></a><span class="lineno"> 1527</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_03 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01528"></a><span class="lineno"> 1528</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_12 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01529"></a><span class="lineno"> 1529</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_13 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01530"></a><span class="lineno"> 1530</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_23 &quot; &lt;&lt; Angle(stars[2]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01531"></a><span class="lineno"> 1531</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01532"></a><span class="lineno"> 1532</span>&#160; </div>
-<div class="line"><a name="l01533"></a><span class="lineno"> 1533</span>&#160;<span class="comment">// void InspectTripleAngle(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01534"></a><span class="lineno"> 1534</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 3);</span></div>
-<div class="line"><a name="l01535"></a><span class="lineno"> 1535</span>&#160; </div>
-<div class="line"><a name="l01536"></a><span class="lineno"> 1536</span>&#160;<span class="comment">//     // TODO</span></div>
-<div class="line"><a name="l01537"></a><span class="lineno"> 1537</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01538"></a><span class="lineno"> 1538</span>&#160; </div>
-<div class="line"><a name="l01539"></a><span class="lineno"> 1539</span>&#160;<span class="comment">// void InspectFindStar(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01540"></a><span class="lineno"> 1540</span>&#160;<span class="comment">//     std::string raStr = PromptLine(&quot;Right Ascension&quot;);</span></div>
+<div class="line"><a name="l01499"></a><span class="lineno"> 1499</span>&#160;<span class="comment">// static std::vector&lt;const CatalogStar *&gt; PromptCatalogStars(const Catalog &amp;catalog, int howMany) {</span></div>
+<div class="line"><a name="l01500"></a><span class="lineno"> 1500</span>&#160;<span class="comment">//     std::vector&lt;const CatalogStar *&gt; result;</span></div>
+<div class="line"><a name="l01501"></a><span class="lineno"> 1501</span>&#160;<span class="comment">//     for (int i = 0; i &lt; howMany; i++) {</span></div>
+<div class="line"><a name="l01502"></a><span class="lineno"> 1502</span>&#160;<span class="comment">//         int name = Prompt&lt;int&gt;(&quot;Catalog name of &quot; + std::to_string(i) + &quot;-th star&quot;);</span></div>
+<div class="line"><a name="l01503"></a><span class="lineno"> 1503</span>&#160;<span class="comment">//         const CatalogStar *star = findNamedStar(catalog, name);</span></div>
+<div class="line"><a name="l01504"></a><span class="lineno"> 1504</span>&#160;<span class="comment">//         if (star == NULL) {</span></div>
+<div class="line"><a name="l01505"></a><span class="lineno"> 1505</span>&#160;<span class="comment">//             std::cerr &lt;&lt; &quot;Star not found!&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01506"></a><span class="lineno"> 1506</span>&#160;<span class="comment">//             exit(1);</span></div>
+<div class="line"><a name="l01507"></a><span class="lineno"> 1507</span>&#160;<span class="comment">//         }</span></div>
+<div class="line"><a name="l01508"></a><span class="lineno"> 1508</span>&#160;<span class="comment">//         result.push_back(star);</span></div>
+<div class="line"><a name="l01509"></a><span class="lineno"> 1509</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01510"></a><span class="lineno"> 1510</span>&#160;<span class="comment">//     return result;</span></div>
+<div class="line"><a name="l01511"></a><span class="lineno"> 1511</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01512"></a><span class="lineno"> 1512</span>&#160; </div>
+<div class="line"><a name="l01513"></a><span class="lineno"> 1513</span>&#160;<span class="comment">// void InspectPairDistance(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01514"></a><span class="lineno"> 1514</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 2);</span></div>
+<div class="line"><a name="l01515"></a><span class="lineno"> 1515</span>&#160; </div>
+<div class="line"><a name="l01516"></a><span class="lineno"> 1516</span>&#160;<span class="comment">//     // TODO: not cout, prompt for an ostream in inspect and pass argument</span></div>
+<div class="line"><a name="l01517"></a><span class="lineno"> 1517</span>&#160;<span class="comment">//     std::cout &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01518"></a><span class="lineno"> 1518</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01519"></a><span class="lineno"> 1519</span>&#160; </div>
+<div class="line"><a name="l01520"></a><span class="lineno"> 1520</span>&#160;<span class="comment">// void InspectPyramidDistances(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01521"></a><span class="lineno"> 1521</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 4);</span></div>
+<div class="line"><a name="l01522"></a><span class="lineno"> 1522</span>&#160; </div>
+<div class="line"><a name="l01523"></a><span class="lineno"> 1523</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_01 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[1]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01524"></a><span class="lineno"> 1524</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_02 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01525"></a><span class="lineno"> 1525</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_03 &quot; &lt;&lt; Angle(stars[0]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01526"></a><span class="lineno"> 1526</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_12 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[2]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01527"></a><span class="lineno"> 1527</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_13 &quot; &lt;&lt; Angle(stars[1]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01528"></a><span class="lineno"> 1528</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;pair_distance_23 &quot; &lt;&lt; Angle(stars[2]-&gt;spatial, stars[3]-&gt;spatial) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01529"></a><span class="lineno"> 1529</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01530"></a><span class="lineno"> 1530</span>&#160; </div>
+<div class="line"><a name="l01531"></a><span class="lineno"> 1531</span>&#160;<span class="comment">// void InspectTripleAngle(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01532"></a><span class="lineno"> 1532</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 3);</span></div>
+<div class="line"><a name="l01533"></a><span class="lineno"> 1533</span>&#160; </div>
+<div class="line"><a name="l01534"></a><span class="lineno"> 1534</span>&#160;<span class="comment">//     // TODO</span></div>
+<div class="line"><a name="l01535"></a><span class="lineno"> 1535</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01536"></a><span class="lineno"> 1536</span>&#160; </div>
+<div class="line"><a name="l01537"></a><span class="lineno"> 1537</span>&#160;<span class="comment">// void InspectFindStar(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01538"></a><span class="lineno"> 1538</span>&#160;<span class="comment">//     std::string raStr = PromptLine(&quot;Right Ascension&quot;);</span></div>
+<div class="line"><a name="l01539"></a><span class="lineno"> 1539</span>&#160; </div>
+<div class="line"><a name="l01540"></a><span class="lineno"> 1540</span>&#160;<span class="comment">//     float raRadians;</span></div>
 <div class="line"><a name="l01541"></a><span class="lineno"> 1541</span>&#160; </div>
-<div class="line"><a name="l01542"></a><span class="lineno"> 1542</span>&#160;<span class="comment">//     float raRadians;</span></div>
-<div class="line"><a name="l01543"></a><span class="lineno"> 1543</span>&#160; </div>
-<div class="line"><a name="l01544"></a><span class="lineno"> 1544</span>&#160;<span class="comment">//     int raHours, raMinutes;</span></div>
-<div class="line"><a name="l01545"></a><span class="lineno"> 1545</span>&#160;<span class="comment">//     float raSeconds;</span></div>
-<div class="line"><a name="l01546"></a><span class="lineno"> 1546</span>&#160;<span class="comment">//     int raFormatTime = sscanf(raStr.c_str(), &quot;%dh %dm %fs&quot;, &amp;raHours, &amp;raMinutes, &amp;raSeconds);</span></div>
-<div class="line"><a name="l01547"></a><span class="lineno"> 1547</span>&#160; </div>
-<div class="line"><a name="l01548"></a><span class="lineno"> 1548</span>&#160;<span class="comment">//     float raDeg;</span></div>
-<div class="line"><a name="l01549"></a><span class="lineno"> 1549</span>&#160;<span class="comment">//     int raFormatDeg = sscanf(raStr.c_str(), &quot;%f&quot;, &amp;raDeg);</span></div>
-<div class="line"><a name="l01550"></a><span class="lineno"> 1550</span>&#160; </div>
-<div class="line"><a name="l01551"></a><span class="lineno"> 1551</span>&#160;<span class="comment">//     if (raFormatTime == 3) {</span></div>
-<div class="line"><a name="l01552"></a><span class="lineno"> 1552</span>&#160;<span class="comment">//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);</span></div>
-<div class="line"><a name="l01553"></a><span class="lineno"> 1553</span>&#160;<span class="comment">//     } else if (raFormatDeg == 1) {</span></div>
-<div class="line"><a name="l01554"></a><span class="lineno"> 1554</span>&#160;<span class="comment">//         raRadians = DegToRad(raFormatDeg);</span></div>
-<div class="line"><a name="l01555"></a><span class="lineno"> 1555</span>&#160;<span class="comment">//     } else {</span></div>
-<div class="line"><a name="l01556"></a><span class="lineno"> 1556</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid right ascension format. Do \&quot;09h 38m 29.8754s\&quot; or a number of degrees.&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01557"></a><span class="lineno"> 1557</span>&#160;<span class="comment">//         exit(1);</span></div>
-<div class="line"><a name="l01558"></a><span class="lineno"> 1558</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01542"></a><span class="lineno"> 1542</span>&#160;<span class="comment">//     int raHours, raMinutes;</span></div>
+<div class="line"><a name="l01543"></a><span class="lineno"> 1543</span>&#160;<span class="comment">//     float raSeconds;</span></div>
+<div class="line"><a name="l01544"></a><span class="lineno"> 1544</span>&#160;<span class="comment">//     int raFormatTime = sscanf(raStr.c_str(), &quot;%dh %dm %fs&quot;, &amp;raHours, &amp;raMinutes, &amp;raSeconds);</span></div>
+<div class="line"><a name="l01545"></a><span class="lineno"> 1545</span>&#160; </div>
+<div class="line"><a name="l01546"></a><span class="lineno"> 1546</span>&#160;<span class="comment">//     float raDeg;</span></div>
+<div class="line"><a name="l01547"></a><span class="lineno"> 1547</span>&#160;<span class="comment">//     int raFormatDeg = sscanf(raStr.c_str(), &quot;%f&quot;, &amp;raDeg);</span></div>
+<div class="line"><a name="l01548"></a><span class="lineno"> 1548</span>&#160; </div>
+<div class="line"><a name="l01549"></a><span class="lineno"> 1549</span>&#160;<span class="comment">//     if (raFormatTime == 3) {</span></div>
+<div class="line"><a name="l01550"></a><span class="lineno"> 1550</span>&#160;<span class="comment">//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);</span></div>
+<div class="line"><a name="l01551"></a><span class="lineno"> 1551</span>&#160;<span class="comment">//     } else if (raFormatDeg == 1) {</span></div>
+<div class="line"><a name="l01552"></a><span class="lineno"> 1552</span>&#160;<span class="comment">//         raRadians = DegToRad(raFormatDeg);</span></div>
+<div class="line"><a name="l01553"></a><span class="lineno"> 1553</span>&#160;<span class="comment">//     } else {</span></div>
+<div class="line"><a name="l01554"></a><span class="lineno"> 1554</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid right ascension format. Do \&quot;09h 38m 29.8754s\&quot; or a number of degrees.&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01555"></a><span class="lineno"> 1555</span>&#160;<span class="comment">//         exit(1);</span></div>
+<div class="line"><a name="l01556"></a><span class="lineno"> 1556</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01557"></a><span class="lineno"> 1557</span>&#160; </div>
+<div class="line"><a name="l01558"></a><span class="lineno"> 1558</span>&#160;<span class="comment">//     std::string deStr = PromptLine(&quot;Declination&quot;);</span></div>
 <div class="line"><a name="l01559"></a><span class="lineno"> 1559</span>&#160; </div>
-<div class="line"><a name="l01560"></a><span class="lineno"> 1560</span>&#160;<span class="comment">//     std::string deStr = PromptLine(&quot;Declination&quot;);</span></div>
+<div class="line"><a name="l01560"></a><span class="lineno"> 1560</span>&#160;<span class="comment">//     float deRadians;</span></div>
 <div class="line"><a name="l01561"></a><span class="lineno"> 1561</span>&#160; </div>
-<div class="line"><a name="l01562"></a><span class="lineno"> 1562</span>&#160;<span class="comment">//     float deRadians;</span></div>
-<div class="line"><a name="l01563"></a><span class="lineno"> 1563</span>&#160; </div>
-<div class="line"><a name="l01564"></a><span class="lineno"> 1564</span>&#160;<span class="comment">//     int deDegPart, deMinPart;</span></div>
-<div class="line"><a name="l01565"></a><span class="lineno"> 1565</span>&#160;<span class="comment">//     float deSecPart;</span></div>
-<div class="line"><a name="l01566"></a><span class="lineno"> 1566</span>&#160;<span class="comment">//     char dummy[8];</span></div>
-<div class="line"><a name="l01567"></a><span class="lineno"> 1567</span>&#160;<span class="comment">//     int deFormatParts = sscanf(deStr.c_str(), &quot;%d%s %d%s %f%s&quot;, &amp;deDegPart, dummy, &amp;deMinPart, dummy, &amp;deSecPart, dummy);</span></div>
-<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160; </div>
-<div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160;<span class="comment">//     float deDeg;</span></div>
-<div class="line"><a name="l01570"></a><span class="lineno"> 1570</span>&#160;<span class="comment">//     int deFormatDeg = sscanf(deStr.c_str(), &quot;%f&quot;, &amp;deDeg);</span></div>
-<div class="line"><a name="l01571"></a><span class="lineno"> 1571</span>&#160; </div>
-<div class="line"><a name="l01572"></a><span class="lineno"> 1572</span>&#160;<span class="comment">//     if (deFormatParts == 6) {</span></div>
-<div class="line"><a name="l01573"></a><span class="lineno"> 1573</span>&#160;<span class="comment">//         deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);</span></div>
-<div class="line"><a name="l01574"></a><span class="lineno"> 1574</span>&#160;<span class="comment">//     } else if (deFormatDeg == 1) {</span></div>
-<div class="line"><a name="l01575"></a><span class="lineno"> 1575</span>&#160;<span class="comment">//         deRadians = DegToRad(deFormatDeg);</span></div>
-<div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;<span class="comment">//     } else {</span></div>
-<div class="line"><a name="l01577"></a><span class="lineno"> 1577</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid declination format.&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01578"></a><span class="lineno"> 1578</span>&#160;<span class="comment">//         exit(1);</span></div>
-<div class="line"><a name="l01579"></a><span class="lineno"> 1579</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01562"></a><span class="lineno"> 1562</span>&#160;<span class="comment">//     int deDegPart, deMinPart;</span></div>
+<div class="line"><a name="l01563"></a><span class="lineno"> 1563</span>&#160;<span class="comment">//     float deSecPart;</span></div>
+<div class="line"><a name="l01564"></a><span class="lineno"> 1564</span>&#160;<span class="comment">//     char dummy[8];</span></div>
+<div class="line"><a name="l01565"></a><span class="lineno"> 1565</span>&#160;<span class="comment">//     int deFormatParts = sscanf(deStr.c_str(), &quot;%d%s %d%s %f%s&quot;, &amp;deDegPart, dummy, &amp;deMinPart, dummy, &amp;deSecPart, dummy);</span></div>
+<div class="line"><a name="l01566"></a><span class="lineno"> 1566</span>&#160; </div>
+<div class="line"><a name="l01567"></a><span class="lineno"> 1567</span>&#160;<span class="comment">//     float deDeg;</span></div>
+<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160;<span class="comment">//     int deFormatDeg = sscanf(deStr.c_str(), &quot;%f&quot;, &amp;deDeg);</span></div>
+<div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160; </div>
+<div class="line"><a name="l01570"></a><span class="lineno"> 1570</span>&#160;<span class="comment">//     if (deFormatParts == 6) {</span></div>
+<div class="line"><a name="l01571"></a><span class="lineno"> 1571</span>&#160;<span class="comment">//         deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);</span></div>
+<div class="line"><a name="l01572"></a><span class="lineno"> 1572</span>&#160;<span class="comment">//     } else if (deFormatDeg == 1) {</span></div>
+<div class="line"><a name="l01573"></a><span class="lineno"> 1573</span>&#160;<span class="comment">//         deRadians = DegToRad(deFormatDeg);</span></div>
+<div class="line"><a name="l01574"></a><span class="lineno"> 1574</span>&#160;<span class="comment">//     } else {</span></div>
+<div class="line"><a name="l01575"></a><span class="lineno"> 1575</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;Invalid declination format.&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;<span class="comment">//         exit(1);</span></div>
+<div class="line"><a name="l01577"></a><span class="lineno"> 1577</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01578"></a><span class="lineno"> 1578</span>&#160; </div>
+<div class="line"><a name="l01579"></a><span class="lineno"> 1579</span>&#160;<span class="comment">//     // find the star</span></div>
 <div class="line"><a name="l01580"></a><span class="lineno"> 1580</span>&#160; </div>
-<div class="line"><a name="l01581"></a><span class="lineno"> 1581</span>&#160;<span class="comment">//     // find the star</span></div>
-<div class="line"><a name="l01582"></a><span class="lineno"> 1582</span>&#160; </div>
-<div class="line"><a name="l01583"></a><span class="lineno"> 1583</span>&#160;<span class="comment">//     float tolerance = 0.001;</span></div>
-<div class="line"><a name="l01584"></a><span class="lineno"> 1584</span>&#160;<span class="comment">//     Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);</span></div>
-<div class="line"><a name="l01585"></a><span class="lineno"> 1585</span>&#160;<span class="comment">//     int i = 0;</span></div>
-<div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;<span class="comment">//     for (const CatalogStar &amp;curStar : catalog) {</span></div>
-<div class="line"><a name="l01587"></a><span class="lineno"> 1587</span>&#160;<span class="comment">//         if ((curStar.spatial - userSpatial).Magnitude() &lt; tolerance) {</span></div>
-<div class="line"><a name="l01588"></a><span class="lineno"> 1588</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;found_star_&quot; &lt;&lt; i &lt;&lt; &quot; &quot;  &lt;&lt; curStar.name &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01589"></a><span class="lineno"> 1589</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;fonud_star_magnitude_&quot; &lt;&lt; i &lt;&lt; &quot; &quot; &lt;&lt; curStar.magnitude &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01590"></a><span class="lineno"> 1590</span>&#160;<span class="comment">//             i++;</span></div>
-<div class="line"><a name="l01591"></a><span class="lineno"> 1591</span>&#160;<span class="comment">//         }</span></div>
-<div class="line"><a name="l01592"></a><span class="lineno"> 1592</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01593"></a><span class="lineno"> 1593</span>&#160;<span class="comment">//     if (i == 0) {</span></div>
-<div class="line"><a name="l01594"></a><span class="lineno"> 1594</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;No stars found&quot; &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01595"></a><span class="lineno"> 1595</span>&#160;<span class="comment">//     }</span></div>
-<div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01597"></a><span class="lineno"> 1597</span>&#160; </div>
-<div class="line"><a name="l01598"></a><span class="lineno"> 1598</span>&#160;<span class="comment">// void InspectPrintStar(const Catalog &amp;catalog) {</span></div>
-<div class="line"><a name="l01599"></a><span class="lineno"> 1599</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 1);</span></div>
-<div class="line"><a name="l01600"></a><span class="lineno"> 1600</span>&#160;<span class="comment">//     float ra, de;</span></div>
-<div class="line"><a name="l01601"></a><span class="lineno"> 1601</span>&#160;<span class="comment">//     SpatialToSpherical(stars[0]-&gt;spatial, &amp;ra, &amp;de);</span></div>
-<div class="line"><a name="l01602"></a><span class="lineno"> 1602</span>&#160; </div>
-<div class="line"><a name="l01603"></a><span class="lineno"> 1603</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_ra &quot; &lt;&lt; RadToDeg(ra) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01604"></a><span class="lineno"> 1604</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_de &quot; &lt;&lt; RadToDeg(de) &lt;&lt; std::endl;</span></div>
-<div class="line"><a name="l01605"></a><span class="lineno"> 1605</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01606"></a><span class="lineno"> 1606</span>&#160; </div>
-<div class="line"><a name="l01607"></a><span class="lineno"> 1607</span>&#160;<span class="comment">// void InspectCatalog() {</span></div>
-<div class="line"><a name="l01608"></a><span class="lineno"> 1608</span>&#160;<span class="comment">//     InteractiveChoice&lt;CatalogInspector&gt; inspectorChoice;</span></div>
-<div class="line"><a name="l01609"></a><span class="lineno"> 1609</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pair_distance&quot;, &quot;pair distance angle&quot;, InspectPairDistance);</span></div>
-<div class="line"><a name="l01610"></a><span class="lineno"> 1610</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pyramid_distances&quot;, &quot;all pair distances in pyramid&quot;, InspectPyramidDistances);</span></div>
-<div class="line"><a name="l01611"></a><span class="lineno"> 1611</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;triple_angle&quot;, &quot;inner angle of a triangle&quot;, InspectTripleAngle);</span></div>
-<div class="line"><a name="l01612"></a><span class="lineno"> 1612</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;find_star&quot;, &quot;find a star name based on ra/de&quot;, InspectFindStar);</span></div>
-<div class="line"><a name="l01613"></a><span class="lineno"> 1613</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;print_star&quot;, &quot;print coordinates of a star&quot;, InspectPrintStar);</span></div>
-<div class="line"><a name="l01614"></a><span class="lineno"> 1614</span>&#160;<span class="comment">//     (*inspectorChoice.Prompt(&quot;Inspect the catalog&quot;))(CatalogRead());</span></div>
-<div class="line"><a name="l01615"></a><span class="lineno"> 1615</span>&#160;<span class="comment">// }</span></div>
-<div class="line"><a name="l01616"></a><span class="lineno"> 1616</span>&#160; </div>
-<div class="line"><a name="l01617"></a><span class="lineno"> 1617</span>&#160;} <span class="comment">// namespace lost</span></div>
+<div class="line"><a name="l01581"></a><span class="lineno"> 1581</span>&#160;<span class="comment">//     float tolerance = 0.001;</span></div>
+<div class="line"><a name="l01582"></a><span class="lineno"> 1582</span>&#160;<span class="comment">//     Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);</span></div>
+<div class="line"><a name="l01583"></a><span class="lineno"> 1583</span>&#160;<span class="comment">//     int i = 0;</span></div>
+<div class="line"><a name="l01584"></a><span class="lineno"> 1584</span>&#160;<span class="comment">//     for (const CatalogStar &amp;curStar : catalog) {</span></div>
+<div class="line"><a name="l01585"></a><span class="lineno"> 1585</span>&#160;<span class="comment">//         if ((curStar.spatial - userSpatial).Magnitude() &lt; tolerance) {</span></div>
+<div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;found_star_&quot; &lt;&lt; i &lt;&lt; &quot; &quot;  &lt;&lt; curStar.name &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01587"></a><span class="lineno"> 1587</span>&#160;<span class="comment">//             std::cout &lt;&lt; &quot;fonud_star_magnitude_&quot; &lt;&lt; i &lt;&lt; &quot; &quot; &lt;&lt; curStar.magnitude &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01588"></a><span class="lineno"> 1588</span>&#160;<span class="comment">//             i++;</span></div>
+<div class="line"><a name="l01589"></a><span class="lineno"> 1589</span>&#160;<span class="comment">//         }</span></div>
+<div class="line"><a name="l01590"></a><span class="lineno"> 1590</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01591"></a><span class="lineno"> 1591</span>&#160;<span class="comment">//     if (i == 0) {</span></div>
+<div class="line"><a name="l01592"></a><span class="lineno"> 1592</span>&#160;<span class="comment">//         std::cerr &lt;&lt; &quot;No stars found&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01593"></a><span class="lineno"> 1593</span>&#160;<span class="comment">//     }</span></div>
+<div class="line"><a name="l01594"></a><span class="lineno"> 1594</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01595"></a><span class="lineno"> 1595</span>&#160; </div>
+<div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;<span class="comment">// void InspectPrintStar(const Catalog &amp;catalog) {</span></div>
+<div class="line"><a name="l01597"></a><span class="lineno"> 1597</span>&#160;<span class="comment">//     auto stars = PromptCatalogStars(catalog, 1);</span></div>
+<div class="line"><a name="l01598"></a><span class="lineno"> 1598</span>&#160;<span class="comment">//     float ra, de;</span></div>
+<div class="line"><a name="l01599"></a><span class="lineno"> 1599</span>&#160;<span class="comment">//     SpatialToSpherical(stars[0]-&gt;spatial, &amp;ra, &amp;de);</span></div>
+<div class="line"><a name="l01600"></a><span class="lineno"> 1600</span>&#160; </div>
+<div class="line"><a name="l01601"></a><span class="lineno"> 1601</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_ra &quot; &lt;&lt; RadToDeg(ra) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01602"></a><span class="lineno"> 1602</span>&#160;<span class="comment">//     std::cout &lt;&lt; &quot;star_de &quot; &lt;&lt; RadToDeg(de) &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l01603"></a><span class="lineno"> 1603</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01604"></a><span class="lineno"> 1604</span>&#160; </div>
+<div class="line"><a name="l01605"></a><span class="lineno"> 1605</span>&#160;<span class="comment">// void InspectCatalog() {</span></div>
+<div class="line"><a name="l01606"></a><span class="lineno"> 1606</span>&#160;<span class="comment">//     InteractiveChoice&lt;CatalogInspector&gt; inspectorChoice;</span></div>
+<div class="line"><a name="l01607"></a><span class="lineno"> 1607</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pair_distance&quot;, &quot;pair distance angle&quot;, InspectPairDistance);</span></div>
+<div class="line"><a name="l01608"></a><span class="lineno"> 1608</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;pyramid_distances&quot;, &quot;all pair distances in pyramid&quot;, InspectPyramidDistances);</span></div>
+<div class="line"><a name="l01609"></a><span class="lineno"> 1609</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;triple_angle&quot;, &quot;inner angle of a triangle&quot;, InspectTripleAngle);</span></div>
+<div class="line"><a name="l01610"></a><span class="lineno"> 1610</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;find_star&quot;, &quot;find a star name based on ra/de&quot;, InspectFindStar);</span></div>
+<div class="line"><a name="l01611"></a><span class="lineno"> 1611</span>&#160;<span class="comment">//     inspectorChoice.Register(&quot;print_star&quot;, &quot;print coordinates of a star&quot;, InspectPrintStar);</span></div>
+<div class="line"><a name="l01612"></a><span class="lineno"> 1612</span>&#160;<span class="comment">//     (*inspectorChoice.Prompt(&quot;Inspect the catalog&quot;))(CatalogRead());</span></div>
+<div class="line"><a name="l01613"></a><span class="lineno"> 1613</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l01614"></a><span class="lineno"> 1614</span>&#160; </div>
+<div class="line"><a name="l01615"></a><span class="lineno"> 1615</span>&#160;} <span class="comment">// namespace lost</span></div>
 <div class="ttc" id="aattitude-estimators_8hpp_html"><div class="ttname"><a href="attitude-estimators_8hpp.html">attitude-estimators.hpp</a></div></div>
 <div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
 <div class="ttc" id="aclasslost_1_1_attitude_estimation_algorithm_html"><div class="ttname"><a href="classlost_1_1_attitude_estimation_algorithm.html">lost::AttitudeEstimationAlgorithm</a></div><div class="ttdoc">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8hpp_source.html#l00015">attitude-estimators.hpp:15</a></div></div>
@@ -1621,7 +1619,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="ttc" id="aclasslost_1_1_centroid_comparison_html_a79a7c2c75e4dbda95b47d23b26d63dec"><div class="ttname"><a href="classlost_1_1_centroid_comparison.html#a79a7c2c75e4dbda95b47d23b26d63dec">lost::CentroidComparison::numMissingStars</a></div><div class="ttdeci">float numMissingStars</div><div class="ttdoc">Stars in expected but not actual.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00950">io.cpp:950</a></div></div>
 <div class="ttc" id="aclasslost_1_1_centroid_comparison_html_ac1e005780ebb245a3baafde37654aafa"><div class="ttname"><a href="classlost_1_1_centroid_comparison.html#ac1e005780ebb245a3baafde37654aafa">lost::CentroidComparison::meanError</a></div><div class="ttdeci">float meanError</div><div class="ttdoc">Average distance from actual to expected centroids (in pixels) Only correct centroids are considered ...</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00938">io.cpp:933</a></div></div>
 <div class="ttc" id="aclasslost_1_1_centroid_comparison_html_ad46cc5ba0521e788511aac2bbdc2569d"><div class="ttname"><a href="classlost_1_1_centroid_comparison.html#ad46cc5ba0521e788511aac2bbdc2569d">lost::CentroidComparison::CentroidComparison</a></div><div class="ttdeci">CentroidComparison()</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00933">io.cpp:933</a></div></div>
-<div class="ttc" id="aclasslost_1_1_database_options_html"><div class="ttname"><a href="classlost_1_1_database_options.html">lost::DatabaseOptions</a></div><div class="ttdoc">Commannd line options when using the database command.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00251">io.hpp:251</a></div></div>
+<div class="ttc" id="aclasslost_1_1_database_options_html"><div class="ttname"><a href="classlost_1_1_database_options.html">lost::DatabaseOptions</a></div><div class="ttdoc">Commannd line options when using the database command.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00245">io.hpp:245</a></div></div>
 <div class="ttc" id="aclasslost_1_1_davenport_q_algorithm_html"><div class="ttname"><a href="classlost_1_1_davenport_q_algorithm.html">lost::DavenportQAlgorithm</a></div><div class="ttdoc">A slow but reliable attitude estimation algorithm.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-estimators_8hpp_source.html#l00031">attitude-estimators.hpp:31</a></div></div>
 <div class="ttc" id="aclasslost_1_1_dummy_centroid_algorithm_html"><div class="ttname"><a href="classlost_1_1_dummy_centroid_algorithm.html">lost::DummyCentroidAlgorithm</a></div><div class="ttdoc">A centroid algorithm for debugging that returns random centroids.</div><div class="ttdef"><b>Definition:</b> <a href="centroiders_8hpp_source.html#l00025">centroiders.hpp:25</a></div></div>
 <div class="ttc" id="aclasslost_1_1_dummy_star_id_algorithm_html"><div class="ttname"><a href="classlost_1_1_dummy_star_id_algorithm.html">lost::DummyStarIdAlgorithm</a></div><div class="ttdoc">A star-id algorithm that returns random results. For debugging.</div><div class="ttdef"><b>Definition:</b> <a href="star-id_8hpp_source.html#l00026">star-id.hpp:26</a></div></div>
@@ -1646,7 +1644,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="ttc" id="aclasslost_1_1_multi_database_html"><div class="ttname"><a href="classlost_1_1_multi_database.html">lost::MultiDatabase</a></div><div class="ttdoc">A database that contains multiple databases This is almost always the database that is actually passe...</div><div class="ttdef"><b>Definition:</b> <a href="databases_8hpp_source.html#l00102">databases.hpp:102</a></div></div>
 <div class="ttc" id="aclasslost_1_1_multi_database_html_ad013d7640b19cb78268c9be5f6c64544"><div class="ttname"><a href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544">lost::MultiDatabase::SubDatabasePointer</a></div><div class="ttdeci">const unsigned char * SubDatabasePointer(int32_t magicValue) const</div><div class="ttdoc">MultiDatabase memory layout:</div><div class="ttdef"><b>Definition:</b> <a href="databases_8cpp_source.html#l00344">databases.cpp:344</a></div></div>
 <div class="ttc" id="aclasslost_1_1_pair_distance_k_vector_database_html_a6d5d477e5e2d9557f0e284e917361a54"><div class="ttname"><a href="classlost_1_1_pair_distance_k_vector_database.html#a6d5d477e5e2d9557f0e284e917361a54">lost::PairDistanceKVectorDatabase::kMagicValue</a></div><div class="ttdeci">static const int32_t kMagicValue</div><div class="ttdoc">Magic value to use when storing inside a MultiDatabase.</div><div class="ttdef"><b>Definition:</b> <a href="databases_8hpp_source.html#l00068">databases.hpp:68</a></div></div>
-<div class="ttc" id="aclasslost_1_1_pipeline_html"><div class="ttname"><a href="classlost_1_1_pipeline.html">lost::Pipeline</a></div><div class="ttdoc">A set of algorithms that describes all or part of the star-tracking &quot;pipeline&quot;.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00222">io.hpp:222</a></div></div>
+<div class="ttc" id="aclasslost_1_1_pipeline_html"><div class="ttname"><a href="classlost_1_1_pipeline.html">lost::Pipeline</a></div><div class="ttdoc">A set of algorithms that describes all or part of the star-tracking &quot;pipeline&quot;.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00216">io.hpp:216</a></div></div>
 <div class="ttc" id="aclasslost_1_1_pipeline_html_ab99f650efd24207ed56ae9d52399cff2"><div class="ttname"><a href="classlost_1_1_pipeline.html#ab99f650efd24207ed56ae9d52399cff2">lost::Pipeline::Pipeline</a></div><div class="ttdeci">Pipeline()=default</div></div>
 <div class="ttc" id="aclasslost_1_1_pipeline_html_aea0fe125836ac0c6906886ad320f5210"><div class="ttname"><a href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210">lost::Pipeline::Go</a></div><div class="ttdeci">PipelineOutput Go(const PipelineInput &amp;)</div><div class="ttdoc">Run all stages of a pipeline.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00844">io.cpp:844</a></div></div>
 <div class="ttc" id="aclasslost_1_1_pipeline_input_html"><div class="ttname"><a href="classlost_1_1_pipeline_input.html">lost::PipelineInput</a></div><div class="ttdoc">Represents the input and expected outputs of a pipeline run.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00093">io.hpp:93</a></div></div>
@@ -1693,7 +1691,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition:</b> <a href="star-utils_8hpp_source.html#l00100">star-utils.hpp:100</a></div></div>
 <div class="ttc" id="anamespacelost_html_a5552f98af725481dee70b9b39e12e064"><div class="ttname"><a href="namespacelost.html#a5552f98af725481dee70b9b39e12e064">lost::PipelineInputFactory</a></div><div class="ttdeci">PipelineInputList(* PipelineInputFactory)()</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00738">io.cpp:738</a></div></div>
 <div class="ttc" id="anamespacelost_html_a5e7d67bec758d4922935c84b8a0f8526"><div class="ttname"><a href="namespacelost.html#a5e7d67bec758d4922935c84b8a0f8526">lost::FovToFocalLength</a></div><div class="ttdeci">float FovToFocalLength(float xFov, float xResolution)</div><div class="ttdef"><b>Definition:</b> <a href="camera_8cpp_source.html#l00057">camera.cpp:57</a></div></div>
-<div class="ttc" id="anamespacelost_html_a69cfc1189a8f18fb6e6a6d400a8a1311"><div class="ttname"><a href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">lost::PipelineComparatorPlotCentroidIndices</a></div><div class="ttdeci">void PipelineComparatorPlotCentroidIndices(std::ostream &amp;os, const PipelineInputList &amp;expected, const std::vector&lt; PipelineOutput &gt; &amp;actual, const PipelineOptions &amp;)</div><div class="ttdoc">Plot an annotated image where centroids are annotated with their centroid index. For debugging.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l01229">io.cpp:1229</a></div></div>
+<div class="ttc" id="anamespacelost_html_a69cfc1189a8f18fb6e6a6d400a8a1311"><div class="ttname"><a href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">lost::PipelineComparatorPlotCentroidIndices</a></div><div class="ttdeci">void PipelineComparatorPlotCentroidIndices(std::ostream &amp;os, const PipelineInputList &amp;expected, const std::vector&lt; PipelineOutput &gt; &amp;actual, const PipelineOptions &amp;)</div><div class="ttdoc">Plot an annotated image where centroids are annotated with their centroid index. For debugging.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l01226">io.cpp:1226</a></div></div>
 <div class="ttc" id="anamespacelost_html_a6b951e30f05e0a748e6c906697002093"><div class="ttname"><a href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">lost::Angle</a></div><div class="ttdeci">float Angle(const Vec3 &amp;vec1, const Vec3 &amp;vec2)</div><div class="ttdoc">Calculate the inner angle, in radians, between two vectors.</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00456">attitude-utils.cpp:456</a></div></div>
 <div class="ttc" id="anamespacelost_html_a7057fa740aebe1cbd43f3bafafff4ac1"><div class="ttname"><a href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1">lost::SphericalToQuaternion</a></div><div class="ttdeci">Quaternion SphericalToQuaternion(float ra, float dec, float roll)</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00090">attitude-utils.cpp:90</a></div></div>
 <div class="ttc" id="anamespacelost_html_a72e465adc8dcb532e46b956261bf93fe"><div class="ttname"><a href="namespacelost.html#a72e465adc8dcb532e46b956261bf93fe">lost::GetPngPipelineInput</a></div><div class="ttdeci">PipelineInputList GetPngPipelineInput(const PipelineOptions &amp;values)</div><div class="ttdoc">Create a PngPipelineInput using command line options.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00355">io.cpp:355</a></div></div>
@@ -1702,11 +1700,11 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="ttc" id="anamespacelost_html_a8f6c4f99ab47d2c48676901452fb8634"><div class="ttname"><a href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">lost::SerializePairDistanceKVector</a></div><div class="ttdeci">void SerializePairDistanceKVector(const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer)</div><div class="ttdoc">Serialize a pair-distance KVector into buffer.</div><div class="ttdef"><b>Definition:</b> <a href="databases_8cpp_source.html#l00219">databases.cpp:219</a></div></div>
 <div class="ttc" id="anamespacelost_html_a9b3311f3ebda1282ad7bf650de30cf45"><div class="ttname"><a href="namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45">lost::kMaxBrightness</a></div><div class="ttdeci">const int kMaxBrightness</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00438">io.cpp:438</a></div></div>
 <div class="ttc" id="anamespacelost_html_aa309f1534940391b0d903f17a4c9be5c"><div class="ttname"><a href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c">lost::GenerateDatabases</a></div><div class="ttdeci">void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &amp;catalog, const DatabaseOptions &amp;values)</div><div class="ttdoc">Generate and add databases to the given multidatabase builder according to the command line options i...</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00265">io.cpp:265</a></div></div>
-<div class="ttc" id="anamespacelost_html_ab001adf3b7887c7b7a72d308893c48b2"><div class="ttname"><a href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2">lost::PipelineComparator</a></div><div class="ttdeci">void(* PipelineComparator)(std::ostream &amp;os, const PipelineInputList &amp;, const std::vector&lt; PipelineOutput &gt; &amp;, const PipelineOptions &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l01114">io.cpp:1114</a></div></div>
+<div class="ttc" id="anamespacelost_html_ab001adf3b7887c7b7a72d308893c48b2"><div class="ttname"><a href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2">lost::PipelineComparator</a></div><div class="ttdeci">void(* PipelineComparator)(std::ostream &amp;os, const PipelineInputList &amp;, const std::vector&lt; PipelineOutput &gt; &amp;, const PipelineOptions &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l01111">io.cpp:1111</a></div></div>
 <div class="ttc" id="anamespacelost_html_abf3a90819d379c9a4d0c48f385f52613"><div class="ttname"><a href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613">lost::DegToRad</a></div><div class="ttdeci">float DegToRad(float deg)</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00146">attitude-utils.cpp:146</a></div></div>
 <div class="ttc" id="anamespacelost_html_acbd12c57a0797b6b786ebfc87aae0c84"><div class="ttname"><a href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">lost::PipelineInputList</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; PipelineInput &gt; &gt; PipelineInputList</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00154">io.hpp:154</a></div></div>
 <div class="ttc" id="anamespacelost_html_ad01d904e4a6bf5aed4a1b8f97f1416c5"><div class="ttname"><a href="namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5">lost::GetPipelineInput</a></div><div class="ttdeci">PipelineInputList GetPipelineInput(const PipelineOptions &amp;values)</div><div class="ttdoc">Come up with a list of pipeline inputs based on command line options.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00741">io.cpp:741</a></div></div>
-<div class="ttc" id="anamespacelost_html_ad2caa7f022ed5c5dba03ab479414dafc"><div class="ttname"><a href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">lost::PipelineComparison</a></div><div class="ttdeci">void PipelineComparison(const PipelineInputList &amp;expected, const std::vector&lt; PipelineOutput &gt; &amp;actual, const PipelineOptions &amp;values)</div><div class="ttdoc">Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l01420">io.cpp:1420</a></div></div>
+<div class="ttc" id="anamespacelost_html_ad2caa7f022ed5c5dba03ab479414dafc"><div class="ttname"><a href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">lost::PipelineComparison</a></div><div class="ttdeci">void PipelineComparison(const PipelineInputList &amp;expected, const std::vector&lt; PipelineOutput &gt; &amp;actual, const PipelineOptions &amp;values)</div><div class="ttdoc">Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l01418">io.cpp:1418</a></div></div>
 <div class="ttc" id="anamespacelost_html_ad4bb00e632a9200a8e42f620e460dd60"><div class="ttname"><a href="namespacelost.html#ad4bb00e632a9200a8e42f620e460dd60">lost::SetPipeline</a></div><div class="ttdeci">Pipeline SetPipeline(const PipelineOptions &amp;values)</div><div class="ttdoc">Create a pipeline from command line options.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00775">io.cpp:775</a></div></div>
 <div class="ttc" id="anamespacelost_html_ad7cbac9d4bf0738d87f14e614ddb6da9"><div class="ttname"><a href="namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9">lost::SurfacePlot</a></div><div class="ttdeci">void SurfacePlot(cairo_surface_t *cairoSurface, const Stars &amp;stars, const StarIdentifiers *starIds, const Catalog *catalog, const Attitude *attitude, double red, double green, double blue, double alpha, bool rawStarIndexes=false)</div><div class="ttdoc">Plot information about an image onto the image using Cairo.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00153">io.cpp:153</a></div></div>
 <div class="ttc" id="anamespacelost_html_adc5108f643b7657a835838c7f6411aa7"><div class="ttname"><a href="namespacelost.html#adc5108f643b7657a835838c7f6411aa7">lost::RadToDeg</a></div><div class="ttdeci">float RadToDeg(float rad)</div><div class="ttdef"><b>Definition:</b> <a href="attitude-utils_8cpp_source.html#l00142">attitude-utils.cpp:142</a></div></div>
@@ -1735,7 +1733,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Fri Mar 24 2023 08:14:01 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Mar 24 2023 08:25:48 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

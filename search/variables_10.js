@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['x_580',['x',['../structlost_1_1_vec2.html#a9a9c151101dbb57060873e8af18927af',1,'lost::Vec2::x()'],['../classlost_1_1_vec3.html#a97adb523973ae539a5d8963d78569618',1,'lost::Vec3::x()'],['../classlost_1_1_mat3.html#a4c1fc3f0ab4ec06bc0dab5585eca306b',1,'lost::Mat3::x()']]],
-  ['xcoordmagsum_581',['xCoordMagSum',['../structlost_1_1_centroid_params.html#ac340f612012e1f6b172cb40fcfa9ae08',1,'lost::CentroidParams']]],
-  ['xmax_582',['xMax',['../structlost_1_1_centroid_params.html#acb5e6b2f74543a8d99c79820a5a3fae5',1,'lost::CentroidParams::xMax()'],['../structlost_1_1_i_w_co_g_params.html#a11bd1f88de67d8009ab086d92eb154e1',1,'lost::IWCoGParams::xMax()']]],
-  ['xmin_583',['xMin',['../structlost_1_1_centroid_params.html#a1ad1a1cdb476e0a0be922b01306c4f01',1,'lost::CentroidParams::xMin()'],['../structlost_1_1_i_w_co_g_params.html#a2b90aeb4c5fe0b2569692b18114bb6d7',1,'lost::IWCoGParams::xMin()']]]
+  ['y_581',['y',['../structlost_1_1_vec2.html#a3a23d5b38c5873b4b870ace85fd30d05',1,'lost::Vec2::y()'],['../classlost_1_1_vec3.html#a50ebc2fd588a7ecc8653166d74b4f4b9',1,'lost::Vec3::y()']]],
+  ['ycoordmagsum_582',['yCoordMagSum',['../structlost_1_1_centroid_params.html#a421ee37e9ef2ac330acaf8ea5bca733d',1,'lost::CentroidParams']]],
+  ['ymax_583',['yMax',['../structlost_1_1_centroid_params.html#a94c747c963ad41ffed83a98e09061175',1,'lost::CentroidParams::yMax()'],['../structlost_1_1_i_w_co_g_params.html#a2d97ec092c041d89f12faae885542ea2',1,'lost::IWCoGParams::yMax()']]],
+  ['ymin_584',['yMin',['../structlost_1_1_centroid_params.html#ace328e1aca0f0a9c707e00bc6d8f7e05',1,'lost::CentroidParams::yMin()'],['../structlost_1_1_i_w_co_g_params.html#af2c1113648b480bf8d495773a76abc55',1,'lost::IWCoGParams::yMin()']]]
 ];
