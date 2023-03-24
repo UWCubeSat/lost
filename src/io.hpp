@@ -125,6 +125,7 @@ class GeneratedPipelineInput : public PipelineInput {
 public:
     GeneratedPipelineInput(const Catalog &, Attitude, Camera, std::default_random_engine *,
 
+                           bool centroidsOnly,
                            float observedReferenceBrightness, float starSpreadStdDev,
                            float sensitivity, float darkCurrent, float readNoiseStdDev,
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,

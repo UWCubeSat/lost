@@ -446,6 +446,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Camera camera,
                                                std::default_random_engine *rng,
 
+                                               bool centroidsOnly,
                                                float observedReferenceBrightness,
                                                float starSpreadStdDev,
                                                float sensitivity,
@@ -478,8 +479,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         std::cerr << "WARNING: oversampling was not a perfect square. Rounding up to "
                   << oversamplingPerAxis*oversamplingPerAxis << "." << std::endl;
     }
-    std::vector<float> photonsBuffer(image.width*image.height, 0);
-
     bool motionBlurEnabled = exposureTime > 0 && abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
     if (!motionBlurEnabled) {
         exposureTime = 1.0;
@@ -539,18 +538,29 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                              -catalogStar.magnitude);
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
 
-            // don't add false stars to centroids or star ids
+            // Now add the star to the input and expected lists.
+            // don't add false stars tho
             if (isTrueStar) {
                 Star starToAdd = star;
                 if (perturbationStddev > 0.0) {
                     starToAdd.position.x += perturbation1DDistribution(*rng);
                     starToAdd.position.y += perturbation1DDistribution(*rng);
                 }
-                stars.push_back(starToAdd);
-                starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                // If it got perturbed outside of the sensor, don't add it.
+                if (camera.InSensor(starToAdd.position)) {
+                    stars.push_back(starToAdd);
+                    starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                }
             }
         }
     }
+
+    if (centroidsOnly) {
+        // we're outta here
+        return;
+    }
+
+    std::vector<float> photonsBuffer(image.width*image.height, 0);
 
     for (const GeneratedStar &star : generatedStars) {
         // delta will be exactly (0,0) when motion blur disabled
@@ -710,6 +720,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                 Camera(focalLength, values.generateXRes, values.generateYRes),
                 &rng,
 
+                values.generateCentroidsOnly,
                 values.generateRefBrightness,
                 values.generateSpreadStdDev,
                 values.generateSensitivity,

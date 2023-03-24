@@ -173,6 +173,10 @@ Controls the simulated camera sensitivity for generated images. This only has an
 Sets the standard deviation of Gaussian noise in the generated image(s) to \fIstddev\fP. Noise is measured in observed brightness, where 1 is the difference between pure white and pure black. Defaults to 0.05.
 
 .TP
+\fB--generate-centroids-only\fP [\fIcentroids-only\fP]
+If set (argument is not needed, but can be a bool), will not actually generate any pixel data -- only centroid positions. Much faster if only evaluating a star-id algorithm (eg sky coverage testing).
+
+.TP
 \fB--generate-ra\fP, \fB--generate-de\fP, \fB--generate-roll\fP \fIdegrees\fP
 Set the right ascension, declination, and roll of the generated image.
 

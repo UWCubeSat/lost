@@ -49,6 +49,7 @@ LOST_CLI_OPTION("compare-attitudes"         , std::string, compareAttitudes     
 LOST_CLI_OPTION("generate"                     , int   , generate                  , 0     , atoi(optarg)    , 1)
 LOST_CLI_OPTION("generate-x-resolution"        , int   , generateXRes              , 1024  , atoi(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-y-resolution"        , int   , generateYRes              , 1024  , atoi(optarg)    , kNoDefaultArgument)
+LOST_CLI_OPTION("generate-centroids-only"      , bool  , generateCentroidsOnly     , false , atobool(optarg) , true)
 LOST_CLI_OPTION("generate-reference-brightness", float , generateRefBrightness     , 100   , atof(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-spread-stddev"       , float , generateSpreadStdDev      , 1     , atof(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-shot-noise"          , bool  , generateShotNoise         , true  , atobool(optarg) , kNoDefaultArgument)
