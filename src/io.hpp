@@ -201,12 +201,6 @@ struct StarIdComparison {
 
     /// The total number of true stars in the image (the number the ideal star-id algorithm would identify)
     int numTotal;
-
-    /// numCorrect/numTotal
-    float fractionCorrect;
-
-    /// numIncorrect/numTotal
-    float fractionIncorrect;
 };
 
 std::ostream &operator<<(std::ostream &, const Camera &);

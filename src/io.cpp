@@ -1101,9 +1101,6 @@ static StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const St
         }
     }
 
-    result.fractionCorrect = (float)result.numCorrect / result.numTotal;
-    result.fractionIncorrect = (float)result.numIncorrect / result.numTotal;
-
     return result;
 }
 
@@ -1277,31 +1274,32 @@ static void PipelineComparatorStarIds(std::ostream &os,
         : 0.0f;
 
     std::vector<StarIdComparison> comparisons;
-    for (int i = 0; i < (int)expected.size(); i++) {
-        comparisons.push_back(
+    int numImagesCorrect = 0;
+    int numImagesIncorrect = 0;
+    int numImagesTotal = expected.size();
+    for (int i = 0; i < numImagesTotal; i++) {
+        StarIdComparison comparison =
             StarIdsCompare(*expected[i]->ExpectedStarIds(), *actual[i].starIds,
                            expected[i]->GetCatalog(), actual[i].catalog,
-                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get()));
+                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get());
+
+        if (comparisons.size() == 1) {
+            os << "starid_num_correct " << comparison.numCorrect << std::endl;
+            os << "starid_num_incorrect " << comparison.numIncorrect << std::endl;
+            os << "starid_num_total " << comparison.numTotal << std::endl;
+        }
+
+        if (comparison.numCorrect > 0 && comparison.numIncorrect == 0) {
+            numImagesCorrect++;
+        }
+        if (comparison.numIncorrect > 0) {
+            numImagesIncorrect++;
+        }
     }
 
-    if (comparisons.size() == 1) {
-        os << "starid_num_correct " << comparisons[0].numCorrect << std::endl;
-        os << "starid_num_incorrect " << comparisons[0].numIncorrect << std::endl;
-        os << "starid_num_total " << comparisons[0].numTotal << std::endl;
-    }
-
-    float fractionIncorrectSum = 0;
-    float fractionCorrectSum = 0;
-    for (const StarIdComparison &comparison : comparisons) {
-        fractionIncorrectSum += comparison.fractionIncorrect;
-        fractionCorrectSum += comparison.fractionCorrect;
-    }
-
-    float fractionIncorrectMean = fractionIncorrectSum / comparisons.size();
-    float fractionCorrectMean = fractionCorrectSum / comparisons.size();
-
-    os << "starid_fraction_correct " << fractionCorrectMean << std::endl;
-    os << "starid_fraction_incorrect " << fractionIncorrectMean << std::endl;
+    // A "correct" image is one where at least two stars are correctly id'd and none are incorrectly id'd
+    os << "starid_num_images_correct " << numImagesCorrect << std::endl;
+    os << "starid_num_images_incorrect " << numImagesIncorrect << std::endl;
 }
 
 /// Print the identifed attitude to `os` in Euler angle format.

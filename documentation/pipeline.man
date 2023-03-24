@@ -267,7 +267,7 @@ Argument is option. Compare expected to actual centroids. Prints to \fIpath\fP. 
 
 .TP
 \fB--compare-stars\fP [\fIpath\fP]
-Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout.
+Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout. In the output, starid_num_correct, starid_num_incorrect, and starid_num_total count the number of individual stars identified in an image. The starid_num_images_correct and starid_num_images_incorrect outputs are more aggregated: starid_num_images_correct records the number of images where at least two stars were correctly id'd and no stars were incorrectly id'd, while starid_num_images_incorrect records the number of images with at least one incorrectly id'd star (used when generating more than 1 image at a time, eg for evaluation).
 
 .TP
 \fB--compare-attitudes\fP [\fIpath\fP]
