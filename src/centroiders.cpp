@@ -140,7 +140,7 @@ static float FitModel(float x, float a, float xb, float sigma) {
     return a * exp(-1 * (x - xb) * (x - xb) / (2 * sigma * sigma));
 }
 
-static float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY){
+static float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY) {
     float term1 = exp(-1 * (x - xb) * (x - xb) / (2 * sigmaX * sigmaX));
     float term2 = exp(-1 * (y - yb) * (y - yb) / (2 * sigmaY * sigmaY));
     return a * term1 * term2;
@@ -148,7 +148,7 @@ static float FitModel2D(float x, float y, float a, float xb, float yb, float sig
 
 // DO NO DELETE
 // void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
-//                   float *xb, float *yb, double *sigma) {
+//                   float *xb, float *yb, float *sigma) {
 //     // a is set to max intensity value in the window
 //     // (xb, yb) = coordinates of pixel with max intensity value
 //     int max = -1;
@@ -174,15 +174,16 @@ static float FitModel2D(float x, float y, float a, float xb, float yb, float sig
 //             }
 //         }
 //     }
-//     double fwhm = std::sqrt(halfCount);
+//     float fwhm = std::sqrt(halfCount);
 //     *sigma = fwhm / (2 * std::sqrt(2 * std::log(2)));
 // }
 
-float FitInitialGuessSigma(int x0, int y0, int maxMag, const int nb, const unsigned char *image, int w){
+float FitInitialGuessSigma(int x0, int y0, int maxMag, const int nb, const unsigned char *image,
+                           int w) {
     float halfCount = 0;
-    for(int i = -nb; i <= nb; i++){
-        for(int j = -nb; j <+ nb; j++){
-            if(Get(x0+i, y0+j, image, w) > maxMag / 2){
+    for (int i = -nb; i <= nb; i++) {
+        for (int j = -nb; j < +nb; j++) {
+            if (Get(x0 + i, y0 + j, image, w) > maxMag / 2) {
                 halfCount++;
             }
         }
@@ -200,8 +201,8 @@ struct Functor {
     typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, 1> ValueType;
     typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, InputsAtCompileTime> JacobianType;
 
-    int m_inputs; // Number of parameters in your model
-    int m_values; // Number of data points
+    int m_inputs;  // Number of parameters in your model
+    int m_values;  // Number of data points
 
     Functor() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}
     Functor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
@@ -211,10 +212,10 @@ struct Functor {
 };
 
 /// Functor for 1D Least Squares Gaussian Fit
-struct LSGF1DFunctor : Functor<double> {
-    LSGF1DFunctor(const int nb, const int marg, Eigen::VectorXd X, const unsigned char *image,
-                const int w, const int x0, const int y0)
-        : Functor<double>(3, 2 * nb + 1),
+struct LSGF1DFunctor : Functor<float> {
+    LSGF1DFunctor(const int nb, const int marg, Eigen::VectorXf X, const unsigned char *image,
+                  const int w, const int x0, const int y0)
+        : Functor<float>(3, 2 * nb + 1),
           nb(nb),
           marg(marg),
           X(X),
@@ -227,10 +228,10 @@ struct LSGF1DFunctor : Functor<double> {
     Calculate residuals (error = prediction - actual)
     x = parameters (a, xb, sigma)
     */
-    int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-        double a = x(0);
-        double xb = x(1);
-        double sigma = x(2);
+    int operator()(const Eigen::VectorXf &x, Eigen::VectorXf &fvec) const {
+        float a = x(0);
+        float xb = x(1);
+        float sigma = x(2);
         for (int i = 0; i < X.size(); i++) {
             int marginal;
             if (marg == 0)
@@ -244,21 +245,21 @@ struct LSGF1DFunctor : Functor<double> {
     }
 
     // Calculate Jacobian
-    int df(const Eigen::VectorXd &x, Eigen::MatrixXd &fjac) const {
-        double a = x(0);
-        double kb = x(1);
-        double sK = x(2);
+    int df(const Eigen::VectorXf &x, Eigen::MatrixXf &fjac) const {
+        float a = x(0);
+        float kb = x(1);
+        float sK = x(2);
 
         int ind = 0;
 
         for (int i = -nb; i <= nb; i++) {
-            int k = (marg == 0) ? (x0+i) : (y0+i);
+            int k = (marg == 0) ? (x0 + i) : (y0 + i);
 
             float expK = exp(-1 * (k - kb) * (k - kb) / (2 * sK * sK));
 
             fjac(ind, 0) = expK;
-            fjac(ind, 1) = a * expK * (k-kb) / (sK * sK);
-            fjac(ind, 2) = a * expK * (k-kb) * (k-kb) / std::pow(sK, 3);
+            fjac(ind, 1) = a * expK * (k - kb) / (sK * sK);
+            fjac(ind, 2) = a * expK * (k - kb) * (k - kb) / std::pow(sK, 3);
 
             ind++;
         }
@@ -271,7 +272,7 @@ struct LSGF1DFunctor : Functor<double> {
     // Flag for which marginal to use (0 = X, 1 = Y)
     const int marg;
     // Data points (set of x or y coordinates)
-    Eigen::VectorXd X;
+    Eigen::VectorXf X;
     const unsigned char *image;
     const int w;  // image width in pixels
     // Center coordinates (x0, y0) of this window
@@ -279,13 +280,12 @@ struct LSGF1DFunctor : Functor<double> {
 };
 
 /// Functor for 2D Least Squares Gaussian Fit
-struct LSGF2DFunctor : Functor<double> {
+struct LSGF2DFunctor : Functor<float> {
     // We now have 5 params, beta = (a, xb, yb, sigmaX, sigmaY)
     // Let entire window be (np x np) pixels
     // We have np^2 data points
-    LSGF2DFunctor(const int nb, const unsigned char *image,
-                const int w, const int x0, const int y0)
-        : Functor<double>(5, (2 * nb + 1) * (2 * nb + 1)),
+    LSGF2DFunctor(const int nb, const unsigned char *image, const int w, const int x0, const int y0)
+        : Functor<float>(5, (2 * nb + 1) * (2 * nb + 1)),
           nb(nb),
           image(image),
           w(w),
@@ -295,16 +295,16 @@ struct LSGF2DFunctor : Functor<double> {
     /*
     x = parameters (a, xb, yb, sigmaX, sigmaY)
     */
-    int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
-        double a = x(0);
-        double xb = x(1);
-        double yb = x(2);
-        double sigmaX = x(3);
-        double sigmaY = x(4);
+    int operator()(const Eigen::VectorXf &x, Eigen::VectorXf &fvec) const {
+        float a = x(0);
+        float xb = x(1);
+        float yb = x(2);
+        float sigmaX = x(3);
+        float sigmaY = x(4);
 
         int ind = 0;
-        for(int i = -nb; i <= nb; i++){
-            for(int j = -nb; j <= nb; j++){
+        for (int i = -nb; i <= nb; i++) {
+            for (int j = -nb; j <= nb; j++) {
                 int xi = x0 + i;
                 int yi = y0 + j;
                 float yPred = FitModel2D(xi, yi, a, xb, yb, sigmaX, sigmaY);
@@ -318,12 +318,12 @@ struct LSGF2DFunctor : Functor<double> {
         return 0;
     }
 
-    int df(const Eigen::VectorXd &x, Eigen::MatrixXd &fjac) const{
-        double a = x(0);
-        double xb = x(1);
-        double yb = x(2);
-        double sigmaX = x(3);
-        double sigmaY = x(4);
+    int df(const Eigen::VectorXf &x, Eigen::MatrixXf &fjac) const {
+        float a = x(0);
+        float xb = x(1);
+        float yb = x(2);
+        float sigmaX = x(3);
+        float sigmaY = x(4);
 
         int ind = 0;
 
@@ -372,8 +372,8 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         int y = pt[1];
         if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
 
-        Eigen::VectorXd X(2 * nb + 1);
-        Eigen::VectorXd Y(2 * nb + 1);
+        Eigen::VectorXf X(2 * nb + 1);
+        Eigen::VectorXf Y(2 * nb + 1);
         int vInd = 0;
         for (int i = -nb; i <= nb; i++) {
             X(vInd) = x + i;
@@ -381,24 +381,23 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
             vInd++;
         }
 
-        double a = Get(x, y, image, imageWidth);
-        double sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
+        float a = Get(x, y, image, imageWidth);
+        float sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
 
-        Eigen::VectorXd betaX(3);
+        Eigen::VectorXf betaX(3);
         betaX << a, x, sigma;
 
-        Eigen::VectorXd betaY(3);
+        Eigen::VectorXf betaY(3);
         betaY << a, y, sigma;
 
         LSGF1DFunctor functorX(nb, 0, X, image, imageWidth, x, y);
-        Eigen::LevenbergMarquardt<LSGF1DFunctor, double> lmX(functorX);
-
+        Eigen::LevenbergMarquardt<LSGF1DFunctor, float> lmX(functorX);
 
         lmX.parameters.maxfev = 2000;
         lmX.parameters.xtol = 1.0e-10;
 
         LSGF1DFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
-        Eigen::LevenbergMarquardt<LSGF1DFunctor, double> lmY(functorY);
+        Eigen::LevenbergMarquardt<LSGF1DFunctor, float> lmY(functorY);
 
         lmY.parameters.maxfev = 2000;
         lmY.parameters.xtol = 1.0e-10;
@@ -408,13 +407,13 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
         a = betaX(0);
 
-        double xb = betaX(1);
-        double yb = betaY(1);
+        float xb = betaX(1);
+        float yb = betaY(1);
 
         sigma = betaX(2);
 
         // TODO: idk how much we care about making radius accurate
-        result.push_back(Star(xb+0.5, yb+0.5, 0));
+        result.push_back(Star(xb + 0.5, yb + 0.5, 0));
     }
 
     // std::cout << "Number of centroids: " << result.size() << std::endl;
@@ -439,28 +438,27 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
 
         float a = Get(x, y, image, imageWidth);
-        double sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
+        float sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
 
-        Eigen::VectorXd beta(5);
+        Eigen::VectorXf beta(5);
         beta << a, x, y, sigma, sigma;
 
         LSGF2DFunctor functor(nb, image, imageWidth, x, y);
-        Eigen::LevenbergMarquardt<LSGF2DFunctor, double> lm(functor);
+        Eigen::LevenbergMarquardt<LSGF2DFunctor, float> lm(functor);
 
         lm.parameters.maxfev = 2000;
         lm.parameters.xtol = 1.0e-10;
 
         lm.minimize(beta);
 
-        double aRes = beta(0);
-        double xRes = beta(1);
-        double yRes = beta(2);
-        double sigmaX = beta(3);
-        double sigmaY = beta(4);
+        float aRes = beta(0);
+        float xRes = beta(1);
+        float yRes = beta(2);
+        float sigmaX = beta(3);
+        float sigmaY = beta(4);
 
         // TODO: not sure how much we care about making the radius/brightness accurate
-        result.push_back(Star(xRes+0.5, yRes+0.5, sigmaX, sigmaY, aRes));
-
+        result.push_back(Star(xRes + 0.5, yRes + 0.5, sigmaX, sigmaY, aRes));
     }
 
     // std::cout << "Number of centroids: " << result.size() << std::endl;
