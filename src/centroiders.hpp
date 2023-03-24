@@ -22,9 +22,11 @@ public:
 };
 
 /**
- * @brief Least Squares Gaussian Fit 1D centroiding algorithm
- * Uses Levenberg-Marquardt to solve nonlinear least-squares
+ * @brief Least Squares Gaussian Fit (1D) centroiding algorithm
  *
+ * Detect centroids by fitting a 1D Gaussian to the marginals of each window
+ * Slightly less accurate than 2D fit
+ * Note: increasing window size may introduce noise, making this method less accurate on small stars
  */
 class LeastSquaresGaussianFit1D : public CentroidAlgorithm{
 public:
@@ -33,8 +35,11 @@ public:
 };
 
 /**
- * @brief Least Squares Gaussian Fit 2D centroiding algorithm
+ * @brief Least Squares Gaussian Fit (2D) centroiding algorithm
  *
+ * Detect centroids by fitting a 2D Gaussian to all pixels in each window
+ * This is the most accurate centroiding function to date
+ * Also more computationally expensive than other methods, scales exponentially with increasing window size
  */
 class LeastSquaresGaussianFit2D : public CentroidAlgorithm {
    public:
@@ -76,10 +81,10 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
 /// Get value of pixel at (x, y) in image with width=w
 int Get(int x, int y, const unsigned char *image, int w);
 
-/// Get XMarginal - keep x fixed, sum pixel values from [y0-nb, y0+nb]
+/// Get value of x marginal - keep x fixed, sum pixel values from [y0-nb, y0+nb]
 int XMarginal(int x, int y0, int nb, const unsigned char *image, int w);
 
-/// Get YMarginal - keep y fixed, sum pixel values from [x0-nb, x0+nb]
+/// Get value of y marginal - keep y fixed, sum pixel values from [x0-nb, x0+nb]
 int YMarginal(int x0, int y, int nb, const unsigned char *image, int w);
 
 /*
@@ -89,8 +94,8 @@ a = max intensity value
 (xb, yb) = coordinates of pixel with max intensity
 sigma = standard deviation (sigmaX = sigmaY)
 */
-void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
-                  float *xb, float *yb, double *sigma);
+// void InitialGuess(int x0, int y0, const int nb, const unsigned char *image, int w, float *a,
+//                   float *xb, float *yb, double *sigma);
 
 // TODO: rename
 // Basically initial guess for window, done after Floodfill preprocessing

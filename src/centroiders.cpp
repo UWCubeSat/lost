@@ -379,16 +379,19 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
             vInd++;
         }
 
-        float a;
-        float xb, yb;
-        double sigma;
-        InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigma);
+        // float a;
+        // float xb, yb;
+        // double sigma;
+        // InitialGuess(x, y, nb, image, imageWidth, &a, &xb, &yb, &sigma);
+
+        double a = Get(x, y, image, imageWidth);
+        double sigma = InitialGuess2(x, y, a, nb, image, imageWidth);
 
         Eigen::VectorXd betaX(3);
-        betaX << a, xb, sigma;
+        betaX << a, x, sigma;
 
         Eigen::VectorXd betaY(3);
-        betaY << a, yb, sigma;
+        betaY << a, y, sigma;
 
         // LSGF2DFunctor functor(nb, image, imageWidth, x, y);
         // // Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
@@ -416,8 +419,8 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
         a = betaX(0);
 
-        xb = betaX(1);
-        yb = betaY(1);
+        double xb = betaX(1);
+        double yb = betaY(1);
 
         sigma = betaX(2);
 
