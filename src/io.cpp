@@ -458,10 +458,12 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int oversampling,
                                                int numFalseStars,
                                                int falseStarMinMagnitude,
-                                               int falseStarMaxMagnitude)
+                                               int falseStarMaxMagnitude,
+                                               float perturbationStddev)
     : camera(camera), attitude(attitude), catalog(catalog) {
 
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
+    assert(perturbationStddev >= 0.0);
 
     // in photons
     float referenceBrightness = observedReferenceBrightness / sensitivity;
@@ -489,6 +491,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     // attitude 1 time unit after middle of exposure
     Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
     std::vector<GeneratedStar> generatedStars;
+
+    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
+    std::normal_distribution<float> perturbation1DDistribution(0.0, perturbationStddev);
 
     Catalog catalogWithFalse = catalog;
 
@@ -536,7 +541,12 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
             // don't add false stars to centroids or star ids
             if (isTrueStar) {
-                stars.push_back(star);
+                Star starToAdd = star;
+                if (perturbationStddev > 0.0) {
+                    starToAdd.position.x += perturbation1DDistribution(*rng);
+                    starToAdd.position.y += perturbation1DDistribution(*rng);
+                }
+                stars.push_back(starToAdd);
                 starIds.push_back(StarIdentifier(stars.size() - 1, i));
             }
         }
@@ -712,7 +722,8 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                 values.generateOversampling,
                 values.generateNumFalseStars,
                 values.generateFalseMinMag,
-                values.generateFalseMaxMag);
+                values.generateFalseMaxMag,
+                values.generatePerturbationStddev);
 
             result.push_back(std::unique_ptr<PipelineInput>(curr));
 

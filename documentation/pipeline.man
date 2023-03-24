@@ -205,6 +205,10 @@ The minimum (weakest) magnitude that generated false stars should have. Defaults
 The maximum (strongest) magnitude that generated false stars should have. Defaults to 1.0.
 
 .TP
+\fB--generate-perturb-centroids\fP \fIperturbation-stddev\fP
+Introduce artificial centroiding error. If provided, all the input and expected centroids will be shifted randomly according to a 2D Gaussian distribution with the given standard deviation (defaults to 0.2 pixel stddev). For evaluating star-id performance vs centroid error.
+
+.TP
 \fB--generate-oversampling\fP \fInum-samples\fP
 Perform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
 

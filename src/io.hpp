@@ -123,14 +123,14 @@ public:
  */
 class GeneratedPipelineInput : public PipelineInput {
 public:
-    // TODO: correct params
     GeneratedPipelineInput(const Catalog &, Attitude, Camera, std::default_random_engine *,
 
                            float observedReferenceBrightness, float starSpreadStdDev,
                            float sensitivity, float darkCurrent, float readNoiseStdDev,
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,
                            bool shotNoise, int oversampling,
-                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude);
+                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
+                           float perturbationStddev);
 
 
     const Image *InputImage() const { return &image; };
