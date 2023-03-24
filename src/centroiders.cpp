@@ -233,7 +233,29 @@ struct LSGFFunctor : Functor<double> {
                 marginal = XMarginal(X(i), y0, nb, image, w);
             else
                 marginal = YMarginal(x0, X(i), nb, image, w);
-            fvec(i) = marginal - FitModel(X(i), a, xb, sigma);
+            fvec(i) = FitModel(X(i), a, xb, sigma) - marginal;
+        }
+
+        return 0;
+    }
+
+    int df(const Eigen::VectorXd &x, Eigen::MatrixXd &fjac) const {
+        double a = x(0);
+        double kb = x(1);
+        double sK = x(2);
+
+        int ind = 0;
+
+        for (int i = -nb; i <= nb; i++) {
+            int k = (marg == 0) ? (x0+i) : (y0+i);
+
+            float expK = exp(-1 * (k - kb) * (k - kb) / (2 * sK * sK));
+
+            fjac(ind, 0) = expK;
+            fjac(ind, 1) = a * expK * (k-kb) / (sK * sK);
+            fjac(ind, 2) = a * expK * (k-kb) * (k-kb) / std::pow(sK, 3);
+
+            ind++;
         }
 
         return 0;
@@ -368,16 +390,23 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         Eigen::VectorXd betaY(3);
         betaY << a, yb, sigma;
 
+        // LSGF2DFunctor functor(nb, image, imageWidth, x, y);
+        // // Eigen::NumericalDiff<LSGF2DFunctor> numDiff(functor);
+        // // Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGF2DFunctor>, double> lm(numDiff);
+        // Eigen::LevenbergMarquardt<LSGF2DFunctor, double> lm(functor);
+
         LSGFFunctor functorX(nb, 0, X, image, imageWidth, x, y);
-        Eigen::NumericalDiff<LSGFFunctor> numDiffX(functorX);
-        Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmX(numDiffX);
+        // Eigen::NumericalDiff<LSGFFunctor> numDiffX(functorX);
+        Eigen::LevenbergMarquardt<LSGFFunctor, double> lmX(functorX);
+
 
         lmX.parameters.maxfev = 2000;
         lmX.parameters.xtol = 1.0e-10;
 
         LSGFFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
-        Eigen::NumericalDiff<LSGFFunctor> numDiffY(functorY);
-        Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmY(numDiffY);
+        // Eigen::NumericalDiff<LSGFFunctor> numDiffY(functorY);
+        // Eigen::LevenbergMarquardt<Eigen::NumericalDiff<LSGFFunctor>, double> lmY(numDiffY);
+        Eigen::LevenbergMarquardt<LSGFFunctor, double> lmY(functorY);
 
         lmY.parameters.maxfev = 2000;
         lmY.parameters.xtol = 1.0e-10;
@@ -394,7 +423,7 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
         // std::cout << "Original: " << x << ", " << y << std::endl;
         // std::cout << "final: " << xb << ", " << yb << std::endl;
-        result.push_back(Star(xb, yb, 0));
+        result.push_back(Star(xb+0.5, yb+0.5, 0));
         // result.push_back(Star(x, y, 0));
     }
 
