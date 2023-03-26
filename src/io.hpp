@@ -5,6 +5,7 @@
 
 #include <cairo/cairo.h>
 
+#include <random>
 #include <vector>
 #include <map>
 #include <utility>
@@ -122,14 +123,15 @@ public:
  */
 class GeneratedPipelineInput : public PipelineInput {
 public:
-    // TODO: correct params
-    GeneratedPipelineInput(const Catalog &, Attitude, Camera,
+    GeneratedPipelineInput(const Catalog &, Attitude, Camera, std::default_random_engine *,
+
+                           bool centroidsOnly,
                            float observedReferenceBrightness, float starSpreadStdDev,
                            float sensitivity, float darkCurrent, float readNoiseStdDev,
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,
                            bool shotNoise, int oversampling,
                            int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
-                           int seed);
+                           float perturbationStddev);
 
 
     const Image *InputImage() const { return &image; };
@@ -200,12 +202,6 @@ struct StarIdComparison {
 
     /// The total number of true stars in the image (the number the ideal star-id algorithm would identify)
     int numTotal;
-
-    /// numCorrect/numTotal
-    float fractionCorrect;
-
-    /// numIncorrect/numTotal
-    float fractionIncorrect;
 };
 
 std::ostream &operator<<(std::ostream &, const Camera &);

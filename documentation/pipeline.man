@@ -173,8 +173,16 @@ Controls the simulated camera sensitivity for generated images. This only has an
 Sets the standard deviation of Gaussian noise in the generated image(s) to \fIstddev\fP. Noise is measured in observed brightness, where 1 is the difference between pure white and pure black. Defaults to 0.05.
 
 .TP
+\fB--generate-centroids-only\fP [\fIcentroids-only\fP]
+If set (argument is not needed, but can be a bool), will not actually generate any pixel data -- only centroid positions. Much faster if only evaluating a star-id algorithm (eg sky coverage testing).
+
+.TP
 \fB--generate-ra\fP, \fB--generate-de\fP, \fB--generate-roll\fP \fIdegrees\fP
 Set the right ascension, declination, and roll of the generated image.
+
+.TP
+\fB--generate-random-attitudes\fP [\fIenable\fP]
+Generate a random attitude for each generated image. Ignores specified ra, de, and roll if set.
 
 .TP
 \fB--generate-exposure\fP \fIexposure-time\fP
@@ -201,6 +209,10 @@ The minimum (weakest) magnitude that generated false stars should have. Defaults
 The maximum (strongest) magnitude that generated false stars should have. Defaults to 1.0.
 
 .TP
+\fB--generate-perturb-centroids\fP \fIperturbation-stddev\fP
+Introduce artificial centroiding error. If provided, all the input and expected centroids will be shifted randomly according to a 2D Gaussian distribution with the given standard deviation (defaults to 0.2 pixel stddev). For evaluating star-id performance vs centroid error.
+
+.TP
 \fB--generate-oversampling\fP \fInum-samples\fP
 Perform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
 
@@ -214,6 +226,10 @@ The options that speak of an "expected" something will only work on generated im
 image, the "ideal" output of each stage is already known because we created the image to begin with!
 For example, we know exactly where each centroid should be. So we have an "expected" output for each
 stage we can conveniently compare against!
+
+.TP
+\fB--generate-time-based-seed\fP [\fIenable\fP]
+If true (the default), uses the current timestamp as a random seed. \fB--generate-seed\fP is ignored if time based seed is set.
 
 .TP
 \fB--plot-raw-input\fP [\fIpath\fP]
@@ -255,7 +271,7 @@ Argument is option. Compare expected to actual centroids. Prints to \fIpath\fP. 
 
 .TP
 \fB--compare-stars\fP [\fIpath\fP]
-Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout.
+Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout. In the output, starid_num_correct, starid_num_incorrect, and starid_num_total count the number of individual stars identified in an image. The starid_num_images_correct and starid_num_images_incorrect outputs are more aggregated: starid_num_images_correct records the number of images where at least two stars were correctly id'd and no stars were incorrectly id'd, while starid_num_images_incorrect records the number of images with at least one incorrectly id'd star (used when generating more than 1 image at a time, eg for evaluation).
 
 .TP
 \fB--compare-attitudes\fP [\fIpath\fP]

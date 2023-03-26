@@ -28,4 +28,11 @@ echo 'Comparator assertions'
 echo 'Issue #36: Cog and Attitude without Star-ID'
 ./lost pipeline --generate 1 --centroid-algo cog --attitude-algo triad && exit 1
 
+echo 'Run the generator without centroids a whole bunch and make sure no assertions go off'
+./lost pipeline --generate 200 --generate-perturb-centroids 5 --generate-centroids-only
+
+set +x
+echo '
+
+Despite all the errors and warnings above, this test has PASSED with FLYING COLORS'
 exit 0
