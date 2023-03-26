@@ -452,7 +452,77 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         result.push_back(Star(xRes + 0.5, yRes + 0.5, sigmaX, sigmaY, aRes));
     }
 
-    // std::cout << "Number of centroids: " << result.size() << std::endl;
+    return result;
+}
+
+static void GetGGridCoeff(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
+    (*a)[0] = 2*w[2]*w[1]*w[0] + 6*w[2]*w[0]*w[3] + 12*(w[3]*w[4]*w[0]+w[3]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[4]*w[1]*w[0];
+    (*a)[1] = 2*w[2]*w[3]*w[1] + 6*w[3]*w[4]*w[1] - 4*w[2]*w[1]*w[0] + 12*w[2]*w[4]*w[1] - 18*w[3]*w[1]*w[0] - 48*w[4]*w[1]*w[0];
+    (*a)[2] = 2*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) - 4*w[1]*w[2]*w[3] - 18*(w[0]*w[2]*w[3] + w[1]*w[2]*w[4]) - 64*w[0]*w[2]*w[4];
+    (*a)[3] = 2*w[2]*w[1]*w[3] + 6*w[3]*w[1]*w[0] - 4*w[2]*w[3]*w[4] + 12*w[2]*w[3]*w[0] - 18*w[3]*w[4]*w[1] - 48*w[3]*w[4]*w[0];
+    (*a)[4] = 2*w[2]*w[3]*w[4] + 6*w[2]*w[4]*w[1] + 12*(w[3]*w[4]*w[1]+w[4]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[3]*w[4]*w[0];
+
+    (*b)[0] = -w[2]*w[1]*w[0] + 3*w[2]*w[3]*w[0] + 18*(w[3]*w[4]*w[0]+w[4]*w[1]*w[0]) + 32*w[2]*w[4]*w[0];
+    (*b)[1] = w[2]*w[3]*w[1] + 4*w[2]*w[1]*w[0] + 9*(w[3]*w[4]*w[1]+w[3]*w[1]*w[0]) + 12*w[2]*w[4]*w[1];
+    (*b)[2] = 3*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) + 9*(w[2]*w[3]*w[0]-w[2]*w[1]*w[4]);
+    (*b)[3] = -w[2]*w[3]*w[1] - 4*w[2]*w[3]*w[4] - 9*(w[3]*w[4]*w[1] + w[3]*w[0]*w[1]) - 12*w[2]*w[3]*w[0];
+    (*b)[4] = w[2]*w[3]*w[4] - 3*w[2]*w[1]*w[4] - 18*(w[3]*w[0]*w[4]+w[1]*w[0]*w[4]) - 32*w[2]*w[4]*w[0];
+}
+
+Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
+                                                int imageHeight) const {
+    std::vector<Star> result;
+
+    std::cout << "Gaussian Grid (" << np << "x" << np << ")" << std::endl;
+
+    std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
+
+    for (const Point &pt : candidatePts) {
+        int x = pt[0];
+        int y = pt[1];
+        if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
+
+        float nom = 0;
+        float denom = 0;
+
+        for (int j = -nb; j <= nb; j++) {
+            std::vector<int> w;
+            for (int k = -nb; k <= nb; k++) {
+                w.push_back(Get(x + k, y + j, image, imageWidth));
+            }
+            std::vector<int> a(np);
+            std::vector<int> b(np);
+            GetGGridCoeff(w, &a, &b);
+            for (int i = -nb; i <= nb; i++) {
+                float v = Get(x + i, y + j, image, imageWidth);
+                nom += b[i + nb] * ((v == 0) ? -1e6 : std::log(v));
+                denom += a[i + nb] * ((v == 0) ? -1e6 : std::log(v));
+            }
+        }
+
+        float xRes = x + nom/denom;
+
+        nom = 0;
+        denom = 0;
+        for (int i = -nb; i <= nb; i++) {
+            std::vector<int> w;
+            for (int k = -nb; k <= nb; k++) {
+                w.push_back(Get(x + i, y + k, image, imageWidth));
+            }
+            std::vector<int> a(np);
+            std::vector<int> b(np);
+            GetGGridCoeff(w, &a, &b);
+            for (int j = -nb; j <= nb; j++) {
+                float v = Get(x + i, y + j, image, imageWidth);
+                nom += b[j + nb] * ((v == 0) ? -1e6 : std::log(v));
+                denom += a[j + nb] * ((v == 0) ? -1e6 : std::log(v));
+            }
+        }
+
+        float yRes = y + nom/denom;
+
+        result.push_back(Star(xRes + 0.5, yRes + 0.5, nb, nb, Get(x, y, image, imageWidth)));
+    }
 
     return result;
 }
@@ -622,8 +692,6 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
                 result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((float)(xDiameter)) / 2.0f,
                                       ((float)(yDiameter)) / 2.0f,
                                       p.checkedIndices.size() - sizeBefore));
-
-                // std::cout << result.back().position.x << ", " << result.back().position.y << std::endl;
             }
         }
     }

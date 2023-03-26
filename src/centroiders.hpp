@@ -79,9 +79,20 @@ public:
  * Iteratively estimates the center of the centroid. Some papers report that it is slightly more precise than CenterOfGravityAlgorithm, but that has not been our experience.
  */
 class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
-    public:
-        IterativeWeightedCenterOfGravityAlgorithm() { };
-        Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+public:
+    IterativeWeightedCenterOfGravityAlgorithm() { };
+    Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+};
+
+class GaussianGrid : public CentroidAlgorithm {
+public:
+    GaussianGrid(){ };
+    Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+
+private:
+    // Only support 5x5 Gaussian Grid for now
+    const int nb = 2;
+    const int np = nb*2 + 1;
 };
 
 /// Get value of pixel at (x, y) in image with width=w
