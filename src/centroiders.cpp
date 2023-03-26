@@ -412,8 +412,7 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
         sigma = betaX(2);
 
-        // TODO: idk how much we care about making radius accurate
-        result.push_back(Star(xb + 0.5, yb + 0.5, 0));
+        result.push_back(Star(xb + 0.5, yb + 0.5, sigma, sigma, a));
     }
 
     // std::cout << "Number of centroids: " << result.size() << std::endl;
@@ -457,7 +456,6 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         float sigmaX = beta(3);
         float sigmaY = beta(4);
 
-        // TODO: not sure how much we care about making the radius/brightness accurate
         result.push_back(Star(xRes + 0.5, yRes + 0.5, sigmaX, sigmaY, aRes));
     }
 
