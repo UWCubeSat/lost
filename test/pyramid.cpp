@@ -1,5 +1,7 @@
 #include <catch.hpp>
+#include <vector>
 
+#include "fixtures.hpp"
 #include "attitude-utils.hpp"
 #include "io.hpp"
 #include "star-id.hpp"
@@ -87,6 +89,40 @@ TEST_CASE("Never don't identify a pyramid", "[pyramid]") {
     }
 
     CHECK((float)numUniquelyIdentified / numPyramidsToTry >= minFractionUniquelyIdentified);
+    delete[] dbBytes;
 }
 
 // TODO: one where spectrality is nearly zero, and thus needs to be ignored. Might be tested by above test already, but unsure.
+
+TEST_CASE("Pyramid selection: Basic strategy only on starCloisters", "[pyramid] [fast]") {
+    std::vector<Vec3> starCloistersSpatials;
+    for (Star star : starCloisters) {
+        starCloistersSpatials.push_back(smolCamera.CameraToSpatial(star.position).Normalize());
+    }
+
+    PyramidIterator pyIter(starCloistersSpatials, 0.0, 100.0);
+    BestPyramidAtStar py1 = pyIter.Next();
+    BestPyramidAtStar py2 = pyIter.Next();
+    BestPyramidAtStar py3 = pyIter.Next();
+    // CHECK(py1.distancesSum == Approx(3).margin(0.3)); // they're not even close, need to way up the margin
+    // CHECK(py2.distancesSum == Approx(6).margin(0.3));
+    CHECK(py1.distancesSum < py2.distancesSum);
+    // iteration stopped:
+    CHECK(py3.distancesSum < 0);
+
+    // of course, you could use a loop here...but it's way easier to read unrolled, and I have the unlimited power of Github copilot!
+    CHECK(py1.centroidIndices[0] == 0);
+    CHECK(py1.centroidIndices[1] == 1);
+    CHECK(py1.centroidIndices[2] == 2);
+    CHECK(py1.centroidIndices[3] == 3);
+
+    CHECK(py2.centroidIndices[0] == 4);
+    CHECK(py2.centroidIndices[1] == 5);
+    CHECK(py2.centroidIndices[2] == 6);
+    CHECK(py2.centroidIndices[3] == 7);
+}
+
+// TODO:
+// TEST_CASE("Pyramids that exist and are unique are always matched immediately", "[pyramid] [fast]") {
+
+// }
