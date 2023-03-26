@@ -200,13 +200,17 @@ struct PipelineOutput {
 
 /// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
-    /// The number of centroids which were identified as the correct catalog star.
+    /// The number of true centroids which were correctly identified.
     int numCorrect;
 
-    /// The number of centroids which were identified, but as the wrong catalog star.
+    /// The number of centroids which were either:
+    /// + False, but identified as something anyway.
+    /// + True, and identified incorrectly.
+    /// The exact definition of a false centroid is a bit weird, see StarIdsCompare
     int numIncorrect;
 
-    /// The total number of true stars in the image (the number the ideal star-id algorithm would identify)
+    /// The number of stars an ideal algorithm would identify. Ie, the number of true centroids
+    /// which are in inputstars.
     int numTotal;
 };
 
@@ -243,6 +247,26 @@ Pipeline SetPipeline(const PipelineOptions &values);
 void PipelineComparison(const PipelineInputList &expected,
                         const std::vector<PipelineOutput> &actual,
                         const PipelineOptions &values);
+
+/**
+ * Compare expected and actual star identifications.
+ * Useful for debugging and benchmarking.
+ *
+ * The following description is compatible with, but more actionable than, the definitions in the
+ * documentation for StarIdComparison. A star-id is *correct* if the centroid is the closest
+ * centroid to some expected centroid, and the referenced catalog star is the same one as in the
+ * expected star-ids for that centroid. Also permissible is if the centroid is not the closest to
+ * any expected centroid, but it has the same star-id as another star closer to the closest expected
+ * centroid. All other star-ids are *incorrect* (because they are either identifying false stars, or
+ * are incorrect identifications on true stars)
+ *
+ * The "total" in the result is just the number of input stars.
+ */
+StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                // use these to map indices to names for the respective lists of StarIdentifiers
+                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
+                                float centroidThreshold,
+                                const Stars &expectedStars, const Stars &inputStars);
 
 ////////////////
 // DB BUILDER //

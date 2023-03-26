@@ -62,7 +62,8 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
     file = fopen(tsvPath.c_str(), "r");
     if (file == NULL) {
         printf("Error opening file: %s\n", strerror(errno));
-        return result; // TODO
+        exit(1); // TODO: do we want any other error handling?
+        return result;
     }
 
     while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d",
@@ -150,7 +151,8 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
  * @param alpha The transparency of annotations. 0 is completely transparent, 1 is completely opaque.
  * @param rawStarIndexes If true, print the catalog index. This is in contrast with the default behavior, which is to print the name of the catalog star.
  */
-void SurfacePlot(cairo_surface_t *cairoSurface,
+void SurfacePlot(std::string description,
+                 cairo_surface_t *cairoSurface,
                  const Stars &stars,
                  const StarIdentifiers *starIds,
                  const Catalog *catalog,
@@ -162,7 +164,7 @@ void SurfacePlot(cairo_surface_t *cairoSurface,
                  // if true, don't use catalog name
                  bool rawStarIndexes = false) {
     cairo_t *cairoCtx;
-    std::string metadata = "";
+    std::string metadata = description + " ";
 
     cairoCtx = cairo_create(cairoSurface);
     cairo_set_source_rgba(cairoCtx, red, green, blue, alpha);
@@ -994,7 +996,7 @@ public:
     float numMissingStars;
 };
 
-// helper for CentroidsCompare
+/// Create a mapping (in a vector), where keys are indices into `one` and values are indices of the closest centroid in `two`.
 static std::vector<int> FindClosestCentroids(float threshold,
                                               const Stars &one,
                                               const Stars &two) {
@@ -1005,7 +1007,7 @@ static std::vector<int> FindClosestCentroids(float threshold,
         int   closestIndex = -1;
 
         for (int k = 0; k < (int)two.size(); k++) {
-            float currDistance = Distance(one[i].position, two[k].position);
+            float currDistance = (one[i].position - two[k].position).Magnitude();
             if (currDistance < threshold && currDistance < closestDistance) {
                 closestDistance = currDistance;
                 closestIndex = k;
@@ -1040,7 +1042,7 @@ CentroidComparison CentroidsCompare(float threshold,
             actualToExpected[expectedToActual[i]] != i) {
             result.numMissingStars++;
         } else {
-            result.meanError += Distance(expected[i].position, actual[expectedToActual[i]].position);
+            result.meanError += (expected[i].position - actual[expectedToActual[i]].position).Magnitude();
         }
     }
     result.meanError /= (expected.size() - result.numMissingStars);
@@ -1074,40 +1076,54 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     return result;
 }
 
-/**
- * Compare expected and actual star identifications.
- * Useful for debugging and benchmarking.
- *
- * A star-id is *correct* if the centroid is the closest centroid to some expected centroid, and the referenced catalog star is the same one as in the expected star-ids for that centroid. Also permissible is if the centroid is not the closest to any expected centroid, but it has the same star-id as another star closer to the closest expected centroid. All other star-ids are *incorrect*. 
- */
-static StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
-                                       // use these to map indices to names for the respective lists of StarIdentifiers
-                                       const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                       float centroidThreshold,
-                                       const Stars &expectedStars, const Stars &inputStars) {
+// (documentation in hpp)
+StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                // use these to map indices to names for the respective lists of StarIdentifiers
+                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
+                                float centroidThreshold,
+                                const Stars &expectedStars, const Stars &inputStars) {
 
     StarIdComparison result = {
         0, // correct
         0, // incorrect
-        (int)expected.size() // total
+        0, // total
     };
+
+    // EXPECTED STAR IDS
+
     // Get two vectors, both of length expectedCentroids, saying what the actual end expected
     // star-IDs are, or -1 for unidentified stars. Then we can trivially compare the lists by just
     // iterating through.
     std::vector<int> expectedCatalogIndices(expectedStars.size(), -1);
     for (const StarIdentifier &starId : expected) {
+        assert(0 <= starId.starIndex && starId.starIndex <= (int)expectedStars.size());
+        assert(0 <= starId.catalogIndex && starId.catalogIndex <= (int)expectedCatalog.size());
         expectedCatalogIndices[starId.starIndex] = starId.catalogIndex;
     }
     std::vector<int> actualCatalogIndices(expectedStars.size(), -1);
 
+    // CORRELATE NEAREST CENTROIDS
+
     std::vector<int> inputToExpectedCentroids = FindClosestCentroids(centroidThreshold, inputStars, expectedStars);
     std::vector<int> expectedToInputCentroids = FindClosestCentroids(centroidThreshold, expectedStars, inputStars);
+
+    // COMPUTE TOTAL
+    // Count the number of expected stars with at least one input star near them
+    for (int i = 0; i < (int)expectedStars.size(); i++) {
+        if (expectedToInputCentroids[i] != -1) {
+            result.numTotal++;
+        }
+    }
+
+    // COMPUTE CORRECT AND INCORRECT
 
     std::vector<bool> identifiedInputCentroids(inputStars.size(), false);
     for (const StarIdentifier &starId : actual) {
         // as later, there shouldn't be duplicate starIndex. This indicates a bug in the star-id algorithm, not comparison code.
         assert(!identifiedInputCentroids[starId.starIndex]);
         identifiedInputCentroids[starId.starIndex] = true;
+        assert(0 <= starId.starIndex && starId.starIndex <= (int)inputStars.size());
+        assert(0 <= starId.catalogIndex && starId.catalogIndex <= (int)actualCatalog.size());
 
         // check that it's close to an expected centroid...
         if (inputToExpectedCentroids[starId.starIndex] != -1 &&
@@ -1121,6 +1137,19 @@ static StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const St
         // now penalize, if either the star isn't close to anything, or it doesn't agree with the identification on the centroid closest to its closest expected star.
         if (inputToExpectedCentroids[starId.starIndex] == -1
             || actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] != starId.catalogIndex) {
+#if LOST_DEBUG > 2
+            std::cerr << "Eliminating star-id on input index " << starId.starIndex << " with name " << actualCatalog[starId.catalogIndex].name
+                      << " because it's too close to another one." << std::endl;
+            std::cerr << "expected centroid index: " << inputToExpectedCentroids[starId.starIndex] << std::endl;
+            std::cerr << "closest input centroid index: " << expectedToInputCentroids[inputToExpectedCentroids[starId.starIndex]] << std::endl;
+            if (inputToExpectedCentroids[starId.starIndex] != -1) {
+                if (actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] != -1) {
+                    std::cerr << "actual centroid name: " << actualCatalog[actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]]].name << std::endl;
+                } else {
+                    std::cerr << "actual centroid name: none" << std::endl;
+                }
+            }
+#endif
             result.numIncorrect++;
         }
     }
@@ -1139,7 +1168,7 @@ static StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const St
             result.numCorrect++;
         } else {
 #if LOST_DEBUG > 2
-            std::cout << "Expected: " << expectedName
+            std::cerr << "Expected: " << expectedName
                       << " Actual: " << actualName << std::endl;
 #endif
             result.numIncorrect++;
@@ -1184,13 +1213,32 @@ static void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineOptions &) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->InputStars() != NULL);
-    SurfacePlot(cairoSurface,
+    SurfacePlot("pipeline input",
+                cairoSurface,
                 *expected[0]->InputStars(),
                 expected[0]->InputStarIds(),
                 &expected[0]->GetCatalog(),
                 expected[0]->InputAttitude(),
                 // green
                 0.0, 1.0, 0.0, 0.6);
+    cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
+    cairo_surface_destroy(cairoSurface);
+}
+
+static void PipelineComparatorPlotExpected(std::ostream &os,
+                                    const PipelineInputList &expected,
+                                    const std::vector<PipelineOutput> &,
+                                    const PipelineOptions &) {
+    cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
+    assert(expected[0]->ExpectedStars() != NULL);
+    SurfacePlot("expected output",
+                cairoSurface,
+                *expected[0]->ExpectedStars(),
+                expected[0]->ExpectedStarIds(),
+                &expected[0]->GetCatalog(),
+                expected[0]->ExpectedAttitude(),
+                // blu
+                0.2, 0.5, 1.0, 0.7);
     cairo_surface_write_to_png_stream(cairoSurface, OstreamPlotter, &os);
     cairo_surface_destroy(cairoSurface);
 }
@@ -1266,19 +1314,20 @@ static void PipelineComparatorPrintActualCentroids(std::ostream &os,
                    actual[0].starIds.get());
 }
 
-// TODO: add a CLI option to use this!
 /// Plot an annotated image where centroids are annotated with their centroid index. For debugging.
+/// Use whatever stars were input into the star-id algo (so either actual centroids, or inputstars)
 void PipelineComparatorPlotCentroidIndices(std::ostream &os,
                                            const PipelineInputList &expected,
                                            const std::vector<PipelineOutput> &actual,
                                            const PipelineOptions &) {
-    const Stars &stars = actual[0].stars ? *actual[0].stars : *expected[0]->ExpectedStars();
+    const Stars &stars = actual[0].stars ? *actual[0].stars : *expected[0]->InputStars();
     StarIdentifiers identifiers;
     for (int i = 0; i < (int)stars.size(); i++) {
         identifiers.push_back(StarIdentifier(i, i));
     }
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
-    SurfacePlot(cairoSurface,
+    SurfacePlot("centroid indices (input)",
+                cairoSurface,
                 stars,
                 &identifiers,
                 &actual[0].catalog,
@@ -1298,7 +1347,8 @@ static void PipelineComparatorPlotOutput(std::ostream &os,
                                          const PipelineOptions &) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
-    SurfacePlot(cairoSurface,
+    SurfacePlot("pipeline output",
+                cairoSurface,
                 actual[0].stars ? *actual[0].stars : *expected[0]->InputStars(),
                 actual[0].starIds.get(),
                 &actual[0].catalog,
@@ -1495,6 +1545,11 @@ void PipelineComparison(const PipelineInputList &expected,
         LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars(),
                               "--plot-input requires exactly 1 input image, and for centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
                               PipelineComparatorPlotInput, values.plotInput, true);
+    }
+    if (values.plotExpectedInput != "") {
+        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->ExpectedStars(),
+                              "--plot-expected-input requires exactly 1 input image, and for expected centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPlotExpected, values.plotExpectedInput, true);
     }
     if (values.plotOutput != "") {
         LOST_PIPELINE_COMPARE(actual.size() == 1 && (actual[0].stars || actual[0].starIds),

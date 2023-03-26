@@ -254,6 +254,10 @@ Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdo
 Mainly for debugging. Argument is optional. Plot output to PNG, but instead of labeling the stars
 with the catalog star they were identified as, labels them with their centroid index.
 
+If a centroid algo was provided, prints those indices. Otherwise, prints the "input centrtoid"
+indices, which is whatever would be passed to the star-id algo (so for generated images, after
+perturbations and magnitude cutoff is applied).
+
 .TP
 \fB--print-actual-centroids\fP [\fIpath\fP]
 Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
