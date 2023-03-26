@@ -30,8 +30,12 @@ public:
  */
 class LeastSquaresGaussianFit1D : public CentroidAlgorithm{
 public:
-    explicit LeastSquaresGaussianFit1D() {};
+    explicit LeastSquaresGaussianFit1D(int nb) : nb(nb), np(nb*2+1) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+
+private:
+    const int nb;
+    const int np;
 };
 
 /**
@@ -42,9 +46,13 @@ public:
  * Also more computationally expensive than other methods, scales exponentially with increasing window size
  */
 class LeastSquaresGaussianFit2D : public CentroidAlgorithm {
-   public:
-    explicit LeastSquaresGaussianFit2D(){};
+public:
+    explicit LeastSquaresGaussianFit2D(int nb) : nb(nb), np(nb*2+1) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
+
+private:
+    const int nb;
+    const int np;
 };
 
 /// A centroid algorithm for debugging that returns random centroids.

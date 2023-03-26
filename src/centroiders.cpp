@@ -361,9 +361,7 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
                                                 int imageHeight) const {
     std::vector<Star> result;
 
-    std::cout << "1D Gaussian Fit" << std::endl;
-
-    const int nb = 2;
+    std::cout << "1D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
@@ -415,8 +413,6 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         result.push_back(Star(xb + 0.5, yb + 0.5, sigma, sigma, a));
     }
 
-    // std::cout << "Number of centroids: " << result.size() << std::endl;
-
     return result;
 }
 
@@ -424,10 +420,7 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
                                                 int imageHeight) const {
     std::vector<Star> result;
 
-    std::cout << "2D Gaussian Fit" << std::endl;
-
-    const int nb = 2;
-    // const int np = 2 * nb + 1;
+    std::cout << "2D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 

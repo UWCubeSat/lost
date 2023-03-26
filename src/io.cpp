@@ -734,10 +734,10 @@ Pipeline SetPipeline(const PipelineOptions &values) {
             std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "lsgf1d") {
         result.centroidAlgorithm =
-            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit1D());
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit1D(values.centroidFitRadius));
     } else if (values.centroidAlgo == "lsgf2d") {
         result.centroidAlgorithm =
-            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit2D());
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit2D(values.centroidFitRadius));
     } else if (values.centroidAlgo != "") {
         std::cout << "Illegal centroid algorithm." << std::endl;
         exit(1);
