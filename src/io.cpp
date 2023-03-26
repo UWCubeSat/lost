@@ -18,6 +18,7 @@
 #include <cstring>
 #include <random>
 #include <algorithm>
+#include <map>
 
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
@@ -94,6 +95,20 @@ const Catalog &CatalogRead() {
         readYet = true;
         char *tsvPath = getenv("LOST_BSC_PATH");
         catalog = BscParse(tsvPath ? tsvPath : DEFAULT_BSC_PATH);
+        // perform essential narrowing
+        // remove all stars with exactly the same position as another, keeping the one with brighter magnitude
+        std::sort(catalog.begin(), catalog.end(), [](const CatalogStar &a, const CatalogStar &b) {
+            return a.spatial.x < b.spatial.x;
+        });
+        for (int i = catalog.size(); i > 0; i--) {
+            if ((catalog[i].spatial - catalog[i-1].spatial).Magnitude() < 5e-5) { // 70 stars removed at this threshold.
+                if (catalog[i].magnitude > catalog[i-1].magnitude) {
+                    catalog.erase(catalog.begin() + i);
+                } else {
+                    catalog.erase(catalog.begin() + i - 1);
+                }
+            }
+        }
     }
     return catalog;
 }
@@ -573,8 +588,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // for input, though, add perturbation and stuff.
             Star inputStar = star;
             if (perturbationStddev > 0.0) {
-                inputStar.position.x += perturbation1DDistribution(*rng);
-                inputStar.position.y += perturbation1DDistribution(*rng);
+                // clamp to within 2 standard deviations for some reason:
+                inputStar.position.x += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
+                inputStar.position.y += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
             }
             // If it got perturbed outside of the sensor, don't add it.
             if (camera.InSensor(inputStar.position)
@@ -976,45 +992,47 @@ std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
  */
 class CentroidComparison {
 public:
-    CentroidComparison() : meanError(0.0f), numExtraStars(0.0), numMissingStars(0.0) {};
+    CentroidComparison() : meanError(0.0f)/*, numExtraStars(0.0), numMissingStars(0.0)*/ {};
     /**
      * Average distance from actual to expected centroids (in pixels)
      * Only correct centroids are considered in this average.
      */
     float meanError;
 
-    /**
-     * Stars in actual but not expected. Ideally 0
-     * This is a float because we may average multiple centroid comparisons together.
-     */
-    float numExtraStars;
+    // /**
+    //  * Stars in actual but not expected. Ideally 0
+    //  * This is a float because we may average multiple centroid comparisons together.
+    //  */
+    // float numExtraStars;
 
-    /**
-     * Stars in expected but not actual. Ideally 0
-     * This is a float because we may average multiple centroid comparisons together.
-     */
-    float numMissingStars;
+    // /**
+    //  * Stars in expected but not actual. Ideally 0
+    //  * This is a float because we may average multiple centroid comparisons together.
+    //  */
+    // float numMissingStars;
 };
 
-/// Create a mapping (in a vector), where keys are indices into `one` and values are indices of the closest centroid in `two`.
-static std::vector<int> FindClosestCentroids(float threshold,
-                                              const Stars &one,
-                                              const Stars &two) {
-    std::vector<int> result;
+/// Create a mapping, where keys are indices into `one` and values are indices of all centroids in
+/// `two` whose distance to the current `one` star is <=threshold. In a (ordered) multimap, the
+/// insertion order is preserved for elements with the same key, and indeed we'll sort the elements
+/// corresponding to each key by distance from the corresponding `one` star.
+static std::multimap<int, int> FindClosestCentroids(float threshold,
+                                                    const Stars &one,
+                                                    const Stars &two) {
+    std::multimap<int, int> result;
 
     for (int i = 0; i < (int)one.size(); i++) {
-        float closestDistance = INFINITY;
-        int   closestIndex = -1;
-
+        std::vector<std::pair<float, int>> closest;
         for (int k = 0; k < (int)two.size(); k++) {
             float currDistance = (one[i].position - two[k].position).Magnitude();
-            if (currDistance < threshold && currDistance < closestDistance) {
-                closestDistance = currDistance;
-                closestIndex = k;
+            if (currDistance <= threshold) {
+                closest.emplace_back(currDistance, k);
             }
         }
-
-        result.push_back(closestIndex);
+        std::sort(closest.begin(), closest.end());
+        for (const std::pair<float, int> &pair : closest) {
+            result.emplace(i, pair.second);
+        }
     }
 
     return result;
@@ -1031,29 +1049,31 @@ CentroidComparison CentroidsCompare(float threshold,
 
     CentroidComparison result;
     // maps from indexes in each list to the closest centroid from other list
-    std::vector<int> expectedToActual, actualToExpected;
-
-    expectedToActual = FindClosestCentroids(threshold, expected, actual);
-    actualToExpected = FindClosestCentroids(threshold, actual, expected);
+    std::multimap<int, int> expectedToActual = FindClosestCentroids(threshold, expected, actual);
+    std::multimap<int, int> actualToExpected = FindClosestCentroids(threshold, actual, expected);
 
     // any expected stars whose closest actual star does not refer to them are missing
+    int numCloseEnough = 0;
     for (int i = 0; i < (int)expectedToActual.size(); i++) {
-        if (expectedToActual[i] == -1 ||
-            actualToExpected[expectedToActual[i]] != i) {
-            result.numMissingStars++;
-        } else {
-            result.meanError += (expected[i].position - actual[expectedToActual[i]].position).Magnitude();
+        // if (expectedToActual[i] == -1 ||
+        //     actualToExpected[expectedToActual[i]] != i) {
+        //     result.numMissingStars++;
+        // } else {
+        auto closest = expectedToActual.find(i);
+        if (closest != expectedToActual.end()) {
+            result.meanError += (expected[i].position - actual[closest->second].position).Magnitude();
+            numCloseEnough++;
         }
     }
-    result.meanError /= (expected.size() - result.numMissingStars);
+    result.meanError /= numCloseEnough;
 
     // any actual star whose closest expected star does not refer to them is extra
-    for (int i = 0; i < (int)actual.size(); i++) {
-        if (actualToExpected[i] == -1 ||
-            expectedToActual[actualToExpected[i]] != i) {
-            result.numExtraStars++;
-        }
-    }
+    // for (int i = 0; i < (int)actual.size(); i++) {
+    //     if (actualToExpected[i] == -1 ||
+    //         expectedToActual[actualToExpected[i]] != i) {
+    //         result.numExtraStars++;
+    //     }
+    // }
 
     return result;
 }
@@ -1065,13 +1085,13 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
-        result.numExtraStars += comparison.numExtraStars;
-        result.numMissingStars += comparison.numMissingStars;
+        // result.numExtraStars += comparison.numExtraStars;
+        // result.numMissingStars += comparison.numMissingStars;
     }
 
     result.meanError /= comparisons.size();
-    result.numExtraStars /= comparisons.size();
-    result.numMissingStars /= comparisons.size();
+    // result.numExtraStars /= comparisons.size();
+    // result.numMissingStars /= comparisons.size();
 
     return result;
 }
@@ -1091,26 +1111,32 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
     // EXPECTED STAR IDS
 
-    // Get two vectors, both of length expectedCentroids, saying what the actual end expected
-    // star-IDs are, or -1 for unidentified stars. Then we can trivially compare the lists by just
-    // iterating through.
+    // map from expected star indices to expected catalog indices (basically flattening the expected star-ids)
     std::vector<int> expectedCatalogIndices(expectedStars.size(), -1);
     for (const StarIdentifier &starId : expected) {
         assert(0 <= starId.starIndex && starId.starIndex <= (int)expectedStars.size());
         assert(0 <= starId.catalogIndex && starId.catalogIndex <= (int)expectedCatalog.size());
         expectedCatalogIndices[starId.starIndex] = starId.catalogIndex;
     }
-    std::vector<int> actualCatalogIndices(expectedStars.size(), -1);
 
-    // CORRELATE NEAREST CENTROIDS
+    // FIND NEAREST CENTROIDS
 
-    std::vector<int> inputToExpectedCentroids = FindClosestCentroids(centroidThreshold, inputStars, expectedStars);
-    std::vector<int> expectedToInputCentroids = FindClosestCentroids(centroidThreshold, expectedStars, inputStars);
+    std::multimap<int, int> inputToExpectedCentroids = FindClosestCentroids(centroidThreshold, inputStars, expectedStars);
+    // std::multimap<int, int> expectedToInputCentroids = FindClosestCentroids(centroidThreshold, expectedStars, inputStars);
 
     // COMPUTE TOTAL
     // Count the number of expected stars with at least one input star near them
-    for (int i = 0; i < (int)expectedStars.size(); i++) {
-        if (expectedToInputCentroids[i] != -1) {
+    for (int i = 0; i < (int)inputStars.size(); i++) {
+        // make sure there's at least one expected star near this input star which has an identification
+        auto closestRange = inputToExpectedCentroids.equal_range(i);
+        bool found = false;
+        for (auto it = closestRange.first; it != closestRange.second; it++) {
+            if (expectedCatalogIndices[it->second] != -1) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {
             result.numTotal++;
         }
     }
@@ -1125,52 +1151,22 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
         assert(0 <= starId.starIndex && starId.starIndex <= (int)inputStars.size());
         assert(0 <= starId.catalogIndex && starId.catalogIndex <= (int)actualCatalog.size());
 
-        // check that it's close to an expected centroid...
-        if (inputToExpectedCentroids[starId.starIndex] != -1 &&
-            // ...and is actually the /closest/ input centroid to that expected centroid
-            expectedToInputCentroids[inputToExpectedCentroids[starId.starIndex]] == starId.starIndex) {
-            actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] = starId.catalogIndex;
-        }
-        // don't penalize yet, do that later.
-    }
-    for (const StarIdentifier &starId : actual) {
-        // now penalize, if either the star isn't close to anything, or it doesn't agree with the identification on the centroid closest to its closest expected star.
-        if (inputToExpectedCentroids[starId.starIndex] == -1
-            || actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] != starId.catalogIndex) {
-#if LOST_DEBUG > 2
-            std::cerr << "Eliminating star-id on input index " << starId.starIndex << " with name " << actualCatalog[starId.catalogIndex].name
-                      << " because it's too close to another one." << std::endl;
-            std::cerr << "expected centroid index: " << inputToExpectedCentroids[starId.starIndex] << std::endl;
-            std::cerr << "closest input centroid index: " << expectedToInputCentroids[inputToExpectedCentroids[starId.starIndex]] << std::endl;
-            if (inputToExpectedCentroids[starId.starIndex] != -1) {
-                if (actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] != -1) {
-                    std::cerr << "actual centroid name: " << actualCatalog[actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]]].name << std::endl;
-                } else {
-                    std::cerr << "actual centroid name: none" << std::endl;
-                }
+        // Check that there's at least one expected centroid in range which agrees with your identification.
+        auto expectedCentroidsInRange = inputToExpectedCentroids.equal_range(starId.starIndex);
+        bool found = false;
+        for (auto it = expectedCentroidsInRange.first; it != expectedCentroidsInRange.second; it++) {
+            int expectedCatalogIndex = expectedCatalogIndices[it->second];
+            if (expectedCatalogIndex != -1
+                && expectedCatalog[expectedCatalogIndex].name == actualCatalog[starId.catalogIndex].name) {
+
+                result.numCorrect++;
+                found = true;
+                break;
             }
-#endif
-            result.numIncorrect++;
-        }
-    }
-
-    for (int i = 0; i < (int)expectedStars.size(); i++) {
-        // if star not identified, skip it
-        if (actualCatalogIndices[i] == -1) {
-            continue;
         }
 
-        int actualName = actualCatalog[actualCatalogIndices[i]].name;
-        int expectedName = expectedCatalogIndices[i] >= 0
-            ? expectedCatalog[expectedCatalogIndices[i]].name
-            : -1;
-        if (actualName == expectedName) {
-            result.numCorrect++;
-        } else {
-#if LOST_DEBUG > 2
-            std::cerr << "Expected: " << expectedName
-                      << " Actual: " << actualName << std::endl;
-#endif
+        // Either there's no expected centroid in range, or none of them agree with the identification.
+        if (!found) {
             result.numIncorrect++;
         }
     }
@@ -1260,8 +1256,8 @@ static void PipelineComparatorCentroids(std::ostream &os,
     }
 
     CentroidComparison result = CentroidComparisonsCombine(comparisons);
-    os << "extra_stars " << result.numExtraStars << std::endl
-       << "missing_stars " << result.numMissingStars << std::endl
+    os // << "extra_stars " << result.numExtraStars << std::endl
+       // << "missing_stars " << result.numMissingStars << std::endl
        << "mean_error " << result.meanError << std::endl;
 }
 

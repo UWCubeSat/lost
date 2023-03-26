@@ -115,6 +115,9 @@ public:
     /// Cf how the star-ID comparator works for a reference implementation.
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
+
+    // sometimes, 
+    virtual const std::vector<int> *InputToExpectedStarMapping() const { return NULL; };
 };
 
 /**
@@ -200,17 +203,16 @@ struct PipelineOutput {
 
 /// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
-    /// The number of true centroids which were correctly identified.
+    /// The number of centroids in the image which are close to an expected centroid that had an
+    /// expected identification the same as the actual identification.
     int numCorrect;
 
     /// The number of centroids which were either:
     /// + False, but identified as something anyway.
-    /// + True, and identified incorrectly.
-    /// The exact definition of a false centroid is a bit weird, see StarIdsCompare
+    /// + True, with an identification that did not agree with any sufficiently close expected centroid's expected identification.
     int numIncorrect;
 
-    /// The number of stars an ideal algorithm would identify. Ie, the number of true centroids
-    /// which are in inputstars.
+    /// The number of centroids sufficiently close to a true expected star.
     int numTotal;
 };
 
