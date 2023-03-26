@@ -131,25 +131,31 @@ public:
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,
                            bool shotNoise, int oversampling,
                            int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
+                           int cutoffMag,
                            float perturbationStddev);
 
 
-    const Image *InputImage() const { return &image; };
-    const Stars *InputStars() const { return &stars; };
-    const Camera *InputCamera() const { return &camera; };
-    const StarIdentifiers *InputStarIds() const { return &starIds; };
-    bool InputStarsIdentified() const { return true; };
-    const Attitude *InputAttitude() const { return &attitude; };
-    const Catalog &GetCatalog() const { return catalog; };
+    const Image *InputImage() const override { return &image; };
+    const Stars *InputStars() const override { return &inputStars; };
+    const Stars *ExpectedStars() const override { return &expectedStars; };
+    const Camera *InputCamera() const override { return &camera; };
+    const StarIdentifiers *InputStarIds() const override { return &inputStarIds; };
+    const StarIdentifiers *ExpectedStarIds() const override { return &expectedStarIds; };
+    const Attitude *InputAttitude() const override { return &attitude; };
+    const Catalog &GetCatalog() const override { return catalog; };
 
 private:
     std::vector<unsigned char> imageData;
     Image image;
-    Stars stars;
+    /// Includes false stars and very dim stars. Any further filtering that needs to happen before comparison happens in the comparator itself.
+    Stars expectedStars;
+    /// Includes perturbations, filtered down to magnitude, etc. Whatever the star-id algorithm needs.
+    Stars inputStars;
     Camera camera;
     Attitude attitude;
     const Catalog &catalog;
-    StarIdentifiers starIds;
+    StarIdentifiers inputStarIds;
+    StarIdentifiers expectedStarIds;
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
@@ -162,9 +168,9 @@ public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
     ~PngPipelineInput();
 
-    const Image *InputImage() const { return &image; };
-    const Camera *InputCamera() const { return &camera; };
-    const Catalog &GetCatalog() const { return catalog; };
+    const Image *InputImage() const override { return &image; };
+    const Camera *InputCamera() const override { return &camera; };
+    const Catalog &GetCatalog() const override { return catalog; };
 
 private:
     Image image;

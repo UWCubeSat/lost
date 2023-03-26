@@ -106,6 +106,10 @@ void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName, unsign
 Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn);
 Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
+/// returns some relative brightness measure, which is proportional to the total number of photons received from a star.
+/// As always, the magnitude is actually 100* the usual magnitude
+float MagToBrightness(int magnitude);
+
 /**
  * Remove unwanted stars from an unfiltered catalog.
  *

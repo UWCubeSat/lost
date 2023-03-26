@@ -416,7 +416,7 @@ public:
  * @param stddev The standard deviation of spread of the star. Higher values make stars more spread out. See command line documentation.
  * @return Indefinite integral of brightness density.
  */
-static float motionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
                                           float t, float stddev) {
     const Vec2 &p0 = generatedStar.position;
     const Vec2 &delta = generatedStar.delta;
@@ -428,11 +428,28 @@ static float motionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar
         * erf((t*delta.MagnitudeSq() + d0.x*delta.x + d0.y*delta.y) / (stddev*sqrt(2)*delta.Magnitude()));
 }
 
-/// Like motinoBlurredPixelBrightness, but for when motion blur is disabled.
-static float staticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+/// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
+static float StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
                                    float stddev) {
     const Vec2 d0 = generatedStar.position - pixel;
     return generatedStar.peakBrightness * exp(-d0.MagnitudeSq() / (2*stddev*stddev));
+}
+
+/**
+ * Compute how likely a star is to be imaged, given a "cutoff" magnitude that the camera can see half of.
+ *
+ * The theory is that there's a threshold of total light energy that must be received to image a
+ * star. The main random factors are shot noise and read noise, but to simplify things so we don't
+ * need to think about photons, we only focus on read noise, which we assume has a standard
+ * deviation 1/5th of the cutoff brightness. We compute the probability that, taking read noise into
+ * account, the observed energy would be less than the cutoff energy.
+ */
+static float CentroidImagingProbability(float mag, float cutoffMag) {
+    float brightness = MagToBrightness(mag);
+    float cutoffBrightness = MagToBrightness(cutoffMag);
+    float stddev = cutoffBrightness/5.0;
+    // CDF of Normal distribution with given mean and stddev
+    return 1 - (0.5 * (1 + erf((cutoffBrightness-brightness)/(stddev*sqrt(2.0)))));
 }
 
 const int kMaxBrightness = 255;
@@ -460,6 +477,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int numFalseStars,
                                                int falseStarMinMagnitude,
                                                int falseStarMaxMagnitude,
+                                               int cutoffMag,
                                                float perturbationStddev)
     : camera(camera), attitude(attitude), catalog(catalog) {
 
@@ -524,7 +542,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 delta = {0, 0}; // avoid floating point funny business
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
-            float peakBrightness = referenceBrightness * pow(10.0, catalogStar.magnitude/-250.0);
+            float peakBrightness = referenceBrightness * MagToBrightness(catalogStar.magnitude);
             float interestingThreshold = 0.01; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
             // inverse of the function defining the Gaussian distribution: Find out how far from the
@@ -539,17 +557,31 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
 
             // Now add the star to the input and expected lists.
-            // don't add false stars tho
+            // We do actually want to add false stars as well, because:
+            // a) A centroider isn't any worse because it picks up a false star that looks exactly like a normal star, so why should we exclude them from compare-centroids?
+            // b) We want to feed false stars into star-ids to evaluate their false-star resilience without running centroiding.
+
+            // Add all stars to expected, cause that's how we roll
+            expectedStars.push_back(star);
+            // and provide expected identifications for all of them
             if (isTrueStar) {
-                Star starToAdd = star;
-                if (perturbationStddev > 0.0) {
-                    starToAdd.position.x += perturbation1DDistribution(*rng);
-                    starToAdd.position.y += perturbation1DDistribution(*rng);
-                }
-                // If it got perturbed outside of the sensor, don't add it.
-                if (camera.InSensor(starToAdd.position)) {
-                    stars.push_back(starToAdd);
-                    starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                expectedStarIds.push_back(StarIdentifier(expectedStars.size()-1, i));
+            }
+
+            // for input, though, add perturbation and stuff.
+            Star inputStar = star;
+            if (perturbationStddev > 0.0) {
+                inputStar.position.x += perturbation1DDistribution(*rng);
+                inputStar.position.y += perturbation1DDistribution(*rng);
+            }
+            // If it got perturbed outside of the sensor, don't add it.
+            if (camera.InSensor(inputStar.position)
+                // and also don't add it if it's too dim.
+                && (cutoffMag >= 10000
+                    || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
+                inputStars.push_back(inputStar);
+                if (isTrueStar) {
+                    inputStarIds.push_back(StarIdentifier(inputStars.size()-1, i));
                 }
             }
         }
@@ -596,11 +628,11 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                         float curPhotons;
                         if (motionBlurEnabled) {
                             curPhotons =
-                                (motionBlurredPixelBrightness({x, y}, star, tEnd, starSpreadStdDev)
-                                 - motionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev))
+                                (MotionBlurredPixelBrightness({x, y}, star, tEnd, starSpreadStdDev)
+                                 - MotionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev))
                                 / oversamplingBrightnessFactor;
                         } else {
-                            curPhotons = staticPixelBrightness({x, y}, star, starSpreadStdDev)
+                            curPhotons = StaticPixelBrightness({x, y}, star, starSpreadStdDev)
                                 / oversamplingBrightnessFactor;
                         }
 
@@ -732,8 +764,9 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                 values.generateShotNoise,
                 values.generateOversampling,
                 values.generateNumFalseStars,
-                values.generateFalseMinMag,
-                values.generateFalseMaxMag,
+                (values.generateFalseMinMag * 100),
+                (values.generateFalseMaxMag * 100),
+                (values.generateCutoffMag * 100),
                 values.generatePerturbationStddev);
 
             result.push_back(std::unique_ptr<PipelineInput>(curr));
@@ -1041,74 +1074,75 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
     return result;
 }
 
-bool StarIdCompare(const StarIdentifier &a, const StarIdentifier &b) {
-    return a.starIndex < b.starIndex;
-}
-
 /**
  * Compare expected and actual star identifications.
  * Useful for debugging and benchmarking.
+ *
+ * A star-id is *correct* if the centroid is the closest centroid to some expected centroid, and the referenced catalog star is the same one as in the expected star-ids for that centroid. Also permissible is if the centroid is not the closest to any expected centroid, but it has the same star-id as another star closer to the closest expected centroid. All other star-ids are *incorrect*. 
  */
 static StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
-                                // use these to map indices to names for the respective lists of StarIdentifiers
-                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                // stars are ignored if threshold<0
-                                float centroidThreshold,
-                                const Stars *expectedStars, const Stars *actualStars) {
+                                       // use these to map indices to names for the respective lists of StarIdentifiers
+                                       const Catalog &expectedCatalog, const Catalog &actualCatalog,
+                                       float centroidThreshold,
+                                       const Stars &expectedStars, const Stars &inputStars) {
 
     StarIdComparison result = {
         0, // correct
         0, // incorrect
         (int)expected.size() // total
     };
-    StarIdentifiers expectedSorted = expected;
-    StarIdentifiers actualSorted;
-    if (expectedStars && actualStars) {
-        // map from actual centroid index -> expected centroid index
-        std::vector<int> closestCentroids =
-            FindClosestCentroids(centroidThreshold, *actualStars, *expectedStars);
-        // ensure that even if two actual centroids are close to the same expected centroid, we
-        // don't double count.
-        std::vector<bool> expectedCentroidsUsed(expected.size());
+    // Get two vectors, both of length expectedCentroids, saying what the actual end expected
+    // star-IDs are, or -1 for unidentified stars. Then we can trivially compare the lists by just
+    // iterating through.
+    std::vector<int> expectedCatalogIndices(expectedStars.size(), -1);
+    for (const StarIdentifier &starId : expected) {
+        expectedCatalogIndices[starId.starIndex] = starId.catalogIndex;
+    }
+    std::vector<int> actualCatalogIndices(expectedStars.size(), -1);
 
-        for (const StarIdentifier &starId : actual) {
-            int closestIndex = closestCentroids[starId.starIndex];
+    std::vector<int> inputToExpectedCentroids = FindClosestCentroids(centroidThreshold, inputStars, expectedStars);
+    std::vector<int> expectedToInputCentroids = FindClosestCentroids(centroidThreshold, expectedStars, inputStars);
 
-            if (closestIndex == -1) {
-                result.numIncorrect++;
-            } else if (!expectedCentroidsUsed[closestIndex]) {
-                expectedCentroidsUsed[closestIndex] = true;
-                actualSorted.push_back(
-                    StarIdentifier(closestIndex, starId.catalogIndex, starId.weight));
-            }
+    std::vector<bool> identifiedInputCentroids(inputStars.size(), false);
+    for (const StarIdentifier &starId : actual) {
+        // as later, there shouldn't be duplicate starIndex. This indicates a bug in the star-id algorithm, not comparison code.
+        assert(!identifiedInputCentroids[starId.starIndex]);
+        identifiedInputCentroids[starId.starIndex] = true;
+
+        // check that it's close to an expected centroid...
+        if (inputToExpectedCentroids[starId.starIndex] != -1 &&
+            // ...and is actually the /closest/ input centroid to that expected centroid
+            expectedToInputCentroids[inputToExpectedCentroids[starId.starIndex]] == starId.starIndex) {
+            actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] = starId.catalogIndex;
         }
-    } else {
-        actualSorted = actual;
+        // don't penalize yet, do that later.
+    }
+    for (const StarIdentifier &starId : actual) {
+        // now penalize, if either the star isn't close to anything, or it doesn't agree with the identification on the centroid closest to its closest expected star.
+        if (inputToExpectedCentroids[starId.starIndex] == -1
+            || actualCatalogIndices[inputToExpectedCentroids[starId.starIndex]] != starId.catalogIndex) {
+            result.numIncorrect++;
+        }
     }
 
-    sort(expectedSorted.begin(), expectedSorted.end(), StarIdCompare);
-    sort(actualSorted.begin(), actualSorted.end(), StarIdCompare);
-    // throw an error if any duplicates in actualSorted
-    for (int i = 1; i < (int)actualSorted.size(); i++) {
-        assert(actualSorted[i].starIndex != actualSorted[i-1].starIndex);
-    }
+    for (int i = 0; i < (int)expectedStars.size(); i++) {
+        // if star not identified, skip it
+        if (actualCatalogIndices[i] == -1) {
+            continue;
+        }
 
-    auto currActual = actualSorted.cbegin();
-    for (const StarIdentifier &currExpected : expectedSorted) {
-        if (currActual != actualSorted.cend() &&
-            currActual->starIndex == currExpected.starIndex) {
-
-            if (actualCatalog[currActual->catalogIndex].name == expectedCatalog[currExpected.catalogIndex].name) {
-                result.numCorrect++;
-            } else {
+        int actualName = actualCatalog[actualCatalogIndices[i]].name;
+        int expectedName = expectedCatalogIndices[i] >= 0
+            ? expectedCatalog[expectedCatalogIndices[i]].name
+            : -1;
+        if (actualName == expectedName) {
+            result.numCorrect++;
+        } else {
 #if LOST_DEBUG > 2
-                std::cout << "Expected: " << expectedCatalog[currExpected.catalogIndex].name
-                          << " Actual: " << actualCatalog[currActual->catalogIndex].name << std::endl;
+            std::cout << "Expected: " << expectedName
+                      << " Actual: " << actualName << std::endl;
 #endif
-                result.numIncorrect++;
-            }
-
-            currActual++;
+            result.numIncorrect++;
         }
     }
 
@@ -1265,7 +1299,7 @@ static void PipelineComparatorPlotOutput(std::ostream &os,
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     SurfacePlot(cairoSurface,
-                actual[0].stars ? *actual[0].stars : *expected[0]->ExpectedStars(),
+                actual[0].stars ? *actual[0].stars : *expected[0]->InputStars(),
                 actual[0].starIds.get(),
                 &actual[0].catalog,
                 actual[0].attitude.get(),
@@ -1280,21 +1314,24 @@ static void PipelineComparatorStarIds(std::ostream &os,
                                       const PipelineInputList &expected,
                                       const std::vector<PipelineOutput> &actual,
                                       const PipelineOptions &values) {
-    float centroidThreshold = actual[0].stars
-        ? values.centroidCompareThreshold
-        : 0.0f;
-
-    std::vector<StarIdComparison> comparisons;
     int numImagesCorrect = 0;
     int numImagesIncorrect = 0;
     int numImagesTotal = expected.size();
     for (int i = 0; i < numImagesTotal; i++) {
+        // since the actual star IDs exist, it must have gotten input from somewhere!
+        // TODO: overhaul: It seems that in these comparators there should be a more fundamental way to figure out the input that was actually sent to a stage.
+        // I.e., instead of having expected and actual arguments, have some sort of PipelineRunSummary object, where the InputStars method looks at actual, then input.
+        assert(actual[i].stars.get() || expected[i]->InputStars());
+
+        const Stars &inputStars = actual[i].stars.get()
+            ? *actual[i].stars.get()
+            : *expected[i]->InputStars();
         StarIdComparison comparison =
             StarIdsCompare(*expected[i]->ExpectedStarIds(), *actual[i].starIds,
                            expected[i]->GetCatalog(), actual[i].catalog,
-                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get());
+                           values.centroidCompareThreshold, *expected[i]->ExpectedStars(), inputStars);
 
-        if (comparisons.size() == 1) {
+        if (numImagesTotal == 1) {
             os << "starid_num_correct " << comparison.numCorrect << std::endl;
             os << "starid_num_incorrect " << comparison.numIncorrect << std::endl;
             os << "starid_num_total " << comparison.numTotal << std::endl;
@@ -1485,8 +1522,8 @@ void PipelineComparison(const PipelineInputList &expected,
                               PipelineComparatorCentroids, values.compareCentroids, false);
     }
     if (values.compareStarIds != "") {
-        LOST_PIPELINE_COMPARE(expected[0]->ExpectedStarIds() && actual[0].starIds,
-                              "--compare-star-ids requires at least 1 output image, and for expected star IDs to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
+        LOST_PIPELINE_COMPARE(expected[0]->ExpectedStarIds() && actual[0].starIds && expected[0]->ExpectedStars(),
+                              "--compare-star-ids requires at least 1 output image, and for expected star IDs and centroids to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorStarIds, values.compareStarIds, false);
     }
     if (values.printAttitude != "") {

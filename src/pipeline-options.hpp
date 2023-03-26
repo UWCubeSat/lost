@@ -70,5 +70,6 @@ LOST_CLI_OPTION("generate-false-stars"         , int   , generateNumFalseStars  
 LOST_CLI_OPTION("generate-false-min-mag"       , float , generateFalseMinMag       , 8     , atof(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-false-max-mag"       , float , generateFalseMaxMag       , 1     , atof(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-perturb-centroids"   , float , generatePerturbationStddev, 0     , atof(optarg)    , 0.2)
+LOST_CLI_OPTION("generate-cutoff-mag"          , float , generateCutoffMag         , 6.0   , atof(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-seed"                , int   , generateSeed              , 394859, atoi(optarg)    , kNoDefaultArgument)
 LOST_CLI_OPTION("generate-time-based-seed"     , bool  , timeSeed                  , false , atobool(optarg) , true)

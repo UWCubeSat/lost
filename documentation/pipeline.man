@@ -213,6 +213,12 @@ The maximum (strongest) magnitude that generated false stars should have. Defaul
 Introduce artificial centroiding error. If provided, all the input and expected centroids will be shifted randomly according to a 2D Gaussian distribution with the given standard deviation (defaults to 0.2 pixel stddev). For evaluating star-id performance vs centroid error.
 
 .TP
+\fB--generate-cutoff-mag\fP \fIhalf-chance-mag\fP
+When evaluating star-id algos on generated images, we don't want every single catalog star in the FOV to be fed into the star-id algorithm. This option lets you control that! Every catalog star has some probability of being turned into an input centroid, and this specifies the magnitude that will have a 50% probability of being included in the input centroid list. An overly complicated mathematical function determines how that probability changes as you increase and decrease the magnitude from there, but it falls to 0 or 1 pretty quickly at either side.
+
+Set to a value of 100 or greater to disable cutoff and include all centroids.
+
+.TP
 \fB--generate-oversampling\fP \fInum-samples\fP
 Perform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
 
