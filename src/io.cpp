@@ -455,6 +455,9 @@ const int kMaxBrightness = 255;
 GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Attitude attitude,
                                                Camera camera,
+                                               std::default_random_engine *rng,
+
+                                               bool centroidsOnly,
                                                float observedReferenceBrightness,
                                                float starSpreadStdDev,
                                                float sensitivity,
@@ -468,11 +471,11 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int numFalseStars,
                                                int falseStarMinMagnitude,
                                                int falseStarMaxMagnitude,
-                                               int seed)
+                                               float perturbationStddev)
     : camera(camera), attitude(attitude), catalog(catalog) {
 
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
-    std::default_random_engine rng(seed);
+    assert(perturbationStddev >= 0.0);
 
     // in photons
     float referenceBrightness = observedReferenceBrightness / sensitivity;
@@ -487,8 +490,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         std::cerr << "WARNING: oversampling was not a perfect square. Rounding up to "
                   << oversamplingPerAxis*oversamplingPerAxis << "." << std::endl;
     }
-    std::vector<float> photonsBuffer(image.width*image.height, 0);
-
     bool motionBlurEnabled = exposureTime > 0 && abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
     if (!motionBlurEnabled) {
         exposureTime = 1.0;
@@ -501,15 +502,18 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
     std::vector<GeneratedStar> generatedStars;
 
+    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
+    std::normal_distribution<float> perturbation1DDistribution(0.0, perturbationStddev);
+
     Catalog catalogWithFalse = catalog;
 
     std::uniform_real_distribution<float> uniformDistribution(0.0, 1.0);
     std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
     for (int i = 0; i < numFalseStars; i++) {
-        float ra = uniformDistribution(rng) * 2*M_PI;
+        float ra = uniformDistribution(*rng) * 2*M_PI;
         // to be uniform around sphere. Borel-Kolmogorov paradox is calling
-        float de = asin(uniformDistribution(rng)*2 - 1);
-        float magnitude = magnitudeDistribution(rng);
+        float de = asin(uniformDistribution(*rng)*2 - 1);
+        float magnitude = magnitudeDistribution(*rng);
 
         catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
     }
@@ -545,13 +549,29 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                              -catalogStar.magnitude);
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
 
-            // don't add false stars to centroids or star ids
+            // Now add the star to the input and expected lists.
+            // don't add false stars tho
             if (isTrueStar) {
-                stars.push_back(star);
-                starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                Star starToAdd = star;
+                if (perturbationStddev > 0.0) {
+                    starToAdd.position.x += perturbation1DDistribution(*rng);
+                    starToAdd.position.y += perturbation1DDistribution(*rng);
+                }
+                // If it got perturbed outside of the sensor, don't add it.
+                if (camera.InSensor(starToAdd.position)) {
+                    stars.push_back(starToAdd);
+                    starIds.push_back(StarIdentifier(stars.size() - 1, i));
+                }
             }
         }
     }
+
+    if (centroidsOnly) {
+        // we're outta here
+        return;
+    }
+
+    std::vector<float> photonsBuffer(image.width*image.height, 0);
 
     for (const GeneratedStar &star : generatedStars) {
         // delta will be exactly (0,0) when motion blur disabled
@@ -616,7 +636,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += darkCurrent;
 
         // read noise (Gaussian)
-        curBrightness += readNoiseDist(rng);
+        curBrightness += readNoiseDist(*rng);
 
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
@@ -631,7 +651,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 exit(1);
             }
             std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
-            quantizedPhotons = shotNoiseDist(rng);
+            quantizedPhotons = shotNoiseDist(*rng);
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }
@@ -643,44 +663,96 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     }
 }
 
+/**
+ * Generates a random attitude for coverage testing.
+ * Takes a random engine as a parameter.
+ */
+static Attitude RandomAttitude(std::default_random_engine* pReng) {
+    std::uniform_real_distribution<float> randomAngleDistribution(0, 1);
+
+    // normally the ranges of the Ra and Dec are:
+    // Dec: [-90 deg, 90 deg] --> [-pi/2 rad, pi/2 rad], where negative means south
+    // of the celestial equator and positive means north
+    // Ra: [0 deg, 360 deg] --> [0 rad, 2pi rad ]
+    // Roll: [0 rad, 2 pi rad]
+
+    float randomRa = 2 *  M_PI * randomAngleDistribution(*pReng);
+    float randomDec = (M_PI / 2) - acos(1 - 2 * randomAngleDistribution(*pReng)); //acos returns a float in range [0, pi]
+    float randomRoll = 2 *  M_PI * randomAngleDistribution(*pReng);
+
+    Attitude randAttitude = Attitude(SphericalToQuaternion(randomRa, randomDec, randomRoll));
+
+    return randAttitude;
+}
+
 /// Create a GeneratedPipelineInput based on the command line options in `values`
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
 
+    int seed;
+
+    // time based seed if option specified
+    if (values.timeSeed) {
+        seed = time(0);
+    } else {
+        seed = values.generateSeed;
+    }
+
+
+    std::default_random_engine rng(seed);
+
     // TODO: allow random angle generation?
     Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
-                                                         DegToRad(values.generateDe),
-                                                         DegToRad(values.generateRoll)));
+                                                       DegToRad(values.generateDe),
+                                                       DegToRad(values.generateRoll)));
+
     Attitude motionBlurDirection = Attitude(SphericalToQuaternion(DegToRad(values.generateBlurRa),
                                                                   DegToRad(values.generateBlurDe),
                                                                   DegToRad(values.generateBlurRoll)));
-
     PipelineInputList result;
 
     float focalLength = FocalLengthFromOptions(values);
 
-    for (int i = 0; i < values.generate; i++) {
-        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
-            CatalogRead(),
-            attitude,
-            Camera(focalLength, values.generateXRes, values.generateYRes),
-            values.generateRefBrightness,
-            values.generateSpreadStdDev,
-            values.generateSensitivity,
-            values.generateDarkCurrent,
-            values.generateReadNoiseStdDev,
-            motionBlurDirection,
-            values.generateExposure,
-            values.generateReadoutTime,
-            values.generateShotNoise,
-            values.generateOversampling,
-            values.generateNumFalseStars,
-            values.generateFalseMinMag,
-            values.generateFalseMaxMag,
-            values.generateSeed);
 
-        result.push_back(std::unique_ptr<PipelineInput>(curr));
+
+    for (int i = 0; i < values.generate; i++) {
+
+
+        Attitude inputAttitude;
+        if (values.generateRandomAttitudes) {
+            inputAttitude = RandomAttitude(&rng);
+        } else {
+            inputAttitude = attitude;
+        }
+
+        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
+                CatalogRead(),
+                inputAttitude,
+                Camera(focalLength, values.generateXRes, values.generateYRes),
+                &rng,
+
+                values.generateCentroidsOnly,
+                values.generateRefBrightness,
+                values.generateSpreadStdDev,
+                values.generateSensitivity,
+                values.generateDarkCurrent,
+                values.generateReadNoiseStdDev,
+                motionBlurDirection,
+                values.generateExposure,
+                values.generateReadoutTime,
+                values.generateShotNoise,
+                values.generateOversampling,
+                values.generateNumFalseStars,
+                values.generateFalseMinMag,
+                values.generateFalseMaxMag,
+                values.generatePerturbationStddev);
+
+            result.push_back(std::unique_ptr<PipelineInput>(curr));
+
+
     }
+
+
 
     return result;
 }
@@ -1072,9 +1144,6 @@ static StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const St
         }
     }
 
-    result.fractionCorrect = (float)result.numCorrect / result.numTotal;
-    result.fractionIncorrect = (float)result.numIncorrect / result.numTotal;
-
     return result;
 }
 
@@ -1248,31 +1317,32 @@ static void PipelineComparatorStarIds(std::ostream &os,
         : 0.0f;
 
     std::vector<StarIdComparison> comparisons;
-    for (int i = 0; i < (int)expected.size(); i++) {
-        comparisons.push_back(
+    int numImagesCorrect = 0;
+    int numImagesIncorrect = 0;
+    int numImagesTotal = expected.size();
+    for (int i = 0; i < numImagesTotal; i++) {
+        StarIdComparison comparison =
             StarIdsCompare(*expected[i]->ExpectedStarIds(), *actual[i].starIds,
                            expected[i]->GetCatalog(), actual[i].catalog,
-                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get()));
+                           centroidThreshold, expected[i]->ExpectedStars(), actual[i].stars.get());
+
+        if (comparisons.size() == 1) {
+            os << "starid_num_correct " << comparison.numCorrect << std::endl;
+            os << "starid_num_incorrect " << comparison.numIncorrect << std::endl;
+            os << "starid_num_total " << comparison.numTotal << std::endl;
+        }
+
+        if (comparison.numCorrect > 0 && comparison.numIncorrect == 0) {
+            numImagesCorrect++;
+        }
+        if (comparison.numIncorrect > 0) {
+            numImagesIncorrect++;
+        }
     }
 
-    if (comparisons.size() == 1) {
-        os << "starid_num_correct " << comparisons[0].numCorrect << std::endl;
-        os << "starid_num_incorrect " << comparisons[0].numIncorrect << std::endl;
-        os << "starid_num_total " << comparisons[0].numTotal << std::endl;
-    }
-
-    float fractionIncorrectSum = 0;
-    float fractionCorrectSum = 0;
-    for (const StarIdComparison &comparison : comparisons) {
-        fractionIncorrectSum += comparison.fractionIncorrect;
-        fractionCorrectSum += comparison.fractionCorrect;
-    }
-
-    float fractionIncorrectMean = fractionIncorrectSum / comparisons.size();
-    float fractionCorrectMean = fractionCorrectSum / comparisons.size();
-
-    os << "starid_fraction_correct " << fractionCorrectMean << std::endl;
-    os << "starid_fraction_incorrect " << fractionIncorrectMean << std::endl;
+    // A "correct" image is one where at least two stars are correctly id'd and none are incorrectly id'd
+    os << "starid_num_images_correct " << numImagesCorrect << std::endl;
+    os << "starid_num_images_incorrect " << numImagesIncorrect << std::endl;
 }
 
 /// Print the identifed attitude to `os` in Euler angle format.
@@ -1301,6 +1371,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
+
     float angleThreshold = DegToRad(values.attitudeCompareThreshold);
 
     float attitudeErrorSum = 0.0f;
@@ -1311,6 +1382,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
         Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
         float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).Angle();
         assert(attitudeError >= 0);
+
         attitudeErrorSum += attitudeError;
         if (attitudeError <= angleThreshold) {
             numCorrect++;
