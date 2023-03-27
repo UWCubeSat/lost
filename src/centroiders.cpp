@@ -455,7 +455,7 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
     return result;
 }
 
-static void GetGGridCoeff(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
+static void GetGGridCoeffs(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
     (*a)[0] = 2*w[2]*w[1]*w[0] + 6*w[2]*w[0]*w[3] + 12*(w[3]*w[4]*w[0]+w[3]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[4]*w[1]*w[0];
     (*a)[1] = 2*w[2]*w[3]*w[1] + 6*w[3]*w[4]*w[1] - 4*w[2]*w[1]*w[0] + 12*w[2]*w[4]*w[1] - 18*w[3]*w[1]*w[0] - 48*w[4]*w[1]*w[0];
     (*a)[2] = 2*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) - 4*w[1]*w[2]*w[3] - 18*(w[0]*w[2]*w[3] + w[1]*w[2]*w[4]) - 64*w[0]*w[2]*w[4];
@@ -492,7 +492,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
             std::vector<int> a(np);
             std::vector<int> b(np);
-            GetGGridCoeff(w, &a, &b);
+            GetGGridCoeffs(w, &a, &b);
             for (int i = -nb; i <= nb; i++) {
                 float v = Get(x + i, y + j, image, imageWidth);
                 nom += b[i + nb] * ((v == 0) ? -1e6 : std::log(v));
@@ -511,7 +511,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
             std::vector<int> a(np);
             std::vector<int> b(np);
-            GetGGridCoeff(w, &a, &b);
+            GetGGridCoeffs(w, &a, &b);
             for (int j = -nb; j <= nb; j++) {
                 float v = Get(x + i, y + j, image, imageWidth);
                 nom += b[j + nb] * ((v == 0) ? -1e6 : std::log(v));
