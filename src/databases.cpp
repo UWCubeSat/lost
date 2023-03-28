@@ -219,7 +219,7 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
 
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
-    
+
     // TODO: errors? (not even sure what i meant by this comment anymore)
     buffer += SerializeLengthKVectorIndex(index.NumBins());
     pairs = (const int16_t *)buffer;
@@ -345,7 +345,7 @@ void SerializeTrackingCatalog(const Catalog &catalog, unsigned char *buffer) {
     }
 
     std::sort(stars.begin(), stars.end(), CompareTrackingStars);
-    
+
     // serialize into buffer
     unsigned char *bufferStart = buffer;
 
@@ -377,7 +377,7 @@ TrackingSortedDatabase::TrackingSortedDatabase(const unsigned char *buffer) {
 }
 
 // query database (returns list of indices into the catalog that have stars within radius of point)
-std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog catalog, const Vec3 point, float radius) {
+std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog& catalog, const Vec3 point, float radius) {
     assert(radius >= 0);
 
     std::vector<int16_t> query_ind;
@@ -388,7 +388,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog cat
     int16_t index = -1;
 
     while (left <= right) {
-        int16_t mid = left + (right - left) / 2; 
+        int16_t mid = left + (right - left) / 2;
         CatalogStar s = catalog[indices[mid]];
         Vec3 diff = s.spatial - point;
         if (abs(diff.x) <= radius) {
@@ -428,7 +428,7 @@ std::vector<int16_t> TrackingSortedDatabase::QueryNearestStars(const Catalog cat
         sRight = catalog[indices[right]];
         diffRight = sRight.spatial - point;
     }
-    
+
     return query_ind;
 }
 
