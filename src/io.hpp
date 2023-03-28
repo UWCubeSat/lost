@@ -115,9 +115,6 @@ public:
     /// Cf how the star-ID comparator works for a reference implementation.
     virtual const StarIdentifiers *ExpectedStarIds() const { return InputStarIds(); };
     virtual const Attitude *ExpectedAttitude() const { return InputAttitude(); };
-
-    // sometimes, 
-    virtual const std::vector<int> *InputToExpectedStarMapping() const { return NULL; };
 };
 
 /**

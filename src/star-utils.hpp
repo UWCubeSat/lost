@@ -113,6 +113,9 @@ float MagToBrightness(int magnitude);
 /**
  * Remove unwanted stars from an unfiltered catalog.
  *
+ * TODO: Don't necessarily remove both stars when they're within minSeparation. Instead, if the
+ * brightnesses are different enough, just keep the brightest one!
+ *
  * @param maxMagnitude Should be 100*(magnitude), just like CatalogStar::magnitude. The narrowed
  * catalog will only contain stars at least as bright as that (i.e., lower magnitude). Pass
  * something like 9999 to not filter based on magnitude.
