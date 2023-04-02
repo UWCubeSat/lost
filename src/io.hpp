@@ -187,9 +187,15 @@ private:
  * @details Also stores intermediate outputs, not just the final attitude.
  */
 struct PipelineOutput {
-    std::unique_ptr<Stars> stars;
-    std::unique_ptr<StarIdentifiers> starIds;
-    std::unique_ptr<Attitude> attitude;
+    std::unique_ptr<Stars> stars = nullptr;
+    std::unique_ptr<StarIdentifiers> starIds = nullptr;
+    std::unique_ptr<Attitude> attitude = nullptr;
+
+    /// How many nanoseconds the centroiding stage of the pipeline took. Similarly for the other
+    /// fields. If negative, the centroiding stage was not run.
+    long centroidingTimeNs = -1;
+    long starIdTimeNs = -1;
+    long attitudeEstimationTimeNs = -1;
 
     /**
      * @brief The catalog that the indices in starIds refer to

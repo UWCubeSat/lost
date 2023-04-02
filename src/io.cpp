@@ -19,6 +19,7 @@
 #include <random>
 #include <algorithm>
 #include <map>
+#include <chrono>
 
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
@@ -907,7 +908,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From
     // there, execute each successive stage of the pipeline using the output of the last stage
     // (human centipede) until there are no more stages set.
-    PipelineOutput result = { 0 };
+    PipelineOutput result;
 
     const Image *inputImage = input.InputImage();
     const Stars *inputStars = input.InputStars();
@@ -928,8 +929,16 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     }
 
     if (centroidAlgorithm && inputImage) {
+
+        // run centroiding, keeping track of the time it takes
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+
         // TODO: we should probably modify Go to just take an image argument
         Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
+
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+        result.centroidingTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
         Stars *filteredStars = new std::vector<Star>();
         for (const Star &star : unfilteredStars) {
             if (star.magnitude >= centroidMinMagnitude) {
@@ -950,8 +959,14 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+
         result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
             starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
+
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+        result.starIdTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
         inputStarIds = result.starIds.get();
     } else if (starIdAlgorithm) {
         std::cerr << "ERROR: Star ID algorithm specified but cannot run because database, centroids, or camera are missing." << std::endl;
@@ -960,8 +975,13 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
     if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+
         result.attitude = std::unique_ptr<Attitude>(
             new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
+
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+        result.attitudeEstimationTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
     } else if (attitudeEstimationAlgorithm) {
         std::cerr << "ERROR: Attitude estimation algorithm set, but either star IDs or camera are missing. One reason this can happen: Setting a centroid algorithm and attitude algorithm, but no star-id algorithm -- that can't work because the input star-ids won't properly correspond to the output centroids!" << std::endl;
         exit(1);
@@ -1448,6 +1468,54 @@ static void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_fraction_correct " << fractionCorrect << std::endl;
 }
 
+static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long> &times) {
+    assert(times.size() > 0);
+
+    // print average, min, max, and 95% max
+    long sum = 0;
+    long min = LONG_MAX;
+    long max = 0;
+    for (int i = 0; i < (int)times.size(); i++) {
+        assert(times[i] > 0);
+        sum += times[i];
+        min = std::min(min, times[i]);
+        max = std::max(max, times[i]);
+    }
+    long average = sum / times.size();
+    std::vector<long> sortedTimes = times;
+    std::sort(sortedTimes.begin(), sortedTimes.end());
+    long ninetyFifthPercentile = sortedTimes[(int)(sortedTimes.size() * 0.95)];
+
+    os << prefix << "_average_ns " << average << std::endl;
+    os << prefix << "_min_ns " << min << std::endl;
+    os << prefix << "_max_ns " << max << std::endl;
+    os << prefix << "_95%_ns " << ninetyFifthPercentile << std::endl;
+}
+
+/// For each stage of the pipeline, print statistics about how long it took to run.
+static void PipelineComparatorPrintSpeed(std::ostream &os,
+                                    const PipelineInputList &,
+                                    const std::vector<PipelineOutput> &actual,
+                                    const PipelineOptions &) {
+    std::vector<long> centroidingTimes;
+    std::vector<long> starIdTimes;
+    std::vector<long> attitudeTimes;
+    for (int i = 0; i < (int)actual.size(); i++) {
+        centroidingTimes.push_back(actual[i].centroidingTimeNs);
+        starIdTimes.push_back(actual[i].starIdTimeNs);
+        attitudeTimes.push_back(actual[i].attitudeEstimationTimeNs);
+    }
+    if (centroidingTimes[0] > 0) {
+        PrintTimeStats(os, "centroiding", centroidingTimes);
+    }
+    if (starIdTimes[0] > 0) {
+        PrintTimeStats(os, "starid", starIdTimes);
+    }
+    if (attitudeTimes[0] > 0) {
+        PrintTimeStats(os, "attitude", attitudeTimes);
+    }
+}
+
 // TODO: add these debug comparators back in!
 // void PipelineComparatorPrintPairDistance(std::ostream &os,
 //                                          const PipelineInputList &expected,
@@ -1586,6 +1654,12 @@ void PipelineComparison(const PipelineInputList &expected,
         LOST_PIPELINE_COMPARE(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold,
                               "--compare-attitudes requires at least 1 output image, and for expected attitude to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorAttitude, values.compareAttitudes, false);
+    }
+    if (values.printSpeed != "") {
+        LOST_PIPELINE_COMPARE(actual.size() > 0,
+                              // I don't think this should ever actually happen??
+                              "--print-speed requires at least 1 output image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorPrintSpeed, values.printSpeed, false);
     }
 
 #undef LOST_PIPELINE_COMPARE
