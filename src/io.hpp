@@ -131,25 +131,31 @@ public:
                            Attitude motionBlurDirection, float exposureTime, float readoutTime,
                            bool shotNoise, int oversampling,
                            int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
+                           int cutoffMag,
                            float perturbationStddev);
 
 
-    const Image *InputImage() const { return &image; };
-    const Stars *InputStars() const { return &stars; };
-    const Camera *InputCamera() const { return &camera; };
-    const StarIdentifiers *InputStarIds() const { return &starIds; };
-    bool InputStarsIdentified() const { return true; };
-    const Attitude *InputAttitude() const { return &attitude; };
-    const Catalog &GetCatalog() const { return catalog; };
+    const Image *InputImage() const override { return &image; };
+    const Stars *InputStars() const override { return &inputStars; };
+    const Stars *ExpectedStars() const override { return &expectedStars; };
+    const Camera *InputCamera() const override { return &camera; };
+    const StarIdentifiers *InputStarIds() const override { return &inputStarIds; };
+    const StarIdentifiers *ExpectedStarIds() const override { return &expectedStarIds; };
+    const Attitude *InputAttitude() const override { return &attitude; };
+    const Catalog &GetCatalog() const override { return catalog; };
 
 private:
     std::vector<unsigned char> imageData;
     Image image;
-    Stars stars;
+    /// Includes false stars and very dim stars. Any further filtering that needs to happen before comparison happens in the comparator itself.
+    Stars expectedStars;
+    /// Includes perturbations, filtered down to magnitude, etc. Whatever the star-id algorithm needs.
+    Stars inputStars;
     Camera camera;
     Attitude attitude;
     const Catalog &catalog;
-    StarIdentifiers starIds;
+    StarIdentifiers inputStarIds;
+    StarIdentifiers expectedStarIds;
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
@@ -162,9 +168,9 @@ public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
     ~PngPipelineInput();
 
-    const Image *InputImage() const { return &image; };
-    const Camera *InputCamera() const { return &camera; };
-    const Catalog &GetCatalog() const { return catalog; };
+    const Image *InputImage() const override { return &image; };
+    const Camera *InputCamera() const override { return &camera; };
+    const Catalog &GetCatalog() const override { return catalog; };
 
 private:
     Image image;
@@ -181,9 +187,15 @@ private:
  * @details Also stores intermediate outputs, not just the final attitude.
  */
 struct PipelineOutput {
-    std::unique_ptr<Stars> stars;
-    std::unique_ptr<StarIdentifiers> starIds;
-    std::unique_ptr<Attitude> attitude;
+    std::unique_ptr<Stars> stars = nullptr;
+    std::unique_ptr<StarIdentifiers> starIds = nullptr;
+    std::unique_ptr<Attitude> attitude = nullptr;
+
+    /// How many nanoseconds the centroiding stage of the pipeline took. Similarly for the other
+    /// fields. If negative, the centroiding stage was not run.
+    long centroidingTimeNs = -1;
+    long starIdTimeNs = -1;
+    long attitudeEstimationTimeNs = -1;
 
     /**
      * @brief The catalog that the indices in starIds refer to
@@ -194,13 +206,16 @@ struct PipelineOutput {
 
 /// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
-    /// The number of centroids which were identified as the correct catalog star.
+    /// The number of centroids in the image which are close to an expected centroid that had an
+    /// expected identification the same as the actual identification.
     int numCorrect;
 
-    /// The number of centroids which were identified, but as the wrong catalog star.
+    /// The number of centroids which were either:
+    /// + False, but identified as something anyway.
+    /// + True, with an identification that did not agree with any sufficiently close expected centroid's expected identification.
     int numIncorrect;
 
-    /// The total number of true stars in the image (the number the ideal star-id algorithm would identify)
+    /// The number of centroids sufficiently close to a true expected star.
     int numTotal;
 };
 
@@ -237,6 +252,26 @@ Pipeline SetPipeline(const PipelineOptions &values);
 void PipelineComparison(const PipelineInputList &expected,
                         const std::vector<PipelineOutput> &actual,
                         const PipelineOptions &values);
+
+/**
+ * Compare expected and actual star identifications.
+ * Useful for debugging and benchmarking.
+ *
+ * The following description is compatible with, but more actionable than, the definitions in the
+ * documentation for StarIdComparison. A star-id is *correct* if the centroid is the closest
+ * centroid to some expected centroid, and the referenced catalog star is the same one as in the
+ * expected star-ids for that centroid. Also permissible is if the centroid is not the closest to
+ * any expected centroid, but it has the same star-id as another star closer to the closest expected
+ * centroid. All other star-ids are *incorrect* (because they are either identifying false stars, or
+ * are incorrect identifications on true stars)
+ *
+ * The "total" in the result is just the number of input stars.
+ */
+StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
+                                // use these to map indices to names for the respective lists of StarIdentifiers
+                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
+                                float centroidThreshold,
+                                const Stars &expectedStars, const Stars &inputStars);
 
 ////////////////
 // DB BUILDER //

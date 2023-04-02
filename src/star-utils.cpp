@@ -180,4 +180,8 @@ Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeRetur
     return result;
 }
 
+float MagToBrightness(int mag) {
+    return pow(10.0, -mag/250.0);
+}
+
 }
