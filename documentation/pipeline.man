@@ -246,6 +246,13 @@ Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Def
 Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
+\fB--plot-expected\fP [\fIpath\fP]
+Argument is optional. Plots annotated "expected" image to PNG. The difference between "expected" and
+"input" is that "input" is what's passed to the actual algorithms, while "expected" is compared
+against the actual output of the algorithms for evaluation purposes.
+
+
+.TP
 \fB--plot-output\fP [\fIpath\fP]
 Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout.
 

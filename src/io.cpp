@@ -1068,6 +1068,10 @@ CentroidComparison CentroidsCompare(float threshold,
                                     const Stars &expected,
                                     const Stars &actual) {
 
+    // TODO: Somehow penalize when multiple centroids correspond to the same expected star (i.e.,
+    // one star turned into multiple centroids). That should probably be considered an extra
+    // centroid, but rn it isn't.
+
     CentroidComparison result;
     // maps from indexes in each list to the closest centroid from other list
     std::multimap<int, int> actualToExpected = FindClosestCentroids(threshold, actual, expected);
@@ -1262,9 +1266,9 @@ static void PipelineComparatorCentroids(std::ostream &os,
     }
 
     CentroidComparison result = CentroidComparisonsCombine(comparisons);
-    os << "correct_centroids " << result.numCorrectCentroids << std::endl
-       << "extra_centroids " << result.numExtraCentroids << std::endl
-       << "mean_error " << result.meanError << std::endl;
+    os << "centroids_num_correct " << result.numCorrectCentroids << std::endl
+       << "centroids_num_extra " << result.numExtraCentroids << std::endl
+       << "centroids_mean_error " << result.meanError << std::endl;
 }
 
 static void PrintCentroids(const std::string &prefix,
@@ -1596,10 +1600,10 @@ void PipelineComparison(const PipelineInputList &expected,
                               "--plot-input requires exactly 1 input image, and for centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
                               PipelineComparatorPlotInput, values.plotInput, true);
     }
-    if (values.plotExpectedInput != "") {
+    if (values.plotExpected != "") {
         LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->ExpectedStars(),
                               "--plot-expected-input requires exactly 1 input image, and for expected centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
-                              PipelineComparatorPlotExpected, values.plotExpectedInput, true);
+                              PipelineComparatorPlotExpected, values.plotExpected, true);
     }
     if (values.plotOutput != "") {
         LOST_PIPELINE_COMPARE(actual.size() == 1 && (actual[0].stars || actual[0].starIds),
