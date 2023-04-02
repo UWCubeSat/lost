@@ -32,7 +32,7 @@ LOST_CLI_OPTION("max-mismatch-probability" , float      , maxMismatchProb       
 LOST_CLI_OPTION("attitude-algo"            , std::string, attitudeAlgo           , ""  , optarg       , "dqm")
 
 // OUTPUT COMPARISON
-LOST_CLI_OPTION("centroid-compare-threshold", float      , centroidCompareThreshold, 1 , atof(optarg), kNoDefaultArgument)
+LOST_CLI_OPTION("centroid-compare-threshold", float      , centroidCompareThreshold, 2 , atof(optarg), kNoDefaultArgument)
 LOST_CLI_OPTION("attitude-compare-threshold", float      , attitudeCompareThreshold, 1 , atof(optarg), kNoDefaultArgument)
 LOST_CLI_OPTION("plot-raw-input"            , std::string, plotRawInput            , "", optarg      , "-")
 LOST_CLI_OPTION("plot-input"                , std::string, plotInput               , "", optarg      , "-")

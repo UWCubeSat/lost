@@ -1,6 +1,7 @@
-#include <catch.hpp>
 #include <random>
 #include <cmath>
+
+#include <catch.hpp>
 
 #include "io.hpp"
 #include "star-utils.hpp"

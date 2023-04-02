@@ -1012,24 +1012,25 @@ std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
  */
 class CentroidComparison {
 public:
-    CentroidComparison() : meanError(0.0f)/*, numExtraStars(0.0), numMissingStars(0.0)*/ {};
+    CentroidComparison() : meanError(0.0), numCorrectCentroids(0), numExtraCentroids(0) { }
     /**
      * Average distance from actual to expected centroids (in pixels)
      * Only correct centroids are considered in this average.
      */
     float meanError;
 
-    // /**
-    //  * Stars in actual but not expected. Ideally 0
-    //  * This is a float because we may average multiple centroid comparisons together.
-    //  */
-    // float numExtraStars;
+    /**
+     * Number of actual stars within the centroiding threshold of an expected star.
+     */
+    float numCorrectCentroids;
 
-    // /**
-    //  * Stars in expected but not actual. Ideally 0
-    //  * This is a float because we may average multiple centroid comparisons together.
-    //  */
-    // float numMissingStars;
+    /**
+     * Stars in actual but not expected. Ideally 0
+     * This is a float because we may average multiple centroid comparisons together.
+     */
+    float numExtraCentroids;
+
+    // We no longer have a num missing because often generated stars have too low of a signal-to-noise ratio and the centroid algo won't pick them up.
 };
 
 /// Create a mapping, where keys are indices into `one` and values are indices of all centroids in
@@ -1069,31 +1070,18 @@ CentroidComparison CentroidsCompare(float threshold,
 
     CentroidComparison result;
     // maps from indexes in each list to the closest centroid from other list
-    std::multimap<int, int> expectedToActual = FindClosestCentroids(threshold, expected, actual);
     std::multimap<int, int> actualToExpected = FindClosestCentroids(threshold, actual, expected);
 
-    // any expected stars whose closest actual star does not refer to them are missing
-    int numCloseEnough = 0;
-    for (int i = 0; i < (int)expectedToActual.size(); i++) {
-        // if (expectedToActual[i] == -1 ||
-        //     actualToExpected[expectedToActual[i]] != i) {
-        //     result.numMissingStars++;
-        // } else {
-        auto closest = expectedToActual.find(i);
-        if (closest != expectedToActual.end()) {
-            result.meanError += (expected[i].position - actual[closest->second].position).Magnitude();
-            numCloseEnough++;
+    for (int i = 0; i < (int)actualToExpected.size(); i++) {
+        auto closest = actualToExpected.find(i);
+        if (closest == actualToExpected.end()) {
+            result.numExtraCentroids++;
+        } else {
+            result.meanError += (actual[i].position - expected[closest->second].position).Magnitude();
+            result.numCorrectCentroids++;
         }
     }
-    result.meanError /= numCloseEnough;
-
-    // any actual star whose closest expected star does not refer to them is extra
-    // for (int i = 0; i < (int)actual.size(); i++) {
-    //     if (actualToExpected[i] == -1 ||
-    //         expectedToActual[actualToExpected[i]] != i) {
-    //         result.numExtraStars++;
-    //     }
-    // }
+    result.meanError /= result.numCorrectCentroids;
 
     return result;
 }
@@ -1105,13 +1093,11 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
-        // result.numExtraStars += comparison.numExtraStars;
-        // result.numMissingStars += comparison.numMissingStars;
+        result.numExtraCentroids += comparison.numExtraCentroids;
     }
 
     result.meanError /= comparisons.size();
-    // result.numExtraStars /= comparisons.size();
-    // result.numMissingStars /= comparisons.size();
+    result.numExtraCentroids /= comparisons.size();
 
     return result;
 }
@@ -1276,8 +1262,8 @@ static void PipelineComparatorCentroids(std::ostream &os,
     }
 
     CentroidComparison result = CentroidComparisonsCombine(comparisons);
-    os // << "extra_stars " << result.numExtraStars << std::endl
-       // << "missing_stars " << result.numMissingStars << std::endl
+    os << "correct_centroids " << result.numCorrectCentroids << std::endl
+       << "extra_centroids " << result.numExtraCentroids << std::endl
        << "mean_error " << result.meanError << std::endl;
 }
 
