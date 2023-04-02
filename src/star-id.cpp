@@ -586,11 +586,13 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allC
     }
 
     std::vector<BestPyramidAtStar> result;
+    result.reserve(centroidIndices.size());
     float maxCos = cos(minDistance);
     float minCos = cos(maxDistance);
+    // Find the 3 closest centroids to this centroid
+    std::vector<std::pair<float, int16_t>> cosines; // allocating outside of the loop avoids repeated heap allocation
+    cosines.reserve(centroidIndices.size());
     for (int i = 0; i < (int)centroidIndices.size(); i++) {
-        // Find the 3 closest centroids to this centroid
-        std::vector<std::pair<float, int16_t>> cosines;
 
         // TODO: optimize this using a sorted centroids list
         for (int j = 0; j < (int)centroidIndices.size(); j++) {
@@ -606,7 +608,7 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allC
         }
 
         if (cosines.size() < 3) {
-            // Not enough centroids to make a pyramid
+            // Not enough centroids to make a pyramid, add a "null" best pyramid
             result.emplace_back(i);
             continue;
         }
@@ -621,6 +623,7 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allC
 
         // Add the best pyramid starting from this centroid to the result
         result.emplace_back(centroidIndices[i], cosines[0].second, cosines[1].second, cosines[2].second, distancesSum);
+        cosines.resize(0);
     }
 
     return result;
