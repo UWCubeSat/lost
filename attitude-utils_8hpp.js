@@ -12,7 +12,7 @@ var attitude_utils_8hpp =
     [ "DCMToQuaternion", "attitude-utils_8hpp.html#a6bb9983e45dfa4b82b531ca96c397eed", null ],
     [ "DegToRad", "attitude-utils_8hpp.html#abf3a90819d379c9a4d0c48f385f52613", null ],
     [ "DeserializeVec3", "attitude-utils_8hpp.html#a268223937ff19ee72a713631586557d3", null ],
-    [ "Distance", "attitude-utils_8hpp.html#a862ea58cf013ca5df18ab749fd563a2d", null ],
+    [ "Distance", "attitude-utils_8hpp.html#a1a50ad86abfc9430d15d2f855311a1f0", null ],
     [ "Distance", "attitude-utils_8hpp.html#a10f0dede807e0a46e2a09defd4270f51", null ],
     [ "FloatModulo", "attitude-utils_8hpp.html#a01c855b3690f601ec92a40471aa05ebd", null ],
     [ "QuaternionToDCM", "attitude-utils_8hpp.html#a08209cdf2c6b9415866d576343c35bf2", null ],

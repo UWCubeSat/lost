@@ -21,6 +21,7 @@ var io_8hpp =
     [ "operator<<", "io_8hpp.html#afd0ad3291fda13bb1bf50fb13906769c", null ],
     [ "PipelineComparison", "io_8hpp.html#ad2caa7f022ed5c5dba03ab479414dafc", null ],
     [ "SetPipeline", "io_8hpp.html#ad4bb00e632a9200a8e42f620e460dd60", null ],
+    [ "StarIdsCompare", "io_8hpp.html#ab6f75e99dbde3eede31e0b3a7c56878e", null ],
     [ "SurfaceToGrayscaleImage", "io_8hpp.html#a1c3caf3f02508df448ec6c761a2d764e", null ],
     [ "kNoDefaultArgument", "io_8hpp.html#adbeb358ec7311bc89886a09aa017388c", null ]
 ];

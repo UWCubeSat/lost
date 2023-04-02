@@ -116,37 +116,35 @@ Collaboration diagram for lost::GeneratedPipelineInput:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aff6876d882f1a4274505f73617827712"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#aff6876d882f1a4274505f73617827712">GeneratedPipelineInput</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <a class="el" href="classlost_1_1_attitude.html">Attitude</a>, <a class="el" href="classlost_1_1_camera.html">Camera</a>, std::default_random_engine *, bool centroidsOnly, float observedReferenceBrightness, float starSpreadStdDev, float sensitivity, float darkCurrent, float readNoiseStdDev, <a class="el" href="classlost_1_1_attitude.html">Attitude</a> motionBlurDirection, float exposureTime, float readoutTime, bool shotNoise, int oversampling, int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude, float perturbationStddev)</td></tr>
-<tr class="memdesc:aff6876d882f1a4274505f73617827712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a generated pipeline input.  <a href="classlost_1_1_generated_pipeline_input.html#aff6876d882f1a4274505f73617827712">More...</a><br /></td></tr>
-<tr class="separator:aff6876d882f1a4274505f73617827712"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadf29204a91a120c3b1e712793aa8562"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562">InputImage</a> () const</td></tr>
-<tr class="separator:aadf29204a91a120c3b1e712793aa8562"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae27db0e671bb26836d66d39ddb46f149"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">InputStars</a> () const</td></tr>
-<tr class="separator:ae27db0e671bb26836d66d39ddb46f149"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5c60e7bfee6a569710a8cc7c40ccbac"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_camera.html">Camera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#af5c60e7bfee6a569710a8cc7c40ccbac">InputCamera</a> () const</td></tr>
-<tr class="separator:af5c60e7bfee6a569710a8cc7c40ccbac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c16727bf2582645ae537c50e6fa589c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a6c16727bf2582645ae537c50e6fa589c">InputStarIds</a> () const</td></tr>
-<tr class="memdesc:a6c16727bf2582645ae537c50e6fa589c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into <a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">InputStars()</a>, not <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars()</a>, when present, because otherwise it's useless.  <a href="classlost_1_1_generated_pipeline_input.html#a6c16727bf2582645ae537c50e6fa589c">More...</a><br /></td></tr>
-<tr class="separator:a6c16727bf2582645ae537c50e6fa589c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a91637d82c0fafa754686080a3dea78"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a0a91637d82c0fafa754686080a3dea78">InputStarsIdentified</a> () const</td></tr>
-<tr class="separator:a0a91637d82c0fafa754686080a3dea78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4b98d7e899ce70fa20d95f757e08df8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8">InputAttitude</a> () const</td></tr>
-<tr class="memdesc:ad4b98d7e899ce70fa20d95f757e08df8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.  <a href="classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8">More...</a><br /></td></tr>
-<tr class="separator:ad4b98d7e899ce70fa20d95f757e08df8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa525af4b907a9ffd29b2b574f33fc53d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#aa525af4b907a9ffd29b2b574f33fc53d">GetCatalog</a> () const</td></tr>
-<tr class="memdesc:aa525af4b907a9ffd29b2b574f33fc53d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The catalog to which catalog indexes returned from other methods refer.  <a href="classlost_1_1_generated_pipeline_input.html#aa525af4b907a9ffd29b2b574f33fc53d">More...</a><br /></td></tr>
-<tr class="separator:aa525af4b907a9ffd29b2b574f33fc53d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b473186f7c725b5e59dcfe95be1f686"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686">GeneratedPipelineInput</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <a class="el" href="classlost_1_1_attitude.html">Attitude</a>, <a class="el" href="classlost_1_1_camera.html">Camera</a>, std::default_random_engine *, bool centroidsOnly, float observedReferenceBrightness, float starSpreadStdDev, float sensitivity, float darkCurrent, float readNoiseStdDev, <a class="el" href="classlost_1_1_attitude.html">Attitude</a> motionBlurDirection, float exposureTime, float readoutTime, bool shotNoise, int oversampling, int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude, int cutoffMag, float perturbationStddev)</td></tr>
+<tr class="memdesc:a1b473186f7c725b5e59dcfe95be1f686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a generated pipeline input.  <a href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686">More...</a><br /></td></tr>
+<tr class="separator:a1b473186f7c725b5e59dcfe95be1f686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cbfa2300553ec4942d124e456d0ed4a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a0cbfa2300553ec4942d124e456d0ed4a">InputImage</a> () const override</td></tr>
+<tr class="separator:a0cbfa2300553ec4942d124e456d0ed4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46251e73597d285c1988fffd243185e0"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">InputStars</a> () const override</td></tr>
+<tr class="separator:a46251e73597d285c1988fffd243185e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bb4d8d26f136ff61250e6ab70437f15"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15">ExpectedStars</a> () const override</td></tr>
+<tr class="separator:a5bb4d8d26f136ff61250e6ab70437f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7feccf083489e6ae34e943eb23ee237f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_camera.html">Camera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a7feccf083489e6ae34e943eb23ee237f">InputCamera</a> () const override</td></tr>
+<tr class="separator:a7feccf083489e6ae34e943eb23ee237f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07c1d15af1fee070bf7b143211f7297f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a07c1d15af1fee070bf7b143211f7297f">InputStarIds</a> () const override</td></tr>
+<tr class="memdesc:a07c1d15af1fee070bf7b143211f7297f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into <a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">InputStars()</a>, not <a class="el" href="classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15">ExpectedStars()</a>, when present, because otherwise it's useless.  <a href="classlost_1_1_generated_pipeline_input.html#a07c1d15af1fee070bf7b143211f7297f">More...</a><br /></td></tr>
+<tr class="separator:a07c1d15af1fee070bf7b143211f7297f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b4e6a0cea348568381061b6ebd1f926"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a9b4e6a0cea348568381061b6ebd1f926">ExpectedStarIds</a> () const override</td></tr>
+<tr class="memdesc:a9b4e6a0cea348568381061b6ebd1f926"><td class="mdescLeft">&#160;</td><td class="mdescRight">Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into <a class="el" href="classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15">ExpectedStars()</a>, /not/ <a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">InputStars()</a>.  <a href="classlost_1_1_generated_pipeline_input.html#a9b4e6a0cea348568381061b6ebd1f926">More...</a><br /></td></tr>
+<tr class="separator:a9b4e6a0cea348568381061b6ebd1f926"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a480955be5ecd314fd59d3c1f6595539a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a480955be5ecd314fd59d3c1f6595539a">InputAttitude</a> () const override</td></tr>
+<tr class="memdesc:a480955be5ecd314fd59d3c1f6595539a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.  <a href="classlost_1_1_generated_pipeline_input.html#a480955be5ecd314fd59d3c1f6595539a">More...</a><br /></td></tr>
+<tr class="separator:a480955be5ecd314fd59d3c1f6595539a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aa7ffe5170d43fe925fdf668a54cc9f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a6aa7ffe5170d43fe925fdf668a54cc9f">GetCatalog</a> () const override</td></tr>
+<tr class="memdesc:a6aa7ffe5170d43fe925fdf668a54cc9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The catalog to which catalog indexes returned from other methods refer.  <a href="classlost_1_1_generated_pipeline_input.html#a6aa7ffe5170d43fe925fdf668a54cc9f">More...</a><br /></td></tr>
+<tr class="separator:a6aa7ffe5170d43fe925fdf668a54cc9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classlost_1_1_pipeline_input"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classlost_1_1_pipeline_input')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classlost_1_1_pipeline_input.html">lost::PipelineInput</a></td></tr>
 <tr class="memitem:ab766f2ef88e9d036c7bb7780d35306f3 inherit pub_methods_classlost_1_1_pipeline_input"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#ab766f2ef88e9d036c7bb7780d35306f3">~PipelineInput</a> ()</td></tr>
 <tr class="separator:ab766f2ef88e9d036c7bb7780d35306f3 inherit pub_methods_classlost_1_1_pipeline_input"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8707ebe081ca65531341eeb2b9d4ff7b inherit pub_methods_classlost_1_1_pipeline_input"><td class="memItemLeft" align="right" valign="top">cairo_surface_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b">InputImageSurface</a> () const</td></tr>
 <tr class="memdesc:a8707ebe081ca65531341eeb2b9d4ff7b inherit pub_methods_classlost_1_1_pipeline_input"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert the <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">InputImage()</a> output into a cairo surface.  <a href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b">More...</a><br /></td></tr>
 <tr class="separator:a8707ebe081ca65531341eeb2b9d4ff7b inherit pub_methods_classlost_1_1_pipeline_input"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d0edc6bfda801512627d6bb1bc39c4a inherit pub_methods_classlost_1_1_pipeline_input"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars</a> () const</td></tr>
-<tr class="separator:a3d0edc6bfda801512627d6bb1bc39c4a inherit pub_methods_classlost_1_1_pipeline_input"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cdd08fecc4186dd3b9263c1a7de2047 inherit pub_methods_classlost_1_1_pipeline_input"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#a9cdd08fecc4186dd3b9263c1a7de2047">ExpectedStarIds</a> () const</td></tr>
-<tr class="memdesc:a9cdd08fecc4186dd3b9263c1a7de2047 inherit pub_methods_classlost_1_1_pipeline_input"><td class="mdescLeft">&#160;</td><td class="mdescRight">Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars()</a>, /not/ <a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">InputStars()</a>.  <a href="classlost_1_1_pipeline_input.html#a9cdd08fecc4186dd3b9263c1a7de2047">More...</a><br /></td></tr>
-<tr class="separator:a9cdd08fecc4186dd3b9263c1a7de2047 inherit pub_methods_classlost_1_1_pipeline_input"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade22c9a790a978c96383c6497e9567ec inherit pub_methods_classlost_1_1_pipeline_input"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pipeline_input.html#ade22c9a790a978c96383c6497e9567ec">ExpectedAttitude</a> () const</td></tr>
 <tr class="separator:ade22c9a790a978c96383c6497e9567ec inherit pub_methods_classlost_1_1_pipeline_input"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -156,8 +154,8 @@ Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00124">124</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aff6876d882f1a4274505f73617827712"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff6876d882f1a4274505f73617827712">&#9670;&nbsp;</a></span>GeneratedPipelineInput()</h2>
+<a id="a1b473186f7c725b5e59dcfe95be1f686"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b473186f7c725b5e59dcfe95be1f686">&#9670;&nbsp;</a></span>GeneratedPipelineInput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,6 +271,12 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cutoffMag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>perturbationStddev</em>&#160;</td>
         </tr>
@@ -287,21 +291,22 @@ Public Member Functions</h2></td></tr>
 <p>Create a generated pipeline input. </p>
 <p>The parameters correspond directly to command line options. See the command line documentation for more details. This constructor performs the actual image generation. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00444">444</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00479">479</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classlost_1_1_generated_pipeline_input_aff6876d882f1a4274505f73617827712_cgraph.png" border="0" usemap="#aclasslost_1_1_generated_pipeline_input_aff6876d882f1a4274505f73617827712_cgraph" alt=""/></div>
-<map name="aclasslost_1_1_generated_pipeline_input_aff6876d882f1a4274505f73617827712_cgraph" id="aclasslost_1_1_generated_pipeline_input_aff6876d882f1a4274505f73617827712_cgraph">
-<area shape="rect" title="Create a generated pipeline input." alt="" coords="5,226,212,267"/>
+<div class="center"><img src="classlost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph.png" border="0" usemap="#aclasslost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph" alt=""/></div>
+<map name="aclasslost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph" id="aclasslost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph">
+<area shape="rect" title="Create a generated pipeline input." alt="" coords="5,251,212,293"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250" title="How many radians the rotation represented by this quaternion has." alt="" coords="286,56,457,83"/>
 <area shape="rect" href="classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="267,107,476,133"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="750,208,927,235"/>
 <area shape="rect" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="287,208,456,235"/>
-<area shape="rect" href="classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf" title="Convert a vector from the reference frame to the body frame." alt="" coords="537,233,695,260"/>
-<area shape="rect" href="classlost_1_1_camera.html#a2282f819be792d84f3168032a9cf457b" title="Converts from a 3D point in space to a 2D point on the camera sensor." alt="" coords="260,309,483,336"/>
-<area shape="rect" href="classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title="Width of the sensor in pixels." alt="" coords="276,360,467,387"/>
-<area shape="rect" href="classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title="Height of the sensor in pixels." alt="" coords="276,411,467,437"/>
+<area shape="rect" href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320" title="returns some relative brightness measure, which is proportional to the total number of photons receiv..." alt="" coords="289,259,454,285"/>
+<area shape="rect" href="classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf" title="Convert a vector from the reference frame to the body frame." alt="" coords="537,259,695,285"/>
+<area shape="rect" href="classlost_1_1_camera.html#a2282f819be792d84f3168032a9cf457b" title="Converts from a 3D point in space to a 2D point on the camera sensor." alt="" coords="260,360,483,387"/>
+<area shape="rect" href="classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title="Width of the sensor in pixels." alt="" coords="276,411,467,437"/>
+<area shape="rect" href="classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title="Height of the sensor in pixels." alt="" coords="276,461,467,488"/>
 <area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="531,107,701,133"/>
 <area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="779,5,898,32"/>
 <area shape="rect" href="classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title="Get the column at index j." alt="" coords="766,56,911,83"/>
@@ -317,8 +322,69 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa525af4b907a9ffd29b2b574f33fc53d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa525af4b907a9ffd29b2b574f33fc53d">&#9670;&nbsp;</a></span>GetCatalog()</h2>
+<a id="a9b4e6a0cea348568381061b6ebd1f926"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b4e6a0cea348568381061b6ebd1f926">&#9670;&nbsp;</a></span>ExpectedStarIds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a>* lost::GeneratedPipelineInput::ExpectedStarIds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into <a class="el" href="classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15">ExpectedStars()</a>, /not/ <a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">InputStars()</a>. </p>
+<p>This is in contrast to InputStarIds. If you need to compare ExpectedStarIds against the input stars, then you should use some function which uses simple heuristics to match the input stars and expected stars (eg based on distance). Cf how the star-ID comparator works for a reference implementation. </p>
+
+<p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a9cdd08fecc4186dd3b9263c1a7de2047">lost::PipelineInput</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00143">143</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5bb4d8d26f136ff61250e6ab70437f15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bb4d8d26f136ff61250e6ab70437f15">&#9670;&nbsp;</a></span>ExpectedStars()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a>* lost::GeneratedPipelineInput::ExpectedStars </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">lost::PipelineInput</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00140">140</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6aa7ffe5170d43fe925fdf668a54cc9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6aa7ffe5170d43fe925fdf668a54cc9f">&#9670;&nbsp;</a></span>GetCatalog()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -335,7 +401,7 @@ Here is the call graph for this function:</div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -344,12 +410,12 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00143">143</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00145">145</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ad4b98d7e899ce70fa20d95f757e08df8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4b98d7e899ce70fa20d95f757e08df8">&#9670;&nbsp;</a></span>InputAttitude()</h2>
+<a id="a480955be5ecd314fd59d3c1f6595539a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a480955be5ecd314fd59d3c1f6595539a">&#9670;&nbsp;</a></span>InputAttitude()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -366,7 +432,7 @@ Here is the call graph for this function:</div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -375,12 +441,12 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00142">142</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00144">144</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
-<a id="af5c60e7bfee6a569710a8cc7c40ccbac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5c60e7bfee6a569710a8cc7c40ccbac">&#9670;&nbsp;</a></span>InputCamera()</h2>
+<a id="a7feccf083489e6ae34e943eb23ee237f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7feccf083489e6ae34e943eb23ee237f">&#9670;&nbsp;</a></span>InputCamera()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -397,19 +463,19 @@ Here is the call graph for this function:</div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00139">139</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00141">141</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aadf29204a91a120c3b1e712793aa8562"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadf29204a91a120c3b1e712793aa8562">&#9670;&nbsp;</a></span>InputImage()</h2>
+<a id="a0cbfa2300553ec4942d124e456d0ed4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cbfa2300553ec4942d124e456d0ed4a">&#9670;&nbsp;</a></span>InputImage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -426,19 +492,19 @@ Here is the call graph for this function:</div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00137">137</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00138">138</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a6c16727bf2582645ae537c50e6fa589c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c16727bf2582645ae537c50e6fa589c">&#9670;&nbsp;</a></span>InputStarIds()</h2>
+<a id="a07c1d15af1fee070bf7b143211f7297f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07c1d15af1fee070bf7b143211f7297f">&#9670;&nbsp;</a></span>InputStarIds()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -455,21 +521,21 @@ Here is the call graph for this function:</div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into <a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">InputStars()</a>, not <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars()</a>, when present, because otherwise it's useless. </p>
+<p>The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into <a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">InputStars()</a>, not <a class="el" href="classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15">ExpectedStars()</a>, when present, because otherwise it's useless. </p>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00140">140</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00142">142</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ae27db0e671bb26836d66d39ddb46f149"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae27db0e671bb26836d66d39ddb46f149">&#9670;&nbsp;</a></span>InputStars()</h2>
+<a id="a46251e73597d285c1988fffd243185e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46251e73597d285c1988fffd243185e0">&#9670;&nbsp;</a></span>InputStars()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -486,41 +552,14 @@ Here is the call graph for this function:</div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00138">138</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a0a91637d82c0fafa754686080a3dea78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a91637d82c0fafa754686080a3dea78">&#9670;&nbsp;</a></span>InputStarsIdentified()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool lost::GeneratedPipelineInput::InputStarsIdentified </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00141">141</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00139">139</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -534,7 +573,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_generated_pipeline_input.html">GeneratedPipelineInput</a></li>
-    <li class="footer">Generated on Sun Mar 26 2023 08:16:44 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sun Apr 2 2023 21:26:46 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

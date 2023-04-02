@@ -1,11 +1,12 @@
 var classlost_1_1_generated_pipeline_input =
 [
-    [ "GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html#aff6876d882f1a4274505f73617827712", null ],
-    [ "GetCatalog", "classlost_1_1_generated_pipeline_input.html#aa525af4b907a9ffd29b2b574f33fc53d", null ],
-    [ "InputAttitude", "classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8", null ],
-    [ "InputCamera", "classlost_1_1_generated_pipeline_input.html#af5c60e7bfee6a569710a8cc7c40ccbac", null ],
-    [ "InputImage", "classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562", null ],
-    [ "InputStarIds", "classlost_1_1_generated_pipeline_input.html#a6c16727bf2582645ae537c50e6fa589c", null ],
-    [ "InputStars", "classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149", null ],
-    [ "InputStarsIdentified", "classlost_1_1_generated_pipeline_input.html#a0a91637d82c0fafa754686080a3dea78", null ]
+    [ "GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686", null ],
+    [ "ExpectedStarIds", "classlost_1_1_generated_pipeline_input.html#a9b4e6a0cea348568381061b6ebd1f926", null ],
+    [ "ExpectedStars", "classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15", null ],
+    [ "GetCatalog", "classlost_1_1_generated_pipeline_input.html#a6aa7ffe5170d43fe925fdf668a54cc9f", null ],
+    [ "InputAttitude", "classlost_1_1_generated_pipeline_input.html#a480955be5ecd314fd59d3c1f6595539a", null ],
+    [ "InputCamera", "classlost_1_1_generated_pipeline_input.html#a7feccf083489e6ae34e943eb23ee237f", null ],
+    [ "InputImage", "classlost_1_1_generated_pipeline_input.html#a0cbfa2300553ec4942d124e456d0ed4a", null ],
+    [ "InputStarIds", "classlost_1_1_generated_pipeline_input.html#a07c1d15af1fee070bf7b143211f7297f", null ],
+    [ "InputStars", "classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0", null ]
 ];

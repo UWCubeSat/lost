@@ -1,7 +1,7 @@
 <map id="lost::PipelineComparison" name="lost::PipelineComparison">
 <area shape="rect" id="node1" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,107,189,133"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,99,420,141"/>
-<area shape="rect" id="node3" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="468,107,596,133"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,99,420,141"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="468,107,596,133"/>
 <area shape="rect" id="node4" href="$namespacelost.html#adc5108f643b7657a835838c7f6411aa7" title=" " alt="" coords="679,81,797,108"/>
 <area shape="rect" id="node5" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="644,132,832,159"/>
 <area shape="rect" id="node6" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="880,107,1089,133"/>

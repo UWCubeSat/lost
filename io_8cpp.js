@@ -24,8 +24,8 @@ var io_8cpp =
     [ "PipelineComparatorPlotCentroidIndices", "io_8cpp.html#a69cfc1189a8f18fb6e6a6d400a8a1311", null ],
     [ "PipelineComparison", "io_8cpp.html#ad2caa7f022ed5c5dba03ab479414dafc", null ],
     [ "SetPipeline", "io_8cpp.html#ad4bb00e632a9200a8e42f620e460dd60", null ],
-    [ "StarIdCompare", "io_8cpp.html#a45aed28f093253469594e7329f16a5e2", null ],
-    [ "SurfacePlot", "io_8cpp.html#ad7cbac9d4bf0738d87f14e614ddb6da9", null ],
+    [ "StarIdsCompare", "io_8cpp.html#ab6f75e99dbde3eede31e0b3a7c56878e", null ],
+    [ "SurfacePlot", "io_8cpp.html#a8298f03c0d1b408401e4200d17305018", null ],
     [ "SurfaceToGrayscaleImage", "io_8cpp.html#a1c3caf3f02508df448ec6c761a2d764e", null ],
     [ "kMaxBrightness", "io_8cpp.html#a9b3311f3ebda1282ad7bf650de30cf45", null ]
 ];

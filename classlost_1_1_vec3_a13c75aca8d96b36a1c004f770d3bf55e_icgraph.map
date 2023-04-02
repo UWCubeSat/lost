@@ -7,10 +7,10 @@
 <area shape="rect" id="node13" href="$namespacelost.html#a0f709f580bfbe3bd0196b50226f22683" title="Return all the unidentified centroids within the requested distance bounds from star" alt="" coords="1264,60,1487,101"/>
 <area shape="rect" id="node5" href="$namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="752,116,959,157"/>
 <area shape="rect" id="node7" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="1007,290,1216,316"/>
-<area shape="rect" id="node8" href="$classlost_1_1_generated_pipeline_input.html#aff6876d882f1a4274505f73617827712" title="Create a generated pipeline input." alt="" coords="752,341,959,382"/>
+<area shape="rect" id="node8" href="$classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686" title="Create a generated pipeline input." alt="" coords="752,341,959,382"/>
 <area shape="rect" id="node9" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="761,290,949,316"/>
-<area shape="rect" id="node10" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="522,290,650,316"/>
-<area shape="rect" id="node11" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="237,282,420,324"/>
+<area shape="rect" id="node10" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="522,290,650,316"/>
+<area shape="rect" id="node11" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,282,420,324"/>
 <area shape="rect" id="node12" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,290,189,316"/>
 <area shape="rect" id="node14" href="$namespacelost.html#a1e9642f2c2d486db201514b9ff579811" title="Given a list of unidentified centroids not yet at the soft threshold, and a list of unidentified cent..." alt="" coords="1017,57,1206,98"/>
 </map>

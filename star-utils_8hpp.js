@@ -8,6 +8,7 @@ var star_utils_8hpp =
     [ "Stars", "star-utils_8hpp.html#a4bd359d9c09dbecb81c3a3e536f0b5c5", null ],
     [ "DeserializeCatalog", "star-utils_8hpp.html#af4b650ecb61d27c188477fc9fbf4c886", null ],
     [ "FindNamedStar", "star-utils_8hpp.html#ac722314f3b14385ade7e5f05699ef006", null ],
+    [ "MagToBrightness", "star-utils_8hpp.html#a90ef8f69cd7b77ba05701f833fdaa320", null ],
     [ "NarrowCatalog", "star-utils_8hpp.html#af37c1bfa9d31aeb6fcd705fffd13497c", null ],
     [ "SerializeCatalog", "star-utils_8hpp.html#a71348982edf43778012c9682bfa99521", null ],
     [ "SerializeLengthCatalog", "star-utils_8hpp.html#ac0b24b666a681eccbaacf52b37c6b09b", null ]

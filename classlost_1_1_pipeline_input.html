@@ -232,6 +232,8 @@ Here is the call graph for this function:</div>
 <p>Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars()</a>, /not/ <a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">InputStars()</a>. </p>
 <p>This is in contrast to InputStarIds. If you need to compare ExpectedStarIds against the input stars, then you should use some function which uses simple heuristics to match the input stars and expected stars (eg based on distance). Cf how the star-ID comparator works for a reference implementation. </p>
 
+<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a9b4e6a0cea348568381061b6ebd1f926">lost::GeneratedPipelineInput</a>.</p>
+
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00116">116</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
@@ -267,6 +269,8 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15">lost::GeneratedPipelineInput</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00110">110</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
@@ -306,7 +310,7 @@ Here is the call graph for this function:</div>
 
 <p>The catalog to which catalog indexes returned from other methods refer. </p>
 
-<p>Implemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#ae1db3bb642d9b4410c641c9f7db92097">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#aa525af4b907a9ffd29b2b574f33fc53d">lost::GeneratedPipelineInput</a>.</p>
+<p>Implemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#acf5c26f8f9ac954ec16bb46938e76672">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#a6aa7ffe5170d43fe925fdf668a54cc9f">lost::GeneratedPipelineInput</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -345,7 +349,7 @@ Here is the caller graph for this function:</div>
 
 <p>Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc. </p>
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#ad4b98d7e899ce70fa20d95f757e08df8">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a480955be5ecd314fd59d3c1f6595539a">lost::GeneratedPipelineInput</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00105">105</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
@@ -383,7 +387,7 @@ Here is the caller graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a75645fe6b18c9de509b72ffbbe64cf3e">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#af5c60e7bfee6a569710a8cc7c40ccbac">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a6d8945388e5607205ec0b37a398558b1">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#a7feccf083489e6ae34e943eb23ee237f">lost::GeneratedPipelineInput</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00106">106</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
@@ -422,7 +426,7 @@ Here is the caller graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#a57f55058c0dcc5822f9c133210342111">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#aadf29204a91a120c3b1e712793aa8562">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_png_pipeline_input.html#ac52da46b0047856721736cf776c19eff">lost::PngPipelineInput</a>, and <a class="el" href="classlost_1_1_generated_pipeline_input.html#a0cbfa2300553ec4942d124e456d0ed4a">lost::GeneratedPipelineInput</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00097">97</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
@@ -458,7 +462,7 @@ Here is the caller graph for this function:</div>
 <p>Convert the result of <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">InputImage()</a> into a cairo surface.</p>
 <p>Allocates a new surface, whih must be destroyed with cairo_surface_destroy </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00316">316</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00334">334</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -497,7 +501,7 @@ Here is the call graph for this function:</div>
 
 <p>The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into <a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">InputStars()</a>, not <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">ExpectedStars()</a>, when present, because otherwise it's useless. </p>
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a6c16727bf2582645ae537c50e6fa589c">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a07c1d15af1fee070bf7b143211f7297f">lost::GeneratedPipelineInput</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00103">103</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
@@ -537,7 +541,7 @@ Here is the caller graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#ae27db0e671bb26836d66d39ddb46f149">lost::GeneratedPipelineInput</a>.</p>
+<p>Reimplemented in <a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">lost::GeneratedPipelineInput</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00100">100</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 <div class="dynheader">
@@ -564,7 +568,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_pipeline_input.html">PipelineInput</a></li>
-    <li class="footer">Generated on Sun Mar 26 2023 08:16:44 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sun Apr 2 2023 21:26:46 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

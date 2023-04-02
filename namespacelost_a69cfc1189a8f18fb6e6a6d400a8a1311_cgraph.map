@@ -1,6 +1,6 @@
 <map id="lost::PipelineComparatorPlotCentroidIndices" name="lost::PipelineComparatorPlotCentroidIndices">
-<area shape="rect" id="node1" title="Plot an annotated image where centroids are annotated with their centroid index. For debugging." alt="" coords="5,99,188,141"/>
-<area shape="rect" id="node2" href="$namespacelost.html#ad7cbac9d4bf0738d87f14e614ddb6da9" title="Plot information about an image onto the image using Cairo." alt="" coords="236,107,364,133"/>
+<area shape="rect" id="node1" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="5,99,188,141"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="236,107,364,133"/>
 <area shape="rect" id="node3" href="$namespacelost.html#adc5108f643b7657a835838c7f6411aa7" title=" " alt="" coords="447,81,565,108"/>
 <area shape="rect" id="node4" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="412,132,600,159"/>
 <area shape="rect" id="node5" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="648,107,857,133"/>
