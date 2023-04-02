@@ -276,6 +276,10 @@ and use \fB--compare-centroids\fP if you need to compare actual and expected cen
 Argument is optional. Print the determined right ascension, declination, and roll to \fIpath\fP. TODO: Option to print as quaternion. Defaults to stdout.
 
 .TP
+\fB--print-speed\fP [\fIpath\fP]
+Print the average, min, max, and upper 95th percentile of how long each stage of the pipeline took to run.
+
+.TP
 \fB--compare-centroids\fP [\fIpath\fP]
 Argument is option. Compare expected to actual centroids. Prints to \fIpath\fP. Defaults to stdout.
 
