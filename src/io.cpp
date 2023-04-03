@@ -1474,7 +1474,12 @@ static void PrintTimeStats(std::ostream &os, const std::string &prefix, const st
     long average = sum / times.size();
     std::vector<long> sortedTimes = times;
     std::sort(sortedTimes.begin(), sortedTimes.end());
-    long ninetyFifthPercentile = sortedTimes[(int)(sortedTimes.size() * 0.95)];
+    // what really is the 95th percentile? Being conservative, we want to pick a value that at least
+    // 95% of the times are less than. This means: (1) finding the number of times, (2) Finding
+    // Math.ceil(0.95 * numTimes), and (3) subtracting 1 to get the index.
+    int ninetyFiveIndex = (int)std::ceil(0.95 * times.size()) - 1;
+    assert(ninetyFiveIndex >= 0);
+    long ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];
 
     os << prefix << "_average_ns " << average << std::endl;
     os << prefix << "_min_ns " << min << std::endl;
@@ -1490,20 +1495,33 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
     std::vector<long> centroidingTimes;
     std::vector<long> starIdTimes;
     std::vector<long> attitudeTimes;
+    std::vector<long> totalTimes;
     for (int i = 0; i < (int)actual.size(); i++) {
-        centroidingTimes.push_back(actual[i].centroidingTimeNs);
-        starIdTimes.push_back(actual[i].starIdTimeNs);
-        attitudeTimes.push_back(actual[i].attitudeEstimationTimeNs);
+        long totalTime = 0;
+        if (actual[i].centroidingTimeNs > 0) {
+            centroidingTimes.push_back(actual[i].centroidingTimeNs);
+            totalTime += actual[i].centroidingTimeNs;
+        }
+        if (actual[i].starIdTimeNs > 0) {
+            starIdTimes.push_back(actual[i].starIdTimeNs);
+            totalTime += actual[i].starIdTimeNs;
+        }
+        if (actual[i].attitudeEstimationTimeNs > 0) {
+            attitudeTimes.push_back(actual[i].attitudeEstimationTimeNs);
+            totalTime += actual[i].attitudeEstimationTimeNs;
+        }
+        totalTimes.push_back(totalTime);
     }
-    if (centroidingTimes[0] > 0) {
+    if (centroidingTimes.size() > 0) {
         PrintTimeStats(os, "centroiding", centroidingTimes);
     }
-    if (starIdTimes[0] > 0) {
+    if (starIdTimes.size() > 0) {
         PrintTimeStats(os, "starid", starIdTimes);
     }
-    if (attitudeTimes[0] > 0) {
+    if (attitudeTimes.size() > 0) {
         PrintTimeStats(os, "attitude", attitudeTimes);
     }
+    PrintTimeStats(os, "total", totalTimes);
 }
 
 // TODO: add these debug comparators back in!
