@@ -62,7 +62,7 @@ Finally, information about the pipeline run can be printed. LOST can:
 .IP \[bu] 2
 Plot images visualizing star identification (\fB--plot-input\fP, \fB--plot-output\fP, and \fB--plot-raw-input\fP).
 .IP \[bu] 2
-Print the raw output of each stage (\fB--print-centroids\fP, \fB--print-attitude\fP).
+Print the raw output of each stage (\fB--print-actual-centroids\fP, \fB--print-expected-centroids\fP, \fB--print-attitude\fP).
 .IP \[bu] 2
 (Generated images only), compare the output of each stage with the expected output (\fB--compare-*\fP), making it easy to evaluate various algorithms for various parts of the pipeline.
 .LP
@@ -173,8 +173,16 @@ Controls the simulated camera sensitivity for generated images. This only has an
 Sets the standard deviation of Gaussian noise in the generated image(s) to \fIstddev\fP. Noise is measured in observed brightness, where 1 is the difference between pure white and pure black. Defaults to 0.05.
 
 .TP
+\fB--generate-centroids-only\fP [\fIcentroids-only\fP]
+If set (argument is not needed, but can be a bool), will not actually generate any pixel data -- only centroid positions. Much faster if only evaluating a star-id algorithm (eg sky coverage testing).
+
+.TP
 \fB--generate-ra\fP, \fB--generate-de\fP, \fB--generate-roll\fP \fIdegrees\fP
 Set the right ascension, declination, and roll of the generated image.
+
+.TP
+\fB--generate-random-attitudes\fP [\fIenable\fP]
+Generate a random attitude for each generated image. Ignores specified ra, de, and roll if set.
 
 .TP
 \fB--generate-exposure\fP \fIexposure-time\fP
@@ -201,6 +209,16 @@ The minimum (weakest) magnitude that generated false stars should have. Defaults
 The maximum (strongest) magnitude that generated false stars should have. Defaults to 1.0.
 
 .TP
+\fB--generate-perturb-centroids\fP \fIperturbation-stddev\fP
+Introduce artificial centroiding error. If provided, all the input and expected centroids will be shifted randomly according to a 2D Gaussian distribution with the given standard deviation (defaults to 0.2 pixel stddev). For evaluating star-id performance vs centroid error.
+
+.TP
+\fB--generate-cutoff-mag\fP \fIhalf-chance-mag\fP
+When evaluating star-id algos on generated images, we don't want every single catalog star in the FOV to be fed into the star-id algorithm. This option lets you control that! Every catalog star has some probability of being turned into an input centroid, and this specifies the magnitude that will have a 50% probability of being included in the input centroid list. An overly complicated mathematical function determines how that probability changes as you increase and decrease the magnitude from there, but it falls to 0 or 1 pretty quickly at either side.
+
+Set to a value of 100 or greater to disable cutoff and include all centroids.
+
+.TP
 \fB--generate-oversampling\fP \fInum-samples\fP
 Perform \fInum-samples\fP many samples per pixel when generating images. Effectively performs antialiasing. \fInum-samples\fP must be a perfect square. Default 4.
 
@@ -216,6 +234,10 @@ For example, we know exactly where each centroid should be. So we have an "expec
 stage we can conveniently compare against!
 
 .TP
+\fB--generate-time-based-seed\fP [\fIenable\fP]
+If true (the default), uses the current timestamp as a random seed. \fB--generate-seed\fP is ignored if time based seed is set.
+
+.TP
 \fB--plot-raw-input\fP [\fIpath\fP]
 Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
@@ -224,16 +246,45 @@ Argument is optional. Plots raw BW input image to PNG. Prints to \fIpath\fP. Def
 Argument is optional. Plots annotated input image to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
+\fB--plot-expected\fP [\fIpath\fP]
+Argument is optional. Plots annotated "expected" image to PNG. The difference between "expected" and
+"input" is that "input" is what's passed to the actual algorithms, while "expected" is compared
+against the actual output of the algorithms for evaluation purposes.
+
+
+.TP
 \fB--plot-output\fP [\fIpath\fP]
 Argument is optional. Plot output to PNG. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
-\fB--print-centroids\fP [\fIpath\fP]
-Argument is optional. Print list of centroids to \fIpath\fP. If star identification was also performed, print which catalog star each centroid was identified as. Defaults to stdout.
+\fB--plot-centroid-indices\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Plot output to PNG, but instead of labeling the stars
+with the catalog star they were identified as, labels them with their centroid index.
+
+If a centroid algo was provided, prints those indices. Otherwise, prints the "input centrtoid"
+indices, which is whatever would be passed to the star-id algo (so for generated images, after
+perturbations and magnitude cutoff is applied).
+
+.TP
+\fB--print-actual-centroids\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
+\fIpath\fP. If star identification was also performed, print which catalog star each centroid was
+identified as. Defaults to stdout.
+
+.TP
+\fB--print-expected-centroids\fP [\fIpath\fP]
+Mainly for debugging. Argument is optional. Print list of "expected" centroids from the pipeline
+input to \fIpath\fP. Also prints out expected star identifications for those stars, if present. This
+only works for generated images. Generally you should use \fB--print-actual-centroids\fP instead,
+and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
 
 .TP
 \fB--print-attitude\fP [\fIpath\fP]
 Argument is optional. Print the determined right ascension, declination, and roll to \fIpath\fP. TODO: Option to print as quaternion. Defaults to stdout.
+
+.TP
+\fB--print-speed\fP [\fIpath\fP]
+Print the average, min, max, and upper 95th percentile of how long each stage of the pipeline took to run.
 
 .TP
 \fB--compare-centroids\fP [\fIpath\fP]
@@ -241,7 +292,7 @@ Argument is option. Compare expected to actual centroids. Prints to \fIpath\fP. 
 
 .TP
 \fB--compare-stars\fP [\fIpath\fP]
-Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout.
+Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout. In the output, starid_num_correct, starid_num_incorrect, and starid_num_total count the number of individual stars identified in an image. The starid_num_images_correct and starid_num_images_incorrect outputs are more aggregated: starid_num_images_correct records the number of images where at least two stars were correctly id'd and no stars were incorrectly id'd, while starid_num_images_incorrect records the number of images with at least one incorrectly id'd star (used when generating more than 1 image at a time, eg for evaluation).
 
 .TP
 \fB--compare-attitudes\fP [\fIpath\fP]

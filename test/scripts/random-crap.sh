@@ -13,8 +13,8 @@ echo 'Issue #44: Throw an error if there are multiple ways to compute the FOV'
 
 echo 'Issue #73: Allow printing compare outputs to terminal'
 # General test that it only allow non-binary outputs to be printed to terminal
-script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids -' /dev/null | grep missing_stars || exit 1
-script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout' /dev/null | grep missing_stars || exit 1
+script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids -' /dev/null | grep centroids_mean_error || exit 1
+script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout' /dev/null | grep centroids_mean_error || exit 1
 # `script` captures stderr by default
 script -c './lost pipeline --generate 1 --plot-raw-input -' /dev/null | grep 'WARNING' || exit 1
 
@@ -28,4 +28,11 @@ echo 'Comparator assertions'
 echo 'Issue #36: Cog and Attitude without Star-ID'
 ./lost pipeline --generate 1 --centroid-algo cog --attitude-algo triad && exit 1
 
+echo 'Run the generator without centroids a whole bunch and make sure no assertions go off'
+./lost pipeline --generate 200 --generate-perturb-centroids 5 --generate-centroids-only
+
+set +x
+echo '
+
+Despite all the errors and warnings above, this test has PASSED with FLYING COLORS'
 exit 0
