@@ -58,9 +58,6 @@ release: CXXFLAGS := $(RELEASE_CXXFLAGS)
 release: LDFLAGS := $(RELEASE_LDFLAGS)
 release: all
 
-$(BSC): download-bsc.sh
-	./download-bsc.sh
-
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
 

@@ -519,9 +519,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                std::default_random_engine *rng,
 
                                                bool centroidsOnly,
-                                               float observedReferenceBrightness,
+                                               float zeroMagTotalPhotons,
                                                float starSpreadStdDev,
-                                               float sensitivity,
+                                               float saturationPhotons,
                                                float darkCurrent,
                                                float readNoiseStdDev,
                                                Attitude motionBlurDirection, // applied on top of the attitude
@@ -538,9 +538,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
     assert(perturbationStddev >= 0.0);
 
-    // in photons
-    float referenceBrightness = observedReferenceBrightness / sensitivity;
-
     image.width = camera.XResolution();
     image.height = camera.YResolution();
     // number of true photons each pixel receives.
@@ -551,17 +548,18 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         std::cerr << "WARNING: oversampling was not a perfect square. Rounding up to "
                   << oversamplingPerAxis * oversamplingPerAxis << "." << std::endl;
     }
-    bool motionBlurEnabled = exposureTime > 0 && abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
-    if (!motionBlurEnabled) {
-        exposureTime = 1.0;
-        motionBlurDirection = Attitude(Quaternion(0, 1, 0, 0));
-    }
+    assert(exposureTime > 0);
+    bool motionBlurEnabled = abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
     Quaternion motionBlurDirectionQ = motionBlurDirection.GetQuaternion();
     // attitude at the middle of exposure time
     Quaternion currentAttitude = attitude.GetQuaternion();
     // attitude 1 time unit after middle of exposure
     Quaternion futureAttitude = motionBlurDirectionQ * currentAttitude;
     std::vector<GeneratedStar> generatedStars;
+
+    // a star with 1 photon has peak density 1/(2pi sigma^2), because 2d gaussian formula. Then just
+    // multiply up proportionally!
+    float zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*M_PI * starSpreadStdDev*starSpreadStdDev);
 
     // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
     std::normal_distribution<float> perturbation1DDistribution(0.0, perturbationStddev);
@@ -597,21 +595,19 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 delta = {0, 0};  // avoid floating point funny business
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
-            float peakBrightness = referenceBrightness * MagToBrightness(catalogStar.magnitude);
-            float interestingThreshold = 0.01; // we don't need to check pixels that are expected to
+            float peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
+            float peakBrightness = peakBrightnessPerTime * exposureTime;
+            float interestingThreshold = 0.05; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
             // inverse of the function defining the Gaussian distribution: Find out how far from the
             // mean we'll have to go until the number of photons is less than interestingThreshold
-            float radius = ceil(sqrt(-log(interestingThreshold / peakBrightness / exposureTime) *
-                                     2 * starSpreadStdDev * starSpreadStdDev));
-            Star star = Star(
-                camCoords.x, camCoords.y, radius, radius,
-                // important to invert magnitude here, so that centroid magnitude becomes larger for
-                // brighter stars. It's possible to make it so that the magnitude is always positive
-                // too, but allowing weirder magnitudes helps keep star-id algos honest about their
-                // assumptions on magnitude. we don't use its magnitude anywhere else in generation;
-                // peakBrightness was already calculated.
-                -catalogStar.magnitude);
+            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
+            Star star = Star(camCoords.x, camCoords.y,
+                             radius, radius,
+                             // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
+                             // It's possible to make it so that the magnitude is always positive too, but allowing weirder magnitudes helps keep star-id algos honest about their assumptions on magnitude.
+                             // we don't use its magnitude anywhere else in generation; peakBrightness was already calculated.
+                             -catalogStar.magnitude);
             generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
 
             // Now add the star to the input and expected lists.
@@ -743,7 +739,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }
-        curBrightness += quantizedPhotons * sensitivity;
+        curBrightness += quantizedPhotons / saturationPhotons;
 
         // std::clamp not introduced until C++17, so we avoid it.
         float clampedBrightness = std::max(std::min(curBrightness, (float)1.0), (float)0.0);
@@ -820,9 +816,9 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                 &rng,
 
                 values.generateCentroidsOnly,
-                values.generateRefBrightness,
+                values.generateZeroMagPhotons,
                 values.generateSpreadStdDev,
-                values.generateSensitivity,
+                values.generateSaturationPhotons,
                 values.generateDarkCurrent,
                 values.generateReadNoiseStdDev,
                 motionBlurDirection,
