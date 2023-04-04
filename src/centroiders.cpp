@@ -488,7 +488,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
         for (int j = -nb; j <= nb; j++) {
             std::vector<int> w;
             for (int k = -nb; k <= nb; k++) {
-                w.push_back(Get(x + k, y + j, image, imageWidth));
+                w.push_back(std::pow(Get(x + k, y + j, image, imageWidth), 1));
             }
             std::vector<int> a(np);
             std::vector<int> b(np);
