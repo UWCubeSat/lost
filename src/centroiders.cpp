@@ -9,7 +9,7 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/unsupported/Eigen/NonLinearOptimization>
-#include <eigen3/unsupported/Eigen/NumericalDiff>
+// #include <eigen3/unsupported/Eigen/NumericalDiff>
 #include <iostream>
 #include <set>  // TODO: remove later, this is just lazy to implement hash for unordered_set
 #include <unordered_map>
@@ -27,6 +27,7 @@ static float FitModel(float x, float a, float xb, float sigma);
 /// Prediction of 2D Gaussian model for 2D LSGF method
 static float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY);
 
+// Structure: (x, y, size of floodfill around (x, y))
 typedef std::vector<int> Point;
 
 /**
@@ -59,6 +60,8 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
             int x0 = x;
             int y0 = y;
 
+            int floodSize = 0;
+
             queue.push_back(pCurr);
             while (queue.size() != 0) {
                 Point p = queue[0];
@@ -71,6 +74,8 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
 
                 int mag = Get(px, py, image, imageWidth);
                 if (mag < cutoff) continue;
+
+                floodSize++;
 
                 // Add this point to pts and checkedPoints
                 // We can add to checkedPoints since cutoff is global - ensure no 2 fills collide
@@ -93,7 +98,7 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
             }
 
             // Cool, our flood is done
-            res.push_back({x0, y0});
+            res.push_back({x0, y0, floodSize});
         }
     }
 
@@ -410,7 +415,7 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
         sigma = betaX(2);
 
-        result.push_back(Star(xb + 0.5, yb + 0.5, sigma, sigma, a));
+        result.push_back(Star(xb + 0.5, yb + 0.5, sigma, sigma, pt[2]));
     }
 
     return result;
@@ -449,13 +454,13 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
         float sigmaX = beta(3);
         float sigmaY = beta(4);
 
-        result.push_back(Star(xRes + 0.5, yRes + 0.5, sigmaX, sigmaY, aRes));
+        result.push_back(Star(xRes + 0.5, yRes + 0.5, sigmaX, sigmaY, pt[2]));
     }
 
     return result;
 }
 
-static void GetGGridCoeff(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
+static void GetGGridCoeffs(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
     (*a)[0] = 2*w[2]*w[1]*w[0] + 6*w[2]*w[0]*w[3] + 12*(w[3]*w[4]*w[0]+w[3]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[4]*w[1]*w[0];
     (*a)[1] = 2*w[2]*w[3]*w[1] + 6*w[3]*w[4]*w[1] - 4*w[2]*w[1]*w[0] + 12*w[2]*w[4]*w[1] - 18*w[3]*w[1]*w[0] - 48*w[4]*w[1]*w[0];
     (*a)[2] = 2*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) - 4*w[1]*w[2]*w[3] - 18*(w[0]*w[2]*w[3] + w[1]*w[2]*w[4]) - 64*w[0]*w[2]*w[4];
@@ -488,11 +493,11 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
         for (int j = -nb; j <= nb; j++) {
             std::vector<int> w;
             for (int k = -nb; k <= nb; k++) {
-                w.push_back(Get(x + k, y + j, image, imageWidth));
+                w.push_back(std::pow(Get(x + k, y + j, image, imageWidth), 1));
             }
             std::vector<int> a(np);
             std::vector<int> b(np);
-            GetGGridCoeff(w, &a, &b);
+            GetGGridCoeffs(w, &a, &b);
             for (int i = -nb; i <= nb; i++) {
                 float v = Get(x + i, y + j, image, imageWidth);
                 nom += b[i + nb] * ((v == 0) ? -1e6 : std::log(v));
@@ -511,7 +516,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
             std::vector<int> a(np);
             std::vector<int> b(np);
-            GetGGridCoeff(w, &a, &b);
+            GetGGridCoeffs(w, &a, &b);
             for (int j = -nb; j <= nb; j++) {
                 float v = Get(x + i, y + j, image, imageWidth);
                 nom += b[j + nb] * ((v == 0) ? -1e6 : std::log(v));
@@ -521,7 +526,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
 
         float yRes = y + nom/denom;
 
-        result.push_back(Star(xRes + 0.5, yRes + 0.5, nb, nb, Get(x, y, image, imageWidth)));
+        result.push_back(Star(xRes + 0.5, yRes + 0.5, nb, nb, pt[2]));
     }
 
     return result;
