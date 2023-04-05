@@ -40,9 +40,24 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
 /// A simple, but well tested thresholding algorithm that works well with star images
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight);
 
+void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight){
+    float sum = 0;
+    for (long i = 0; i < imageHeight * imageWidth; i++) {
+        int x = i % imageWidth;
+        int y = i / imageWidth;
+        sum += Get(x, y, image, imageWidth);
+    }
+    float noise = sum / (imageWidth * imageHeight);
+    for (long i = 0; i < imageHeight * imageWidth; i++) {
+        image[i] = std::max(0, int(image[i] - noise));
+    }
+}
+
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight) {
     std::vector<Point> res;
     std::set<Point> checkedPoints;
+
+    SubtractNoise(image, imageWidth, imageHeight);
 
     int cutoff = BasicThreshold(image, imageWidth, imageHeight);
 
@@ -368,6 +383,8 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
     std::cout << "1D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
+    SubtractNoise(image, imageWidth, imageHeight);
+
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
     for (const Point &pt : candidatePts) {
@@ -427,6 +444,8 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
 
     std::cout << "2D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
+    SubtractNoise(image, imageWidth, imageHeight);
+
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
     for (const Point &pt : candidatePts) {
@@ -460,25 +479,39 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
     return result;
 }
 
-static void GetGGridCoeffs(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
-    (*a)[0] = 2*w[2]*w[1]*w[0] + 6*w[2]*w[0]*w[3] + 12*(w[3]*w[4]*w[0]+w[3]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[4]*w[1]*w[0];
-    (*a)[1] = 2*w[2]*w[3]*w[1] + 6*w[3]*w[4]*w[1] - 4*w[2]*w[1]*w[0] + 12*w[2]*w[4]*w[1] - 18*w[3]*w[1]*w[0] - 48*w[4]*w[1]*w[0];
-    (*a)[2] = 2*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) - 4*w[1]*w[2]*w[3] - 18*(w[0]*w[2]*w[3] + w[1]*w[2]*w[4]) - 64*w[0]*w[2]*w[4];
-    (*a)[3] = 2*w[2]*w[1]*w[3] + 6*w[3]*w[1]*w[0] - 4*w[2]*w[3]*w[4] + 12*w[2]*w[3]*w[0] - 18*w[3]*w[4]*w[1] - 48*w[3]*w[4]*w[0];
-    (*a)[4] = 2*w[2]*w[3]*w[4] + 6*w[2]*w[4]*w[1] + 12*(w[3]*w[4]*w[1]+w[4]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[3]*w[4]*w[0];
+static void GetGGridCoeffs(const std::vector<int> &w, std::vector<int> *const a,
+                           std::vector<int> *const b) {
+    (*a)[0] = 2 * w[2] * w[1] * w[0] + 6 * w[2] * w[0] * w[3] +
+              12 * (w[3] * w[4] * w[0] + w[3] * w[1] * w[0]) + 32 * w[2] * w[4] * w[0] +
+              36 * w[4] * w[1] * w[0];
+    (*a)[1] = 2 * w[2] * w[3] * w[1] + 6 * w[3] * w[4] * w[1] - 4 * w[2] * w[1] * w[0] +
+              12 * w[2] * w[4] * w[1] - 18 * w[3] * w[1] * w[0] - 48 * w[4] * w[1] * w[0];
+    (*a)[2] = 2 * (w[2] * w[3] * w[4] - w[2] * w[1] * w[0]) - 4 * w[1] * w[2] * w[3] -
+              18 * (w[0] * w[2] * w[3] + w[1] * w[2] * w[4]) - 64 * w[0] * w[2] * w[4];
+    (*a)[3] = 2 * w[2] * w[1] * w[3] + 6 * w[3] * w[1] * w[0] - 4 * w[2] * w[3] * w[4] +
+              12 * w[2] * w[3] * w[0] - 18 * w[3] * w[4] * w[1] - 48 * w[3] * w[4] * w[0];
+    (*a)[4] = 2 * w[2] * w[3] * w[4] + 6 * w[2] * w[4] * w[1] +
+              12 * (w[3] * w[4] * w[1] + w[4] * w[1] * w[0]) + 32 * w[2] * w[4] * w[0] +
+              36 * w[3] * w[4] * w[0];
 
-    (*b)[0] = -w[2]*w[1]*w[0] + 3*w[2]*w[3]*w[0] + 18*(w[3]*w[4]*w[0]+w[4]*w[1]*w[0]) + 32*w[2]*w[4]*w[0];
-    (*b)[1] = w[2]*w[3]*w[1] + 4*w[2]*w[1]*w[0] + 9*(w[3]*w[4]*w[1]+w[3]*w[1]*w[0]) + 12*w[2]*w[4]*w[1];
-    (*b)[2] = 3*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) + 9*(w[2]*w[3]*w[0]-w[2]*w[1]*w[4]);
-    (*b)[3] = -w[2]*w[3]*w[1] - 4*w[2]*w[3]*w[4] - 9*(w[3]*w[4]*w[1] + w[3]*w[0]*w[1]) - 12*w[2]*w[3]*w[0];
-    (*b)[4] = w[2]*w[3]*w[4] - 3*w[2]*w[1]*w[4] - 18*(w[3]*w[0]*w[4]+w[1]*w[0]*w[4]) - 32*w[2]*w[4]*w[0];
+    (*b)[0] = -w[2] * w[1] * w[0] + 3 * w[2] * w[3] * w[0] +
+              18 * (w[3] * w[4] * w[0] + w[4] * w[1] * w[0]) + 32 * w[2] * w[4] * w[0];
+    (*b)[1] = w[2] * w[3] * w[1] + 4 * w[2] * w[1] * w[0] +
+              9 * (w[3] * w[4] * w[1] + w[3] * w[1] * w[0]) + 12 * w[2] * w[4] * w[1];
+    (*b)[2] = 3 * (w[2] * w[3] * w[4] - w[2] * w[1] * w[0]) +
+              9 * (w[2] * w[3] * w[0] - w[2] * w[1] * w[4]);
+    (*b)[3] = -w[2] * w[3] * w[1] - 4 * w[2] * w[3] * w[4] -
+              9 * (w[3] * w[4] * w[1] + w[3] * w[0] * w[1]) - 12 * w[2] * w[3] * w[0];
+    (*b)[4] = w[2] * w[3] * w[4] - 3 * w[2] * w[1] * w[4] -
+              18 * (w[3] * w[0] * w[4] + w[1] * w[0] * w[4]) - 32 * w[2] * w[4] * w[0];
 }
 
-Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
-                                                int imageHeight) const {
+Stars GaussianGrid::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
     std::cout << "Gaussian Grid (" << np << "x" << np << ")" << std::endl;
+
+    SubtractNoise(image, imageWidth, imageHeight);
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
@@ -505,7 +538,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
         }
 
-        float xRes = x + nom/denom;
+        float xRes = x + nom / denom;
 
         nom = 0;
         denom = 0;
@@ -524,7 +557,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
         }
 
-        float yRes = y + nom/denom;
+        float yRes = y + nom / denom;
 
         result.push_back(Star(xRes + 0.5, yRes + 0.5, nb, nb, pt[2]));
     }
@@ -667,6 +700,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
     std::vector<Star> result;
 
+    SubtractNoise(image, imageWidth, imageHeight);
+
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
@@ -759,6 +794,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                                                     int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
+    SubtractNoise(image, imageWidth, imageHeight);
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         // check if pixel is part of a "star" and has not been iterated over

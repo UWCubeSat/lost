@@ -104,6 +104,9 @@ int XMarginal(int x, int y0, int nb, const unsigned char *image, int w);
 /// Get value of y marginal - keep y fixed, sum pixel values from [x0-nb, x0+nb]
 int YMarginal(int x0, int y, int nb, const unsigned char *image, int w);
 
+/// Compute and subtract noise = mean of all pixels from image
+void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight);
+
 /**
  * @brief Given window centered at (x0, y0) in image with width=w, calculate initial guess for sigma
  * parameter of Gaussian function
