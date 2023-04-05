@@ -13,8 +13,8 @@ echo 'Issue #44: Throw an error if there are multiple ways to compute the FOV'
 
 echo 'Issue #73: Allow printing compare outputs to terminal'
 # General test that it only allow non-binary outputs to be printed to terminal
-script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids -' /dev/null | grep missing_stars || exit 1
-script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout' /dev/null | grep missing_stars || exit 1
+script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids -' /dev/null | grep centroids_mean_error || exit 1
+script -c './lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout' /dev/null | grep centroids_mean_error || exit 1
 # `script` captures stderr by default
 script -c './lost pipeline --generate 1 --plot-raw-input -' /dev/null | grep 'WARNING' || exit 1
 
@@ -30,6 +30,16 @@ echo 'Issue #36: Cog and Attitude without Star-ID'
 
 echo 'Run the generator without centroids a whole bunch and make sure no assertions go off'
 ./lost pipeline --generate 200 --generate-perturb-centroids 5 --generate-centroids-only
+
+echo 'Speed 95-th percentile should be different than max for 20 but not 19 trials'
+nineteen_out=$(./lost pipeline --generate 19 --generate-centroids-only --attitude-algo quest --print-speed -)
+nineteen_max_ns=$(echo "$nineteen_out" | grep total_max_ns | cut -d' ' -f2)
+nineteen_95_ns=$(echo "$nineteen_out" | grep 'total_95%_ns' | cut -d' ' -f2)
+(( nineteen_max_ns == nineteen_95_ns )) || exit 1 # somehow single equals sign doesn't work? I am confusion. Probably because they actually have that do assignment, for for-loop purposes?
+twenty_out=$(./lost pipeline --generate 20 --generate-centroids-only --attitude-algo quest --print-speed -)
+twenty_max_ns=$(echo "$twenty_out" | grep total_max_ns | cut -d' ' -f2)
+twenty_95_ns=$(echo "$twenty_out" | grep 'total_95%_ns' | cut -d' ' -f2)
+(( twenty_max_ns > twenty_95_ns )) || exit 1
 
 set +x
 echo '

@@ -8,6 +8,13 @@
 *.txt
 *.bin
 
+*.out.*
+*.lisp
+*.org
+*.py
+*.json
+/.gdb_history
+
 BSC5
 
 /documentation/man-*.h
