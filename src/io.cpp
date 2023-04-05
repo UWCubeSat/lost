@@ -1107,11 +1107,13 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
+        result.numCorrectCentroids += comparison.numCorrectCentroids;
         result.numExtraCentroids += comparison.numExtraCentroids;
     }
 
     result.meanError /= comparisons.size();
     result.numExtraCentroids /= comparisons.size();
+    result.numCorrectCentroids /= comparisons.size();
 
     return result;
 }
