@@ -93,6 +93,13 @@ The field of view of the camera that took the picture (in degrees). Defaults to 
 Will not consider centroids with magnitude below \fImin-mag\fP.
 
 .TP
+\fB--centroid-filter-brightest\fP \fInum-stars\fP
+Remove all but the brightest \fInum-stars\fP many stars from the list of centroids before sending to
+star-id. Often a better choice than \fB--centroid-mag-filter\fP, because you can ensure that you
+keep enough stars to do star-id. If both this option and \fB--centroid-mag-filter\fP are provided,
+then all stars satisfying both criteria are kept (intersection).
+
+.TP
 \fB--database\fP \fIfilename\fP
 Chooses \fIfilename\fP as the database to use during star identification.
 

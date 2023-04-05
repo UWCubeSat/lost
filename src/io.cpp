@@ -880,15 +880,6 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm, StarIdAlgorithm *starId
 
 /// Create a pipeline from command line options.
 Pipeline SetPipeline(const PipelineOptions &values) {
-    enum class PipelineStage {
-        Centroid,
-        CentroidMagnitudeFilter,
-        Database,
-        StarId,
-        AttitudeEstimation,
-        Done
-    };
-
     Pipeline result;
 
     // TODO: more flexible or sth
@@ -920,7 +911,8 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     }
 
     // centroid magnitude filter stage
-    if (values.centroidMagFilter != -1) result.centroidMinMagnitude = values.centroidMagFilter;
+    if (values.centroidMagFilter > 0) result.centroidMinMagnitude = values.centroidMagFilter;
+    if (values.centroidFilterBrightest > 0) result.centroidMinStars = values.centroidFilterBrightest;
 
     // database stage
     if (values.databasePath != "") {
@@ -1017,9 +1009,23 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.centroidingTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
+        // MAGNITUDE FILTERING
+        int minMagnitude = centroidMinMagnitude;
+        if (centroidMinStars > 0
+            // don't need to filter if we don't even have that many stars
+            && centroidMinStars < (int)unfilteredStars.size()) {
+
+            Stars magSortedStars = unfilteredStars;
+            // sort descending
+            std::sort(magSortedStars.begin(), magSortedStars.end(), [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
+            minMagnitude = std::max(minMagnitude, magSortedStars[centroidMinStars - 1].magnitude);
+        }
+        // determine the minimum magnitude according to sorted stars
         Stars *filteredStars = new std::vector<Star>();
         for (const Star &star : unfilteredStars) {
-            if (star.magnitude >= centroidMinMagnitude) {
+            assert(star.magnitude >= 0); // catalog stars can have negative magnitude, but by our
+                                         // conventions, centroids shouldn't.
+            if (star.magnitude >= minMagnitude) {
                 filteredStars->push_back(star);
             }
         }
@@ -1673,10 +1679,7 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
 void PipelineComparison(const PipelineInputList &expected,
                         const std::vector<PipelineOutput> &actual, const PipelineOptions &values) {
     if (actual.size() == 0) {
-        std::cerr << "ERROR: No \"comparator\"/output action was specified. I.e., the star "
-                     "identification is all done, but you didn't specify how to return the results "
-                     "to you! Try --plot-output <filepath>, perhaps."
-                  << std::endl;
+        std::cerr << "ERROR: No output! Did you specify any input images? Try --png or --generate." << std::endl;
         exit(1);
     }
 
