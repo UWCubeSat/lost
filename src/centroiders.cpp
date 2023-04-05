@@ -57,9 +57,13 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
     std::vector<Point> res;
     std::set<Point> checkedPoints;
 
-    SubtractNoise(image, imageWidth, imageHeight);
-
     int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    std::cout << "Cutoff: " << cutoff << std::endl;
+    if(cutoff == 0){
+        // TODO: scuffed, floodfill will never stop if cutoff=0, so stop it here
+        std::cerr << "No stars detected in image, killing process" << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         int x = i % imageWidth;
