@@ -411,7 +411,7 @@ public:
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
 
-    /// the brightness density at the center of the star. 0.0 is black, 1.0 is white.
+    /// the brightness density per time unit at the center of the star. 0.0 is black, 1.0 is white.
     float peakBrightness;
 
     /// (only meaningful with motion blur) Where the star will appear one time unit in the future.
@@ -448,9 +448,9 @@ static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar
 
 /// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
 static float StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
-                                   float stddev) {
+                                   float t, float stddev) {
     const Vec2 d0 = generatedStar.position - pixel;
-    return generatedStar.peakBrightness * exp(-d0.MagnitudeSq() / (2*stddev*stddev));
+    return generatedStar.peakBrightness * t * exp(-d0.MagnitudeSq() / (2 * stddev * stddev));
 }
 
 /**
@@ -559,19 +559,18 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
             float peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
-            float peakBrightness = peakBrightnessPerTime * exposureTime;
             float interestingThreshold = 0.05; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
             // inverse of the function defining the Gaussian distribution: Find out how far from the
             // mean we'll have to go until the number of photons is less than interestingThreshold
-            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
+            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightnessPerTime/exposureTime)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
                              // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
                              // It's possible to make it so that the magnitude is always positive too, but allowing weirder magnitudes helps keep star-id algos honest about their assumptions on magnitude.
                              // we don't use its magnitude anywhere else in generation; peakBrightness was already calculated.
                              -catalogStar.magnitude);
-            generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
+            generatedStars.push_back(GeneratedStar(star, peakBrightnessPerTime, delta));
 
             // Now add the star to the input and expected lists.
             // We do actually want to add false stars as well, because:
@@ -650,7 +649,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                  - MotionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev))
                                 / oversamplingBrightnessFactor;
                         } else {
-                            curPhotons = StaticPixelBrightness({x, y}, star, starSpreadStdDev)
+                            curPhotons = StaticPixelBrightness({x, y}, star, exposureTime, starSpreadStdDev)
                                 / oversamplingBrightnessFactor;
                         }
 
