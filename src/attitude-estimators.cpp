@@ -10,6 +10,10 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
                                  const Catalog &catalog,
                                  const StarIdentifiers &starIdentifiers) {
+    if (starIdentifiers.size() < 2) {
+        return Attitude();
+    }
+    assert(stars.size() >= 2);
 
     // attitude profile matrix
     Eigen::Matrix3f B;
@@ -88,9 +92,10 @@ Attitude TriadAlgorithm::Go(const Camera &camera,
                             const Stars &stars,
                             const Catalog &catalog,
                             const StarIdentifiers &starIds) {
-    if ((int)stars.size() < 2 || (int)starIds.size() < 2) {
-        return Attitude(Quaternion(1,0,0,0));
+    if (starIds.size() < 2) {
+        return Attitude();
     }
+    assert(stars.size() >= 2);
 
     // TODO: Better way of picking the two stars
     StarIdentifier
@@ -137,6 +142,11 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
                             const Stars &stars,
                             const Catalog &catalog,
                             const StarIdentifiers &starIdentifiers) {
+
+    if (starIdentifiers.size() < 2) {
+        return Attitude();
+    }
+    assert(stars.size() >= 2);
 
     // initial guess for eigenvalue (sum of the weights)
     float guess = 0;

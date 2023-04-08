@@ -1455,16 +1455,23 @@ static void PipelineComparatorStarIds(std::ostream &os,
 }
 
 static void PrintAttitude(std::ostream &os, const std::string &prefix, const Attitude &attitude) {
-    EulerAngles spherical = attitude.ToSpherical();
-    os << prefix << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
-    os << prefix << "attitude_de " << RadToDeg(spherical.de) << std::endl;
-    os << prefix << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+    if (attitude.IsKnown()) {
+        os << prefix << "attitude_known 1" << std::endl;
 
-    Quaternion q = attitude.GetQuaternion();
-    os << prefix << "attitude_i " << q.i << std::endl;
-    os << prefix << "attitude_j " << q.j << std::endl;
-    os << prefix << "attitude_k " << q.k << std::endl;
-    os << prefix << "attitude_real " << q.real << std::endl;
+        EulerAngles spherical = attitude.ToSpherical();
+        os << prefix << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
+        os << prefix << "attitude_de " << RadToDeg(spherical.de) << std::endl;
+        os << prefix << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+
+        Quaternion q = attitude.GetQuaternion();
+        os << prefix << "attitude_i " << q.i << std::endl;
+        os << prefix << "attitude_j " << q.j << std::endl;
+        os << prefix << "attitude_k " << q.k << std::endl;
+        os << prefix << "attitude_real " << q.real << std::endl;
+
+    } else {
+        os << prefix << "attitude_known 0" << std::endl;
+    }
 }
 
 /// Print the identifed attitude to `os` in Euler angle format.
@@ -1499,25 +1506,31 @@ static void PipelineComparatorAttitude(std::ostream &os,
 
     float attitudeErrorSum = 0.0f;
     int numCorrect = 0;
+    int numIncorrect = 0;
 
     for (int i = 0; i < (int)expected.size(); i++) {
-        Quaternion expectedQuaternion = expected[i]->ExpectedAttitude()->GetQuaternion();
-        Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
-        float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).Angle();
-        assert(attitudeError >= 0);
+        if (actual[i].attitude->IsKnown()) {
+            Quaternion expectedQuaternion = expected[i]->ExpectedAttitude()->GetQuaternion();
+            Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
+            float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).SmallestAngle();
+            assert(attitudeError >= 0);
 
-        attitudeErrorSum += attitudeError;
-        if (attitudeError <= angleThreshold) {
-            numCorrect++;
+            if (attitudeError <= angleThreshold) {
+                attitudeErrorSum += attitudeError;
+                numCorrect++;
+            } else {
+                numIncorrect++;
+            }
         }
     }
 
     float attitudeErrorMean = attitudeErrorSum / expected.size();
     float fractionCorrect = (float)numCorrect / expected.size();
+    float fractionIncorrect = (float)numIncorrect / expected.size();
 
     os << "attitude_error_mean " << attitudeErrorMean << std::endl;
-    os << "attitude_num_correct " << numCorrect << std::endl;
-    os << "attitude_fraction_correct " << fractionCorrect << std::endl;
+    os << "attitude_availability " << fractionCorrect << std::endl;
+    os << "attitude_error_rate " << fractionIncorrect << std::endl;
 }
 
 static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long> &times) {
@@ -1583,7 +1596,9 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
     if (attitudeTimes.size() > 0) {
         PrintTimeStats(os, "attitude", attitudeTimes);
     }
-    PrintTimeStats(os, "total", totalTimes);
+    if (centroidingTimes.size() > 0 || starIdTimes.size() > 0 || attitudeTimes.size() > 0) {
+        PrintTimeStats(os, "total", totalTimes);
+    }
 }
 
 // TODO: add these debug comparators back in!
