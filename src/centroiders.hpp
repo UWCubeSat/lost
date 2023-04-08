@@ -30,11 +30,12 @@ public:
  */
 class LeastSquaresGaussianFit1D : public CentroidAlgorithm{
 public:
-    explicit LeastSquaresGaussianFit1D(int nb) : nb(nb), np(nb*2+1) { };
+    explicit LeastSquaresGaussianFit1D(int nb, bool dyn) : nb(nb), dynamic(dyn), np(nb*2+1) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 
 private:
     const int nb;
+    bool dynamic;
     const int np;
 };
 
@@ -47,11 +48,12 @@ private:
  */
 class LeastSquaresGaussianFit2D : public CentroidAlgorithm {
 public:
-    explicit LeastSquaresGaussianFit2D(int nb) : nb(nb), np(nb*2+1) { };
+    explicit LeastSquaresGaussianFit2D(int nb, bool dyn) : nb(nb), dynamic(dyn), np(nb*2+1) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 
 private:
     const int nb;
+    bool dynamic;
     const int np;
 };
 
