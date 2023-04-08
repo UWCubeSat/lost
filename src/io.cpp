@@ -594,7 +594,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // If it got perturbed outside of the sensor, don't add it.
             if (camera.InSensor(inputStar.position)
                 // and also don't add it if it's too dim.
-                && (cutoffMag >= 10000
+                && (cutoffMag >= 10000 // but always add the star if the cutoff is very high
+                    || !isTrueStar // and always add the false stars
                     || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
                 inputStars.push_back(inputStar);
                 if (isTrueStar) {
