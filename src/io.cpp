@@ -411,7 +411,7 @@ public:
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
 
-    /// the brightness density at the center of the star. 0.0 is black, 1.0 is white.
+    /// the brightness density per time unit at the center of the star. 0.0 is black, 1.0 is white.
     float peakBrightness;
 
     /// (only meaningful with motion blur) Where the star will appear one time unit in the future.
@@ -448,9 +448,9 @@ static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar
 
 /// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
 static float StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
-                                   float stddev) {
+                                   float t, float stddev) {
     const Vec2 d0 = generatedStar.position - pixel;
-    return generatedStar.peakBrightness * exp(-d0.MagnitudeSq() / (2*stddev*stddev));
+    return generatedStar.peakBrightness * t * exp(-d0.MagnitudeSq() / (2 * stddev * stddev));
 }
 
 /**
@@ -559,19 +559,18 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
             float peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
-            float peakBrightness = peakBrightnessPerTime * exposureTime;
             float interestingThreshold = 0.05; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
             // inverse of the function defining the Gaussian distribution: Find out how far from the
             // mean we'll have to go until the number of photons is less than interestingThreshold
-            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
+            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightnessPerTime/exposureTime)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
                              // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
                              // It's possible to make it so that the magnitude is always positive too, but allowing weirder magnitudes helps keep star-id algos honest about their assumptions on magnitude.
                              // we don't use its magnitude anywhere else in generation; peakBrightness was already calculated.
                              -catalogStar.magnitude);
-            generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
+            generatedStars.push_back(GeneratedStar(star, peakBrightnessPerTime, delta));
 
             // Now add the star to the input and expected lists.
             // We do actually want to add false stars as well, because:
@@ -650,7 +649,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                  - MotionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev))
                                 / oversamplingBrightnessFactor;
                         } else {
-                            curPhotons = StaticPixelBrightness({x, y}, star, starSpreadStdDev)
+                            curPhotons = StaticPixelBrightness({x, y}, star, exposureTime, starSpreadStdDev)
                                 / oversamplingBrightnessFactor;
                         }
 
@@ -835,10 +834,6 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 
 /// Create a pipeline from command line options.
 Pipeline SetPipeline(const PipelineOptions &values) {
-    enum class PipelineStage {
-        Centroid, CentroidMagnitudeFilter, Database, StarId, AttitudeEstimation, Done
-    };
-
     Pipeline result;
 
     // TODO: more flexible or sth
@@ -870,7 +865,8 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     }
 
     // centroid magnitude filter stage
-    if (values.centroidMagFilter != -1) result.centroidMinMagnitude = values.centroidMagFilter;
+    if (values.centroidMagFilter > 0) result.centroidMinMagnitude = values.centroidMagFilter;
+    if (values.centroidFilterBrightest > 0) result.centroidMinStars = values.centroidFilterBrightest;
 
     // database stage
     if (values.databasePath != "") {
@@ -950,9 +946,23 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.centroidingTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
+        // MAGNITUDE FILTERING
+        int minMagnitude = centroidMinMagnitude;
+        if (centroidMinStars > 0
+            // don't need to filter if we don't even have that many stars
+            && centroidMinStars < (int)unfilteredStars.size()) {
+
+            Stars magSortedStars = unfilteredStars;
+            // sort descending
+            std::sort(magSortedStars.begin(), magSortedStars.end(), [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
+            minMagnitude = std::max(minMagnitude, magSortedStars[centroidMinStars - 1].magnitude);
+        }
+        // determine the minimum magnitude according to sorted stars
         Stars *filteredStars = new std::vector<Star>();
         for (const Star &star : unfilteredStars) {
-            if (star.magnitude >= centroidMinMagnitude) {
+            assert(star.magnitude >= 0); // catalog stars can have negative magnitude, but by our
+                                         // conventions, centroids shouldn't.
+            if (star.magnitude >= minMagnitude) {
                 filteredStars->push_back(star);
             }
         }
@@ -1108,11 +1118,13 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
+        result.numCorrectCentroids += comparison.numCorrectCentroids;
         result.numExtraCentroids += comparison.numExtraCentroids;
     }
 
     result.meanError /= comparisons.size();
     result.numExtraCentroids /= comparisons.size();
+    result.numCorrectCentroids /= comparisons.size();
 
     return result;
 }
@@ -1600,7 +1612,7 @@ void PipelineComparison(const PipelineInputList &expected,
                         const std::vector<PipelineOutput> &actual,
                         const PipelineOptions &values) {
     if (actual.size() == 0) {
-        std::cerr << "ERROR: No \"comparator\"/output action was specified. I.e., the star identification is all done, but you didn't specify how to return the results to you! Try --plot-output <filepath>, perhaps." << std::endl;
+        std::cerr << "ERROR: No output! Did you specify any input images? Try --png or --generate." << std::endl;
         exit(1);
     }
 

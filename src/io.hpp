@@ -240,7 +240,11 @@ public:
 
 private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
+
+    // next two options are for magnitude filter:
     int centroidMinMagnitude = 0;
+    int centroidMinStars = 0;
+
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
     std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     std::unique_ptr<unsigned char[]> database;
