@@ -44,6 +44,7 @@ LOST_CLI_OPTION("print-expected-centroids"  , std::string, printExpectedCentroid
 LOST_CLI_OPTION("print-input-centroids"     , std::string, printInputCentroids     , "", optarg      , "-")
 LOST_CLI_OPTION("print-actual-centroids"    , std::string, printActualCentroids    , "", optarg      , "-")
 LOST_CLI_OPTION("print-attitude"            , std::string, printAttitude           , "", optarg      , "-")
+LOST_CLI_OPTION("print-expected-attitude"   , std::string, printExpectedAttitude   , "", optarg      , "-")
 LOST_CLI_OPTION("print-speed"               , std::string, printSpeed              , "", optarg      , "-")
 LOST_CLI_OPTION("compare-centroids"         , std::string, compareCentroids        , "", optarg      , "-")
 LOST_CLI_OPTION("compare-star-ids"          , std::string, compareStarIds          , "", optarg      , "-")

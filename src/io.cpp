@@ -1454,6 +1454,19 @@ static void PipelineComparatorStarIds(std::ostream &os,
     os << "starid_num_images_incorrect " << numImagesIncorrect << std::endl;
 }
 
+static void PrintAttitude(std::ostream &os, const std::string &prefix, const Attitude &attitude) {
+    EulerAngles spherical = attitude.ToSpherical();
+    os << prefix << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
+    os << prefix << "attitude_de " << RadToDeg(spherical.de) << std::endl;
+    os << prefix << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+
+    Quaternion q = attitude.GetQuaternion();
+    os << prefix << "attitude_i " << q.i << std::endl;
+    os << prefix << "attitude_j " << q.j << std::endl;
+    os << prefix << "attitude_k " << q.k << std::endl;
+    os << prefix << "attitude_real " << q.real << std::endl;
+}
+
 /// Print the identifed attitude to `os` in Euler angle format.
 static void PipelineComparatorPrintAttitude(std::ostream &os,
                                             const PipelineInputList &,
@@ -1461,15 +1474,16 @@ static void PipelineComparatorPrintAttitude(std::ostream &os,
                                             const PipelineOptions &) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
+    PrintAttitude(os, "", *actual[0].attitude);
+}
 
-    // os << "attitude_real " << actual[0].attitude->real << std::endl;
-    // os << "attitude_i " << actual[0].attitude->i << std::endl;
-    // os << "attitude_j " << actual[0].attitude->j << std::endl;
-    // os << "attitude_k " << actual[0].attitude->k << std::endl;
-    EulerAngles spherical = actual[0].attitude->ToSpherical();
-    os << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
-    os << "attitude_de " << RadToDeg(spherical.de) << std::endl;
-    os << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+static void PipelineComparatorPrintExpectedAttitude(std::ostream &os,
+                                                   const PipelineInputList &expected,
+                                                   const std::vector<PipelineOutput> &,
+                                                   const PipelineOptions &) {
+    assert(expected.size() == 1);
+    assert(expected[0]->ExpectedAttitude());
+    PrintAttitude(os, "expected_", *expected[0]->ExpectedAttitude());
 }
 
 /// Compare the actual and expected attitudes.
@@ -1710,6 +1724,11 @@ void PipelineComparison(const PipelineInputList &expected,
         LOST_PIPELINE_COMPARE(actual[0].attitude && actual.size() == 1,
                               "--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPrintAttitude, values.printAttitude, false);
+    }
+    if (values.printExpectedAttitude != "") {
+        LOST_PIPELINE_COMPARE(expected[0]->ExpectedAttitude() && expected.size() == 1,
+                              "--print-expected-attitude requires exactly 1 input image, and for expected attitude to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPrintExpectedAttitude, values.printExpectedAttitude, false);
     }
     if (values.compareAttitudes != "") {
         LOST_PIPELINE_COMPARE(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold,
