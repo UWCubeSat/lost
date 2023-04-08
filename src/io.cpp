@@ -1524,7 +1524,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
         }
     }
 
-    float attitudeErrorMean = attitudeErrorSum / expected.size();
+    float attitudeErrorMean = attitudeErrorSum / numCorrect;
     float fractionCorrect = (float)numCorrect / expected.size();
     float fractionIncorrect = (float)numIncorrect / expected.size();
 
