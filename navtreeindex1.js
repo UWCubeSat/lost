@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea":[3,0,0,41,4],
+"classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf":[3,0,0,41,3],
 "classlost_1_1_star.html#abb1ed64c90d4f6508fdd1e75923175d6":[3,0,0,41,6],
 "classlost_1_1_star.html#ac68887ed98b387fe4a4f437b847aa09a":[3,0,0,41,1],
 "classlost_1_1_star.html#ad7bcae53e6ad611b8fb436eeb159da98":[3,0,0,41,5],
@@ -88,8 +90,8 @@ var NAVTREEINDEX1 =
 "globals_defs.html":[4,1,2],
 "globals_func.html":[4,1,1],
 "hierarchy.html":[3,2],
-"index.html":[0],
 "index.html":[],
+"index.html":[0],
 "index.html#autotoc_md1":[0,0],
 "index.html#autotoc_md2":[0,1],
 "io_8cpp.html":[4,0,1,11],
@@ -139,12 +141,12 @@ var NAVTREEINDEX1 =
 "main_8cpp.html":[4,0,1,13],
 "main_8cpp.html#a089bd9a13d6fb6149353c65fdf20f83c":[4,0,1,13,6],
 "main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627":[4,0,1,13,8],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,1],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,3],
 "main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,0],
-"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,4],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,3],
 "main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,2],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,4],
 "main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,5],
+"main_8cpp.html#a68d9f1b201a18b8388ba6593ab8039f6":[4,0,1,13,1],
 "main_8cpp.html#ad716669cae846c56701cf10aff6f8e5f":[4,0,1,13,7],
 "main_8cpp_source.html":[4,0,1,13],
 "namespacelost.html":[2,0,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "pipeline-options_8hpp.html":[4,0,1,14],
 "pipeline-options_8hpp_source.html":[4,0,1,14],
 "star-id-private_8hpp.html":[4,0,1,15],
-"star-id-private_8hpp.html#a6271e89ec246219f15d27942b98c8877":[4,0,1,15,2],
-"star-id-private_8hpp.html#adb9048b631cf1af6c33af2b0dca53c41":[4,0,1,15,1],
-"star-id-private_8hpp_source.html":[4,0,1,15]
+"star-id-private_8hpp.html#a6271e89ec246219f15d27942b98c8877":[4,0,1,15,2]
 };

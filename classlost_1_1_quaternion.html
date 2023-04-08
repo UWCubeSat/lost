@@ -127,8 +127,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a819b0f409e60886138c0fae47c21e250"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250">Angle</a> () const</td></tr>
 <tr class="memdesc:a819b0f409e60886138c0fae47c21e250"><td class="mdescLeft">&#160;</td><td class="mdescRight">How many radians the rotation represented by this quaternion has.  <a href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250">More...</a><br /></td></tr>
 <tr class="separator:a819b0f409e60886138c0fae47c21e250"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d3b137eb8c75c996c3f25a4fdc7bde2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quaternion.html#a5d3b137eb8c75c996c3f25a4fdc7bde2">SmallestAngle</a> () const</td></tr>
+<tr class="memdesc:a5d3b137eb8c75c996c3f25a4fdc7bde2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the smallest angle that can be used to represent the rotation represented by the quaternion.  <a href="classlost_1_1_quaternion.html#a5d3b137eb8c75c996c3f25a4fdc7bde2">More...</a><br /></td></tr>
+<tr class="separator:a5d3b137eb8c75c996c3f25a4fdc7bde2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91c8378b5a2067015553533152bf3327"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quaternion.html#a91c8378b5a2067015553533152bf3327">SetAngle</a> (float)</td></tr>
-<tr class="memdesc:a91c8378b5a2067015553533152bf3327"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the amount of rotation in a quaternion, keeping that rotation around the same axis.  <a href="classlost_1_1_quaternion.html#a91c8378b5a2067015553533152bf3327">More...</a><br /></td></tr>
 <tr class="separator:a91c8378b5a2067015553533152bf3327"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a565b9cb827d1938fe0b88aaa19093686"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_euler_angles.html">EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_quaternion.html#a565b9cb827d1938fe0b88aaa19093686">ToSpherical</a> () const</td></tr>
 <tr class="separator:a565b9cb827d1938fe0b88aaa19093686"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -347,8 +349,9 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_quaternion_a819b0f409e60886138c0fae47c21e250_icgraph.png" border="0" usemap="#aclasslost_1_1_quaternion_a819b0f409e60886138c0fae47c21e250_icgraph" alt=""/></div>
 <map name="aclasslost_1_1_quaternion_a819b0f409e60886138c0fae47c21e250_icgraph" id="aclasslost_1_1_quaternion_a819b0f409e60886138c0fae47c21e250_icgraph">
-<area shape="rect" title="How many radians the rotation represented by this quaternion has." alt="" coords="260,13,431,39"/>
+<area shape="rect" title="How many radians the rotation represented by this quaternion has." alt="" coords="260,46,431,73"/>
 <area shape="rect" href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
+<area shape="rect" href="classlost_1_1_quaternion.html#a5d3b137eb8c75c996c3f25a4fdc7bde2" title="Returns the smallest angle that can be used to represent the rotation represented by the quaternion." alt="" coords="13,71,204,112"/>
 </map>
 </div>
 
@@ -372,7 +375,7 @@ Here is the caller graph for this function:</div>
 <p>Ensure that the quaternion's real part is nonnegative. </p>
 <p>Does not change the rotation represented by the quaternion. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00117">117</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00123">123</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -452,7 +455,7 @@ Here is the caller graph for this function:</div>
 
 <p>Whether the quaternion is a unit quaternion. All quaternions representing rotations should be units. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00110">110</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00116">116</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -553,15 +556,13 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Change the amount of rotation in a quaternion, keeping that rotation around the same axis. </p>
-
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00066">66</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00072">72</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_quaternion_a91c8378b5a2067015553533152bf3327_cgraph.png" border="0" usemap="#aclasslost_1_1_quaternion_a91c8378b5a2067015553533152bf3327_cgraph" alt=""/></div>
 <map name="aclasslost_1_1_quaternion_a91c8378b5a2067015553533152bf3327_cgraph" id="aclasslost_1_1_quaternion_a91c8378b5a2067015553533152bf3327_cgraph">
-<area shape="rect" title="Change the amount of rotation in a quaternion, keeping that rotation around the same axis." alt="" coords="5,31,197,57"/>
+<area shape="rect" title=" " alt="" coords="5,31,197,57"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a6d8e723c0c49869742c938a0dcb38d2f" title="Set imaginary components." alt="" coords="245,5,441,32"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a2eace9c3a35569109c949b7d8f1bc96e" title="The vector formed by imaginary components of the quaternion. The axis of the represented rotation." alt="" coords="256,56,431,83"/>
 </map>
@@ -595,7 +596,38 @@ Here is the caller graph for this function:</div>
 <map name="aclasslost_1_1_quaternion_a6d8e723c0c49869742c938a0dcb38d2f_icgraph" id="aclasslost_1_1_quaternion_a6d8e723c0c49869742c938a0dcb38d2f_icgraph">
 <area shape="rect" title="Set imaginary components." alt="" coords="260,31,456,57"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#aaf73dff6f30d740ded0ea2be0449b3b2" title="Creates a &quot;pure quaternion&quot; with the given vector for imaginary parts and zero for real part." alt="" coords="5,5,212,32"/>
-<area shape="rect" href="classlost_1_1_quaternion.html#a91c8378b5a2067015553533152bf3327" title="Change the amount of rotation in a quaternion, keeping that rotation around the same axis." alt="" coords="13,56,205,83"/>
+<area shape="rect" href="classlost_1_1_quaternion.html#a91c8378b5a2067015553533152bf3327" title=" " alt="" coords="13,56,205,83"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a5d3b137eb8c75c996c3f25a4fdc7bde2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d3b137eb8c75c996c3f25a4fdc7bde2">&#9670;&nbsp;</a></span>SmallestAngle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float lost::Quaternion::SmallestAngle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the smallest angle that can be used to represent the rotation represented by the quaternion. </p>
+<p>I.e, min(Angle, 2pi-Angle). </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00065">65</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1_quaternion_a5d3b137eb8c75c996c3f25a4fdc7bde2_cgraph.png" border="0" usemap="#aclasslost_1_1_quaternion_a5d3b137eb8c75c996c3f25a4fdc7bde2_cgraph" alt=""/></div>
+<map name="aclasslost_1_1_quaternion_a5d3b137eb8c75c996c3f25a4fdc7bde2_cgraph" id="aclasslost_1_1_quaternion_a5d3b137eb8c75c996c3f25a4fdc7bde2_cgraph">
+<area shape="rect" title="Returns the smallest angle that can be used to represent the rotation represented by the quaternion." alt="" coords="5,5,196,47"/>
+<area shape="rect" href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250" title="How many radians the rotation represented by this quaternion has." alt="" coords="244,13,415,39"/>
 </map>
 </div>
 
@@ -616,7 +648,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00071">71</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00077">77</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -656,7 +688,7 @@ Here is the caller graph for this function:</div>
 <div class="center"><img src="classlost_1_1_quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph.png" border="0" usemap="#aclasslost_1_1_quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph" alt=""/></div>
 <map name="aclasslost_1_1_quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph" id="aclasslost_1_1_quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph">
 <area shape="rect" title="The vector formed by imaginary components of the quaternion. The axis of the represented rotation." alt="" coords="245,5,420,32"/>
-<area shape="rect" href="classlost_1_1_quaternion.html#a91c8378b5a2067015553533152bf3327" title="Change the amount of rotation in a quaternion, keeping that rotation around the same axis." alt="" coords="5,5,197,32"/>
+<area shape="rect" href="classlost_1_1_quaternion.html#a91c8378b5a2067015553533152bf3327" title=" " alt="" coords="5,5,197,32"/>
 </map>
 </div>
 
@@ -675,7 +707,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00116">116</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00119">119</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -691,7 +723,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00117">117</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00120">120</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -707,7 +739,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00118">118</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00121">121</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -723,7 +755,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00115">115</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00118">118</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -737,7 +769,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_quaternion.html">Quaternion</a></li>
-    <li class="footer">Generated on Sat Apr 8 2023 17:06:26 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Apr 8 2023 20:32:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

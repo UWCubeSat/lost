@@ -258,6 +258,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Approximates roots of a real function using the Newton-Raphson algorithm.  <a href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5">More...</a><br /></td></tr>
 <tr class="separator:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_quaternion.html">Quaternion</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1">SphericalToQuaternion</a> (float ra, float dec, float roll)</td></tr>
+<tr class="memdesc:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars will appear to rotate clockwise).  <a href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1">More...</a><br /></td></tr>
 <tr class="separator:a7057fa740aebe1cbd43f3bafafff4ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62a70a38d20ca4be158d9f592862aeb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a62a70a38d20ca4be158d9f592862aeb4">SphericalToSpatial</a> (float ra, float de)</td></tr>
 <tr class="memdesc:a62a70a38d20ca4be158d9f592862aeb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert from right ascension &amp; declination to a 3d point on the unit sphere.  <a href="namespacelost.html#a62a70a38d20ca4be158d9f592862aeb4">More...</a><br /></td></tr>
@@ -737,8 +738,9 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Calculate the inner angle, in radians, between two vectors. </p>
+<p>angle between two vectors, using dot product and magnitude division </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00456">456</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00472">472</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -791,9 +793,10 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Calculate the inner angle, in radians, between two /unit/ vectors. </p>
+<p>angle between two vectors, /assuming/ that they are already unit length</p>
 <p>Slightly faster than <a class="el" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors.">Angle()</a> @warn If the vectors are not already unit vectors, will return the wrong result! </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00465">465</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00481">481</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -840,7 +843,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00154">154</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00160">160</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1502,7 +1505,7 @@ Here is the call graph for this function:</div>
 
 <p>Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00357">357</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00363">363</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1553,7 +1556,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00146">146</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00152">152</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -1715,7 +1718,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00446">446</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00462">462</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -1922,7 +1925,7 @@ Here is the caller graph for this function:</div>
 <p>Given a float, find it "modulo" another float, in the true mathematical sense (not remainder). </p>
 <p>Always returns something in [0,mod) Eg -0.8 mod 0.6 = 0.4 </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00158">158</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00164">164</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -2142,7 +2145,7 @@ Here is the call graph for this function:</div>
 <area shape="rect" href="namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="289,5,427,32"/>
 <area shape="rect" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="731,56,849,83"/>
 <area shape="rect" href="namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="251,107,465,133"/>
-<area shape="rect" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1" title=" " alt="" coords="258,157,458,184"/>
+<area shape="rect" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="258,157,458,184"/>
 <area shape="rect" href="namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="542,5,654,32"/>
 <area shape="rect" href="namespacelost.html#a5e7d67bec758d4922935c84b8a0f8526" title=" " alt="" coords="513,157,683,184"/>
 </map>
@@ -2189,7 +2192,7 @@ Here is the call graph for this function:</div>
 <area shape="rect" href="namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="500,157,637,184"/>
 <area shape="rect" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="941,107,1060,133"/>
 <area shape="rect" href="namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,107,676,133"/>
-<area shape="rect" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1" title=" " alt="" coords="469,5,669,32"/>
+<area shape="rect" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="469,5,669,32"/>
 <area shape="rect" href="namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="753,208,865,235"/>
 <area shape="rect" href="namespacelost.html#a5e7d67bec758d4922935c84b8a0f8526" title=" " alt="" coords="724,157,893,184"/>
 </map>
@@ -2874,7 +2877,7 @@ Here is the caller graph for this function:</div>
 <p>Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline. </p>
 <p>Uses the command line options in <code>values</code> to determine which analyses to run. Examples include plotting an annotated output image to a png file, comparing the actual and expected centroids, etc </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01650">1650</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01665">1665</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2920,7 +2923,7 @@ Here is the call graph for this function:</div>
 
 <p>Convert a quaternion to a rotation matrix (Direction Cosine Matrix) </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00345">345</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00351">351</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2997,7 +3000,7 @@ Here is the caller graph for this function:</div>
 <p>Characteristic polynomial of the quest K-matrix. </p>
 <dl class="section see"><dt>See also</dt><dd>equation 19b of <a href="https://arc.aiaa.org/doi/pdf/10.2514/1.62549">https://arc.aiaa.org/doi/pdf/10.2514/1.62549</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00115">115</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00120">120</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3051,7 +3054,7 @@ Here is the caller graph for this function:</div>
 
 <p>Derivitive of the characteristic polynomial of the quest K-matrix. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00120">120</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00125">125</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3118,7 +3121,7 @@ Here is the caller graph for this function:</div>
 <p>Approximates roots of a real function using the Newton-Raphson algorithm. </p>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www.geeksforgeeks.org/program-for-newton-raphson-method/">https://www.geeksforgeeks.org/program-for-newton-raphson-method/</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00126">126</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00131">131</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3157,7 +3160,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00150">150</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00156">156</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3186,7 +3189,7 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00142">142</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00148">148</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3738,7 +3741,7 @@ Here is the caller graph for this function:</div>
 
 <p>The length that a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> will take up when serialized. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00434">434</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00450">450</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3861,7 +3864,7 @@ Here is the caller graph for this function:</div>
 
 <p>Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00439">439</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00455">455</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3931,7 +3934,7 @@ Here is the caller graph for this function:</div>
 
 <p>Convert from a 3d point on the unit sphere to right ascension &amp; declination. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00135">135</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00141">141</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -3967,13 +3970,16 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00090">90</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p>Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars will appear to rotate clockwise). </p>
+<p>This is an "improper" z-y'-x' Euler rotation. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00096">96</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespacelost_a7057fa740aebe1cbd43f3bafafff4ac1_icgraph.png" border="0" usemap="#anamespacelost_a7057fa740aebe1cbd43f3bafafff4ac1_icgraph" alt=""/></div>
 <map name="anamespacelost_a7057fa740aebe1cbd43f3bafafff4ac1_icgraph" id="anamespacelost_a7057fa740aebe1cbd43f3bafafff4ac1_icgraph">
-<area shape="rect" title=" " alt="" coords="461,13,661,39"/>
+<area shape="rect" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="461,13,661,39"/>
 <area shape="rect" href="namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,47"/>
 <area shape="rect" href="namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,13,168,39"/>
 </map>
@@ -4008,8 +4014,9 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Convert from right ascension &amp; declination to a 3d point on the unit sphere. </p>
+<p>returns unit vector </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00126">126</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00132">132</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -4302,7 +4309,7 @@ Here is the caller graph for this function:</div>
 </div><!-- fragment -->
 <p>3x3 identity matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00334">334</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00340">340</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -4380,7 +4387,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li>
-    <li class="footer">Generated on Sat Apr 8 2023 17:06:26 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Apr 8 2023 20:32:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

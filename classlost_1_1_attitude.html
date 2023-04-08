@@ -99,6 +99,7 @@ $(document).ready(function(){initNavTree('classlost_1_1_attitude.html',''); init
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad220252090ed6e0c43170de49fbe3a48"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_attitude.html#ad220252090ed6e0c43170de49fbe3a48">Attitude</a> ()=default</td></tr>
+<tr class="memdesc:ad220252090ed6e0c43170de49fbe3a48"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs unknown attitude:  <a href="classlost_1_1_attitude.html#ad220252090ed6e0c43170de49fbe3a48">More...</a><br /></td></tr>
 <tr class="separator:ad220252090ed6e0c43170de49fbe3a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad32d962805147e579fabf926a404362c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_attitude.html#ad32d962805147e579fabf926a404362c">Attitude</a> (const <a class="el" href="classlost_1_1_quaternion.html">Quaternion</a> &amp;)</td></tr>
 <tr class="separator:ad32d962805147e579fabf926a404362c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,12 +117,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c7ac3eb32e2e6dc8c576c9ad7134aaf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf">Rotate</a> (const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;) const</td></tr>
 <tr class="memdesc:a4c7ac3eb32e2e6dc8c576c9ad7134aaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a vector from the reference frame to the body frame.  <a href="classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf">More...</a><br /></td></tr>
 <tr class="separator:a4c7ac3eb32e2e6dc8c576c9ad7134aaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb6f3d23d6884b94a43028f97cac92d5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_attitude.html#afb6f3d23d6884b94a43028f97cac92d5">IsKnown</a> () const</td></tr>
+<tr class="separator:afb6f3d23d6884b94a43028f97cac92d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The attitude (orientation) of a spacecraft. </p>
-<p>The <a class="el" href="classlost_1_1_attitude.html" title="The attitude (orientation) of a spacecraft.">Attitude</a> object stores either a rotation matrix (direction cosine matrix) or a quaternion, and converts automatically to the other format when needed. </p><dl class="section note"><dt>Note</dt><dd>When porting to an embedded device, you'll probably want to get rid of this class and adapt to either quaternions or DCMs exclusively, depending on the natural output format of whatever attitude estimation algorithm you're using. </dd></dl>
+<p>The <a class="el" href="classlost_1_1_attitude.html" title="The attitude (orientation) of a spacecraft.">Attitude</a> object stores either a rotation matrix (direction cosine matrix) or a quaternion, and converts automatically to the other format when needed. Importantly, an attitude may also be "unknown", representing for example if there weren't enough stars to determine an attitude. When set to unknown, it is illegal to try and convert it to anything, so check IsKnown first! </p><dl class="section note"><dt>Note</dt><dd>When porting to an embedded device, you may want to get rid of this class and adapt to either quaternions or DCMs exclusively, depending on the natural output format of whatever attitude estimation algorithm you're using. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00129">129</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00135">135</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad220252090ed6e0c43170de49fbe3a48"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad220252090ed6e0c43170de49fbe3a48">&#9670;&nbsp;</a></span>Attitude() <span class="overload">[1/3]</span></h2>
@@ -145,6 +148,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>constructs unknown attitude: </p>
 
 </div>
 </div>
@@ -172,7 +177,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00338">338</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00344">344</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -200,7 +205,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00341">341</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00347">347</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -222,7 +227,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever format is stored. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00398">398</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00404">404</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -255,7 +260,7 @@ Here is the call graph for this function:</div>
 
 <p>Get the quaternion representing the attitude, converting from whatever format is stored. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00386">386</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00392">392</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -290,6 +295,25 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="afb6f3d23d6884b94a43028f97cac92d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb6f3d23d6884b94a43028f97cac92d5">&#9670;&nbsp;</a></span>IsKnown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool lost::Attitude::IsKnown </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00439">439</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a4c7ac3eb32e2e6dc8c576c9ad7134aaf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4c7ac3eb32e2e6dc8c576c9ad7134aaf">&#9670;&nbsp;</a></span>Rotate()</h2>
 
@@ -308,7 +332,7 @@ Here is the caller graph for this function:</div>
 
 <p>Convert a vector from the reference frame to the body frame. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00410">410</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00416">416</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -349,7 +373,7 @@ Here is the caller graph for this function:</div>
 
 <p>Get the euler angles from the attitude, converting from whatever format is stored. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00422">422</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00428">428</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -394,7 +418,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_attitude.html">Attitude</a></li>
-    <li class="footer">Generated on Sat Apr 8 2023 17:06:26 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Apr 8 2023 20:32:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

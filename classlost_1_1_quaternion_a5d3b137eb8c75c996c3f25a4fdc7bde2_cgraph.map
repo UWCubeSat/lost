@@ -1,0 +1,4 @@
+<map id="lost::Quaternion::SmallestAngle" name="lost::Quaternion::SmallestAngle">
+<area shape="rect" id="node1" title="Returns the smallest angle that can be used to represent the rotation represented by the quaternion." alt="" coords="5,5,196,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250" title="How many radians the rotation represented by this quaternion has." alt="" coords="244,13,415,39"/>
+</map>

@@ -1,5 +1,5 @@
 <map id="lost::SphericalToQuaternion" name="lost::SphericalToQuaternion">
-<area shape="rect" id="node1" title=" " alt="" coords="461,13,661,39"/>
+<area shape="rect" id="node1" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="461,13,661,39"/>
 <area shape="rect" id="node2" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,47"/>
 <area shape="rect" id="node3" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,13,168,39"/>
 </map>

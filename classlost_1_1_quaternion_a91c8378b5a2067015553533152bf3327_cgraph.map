@@ -1,5 +1,5 @@
 <map id="lost::Quaternion::SetAngle" name="lost::Quaternion::SetAngle">
-<area shape="rect" id="node1" title="Change the amount of rotation in a quaternion, keeping that rotation around the same axis." alt="" coords="5,31,197,57"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,31,197,57"/>
 <area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a6d8e723c0c49869742c938a0dcb38d2f" title="Set imaginary components." alt="" coords="245,5,441,32"/>
 <area shape="rect" id="node3" href="$classlost_1_1_quaternion.html#a2eace9c3a35569109c949b7d8f1bc96e" title="The vector formed by imaginary components of the quaternion. The axis of the represented rotation." alt="" coords="256,56,431,83"/>
 </map>
