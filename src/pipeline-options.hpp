@@ -41,6 +41,7 @@ LOST_CLI_OPTION("plot-expected"             , std::string, plotExpected         
 LOST_CLI_OPTION("plot-centroid-indices"     , std::string, plotCentroidIndices     , "", optarg      , "-")
 LOST_CLI_OPTION("plot-output"               , std::string, plotOutput              , "", optarg      , "-")
 LOST_CLI_OPTION("print-expected-centroids"  , std::string, printExpectedCentroids  , "", optarg      , "-")
+LOST_CLI_OPTION("print-input-centroids"     , std::string, printInputCentroids     , "", optarg      , "-")
 LOST_CLI_OPTION("print-actual-centroids"    , std::string, printActualCentroids    , "", optarg      , "-")
 LOST_CLI_OPTION("print-attitude"            , std::string, printAttitude           , "", optarg      , "-")
 LOST_CLI_OPTION("print-speed"               , std::string, printSpeed              , "", optarg      , "-")

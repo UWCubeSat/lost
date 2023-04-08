@@ -1285,17 +1285,27 @@ static void PipelineComparatorCentroids(std::ostream &os,
 static void PrintCentroids(const std::string &prefix,
                            std::ostream &os,
                            const Catalog &catalog,
-                           const Stars &stars,
-                           // may be null:
+                           const std::vector<Stars> &starses,
+                           // May be NULL. Should be the only the first starId, because we don't have any reasonable aggregative action to perform.
                            const StarIdentifiers *starIds) {
-    os << "num_" << prefix << "_centroids " << stars.size() << std::endl;
-    for (int i = 0; i < (int)stars.size(); i++) {
-        os << prefix << "_centroid_" << i << "_x " << stars[i].position.x << std::endl;
-        os << prefix << "_centroid_" << i << "_y " << stars[i].position.y << std::endl;
-        if (starIds) {
-            for (const StarIdentifier &starId : *starIds) {
-                if (starId.starIndex == i) {
-                    os << prefix << "_centroid_" << i << "_id " << catalog[starId.catalogIndex].name << std::endl;
+    assert(starses.size() > 0);
+    float avgNumStars = 0;
+    for (const Stars &stars : starses) {
+        avgNumStars += stars.size();
+    }
+    avgNumStars /= starses.size();
+
+    os << "num_" << prefix << "_centroids " << avgNumStars << std::endl;
+    if (starses.size() == 1) {
+        const Stars &stars = starses[0];
+        for (int i = 0; i < (int)stars.size(); i++) {
+            os << prefix << "_centroid_" << i << "_x " << stars[i].position.x << std::endl;
+            os << prefix << "_centroid_" << i << "_y " << stars[i].position.y << std::endl;
+            if (starIds) {
+                for (const StarIdentifier &starId : *starIds) {
+                    if (starId.starIndex == i) {
+                        os << prefix << "_centroid_" << i << "_id " << catalog[starId.catalogIndex].name << std::endl;
+                    }
                 }
             }
         }
@@ -1307,14 +1317,36 @@ static void PipelineComparatorPrintExpectedCentroids(std::ostream &os,
                                                      const PipelineInputList &expected,
                                                      const std::vector<PipelineOutput> &, // actual
                                                      const PipelineOptions &) {
-    assert(expected.size() == 1);
+    assert(expected.size() > 0);
     assert(expected[0]->ExpectedStars());
 
+    std::vector<Stars> expectedStarses;
+    for (const auto &input : expected) {
+        expectedStarses.push_back(*input->ExpectedStars());
+    }
     PrintCentroids("expected",
                    os,
                    expected[0]->GetCatalog(),
-                   *expected[0]->ExpectedStars(),
+                   expectedStarses,
                    expected[0]->ExpectedStarIds());
+}
+
+static void PipelineComparatorPrintInputCentroids(std::ostream &os,
+                                                  const PipelineInputList &expected,
+                                                  const std::vector<PipelineOutput> &, // actual
+                                                  const PipelineOptions &) {
+    assert(expected.size() > 0);
+    assert(expected[0]->InputStars());
+
+    std::vector<Stars> inputStarses;
+    for (const auto &input : expected) {
+        inputStarses.push_back(*input->InputStars());
+    }
+    PrintCentroids("input",
+                   os,
+                   expected[0]->GetCatalog(),
+                   inputStarses,
+                   expected[0]->InputStarIds());
 }
 
 static void PipelineComparatorPrintActualCentroids(std::ostream &os,
@@ -1324,10 +1356,14 @@ static void PipelineComparatorPrintActualCentroids(std::ostream &os,
     assert(actual.size() == 1);
     assert(actual[0].stars);
 
+    std::vector<Stars> actualStarses;
+    for (const auto &output : actual) {
+        actualStarses.push_back(*output.stars);
+    }
     PrintCentroids("actual",
                    os,
                    actual[0].catalog,
-                   *actual[0].stars,
+                   actualStarses,
                    actual[0].starIds.get());
 }
 
@@ -1640,13 +1676,18 @@ void PipelineComparison(const PipelineInputList &expected,
                               PipelineComparatorPlotOutput, values.plotOutput, true);
     }
     if (values.printExpectedCentroids != "") {
-        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->ExpectedStars(),
-                              "--print-expected-centroids requires exactly 1 input image, and for expected centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+        LOST_PIPELINE_COMPARE(expected[0]->ExpectedStars(),
+                              "--print-expected-centroids requires at least 1 input with expected centroids. " + std::to_string(expected.size()) + " many input images were provided.",
                               PipelineComparatorPrintExpectedCentroids, values.printExpectedCentroids, false);
     }
+    if (values.printInputCentroids != "") {
+        LOST_PIPELINE_COMPARE(expected[0]->InputStars(),
+                              "--print-input-centroids requires at least 1 input with centroids. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPrintInputCentroids, values.printInputCentroids, false);
+    }
     if (values.printActualCentroids != "") {
-        LOST_PIPELINE_COMPARE(actual.size() == 1 && actual[0].stars,
-                              "--print-actual-centroids requires exactly 1 output image, and for centroids to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
+        LOST_PIPELINE_COMPARE(actual[0].stars,
+                              "--print-actual-centroids requires at least 1 output image, and for centroids to be available on the output images. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPrintActualCentroids, values.printActualCentroids, false);
     }
     if (values.plotCentroidIndices != "") {
