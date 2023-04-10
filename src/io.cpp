@@ -439,7 +439,7 @@ class GeneratedStar : public Star {
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta){};
 
-    /// the brightness density at the center of the star. 0.0 is black, 1.0 is white.
+    /// the brightness density per time unit at the center of the star. 0.0 is black, 1.0 is white.
     float peakBrightness;
 
     /// (only meaningful with motion blur) Where the star will appear one time unit in the future.
@@ -484,9 +484,9 @@ static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar
 
 /// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
 static float StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
-                                   float stddev) {
+                                   float t, float stddev) {
     const Vec2 d0 = generatedStar.position - pixel;
-    return generatedStar.peakBrightness * exp(-d0.MagnitudeSq() / (2 * stddev * stddev));
+    return generatedStar.peakBrightness * t * exp(-d0.MagnitudeSq() / (2 * stddev * stddev));
 }
 
 /**
@@ -596,19 +596,18 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
             float peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
-            float peakBrightness = peakBrightnessPerTime * exposureTime;
             float interestingThreshold = 0.05; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
             // inverse of the function defining the Gaussian distribution: Find out how far from the
             // mean we'll have to go until the number of photons is less than interestingThreshold
-            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightness)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
+            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightnessPerTime/exposureTime)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
                              // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
                              // It's possible to make it so that the magnitude is always positive too, but allowing weirder magnitudes helps keep star-id algos honest about their assumptions on magnitude.
                              // we don't use its magnitude anywhere else in generation; peakBrightness was already calculated.
                              -catalogStar.magnitude);
-            generatedStars.push_back(GeneratedStar(star, peakBrightness, delta));
+            generatedStars.push_back(GeneratedStar(star, peakBrightnessPerTime, delta));
 
             // Now add the star to the input and expected lists.
             // We do actually want to add false stars as well, because:
@@ -632,7 +631,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // If it got perturbed outside of the sensor, don't add it.
             if (camera.InSensor(inputStar.position)
                 // and also don't add it if it's too dim.
-                && (cutoffMag >= 10000
+                && (cutoffMag >= 10000 // but always add the star if the cutoff is very high
+                    || !isTrueStar // and always add the false stars
                     || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
                 inputStars.push_back(inputStar);
                 if (isTrueStar) {
@@ -692,7 +692,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                  - MotionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev))
                                 / oversamplingBrightnessFactor;
                         } else {
-                            curPhotons = StaticPixelBrightness({x, y}, star, starSpreadStdDev)
+                            curPhotons = StaticPixelBrightness({x, y}, star, exposureTime, starSpreadStdDev)
                                 / oversamplingBrightnessFactor;
                         }
 
@@ -1188,11 +1188,13 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 
     for (const CentroidComparison &comparison : comparisons) {
         result.meanError += comparison.meanError;
+        result.numCorrectCentroids += comparison.numCorrectCentroids;
         result.numExtraCentroids += comparison.numExtraCentroids;
     }
 
     result.meanError /= comparisons.size();
     result.numExtraCentroids /= comparisons.size();
+    result.numCorrectCentroids /= comparisons.size();
 
     return result;
 }
@@ -1362,17 +1364,27 @@ static void PipelineComparatorCentroids(std::ostream &os,
 static void PrintCentroids(const std::string &prefix,
                            std::ostream &os,
                            const Catalog &catalog,
-                           const Stars &stars,
-                           // may be null:
+                           const std::vector<Stars> &starses,
+                           // May be NULL. Should be the only the first starId, because we don't have any reasonable aggregative action to perform.
                            const StarIdentifiers *starIds) {
-    os << "num_" << prefix << "_centroids " << stars.size() << std::endl;
-    for (int i = 0; i < (int)stars.size(); i++) {
-        os << prefix << "_centroid_" << i << "_x " << stars[i].position.x << std::endl;
-        os << prefix << "_centroid_" << i << "_y " << stars[i].position.y << std::endl;
-        if (starIds) {
-            for (const StarIdentifier &starId : *starIds) {
-                if (starId.starIndex == i) {
-                    os << prefix << "_centroid_" << i << "_id " << catalog[starId.catalogIndex].name << std::endl;
+    assert(starses.size() > 0);
+    float avgNumStars = 0;
+    for (const Stars &stars : starses) {
+        avgNumStars += stars.size();
+    }
+    avgNumStars /= starses.size();
+
+    os << "num_" << prefix << "_centroids " << avgNumStars << std::endl;
+    if (starses.size() == 1) {
+        const Stars &stars = starses[0];
+        for (int i = 0; i < (int)stars.size(); i++) {
+            os << prefix << "_centroid_" << i << "_x " << stars[i].position.x << std::endl;
+            os << prefix << "_centroid_" << i << "_y " << stars[i].position.y << std::endl;
+            if (starIds) {
+                for (const StarIdentifier &starId : *starIds) {
+                    if (starId.starIndex == i) {
+                        os << prefix << "_centroid_" << i << "_id " << catalog[starId.catalogIndex].name << std::endl;
+                    }
                 }
             }
         }
@@ -1384,27 +1396,53 @@ static void PipelineComparatorPrintExpectedCentroids(std::ostream &os,
                                                      const PipelineInputList &expected,
                                                      const std::vector<PipelineOutput> &, // actual
                                                      const PipelineOptions &) {
-    assert(expected.size() == 1);
+    assert(expected.size() > 0);
     assert(expected[0]->ExpectedStars());
 
+    std::vector<Stars> expectedStarses;
+    for (const auto &input : expected) {
+        expectedStarses.push_back(*input->ExpectedStars());
+    }
     PrintCentroids("expected",
                    os,
                    expected[0]->GetCatalog(),
-                   *expected[0]->ExpectedStars(),
+                   expectedStarses,
                    expected[0]->ExpectedStarIds());
+}
+
+static void PipelineComparatorPrintInputCentroids(std::ostream &os,
+                                                  const PipelineInputList &expected,
+                                                  const std::vector<PipelineOutput> &, // actual
+                                                  const PipelineOptions &) {
+    assert(expected.size() > 0);
+    assert(expected[0]->InputStars());
+
+    std::vector<Stars> inputStarses;
+    for (const auto &input : expected) {
+        inputStarses.push_back(*input->InputStars());
+    }
+    PrintCentroids("input",
+                   os,
+                   expected[0]->GetCatalog(),
+                   inputStarses,
+                   expected[0]->InputStarIds());
 }
 
 static void PipelineComparatorPrintActualCentroids(std::ostream &os,
                                                    const PipelineInputList &, // expected
                                                    const std::vector<PipelineOutput> &actual,
                                                    const PipelineOptions &) {
-    assert(actual.size() == 1);
+    assert(actual.size() > 0);
     assert(actual[0].stars);
 
+    std::vector<Stars> actualStarses;
+    for (const auto &output : actual) {
+        actualStarses.push_back(*output.stars);
+    }
     PrintCentroids("actual",
                    os,
                    actual[0].catalog,
-                   *actual[0].stars,
+                   actualStarses,
                    actual[0].starIds.get());
 }
 
@@ -1494,6 +1532,26 @@ static void PipelineComparatorStarIds(std::ostream &os,
     os << "starid_num_images_incorrect " << numImagesIncorrect << std::endl;
 }
 
+static void PrintAttitude(std::ostream &os, const std::string &prefix, const Attitude &attitude) {
+    if (attitude.IsKnown()) {
+        os << prefix << "attitude_known 1" << std::endl;
+
+        EulerAngles spherical = attitude.ToSpherical();
+        os << prefix << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
+        os << prefix << "attitude_de " << RadToDeg(spherical.de) << std::endl;
+        os << prefix << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+
+        Quaternion q = attitude.GetQuaternion();
+        os << prefix << "attitude_i " << q.i << std::endl;
+        os << prefix << "attitude_j " << q.j << std::endl;
+        os << prefix << "attitude_k " << q.k << std::endl;
+        os << prefix << "attitude_real " << q.real << std::endl;
+
+    } else {
+        os << prefix << "attitude_known 0" << std::endl;
+    }
+}
+
 /// Print the identifed attitude to `os` in Euler angle format.
 static void PipelineComparatorPrintAttitude(std::ostream &os,
                                             const PipelineInputList &,
@@ -1501,15 +1559,16 @@ static void PipelineComparatorPrintAttitude(std::ostream &os,
                                             const PipelineOptions &) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
+    PrintAttitude(os, "", *actual[0].attitude);
+}
 
-    // os << "attitude_real " << actual[0].attitude->real << std::endl;
-    // os << "attitude_i " << actual[0].attitude->i << std::endl;
-    // os << "attitude_j " << actual[0].attitude->j << std::endl;
-    // os << "attitude_k " << actual[0].attitude->k << std::endl;
-    EulerAngles spherical = actual[0].attitude->ToSpherical();
-    os << "attitude_ra " << RadToDeg(spherical.ra) << std::endl;
-    os << "attitude_de " << RadToDeg(spherical.de) << std::endl;
-    os << "attitude_roll " << RadToDeg(spherical.roll) << std::endl;
+static void PipelineComparatorPrintExpectedAttitude(std::ostream &os,
+                                                   const PipelineInputList &expected,
+                                                   const std::vector<PipelineOutput> &,
+                                                   const PipelineOptions &) {
+    assert(expected.size() == 1);
+    assert(expected[0]->ExpectedAttitude());
+    PrintAttitude(os, "expected_", *expected[0]->ExpectedAttitude());
 }
 
 /// Compare the actual and expected attitudes.
@@ -1525,25 +1584,31 @@ static void PipelineComparatorAttitude(std::ostream &os,
 
     float attitudeErrorSum = 0.0f;
     int numCorrect = 0;
+    int numIncorrect = 0;
 
     for (int i = 0; i < (int)expected.size(); i++) {
-        Quaternion expectedQuaternion = expected[i]->ExpectedAttitude()->GetQuaternion();
-        Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
-        float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).Angle();
-        assert(attitudeError >= 0);
+        if (actual[i].attitude->IsKnown()) {
+            Quaternion expectedQuaternion = expected[i]->ExpectedAttitude()->GetQuaternion();
+            Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
+            float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).SmallestAngle();
+            assert(attitudeError >= 0);
 
-        attitudeErrorSum += attitudeError;
-        if (attitudeError <= angleThreshold) {
-            numCorrect++;
+            if (attitudeError <= angleThreshold) {
+                attitudeErrorSum += attitudeError;
+                numCorrect++;
+            } else {
+                numIncorrect++;
+            }
         }
     }
 
-    float attitudeErrorMean = attitudeErrorSum / expected.size();
+    float attitudeErrorMean = attitudeErrorSum / numCorrect;
     float fractionCorrect = (float)numCorrect / expected.size();
+    float fractionIncorrect = (float)numIncorrect / expected.size();
 
     os << "attitude_error_mean " << attitudeErrorMean << std::endl;
-    os << "attitude_num_correct " << numCorrect << std::endl;
-    os << "attitude_fraction_correct " << fractionCorrect << std::endl;
+    os << "attitude_availability " << fractionCorrect << std::endl;
+    os << "attitude_error_rate " << fractionIncorrect << std::endl;
 }
 
 static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long> &times) {
@@ -1609,7 +1674,9 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
     if (attitudeTimes.size() > 0) {
         PrintTimeStats(os, "attitude", attitudeTimes);
     }
-    PrintTimeStats(os, "total", totalTimes);
+    if (centroidingTimes.size() > 0 || starIdTimes.size() > 0 || attitudeTimes.size() > 0) {
+        PrintTimeStats(os, "total", totalTimes);
+    }
 }
 
 // TODO: add these debug comparators back in!
@@ -1727,13 +1794,18 @@ void PipelineComparison(const PipelineInputList &expected,
                               PipelineComparatorPlotOutput, values.plotOutput, true);
     }
     if (values.printExpectedCentroids != "") {
-        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->ExpectedStars(),
-                              "--print-expected-centroids requires exactly 1 input image, and for expected centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+        LOST_PIPELINE_COMPARE(expected[0]->ExpectedStars(),
+                              "--print-expected-centroids requires at least 1 input with expected centroids. " + std::to_string(expected.size()) + " many input images were provided.",
                               PipelineComparatorPrintExpectedCentroids, values.printExpectedCentroids, false);
     }
+    if (values.printInputCentroids != "") {
+        LOST_PIPELINE_COMPARE(expected[0]->InputStars(),
+                              "--print-input-centroids requires at least 1 input with centroids. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPrintInputCentroids, values.printInputCentroids, false);
+    }
     if (values.printActualCentroids != "") {
-        LOST_PIPELINE_COMPARE(actual.size() == 1 && actual[0].stars,
-                              "--print-actual-centroids requires exactly 1 output image, and for centroids to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
+        LOST_PIPELINE_COMPARE(actual[0].stars,
+                              "--print-actual-centroids requires at least 1 output image, and for centroids to be available on the output images. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPrintActualCentroids, values.printActualCentroids, false);
     }
     if (values.plotCentroidIndices != "") {
@@ -1761,6 +1833,11 @@ void PipelineComparison(const PipelineInputList &expected,
                                   std::to_string(actual.size()) +
                                   " many output images were provided.",
                               PipelineComparatorPrintAttitude, values.printAttitude, false);
+    }
+    if (values.printExpectedAttitude != "") {
+        LOST_PIPELINE_COMPARE(expected[0]->ExpectedAttitude() && expected.size() == 1,
+                              "--print-expected-attitude requires exactly 1 input image, and for expected attitude to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPrintExpectedAttitude, values.printExpectedAttitude, false);
     }
     if (values.compareAttitudes != "") {
         LOST_PIPELINE_COMPARE(actual[0].attitude && expected[0]->ExpectedAttitude() &&

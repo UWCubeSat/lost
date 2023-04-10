@@ -276,16 +276,25 @@ perturbations and magnitude cutoff is applied).
 
 .TP
 \fB--print-actual-centroids\fP [\fIpath\fP]
-Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
-\fIpath\fP. If star identification was also performed, print which catalog star each centroid was
-identified as. Defaults to stdout.
+Argument is optional. Print list of centroids in the pipeline output to \fIpath\fP. If star
+identification was also performed, print which catalog star each centroid was identified as.
+Defaults to stdout.
+
+.TP
+\fB--print-input-centroids\fP [\fIpath\fP]
+Argument is optional. Print list of centroids in the pipeline input to \fIpath\fP. This only works
+for generated images. Prints whatever centroids would normally be sent to the star-id algorithm if
+provided in the pipeline. Also prints star-ids, but don't rely on them, because if the input
+centroids were perturbed the generated star-id may not actually be the closest catalog star anymore!
+Defaults to stdout.
 
 .TP
 \fB--print-expected-centroids\fP [\fIpath\fP]
-Mainly for debugging. Argument is optional. Print list of "expected" centroids from the pipeline
-input to \fIpath\fP. Also prints out expected star identifications for those stars, if present. This
-only works for generated images. Generally you should use \fB--print-actual-centroids\fP instead,
-and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
+Argument is optional. Print list of "expected" centroids from the pipeline input to \fIpath\fP. The
+"expected" centroids are all centroids used to generate the real image, including false stars and
+stars below the cutoff magnitude. Also prints out expected star identifications for those stars.
+This only works for generated images. Generally you should use \fB--print-actual-centroids\fP
+instead, and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
 
 .TP
 \fB--print-attitude\fP [\fIpath\fP]
