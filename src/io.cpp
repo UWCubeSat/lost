@@ -1354,7 +1354,7 @@ static void PipelineComparatorPrintActualCentroids(std::ostream &os,
                                                    const PipelineInputList &, // expected
                                                    const std::vector<PipelineOutput> &actual,
                                                    const PipelineOptions &) {
-    assert(actual.size() == 1);
+    assert(actual.size() > 0);
     assert(actual[0].stars);
 
     std::vector<Stars> actualStarses;
