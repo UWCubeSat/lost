@@ -277,8 +277,11 @@ perturbations and magnitude cutoff is applied).
 .TP
 \fB--print-actual-centroids\fP [\fIpath\fP]
 Argument is optional. Print list of centroids in the pipeline output to \fIpath\fP. If star
-identification was also performed, print which catalog star each centroid was identified as.
-Defaults to stdout.
+identification was also performed, print which catalog star each centroid was identified as. If
+input is from a generated image, also print the expected id for each centroid (note that there can
+sometimes be multiple acceptable star-ids for a star, if it's within the centroid comparison
+threshold of multiple catalog stars. Usually setting --min-separation sufficiently high prevents
+this). Defaults to stdout.
 
 .TP
 \fB--print-input-centroids\fP [\fIpath\fP]

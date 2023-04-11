@@ -1429,9 +1429,9 @@ static void PipelineComparatorPrintInputCentroids(std::ostream &os,
 }
 
 static void PipelineComparatorPrintActualCentroids(std::ostream &os,
-                                                   const PipelineInputList &, // expected
+                                                   const PipelineInputList &expected, // expected
                                                    const std::vector<PipelineOutput> &actual,
-                                                   const PipelineOptions &) {
+                                                   const PipelineOptions &values) {
     assert(actual.size() > 0);
     assert(actual[0].stars);
 
@@ -1444,6 +1444,33 @@ static void PipelineComparatorPrintActualCentroids(std::ostream &os,
                    actual[0].catalog,
                    actualStarses,
                    actual[0].starIds.get());
+
+    if (expected.size() == 1 && expected[0]->ExpectedStars() && expected[0]->ExpectedStarIds()) {
+        // also print expected ID of each one
+        const Stars &actualStars = *actual[0].stars;
+        const Stars &expectedStars = *expected[0]->ExpectedStars();
+        std::multimap<int, int> actualToExpectedCentroids = FindClosestCentroids(values.centroidCompareThreshold, actualStars, expectedStars);
+        for (int i = 0; i < (int)actualStars.size(); i++) {
+            auto range = actualToExpectedCentroids.equal_range(i);
+            auto it = range.first;
+            auto end = range.second;
+            for (int j = 0;
+                 it != end;
+                 j++, it++) {
+
+                int expectedCentroidIndex = it->second;
+                bool foundIt = false; // just to be sure
+                for (const StarIdentifier &starId : *expected[0]->ExpectedStarIds()) {
+                    if (starId.starIndex == expectedCentroidIndex) {
+                        assert(!foundIt);
+                        int expectedName = expected[0]->GetCatalog()[starId.catalogIndex].name;
+                        std::cout << "actual_centroid_" << i << "_expected_id_" << j << " " << expectedName << std::endl;
+                        foundIt = true;
+                    }
+                }
+            }
+        }
+    }
 }
 
 /// Plot an annotated image where centroids are annotated with their centroid index. For debugging.
