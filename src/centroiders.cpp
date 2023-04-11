@@ -27,6 +27,8 @@ static float FitModel(float x, float a, float xb, float sigma);
 /// Prediction of 2D Gaussian model for 2D LSGF method
 static float FitModel2D(float x, float y, float a, float xb, float yb, float sigmaX, float sigmaY);
 
+static std::vector<unsigned char> CopyImage(const unsigned char* const image, int w, int h);
+
 // Structure: (x, y, size of floodfill around (x, y))
 typedef std::vector<int> Point;
 
@@ -53,6 +55,12 @@ void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight, float 
     }
 }
 
+static std::vector<unsigned char> CopyImage(const unsigned char* const image, int w, int h){
+    std::vector<unsigned char> res;
+    res.insert(res.begin(), &image[0], &image[w*h]);
+    return res;
+}
+
 struct FloodParams{
     int xMin;
     int xMax;
@@ -60,14 +68,16 @@ struct FloodParams{
     int yMax;
 };
 
-std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight) {
+std::vector<Point> FloodfillPreproc(unsigned char *img, int imageWidth, int imageHeight) {
     std::vector<Point> res;
     std::set<Point> checkedPoints;
 
+    std::vector<unsigned char> image = CopyImage(img, imageWidth, imageHeight);
+
     float noise;
-    int cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    int cutoff = BasicThreshold(image.data(), imageWidth, imageHeight, &noise);
     cutoff -= noise;
-    SubtractNoise(image, imageWidth, imageHeight, noise);
+    SubtractNoise(image.data(), imageWidth, imageHeight, noise);
 
     std::cout << "Cutoff: " << cutoff << std::endl;
     if(cutoff == 0){
@@ -104,7 +114,7 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
                 if (px < 0 || px >= imageWidth || py < 0 || py >= imageHeight) continue;
                 if (checkedPoints.count(p) != 0) continue;
 
-                int mag = Get(px, py, image, imageWidth);
+                int mag = Get(px, py, image.data(), imageWidth);
                 if (mag < cutoff) continue;
 
                 floodSize++;
@@ -729,16 +739,17 @@ void CogHelper(CentroidParams *p, long i, unsigned char *image, int imageWidth, 
     }
 }
 
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth,
+std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *img, int imageWidth,
                                                int imageHeight) const {
     CentroidParams p;
 
     std::vector<Star> result;
+    std::vector<unsigned char> image = CopyImage(img, imageWidth, imageHeight);
 
     float noise;
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    p.cutoff = BasicThreshold(image.data(), imageWidth, imageHeight, &noise);
     p.cutoff -= noise;
-    SubtractNoise(image, imageWidth, imageHeight, noise);
+    SubtractNoise(image.data(), imageWidth, imageHeight, noise);
 
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
@@ -757,7 +768,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
             int sizeBefore = p.checkedIndices.size();
 
-            CogHelper(&p, i, image, imageWidth, imageHeight);
+            CogHelper(&p, i, image.data(), imageWidth, imageHeight);
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
 
@@ -827,14 +838,16 @@ void IWCoGHelper(IWCoGParams *p, long i, unsigned char *image, int imageWidth, i
     }
 }
 
-Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth,
+Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *img, int imageWidth,
                                                     int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
+
+    std::vector<unsigned char> image = CopyImage(img, imageWidth, imageHeight);
     float noise;
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    p.cutoff = BasicThreshold(image.data(), imageWidth, imageHeight, &noise);
     p.cutoff -= noise;
-    SubtractNoise(image, imageWidth, imageHeight, noise);
+    SubtractNoise(image.data(), imageWidth, imageHeight, noise);
 
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         // check if pixel is part of a "star" and has not been iterated over
@@ -857,7 +870,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.yMin = i / imageWidth;
             p.isValid = true;
 
-            IWCoGHelper(&p, i, image, imageWidth, imageHeight, &starIndices);
+            IWCoGHelper(&p, i, image.data(), imageWidth, imageHeight, &starIndices);
 
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
