@@ -21,8 +21,9 @@ LOST_CLI_OPTION("pixel-size"   , float      , pixelSize   , -1 , atof(optarg) , 
 LOST_CLI_OPTION("fov"          , float      , fov         , 20 , atof(optarg) , kNoDefaultArgument)
 
 // PIPELINE STAGES
-LOST_CLI_OPTION("centroid-fit-radius"      , int        , centroidFitRadius             , 2   , atoi(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("centroid-algo"            , std::string, centroidAlgo                  , ""  , optarg       , "cog")
+LOST_CLI_OPTION("centroid-fit-radius"      , int        , centroidFitRadius             , 2   , atoi(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("centroid-fit-dynamic"     , bool       , centroidFitDynamic            , false , atobool(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("centroid-dummy-stars"     , int        , centroidDummyNumStars         , 5   , atoi(optarg) , kNoDefaultArgument)
 LOST_CLI_OPTION("centroid-mag-filter"      , float      , centroidMagFilter             , -1  , atof(optarg) , 5)
 LOST_CLI_OPTION("centroid-filter-brightest", int        ,        centroidFilterBrightest, -1  , atoi(optarg) , 10)

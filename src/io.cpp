@@ -898,10 +898,10 @@ Pipeline SetPipeline(const PipelineOptions &values) {
             std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "lsgf1d") {
         result.centroidAlgorithm =
-            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit1D(values.centroidFitRadius));
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit1D(values.centroidFitRadius, values.centroidFitDynamic));
     } else if (values.centroidAlgo == "lsgf2d") {
         result.centroidAlgorithm =
-            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit2D(values.centroidFitRadius));
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit2D(values.centroidFitRadius, values.centroidFitDynamic));
     } else if (values.centroidAlgo == "ggrid"){
         result.centroidAlgorithm =
             std::unique_ptr<CentroidAlgorithm>(new GaussianGrid());

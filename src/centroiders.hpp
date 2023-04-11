@@ -30,11 +30,12 @@ public:
  */
 class LeastSquaresGaussianFit1D : public CentroidAlgorithm{
 public:
-    explicit LeastSquaresGaussianFit1D(int nb) : nb(nb), np(nb*2+1) { };
+    explicit LeastSquaresGaussianFit1D(int nb, bool dyn) : nb(nb), dynamic(dyn), np(nb*2+1) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 
 private:
     const int nb;
+    bool dynamic;
     const int np;
 };
 
@@ -47,11 +48,12 @@ private:
  */
 class LeastSquaresGaussianFit2D : public CentroidAlgorithm {
 public:
-    explicit LeastSquaresGaussianFit2D(int nb) : nb(nb), np(nb*2+1) { };
+    explicit LeastSquaresGaussianFit2D(int nb, bool dyn) : nb(nb), dynamic(dyn), np(nb*2+1) { };
     Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override;
 
 private:
     const int nb;
+    bool dynamic;
     const int np;
 };
 
@@ -103,6 +105,9 @@ int XMarginal(int x, int y0, int nb, const unsigned char *image, int w);
 
 /// Get value of y marginal - keep y fixed, sum pixel values from [x0-nb, x0+nb]
 int YMarginal(int x0, int y, int nb, const unsigned char *image, int w);
+
+/// Compute and subtract noise = mean of all pixels from image
+void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight, float noise);
 
 /**
  * @brief Given window centered at (x0, y0) in image with width=w, calculate initial guess for sigma

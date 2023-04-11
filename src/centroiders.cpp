@@ -38,13 +38,43 @@ typedef std::vector<int> Point;
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
 
 /// A simple, but well tested thresholding algorithm that works well with star images
-int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight);
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, float* const noise);
+
+void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight, float noise){
+    // float sum = 0;
+    // for (long i = 0; i < imageHeight * imageWidth; i++) {
+    //     int x = i % imageWidth;
+    //     int y = i / imageWidth;
+    //     sum += Get(x, y, image, imageWidth);
+    // }
+    // float noise = sum / (imageWidth * imageHeight);
+    for (long i = 0; i < imageHeight * imageWidth; i++) {
+        image[i] = std::max(0, int(image[i] - noise));
+    }
+}
+
+struct FloodParams{
+    int xMin;
+    int xMax;
+    int yMin;
+    int yMax;
+};
 
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight) {
     std::vector<Point> res;
     std::set<Point> checkedPoints;
 
-    int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    float noise;
+    int cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    cutoff -= noise;
+    SubtractNoise(image, imageWidth, imageHeight, noise);
+
+    std::cout << "Cutoff: " << cutoff << std::endl;
+    if(cutoff == 0){
+        // TODO: scuffed, floodfill will never stop if cutoff=0, so stop it here
+        std::cerr << "No stars detected in image, killing process" << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         int x = i % imageWidth;
@@ -55,6 +85,8 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
             // Obtain coordinates (x0, y0) of pixel with largest magnitude in the floodfill
             std::vector<Point> pts;
             std::deque<Point> queue;
+
+            FloodParams fp{x, x, y, y};
 
             int maxMag = -1;
             int x0 = x;
@@ -77,6 +109,11 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
 
                 floodSize++;
 
+                fp.xMin = std::min(fp.xMin, px);
+                fp.xMax = std::max(fp.xMax, px);
+                fp.yMin = std::min(fp.yMin, py);
+                fp.yMax = std::max(fp.yMax, py);
+
                 // Add this point to pts and checkedPoints
                 // We can add to checkedPoints since cutoff is global - ensure no 2 fills collide
                 pts.push_back(p);
@@ -98,7 +135,7 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
             }
 
             // Cool, our flood is done
-            res.push_back({x0, y0, floodSize});
+            res.push_back({x0, y0, floodSize, fp.xMax - fp.xMin, fp.yMax - fp.yMin});
         }
     }
 
@@ -373,19 +410,27 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
     for (const Point &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
-        if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
+        // TODO: just taking largest diameter right now
+        int dynamicWinSize = std::max(pt[3], pt[4]);
 
-        Eigen::VectorXf X(2 * nb + 1);
-        Eigen::VectorXf Y(2 * nb + 1);
+        int winRadius = (dynamic) ? dynamicWinSize : nb; // /2?
+        // int winRadius = nb;
+
+        if (x - winRadius < 0 || x + winRadius >= imageWidth || y - winRadius < 0 ||
+            y + winRadius >= imageHeight)
+            continue;
+
+        Eigen::VectorXf X(2 * winRadius + 1);
+        Eigen::VectorXf Y(2 * winRadius + 1);
         int vInd = 0;
-        for (int i = -nb; i <= nb; i++) {
+        for (int i = -winRadius; i <= winRadius; i++) {
             X(vInd) = x + i;
             Y(vInd) = y + i;
             vInd++;
         }
 
         float a = Get(x, y, image, imageWidth);
-        float sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
+        float sigma = FitInitialGuessSigma(x, y, a, winRadius, image, imageWidth);
 
         Eigen::VectorXf betaX(3);
         betaX << a, x, sigma;
@@ -393,13 +438,13 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
         Eigen::VectorXf betaY(3);
         betaY << a, y, sigma;
 
-        LSGF1DFunctor functorX(nb, 0, X, image, imageWidth, x, y);
+        LSGF1DFunctor functorX(winRadius, 0, X, image, imageWidth, x, y);
         Eigen::LevenbergMarquardt<LSGF1DFunctor, float> lmX(functorX);
 
         lmX.parameters.maxfev = 2000;
         lmX.parameters.xtol = 1.0e-10;
 
-        LSGF1DFunctor functorY(nb, 1, Y, image, imageWidth, x, y);
+        LSGF1DFunctor functorY(winRadius, 1, Y, image, imageWidth, x, y);
         Eigen::LevenbergMarquardt<LSGF1DFunctor, float> lmY(functorY);
 
         lmY.parameters.maxfev = 2000;
@@ -432,15 +477,24 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
     for (const Point &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
-        if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
+
+        // TODO: just taking largest diameter right now
+        int dynamicWinSize = std::max(pt[3], pt[4]);
+
+        int winRadius = (dynamic) ? dynamicWinSize : nb; // /2?
+        // int winRadius = nb;
+
+        if (x - winRadius < 0 || x + winRadius >= imageWidth || y - winRadius < 0 ||
+            y + winRadius >= imageHeight)
+            continue;
 
         float a = Get(x, y, image, imageWidth);
-        float sigma = FitInitialGuessSigma(x, y, a, nb, image, imageWidth);
+        float sigma = FitInitialGuessSigma(x, y, a, winRadius, image, imageWidth);
 
         Eigen::VectorXf beta(5);
         beta << a, x, y, sigma, sigma;
 
-        LSGF2DFunctor functor(nb, image, imageWidth, x, y);
+        LSGF2DFunctor functor(winRadius, image, imageWidth, x, y);
         Eigen::LevenbergMarquardt<LSGF2DFunctor, float> lm(functor);
 
         lm.parameters.maxfev = 2000;
@@ -460,22 +514,34 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
     return result;
 }
 
-static void GetGGridCoeffs(const std::vector<int>& w, std::vector<int>* const a, std::vector<int>* const b){
-    (*a)[0] = 2*w[2]*w[1]*w[0] + 6*w[2]*w[0]*w[3] + 12*(w[3]*w[4]*w[0]+w[3]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[4]*w[1]*w[0];
-    (*a)[1] = 2*w[2]*w[3]*w[1] + 6*w[3]*w[4]*w[1] - 4*w[2]*w[1]*w[0] + 12*w[2]*w[4]*w[1] - 18*w[3]*w[1]*w[0] - 48*w[4]*w[1]*w[0];
-    (*a)[2] = 2*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) - 4*w[1]*w[2]*w[3] - 18*(w[0]*w[2]*w[3] + w[1]*w[2]*w[4]) - 64*w[0]*w[2]*w[4];
-    (*a)[3] = 2*w[2]*w[1]*w[3] + 6*w[3]*w[1]*w[0] - 4*w[2]*w[3]*w[4] + 12*w[2]*w[3]*w[0] - 18*w[3]*w[4]*w[1] - 48*w[3]*w[4]*w[0];
-    (*a)[4] = 2*w[2]*w[3]*w[4] + 6*w[2]*w[4]*w[1] + 12*(w[3]*w[4]*w[1]+w[4]*w[1]*w[0]) + 32*w[2]*w[4]*w[0] + 36*w[3]*w[4]*w[0];
+static void GetGGridCoeffs(const std::vector<int> &w, std::vector<int> *const a,
+                           std::vector<int> *const b) {
+    (*a)[0] = 2 * w[2] * w[1] * w[0] + 6 * w[2] * w[0] * w[3] +
+              12 * (w[3] * w[4] * w[0] + w[3] * w[1] * w[0]) + 32 * w[2] * w[4] * w[0] +
+              36 * w[4] * w[1] * w[0];
+    (*a)[1] = 2 * w[2] * w[3] * w[1] + 6 * w[3] * w[4] * w[1] - 4 * w[2] * w[1] * w[0] +
+              12 * w[2] * w[4] * w[1] - 18 * w[3] * w[1] * w[0] - 48 * w[4] * w[1] * w[0];
+    (*a)[2] = 2 * (w[2] * w[3] * w[4] - w[2] * w[1] * w[0]) - 4 * w[1] * w[2] * w[3] -
+              18 * (w[0] * w[2] * w[3] + w[1] * w[2] * w[4]) - 64 * w[0] * w[2] * w[4];
+    (*a)[3] = 2 * w[2] * w[1] * w[3] + 6 * w[3] * w[1] * w[0] - 4 * w[2] * w[3] * w[4] +
+              12 * w[2] * w[3] * w[0] - 18 * w[3] * w[4] * w[1] - 48 * w[3] * w[4] * w[0];
+    (*a)[4] = 2 * w[2] * w[3] * w[4] + 6 * w[2] * w[4] * w[1] +
+              12 * (w[3] * w[4] * w[1] + w[4] * w[1] * w[0]) + 32 * w[2] * w[4] * w[0] +
+              36 * w[3] * w[4] * w[0];
 
-    (*b)[0] = -w[2]*w[1]*w[0] + 3*w[2]*w[3]*w[0] + 18*(w[3]*w[4]*w[0]+w[4]*w[1]*w[0]) + 32*w[2]*w[4]*w[0];
-    (*b)[1] = w[2]*w[3]*w[1] + 4*w[2]*w[1]*w[0] + 9*(w[3]*w[4]*w[1]+w[3]*w[1]*w[0]) + 12*w[2]*w[4]*w[1];
-    (*b)[2] = 3*(w[2]*w[3]*w[4]-w[2]*w[1]*w[0]) + 9*(w[2]*w[3]*w[0]-w[2]*w[1]*w[4]);
-    (*b)[3] = -w[2]*w[3]*w[1] - 4*w[2]*w[3]*w[4] - 9*(w[3]*w[4]*w[1] + w[3]*w[0]*w[1]) - 12*w[2]*w[3]*w[0];
-    (*b)[4] = w[2]*w[3]*w[4] - 3*w[2]*w[1]*w[4] - 18*(w[3]*w[0]*w[4]+w[1]*w[0]*w[4]) - 32*w[2]*w[4]*w[0];
+    (*b)[0] = -w[2] * w[1] * w[0] + 3 * w[2] * w[3] * w[0] +
+              18 * (w[3] * w[4] * w[0] + w[4] * w[1] * w[0]) + 32 * w[2] * w[4] * w[0];
+    (*b)[1] = w[2] * w[3] * w[1] + 4 * w[2] * w[1] * w[0] +
+              9 * (w[3] * w[4] * w[1] + w[3] * w[1] * w[0]) + 12 * w[2] * w[4] * w[1];
+    (*b)[2] = 3 * (w[2] * w[3] * w[4] - w[2] * w[1] * w[0]) +
+              9 * (w[2] * w[3] * w[0] - w[2] * w[1] * w[4]);
+    (*b)[3] = -w[2] * w[3] * w[1] - 4 * w[2] * w[3] * w[4] -
+              9 * (w[3] * w[4] * w[1] + w[3] * w[0] * w[1]) - 12 * w[2] * w[3] * w[0];
+    (*b)[4] = w[2] * w[3] * w[4] - 3 * w[2] * w[1] * w[4] -
+              18 * (w[3] * w[0] * w[4] + w[1] * w[0] * w[4]) - 32 * w[2] * w[4] * w[0];
 }
 
-Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
-                                                int imageHeight) const {
+Stars GaussianGrid::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
     std::cout << "Gaussian Grid (" << np << "x" << np << ")" << std::endl;
@@ -505,7 +571,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
         }
 
-        float xRes = x + nom/denom;
+        float xRes = x + nom / denom;
 
         nom = 0;
         denom = 0;
@@ -524,7 +590,7 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth,
             }
         }
 
-        float yRes = y + nom/denom;
+        float yRes = y + nom / denom;
 
         result.push_back(Star(xRes + 0.5, yRes + 0.5, nb, nb, pt[2]));
     }
@@ -596,7 +662,7 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return level;
 }
 
-int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, float* const noise) {
     unsigned long totalMag = 0;
     float std = 0;
     long totalPixels = imageHeight * imageWidth;
@@ -604,6 +670,8 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
         totalMag += image[i];
     }
     float mean = totalMag / totalPixels;
+    *noise = mean;
+
     for (long i = 0; i < totalPixels; i++) {
         std += std::pow(image[i] - mean, 2);
     }
@@ -667,7 +735,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
     std::vector<Star> result;
 
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    float noise;
+    p.cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    p.cutoff -= noise;
+    SubtractNoise(image, imageWidth, imageHeight, noise);
+
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
             // iterate over pixels that are part of the star
@@ -759,7 +831,11 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                                                     int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    float noise;
+    p.cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    p.cutoff -= noise;
+    SubtractNoise(image, imageWidth, imageHeight, noise);
+
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         // check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
