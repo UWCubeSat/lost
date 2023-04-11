@@ -107,7 +107,7 @@ int XMarginal(int x, int y0, int nb, const unsigned char *image, int w);
 int YMarginal(int x0, int y, int nb, const unsigned char *image, int w);
 
 /// Compute and subtract noise = mean of all pixels from image
-void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight);
+void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight, float noise);
 
 /**
  * @brief Given window centered at (x0, y0) in image with width=w, calculate initial guess for sigma

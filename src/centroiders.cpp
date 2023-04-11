@@ -38,16 +38,16 @@ typedef std::vector<int> Point;
 std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
 
 /// A simple, but well tested thresholding algorithm that works well with star images
-int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight);
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, float* const noise);
 
-void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight){
-    float sum = 0;
-    for (long i = 0; i < imageHeight * imageWidth; i++) {
-        int x = i % imageWidth;
-        int y = i / imageWidth;
-        sum += Get(x, y, image, imageWidth);
-    }
-    float noise = sum / (imageWidth * imageHeight);
+void SubtractNoise(unsigned char *image, int imageWidth, int imageHeight, float noise){
+    // float sum = 0;
+    // for (long i = 0; i < imageHeight * imageWidth; i++) {
+    //     int x = i % imageWidth;
+    //     int y = i / imageWidth;
+    //     sum += Get(x, y, image, imageWidth);
+    // }
+    // float noise = sum / (imageWidth * imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         image[i] = std::max(0, int(image[i] - noise));
     }
@@ -64,7 +64,11 @@ std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int im
     std::vector<Point> res;
     std::set<Point> checkedPoints;
 
-    int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    float noise;
+    int cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    cutoff -= noise;
+    SubtractNoise(image, imageWidth, imageHeight, noise);
+
     std::cout << "Cutoff: " << cutoff << std::endl;
     if(cutoff == 0){
         // TODO: scuffed, floodfill will never stop if cutoff=0, so stop it here
@@ -401,8 +405,6 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
     std::cout << "1D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
-    SubtractNoise(image, imageWidth, imageHeight);
-
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
     for (const Point &pt : candidatePts) {
@@ -469,8 +471,6 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
     std::vector<Star> result;
 
     std::cout << "2D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
-
-    SubtractNoise(image, imageWidth, imageHeight);
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
@@ -545,8 +545,6 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth, int imageHeight) co
     std::vector<Star> result;
 
     std::cout << "Gaussian Grid (" << np << "x" << np << ")" << std::endl;
-
-    SubtractNoise(image, imageWidth, imageHeight);
 
     std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
@@ -664,7 +662,7 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return level;
 }
 
-int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, float* const noise) {
     unsigned long totalMag = 0;
     float std = 0;
     long totalPixels = imageHeight * imageWidth;
@@ -672,6 +670,8 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
         totalMag += image[i];
     }
     float mean = totalMag / totalPixels;
+    *noise = mean;
+
     for (long i = 0; i < totalPixels; i++) {
         std += std::pow(image[i] - mean, 2);
     }
@@ -735,9 +735,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
     std::vector<Star> result;
 
-    SubtractNoise(image, imageWidth, imageHeight);
+    float noise;
+    p.cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    p.cutoff -= noise;
+    SubtractNoise(image, imageWidth, imageHeight, noise);
 
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
             // iterate over pixels that are part of the star
@@ -829,8 +831,11 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                                                     int imageHeight) const {
     IWCoGParams p;
     std::vector<Star> result;
-    SubtractNoise(image, imageWidth, imageHeight);
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    float noise;
+    p.cutoff = BasicThreshold(image, imageWidth, imageHeight, &noise);
+    p.cutoff -= noise;
+    SubtractNoise(image, imageWidth, imageHeight, noise);
+
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         // check if pixel is part of a "star" and has not been iterated over
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
