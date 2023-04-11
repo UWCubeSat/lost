@@ -93,6 +93,13 @@ The field of view of the camera that took the picture (in degrees). Defaults to 
 Will not consider centroids with magnitude below \fImin-mag\fP.
 
 .TP
+\fB--centroid-filter-brightest\fP \fInum-stars\fP
+Remove all but the brightest \fInum-stars\fP many stars from the list of centroids before sending to
+star-id. Often a better choice than \fB--centroid-mag-filter\fP, because you can ensure that you
+keep enough stars to do star-id. If both this option and \fB--centroid-mag-filter\fP are provided,
+then all stars satisfying both criteria are kept (intersection).
+
+.TP
 \fB--database\fP \fIfilename\fP
 Chooses \fIfilename\fP as the database to use during star identification.
 
@@ -149,8 +156,14 @@ Sets the horizontal resolution of the generated image(s) to \fIpixels\fP. Defaul
 Sets the vertical resolution of the generated image(s) to \fIpixels\fP. Defaults to 1024.
 
 .TP
-\fB--generate-reference-brightness\fP \fIobserved-brightness\fP
-A star with magnitude 0 in the generated image will have have brightness \fIobserved-brightness\fP. An observed brightness of 1 fully saturates the pixel at the center of the star (completely white). Defaults to 100.
+\fB--generate-zero-mag-photons\fP \fInum-photoelectrons\fP
+A star with magnitude 0 will cause \fInum-photoelectrons\fP many photoelectrons to be received by
+the sensor. A default value of 20,000 is chosen. See Liebe's, "tutorial on star tracker accuracy" for theoretical information on how to calculate this.
+
+.TP
+\fB--generate-saturation-photons\fP \fIsaturation-photoelectrons\fP
+
+When a pixel receives at least this many photoelectrons, it will appear completely white (at least before other noise is applied). Note that, because of noise, a pixel may still appear completely white if it receives less than \fIsaturation-photoelectrons\fP many photoelectrons.
 
 .TP
 \fB--generate-spread-stddev\fP \fIstddev\fP
@@ -163,10 +176,6 @@ Enables or disables shot noise simulation in generated images. Defaults to true.
 .TP
 \fB--generate-dark-current\fP \fInoise-level\fP
 Set observed brightness of dark current in the image, from 0 (no dark noise) to 1 (whole image pure white). Defaults to 0.1. cf \fB--generate-sensitivity\fP to control shot noise intensity.
-
-.TP
-\fB--generate-sensitivity\fP \fIsensitivity\fP
-Controls the simulated camera sensitivity for generated images. This only has an observable effect when shot noise is enabled (cf \fB--generate-shot-noise\fP). A higher sensitivity means that fewer photons can cause the same observed brightness on the sensor, so variation in number of photons causes more shot noise. Brightness is normalized according to \fB--generate-reference-brightness\fP so that adjusting sensitivity does not change observed brightness.
 
 .TP
 \fB--generate-read-noise-stddev\fP \fIstddev\fP
@@ -267,16 +276,28 @@ perturbations and magnitude cutoff is applied).
 
 .TP
 \fB--print-actual-centroids\fP [\fIpath\fP]
-Mainly for debugging. Argument is optional. Print list of centroids in the pipeline output to
-\fIpath\fP. If star identification was also performed, print which catalog star each centroid was
-identified as. Defaults to stdout.
+Argument is optional. Print list of centroids in the pipeline output to \fIpath\fP. If star
+identification was also performed, print which catalog star each centroid was identified as. If
+input is from a generated image, also print the expected id for each centroid (note that there can
+sometimes be multiple acceptable star-ids for a star, if it's within the centroid comparison
+threshold of multiple catalog stars. Usually setting --min-separation sufficiently high prevents
+this). Defaults to stdout.
+
+.TP
+\fB--print-input-centroids\fP [\fIpath\fP]
+Argument is optional. Print list of centroids in the pipeline input to \fIpath\fP. This only works
+for generated images. Prints whatever centroids would normally be sent to the star-id algorithm if
+provided in the pipeline. Also prints star-ids, but don't rely on them, because if the input
+centroids were perturbed the generated star-id may not actually be the closest catalog star anymore!
+Defaults to stdout.
 
 .TP
 \fB--print-expected-centroids\fP [\fIpath\fP]
-Mainly for debugging. Argument is optional. Print list of "expected" centroids from the pipeline
-input to \fIpath\fP. Also prints out expected star identifications for those stars, if present. This
-only works for generated images. Generally you should use \fB--print-actual-centroids\fP instead,
-and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
+Argument is optional. Print list of "expected" centroids from the pipeline input to \fIpath\fP. The
+"expected" centroids are all centroids used to generate the real image, including false stars and
+stars below the cutoff magnitude. Also prints out expected star identifications for those stars.
+This only works for generated images. Generally you should use \fB--print-actual-centroids\fP
+instead, and use \fB--compare-centroids\fP if you need to compare actual and expected centroids.
 
 .TP
 \fB--print-attitude\fP [\fIpath\fP]
