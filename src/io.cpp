@@ -737,8 +737,8 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
         seed = values.generateSeed;
     }
 
-
-    std::default_random_engine rng(seed);
+    std::default_random_engine attitudeRng(seed);
+    std::default_random_engine noiseRng(seed);
 
     // TODO: allow random angle generation?
     Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
@@ -759,7 +759,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
 
         Attitude inputAttitude;
         if (values.generateRandomAttitudes) {
-            inputAttitude = RandomAttitude(&rng);
+            inputAttitude = RandomAttitude(&attitudeRng);
         } else {
             inputAttitude = attitude;
         }
@@ -768,7 +768,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                 CatalogRead(),
                 inputAttitude,
                 Camera(focalLength, values.generateXRes, values.generateYRes),
-                &rng,
+                &noiseRng,
 
                 values.generateCentroidsOnly,
                 values.generateZeroMagPhotons,
