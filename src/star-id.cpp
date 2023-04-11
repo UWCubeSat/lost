@@ -605,6 +605,7 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allC
             if (minCos <= curCos && curCos <= maxCos) {
                 assert(centroidIndices[i] != centroidIndices[j]);
                 // emplace the NEGATIVE cosine so that the sort will be smallest angle first.
+                assert(centroidIndices[i] != centroidIndices[j]);
                 cosines.emplace_back(-curCos, centroidIndices[j]);
             }
         }
@@ -615,7 +616,7 @@ std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allC
             continue;
         }
 
-        std::partial_sort(cosines.begin(), cosines.begin()+4, cosines.end()); // operator< is defined on pairs to sort by first element
+        std::partial_sort(cosines.begin(), cosines.begin()+3, cosines.end()); // operator< is defined on pairs to sort by first element
 
         // Compute the sum of the distances between the 3 closest centroids
         float distancesSum = 0;
