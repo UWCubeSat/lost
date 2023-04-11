@@ -766,8 +766,8 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;        seed = values.generateSeed;</div>
 <div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    }</div>
 <div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160; </div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160; </div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    std::default_random_engine rng(seed);</div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;    std::default_random_engine attitudeRng(seed);</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    std::default_random_engine noiseRng(seed);</div>
 <div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160; </div>
 <div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;    <span class="comment">// TODO: allow random angle generation?</span></div>
 <div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;    <a class="code" href="classlost_1_1_attitude.html">Attitude</a> attitude = <a class="code" href="classlost_1_1_attitude.html">Attitude</a>(<a class="code" href="namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1">SphericalToQuaternion</a>(<a class="code" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613">DegToRad</a>(values.generateRa),</div>
@@ -788,7 +788,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160; </div>
 <div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;        <a class="code" href="classlost_1_1_attitude.html">Attitude</a> inputAttitude;</div>
 <div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;        <span class="keywordflow">if</span> (values.generateRandomAttitudes) {</div>
-<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;            inputAttitude = RandomAttitude(&amp;rng);</div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;            inputAttitude = RandomAttitude(&amp;attitudeRng);</div>
 <div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;        } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;            inputAttitude = attitude;</div>
 <div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;        }</div>
@@ -797,7 +797,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;                <a class="code" href="namespacelost.html#a41f5bb669129790c12bd70e1d641441f">CatalogRead</a>(),</div>
 <div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;                inputAttitude,</div>
 <div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;                <a class="code" href="classlost_1_1_camera.html">Camera</a>(focalLength, values.generateXRes, values.generateYRes),</div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;                &amp;rng,</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;                &amp;noiseRng,</div>
 <div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160; </div>
 <div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;                values.generateCentroidsOnly,</div>
 <div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;                values.generateZeroMagPhotons,</div>
@@ -2023,7 +2023,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Tue Apr 11 2023 06:43:53 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Tue Apr 11 2023 19:52:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
