@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "threshold.hpp"
+
 namespace lost {
 
 // DUMMY
@@ -34,6 +36,26 @@ int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     }
     return (((totalMag/(imageHeight * imageWidth)) + 1) * 15) / 10;
 }
+
+// a simple, but well tested thresholding algorithm that works well with star images
+int LessBasicThreshold(unsigned char *image, int imageWidth, int imageHeight, int x, int y) {
+    //preprocess
+    //sumQuery(img, max(0, i - k), max(0, j - k), min(i+k, m), min(j+k, n))
+    unsigned long totalMag = 0;
+    float std = 0;
+    long totalPixels = imageHeight * imageWidth;
+    for (long i = 0; i < totalPixels; i++) {
+        //sumQuery(img, max(0, i - k), max(0, j - k), min(i+k, m), min(j+k, n))
+        totalMag += image[i];
+    }
+    float mean = totalMag / totalPixels;
+    for (long i = 0; i < totalPixels; i++) {
+        std += std::pow(image[i] - mean, 2);
+    }
+    std = std::sqrt(std / totalPixels);
+    return mean + (std * 5);
+}
+
 
 // a more sophisticated thresholding algorithm, not tailored to star images
 int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
@@ -159,6 +181,8 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
     std::vector<Star> result;
 
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    // preprocess
+    // move p.cutoff definition to inside for loop
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
 
