@@ -158,7 +158,7 @@ Sets the vertical resolution of the generated image(s) to \fIpixels\fP. Defaults
 .TP
 \fB--generate-zero-mag-photons\fP \fInum-photoelectrons\fP
 A star with magnitude 0 will cause \fInum-photoelectrons\fP many photoelectrons to be received by
-the sensor. A default value of 20,000 is chosen. See Liebe's, "tutorial on star tracker accuracy" for theoretical information on how to calculate this.
+the sensor per time unit. A default value of 20,000 is chosen. See Liebe's, "tutorial on star tracker accuracy" for theoretical information on how to calculate this.
 
 .TP
 \fB--generate-saturation-photons\fP \fIsaturation-photoelectrons\fP
@@ -195,11 +195,11 @@ Generate a random attitude for each generated image. Ignores specified ra, de, a
 
 .TP
 \fB--generate-exposure\fP \fIexposure-time\fP
-Controls the exposure time of generated images. Only useful wrt motion blur. Default is 0 (motion blur disabled).
+Controls the exposure time of generated images. Default is 0.2. Affects both motion blur and number of photons received per star.
 
 .TP
 \fB--generate-blur-ra\fP, \fB--generate-blur-de\fP, \fB--generate-blur-roll\fP \fIdegrees\fP
-When motion blur is enabled, this is the change in attitude per unit time.
+Set the motion blur direction. By default, there is no motion blur (i.e., all of these are 0.0)
 
 .TP
 \fB--generate-readout-time\fP \fIreadout-time\fP

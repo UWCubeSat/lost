@@ -488,7 +488,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                float darkCurrent,
                                                float readNoiseStdDev,
                                                Attitude motionBlurDirection, // applied on top of the attitude
-                                               float exposureTime, // zero for no motion blur
+                                               float exposureTime,
                                                float readoutTime, // zero for no rolling shutter
                                                bool shotNoise,
                                                int oversampling,
