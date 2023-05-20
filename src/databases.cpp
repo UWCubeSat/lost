@@ -510,6 +510,7 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
     const uint16_t pattBins = 50;
     const int tempBins = 4;
 
+    // Preprocessed star table for Tetra
     Catalog tetraCatalog;
     for (uint16_t ind : catIndices) {
         tetraCatalog.push_back(catalog[ind]);
@@ -581,6 +582,8 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
         // Remove star i from its sky map partition
         auto removeIt = std::find(tempCoarseSkyMap[hashCode].begin(),
                                   tempCoarseSkyMap[hashCode].end(), firstStarID);
+
+        // TODO: an assertion is more appropriate
         if (removeIt == tempCoarseSkyMap[hashCode].end()) {
             std::cerr << "Fatal error with hashing" << std::endl;
             exit(EXIT_FAILURE);
@@ -598,6 +601,9 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
                     patt[3] = nearbyStars[k];
 
                     bool pattFits = true;
+                    // TODO: why do we need to check this?
+                    // If we do nearbyStars, we already guarantee that this spatial is at most maxFOV away from all in nearby?
+                    // No guarantee that all stars in nearBy are at most maxFOV from each other though
                     for (int pair1 = 0; pair1 < pattSize; pair1++) {
                         for (int pair2 = pair1 + 1; pair2 < pattSize; pair2++) {
                             float dotProd = tetraCatalog[patt[pair1]].spatial *

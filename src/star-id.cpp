@@ -151,7 +151,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     bool firstTime = true;
     std::vector<int> cen;
 
-    // In practice, maybe cap this at some number of combinations, maybe 10 or so
+    // TODO: In practice, maybe cap this at some number of combinations, maybe 10 or so
     while (TetraGetCentroidCombo(numPattStars, centroidIndices.size(), firstTime, cen,
                                   &chosenCentroidIndices)) {
         firstTime = false;
