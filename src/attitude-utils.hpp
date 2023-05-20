@@ -121,6 +121,9 @@ class Quaternion {
     void SetVector(const Vec3 &);
     Vec3 Rotate(const Vec3 &) const;
     float Angle() const;
+    /// Returns the smallest angle that can be used to represent the rotation represented by the
+    /// quaternion. I.e, min(Angle, 2pi-Angle).
+    float SmallestAngle() const;
     void SetAngle(float);
     EulerAngles ToSpherical() const;
     bool IsUnit(float tolerance) const;
@@ -136,13 +139,16 @@ class Quaternion {
 /**
  * The attitude (orientation) of a spacecraft.
  * The Attitude object stores either a rotation matrix (direction cosine matrix) or a quaternion,
- * and converts automatically to the other format when needed.
- * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt
- * to either quaternions or DCMs exclusively, depending on the natural output format of whatever
+ * and converts automatically to the other format when needed. Importantly, an attitude may also be
+ * "unknown", representing for example if there weren't enough stars to determine an attitude. When
+ * set to unknown, it is illegal to try and convert it to anything, so check IsKnown first!
+ * @note When porting to an embedded device, you may want to get rid of this class and adapt to
+ * either quaternions or DCMs exclusively, depending on the natural output format of whatever
  * attitude estimation algorithm you're using.
  */
 class Attitude {
-   public:
+public:
+    /// constructs unknown attitude:
     Attitude() = default;
     explicit Attitude(const Quaternion &);  // NOLINT
     explicit Attitude(const Mat3 &dcm);
@@ -151,33 +157,34 @@ class Attitude {
     Mat3 GetDCM() const;
     EulerAngles ToSpherical() const;
     Vec3 Rotate(const Vec3 &) const;
+    bool IsKnown() const;
 
-   private:
-    enum AttitudeType {
-        NullType,
+private:
+    enum class AttitudeType {
+        UnknownType, /// Doesn't mean "unknown type", but rather "we have no fucking clue where we're pointing"
         QuaternionType,
         DCMType,
     };
 
-    Quaternion quaternion;
-    Mat3 dcm;  // direction cosine matrix
     AttitudeType type;
+    Quaternion quaternion;
+    Mat3 dcm; // direction cosine matrix
 };
 
 Mat3 QuaternionToDCM(const Quaternion &);
 Quaternion DCMToQuaternion(const Mat3 &);
 
-// Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given
-// right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
-// will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
+/// Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given
+/// right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
+/// will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 Quaternion SphericalToQuaternion(float ra, float dec, float roll);
 
-// returns unit vector
+/// returns unit vector
 Vec3 SphericalToSpatial(float ra, float de);
 void SpatialToSpherical(const Vec3 &, float *ra, float *de);
-// angle between two vectors, using dot product and magnitude division
+/// angle between two vectors, using dot product and magnitude division
 float Angle(const Vec3 &, const Vec3 &);
-// angle between two vectors, /assuming/ that they are already unit length
+/// angle between two vectors, /assuming/ that they are already unit length
 float AngleUnit(const Vec3 &, const Vec3 &);
 
 float RadToDeg(float);

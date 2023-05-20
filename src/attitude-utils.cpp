@@ -62,7 +62,13 @@ float Quaternion::Angle() const {
     return (real >= 1 ? 0 : acos(real))*2;
 }
 
-/// Change the amount of rotation in a quaternion, keeping that rotation around the same axis.
+float Quaternion::SmallestAngle() const {
+    float rawAngle = Angle();
+    return rawAngle > M_PI
+        ? 2*M_PI - rawAngle
+        : rawAngle;
+}
+
 void Quaternion::SetAngle(float newAngle) {
     real = cos(newAngle/2);
     SetVector(Vector().Normalize() * sin(newAngle/2));
@@ -357,10 +363,10 @@ Mat3 Mat3::Inverse() const {
                      0,0,1};
 
 Attitude::Attitude(const Quaternion &quat)
-    : quaternion(quat), type(QuaternionType) {}
+    : type(AttitudeType::QuaternionType), quaternion(quat) {}
 
 Attitude::Attitude(const Mat3 &matrix)
-    : dcm(matrix), type(DCMType) {}
+    : type(AttitudeType::DCMType), dcm(matrix) {}
 
 /// Convert a quaternion to a rotation matrix (Direction Cosine Matrix)
 Mat3 QuaternionToDCM(const Quaternion &quat) {
@@ -406,48 +412,58 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
 /// Get the quaternion representing the attitude, converting from whatever format is stored.
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
-        case QuaternionType:
-            return quaternion;
-        case DCMType:
-            return DCMToQuaternion(dcm);
-        default:
-            assert(false);
+    case AttitudeType::QuaternionType:
+        return quaternion;
+    case AttitudeType::DCMType:
+        return DCMToQuaternion(dcm);
+    default:
+        assert(false);
     }
 }
 
 /// Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever format is stored.
 Mat3 Attitude::GetDCM() const {
     switch (type) {
-        case DCMType:
-            return dcm;
-        case QuaternionType:
-            return QuaternionToDCM(quaternion);
-        default:
-            assert(false);
+    case AttitudeType::DCMType:
+        return dcm;
+    case AttitudeType::QuaternionType:
+        return QuaternionToDCM(quaternion);
+    default:
+        assert(false);
     }
 }
 
 /// Convert a vector from the reference frame to the body frame.
 Vec3 Attitude::Rotate(const Vec3 &vec) const {
     switch (type) {
-        case DCMType:
-            return dcm*vec;
-        case QuaternionType:
-            return quaternion.Rotate(vec);
-        default:
-            assert(false);
+    case AttitudeType::DCMType:
+        return dcm*vec;
+    case AttitudeType::QuaternionType:
+        return quaternion.Rotate(vec);
+    default:
+        assert(false);
     }
 }
 
 /// Get the euler angles from the attitude, converting from whatever format is stored.
 EulerAngles Attitude::ToSpherical() const {
     switch (type) {
-        case DCMType:
-            return GetQuaternion().ToSpherical();
-        case QuaternionType:
-            return quaternion.ToSpherical();
-        default:
-            assert(false);
+    case AttitudeType::DCMType:
+        return GetQuaternion().ToSpherical();
+    case AttitudeType::QuaternionType:
+        return quaternion.ToSpherical();
+    default:
+        assert(false);
+    }
+}
+
+bool Attitude::IsKnown() const {
+    switch (type) {
+    case AttitudeType::DCMType:
+    case AttitudeType::QuaternionType:
+        return true;
+    default:
+        return false;
     }
 }
 
