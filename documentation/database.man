@@ -1,4 +1,4 @@
-.TH DATABASE 3 "06 November 2021" 
+.TH DATABASE 3 "06 November 2021"
 
 .SH NAME
 
@@ -79,6 +79,19 @@ Sets the maximum distance \fImax\fP (degrees). Defaults to 15 if option is not s
 .TP
 \fB--kvector-distance-bins\fP \fInum-bins\fP
 Sets the number of distance bins in the kvector building method to \fInum-bins\fP.  Defaults to 10000 if option is not selected, which is pretty reasonable for most cases.
+
+.SH TETRA DATABASE OPTIONS
+
+The Tetra database is needed for the Tetra star identification algorithm. It's primary payload is
+a pattern catalog , essentially a large hash table that stores 4-star patterns
+
+.TP
+\fB--tetra\fP
+Generate a Tetra database
+
+.TP
+\fB--tetra-max-angle \fImax\fP
+Sets the maximum allowable angle between stars in a Tetra pattern to \fImax\fP (degrees). Defaults to 12 if option is not selected.
 
 .SH OTHER OPTIONS
 

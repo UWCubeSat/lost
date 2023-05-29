@@ -977,7 +977,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(const unsigned char *database, const 
                                                std::max(std::max(iSinInner, jSinInner), kSinInner);
 
                     if (expectedMismatches > maxMismatchProbability) {
-                        std::cout << "skip: mismatch prob." << std::endl;
+                        std::cerr << "skip: mismatch prob." << std::endl;
                         continue;
                     }
 

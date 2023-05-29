@@ -639,7 +639,7 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
         }
     }
 
-    std::cout << "Found " << pattList.size() << " patterns" << std::endl;
+    std::cerr << "Found " << pattList.size() << " patterns" << std::endl;
 
     // Load factor of 0.5
     long long pattCatalogLength = 2 * (int)pattList.size();

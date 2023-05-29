@@ -36,23 +36,23 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
     if (values.tetra) {
-        std::cout << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
+        std::cerr << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
         auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
         std::vector<uint16_t> catIndices = tetraStuff.first;
         std::vector<uint16_t> pattStars = tetraStuff.second;
 
-        std::cout << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
-        std::cout << "Number of pattern stars: " << pattStars.size() << std::endl;
+        std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+        std::cerr << "Number of pattern stars: " << pattStars.size() << std::endl;
 
         GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars, catIndices);
-        std::cout << "Generated TETRA database with " << builder.BufferLength() << " bytes"
+        std::cerr << "Generated TETRA database with " << builder.BufferLength() << " bytes"
                   << std::endl;
     }
     // We should allow for multiple databases at the same tme
     // Do NOT make this an if...else if...else
     if (values.kvector) {
         GenerateDatabases(&builder, narrowedCatalog, values);
-        std::cout << "Generated kvector database with " << builder.BufferLength() << " bytes"
+        std::cerr << "Generated kvector database with " << builder.BufferLength() << " bytes"
                   << std::endl;
     }
 
