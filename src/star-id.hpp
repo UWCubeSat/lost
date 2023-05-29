@@ -39,18 +39,6 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
     const int numPattBins = 50;
     const float pattMaxError = 0.002;
 
-    /**
-     * @brief Get all possible matching patterns starting from given index
-     *
-     * Perform quadratic probing
-     *
-     * @param index
-     * @param pattCatFile
-     * @return std::vector<std::vector<int>> List of 4-star patterns that could be matches
-     */
-
-    std::vector<std::vector<int>> GetPatternMatches(int index, int maxIndex,
-                                             const TetraDatabase &db) const;
 };
 
 /// A star-id algorithm that returns random results. For debugging.

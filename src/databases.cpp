@@ -368,9 +368,9 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         }
     }
 
-    // Pretty clever way of finding which stars in the final star table
+    // Find which stars in the final star table
     // should be used for pattern construction later in Tetra's database generation step
-    uint16_t cumulativeSum = -1;
+    int cumulativeSum = -1;
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
         if (keepForVerifying[i]) {
             cumulativeSum++;
@@ -523,18 +523,18 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
 
     // TODO: pattBins here and numPattBins in TetraStarIDAlgorithm::numPattBins should be the same
     // Otherwise we break things
-    const uint16_t pattBins = 50;
+    const int pattBins = 50;
     const int tempBins = 4;
 
     // Preprocessed star table for Tetra
     Catalog tetraCatalog;
-    for (uint16_t ind : catIndices) {
+    for (int ind : catIndices) {
         tetraCatalog.push_back(catalog[ind]);
     }
 
     std::map<Vec3, std::vector<uint16_t>> tempCoarseSkyMap;
 
-    for (const uint16_t starID : pattStarIndices) {
+    for (const int starID : pattStarIndices) {
         Vec3 v(tetraCatalog[starID].spatial);
         Vec3 hash{floor((v.x + 1) * tempBins), floor((v.y + 1) * tempBins),
                   floor((v.z + 1) * tempBins)};

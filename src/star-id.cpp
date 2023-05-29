@@ -60,27 +60,6 @@ static std::vector<float> TetraConstructPattern(const std::vector<Vec3> &spats) 
     return edgeRatios;
 }
 
-/*
-Returns a list of rows (4-tuples) from the Pattern Catalog
-Start from index and does quadratic probing
-*/
-// std::vector<std::vector<int>> TetraStarIdAlgorithm::GetPatternMatches(
-//     int index, int maxIndex, const TetraDatabase &db) const {
-//     std::vector<std::vector<int>> res;
-//     for (int c = 0;; c++) {
-//         int i = (index + c * c) % maxIndex;
-
-//         std::vector<int> tableRow = db.GetPattern(i);
-
-//         if (tableRow[0] == 0 && tableRow[1] == 0) {
-//             break;
-//         } else {
-//             res.push_back(tableRow);
-//         }
-//     }
-//     return res;
-// }
-
 static bool TetraGetCentroidCombo(int pattSize, int numCentroids, bool firstTime,
                                    std::vector<int> &indices, std::vector<int> *const res) {
     if (numCentroids < pattSize) {
@@ -242,8 +221,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             int hashIndex = KeyToIndex(code, numPattBins, catLength);
             // Get a list of Pattern Catalog rows with hash code == hashIndex
             // One of these Patterns in the database could be a match to our constructed Pattern
-            // std::vector<std::vector<int>> matches =
-            //     GetPatternMatches(hashIndex, catLength, tetraDatabase);
             std::vector<Pattern> matches = tetraDatabase.GetPatternMatches(hashIndex);
 
             if ((int)matches.size() == 0) {
@@ -258,9 +235,11 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
                 std::vector<int> catStarIDs;
                 std::vector<Vec3> catStarVecs;
                 for (int star : matchRow) {
-                    CatalogStar catStar = catalog[tetraDatabase.GetTrueCatInd(star)];
+                    int catInd = tetraDatabase.GetTrueCatInd(star);
+                    CatalogStar catStar = catalog[catInd];
                     Vec3 catVec = catStar.spatial;
-                    catStarIDs.push_back(catStar.name);
+                    // catStarIDs.push_back(catStar.name);
+                    catStarIDs.push_back(catInd);
                     catStarVecs.push_back(catVec);
                 }
 
@@ -326,14 +305,16 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
                 for (int i = 0; i < numPattStars; i++) {
                     int centroidIndex = sortedCentroidIndices[i];
 
-                    int resultStarID = catSortedStarIDs[i];
+                    // int resultStarID = catSortedStarIDs[i];
+                    // TODO: change name of catSortedStarIDs
+                    int catInd = catSortedStarIDs[i];
 
                     // std::cout << "Centroid Index: " << centroidIndex
                     //           << ", Result StarID: " << resultStarID << std::endl;
 
-                    int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
+                    // int catalogIndex = FindCatalogStarIndex(catalog, resultStarID);
 
-                    result.push_back(StarIdentifier(centroidIndex, catalogIndex));
+                    result.push_back(StarIdentifier(centroidIndex, catInd));
                 }
 
                 // Note: StarIdentifier wants the catalog INDEX, not the real star ID
