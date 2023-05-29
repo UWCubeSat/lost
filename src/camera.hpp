@@ -28,8 +28,6 @@ public:
     Vec2 SpatialToCamera(const Vec3 &) const;
     Vec3 CameraToSpatial(const Vec2 &) const;
 
-    Vec3 CameraToSpatialFov(const Vec2 &) const;
-
     // converts from a 2d point in the camera sensor to right ascension and declination relative to
     // the center of the camera.
     // void CoordinateAngles(const Vec2 &vector, float *ra, float *de) const;
