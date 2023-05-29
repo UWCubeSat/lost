@@ -370,6 +370,10 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
 
     // Find which stars in the final star table
     // should be used for pattern construction later in Tetra's database generation step
+    // pattStarIndices will be a double-index:
+    //  our "final star table" is a list of indices into the original (unchanged) catalog
+    //  pattStarIndices is a list of indices into the final star table to tell Tetra which ones
+    //  to use for pattern construction
     int cumulativeSum = -1;
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
         if (keepForVerifying[i]) {

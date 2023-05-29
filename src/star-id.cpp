@@ -186,9 +186,9 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         std::vector<std::pair<int, int>> hcSpace;
         for (float edgeRatio : pattEdgeRatios) {
             std::pair<int, int> range;
-            int lo = int((edgeRatio - pattMaxError) * numPattBins);
+            int lo = int((edgeRatio - pattErrorRange) * numPattBins);
             lo = std::max(lo, 0);
-            int hi = int((edgeRatio + pattMaxError) * numPattBins);
+            int hi = int((edgeRatio + pattErrorRange) * numPattBins);
             hi = std::min(hi + 1, numPattBins);
             range = std::make_pair(lo, hi);
             hcSpace.push_back(range);
@@ -249,8 +249,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
                     val = std::abs(val);
                     // Test that our pattern and PC pattern roughly match up
                     // For now, just compare edge ratios
-                    // if (val > pattMaxError) {
-                    if (val > 0.0005){
+                    if (val > pattMaxError){
                         skipMatchRow = true;
                     }
                 }

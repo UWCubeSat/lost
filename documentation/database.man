@@ -82,7 +82,7 @@ Sets the number of distance bins in the kvector building method to \fInum-bins\f
 
 .SH TETRA DATABASE OPTIONS
 
-The Tetra database is needed for the Tetra star identification algorithm. It's primary payload is
+The Tetra database is needed for the Tetra star identification algorithm. Its primary payload is
 a pattern catalog , essentially a large hash table that stores 4-star patterns
 
 .TP
