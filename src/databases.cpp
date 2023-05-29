@@ -386,12 +386,12 @@ TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer) {
     maxAngle_ = *(float*)buffer;
     buffer += sizeof(float);
     catalogSize_ = *(int32_t *)buffer;
-    std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
+    // std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
 }
 
 float TetraDatabase::MaxAngle() const { return maxAngle_; }
 
-int TetraDatabase::Size() const { return catalogSize_; }
+int TetraDatabase::PattCatSize() const { return catalogSize_; }
 
 std::vector<int> TetraDatabase::GetPattern(int index) const {
     std::vector<int> res;
@@ -405,8 +405,24 @@ std::vector<int> TetraDatabase::GetPattern(int index) const {
 
 uint16_t TetraDatabase::GetTrueCatInd(int tetraInd) const {
     // TODO: don't harcode this 4
-    const unsigned char *p = buffer_ + headerSize + Size() * 4 * sizeof(uint16_t);
+    const unsigned char *p = buffer_ + headerSize + PattCatSize() * 4 * sizeof(uint16_t);
     return *((uint16_t *)p + tetraInd);
+}
+
+std::vector<Pattern> TetraDatabase::GetPatternMatches(int index) const {
+    std::vector<Pattern> res;
+    for (int c = 0;; c++) {
+        int i = (index + c * c) % PattCatSize();
+
+        Pattern tableRow = GetPattern(i);
+
+        if (tableRow[0] == 0 && tableRow[1] == 0) {
+            break;
+        } else {
+            res.push_back(tableRow);
+        }
+    }
+    return res;
 }
 
 /// Create the database from a serialized buffer.

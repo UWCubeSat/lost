@@ -100,6 +100,8 @@ void SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer
                             const std::vector<uint16_t> &,
                             const std::vector<uint16_t> &);
 
+typedef std::vector<int> Pattern;
+
 /*
 Layout:
 
@@ -107,7 +109,7 @@ Layout:
 - Max FOV (float)
 - Number of patterns in pattern catalog (int)
 ////////////////////////////////////////////////////////
-- All patterns (number of patterns * 4 * sizeof(uint16_t))
+- All patterns (number of patterns * pattSize=4 * sizeof(uint16_t))
 - List of Catalog indices to use for Tetra star ID algo
 /////////////////////////////////////////////////////////
 
@@ -121,10 +123,16 @@ class TetraDatabase {
 
     /// Number of rows in pattern catalog
     // With load factor of 0.5, size = number of patterns * 2
-    int Size() const;
+    int PattCatSize() const;
 
     // Get the 4-tuple pattern at row=index, 0-based
-    std::vector<int> GetPattern(int index) const;
+    Pattern GetPattern(int index) const;
+
+    /*
+    Returns a list of rows (4-tuples) from the Pattern Catalog
+    Start from index and does quadratic probing
+    */
+    std::vector<Pattern> GetPatternMatches(int index) const;
 
     uint16_t GetTrueCatInd(int tetraIndex) const;
     // TODO: should probably have a field describing number of indices for future updates to db
@@ -136,7 +144,7 @@ class TetraDatabase {
    private:
     const unsigned char *buffer_;
     float maxAngle_;
-    int32_t catalogSize_;
+    uint32_t catalogSize_;
 };
 
 // /**
