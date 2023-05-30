@@ -11,6 +11,7 @@
 #include <map>
 #include <set>
 #include <unordered_map>
+#include <utility>  // pair
 #include <vector>
 
 #include "attitude-utils.hpp"
@@ -304,12 +305,12 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         for (int j = 0; j < i; j++) {
             if (keepForPatterns[j]) {
                 float angle = Angle(vec, catalog[j].spatial);
-                if(angle < DegToRad(starMinSep)){
+                if (angle < DegToRad(starMinSep)) {
                     anglesForPattOK = false;
                     break;
                 }
                 // If angle between new star i and old star j is less than maxFov/2, OK
-                if(angle < maxFOV/2){
+                if (angle < maxFOV / 2) {
                     numPattStarsInFov++;
                     if (numPattStarsInFov >= pattStarsPerFOV) {
                         anglesForPattOK = false;
@@ -335,11 +336,11 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
         for (int j = 0; j < i; j++) {
             if (keepForVerifying[j]) {
                 float angle = Angle(vec, catalog[j].spatial);
-                if(angle < DegToRad(starMinSep)){
+                if (angle < DegToRad(starMinSep)) {
                     anglesForVerifOK = false;
                     break;
                 }
-                if(angle < maxFOV/2){
+                if (angle < maxFOV / 2) {
                     numVerStarsInFov++;
                     if (numVerStarsInFov >= verificationStarsPerFOV) {
                         anglesForVerifOK = false;

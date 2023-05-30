@@ -13,7 +13,6 @@
 #include "attitude-utils.hpp"
 #include "databases.hpp"
 #include "star-id-private.hpp"
-#include "star-id.hpp"
 #include "star-utils.hpp"
 
 namespace lost {
@@ -137,7 +136,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
     TetraCentroidComboIterator tetraCentroidComboIt(numPattStars, centroidIndices.size());
 
     // TODO: In practice, maybe cap this at some number of combinations, maybe 10 or so
-    while(tetraCentroidComboIt.getCentroidCombo(&chosenCentroidIndices)){
+    while (tetraCentroidComboIt.getCentroidCombo(&chosenCentroidIndices)) {
         // std::cerr << "new combo" << std::endl;
 
         // Index in centroid indices list
@@ -211,8 +210,6 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             }
         }
 
-        float minTotalError = 5 * pattMaxError;
-
         for (std::vector<int> code : finalCodes) {
             // std::cerr << "new code" << std::endl;
 
@@ -252,7 +249,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
                     val = std::abs(val);
                     // Test that our pattern and PC pattern roughly match up
                     // For now, just compare edge ratios
-                    if (val > pattMaxError){
+                    if (val > pattMaxError) {
                         skipMatchRow = true;
                     }
                 }
@@ -268,7 +265,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
                 numMatches++;
 
-                if(alrFoundMatch) continue; // If we already found a match, don't add new ID'd stars
+                if (alrFoundMatch)
+                    continue;  // If we already found a match, don't add new ID'd stars
                 alrFoundMatch = true;
 
                 Vec3 pattCentroid(0, 0, 0);
@@ -325,7 +323,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             // TODO: in practice, this seems to have almost no effect
             // Surprisingly almost always, if the hashed pattern has at least 1 one match in the PC,
             // then it can find a unique match
-            if(numMatches == 1){
+            if (numMatches == 1) {
                 return result;
             }
         }

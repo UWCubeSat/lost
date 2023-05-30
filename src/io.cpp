@@ -295,8 +295,8 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, f
 }
 
 void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                            const DatabaseOptions &values, std::vector<uint16_t> &pattStars,
-                            std::vector<uint16_t> &catIndices) {
+                            const DatabaseOptions &values, const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &catIndices) {
     float maxAngle = values.tetraMaxAngle;
     BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
 }

@@ -5,15 +5,10 @@
 
 #include <cairo/cairo.h>
 
-#include <random>
-#include <vector>
-#include <map>
-#include <utility>
-#include <string>
-#include <sstream>
 #include <iostream>
 #include <map>
 #include <memory>
+#include <random>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -334,7 +329,8 @@ void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOp
 
 // TODO:  can we avoid the split?
 void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,
-                            std::vector<uint16_t> &pattStars, std::vector<uint16_t> &catIndices);
+                            const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &catIndices);
 
 /////////////////////
 // INSPECT CATALOG //
