@@ -192,6 +192,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             hi = std::min(hi + 1, numPattBins);
             range = std::make_pair(lo, hi);
             hcSpace.push_back(range);
+            // std::cerr << range.first << ", " << range.second << std::endl;
         }
 
         std::set<std::vector<int>> finalCodes;
@@ -209,6 +210,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
                 }
             }
         }
+
+        float minTotalError = 5 * pattMaxError;
 
         for (std::vector<int> code : finalCodes) {
             // std::cerr << "new code" << std::endl;
@@ -319,6 +322,9 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             }
 
             // If we've looked at all possible matches and found a unique one, return it
+            // TODO: in practice, this seems to have almost no effect
+            // Surprisingly almost always, if the hashed pattern has at least 1 one match in the PC,
+            // then it can find a unique match
             if(numMatches == 1){
                 return result;
             }
