@@ -37,7 +37,7 @@ class TetraStarIdAlgorithm : public StarIdAlgorithm {
     // Do NOT modify these parameters unless you know what you're doing
     const int numPattStars = 4;
     const int numPattBins = 50;
-    const float pattErrorRange = 0.01; // default: 0.002
+    const float pattErrorRange = 0.001; // default: 0.002
     const float pattMaxError = 0.001; // default: 0.002
 
 };

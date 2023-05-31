@@ -537,7 +537,15 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
         tetraCatalog.push_back(catalog[ind]);
     }
 
-    std::map<Vec3, std::vector<uint16_t>> tempCoarseSkyMap;
+    struct CmpSpatialHash {
+        bool operator()(const Vec3 &vec1, const Vec3 &vec2) const {
+            if (vec1.x != vec2.x) return (vec1.x < vec2.x);
+            if (vec1.y != vec2.y) return (vec1.y < vec2.y);
+            return vec1.z < vec2.z;
+        };
+    };
+
+    std::map<Vec3, std::vector<uint16_t>, CmpSpatialHash> tempCoarseSkyMap;
 
     for (const int starID : pattStarIndices) {
         Vec3 v(tetraCatalog[starID].spatial);
