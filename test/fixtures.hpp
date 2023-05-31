@@ -19,6 +19,7 @@ extern Quaternion straightAhead;
 
 extern Stars elevenStars;
 extern StarIdentifiers elevenStarIds;
+extern Stars starCloisters;
 
 }
 

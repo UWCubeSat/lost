@@ -1712,13 +1712,13 @@ void PipelineComparison(const PipelineInputList &expected,
     } while (0)
 
     if (values.plotRawInput != "") {
-        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1,
+        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->InputImage(),
                               "--plot-raw-input requires exactly 1 input image, but " + std::to_string(expected.size()) + " many were provided.",
                               PipelineComparatorPlotRawInput, values.plotRawInput, true);
     }
 
     if (values.plotInput != "") {
-        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars(),
+        LOST_PIPELINE_COMPARE(expected.size() == 1 && expected[0]->InputImage() && expected[0]->InputStars(),
                               "--plot-input requires exactly 1 input image, and for centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
                               PipelineComparatorPlotInput, values.plotInput, true);
     }

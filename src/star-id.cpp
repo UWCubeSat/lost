@@ -4,7 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-#include <unordered_map>
+#include <utility>
+#include <map>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -255,8 +256,12 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */
-std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
-    std::unordered_multimap<int16_t, int16_t> result;
+std::multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
+#if LOST_DEBUG > 3
+    std::cerr << "Building map from " << (end-pairs)/2 << " pairs" << std::endl;
+#endif
+    std::multimap<int16_t, int16_t> result;
+    // result.reserve(end - pairs); // equals number of pairs times two, which is correct.
     for (const int16_t *p = pairs; p != end; p += 2) {
         result.emplace(p[0], p[1]);
         result.emplace(p[1], p[0]);
@@ -567,6 +572,224 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     return numExtraIdentifiedStars;
 }
 
+// allCentroidSpatials should be unit vectors
+std::vector<BestPyramidAtStar> ComputeBestPyramids(const std::vector<Vec3> &allCentroidSpatials,
+                                                   const std::vector<int16_t> &centroidIndices,
+                                                   float minDistance,
+                                                   float maxDistance) {
+    assert(centroidIndices.size() >= 4);
+    assert(allCentroidSpatials.size() >= centroidIndices.size());
+    assert(minDistance < maxDistance);
+    if (allCentroidSpatials.size() > 0) {
+        // the only way this can happen by chance is if it's right on the boresight. Some test will catch it :)
+        assert(abs(allCentroidSpatials[0].Magnitude() - 1) < 0.0001);
+    }
+
+    std::vector<BestPyramidAtStar> result;
+    result.reserve(centroidIndices.size());
+    float maxCos = cos(minDistance);
+    float minCos = cos(maxDistance);
+    // Find the 3 closest centroids to this centroid
+    std::vector<std::pair<float, int16_t>> cosines; // allocating outside of the loop avoids repeated heap allocation
+    cosines.reserve(centroidIndices.size());
+    for (int i = 0; i < (int)centroidIndices.size(); i++) {
+        cosines.resize(0);
+
+        // TODO: optimize this using a sorted centroids list
+        for (int j = 0; j < (int)centroidIndices.size(); j++) {
+            if (i == j) {
+                continue;
+            }
+            float curCos = allCentroidSpatials[centroidIndices[i]] * allCentroidSpatials[centroidIndices[j]];
+            // float curDistance = (allCentroids[centroidIndices[i]].position - allCentroids[centroidIndices[j]].position).Magnitude();
+            if (minCos <= curCos && curCos <= maxCos) {
+                assert(centroidIndices[i] != centroidIndices[j]);
+                // emplace the NEGATIVE cosine so that the sort will be smallest angle first.
+                assert(centroidIndices[i] != centroidIndices[j]);
+                cosines.emplace_back(-curCos, centroidIndices[j]);
+            }
+        }
+
+        if (cosines.size() < 3) {
+            // Not enough centroids to make a pyramid, add a "null" best pyramid
+            result.emplace_back(i);
+            continue;
+        }
+
+        std::partial_sort(cosines.begin(), cosines.begin()+3, cosines.end()); // operator< is defined on pairs to sort by first element
+
+        // Compute the sum of the distances between the 3 closest centroids
+        float distancesSum = 0;
+        for (int j = 0; j < 3; j++) {
+            distancesSum += acos(-cosines[j].first);
+        }
+
+        // Add the best pyramid starting from this centroid to the result
+        result.emplace_back(centroidIndices[i], cosines[0].second, cosines[1].second, cosines[2].second, distancesSum);
+    }
+
+    return result;
+}
+
+// see star-id-private.hpp for docs on PyramidIterator
+PyramidIterator::PyramidIterator(const std::vector<Vec3> &centroidSpatials, float minDistance, float maxDistance)
+    : minDistance(minDistance), maxDistance(maxDistance), allCentroidSpatials(centroidSpatials) {
+    for (int i = 0; i < (int)centroidSpatials.size(); i++) {
+        untriedCentroidIndices.push_back(i);
+    }
+}
+
+BestPyramidAtStar PyramidIterator::Next() {
+    if (untriedCentroidIndices.size() < 4) {
+        return BestPyramidAtStar(-1);
+    }
+
+    // Find the best pyramid
+    std::vector<BestPyramidAtStar> bestPyramids = ComputeBestPyramids(allCentroidSpatials, untriedCentroidIndices,
+                                                                      minDistance, maxDistance);
+    assert(!bestPyramids.empty());
+
+    // Find the best pyramid
+    auto minIt = std::min_element(bestPyramids.begin(), bestPyramids.end());
+    assert(minIt != bestPyramids.end());
+    BestPyramidAtStar bestPyramid = *minIt;
+
+    if (bestPyramid.distancesSum < 0) {
+        // No suitable pyramid exists
+        return BestPyramidAtStar(-1);
+    }
+
+    // Remove all the stars in the best pyramid from the list of untried stars
+    for (int i = 0; i < 4; i++) {
+        // Possible to optimize this using remove_if, or otherwise doing all the removal at once.
+        untriedCentroidIndices.erase(std::remove(untriedCentroidIndices.begin(), untriedCentroidIndices.end(),
+                                                 bestPyramid.centroidIndices[i]),
+                                     untriedCentroidIndices.end());
+    }
+
+    return bestPyramid;
+}
+
+IdentifyPyramidResult IdentifyPyramid(const PairDistanceKVectorDatabase &db,
+                                      const Catalog &catalog,
+                                      float tolerance,
+                                      const Vec3 &iSpatial, const Vec3 &jSpatial, const Vec3 &kSpatial, const Vec3 &rSpatial,
+                                      int *a, int *b, int *c, int *d) {
+
+    // sign of determinant, to detect flipped patterns
+    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
+
+    float ijDist = AngleUnit(iSpatial, jSpatial);
+    float ikDist = AngleUnit(iSpatial, kSpatial);
+    float irDist = AngleUnit(iSpatial, rSpatial);
+    float jkDist = AngleUnit(jSpatial, kSpatial);
+    float jrDist = AngleUnit(jSpatial, rSpatial);
+    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
+    // check krDist, if k has been
+    // verified by i and j it's fine.
+
+    // we check the distances with the extra tolerance requirement to ensure that
+    // there isn't some pyramid that's just outside the database's bounds, but
+    // within measurement tolerance of the observed pyramid, since that would
+    // possibly cause a non-unique pyramid to be identified as unique.
+#define _CHECK_DISTANCE(_dist) if (_dist < db.MinDistance() + tolerance || _dist > db.MaxDistance() - tolerance) { std::cerr << _dist << std::endl; return IdentifyPyramidResult::CannotPossiblyIdentify; }
+    _CHECK_DISTANCE(ijDist);
+    _CHECK_DISTANCE(ikDist);
+    _CHECK_DISTANCE(irDist);
+#undef _CHECK_DISTANCE
+
+#if LOST_DEBUG > 2
+    std::cerr << "Passed distance checks for pyramid" << std::endl;
+#endif
+
+    const int16_t *ijEnd, *ikEnd, *irEnd;
+    const int16_t *const ijQuery = db.FindPairsExact(catalog, ijDist - tolerance, ijDist + tolerance, &ijEnd);
+    const int16_t *const ikQuery = db.FindPairsExact(catalog, ikDist - tolerance, ikDist + tolerance, &ikEnd);
+    const int16_t *const irQuery = db.FindPairsExact(catalog, irDist - tolerance, irDist + tolerance, &irEnd);
+
+    // TODO: theoretically, it's fastest to relabel j,k,r to put the shortest one first (probably).
+    // But since we're not even sure of that, we'll just leave them alone for now.
+
+#if LOST_DEBUG > 3
+    std::cerr << "Number of ij pairs: " << (ijEnd-ijQuery)/2 << std::endl;
+#endif
+    std::multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
+    std::multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
+
+    bool foundMatchYet = false;
+    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
+        int iCandidate = *iCandidateQuery;
+        // depending on parity, the first or second star in the pair is the "other" one
+        int jCandidate = (iCandidateQuery - ijQuery) % 2 == 0
+            ? iCandidateQuery[1]
+            : iCandidateQuery[-1];
+
+        // if debug>4, print the candidates
+#if LOST_DEBUG > 3
+        std::cerr << "iCandidate: " << *iCandidateQuery << std::endl;
+        std::cerr << "jCandidate: " << jCandidate << std::endl;
+#endif
+
+        const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
+        const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
+
+        Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
+
+        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+            // kCandidate.first is iterator, then ->second is the value (other star)
+            int kCandidate = kCandidateIt.first->second;
+            Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
+            bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
+            // checking the spectral-ity early to fail fast
+            if (candidateSpectralTorch != spectralTorch) {
+#if LOST_DEBUG > 3
+                std::cerr << "skipping candidate " << iCandidate << " " << jCandidate << " " << kCandidate << " because spectral-ity mismatch" << std::endl;
+#endif
+                continue;
+            }
+
+            // small optimization: We can calculate jk before iterating through r, so we will!
+            float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+            if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
+                continue;
+            }
+
+            // TODO: if there are no jr matches, there's no reason to
+            // continue iterating through all the other k-s. Possibly
+            // enumarete all r matches, according to ir, before this loop
+            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
+                int rCandidate = rCandidateIt.first->second;
+                const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
+                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
+                float krCandidateDist;
+                if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
+                    continue;
+                }
+                krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
+                if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
+                    continue;
+                }
+
+                // we have a match!
+                if (!foundMatchYet) {
+                    *a = iCandidate;
+                    *b = jCandidate;
+                    *c = kCandidate;
+                    *d = rCandidate;
+                    foundMatchYet = true;
+                } else {
+                    // not unique!
+                    return IdentifyPyramidResult::MatchedAmbiguously;
+                }
+            }
+        }
+    }
+    return foundMatchYet
+        ? IdentifyPyramidResult::MatchedUniquely
+        : IdentifyPyramidResult::NoMatch;
+
+}
+
 StarIdentifiers PyramidStarIdAlgorithm::Go(
     const unsigned char *database, const Stars &stars, const Catalog &catalog, const Camera &camera) const {
 
@@ -578,187 +801,83 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
         return identified;
     }
     PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
+    std::vector<Vec3> starSpatials;
+    for (const Star &star : stars) {
+        starSpatials.push_back(camera.CameraToSpatial(star.position).Normalize());
+    }
 
     // smallest normal single-precision float is around 10^-38 so we should be all good. See
     // Analytic_Star_Pattern_Probability on the HSL wiki for details.
     float expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
 
-    // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
-    // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and
-    // k-th from the j-th. In addition, we here add some other numbers so that the pyramids are not
-    // weird lines in wide FOV images. TODO: Select the starting points to ensure that the first pyramids are all within measurement tolerance.
-    int numStars = (int)stars.size();
-    // the idea is that the square root is about across the FOV horizontally
-    int across = floor(sqrt(numStars))*2;
-    int halfwayAcross = floor(sqrt(numStars)/2);
-    long totalIterations = 0;
+    // keep iterating through pyramids
+    PyramidIterator pyramidIterator(starSpatials,
+                                    vectorDatabase.MinDistance() + tolerance,
+                                    vectorDatabase.MaxDistance() - tolerance);
+    BestPyramidAtStar bestPyramid(-1);
+    while (bestPyramid = pyramidIterator.Next(), !bestPyramid.isNull()) {
 
-    int jMax = numStars - 3;
-    for (int jIter = 0; jIter < jMax; jIter++) {
-        int dj = 1+(jIter+halfwayAcross)%jMax;
+#if LOST_DEBUG > 2
+        // print distance sum
+        std::cerr << "Current pyramid distance sum: " << bestPyramid.distancesSum << std::endl;
+        // print out each centroid index
+        std::cerr << bestPyramid.centroidIndices[0] << " " << bestPyramid.centroidIndices[1] << " " << bestPyramid.centroidIndices[2] << " " << bestPyramid.centroidIndices[3] << std::endl;
+#endif
+        int i = bestPyramid.centroidIndices[0],
+            j = bestPyramid.centroidIndices[1],
+            k = bestPyramid.centroidIndices[2],
+            r = bestPyramid.centroidIndices[3];
 
-        int kMax = numStars-dj-2;
-        for (int kIter = 0; kIter < kMax; kIter++) {
-            int dk = 1+(kIter+across)%kMax;
+        assert(i != j && j != k && k != r && i != k && i != r && j != r);
 
-            int rMax = numStars-dj-dk-1;
-            for (int rIter = 0; rIter < rMax; rIter++) {
-                int dr = 1+(rIter+halfwayAcross)%rMax;
+        // TODO: move this out of the loop?
+        Vec3 iSpatial = starSpatials[i];
+        Vec3 jSpatial = starSpatials[j];
+        Vec3 kSpatial = starSpatials[k];
 
-                int iMax = numStars-dj-dk-dr-1;
-                for (int iIter = 0; iIter <= iMax; iIter++) {
-                    int i = (iIter + iMax/2)%(iMax+1); // start near the center of the photo
+        float ijDist = AngleUnit(iSpatial, jSpatial);
 
-                    // identification failure due to cutoff
-                    if (++totalIterations > cutoff) {
-                        std::cerr << "Cutoff reached." << std::endl;
-                        return identified;
-                    }
+        float iSinInner = sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
+        float jSinInner = sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
+        float kSinInner = sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
 
-                    int j = i+dj;
-                    int k = j+dk;
-                    int r = k+dr;
+        // if we made it this far, all 6 angles are confirmed! Now check
+        // that this match would not often occur due to chance.
+        // See Analytic_Star_Pattern_Probability on the HSL wiki for details
+        float expectedMismatches = expectedMismatchesConstant
+            * sin(ijDist)
+            / kSinInner
+            / std::max(std::max(iSinInner, jSinInner), kSinInner);
 
-                    assert(i != j && j != k && k != r && i != k && i != r && j != r);
+        if (expectedMismatches > maxMismatchProbability) {
+            std::cout << "skip: mismatch prob." << std::endl;
+            continue;
+        }
 
-                    // TODO: move this out of the loop?
-                    Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
-                    Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
-                    Vec3 kSpatial = camera.CameraToSpatial(stars[k].position).Normalize();
+        Vec3 rSpatial = starSpatials[r];
 
-                    float ijDist = AngleUnit(iSpatial, jSpatial);
+        int iMatch, jMatch, kMatch, rMatch;
+        IdentifyPyramidResult identifyResult
+            = IdentifyPyramid(vectorDatabase, catalog, tolerance,
+                              iSpatial, jSpatial, kSpatial, rSpatial,
+                              &iMatch, &jMatch, &kMatch, &rMatch);
 
-                    float iSinInner = sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
-                    float jSinInner = sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
-                    float kSinInner = sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
+        switch (identifyResult) {
+        case IdentifyPyramidResult::CannotPossiblyIdentify:
+        case IdentifyPyramidResult::NoMatch:
+        case IdentifyPyramidResult::MatchedAmbiguously:
+            continue;
+        case IdentifyPyramidResult::MatchedUniquely:
+            identified.push_back(StarIdentifier(i, iMatch));
+            identified.push_back(StarIdentifier(j, jMatch));
+            identified.push_back(StarIdentifier(k, kMatch));
+            identified.push_back(StarIdentifier(r, rMatch));
 
-                    // if we made it this far, all 6 angles are confirmed! Now check
-                    // that this match would not often occur due to chance.
-                    // See Analytic_Star_Pattern_Probability on the HSL wiki for details
-                    float expectedMismatches = expectedMismatchesConstant
-                        * sin(ijDist)
-                        / kSinInner
-                        / std::max(std::max(iSinInner, jSinInner), kSinInner);
+            int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
+            printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
+            assert(numAdditionallyIdentified == (int)identified.size()-4);
 
-                    if (expectedMismatches > maxMismatchProbability) {
-                        std::cout << "skip: mismatch prob." << std::endl;
-                        continue;
-                    }
-
-                    Vec3 rSpatial = camera.CameraToSpatial(stars[r].position).Normalize();
-
-                    // sign of determinant, to detect flipped patterns
-                    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
-
-                    float ikDist = AngleUnit(iSpatial, kSpatial);
-                    float irDist = AngleUnit(iSpatial, rSpatial);
-                    float jkDist = AngleUnit(jSpatial, kSpatial);
-                    float jrDist = AngleUnit(jSpatial, rSpatial);
-                    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
-                                                                  // check krDist, if k has been
-                                                                  // verified by i and j it's fine.
-
-                    // we check the distances with the extra tolerance requirement to ensure that
-                    // there isn't some pyramid that's just outside the database's bounds, but
-                    // within measurement tolerance of the observed pyramid, since that would
-                    // possibly cause a non-unique pyramid to be identified as unique.
-#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
-                    _CHECK_DISTANCE(ikDist);
-                    _CHECK_DISTANCE(irDist);
-                    _CHECK_DISTANCE(jkDist);
-                    _CHECK_DISTANCE(jrDist);
-                    _CHECK_DISTANCE(krDist);
-#undef _CHECK_DISTANCE
-
-                    const int16_t *ijEnd, *ikEnd, *irEnd;
-                    const int16_t *const ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
-                    const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
-                    const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
-
-                    std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
-                    std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
-
-                    int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
-                    for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
-                        int iCandidate = *iCandidateQuery;
-                        // depending on parity, the first or second star in the pair is the "other" one
-                        int jCandidate = (iCandidateQuery - ijQuery) % 2 == 0
-                            ? iCandidateQuery[1]
-                            : iCandidateQuery[-1];
-
-                        const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
-                        const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
-
-                        Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
-
-                        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
-                            // kCandidate.first is iterator, then ->second is the value (other star)
-                            int kCandidate = kCandidateIt.first->second;
-                            Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
-                            bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
-                            // checking the spectral-ity early to fail fast
-                            if (candidateSpectralTorch != spectralTorch) {
-                                continue;
-                            }
-
-                            // small optimization: We can calculate jk before iterating through r, so we will!
-                            float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
-                            if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
-                                continue;
-                            }
-
-                            // TODO: if there are no jr matches, there's no reason to
-                            // continue iterating through all the other k-s. Possibly
-                            // enumarete all r matches, according to ir, before this loop
-                            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
-                                int rCandidate = rCandidateIt.first->second;
-                                const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
-                                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
-                                float krCandidateDist;
-                                if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
-                                    continue;
-                                }
-                                krCandidateDist = AngleUnit(kCandidateSpatial, rCandidateSpatial);
-                                if (krCandidateDist < krDist - tolerance || krCandidateDist > krDist + tolerance) {
-                                    continue;
-                                }
-
-                                // we have a match!
-
-                                if (iMatch == -1) {
-                                    iMatch = iCandidate;
-                                    jMatch = jCandidate;
-                                    kMatch = kCandidate;
-                                    rMatch = rCandidate;
-                                } else {
-                                    // uh-oh, stinky!
-                                    // TODO: test duplicate detection, it's hard to cause it in the real catalog...
-                                    std::cerr << "Pyramid not unique, skipping..." << std::endl;
-                                    goto sensorContinue;
-                                }
-                            }
-                        }
-
-
-                    }
-
-                    if (iMatch != -1) {
-                        printf("Matched unique pyramid!\nExpected mismatches: %e\n", expectedMismatches);
-                        identified.push_back(StarIdentifier(i, iMatch));
-                        identified.push_back(StarIdentifier(j, jMatch));
-                        identified.push_back(StarIdentifier(k, kMatch));
-                        identified.push_back(StarIdentifier(r, rMatch));
-
-                        int numAdditionallyIdentified = IdentifyRemainingStarsPairDistance(&identified, stars, vectorDatabase, catalog, camera, tolerance);
-                        printf("Identified an additional %d stars.\n", numAdditionallyIdentified);
-                        assert(numAdditionallyIdentified == (int)identified.size()-4);
-
-                        return identified;
-                    }
-
-                sensorContinue:;
-                }
-            }
+            return identified;
         }
     }
 
