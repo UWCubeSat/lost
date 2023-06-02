@@ -31,11 +31,11 @@ struct Vec2 {
     friend std::ostream &operator<<(std::ostream &output, const Vec2 &vec);
 };
 
-class Mat3;  // define above so we can use in Vec3 class
+class Mat3; // define above so we can use in Vec3 class
 
 /// Three dimensional vector with floating point components
 class Vec3 {
-   public:
+public:
     float x;
     float y;
     float z;
@@ -46,8 +46,6 @@ class Vec3 {
     float Magnitude() const;
     float MagnitudeSq() const;
     Vec3 Normalize() const;
-
-    bool operator<(const Vec3 &other) const;
 
     float operator*(const Vec3 &) const;
     Vec3 operator*(const float &) const;
@@ -62,7 +60,7 @@ class Vec3 {
 
 /// 3x3 vector with floating point components
 class Mat3 {
-   public:
+public:
     float x[9];
 
     float At(int i, int j) const;
@@ -89,18 +87,17 @@ float Distance(const Vec3 &, const Vec3 &);
 
 /**
  * A "human-readable" way to represent a 3d rotation or orientation.
- * Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans
- * to understand. There's no one single way to store Euler angles. We use z-y'-x'' angles, according
- * to the notation used on the wikipedia page for euler angles.
+ * Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans to understand.
+ * There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles.
  */
 class EulerAngles {
-   public:
-    EulerAngles(float ra, float de, float roll) : ra(ra), de(de), roll(roll){};
+public:
+    EulerAngles(float ra, float de, float roll)
+        : ra(ra), de(de), roll(roll) { };
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
     float ra;
-    /// Declination. How far we pitch up (or down if negative). Pitch is performed second, after
-    /// yaw.
+    /// Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw.
     float de;
     /// How far we roll counterclockwise. Roll is performed last (after yaw and pitch).
     float roll;
@@ -108,12 +105,13 @@ class EulerAngles {
 
 /// A quaternion is a common way to represent a 3d rotation.
 class Quaternion {
-   public:
+public:
     Quaternion() = default;
     explicit Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, float);
 
-    Quaternion(float real, float i, float j, float k) : real(real), i(i), j(j), k(k){};
+    Quaternion(float real, float i, float j, float k)
+        : real(real), i(i), j(j), k(k) { };
 
     Quaternion operator*(const Quaternion &other) const;
     Quaternion Conjugate() const;
@@ -150,7 +148,7 @@ class Attitude {
 public:
     /// constructs unknown attitude:
     Attitude() = default;
-    explicit Attitude(const Quaternion &);  // NOLINT
+    explicit Attitude(const Quaternion &); // NOLINT
     explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;

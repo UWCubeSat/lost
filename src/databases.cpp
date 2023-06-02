@@ -46,7 +46,7 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
 
 /// The number of bytes that a kvector index will take up whe serialized
 long SerializeLengthKVectorIndex(long numBins) {
-    return 4 + sizeof(float) + sizeof(float) + 4 + 4 * (numBins + 1);
+    return 4+sizeof(float)+sizeof(float)+4+4*(numBins+1);
 }
 
 // apparently there's no easy way to accept an iterator argument. Hate java all you want, but at
@@ -62,34 +62,28 @@ long SerializeLengthKVectorIndex(long numBins) {
  * @pre values must be sorted in ascending order!
  * @param min,max Guaranteed bounds on the entries of values
  * @todo Consider replacing min and max parameters by just calculating the min and max of values?
- * @param numBins the number of "bins" the KVector should use. A higher number makes query results
- * "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min)
- * divided by the "width" of the typical query.
+ * @param numBins the number of "bins" the KVector should use. A higher number makes query results "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min) divided by the "width" of the typical query.
  * @param buffer[out] index is written here.
  */
-void SerializeKVectorIndex(const std::vector<float> &values, float min, float max, long numBins,
-                           unsigned char *buffer) {
-    std::vector<int32_t> kVector(numBins + 1);  // numBins = length, all elements zero
+void SerializeKVectorIndex(const std::vector<float> &values, float min, float max, long numBins, unsigned char *buffer) {
+    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     float binWidth = (max - min) / numBins;
 
     // generate the k-vector part
-    // Idea: When we find the first star that's across any bin boundary, we want to update all the
-    // newly sealed bins
-    long lastBin = 0;  // first bin the last star belonged to
+    // Idea: When we find the first star that's across any bin boundary, we want to update all the newly sealed bins
+    long lastBin = 0; // first bin the last star belonged to
     for (int32_t i = 0; i < (int32_t)values.size(); i++) {
         if (i > 0) {
-            assert(values[i] >= values[i - 1]);
+            assert(values[i] >= values[i-1]);
         }
         assert(values[i] >= min);
         assert(values[i] <= max);
-        long thisBin = (long)ceil((values[i] - min) / binWidth);  // first bin we belong to
+        long thisBin = (long)ceil((values[i] - min) / binWidth); // first bin we belong to
         assert(thisBin >= 0);
-        assert(thisBin <=
-               numBins);  // thisBin == numBins is acceptable since kvector length == numBins + 1
-        // if thisBin > lastBin, then no more stars can be added to those bins between thisBin and
-        // lastBin, so set them.
+        assert(thisBin <= numBins); // thisBin == numBins is acceptable since kvector length == numBins + 1
+        // if thisBin > lastBin, then no more stars can be added to those bins between thisBin and lastBin, so set them.
         for (long bin = lastBin; bin < thisBin; bin++) {
-            kVector[bin] = i;  // our index is the number of pairs with shorter distance
+            kVector[bin] = i; // our index is the number of pairs with shorter distance
         }
         lastBin = thisBin;
     }
@@ -150,11 +144,10 @@ KVectorIndex::KVectorIndex(const unsigned char *buffer) {
  * @param upperIndex[out] Is set to the index of the last returned value +1.
  * @return the index (starting from zero) of the first value matching the query
  */
-long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance,
-                                long *upperIndex) const {
+long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const {
     assert(maxQueryDistance > minQueryDistance);
     if (maxQueryDistance >= max) {
-        maxQueryDistance = max - 0.00001;  // TODO: better way to avoid hitting the bottom bin
+        maxQueryDistance = max - 0.00001; // TODO: better way to avoid hitting the bottom bin
     }
     if (minQueryDistance <= min) {
         minQueryDistance = min + 0.00001;
@@ -169,7 +162,7 @@ long KVectorIndex::QueryLiberal(float minQueryDistance, float maxQueryDistance,
     assert(upperBin <= numBins);
     // bins[lowerBin-1]=number of pairs <= r < query distance, so it is the index of the
     // first possible item that might be equal to the query distance
-    int lowerIndex = bins[lowerBin - 1];
+    int lowerIndex = bins[lowerBin-1];
     if (lowerIndex >= numValues) {
         // all pairs have distance less than queried. Return value is irrelevant as long as
         // numReturned=0
@@ -189,20 +182,20 @@ long KVectorIndex::BinFor(float query) const {
 }
 
 /**
- pair K-vector database layout. The kvector appears before the bulk pair data because it contains
- the number of pairs, which is necessary to read the bulk pair data.
+ pair K-vector database layout. The kvector appears before the bulk pair data because it contains the
+ number of pairs, which is necessary to read the bulk pair data.
 
-     | size (bytes)             | name         | description |
+     | size (bytes)             | name         | description                                                 |
      |--------------------------+--------------+-------------------------------------------------------------|
-     | sizeof kvectorIndex      | kVectorIndex | Serialized KVector index | |
- 2*sizeof(int16)*numPairs | pairs        | Bulk pair data |
+     | sizeof kvectorIndex      | kVectorIndex | Serialized KVector index                                    |
+     | 2*sizeof(int16)*numPairs | pairs        | Bulk pair data                                              |
  */
-std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float minDistance,
-                                                float maxDistance) {
+std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float minDistance, float maxDistance) {
     std::vector<KVectorPair> result;
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
-        for (int16_t k = i + 1; k < (int16_t)catalog.size(); k++) {
-            KVectorPair pair = {i, k, AngleUnit(catalog[i].spatial, catalog[k].spatial)};
+        for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
+
+            KVectorPair pair = { i, k, AngleUnit(catalog[i].spatial, catalog[k].spatial) };
             assert(isfinite(pair.distance));
             assert(pair.distance >= 0);
             assert(pair.distance <= M_PI);
@@ -217,24 +210,20 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
 }
 
 long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
-    return SerializeLengthKVectorIndex(numBins) + 2 * sizeof(int16_t) * numPairs;
+    return SerializeLengthKVectorIndex(numBins) + 2*sizeof(int16_t)*numPairs;
 }
 
 /// Number of bytes that a serialized KVectorDatabase will take up
-long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistance,
-                                        float maxDistance, long numBins) {
-    return SerializeLengthPairDistanceKVector(
-        CatalogToPairDistances(catalog, minDistance, maxDistance).size(), numBins);
+long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+    return SerializeLengthPairDistanceKVector(CatalogToPairDistances(catalog, minDistance, maxDistance).size(), numBins);
 }
 
 /**
  * Serialize a pair-distance KVector into buffer.
- * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command
- * line documentation for other options.
+ * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
-void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance,
-                                  long numBins, unsigned char *buffer) {
-    std::vector<int32_t> kVector(numBins + 1);  // numBins = length, all elements zero
+void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
+    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
 
     // sort pairs in increasing order.
@@ -433,25 +422,25 @@ std::vector<Pattern> TetraDatabase::GetPatternMatches(int index) const {
 /// Create the database from a serialized buffer.
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
     : index(KVectorIndex(buffer)) {
+
     // TODO: errors? (not even sure what i meant by this comment anymore)
     buffer += SerializeLengthKVectorIndex(index.NumBins());
     pairs = (const int16_t *)buffer;
 }
 
 /// Return the value in the range [low,high] which is closest to num
-float Clamp(float num, float low, float high) { return num < low ? low : num > high ? high : num; }
+float Clamp(float num, float low, float high) {
+    return num < low ? low : num > high ? high : num;
+}
 
 /**
  * Return at least all the star pairs whose inter-star distance is between min and max
- * @param end[out] Is set to an "off-the-end" pointer, one past the last pair being returned by the
- * query.
- * @return A pointer to the start of the matched pairs. Each pair is stored as simply two 16-bit
- * integers, each of which is a catalog index. (you must increment the pointer twice to get to the
- * next pair).
+ * @param end[out] Is set to an "off-the-end" pointer, one past the last pair being returned by the query.
+ * @return A pointer to the start of the matched pairs. Each pair is stored as simply two 16-bit integers, each of which is a catalog index. (you must increment the pointer twice to get to the next pair).
  */
-const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(float minQueryDistance,
-                                                             float maxQueryDistance,
-                                                             const int16_t **end) const {
+const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
+    float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+
     assert(maxQueryDistance <= M_PI);
 
     long upperIndex = -1;
@@ -461,9 +450,8 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(float minQueryDista
 }
 
 const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalog,
-                                                           float minQueryDistance,
-                                                           float maxQueryDistance,
-                                                           const int16_t **end) const {
+                                                           float minQueryDistance, float maxQueryDistance, const int16_t **end) const {
+
     // Instead of computing the angle for every pair in the database, we pre-compute the /cosines/
     // of the min and max query distances so that we can compare against dot products directly! As
     // angle increases, cosine decreases, up to M_PI (and queries larger than that don't really make
@@ -750,8 +738,7 @@ void SerializeTetraDatabase(const Catalog &cat, float maxFov, unsigned char *buf
  * @brief return a pointer to the start of the database type indicated by the magic value, if such
  * a sub-database is present in the database
  * @param magicValue
- * @return Returns a pointer to the start of the database type indicated by the magic value, null if
- * not found
+ * @return Returns a pointer to the start of the database type indicated by the magic value, null if not found
  */
 const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const {
     long databaseIndex = -1;
@@ -770,16 +757,14 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
         return NULL;
     }
 
-    return buffer + kMultiDatabaseTocLength + databaseIndex;
+    return buffer+kMultiDatabaseTocLength+databaseIndex;
 }
 
 /**
  * Add a database to a MultiDatabase
- * @param magicValue A value unique to this type of database which is used to extract it out of the
- * database later.
+ * @param magicValue A value unique to this type of database which is used to extract it out of the database later.
  * @param length The number of bytes to allocate for this database.
- * @return Pointer to the start of the space allocated for said database. Return null if full (too
- * many databases).
+ * @return Pointer to the start of the space allocated for said database. Return null if full (too many databases).
  */
 unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long length) {
     // find unused spot in toc and take it!
@@ -802,16 +787,18 @@ unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long len
         return NULL;
     }
 
-    buffer = (unsigned char *)realloc(buffer, kMultiDatabaseTocLength + bulkLength + length);
+    buffer = (unsigned char *)realloc(buffer, kMultiDatabaseTocLength+bulkLength+length);
     // just past the end of the last database
-    unsigned char *result = buffer + kMultiDatabaseTocLength + bulkLength;
+    unsigned char *result = buffer+kMultiDatabaseTocLength+bulkLength;
     bulkLength += length;
     return result;
 }
 
-MultiDatabaseBuilder::~MultiDatabaseBuilder() { free(buffer); }
+MultiDatabaseBuilder::~MultiDatabaseBuilder() {
+    free(buffer);
+}
 
-}  // namespace lost
+}
 
 // TODO: after creating the database, print more statistics, such as average number of pairs per
 // star, stars per bin, space distribution between array and index.

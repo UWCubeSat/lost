@@ -498,5 +498,4 @@ float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
     return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }
 
-
 }

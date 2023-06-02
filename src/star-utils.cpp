@@ -75,16 +75,6 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
     return catalog.cend();
 }
 
-/// Get index of a CatalogStar in catalog given name
-int FindCatalogStarIndex(const Catalog &catalog, int name) {
-    for (int i = 0; i < (int)catalog.size(); i++) {
-        if (catalog[i].name == name) {
-            return i;
-        }
-    }
-    return -1;  // no star found
-}
-
 /// @sa SerializeCatalogStar
 long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
     long starSize = SerializeLengthVec3();
@@ -123,8 +113,7 @@ void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bo
 
 /**
  * Deserialize a catalog star.
- * @warn The `inclMagnitude` and `inclName` parameters must be the same as passed to
- * SerializeCatalogStar()
+ * @warn The `inclMagnitude` and `inclName` parameters must be the same as passed to SerializeCatalogStar()
  * @sa SerializeCatalogStar
  */
 CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitude, bool inclName) {
@@ -135,8 +124,7 @@ CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitu
         result.magnitude = *(float *)buffer;
         buffer += sizeof(float);
     } else {
-        result.magnitude =
-            -424242;  // TODO, what to do about special values, since there's no good ones for ints.
+        result.magnitude = -424242; // TODO, what to do about special values, since there's no good ones for ints.
     }
     if (inclName) {
         result.name = *(int16_t *)buffer;
@@ -149,8 +137,7 @@ CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitu
 
 /// @sa SerializeCatalog
 long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName) {
-    return sizeof(int16_t) + sizeof(int8_t) +
-           catalog.size() * SerializeLengthCatalogStar(inclMagnitude, inclName);
+    return sizeof(int16_t) + sizeof(int8_t) + catalog.size()*SerializeLengthCatalogStar(inclMagnitude, inclName);
 }
 
 /**
@@ -158,8 +145,7 @@ long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inc
  * Use SerializeLengthCatalog() to determine how many bytes to allocate in `buffer`
  * @param inclMagnitude,inclName See SerializeCatalogStar()
  */
-void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
-                      unsigned char *buffer) {
+void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName, unsigned char *buffer) {
     unsigned char *bufferStart = buffer;
 
     // size
@@ -177,21 +163,17 @@ void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName,
         buffer += catalogStarLength;
     }
 
-    assert(buffer - bufferStart == SerializeLengthCatalog(catalog, inclMagnitude, inclName));
+    assert(buffer-bufferStart == SerializeLengthCatalog(catalog, inclMagnitude, inclName));
 }
 
-// TODO (longer term): don't deserialize the catalog, store it on disk using the
-// in-memory format so we can just copy it to memory then cast Sus, 333 hw3
-// comes to mind...
-// https://courses.cs.washington.edu/courses/cse333/22au/hw/hw3/hw3.html
+// TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so
+// we can just copy it to memory then cast
 
 /**
  * Deserialize a catalog.
- * @param[out] inclMagnitudeReturn,inclNameReturn Will store whether `inclMagnitude` and
- * `inclNameReturn` were set in the corresponding SerializeCatalog() call.
+ * @param[out] inclMagnitudeReturn,inclNameReturn Will store whether `inclMagnitude` and `inclNameReturn` were set in the corresponding SerializeCatalog() call.
  */
-Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn,
-                           bool *inclNameReturn) {
+Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn) {
     bool inclName, inclMagnitude;
     Catalog result;
 
@@ -199,8 +181,8 @@ Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeRetur
     buffer += sizeof(int16_t);
 
     int8_t flags = *(int8_t *)buffer;
-    inclMagnitude = (flags)&1;
-    inclName = (flags >> 1) & 1;
+    inclMagnitude = (flags) & 1;
+    inclName = (flags>>1) & 1;
     if (inclMagnitudeReturn != NULL) {
         *inclMagnitudeReturn = inclMagnitude;
     }
@@ -222,4 +204,4 @@ float MagToBrightness(int mag) {
     return pow(10.0, -mag/250.0);
 }
 
-}  // namespace lost
+}

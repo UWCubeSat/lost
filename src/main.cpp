@@ -31,8 +31,9 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     MultiDatabaseBuilder builder;
     // TODO: allow magnitude and weird
-    unsigned char *catalogBuffer = builder.AddSubDatabase(
-        kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
+    unsigned char
+        *catalogBuffer =
+        builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
     SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
 
     if (values.tetra) {
@@ -57,11 +58,11 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     }
 
     UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
-    pos.Stream().write((char *)builder.Buffer(), builder.BufferLength());
+    pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
+
 }
 
-/// Run a star-tracking pipeline (possibly including generating inputs and analyzing outputs) based
-/// on command line options in \p values.
+/// Run a star-tracking pipeline (possibly including generating inputs and analyzing outputs) based on command line options in \p values.
 static void PipelineRun(const PipelineOptions &values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
@@ -76,8 +77,7 @@ static void PipelineRun(const PipelineOptions &values) {
 //     int iterations = Prompt<int>("Times to run the pipeline");
 //     std::cerr << "Benchmarking..." << std::endl;
 
-//     // TODO: we can do better than this :| maybe include mean time, 99% time, or allow a vector
-//     of
+//     // TODO: we can do better than this :| maybe include mean time, 99% time, or allow a vector of
 //     // input and determine which one took the longest
 //     auto startTime = std::chrono::high_resolution_clock::now();
 //     for (int i = 0; i < iterations; i++) {
@@ -92,14 +92,14 @@ static void PipelineRun(const PipelineOptions &values) {
 //     std::cerr << "Enter estimated camera details when prompted." << std::endl;
 //     PipelineInputList inputs = PromptPngPipelineInput();
 //     float baseFocalLength = inputs[0]->InputCamera()->FocalLength();
-//     float deviationIncrement = Prompt<float>("Focal length increment (base: " +
-//     std::to_string(baseFocalLength) + ")"); float deviationMax = Prompt<float>("Maximum focal
-//     length deviation to attempt"); Pipeline pipeline = PromptPipeline();
+//     float deviationIncrement = Prompt<float>("Focal length increment (base: " + std::to_string(baseFocalLength) + ")");
+//     float deviationMax = Prompt<float>("Maximum focal length deviation to attempt");
+//     Pipeline pipeline = PromptPipeline();
 
 //     while (inputs[0]->InputCamera()->FocalLength() - baseFocalLength <= deviationMax) {
-//         std::cerr << "Attempt focal length " << inputs[0]->InputCamera()->FocalLength() <<
-//         std::endl; std::vector<PipelineOutput> outputs = pipeline.Go(inputs); if
-//         (outputs[0].nice) {
+//         std::cerr << "Attempt focal length " << inputs[0]->InputCamera()->FocalLength() << std::endl;
+//         std::vector<PipelineOutput> outputs = pipeline.Go(inputs);
+//         if (outputs[0].nice) {
 //             std::cout << "camera_identified true" << std::endl << *inputs[0]->InputCamera();
 //             return;
 //         }
@@ -107,11 +107,9 @@ static void PipelineRun(const PipelineOptions &values) {
 //         Camera camera(*inputs[0]->InputCamera());
 //         if (camera.FocalLength() - baseFocalLength > 0) {
 //             // yes i know this expression can be simplified shut up
-//             camera.SetFocalLength(camera.FocalLength() - 2*(camera.FocalLength() -
-//             baseFocalLength));
+//             camera.SetFocalLength(camera.FocalLength() - 2*(camera.FocalLength() - baseFocalLength));
 //         } else {
-//             camera.SetFocalLength(camera.FocalLength() + 2*(baseFocalLength -
-//             camera.FocalLength()) + deviationIncrement);
+//             camera.SetFocalLength(camera.FocalLength() + 2*(baseFocalLength - camera.FocalLength()) + deviationIncrement);
 //         }
 //         ((PngPipelineInput *)(inputs[0].get()))->SetCamera(camera);
 //     }
@@ -134,12 +132,14 @@ bool atobool(const char *cstr) {
  * Handle optional CLI arguments
  * https://stackoverflow.com/a/69177115
  */
-#define LOST_OPTIONAL_OPTARG()                                                                     \
-    ((optarg == NULL && optind < argc && argv[optind][0] != '-') ? (bool)(optarg = argv[optind++]) \
-                                                                 : (optarg != NULL))
+#define LOST_OPTIONAL_OPTARG()                                   \
+    ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
+     ? (bool) (optarg = argv[optind++])                          \
+     : (optarg != NULL))
 
 // This is separate from `main` just because it's in the `lost` namespace
 static int LostMain(int argc, char **argv) {
+
     if (argc == 1) {
         std::cout << "Usage: ./lost database or ./lost pipeline" << std::endl
                   << "Use --help flag on those commands for further help" << std::endl;
@@ -150,6 +150,7 @@ static int LostMain(int argc, char **argv) {
     optind = 2;
 
     if (command == "database") {
+
         enum class DatabaseCliOption {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "database-options.hpp"
@@ -159,11 +160,15 @@ static int LostMain(int argc, char **argv) {
 
         static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    {name, defaultArg == 0 ? required_argument : optional_argument, 0,       \
-     (int)DatabaseCliOption::prop},
-#include "database-options.hpp"  // NOLINT
+            {name,                                                      \
+             defaultArg == 0 ? required_argument : optional_argument, \
+             0,                                                         \
+             (int)DatabaseCliOption::prop},
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
-            {"help", no_argument, 0, (int)DatabaseCliOption::help}, {0}};
+                {"help", no_argument, 0, (int) DatabaseCliOption::help},
+                {0}
+        };
 
         DatabaseOptions databaseOptions;
         int index;
@@ -172,25 +177,23 @@ static int LostMain(int argc, char **argv) {
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    case (int)DatabaseCliOption::prop:                                       \
-        if (defaultArg == 0) {                                               \
-            databaseOptions.prop = converter;                                \
-        } else {                                                             \
-            if (LOST_OPTIONAL_OPTARG()) {                                    \
-                databaseOptions.prop = converter;                            \
-            } else {                                                         \
-                databaseOptions.prop = defaultArg;                           \
-            }                                                                \
-        }                                                                    \
-        break;
-#include "database-options.hpp"  // NOLINT
+                case (int)DatabaseCliOption::prop :                     \
+                    if (defaultArg == 0) {     \
+                        databaseOptions.prop = converter;       \
+                    } else {                                    \
+                        if (LOST_OPTIONAL_OPTARG()) {           \
+                            databaseOptions.prop = converter;   \
+                        } else {                                \
+                            databaseOptions.prop = defaultArg;  \
+                        }                                       \
+                    }                                           \
+            break;
+#include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
-                case (int)DatabaseCliOption::help:
-                    std::cout << documentation_database_txt << std::endl;
+                case (int) DatabaseCliOption::help :std::cout << documentation_database_txt << std::endl;
                     return 0;
                     break;
-                default:
-                    std::cout << "Illegal flag" << std::endl;
+                default :std::cout << "Illegal flag" << std::endl;
                     exit(1);
             }
         }
@@ -198,6 +201,7 @@ static int LostMain(int argc, char **argv) {
         lost::DatabaseBuild(databaseOptions);
 
     } else if (command == "pipeline") {
+
         enum class PipelineCliOption {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
 #include "pipeline-options.hpp"
@@ -207,14 +211,17 @@ static int LostMain(int argc, char **argv) {
 
         static struct option long_options[] = {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    {name, defaultArg == 0 ? required_argument : optional_argument, 0,       \
-     (int)PipelineCliOption::prop},
-#include "pipeline-options.hpp"  // NOLINT
+            {name,                                                      \
+             defaultArg == 0 ? required_argument : optional_argument, \
+             0,                                                         \
+             (int)PipelineCliOption::prop},
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
 
-            // DATABASES
-            {"help", no_argument, 0, (int)PipelineCliOption::help},
-            {0, 0, 0, 0}};
+                // DATABASES
+                {"help", no_argument, 0, (int) PipelineCliOption::help},
+                {0, 0, 0, 0}
+        };
 
         lost::PipelineOptions pipelineOptions;
         int index;
@@ -223,25 +230,23 @@ static int LostMain(int argc, char **argv) {
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
 #define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    case (int)PipelineCliOption::prop:                                       \
-        if (defaultArg == 0) {                                               \
-            pipelineOptions.prop = converter;                                \
-        } else {                                                             \
-            if (LOST_OPTIONAL_OPTARG()) {                                    \
-                pipelineOptions.prop = converter;                            \
-            } else {                                                         \
-                pipelineOptions.prop = defaultArg;                           \
-            }                                                                \
-        }                                                                    \
-        break;
-#include "pipeline-options.hpp"  // NOLINT
+                case (int)PipelineCliOption::prop :                         \
+                    if (defaultArg == 0) {    \
+                        pipelineOptions.prop = converter;       \
+                    } else {                                    \
+                        if (LOST_OPTIONAL_OPTARG()) {           \
+                            pipelineOptions.prop = converter;   \
+                        } else {                                \
+                            pipelineOptions.prop = defaultArg;  \
+                        }                                       \
+                    }                                           \
+            break;
+#include "pipeline-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
-                case (int)PipelineCliOption::help:
-                    std::cout << documentation_pipeline_txt << std::endl;
+                case (int) PipelineCliOption::help :std::cout << documentation_pipeline_txt << std::endl;
                     return 0;
                     break;
-                default:
-                    std::cout << "Illegal flag" << std::endl;
+                default :std::cout << "Illegal flag" << std::endl;
                     exit(1);
             }
         }
@@ -255,6 +260,8 @@ static int LostMain(int argc, char **argv) {
     return 0;
 }
 
-}  // namespace lost
+}
 
-int main(int argc, char **argv) { return lost::LostMain(argc, argv); }
+int main(int argc, char **argv) {
+    return lost::LostMain(argc, argv);
+}
