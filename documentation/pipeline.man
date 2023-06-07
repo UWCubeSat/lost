@@ -121,7 +121,7 @@ Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-sta
 
 .TP
 \fB--star-id-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
+Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", "tetra", and "pyramid". Defaults to "dummy" if option is not selected.
 
 .TP
 \fB--angular-tolerance\fP [\fItolerance\fP] Sets the estimated angular centroiding error tolerance,
@@ -158,7 +158,7 @@ Sets the vertical resolution of the generated image(s) to \fIpixels\fP. Defaults
 .TP
 \fB--generate-zero-mag-photons\fP \fInum-photoelectrons\fP
 A star with magnitude 0 will cause \fInum-photoelectrons\fP many photoelectrons to be received by
-the sensor. A default value of 20,000 is chosen. See Liebe's, "tutorial on star tracker accuracy" for theoretical information on how to calculate this.
+the sensor per time unit. A default value of 20,000 is chosen. See Liebe's, "tutorial on star tracker accuracy" for theoretical information on how to calculate this.
 
 .TP
 \fB--generate-saturation-photons\fP \fIsaturation-photoelectrons\fP
@@ -195,11 +195,11 @@ Generate a random attitude for each generated image. Ignores specified ra, de, a
 
 .TP
 \fB--generate-exposure\fP \fIexposure-time\fP
-Controls the exposure time of generated images. Only useful wrt motion blur. Default is 0 (motion blur disabled).
+Controls the exposure time of generated images. Default is 0.2. Affects both motion blur and number of photons received per star.
 
 .TP
 \fB--generate-blur-ra\fP, \fB--generate-blur-de\fP, \fB--generate-blur-roll\fP \fIdegrees\fP
-When motion blur is enabled, this is the change in attitude per unit time.
+Set the motion blur direction. By default, there is no motion blur (i.e., all of these are 0.0)
 
 .TP
 \fB--generate-readout-time\fP \fIreadout-time\fP
@@ -312,7 +312,7 @@ Print the average, min, max, and upper 95th percentile of how long each stage of
 Argument is option. Compare expected to actual centroids. Prints to \fIpath\fP. Defaults to stdout.
 
 .TP
-\fB--compare-stars\fP [\fIpath\fP]
+\fB--compare-star-ids\fP [\fIpath\fP]
 Argument is optional. Compare expected to actual star identifiers. Prints to \fIpath\fP. Defaults to stdout. In the output, starid_num_correct, starid_num_incorrect, and starid_num_total count the number of individual stars identified in an image. The starid_num_images_correct and starid_num_images_incorrect outputs are more aggregated: starid_num_images_correct records the number of images where at least two stars were correctly id'd and no stars were incorrectly id'd, while starid_num_images_incorrect records the number of images with at least one incorrectly id'd star (used when generating more than 1 image at a time, eg for evaluation).
 
 .TP

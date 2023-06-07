@@ -167,12 +167,12 @@ float FloatModulo(float x, float mod) {
     return result >= 0 ? result : result + mod;
 }
 
-std::ostream& operator<< (std::ostream& output, const Vec2 &vec){
+std::ostream &operator<<(std::ostream &output, const Vec2 &vec) {
     output << "Vec2(x: " << vec.x << ", y: " << vec.y << ")";
     return output;
 }
 
-std::ostream& operator<< (std::ostream& output, const Vec3 &vec){
+std::ostream &operator<<(std::ostream &output, const Vec3 &vec) {
     output << "Vec3(x: " << vec.x << ", y: " << vec.y << ", z: " << vec.z << ")";
     return output;
 }
@@ -201,13 +201,6 @@ Vec3 Vec3::Normalize() const {
     return {
         x/mag, y/mag, z/mag,
     };
-}
-
-// Allows Vec3 to be used as key in associative containers
-bool Vec3::operator<(const Vec3 &other) const{
-    if (x != other.x) return (x < other.x);
-    if (y != other.y) return (y < other.y);
-    return z < other.z;
 }
 
 /// Dot product
@@ -240,7 +233,7 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
-Vec3 Vec3::operator+(const Vec3 &other) const{
+Vec3 Vec3::operator+(const Vec3 &other) const {
     return {x + other.x, y + other.y, z + other.z};
 }
 
@@ -504,6 +497,5 @@ float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
     return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }
-
 
 }

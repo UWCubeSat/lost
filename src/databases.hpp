@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+#include <utility>
 #include <vector>
 
 #include "star-utils.hpp"
@@ -14,12 +15,12 @@ const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
- *
+ * 
  * @note Not an instantiable database on its own -- used in other databases
  */
 // TODO: QueryConservative, QueryExact, QueryTrapezoidal?
 class KVectorIndex {
-   public:
+public:
     explicit KVectorIndex(const unsigned char *);
 
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
@@ -31,8 +32,7 @@ class KVectorIndex {
     float Max() const { return max; };
     // Lower bound on elements
     float Min() const { return min; };
-
-   private:
+private:
     long BinFor(float dist) const;
 
     long numValues;
@@ -43,20 +43,16 @@ class KVectorIndex {
     const int32_t *bins;
 };
 
-long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance,
-                                        long numBins);
-void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance,
-                                  long numBins, unsigned char *buffer);
+long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
+void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
 
 /**
  * A database storing distances between pairs of stars.
- * Supports fast range queries to find all pairs of stars separated by approximately a certain
- * distance.
+ * Supports fast range queries to find all pairs of stars separated by approximately a certain distance.
  * @warning Sensitive to uncalibrated camera parameters
  */
 class PairDistanceKVectorDatabase {
-   public:
-    // TODO: databaseBytes just = buffer?
+public:
     explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
@@ -100,6 +96,8 @@ void SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer
                             const std::vector<uint16_t> &,
                             const std::vector<uint16_t> &);
 
+typedef std::vector<int> Pattern;
+
 /*
 Layout:
 
@@ -107,7 +105,7 @@ Layout:
 - Max FOV (float)
 - Number of patterns in pattern catalog (int)
 ////////////////////////////////////////////////////////
-- All patterns (number of patterns * 4 * sizeof(uint16_t))
+- All patterns (number of patterns * pattSize=4 * sizeof(uint16_t))
 - List of Catalog indices to use for Tetra star ID algo
 /////////////////////////////////////////////////////////
 
@@ -121,10 +119,16 @@ class TetraDatabase {
 
     /// Number of rows in pattern catalog
     // With load factor of 0.5, size = number of patterns * 2
-    int Size() const;
+    int PattCatSize() const;
 
     // Get the 4-tuple pattern at row=index, 0-based
-    std::vector<int> GetPattern(int index) const;
+    Pattern GetPattern(int index) const;
+
+    /*
+    Returns a list of rows (4-tuples) from the Pattern Catalog
+    Start from index and does quadratic probing
+    */
+    std::vector<Pattern> GetPatternMatches(int index) const;
 
     uint16_t GetTrueCatInd(int tetraIndex) const;
     // TODO: should probably have a field describing number of indices for future updates to db
@@ -136,7 +140,7 @@ class TetraDatabase {
    private:
     const unsigned char *buffer_;
     float maxAngle_;
-    int32_t catalogSize_;
+    uint32_t catalogSize_;
 };
 
 // /**
@@ -159,29 +163,27 @@ class TetraDatabase {
 /// maximum number of databases in a MultiDatabase
 const int kMultiDatabaseMaxDatabases = 64;
 /// The size of the table of contents in a multidatabase (stores subdatabase locations)
-const long kMultiDatabaseTocLength = 8 * kMultiDatabaseMaxDatabases;
+const long kMultiDatabaseTocLength = 8*kMultiDatabaseMaxDatabases;
 
 /**
  * A database that contains multiple databases
- * This is almost always the database that is actually passed to star-id algorithms in the real
- * world, since you'll want to store at least the catalog plus one specific database.
+ * This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.
  * Multi-databases are essentially a map from "magic values" to database buffers.
  */
 class MultiDatabase {
-   public:
+public:
     /// Create a multidatabase from a serialized multidatabase.
-    explicit MultiDatabase(const unsigned char *buffer) : buffer(buffer){};
+    explicit MultiDatabase(const unsigned char *buffer) : buffer(buffer) { };
     const unsigned char *SubDatabasePointer(int32_t magicValue) const;
-
-   private:
+private:
     const unsigned char *buffer;
 };
 
 /// Class for easily creating a MultiDatabase
 class MultiDatabaseBuilder {
-   public:
+public:
     MultiDatabaseBuilder()
-        : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0){};
+        : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
     ~MultiDatabaseBuilder();
 
     unsigned char *AddSubDatabase(int32_t magicValue, long length);
@@ -189,9 +191,8 @@ class MultiDatabaseBuilder {
     /// When done adding databases, use this to get the buffer you should write to disk.
     unsigned char *Buffer() { return buffer; };
     /// The length of the buffer returned by Buffer
-    long BufferLength() { return kMultiDatabaseTocLength + bulkLength; };
-
-   private:
+    long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
+private:
     // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to
     // use unique pointers. Here, however, we use realloc, so C-style memory management.
     unsigned char *buffer;
@@ -199,6 +200,6 @@ class MultiDatabaseBuilder {
     long bulkLength;
 };
 
-}  // namespace lost
+}
 
 #endif

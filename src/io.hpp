@@ -5,15 +5,10 @@
 
 #include <cairo/cairo.h>
 
-#include <random>
-#include <vector>
-#include <map>
-#include <utility>
-#include <string>
-#include <sstream>
 #include <iostream>
 #include <map>
 #include <memory>
+#include <random>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -37,14 +32,14 @@ const char kNoDefaultArgument = 0;
 
 /// An output stream which might be a file or stdout
 class UserSpecifiedOutputStream {
-   public:
+public:
     explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
     ~UserSpecifiedOutputStream();
 
     /// return the inner output stream, suitable for use with <<
     std::ostream &Stream() { return *stream; };
 
-   private:
+private:
     bool isFstream;
     std::ostream *stream;
 };
@@ -65,12 +60,10 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width,
 
 /// An 8-bit grayscale 2d image
 class Image {
-   public:
+public:
     /**
      * The raw pixel data in the image.
-     * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte
-     * is pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits
-     * may be added in the future.
+     * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte is pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits may be added in the future.
      */
     unsigned char *image;
 
@@ -84,25 +77,20 @@ class Image {
 
 /// The command line options passed when running a pipeline
 class PipelineOptions {
-   public:
-#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) type prop = defaultVal;
+public:
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+    type prop = defaultVal;
 #include "./pipeline-options.hpp"
 #undef LOST_CLI_OPTION
 };
 
 /**
  * Represents the input and expected outputs of a pipeline run.
- * This is all the data about the pipeline we are about to run that can be gathered without actually
- * running the pipeline. The "input" members return the things that will be fed into the pipeline.
- * The "expected" methods return the "correct" outputs, i.e. what a perfect star tracking algorithm
- * would output (this is only meaningful whe the image is generated, otherwise we don't know the
- * correct output!). The "expected" methods are used to evaluate the quality of our algorithms. Some
- * of the methods (both input and expected) may return NULL for certain subclasses. By default, the
- * "expected" methods return the corresponding inputs, which is reasonable behavior unless you are
- * trying to intentionally introduce error into the inputs.
+ * This is all the data about the pipeline we are about to run that can be gathered without actually running the pipeline. The "input" members return the things that will be fed into the pipeline. The "expected" methods return the "correct" outputs, i.e. what a perfect star tracking algorithm would output (this is only meaningful whe the image is generated, otherwise we don't know the correct output!). The "expected" methods are used to evaluate the quality of our algorithms. Some of the methods (both input and expected) may return NULL for certain subclasses.
+ * By default, the "expected" methods return the corresponding inputs, which is reasonable behavior unless you are trying to intentionally introduce error into the inputs.
  */
 class PipelineInput {
-   public:
+public:
     virtual ~PipelineInput(){};
 
     virtual const Image *InputImage() const { return NULL; };
@@ -112,8 +100,7 @@ class PipelineInput {
     /// The centroid indices in the StarIdentifiers returned from InputStarIds should be indices
     /// into InputStars(), not ExpectedStars(), when present, because otherwise it's useless.
     virtual const StarIdentifiers *InputStarIds() const { return NULL; };
-    /// Only used in tracking mode, in which case it is an estimate of the current attitude based on
-    /// the last attitude, IMU info, etc.
+    /// Only used in tracking mode, in which case it is an estimate of the current attitude based on the last attitude, IMU info, etc.
     virtual const Attitude *InputAttitude() const { return NULL; };
     virtual const Camera *InputCamera() const { return NULL; };
     /// Convert the InputImage() output into a cairo surface
@@ -131,9 +118,7 @@ class PipelineInput {
 
 /**
  * A pipeline input which is generated (fake image).
- * Uses a pretty decent image generation algorithm to create a fake image as the basis for a
- * pipeline input. Since we know everything about the generated image, all of the input and expected
- * methods are available.
+ * Uses a pretty decent image generation algorithm to create a fake image as the basis for a pipeline input. Since we know everything about the generated image, all of the input and expected methods are available.
  */
 class GeneratedPipelineInput : public PipelineInput {
 public:
@@ -158,7 +143,7 @@ public:
     const Attitude *InputAttitude() const override { return &attitude; };
     const Catalog &GetCatalog() const override { return catalog; };
 
-   private:
+private:
     std::vector<unsigned char> imageData;
     Image image;
     /// Includes false stars and very dim stars. Any further filtering that needs to happen before comparison happens in the comparator itself.
@@ -178,7 +163,7 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
 /// A pipeline input created by reading a PNG from a file on disk.
 class PngPipelineInput : public PipelineInput {
-   public:
+public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
     ~PngPipelineInput();
 
@@ -186,7 +171,7 @@ class PngPipelineInput : public PipelineInput {
     const Camera *InputCamera() const override { return &camera; };
     const Catalog &GetCatalog() const override { return catalog; };
 
-   private:
+private:
     Image image;
     Camera camera;
     const Catalog &catalog;
@@ -218,8 +203,7 @@ struct PipelineOutput {
     Catalog catalog;
 };
 
-/// The result of comparing an actual star identification with the true star idenification, used for
-/// testing and benchmarking.
+/// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
     /// The number of centroids in the image which are close to an expected centroid that had an
     /// expected identification the same as the actual identification.
@@ -242,22 +226,18 @@ std::ostream &operator<<(std::ostream &, const Camera &);
 
 /**
  * @brief A set of algorithms that describes all or part of the star-tracking "pipeline"
- * @details A centroiding algorithm identifies the (x,y) pixel coordinates of each star detected in
- * the raw image. The star id algorithm then determines which centroid corresponds to which catalog
- * star. Finally, the attitude estimation algorithm determines the orientation of the camera based
- * on the centroids and identified stars.
+ * @details A centroiding algorithm identifies the (x,y) pixel coordinates of each star detected in the raw image. The star id algorithm then determines which centroid corresponds to which catalog star. Finally, the attitude estimation algorithm determines the orientation of the camera based on the centroids and identified stars.
  */
 class Pipeline {
     friend Pipeline SetPipeline(const PipelineOptions &values);
 
-   public:
+public:
     Pipeline() = default;
-    Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *,
-             unsigned char *);
+    Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
     std::vector<PipelineOutput> Go(const PipelineInputList &);
 
-   private:
+private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
 
     // next two options are for magnitude filter:
@@ -273,27 +253,8 @@ Pipeline SetPipeline(const PipelineOptions &values);
 
 // TODO: rename. Do something with the output
 void PipelineComparison(const PipelineInputList &expected,
-                        const std::vector<PipelineOutput> &actual, const PipelineOptions &values);
-
-/**
- * Compare expected and actual star identifications.
- * Useful for debugging and benchmarking.
- *
- * The following description is compatible with, but more actionable than, the definitions in the
- * documentation for StarIdComparison. A star-id is *correct* if the centroid is the closest
- * centroid to some expected centroid, and the referenced catalog star is the same one as in the
- * expected star-ids for that centroid. Also permissible is if the centroid is not the closest to
- * any expected centroid, but it has the same star-id as another star closer to the closest expected
- * centroid. All other star-ids are *incorrect* (because they are either identifying false stars, or
- * are incorrect identifications on true stars)
- *
- * The "total" in the result is just the number of input stars.
- */
-StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
-                                // use these to map indices to names for the respective lists of StarIdentifiers
-                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                float centroidThreshold,
-                                const Stars &expectedStars, const Stars &inputStars);
+                        const std::vector<PipelineOutput> &actual,
+                        const PipelineOptions &values);
 
 /**
  * Compare expected and actual star identifications.
@@ -321,8 +282,9 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
 /// Commannd line options when using the `database` command.
 class DatabaseOptions {
-   public:
-#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) type prop = defaultVal;
+public:
+#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
+    type prop = defaultVal;
 #include "database-options.hpp"
 #undef LOST_CLI_OPTION
 };
@@ -334,7 +296,8 @@ void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOp
 
 // TODO:  can we avoid the split?
 void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,
-                            std::vector<uint16_t> &pattStars, std::vector<uint16_t> &catIndices);
+                            const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &catIndices);
 
 /////////////////////
 // INSPECT CATALOG //
@@ -342,6 +305,6 @@ void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const Datab
 
 void InspectCatalog();
 
-}  // namespace lost
+}
 
 #endif

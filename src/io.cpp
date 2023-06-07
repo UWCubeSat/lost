@@ -32,8 +32,7 @@ namespace lost {
 /// Create a PromptedOutputStream which will output to the given file.
 UserSpecifiedOutputStream::UserSpecifiedOutputStream(std::string filePath, bool isBinary) {
     if (isBinary && isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
-        std::cerr << "WARNING: output contains binary contents. Not printed to terminal."
-                  << std::endl;
+        std::cerr << "WARNING: output contains binary contents. Not printed to terminal." << std::endl;
         filePath = "/dev/null";
     }
 
@@ -69,23 +68,18 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
         return result;
     }
 
-    // name == starID?
-    while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d", &raj2000, &dej2000, &name, &weird,
+    while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d",
+                         &raj2000, &dej2000,
+                         &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
-        // TODO: how can magnitudeHigh be < 0
-        // Do we need to store RA and DEC for current year?
-        // I don't think our stable stores these valeus though
-        // Intuitively these shouldn't change much anyway
-
-        if (raj2000 == 0.0 && dej2000 == 0.0) continue;
-
-        result.push_back(CatalogStar(
-            DegToRad(raj2000), DegToRad(dej2000),
-            magnitudeHigh * 100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow), name));
+        result.push_back(CatalogStar(DegToRad(raj2000),
+                                     DegToRad(dej2000),
+                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
+                                     name));
     }
 
     fclose(file);
-    assert(result.size() > 9000);  // basic sanity check
+    assert(result.size() > 9000); // basic sanity check
     return result;
 }
 
@@ -133,24 +127,26 @@ unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
         return NULL;
     }
 
-    width = cairo_image_surface_get_width(cairoSurface);
+    width  = cairo_image_surface_get_width(cairoSurface);
     height = cairo_image_surface_get_height(cairoSurface);
 
-    result = new unsigned char[width * height];
+    result = new unsigned char[width*height];
     cairoImage = (uint32_t *)cairo_image_surface_get_data(cairoSurface);
 
     for (int i = 0; i < height * width; i++) {
         pixel = cairoImage[i];
         // use "luminosity" method of grayscaling
-        result[i] =
-            round((pixel >> 16 & 0xFF) * 0.21 + (pixel >> 8 & 0xFF) * 0.71 + (pixel & 0xFF) * 0.07);
+        result[i] = round(
+            (pixel>>16 &0xFF) *0.21 +
+            (pixel>>8  &0xFF) *0.71 +
+            (pixel     &0xFF) *0.07);
     }
 
     return result;
 }
 
-cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image, const int width,
-                                         const int height) {
+cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
+                                         const int width, const int height) {
     // cairo's 8-bit type isn't BW, it's an alpha channel only, which would look a bit weird lol
     cairo_surface_t *result = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
     uint32_t *resultData = (uint32_t *)cairo_image_surface_get_data(result);
@@ -167,12 +163,9 @@ cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image, const int w
 /**
  * Plot information about an image onto the image using Cairo.
  * Puts a box around each centroid, writes the attitude in the top left, etc.
- * @param red,green,blue The color to use when annotating the image. 0 represents none of that
- * color, 1 represents that color in full.
- * @param alpha The transparency of annotations. 0 is completely transparent, 1 is completely
- * opaque.
- * @param rawStarIndexes If true, print the catalog index. This is in contrast with the default
- * behavior, which is to print the name of the catalog star.
+ * @param red,green,blue The color to use when annotating the image. 0 represents none of that color, 1 represents that color in full.
+ * @param alpha The transparency of annotations. 0 is completely transparent, 1 is completely opaque.
+ * @param rawStarIndexes If true, print the catalog index. This is in contrast with the default behavior, which is to print the name of the catalog star.
  */
 void SurfacePlot(std::string description,
                  cairo_surface_t *cairoSurface,
@@ -204,15 +197,22 @@ void SurfacePlot(std::string description,
         // plot the box around the star
         if (centroid.radiusX > 0.0f) {
             float radiusX = centroid.radiusX;
-            float radiusY = centroid.radiusY > 0.0f ? centroid.radiusY : radiusX;
+            float radiusY = centroid.radiusY > 0.0f ?
+                centroid.radiusY : radiusX;
 
             // Rectangles should be entirely /outside/ the radius of the star, so the star is
             // fully visible.
-            cairo_rectangle(cairoCtx, centroid.position.x - radiusX, centroid.position.y - radiusY,
-                            radiusX * 2, radiusY * 2);
+            cairo_rectangle(cairoCtx,
+                            centroid.position.x - radiusX,
+                            centroid.position.y - radiusY,
+                            radiusX * 2,
+                            radiusY * 2);
             cairo_stroke(cairoCtx);
         } else {
-            cairo_rectangle(cairoCtx, floor(centroid.position.x), floor(centroid.position.y), 1, 1);
+            cairo_rectangle(cairoCtx,
+                            floor(centroid.position.x),
+                            floor(centroid.position.y),
+                            1, 1);
             cairo_fill(cairoCtx);
         }
     }
@@ -226,15 +226,15 @@ void SurfacePlot(std::string description,
             const Star &centroid = stars[starId.starIndex];
             cairo_move_to(cairoCtx,
 
-                          centroid.radiusX > 0.0f ? centroid.position.x + centroid.radiusX + 3
-                                                  : centroid.position.x + 8,
+                          centroid.radiusX > 0.0f
+                          ? centroid.position.x + centroid.radiusX + 3
+                          : centroid.position.x + 8,
 
                           centroid.radiusY > 0.0f
-                              ? centroid.position.y - centroid.radiusY + textHeight
-                              : centroid.position.y + 10);
+                          ? centroid.position.y - centroid.radiusY + textHeight
+                          : centroid.position.y + 10);
 
-            int plotName =
-                rawStarIndexes ? starId.catalogIndex : (*catalog)[starId.catalogIndex].name;
+            int plotName = rawStarIndexes ? starId.catalogIndex : (*catalog)[starId.catalogIndex].name;
             cairo_show_text(cairoCtx, std::to_string(plotName).c_str());
         }
         metadata += std::to_string(starIds->size()) + " identified   ";
@@ -242,9 +242,10 @@ void SurfacePlot(std::string description,
 
     if (attitude != NULL) {
         EulerAngles spherical = attitude->ToSpherical();
-        metadata += "RA: " + std::to_string(RadToDeg(spherical.ra)) + "  " +
-                    "DE: " + std::to_string(RadToDeg(spherical.de)) + "  " +
-                    "Roll: " + std::to_string(RadToDeg(spherical.roll)) + "   ";
+        metadata +=
+            "RA: " + std::to_string(RadToDeg(spherical.ra)) + "  " +
+            "DE: " + std::to_string(RadToDeg(spherical.de)) + "  " +
+            "Roll: " + std::to_string(RadToDeg(spherical.roll)) + "   ";
     }
 
     // plot metadata
@@ -265,14 +266,11 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 /// Add a pair-distance KVector database to the given builder.
-// TODO: make this static?
-void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                                      float minDistance, float maxDistance, long numBins) {
+void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
     // database generation
     long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
-    unsigned char *buffer =
-        builder->AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
+    unsigned char *buffer = builder->AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
     if (buffer == NULL) {
         std::cerr << "No room for another database." << std::endl;
     }
@@ -295,16 +293,14 @@ void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, f
 }
 
 void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                            const DatabaseOptions &values, std::vector<uint16_t> &pattStars,
-                            std::vector<uint16_t> &catIndices) {
+                            const DatabaseOptions &values, const std::vector<uint16_t> &pattStars,
+                            const std::vector<uint16_t> &catIndices) {
     float maxAngle = values.tetraMaxAngle;
     BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
 }
+/// Generate and add databases to the given multidatabase builder according to the command line options in `values`
+void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
 
-/// Generate and add databases to the given multidatabase builder according to the command line
-/// options in `values`
-void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                       const DatabaseOptions &values) {
     if (values.kvector) {
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
@@ -314,6 +310,7 @@ void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
+
 }
 
 /// Print information about the camera in machine and human-readable form.
@@ -330,9 +327,7 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
 
 /**
  * Calculate the focal length, in pixels, based on the given command line options.
- * This function exists because there are two ways to specify how "zoomed-in" the camera is. One way
- * is using just FOV, which is useful when generating false images. Another is a combination of
- * pixel size and focal length, which is useful for physical cameras.
+ * This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras.
  */
 float FocalLengthFromOptions(const PipelineOptions &values) {
     if ((values.pixelSize != -1) ^ (values.focalLength != 0)) {
@@ -340,13 +335,9 @@ float FocalLengthFromOptions(const PipelineOptions &values) {
         exit(1);
     }
 
-    // no surefire way to see if the fov was set on command line, so we just check if it was changed
-    // from default.
+    // no surefire way to see if the fov was set on command line, so we just check if it was changed from default.
     if (values.pixelSize != -1 && values.fov != 20) {
-        std::cerr << "ERROR: Both focal length and FOV were provided. We only need one of the two "
-                     "methods (pixel size + focal length, or fov) to determine fov, please only "
-                     "provide one."
-                  << std::endl;
+        std::cerr << "ERROR: Both focal length and FOV were provided. We only need one of the two methods (pixel size + focal length, or fov) to determine fov, please only provide one." << std::endl;
         exit(1);
     }
 
@@ -385,15 +376,17 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
  * @param cairoSurface A cairo surface from the image file.
  * @todo should rename, not specific to PNG.
  */
-PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera,
-                                   const Catalog &catalog)
+PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
+
     image.image = SurfaceToGrayscaleImage(cairoSurface);
     image.width = cairo_image_surface_get_width(cairoSurface);
     image.height = cairo_image_surface_get_height(cairoSurface);
 }
 
-PngPipelineInput::~PngPipelineInput() { delete[] image.image; }
+PngPipelineInput::~PngPipelineInput() {
+    delete[] image.image;
+}
 
 /// Create a PngPipelineInput using command line options.
 PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
@@ -404,8 +397,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     std::string pngPath = values.png;
 
     cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
-    std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface))
-              << std::endl;
+    std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
     if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
         exit(1);
     }
@@ -415,8 +407,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     float focalLengthPixels = FocalLengthFromOptions(values);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
-    result.push_back(
-        std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
+    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
     cairo_surface_destroy(cairoSurface);
     return result;
 }
@@ -435,9 +426,9 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
 
 /// A star used in simulated image generation. Contains extra data about how to simulate the star.
 class GeneratedStar : public Star {
-   public:
+public:
     GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
-        : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta){};
+        : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
 
     /// the brightness density per time unit at the center of the star. 0.0 is black, 1.0 is white.
     float peakBrightness;
@@ -454,19 +445,12 @@ class GeneratedStar : public Star {
 
 /**
  * Calculates the indefinite integral of brightness density at a point due to a single star.
- * When oversampling is disabled, this is called only at pixel centers. When oversampling is
- * enabled, it's called at multiple points in each pixel and then averaged. If multiple stars are
- * near each other, the brightnesses can just be added then clamped. See
- * https://wiki.huskysat.org/wiki/index.php/Motion_Blur_and_Rolling_Shutter#Motion_Blur_Math to
- * learn how these equations were derived.
- * @param pixel The point to calculate brightness density at. If only calculating per-pixel, should
- * be the center of the pixel. ie, Vec2(10.5,5.5) would be appropriate for the pixel (10,5)
+ * When oversampling is disabled, this is called only at pixel centers. When oversampling is enabled, it's called at multiple points in each pixel and then averaged. If multiple stars are near each other, the brightnesses can just be added then clamped.
+ * See https://wiki.huskysat.org/wiki/index.php/Motion_Blur_and_Rolling_Shutter#Motion_Blur_Math to learn how these equations were derived.
+ * @param pixel The point to calculate brightness density at. If only calculating per-pixel, should be the center of the pixel. ie, Vec2(10.5,5.5) would be appropriate for the pixel (10,5)
  * @param generatedStar the star to calculate brightness based on.
- * @param t Since this function computes the indefinite integral, this is the value it's evaluated
- * at. To calculate the definite integral, which is what you want, call this function twice with
- * different values for the `t` parameter then find the difference.
- * @param stddev The standard deviation of spread of the star. Higher values make stars more spread
- * out. See command line documentation.
+ * @param t Since this function computes the indefinite integral, this is the value it's evaluated at. To calculate the definite integral, which is what you want, call this function twice with different values for the `t` parameter then find the difference.
+ * @param stddev The standard deviation of spread of the star. Higher values make stars more spread out. See command line documentation.
  * @return Indefinite integral of brightness density.
  */
 static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
@@ -474,12 +458,11 @@ static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar
     const Vec2 &p0 = generatedStar.position;
     const Vec2 &delta = generatedStar.delta;
     const Vec2 d0 = p0 - pixel;
-    return generatedStar.peakBrightness * stddev * sqrt(M_PI) / (sqrt(2) * delta.Magnitude()) *
-           exp(pow(d0.x * delta.x + d0.y * delta.y, 2) /
-                   (2 * stddev * stddev * delta.MagnitudeSq()) -
-               d0.MagnitudeSq() / (2 * stddev * stddev)) *
-           erf((t * delta.MagnitudeSq() + d0.x * delta.x + d0.y * delta.y) /
-               (stddev * sqrt(2) * delta.Magnitude()));
+    return generatedStar.peakBrightness
+        * stddev*sqrt(M_PI) / (sqrt(2)*delta.Magnitude())
+        * exp(pow(d0.x*delta.x + d0.y*delta.y, 2) / (2*stddev*stddev*delta.MagnitudeSq())
+              - d0.MagnitudeSq() / (2*stddev*stddev))
+        * erf((t*delta.MagnitudeSq() + d0.x*delta.x + d0.y*delta.y) / (stddev*sqrt(2)*delta.Magnitude()));
 }
 
 /// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
@@ -510,8 +493,7 @@ const int kMaxBrightness = 255;
 
 /**
  * Create a generated pipeline input.
- * The parameters correspond directly to command line options. See the command line documentation
- * for more details. This constructor performs the actual image generation.
+ * The parameters correspond directly to command line options. See the command line documentation for more details. This constructor performs the actual image generation.
  */
 GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                Attitude attitude,
@@ -525,7 +507,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                float darkCurrent,
                                                float readNoiseStdDev,
                                                Attitude motionBlurDirection, // applied on top of the attitude
-                                               float exposureTime, // zero for no motion blur
+                                               float exposureTime,
                                                float readoutTime, // zero for no rolling shutter
                                                bool shotNoise,
                                                int oversampling,
@@ -535,6 +517,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int cutoffMag,
                                                float perturbationStddev)
     : camera(camera), attitude(attitude), catalog(catalog) {
+
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
     assert(perturbationStddev >= 0.0);
 
@@ -544,9 +527,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
     assert(oversampling >= 1);
     int oversamplingPerAxis = ceil(sqrt(oversampling));
-    if (oversamplingPerAxis * oversamplingPerAxis != oversampling) {
+    if (oversamplingPerAxis*oversamplingPerAxis != oversampling) {
         std::cerr << "WARNING: oversampling was not a perfect square. Rounding up to "
-                  << oversamplingPerAxis * oversamplingPerAxis << "." << std::endl;
+                  << oversamplingPerAxis*oversamplingPerAxis << "." << std::endl;
     }
     assert(exposureTime > 0);
     bool motionBlurEnabled = abs(motionBlurDirection.GetQuaternion().Angle()) > 0.001;
@@ -554,7 +537,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     // attitude at the middle of exposure time
     Quaternion currentAttitude = attitude.GetQuaternion();
     // attitude 1 time unit after middle of exposure
-    Quaternion futureAttitude = motionBlurDirectionQ * currentAttitude;
+    Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
     std::vector<GeneratedStar> generatedStars;
 
     // a star with 1 photon has peak density 1/(2pi sigma^2), because 2d gaussian formula. Then just
@@ -567,8 +550,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     Catalog catalogWithFalse = catalog;
 
     std::uniform_real_distribution<float> uniformDistribution(0.0, 1.0);
-    std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude,
-                                                             falseStarMinMagnitude);
+    std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
     for (int i = 0; i < numFalseStars; i++) {
         float ra = uniformDistribution(*rng) * 2*M_PI;
         // to be uniform around sphere. Borel-Kolmogorov paradox is calling
@@ -592,7 +574,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             Vec3 futureSpatial = futureAttitude.Rotate(catalogWithFalse[i].spatial);
             Vec2 delta = camera.SpatialToCamera(futureSpatial) - camCoords;
             if (!motionBlurEnabled) {
-                delta = {0, 0};  // avoid floating point funny business
+                delta = {0, 0}; // avoid floating point funny business
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
             float peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
@@ -651,21 +633,16 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
     for (const GeneratedStar &star : generatedStars) {
         // delta will be exactly (0,0) when motion blur disabled
-        Vec2 earliestPosition =
-            star.position - star.delta * (exposureTime / 2.0 + readoutTime / 2.0);
-        Vec2 latestPosition = star.position + star.delta * (exposureTime / 2.0 + readoutTime / 2.0);
-        int xMin = std::max(
-            0, (int)std::min(earliestPosition.x - star.radiusX, latestPosition.x - star.radiusX));
-        int xMax = std::min(image.width - 1, (int)std::max(earliestPosition.x + star.radiusX,
-                                                           latestPosition.x + star.radiusX));
-        int yMin = std::max(
-            0, (int)std::min(earliestPosition.y - star.radiusX, latestPosition.y - star.radiusX));
-        int yMax = std::min(image.height - 1, (int)std::max(earliestPosition.y + star.radiusX,
-                                                            latestPosition.y + star.radiusX));
+        Vec2 earliestPosition = star.position - star.delta*(exposureTime/2.0 + readoutTime/2.0);
+        Vec2 latestPosition = star.position + star.delta*(exposureTime/2.0 + readoutTime/2.0);
+        int xMin = std::max(0, (int)std::min(earliestPosition.x - star.radiusX, latestPosition.x - star.radiusX));
+        int xMax = std::min(image.width-1, (int)std::max(earliestPosition.x + star.radiusX, latestPosition.x + star.radiusX));
+        int yMin = std::max(0, (int)std::min(earliestPosition.y - star.radiusX, latestPosition.y - star.radiusX));
+        int yMax = std::min(image.height-1, (int)std::max(earliestPosition.y + star.radiusX, latestPosition.y + star.radiusX));
 
         // peak brightness is measured in photons per time unit per pixel, so if oversampling, we
         // need to convert units to photons per time unit per sample
-        float oversamplingBrightnessFactor = oversamplingPerAxis * oversamplingPerAxis;
+        float oversamplingBrightnessFactor = oversamplingPerAxis*oversamplingPerAxis;
 
         // the star.x and star.y refer to the pixel whose top left corner the star should appear at
         // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
@@ -675,15 +652,15 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             for (int yPixel = yMin; yPixel <= yMax; yPixel++) {
                 // offset of beginning & end of readout compared to beginning & end of readout for
                 // center row
-                float readoutOffset = readoutTime * (yPixel - image.height / 2.0) / image.height;
-                float tStart = -exposureTime / 2.0 + readoutOffset;
-                float tEnd = exposureTime / 2.0 + readoutOffset;
+                float readoutOffset = readoutTime * (yPixel - image.height/2.0) / image.height;
+                float tStart = -exposureTime/2.0 + readoutOffset;
+                float tEnd = exposureTime/2.0 + readoutOffset;
 
                 // loop through all samples in the current pixel
                 for (int xSample = 0; xSample < oversamplingPerAxis; xSample++) {
                     for (int ySample = 0; ySample < oversamplingPerAxis; ySample++) {
-                        float x = xPixel + (xSample + 0.5) / oversamplingPerAxis;
-                        float y = yPixel + (ySample + 0.5) / oversamplingPerAxis;
+                        float x = xPixel + (xSample+0.5)/oversamplingPerAxis;
+                        float y = yPixel + (ySample+0.5)/oversamplingPerAxis;
 
                         float curPhotons;
                         if (motionBlurEnabled) {
@@ -698,7 +675,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
                         assert(0.0 <= curPhotons);
 
-                        photonsBuffer[xPixel + yPixel * image.width] += curPhotons;
+                        photonsBuffer[xPixel + yPixel*image.width] += curPhotons;
                     }
                 }
             }
@@ -708,7 +685,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     std::normal_distribution<float> readNoiseDist(0.0, readNoiseStdDev);
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
-    imageData = std::vector<unsigned char>(image.width * image.height);
+    imageData = std::vector<unsigned char>(image.width*image.height);
     image.image = imageData.data();
     for (int i = 0; i < image.width * image.height; i++) {
         float curBrightness = 0;
@@ -722,16 +699,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
         if (shotNoise) {
-            // with GNU libstdc++, it keeps sampling from the distribution until it's within the
-            // min-max range. This is problematic if the mean is far above the max long value,
-            // because then it might have to sample many many times (and furthermore, the results
-            // won't be useful anyway)
+            // with GNU libstdc++, it keeps sampling from the distribution until it's within the min-max
+            // range. This is problematic if the mean is far above the max long value, because then it
+            // might have to sample many many times (and furthermore, the results won't be useful
+            // anyway)
             float photons = photonsBuffer[i];
-            if (photons > (float)LONG_MAX - 3.0 * sqrt(LONG_MAX)) {
-                std::cout << "ERROR: One of the pixels had too many photons. Generated image would "
-                             "not be "
-                             "physically accurate, exiting."
-                          << std::endl;
+            if (photons > (float)LONG_MAX - 3.0*sqrt(LONG_MAX)) {
+                std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
             std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
@@ -743,7 +717,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
         // std::clamp not introduced until C++17, so we avoid it.
         float clampedBrightness = std::max(std::min(curBrightness, (float)1.0), (float)0.0);
-        imageData[i] = floor(clampedBrightness * kMaxBrightness);  // TODO: off-by-one, 256?
+        imageData[i] = floor(clampedBrightness * kMaxBrightness); // TODO: off-by-one, 256?
     }
 }
 
@@ -846,6 +820,7 @@ typedef PipelineInputList (*PipelineInputFactory)();
 
 /// Come up with a list of pipeline inputs based on command line options.
 PipelineInputList GetPipelineInput(const PipelineOptions &values) {
+
     if (values.png != "") {
         return GetPngPipelineInput(values);
     } else {
@@ -855,11 +830,10 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values) {
 
 /**
  * Construct a pipeline using the given algorithms, some of which may be null.
- * @param database A pointer to the raw bytes of the database the star ID algorithm expects. If the
- * database is NULL or not the type of database the star ID algorithm expects (almost always a
- * multi-database), you'll get an error trying to identify stars later.
+ * @param database A pointer to the raw bytes of the database the star ID algorithm expects. If the database is NULL or not the type of database the star ID algorithm expects (almost always a multi-database), you'll get an error trying to identify stars later.
  */
-Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm, StarIdAlgorithm *starIdAlgorithm,
+Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
+                   StarIdAlgorithm *starIdAlgorithm,
                    AttitudeEstimationAlgorithm *attitudeEstimationAlgorithm,
                    unsigned char *database)
     : Pipeline() {
@@ -870,13 +844,13 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm, StarIdAlgorithm *starId
         this->starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(starIdAlgorithm);
     }
     if (attitudeEstimationAlgorithm) {
-        this->attitudeEstimationAlgorithm =
-            std::unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
+        this->attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
     }
     if (database) {
         this->database = std::unique_ptr<unsigned char[]>(database);
     }
 }
+
 
 /// Create a pipeline from command line options.
 Pipeline SetPipeline(const PipelineOptions &values) {
@@ -888,11 +862,9 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
-            new DummyCentroidAlgorithm(values.centroidDummyNumStars));
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.centroidDummyNumStars));
     } else if (values.centroidAlgo == "cog") {
-        result.centroidAlgorithm =
-            std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "iwcog") {
         result.centroidAlgorithm =
             std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
@@ -930,8 +902,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     if (values.idAlgo == "dummy") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
     } else if (values.idAlgo == "gv") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
-            new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(
             DegToRad(values.angularTolerance), values.estimatedNumFalseStars,
@@ -944,14 +915,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     }
 
     if (values.attitudeAlgo == "dqm") {
-        result.attitudeEstimationAlgorithm =
-            std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
     } else if (values.attitudeAlgo == "triad") {
-        result.attitudeEstimationAlgorithm =
-            std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
     } else if (values.attitudeAlgo == "quest") {
-        result.attitudeEstimationAlgorithm =
-            std::unique_ptr<AttitudeEstimationAlgorithm>(new QuestAlgorithm());
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new QuestAlgorithm());
     } else if (values.attitudeAlgo != "") {
         std::cout << "Illegal attitude algorithm." << std::endl;
         exit(1);
@@ -962,14 +930,8 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
 /**
  * Run all stages of a pipeline. This is the "main" method for pipelines.
- * In space (or when using an image file as input), the PipelineInput will contain only an
- * InputImage. In this case, `Go` runs each star tracking algorithm in turn, passing the result of
- * each step into the next one. When running on a generated image (or any pipeline input where
- * methods other than InputImage are available), or using a Pipeline where some algorithms are not
- * set, the behavior is more nuanced. Each algorithm will be run on the return value of the
- * corresponding input method from the PipelineInput object, unless an earlier algorithm in the
- * Pipeline returned a result, in which case that intermediate value is used instead of the value
- * from the PipelineInput.
+ * In space (or when using an image file as input), the PipelineInput will contain only an InputImage. In this case, `Go` runs each star tracking algorithm in turn, passing the result of each step into the next one.
+ * When running on a generated image (or any pipeline input where methods other than InputImage are available), or using a Pipeline where some algorithms are not set, the behavior is more nuanced. Each algorithm will be run on the return value of the corresponding input method from the PipelineInput object, unless an earlier algorithm in the Pipeline returned a result, in which case that intermediate value is used instead of the value from the PipelineInput.
  */
 PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // Start executing the pipeline at the first stage that has both input and an algorithm. From
@@ -986,12 +948,9 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         MultiDatabase multiDatabase(database.get());
         const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
         if (catalogBuffer != NULL) {
-            result.catalog = DeserializeCatalog(
-                multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+            result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
         } else {
-            std::cerr << "WARNING: That database does not include a catalog. Proceeding with the "
-                         "full catalog."
-                      << std::endl;
+            std::cerr << "WARNING: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
             result.catalog = input.GetCatalog();
         }
     } else {
@@ -1037,8 +996,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         inputStarIds = NULL;
         result.starIds = NULL;
     } else if (centroidAlgorithm) {
-        std::cerr << "ERROR: Centroid algorithm specified, but no input image to run it on."
-                  << std::endl;
+        std::cerr << "ERROR: Centroid algorithm specified, but no input image to run it on." << std::endl;
         exit(1);
     }
 
@@ -1054,9 +1012,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         inputStarIds = result.starIds.get();
     } else if (starIdAlgorithm) {
-        std::cerr << "ERROR: Star ID algorithm specified but cannot run because database, "
-                     "centroids, or camera are missing."
-                  << std::endl;
+        std::cerr << "ERROR: Star ID algorithm specified but cannot run because database, centroids, or camera are missing." << std::endl;
         exit(1);
     }
 
@@ -1070,11 +1026,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.attitudeEstimationTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
     } else if (attitudeEstimationAlgorithm) {
-        std::cerr << "ERROR: Attitude estimation algorithm set, but either star IDs or camera are "
-                     "missing. One reason this can happen: Setting a centroid algorithm and "
-                     "attitude algorithm, but no star-id algorithm -- that can't work because the "
-                     "input star-ids won't properly correspond to the output centroids!"
-                  << std::endl;
+        std::cerr << "ERROR: Attitude estimation algorithm set, but either star IDs or camera are missing. One reason this can happen: Setting a centroid algorithm and attitude algorithm, but no star-id algorithm -- that can't work because the input star-ids won't properly correspond to the output centroids!" << std::endl;
         exit(1);
     }
 
@@ -1084,6 +1036,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 /// Convenience function to run the main `Pipeline::Go` function on each input
 std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
     std::vector<PipelineOutput> result;
+
 
     for (const std::unique_ptr<PipelineInput> &input : inputs) {
         result.push_back(Go(*input));
@@ -1152,8 +1105,7 @@ static std::multimap<int, int> FindClosestCentroids(float threshold,
 /**
  * Compare expected and actual centroids.
  * Useful for debugging and benchmarking.
- * @param threshold The maximum number of pixels apart two centroids can be to be considered the
- * same.
+ * @param threshold The maximum number of pixels apart two centroids can be to be considered the same.
  */
 CentroidComparison CentroidsCompare(float threshold,
                                     const Stars &expected,
@@ -1281,8 +1233,10 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // PIPELINE OUTPUT //
 /////////////////////
 
-typedef void (*PipelineComparator)(std::ostream &os, const PipelineInputList &,
-                                   const std::vector<PipelineOutput> &, const PipelineOptions &);
+typedef void (*PipelineComparator)(std::ostream &os,
+                                   const PipelineInputList &,
+                                   const std::vector<PipelineOutput> &,
+                                   const PipelineOptions &);
 
 /// Plotter suitable for `cairo_surface_write_to_png_stream` which simply writes to an std::ostream
 static cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, unsigned int length) {
@@ -1351,8 +1305,9 @@ static void PipelineComparatorCentroids(std::ostream &os,
 
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
-        comparisons.push_back(
-            CentroidsCompare(threshold, *(expected[i]->ExpectedStars()), *(actual[i].stars)));
+        comparisons.push_back(CentroidsCompare(threshold,
+                                               *(expected[i]->ExpectedStars()),
+                                               *(actual[i].stars)));
     }
 
     CentroidComparison result = CentroidComparisonsCombine(comparisons);
@@ -1716,9 +1671,8 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
 //     const Camera &camera = *expected[0]->InputCamera();
 //     const Stars &stars = *actual[0].stars;
 
-//     assert(index1 >= 0 && index2 >= 0 && index1 < (int)stars.size() && index2 <
-//     (int)stars.size()); os << "pair_distance " <<
-//     Angle(camera.CameraToSpatial(stars[index1].position),
+//     assert(index1 >= 0 && index2 >= 0 && index1 < (int)stars.size() && index2 < (int)stars.size());
+//     os << "pair_distance " << Angle(camera.CameraToSpatial(stars[index1].position),
 //                                     camera.CameraToSpatial(stars[index2].position))
 //        << std::endl;
 // }
@@ -1766,12 +1720,11 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
 
 /**
  * Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline.
- * Uses the command line options in `values` to determine which analyses to run. Examples include
- * plotting an annotated output image to a png file, comparing the actual and expected centroids,
- * etc
+ * Uses the command line options in `values` to determine which analyses to run. Examples include plotting an annotated output image to a png file, comparing the actual and expected centroids, etc
  */
 void PipelineComparison(const PipelineInputList &expected,
-                        const std::vector<PipelineOutput> &actual, const PipelineOptions &values) {
+                        const std::vector<PipelineOutput> &actual,
+                        const PipelineOptions &values) {
     if (actual.size() == 0) {
         std::cerr << "ERROR: No output! Did you specify any input images? Try --png or --generate." << std::endl;
         exit(1);
@@ -1781,31 +1734,26 @@ void PipelineComparison(const PipelineInputList &expected,
 
     // TODO: Remove the asserts and print out more reasonable error messages.
 
-#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary)       \
-    do {                                                                              \
-        if (precondition) {                                                           \
-            UserSpecifiedOutputStream pos(path, isBinary);                            \
-            comparator(pos.Stream(), expected, actual, values);                       \
-        } else {                                                                      \
+#define LOST_PIPELINE_COMPARE(precondition, errmsg, comparator, path, isBinary) do { \
+        if (precondition) {                                             \
+            UserSpecifiedOutputStream pos(path, isBinary);              \
+            comparator(pos.Stream(), expected, actual, values);         \
+        } else {                                                        \
             std::cerr << "ERROR: Comparator not applicable: " << errmsg << std::endl; \
-            exit(1);                                                                  \
-        }                                                                             \
+            exit(1);                                                    \
+        }                                                               \
     } while (0)
 
     if (values.plotRawInput != "") {
         LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1,
-                              "--plot-raw-input requires exactly 1 input image, but " +
-                                  std::to_string(expected.size()) + " many were provided.",
+                              "--plot-raw-input requires exactly 1 input image, but " + std::to_string(expected.size()) + " many were provided.",
                               PipelineComparatorPlotRawInput, values.plotRawInput, true);
     }
 
     if (values.plotInput != "") {
-        LOST_PIPELINE_COMPARE(
-            expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars(),
-            "--plot-input requires exactly 1 input image, and for centroids to be available on "
-            "that input image. " +
-                std::to_string(expected.size()) + " many input images were provided.",
-            PipelineComparatorPlotInput, values.plotInput, true);
+        LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->InputStars(),
+                              "--plot-input requires exactly 1 input image, and for centroids to be available on that input image. " + std::to_string(expected.size()) + " many input images were provided.",
+                              PipelineComparatorPlotInput, values.plotInput, true);
     }
     if (values.plotExpected != "") {
         LOST_PIPELINE_COMPARE(expected[0]->InputImage() && expected.size() == 1 && expected[0]->ExpectedStars(),
@@ -1814,10 +1762,7 @@ void PipelineComparison(const PipelineInputList &expected,
     }
     if (values.plotOutput != "") {
         LOST_PIPELINE_COMPARE(actual.size() == 1 && (actual[0].stars || actual[0].starIds),
-                              "--plot-output requires exactly 1 output image, and for either "
-                              "centroids or star IDs to be available on that output image. " +
-                                  std::to_string(actual.size()) +
-                                  " many output images were provided.",
+                              "--plot-output requires exactly 1 output image, and for either centroids or star IDs to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPlotOutput, values.plotOutput, true);
     }
     if (values.printExpectedCentroids != "") {
@@ -1841,12 +1786,9 @@ void PipelineComparison(const PipelineInputList &expected,
                               PipelineComparatorPlotCentroidIndices, values.plotCentroidIndices, true);
     }
     if (values.compareCentroids != "") {
-        LOST_PIPELINE_COMPARE(
-            actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold,
-            "--compare-centroids requires at least 1 output image, and for expected centroids to "
-            "be available on the input image. " +
-                std::to_string(actual.size()) + " many output images were provided.",
-            PipelineComparatorCentroids, values.compareCentroids, false);
+        LOST_PIPELINE_COMPARE(actual[0].stars && expected[0]->ExpectedStars() && values.centroidCompareThreshold,
+                              "--compare-centroids requires at least 1 output image, and for expected centroids to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
+                              PipelineComparatorCentroids, values.compareCentroids, false);
     }
     if (values.compareStarIds != "") {
         LOST_PIPELINE_COMPARE(expected[0]->ExpectedStarIds() && actual[0].starIds && expected[0]->ExpectedStars(),
@@ -1855,10 +1797,7 @@ void PipelineComparison(const PipelineInputList &expected,
     }
     if (values.printAttitude != "") {
         LOST_PIPELINE_COMPARE(actual[0].attitude && actual.size() == 1,
-                              "--print-attitude requires exactly 1 output image, and for attitude "
-                              "to be available on that output image. " +
-                                  std::to_string(actual.size()) +
-                                  " many output images were provided.",
+                              "--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPrintAttitude, values.printAttitude, false);
     }
     if (values.printExpectedAttitude != "") {
@@ -1867,12 +1806,8 @@ void PipelineComparison(const PipelineInputList &expected,
                               PipelineComparatorPrintExpectedAttitude, values.printExpectedAttitude, false);
     }
     if (values.compareAttitudes != "") {
-        LOST_PIPELINE_COMPARE(actual[0].attitude && expected[0]->ExpectedAttitude() &&
-                                  values.attitudeCompareThreshold,
-                              "--compare-attitudes requires at least 1 output image, and for "
-                              "expected attitude to be available on the input image. " +
-                                  std::to_string(actual.size()) +
-                                  " many output images were provided.",
+        LOST_PIPELINE_COMPARE(actual[0].attitude && expected[0]->ExpectedAttitude() && values.attitudeCompareThreshold,
+                              "--compare-attitudes requires at least 1 output image, and for expected attitude to be available on the input image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorAttitude, values.compareAttitudes, false);
     }
     if (values.printSpeed != "") {
@@ -1940,13 +1875,12 @@ void PipelineComparison(const PipelineInputList &expected,
 //     int raFormatDeg = sscanf(raStr.c_str(), "%f", &raDeg);
 
 //     if (raFormatTime == 3) {
-//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds *
-//         2*M_PI/24/60/60);
+//         raRadians = (raHours * 2*M_PI/24) + (raMinutes * 2*M_PI/24/60) + (raSeconds * 2*M_PI/24/60/60);
 //     } else if (raFormatDeg == 1) {
 //         raRadians = DegToRad(raFormatDeg);
 //     } else {
-//         std::cerr << "Invalid right ascension format. Do \"09h 38m 29.8754s\" or a number of
-//         degrees." << std::endl; exit(1);
+//         std::cerr << "Invalid right ascension format. Do \"09h 38m 29.8754s\" or a number of degrees." << std::endl;
+//         exit(1);
 //     }
 
 //     std::string deStr = PromptLine("Declination");
@@ -1956,8 +1890,7 @@ void PipelineComparison(const PipelineInputList &expected,
 //     int deDegPart, deMinPart;
 //     float deSecPart;
 //     char dummy[8];
-//     int deFormatParts = sscanf(deStr.c_str(), "%d%s %d%s %f%s", &deDegPart, dummy, &deMinPart,
-//     dummy, &deSecPart, dummy);
+//     int deFormatParts = sscanf(deStr.c_str(), "%d%s %d%s %f%s", &deDegPart, dummy, &deMinPart, dummy, &deSecPart, dummy);
 
 //     float deDeg;
 //     int deFormatDeg = sscanf(deStr.c_str(), "%f", &deDeg);
@@ -2000,12 +1933,11 @@ void PipelineComparison(const PipelineInputList &expected,
 // void InspectCatalog() {
 //     InteractiveChoice<CatalogInspector> inspectorChoice;
 //     inspectorChoice.Register("pair_distance", "pair distance angle", InspectPairDistance);
-//     inspectorChoice.Register("pyramid_distances", "all pair distances in pyramid",
-//     InspectPyramidDistances); inspectorChoice.Register("triple_angle", "inner angle of a
-//     triangle", InspectTripleAngle); inspectorChoice.Register("find_star", "find a star name based
-//     on ra/de", InspectFindStar); inspectorChoice.Register("print_star", "print coordinates of a
-//     star", InspectPrintStar);
+//     inspectorChoice.Register("pyramid_distances", "all pair distances in pyramid", InspectPyramidDistances);
+//     inspectorChoice.Register("triple_angle", "inner angle of a triangle", InspectTripleAngle);
+//     inspectorChoice.Register("find_star", "find a star name based on ra/de", InspectFindStar);
+//     inspectorChoice.Register("print_star", "print coordinates of a star", InspectPrintStar);
 //     (*inspectorChoice.Prompt("Inspect the catalog"))(CatalogRead());
 // }
 
-}  // namespace lost
+} // namespace lost
