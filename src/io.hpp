@@ -192,9 +192,9 @@ struct PipelineOutput {
 
     /// How many nanoseconds the centroiding stage of the pipeline took. Similarly for the other
     /// fields. If negative, the centroiding stage was not run.
-    long centroidingTimeNs = -1;
-    long starIdTimeNs = -1;
-    long attitudeEstimationTimeNs = -1;
+    long long centroidingTimeNs = -1;
+    long long starIdTimeNs = -1;
+    long long attitudeEstimationTimeNs = -1;
 
     /**
      * @brief The catalog that the indices in starIds refer to
