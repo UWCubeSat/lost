@@ -1593,13 +1593,13 @@ static void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_error_rate " << fractionIncorrect << std::endl;
 }
 
-static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long> &times) {
+static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long long> &times) {
     assert(times.size() > 0);
 
     // print average, min, max, and 95% max
-    long sum = 0;
-    long min = LONG_MAX;
-    long max = 0;
+    long long sum = 0;
+    long long min = LONG_MAX;
+    long long max = 0;
     for (int i = 0; i < (int)times.size(); i++) {
         assert(times[i] > 0);
         sum += times[i];
@@ -1607,14 +1607,14 @@ static void PrintTimeStats(std::ostream &os, const std::string &prefix, const st
         max = std::max(max, times[i]);
     }
     long average = sum / times.size();
-    std::vector<long> sortedTimes = times;
+    std::vector<long long> sortedTimes = times;
     std::sort(sortedTimes.begin(), sortedTimes.end());
     // what really is the 95th percentile? Being conservative, we want to pick a value that at least
     // 95% of the times are less than. This means: (1) finding the number of times, (2) Finding
     // Math.ceil(0.95 * numTimes), and (3) subtracting 1 to get the index.
     int ninetyFiveIndex = (int)std::ceil(0.95 * times.size()) - 1;
     assert(ninetyFiveIndex >= 0);
-    long ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];
+    long long ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];
 
     os << prefix << "_average_ns " << average << std::endl;
     os << prefix << "_min_ns " << min << std::endl;
@@ -1627,10 +1627,10 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
                                     const PipelineInputList &,
                                     const std::vector<PipelineOutput> &actual,
                                     const PipelineOptions &) {
-    std::vector<long> centroidingTimes;
-    std::vector<long> starIdTimes;
-    std::vector<long> attitudeTimes;
-    std::vector<long> totalTimes;
+    std::vector<long long> centroidingTimes;
+    std::vector<long long> starIdTimes;
+    std::vector<long long> attitudeTimes;
+    std::vector<long long> totalTimes;
     for (int i = 0; i < (int)actual.size(); i++) {
         long totalTime = 0;
         if (actual[i].centroidingTimeNs > 0) {
