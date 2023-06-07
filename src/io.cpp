@@ -1632,7 +1632,7 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
     std::vector<long long> attitudeTimes;
     std::vector<long long> totalTimes;
     for (int i = 0; i < (int)actual.size(); i++) {
-        long totalTime = 0;
+        long long totalTime = 0;
         if (actual[i].centroidingTimeNs > 0) {
             centroidingTimes.push_back(actual[i].centroidingTimeNs);
             totalTime += actual[i].centroidingTimeNs;
