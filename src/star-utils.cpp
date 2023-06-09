@@ -67,14 +67,14 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
  * @param inclName Whether to include the (numerical) name of the star.
  * @param buffer[out] Where the serialized star is stored.
  */
-void SerializeCatalogStar(std::vector<unsigned char> *buffer, const CatalogStar &catalogStar, bool inclMagnitude, bool inclName) {
-    SerializeVec3(buffer, catalogStar.spatial);
+void SerializeCatalogStar(SerializeContext *ser, const CatalogStar &catalogStar, bool inclMagnitude, bool inclName) {
+    SerializeVec3(ser, catalogStar.spatial);
     if (inclMagnitude) {
-        SerializePrimitive<float>(buffer, catalogStar.magnitude);
+        SerializePrimitive<float>(ser, catalogStar.magnitude);
     }
     if (inclName) {
         // TODO: double check that bools aren't some special bitwise thing in C++
-        SerializePrimitive<int16_t>(buffer, catalogStar.name);
+        SerializePrimitive<int16_t>(ser, catalogStar.name);
     }
 }
 
@@ -104,15 +104,15 @@ CatalogStar DeserializeCatalogStar(DeserializeContext *des, bool inclMagnitude, 
  * Use SerializeLengthCatalog() to determine how many bytes to allocate in `buffer`
  * @param inclMagnitude,inclName See SerializeCatalogStar()
  */
-void SerializeCatalog(std::vector<unsigned char> *buffer, const Catalog &catalog, bool inclMagnitude, bool inclName) {
-    SerializePrimitive<int16_t>(buffer, catalog.size());
+void SerializeCatalog(SerializeContext *ser, const Catalog &catalog, bool inclMagnitude, bool inclName) {
+    SerializePrimitive<int16_t>(ser, catalog.size());
 
     // flags
     int8_t flags = (inclMagnitude) | (inclName << 1);
-    SerializePrimitive<int8_t>(buffer, flags);
+    SerializePrimitive<int8_t>(ser, flags);
 
     for (const CatalogStar &catalogStar : catalog) {
-        SerializeCatalogStar(buffer, catalogStar, inclMagnitude, inclName);
+        SerializeCatalogStar(ser, catalogStar, inclMagnitude, inclName);
     }
 }
 

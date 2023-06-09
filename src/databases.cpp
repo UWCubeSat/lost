@@ -57,7 +57,7 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  * @param numBins the number of "bins" the KVector should use. A higher number makes query results "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min) divided by the "width" of the typical query.
  * @param buffer[out] index is written here.
  */
-void SerializeKVectorIndex(std::vector<unsigned char> *buffer, const std::vector<float> &values, float min, float max, long numBins) {
+void SerializeKVectorIndex(SerializeContext *ser, const std::vector<float> &values, float min, float max, long numBins) {
     std::vector<int32_t> kVector(numBins+1); // We store sums before and after each bin
     float binWidth = (max - min) / numBins;
 
@@ -91,14 +91,14 @@ void SerializeKVectorIndex(std::vector<unsigned char> *buffer, const std::vector
     }
 
     // metadata fields
-    SerializePrimitive<int32_t>(buffer, values.size());
-    SerializePrimitive<float>(buffer, min);
-    SerializePrimitive<float>(buffer, max);
-    SerializePrimitive<int32_t>(buffer, numBins);
+    SerializePrimitive<int32_t>(ser, values.size());
+    SerializePrimitive<float>(ser, min);
+    SerializePrimitive<float>(ser, max);
+    SerializePrimitive<int32_t>(ser, numBins);
 
     // kvector index field
     for (const int32_t &bin : kVector) {
-        SerializePrimitive<int32_t>(buffer, bin);
+        SerializePrimitive<int32_t>(ser, bin);
     }
 }
 
@@ -191,7 +191,7 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
  * Serialize a pair-distance KVector into buffer.
  * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
-void SerializePairDistanceKVector(std::vector<unsigned char> *buffer, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
+void SerializePairDistanceKVector(SerializeContext *ser, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
 
@@ -204,12 +204,12 @@ void SerializePairDistanceKVector(std::vector<unsigned char> *buffer, const Cata
     }
 
     // index field
-    SerializeKVectorIndex(buffer, distances, minDistance, maxDistance, numBins);
+    SerializeKVectorIndex(ser, distances, minDistance, maxDistance, numBins);
 
     // bulk pairs field
     for (const KVectorPair &pair : pairs) {
-        SerializePrimitive<int16_t>(buffer, pair.index1);
-        SerializePrimitive<int16_t>(buffer, pair.index2);
+        SerializePrimitive<int16_t>(ser, pair.index1);
+        SerializePrimitive<int16_t>(ser, pair.index2);
     }
 }
 
@@ -330,14 +330,15 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
     assert(false);
 }
 
-void SerializeMultiDatabase(std::vector<unsigned char> *buffer, const MultiDatabaseDescriptor &dbs) {
+void SerializeMultiDatabase(SerializeContext *ser,
+                            const MultiDatabaseDescriptor &dbs) {
     for (const MultiDatabaseEntry &multiDbEntry : dbs) {
-        SerializePrimitive<int32_t>(buffer, multiDbEntry.magicValue);
-        SerializePrimitive<uint32_t>(buffer, multiDbEntry.bytes.size());
-        SerializePadding<uint64_t>(buffer);
-        std::copy(multiDbEntry.bytes.cbegin(), multiDbEntry.bytes.cend(), std::back_inserter(*buffer));
+        SerializePrimitive<int32_t>(ser, multiDbEntry.magicValue);
+        SerializePrimitive<uint32_t>(ser, multiDbEntry.bytes.size());
+        SerializePadding<uint64_t>(ser);
+        std::copy(multiDbEntry.bytes.cbegin(), multiDbEntry.bytes.cend(), std::back_inserter(ser->buffer));
     }
-    SerializePrimitive<int32_t>(buffer, 0); // caboose
+    SerializePrimitive<int32_t>(ser, 0); // caboose
 }
 
 }

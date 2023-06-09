@@ -12,8 +12,9 @@ using namespace lost; // NOLINT
 TEST_CASE("Kvector full database stuff", "[kvector]") {
     const Catalog &catalog = CatalogRead();
     std::vector<unsigned char> dbBytes;
-    SerializePairDistanceKVector(&dbBytes, catalog, DegToRad(1.0), DegToRad(2.0), 100);
-    DeserializeContext des(dbBytes.data());
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, catalog, DegToRad(1.0), DegToRad(2.0), 100);
+    DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);
 
     SECTION("basic consistency checks") {
@@ -52,9 +53,9 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
 
 TEST_CASE("Tighter tolerance test", "[kvector]") {
     const Catalog &catalog = CatalogRead();
-    std::vector<unsigned char> dbBytes;
-    SerializePairDistanceKVector(&dbBytes, catalog, DegToRad(0.5), DegToRad(5.0), 1000);
-    DeserializeContext des(dbBytes.data());
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, catalog, DegToRad(0.5), DegToRad(5.0), 1000);
+    DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);
     // radius we'll request
     float delta = 0.0001;
@@ -106,9 +107,9 @@ TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
         CatalogStar(DegToRad(4), DegToRad(7), 2.0, 43),
         CatalogStar(DegToRad(2), DegToRad(6), 4.0, 44),
     };
-    std::vector<unsigned char> dbBytes;
-    SerializePairDistanceKVector(&dbBytes, tripleCatalog, DegToRad(0.5), DegToRad(20.0), 1000);
-    DeserializeContext des(dbBytes.data());
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, tripleCatalog, DegToRad(0.5), DegToRad(20.0), 1000);
+    DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);
     REQUIRE(db.NumPairs() == 3);
 

@@ -290,6 +290,8 @@ public:
 #undef LOST_CLI_OPTION
 };
 
+SerializeContext serFromDbValues(const DatabaseOptions &values);
+
 /// Appropriately create descriptors for all requested databases according to command-line options.
 /// @sa SerializeMultiDatabase
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &, const DatabaseOptions &values);

@@ -449,10 +449,10 @@ bool Attitude::IsKnown() const {
 }
 
 /// Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3
-void SerializeVec3(std::vector<unsigned char> *buffer, const Vec3 &vec) {
-    SerializePrimitive<float>(buffer, vec.x);
-    SerializePrimitive<float>(buffer, vec.y);
-    SerializePrimitive<float>(buffer, vec.z);
+void SerializeVec3(SerializeContext *ser, const Vec3 &vec) {
+    SerializePrimitive<float>(ser, vec.x);
+    SerializePrimitive<float>(ser, vec.y);
+    SerializePrimitive<float>(ser, vec.z);
 }
 
 Vec3 DeserializeVec3(DeserializeContext *des) {

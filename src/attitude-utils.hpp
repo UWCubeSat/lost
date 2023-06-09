@@ -69,8 +69,7 @@ public:
 
 extern const Mat3 kIdentityMat3;
 
-long SerializeLengthVec3();
-void SerializeVec3(std::vector<unsigned char> *, const Vec3 &);
+void SerializeVec3(SerializeContext *, const Vec3 &);
 Vec3 DeserializeVec3(DeserializeContext *des);
 
 float Distance(const Vec2 &, const Vec2 &);

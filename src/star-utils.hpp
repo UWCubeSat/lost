@@ -101,7 +101,7 @@ typedef std::vector<CatalogStar> Catalog;
 typedef std::vector<Star> Stars;
 typedef std::vector<StarIdentifier> StarIdentifiers;
 
-void SerializeCatalog(std::vector<unsigned char> *buffer, const Catalog &, bool inclMagnitude, bool inclName);
+void SerializeCatalog(SerializeContext *, const Catalog &, bool inclMagnitude, bool inclName);
 // sets magnited and name to whether the catalog in the database contained magnitude and name
 Catalog DeserializeCatalog(DeserializeContext *des, bool *inclMagnitudeReturn, bool *inclNameReturn);
 Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);

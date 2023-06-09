@@ -42,7 +42,7 @@ private:
     const int32_t *bins;
 };
 
-void SerializePairDistanceKVector(std::vector<unsigned char> *buffer, const Catalog &, float minDistance, float maxDistance, long numBins);
+void SerializePairDistanceKVector(SerializeContext *, const Catalog &, float minDistance, float maxDistance, long numBins);
 
 /**
  * A database storing distances between pairs of stars.
@@ -116,7 +116,7 @@ public:
 
 typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
 
-void SerializeMultiDatabase(std::vector<unsigned char> *buffer, const MultiDatabaseDescriptor &dbs);
+void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs);
 
 }
 

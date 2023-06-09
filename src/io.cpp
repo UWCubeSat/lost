@@ -265,22 +265,25 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
+SerializeContext serFromDbValues(const DatabaseOptions &values) {
+    return SerializeContext(values.swapIntegerEndianness, values.swapFloatEndianness);
+}
+
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const DatabaseOptions &values) {
     MultiDatabaseDescriptor dbEntries;
 
-    // always include the serialized catalog
-    std::vector<unsigned char> catalogBuffer;
+    SerializeContext catalogSer = serFromDbValues(values);
     // TODO decide why we have this inclMagnitude and inclName and if we should change that
-    SerializeCatalog(&catalogBuffer, catalog, false, true);
-    dbEntries.emplace_back(kCatalogMagicValue, catalogBuffer);
+    SerializeCatalog(&catalogSer, catalog, false, true);
+    dbEntries.emplace_back(kCatalogMagicValue, catalogSer.buffer);
 
     if (values.kvector) {
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
-        std::vector<unsigned char> buffer;
-        SerializePairDistanceKVector(&buffer, catalog, minDistance, maxDistance, numBins);
-        dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, buffer);
+        SerializeContext ser = serFromDbValues(values);
+        SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
+        dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);

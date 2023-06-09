@@ -29,13 +29,13 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
-    std::vector<unsigned char> buffer;
-    SerializeMultiDatabase(&buffer, dbEntries);
+    SerializeContext ser = serFromDbValues(values);
+    SerializeMultiDatabase(&ser, dbEntries);
 
-    std::cerr << "Generated database with " << buffer.size() << " bytes" << std::endl;
+    std::cerr << "Generated database with " << ser.buffer.size() << " bytes" << std::endl;
 
     UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
-    pos.Stream().write((char *) buffer.data(), buffer.size());
+    pos.Stream().write((char *) ser.buffer.data(), ser.buffer.size());
 
 }
 

@@ -17,36 +17,28 @@
 #ifndef SERIALIZE_HELPERS_H
 #define SERIALIZE_HELPERS_H
 
-#include <utility>
-#include <vector>
 #include <string.h>
 
-#ifndef LOST_DATABASE_SOURCE_INTEGER_ENDIANNESS
-#define LOST_DATABASE_SOURCE_INTEGER_ENDIANNESS lost::Endianness::LittleEndian
-#endif
-
-#ifndef LOST_DATABASE_SOURCE_FLOAT_ENDIANNESS
-#define LOST_DATABASE_SOURCE_FLOAT_ENDIANNESS lost::Endianness::LittleEndian
-#endif
-
-#ifndef LOST_DATABASE_TARGET_INTEGER_ENDIANNESS
-#define LOST_DATABASE_TARGET_INTEGER_ENDIANNESS lost::Endianness::LittleEndian
-#endif
-
-#ifndef LOST_DATABASE_TARGET_FLOAT_ENDIANNESS
-#define LOST_DATABASE_TARGET_FLOAT_ENDIANNESS lost::Endianness::LittleEndian
-#endif
+#include <utility>
+#include <vector>
+#include <algorithm>
 
 namespace lost {
 
-enum class Endianness {
-    LittleEndian,
-    BigEndian,
+class SerializeContext {
+public:
+    SerializeContext(bool swapIntegerEndianness, bool swapFloatEndianness)
+        : swapIntegerEndianness(swapIntegerEndianness), swapFloatEndianness(swapFloatEndianness) { }
+    SerializeContext() : SerializeContext(false, false) { }
+
+    bool swapIntegerEndianness;
+    bool swapFloatEndianness;
+    std::vector<unsigned char> buffer;
 };
 
 class DeserializeContext {
 public:
-    explicit DeserializeContext(const unsigned char *buffer) : buffer(buffer), cursor(buffer) { };
+    explicit DeserializeContext(const unsigned char *buffer) : buffer(buffer), cursor(buffer) { }
 
     size_t GetOffset() const {
         return cursor - buffer;
@@ -77,8 +69,8 @@ void SwapEndianness(unsigned char *buffer) {
 /// LOST_DATABASE_{SOURCE,TARGET}_INTEGER_ENDIANNESS to determine to switch all values but float and
 /// double, which use LOST_DATABASE_{SOURCE,TARGET}_FLOAT_ENDIANNESS.
 template <typename T>
-void SwapEndiannessIfNecessary(unsigned char *buffer) {
-    if (LOST_DATABASE_SOURCE_INTEGER_ENDIANNESS != LOST_DATABASE_TARGET_INTEGER_ENDIANNESS) {
+void SwapEndiannessIfNecessary(unsigned char *buffer, SerializeContext *ser) {
+    if (ser->swapIntegerEndianness) {
         SwapEndianness<T>(buffer);
     }
 }
@@ -86,15 +78,15 @@ void SwapEndiannessIfNecessary(unsigned char *buffer) {
 // template specializations
 
 template <>
-inline void SwapEndiannessIfNecessary<float>(unsigned char *buffer) {
-    if (LOST_DATABASE_SOURCE_FLOAT_ENDIANNESS != LOST_DATABASE_TARGET_FLOAT_ENDIANNESS) {
+inline void SwapEndiannessIfNecessary<float>(unsigned char *buffer, SerializeContext *ser) {
+    if (ser->swapFloatEndianness) {
         SwapEndianness<float>(buffer);
     }
 }
 
 template <>
-inline void SwapEndiannessIfNecessary<double>(unsigned char *buffer) {
-    if (LOST_DATABASE_SOURCE_FLOAT_ENDIANNESS != LOST_DATABASE_TARGET_FLOAT_ENDIANNESS) {
+inline void SwapEndiannessIfNecessary<double>(unsigned char *buffer, SerializeContext *ser) {
+    if (ser->swapFloatEndianness) {
         SwapEndianness<double>(buffer);
     }
 }
@@ -124,19 +116,19 @@ const T *DeserializeArray(DeserializeContext *des, long arrLength) {
 }
 
 template <typename T>
-void SerializePadding(std::vector<unsigned char> *vec) {
-    for (int i = vec->size(); i%sizeof(T) != 0; i++) {
-        vec->push_back(0);
+void SerializePadding(SerializeContext *ser) {
+    for (int i = ser->buffer.size(); i%sizeof(T) != 0; i++) {
+        ser->buffer.push_back(0);
     }
 }
 
 template <typename T>
-void SerializePrimitive(std::vector<unsigned char> *vec, const T &val) {
+void SerializePrimitive(SerializeContext *ser, const T &val) {
     unsigned char buf[sizeof(T)];
     memcpy(&buf, &val, sizeof(T));
-    SwapEndiannessIfNecessary<T>(buf);
-    SerializePadding<T>(vec);
-    std::copy(buf, buf+sizeof(T), std::back_inserter(*vec));
+    SwapEndiannessIfNecessary<T>(buf, ser);
+    SerializePadding<T>(ser);
+    std::copy(buf, buf+sizeof(T), std::back_inserter(ser->buffer));
 }
 
 }

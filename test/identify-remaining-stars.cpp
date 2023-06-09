@@ -52,9 +52,9 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 
 std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
                                            float dist1, float dist2, float tolerance) {
-    std::vector<unsigned char> dbBytes;
-    SerializePairDistanceKVector(&dbBytes, integralCatalog, 0, M_PI, 1000);
-    DeserializeContext des(dbBytes.data());
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, integralCatalog, 0, M_PI, 1000);
+    DeserializeContext des(ser.buffer.data());
     auto cs1 = FindNamedStar(catalog, catalogName1);
     auto cs2 = FindNamedStar(catalog, catalogName2);
 
@@ -165,9 +165,9 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
         someFakeStarIds.push_back(fakeStarIdsCopy[i]);
     }
 
-    std::vector<unsigned char> dbBytes;
-    SerializePairDistanceKVector(&dbBytes, fakeCatalog, 0, M_PI, 1000);
-    DeserializeContext des(dbBytes.data());
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, fakeCatalog, 0, M_PI, 1000);
+    DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);
 
     int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-5);
