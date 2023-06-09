@@ -1,8 +1,8 @@
 // Tests for serialization and multidatabases
 
-#include <catch.hpp>
-
 #include <vector>
+
+#include <catch.hpp>
 
 #include "serialize-helpers.hpp"
 
