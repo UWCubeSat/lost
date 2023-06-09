@@ -3,17 +3,18 @@
 #include "databases.hpp"
 #include "io.hpp"
 #include "attitude-utils.hpp"
+#include "serialize-helpers.hpp"
 
 #include "utils.hpp"
 
 using namespace lost; // NOLINT
 
 TEST_CASE("Kvector full database stuff", "[kvector]") {
-    long length;
     const Catalog &catalog = CatalogRead();
-    unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(catalog, &length, DegToRad(1.0), DegToRad(2.0), 100);
-    REQUIRE(length < 999999);
-    PairDistanceKVectorDatabase db(dbBytes);
+    std::vector<unsigned char> dbBytes;
+    SerializePairDistanceKVector(&dbBytes, catalog, DegToRad(1.0), DegToRad(2.0), 100);
+    DeserializeContext des(dbBytes.data());
+    PairDistanceKVectorDatabase db(&des);
 
     SECTION("basic consistency checks") {
         long lastNumReturnedPairs = 999999;
@@ -47,16 +48,14 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
         }
         REQUIRE(totalReturnedPairs == db.NumPairs());
     }
-
-    delete[] dbBytes;
 }
 
 TEST_CASE("Tighter tolerance test", "[kvector]") {
-    long length;
     const Catalog &catalog = CatalogRead();
-    unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(catalog, &length, DegToRad(0.5), DegToRad(5.0), 1000);
-    REQUIRE(length < 999999);
-    PairDistanceKVectorDatabase db(dbBytes);
+    std::vector<unsigned char> dbBytes;
+    SerializePairDistanceKVector(&dbBytes, catalog, DegToRad(0.5), DegToRad(5.0), 1000);
+    DeserializeContext des(dbBytes.data());
+    PairDistanceKVectorDatabase db(&des);
     // radius we'll request
     float delta = 0.0001;
     // radius we expect back: radius we request + width of a bin
@@ -99,8 +98,6 @@ TEST_CASE("Tighter tolerance test", "[kvector]") {
         }
         CHECK(!outsideRangeReturned);
     }
-
-    delete[] dbBytes;
 }
 
 TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
@@ -109,8 +106,10 @@ TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
         CatalogStar(DegToRad(4), DegToRad(7), 2.0, 43),
         CatalogStar(DegToRad(2), DegToRad(6), 4.0, 44),
     };
-    unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(tripleCatalog, NULL, DegToRad(0.5), DegToRad(20.0), 1000);
-    PairDistanceKVectorDatabase db(dbBytes);
+    std::vector<unsigned char> dbBytes;
+    SerializePairDistanceKVector(&dbBytes, tripleCatalog, DegToRad(0.5), DegToRad(20.0), 1000);
+    DeserializeContext des(dbBytes.data());
+    PairDistanceKVectorDatabase db(&des);
     REQUIRE(db.NumPairs() == 3);
 
     float distances[] = {0.038825754, 0.15707963, 0.177976474};
@@ -132,6 +131,4 @@ TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
             CHECK(AngleUnit(tripleCatalog[pairs[0]].spatial, tripleCatalog[pairs[1]].spatial) == Approx(distance).epsilon(1e-4));
         }
     }
-
-    delete[] dbBytes;
 }

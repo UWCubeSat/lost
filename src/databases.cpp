@@ -58,7 +58,7 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  * @param buffer[out] index is written here.
  */
 void SerializeKVectorIndex(std::vector<unsigned char> *buffer, const std::vector<float> &values, float min, float max, long numBins) {
-    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
+    std::vector<int32_t> kVector(numBins+1); // We store sums before and after each bin
     float binWidth = (max - min) / numBins;
 
     // generate the k-vector part
@@ -114,7 +114,7 @@ KVectorIndex::KVectorIndex(DeserializeContext *des) {
     assert(max > min);
     binWidth = (max - min) / numBins;
 
-    bins = DeserializeArray<int32_t>(des, numBins);
+    bins = DeserializeArray<int32_t>(des, numBins+1);
 }
 
 /**

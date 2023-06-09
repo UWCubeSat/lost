@@ -46,7 +46,7 @@ enum class Endianness {
 
 class DeserializeContext {
 public:
-    DeserializeContext(const unsigned char *buffer) : buffer(buffer), cursor(buffer) { };
+    explicit DeserializeContext(const unsigned char *buffer) : buffer(buffer), cursor(buffer) { };
 
     size_t GetOffset() const {
         return cursor - buffer;
@@ -67,10 +67,9 @@ private:
 
 /// Unconditionally swap the endianness of a value (uses sizeof T).
 template <typename T>
-void SwapEndianness(T *buffer) {
-    char *charBuffer = (char *)buffer;
+void SwapEndianness(unsigned char *buffer) {
     for (int i = 0; i < (int)(sizeof(T)/2); i++) {
-        std::swap(charBuffer[i], charBuffer[sizeof(T)-1-i]);
+        std::swap(buffer[i], buffer[sizeof(T)-1-i]);
     }
 }
 
@@ -78,7 +77,7 @@ void SwapEndianness(T *buffer) {
 /// LOST_DATABASE_{SOURCE,TARGET}_INTEGER_ENDIANNESS to determine to switch all values but float and
 /// double, which use LOST_DATABASE_{SOURCE,TARGET}_FLOAT_ENDIANNESS.
 template <typename T>
-void SwapEndiannessIfNecessary(T *buffer) {
+void SwapEndiannessIfNecessary(unsigned char *buffer) {
     if (LOST_DATABASE_SOURCE_INTEGER_ENDIANNESS != LOST_DATABASE_TARGET_INTEGER_ENDIANNESS) {
         SwapEndianness<T>(buffer);
     }
@@ -87,14 +86,14 @@ void SwapEndiannessIfNecessary(T *buffer) {
 // template specializations
 
 template <>
-inline void SwapEndiannessIfNecessary<float>(float *buffer) {
+inline void SwapEndiannessIfNecessary<float>(unsigned char *buffer) {
     if (LOST_DATABASE_SOURCE_FLOAT_ENDIANNESS != LOST_DATABASE_TARGET_FLOAT_ENDIANNESS) {
         SwapEndianness<float>(buffer);
     }
 }
 
 template <>
-inline void SwapEndiannessIfNecessary<double>(double *buffer) {
+inline void SwapEndiannessIfNecessary<double>(unsigned char *buffer) {
     if (LOST_DATABASE_SOURCE_FLOAT_ENDIANNESS != LOST_DATABASE_TARGET_FLOAT_ENDIANNESS) {
         SwapEndianness<double>(buffer);
     }
@@ -133,10 +132,9 @@ void SerializePadding(std::vector<unsigned char> *vec) {
 
 template <typename T>
 void SerializePrimitive(std::vector<unsigned char> *vec, const T &val) {
-    T tBuf;
-    memcpy(&tBuf, &val, sizeof(T));
-    SwapEndiannessIfNecessary<T>(&tBuf);
-    unsigned char *buf = (unsigned char *)(&tBuf);
+    unsigned char buf[sizeof(T)];
+    memcpy(&buf, &val, sizeof(T));
+    SwapEndiannessIfNecessary<T>(buf);
     SerializePadding<T>(vec);
     std::copy(buf, buf+sizeof(T), std::back_inserter(*vec));
 }
