@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kvectorindex_445',['KVectorIndex',['../classlost_1_1_k_vector_index.html#ad3152d3e3f84e92175d1b7416391bb77',1,'lost::KVectorIndex']]]
+  ['kvectorindex_461',['KVectorIndex',['../classlost_1_1_k_vector_index.html#a6cd151dd8a9224581c9fdeaa40831379',1,'lost::KVectorIndex']]]
 ];

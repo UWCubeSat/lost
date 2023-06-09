@@ -1,0 +1,7 @@
+<map id="lost::DeserializeVec3" name="lost::DeserializeVec3">
+<area shape="rect" id="node1" title=" " alt="" coords="841,5,1000,32"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="591,5,793,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
+<area shape="rect" id="node4" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,5,317,32"/>
+<area shape="rect" id="node5" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
+</map>

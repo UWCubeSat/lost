@@ -109,7 +109,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database. </p>
 <p>Multi-databases are essentially a map from "magic values" to database buffers. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00102">102</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00099">99</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a51b6553e5466c57c9ff0ae9655e35639"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a51b6553e5466c57c9ff0ae9655e35639">&#9670;&nbsp;</a></span>MultiDatabase()</h2>
@@ -137,7 +137,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Create a multidatabase from a serialized multidatabase. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00105">105</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00102">102</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -159,7 +159,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p><a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a> memory layout: </p>
-<p>| size | name | description | |-------------&mdash;+----------------&mdash;+------------------------------------------------------&mdash;| | 8*maxDatabases | table of contents | each 8-byte entry is the 4-byte magic value followed by | | | | a 4-byte index into the bulk where that db begins | | Large | databases | the database contents |</p>
+<p>| size | name | description | |---&mdash;+-------------&mdash;+------------------------------------------&mdash;| | 4 | magicValue | unique database identifier | | 4 | databaseLength | length in bytes (32-bit unsigned) | | n | database | the entire database. 8-byte aligned | | ... | ... | More databases (each has value, length, db) | | 4 | caboose | 4 null bytes indicate the end |</p>
 <p>return a pointer to the start of the database type indicated by the magic value, if such a sub-database is present in the database </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">magicValue</td><td></td></tr>
@@ -168,7 +168,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns a pointer to the start of the database type indicated by the magic value, null if not found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00344">344</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00311">311</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -194,7 +194,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_multi_database.html">MultiDatabase</a></li>
-    <li class="footer">Generated on Sun May 28 2023 19:29:21 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Jun 9 2023 23:23:47 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

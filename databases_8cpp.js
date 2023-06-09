@@ -4,9 +4,7 @@ var databases_8cpp =
     [ "CatalogToPairDistances", "databases_8cpp.html#a63bf3cd684687462bda2231e2aa1f14c", null ],
     [ "Clamp", "databases_8cpp.html#a4753c4aab04ad2deb202dd8be458e5d8", null ],
     [ "CompareKVectorPairs", "databases_8cpp.html#a68f14b0d645721125203e669cde68358", null ],
-    [ "SerializeKVectorIndex", "databases_8cpp.html#a27ceaf6d1d5d30db1fe89367989c642c", null ],
-    [ "SerializeLengthKVectorIndex", "databases_8cpp.html#a32f9662c4f6edcf08e70e869e5c2fbdf", null ],
-    [ "SerializeLengthPairDistanceKVector", "databases_8cpp.html#ac9c297050f327e91460630fa720ae93c", null ],
-    [ "SerializeLengthPairDistanceKVector", "databases_8cpp.html#afaa7020ad6a01645b45d4da236d4dfcb", null ],
-    [ "SerializePairDistanceKVector", "databases_8cpp.html#a8f6c4f99ab47d2c48676901452fb8634", null ]
+    [ "SerializeKVectorIndex", "databases_8cpp.html#ac0c0c9865d2c16d74149bf85366cdc18", null ],
+    [ "SerializeMultiDatabase", "databases_8cpp.html#a56c54ae520919bdd6d87f291e02883d3", null ],
+    [ "SerializePairDistanceKVector", "databases_8cpp.html#aefdad61aa2dbf38415d0345c1ff2916d", null ]
 ];

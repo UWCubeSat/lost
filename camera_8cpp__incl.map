@@ -1,8 +1,13 @@
 <map id="src/camera.cpp" name="src/camera.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="117,5,238,32"/>
-<area shape="rect" id="node2" href="$camera_8hpp.html" title=" " alt="" coords="5,80,104,107"/>
-<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="30,155,165,181"/>
-<area shape="rect" id="node5" title=" " alt="" coords="179,80,247,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="272,80,347,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="59,229,136,256"/>
+<area shape="rect" id="node1" title=" " alt="" coords="139,5,261,32"/>
+<area shape="rect" id="node2" href="$camera_8hpp.html" title=" " alt="" coords="28,80,127,107"/>
+<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="53,155,187,181"/>
+<area shape="rect" id="node10" title=" " alt="" coords="202,80,270,107"/>
+<area shape="rect" id="node11" title=" " alt="" coords="295,80,369,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,229,83,256"/>
+<area shape="rect" id="node5" title=" " alt="" coords="89,304,151,331"/>
+<area shape="rect" id="node6" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="158,229,317,256"/>
+<area shape="rect" id="node7" title=" " alt="" coords="175,304,246,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="270,304,330,331"/>
+<area shape="rect" id="node9" title=" " alt="" coords="355,304,440,331"/>
 </map>

@@ -1,12 +1,16 @@
 <map id="src/attitude&#45;estimators.hpp" name="src/attitude&#45;estimators.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="167,5,366,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="209,5,407,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,195,107"/>
-<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="226,304,361,331"/>
-<area shape="rect" id="node5" href="$camera_8hpp.html" title=" " alt="" coords="269,155,368,181"/>
-<area shape="rect" id="node6" href="$star-id_8hpp.html" title=" " alt="" coords="359,80,451,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="255,379,332,405"/>
-<area shape="rect" id="node7" title=" " alt="" coords="550,304,613,331"/>
-<area shape="rect" id="node8" href="$centroiders_8hpp.html" title=" " alt="" coords="443,155,565,181"/>
-<area shape="rect" id="node10" href="$star-utils_8hpp.html" title=" " alt="" coords="331,229,439,256"/>
-<area shape="rect" id="node9" title=" " alt="" coords="464,229,544,256"/>
+<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="319,304,454,331"/>
+<area shape="rect" id="node10" href="$camera_8hpp.html" title=" " alt="" coords="303,155,401,181"/>
+<area shape="rect" id="node11" href="$star-id_8hpp.html" title=" " alt="" coords="219,80,311,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="412,379,489,405"/>
+<area shape="rect" id="node5" title=" " alt="" coords="102,453,165,480"/>
+<area shape="rect" id="node6" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="229,379,387,405"/>
+<area shape="rect" id="node7" title=" " alt="" coords="189,453,259,480"/>
+<area shape="rect" id="node8" title=" " alt="" coords="283,453,343,480"/>
+<area shape="rect" id="node9" title=" " alt="" coords="368,453,453,480"/>
+<area shape="rect" id="node12" href="$centroiders_8hpp.html" title=" " alt="" coords="105,155,228,181"/>
+<area shape="rect" id="node14" href="$star-utils_8hpp.html" title=" " alt="" coords="231,229,339,256"/>
+<area shape="rect" id="node13" title=" " alt="" coords="127,229,207,256"/>
 </map>

@@ -1,9 +1,0 @@
-<map id="lost::SerializePairDistanceKVector" name="lost::SerializePairDistanceKVector">
-<area shape="rect" id="node1" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="5,99,196,141"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="244,5,451,32"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="250,56,445,83"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="249,107,445,133"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="499,150,703,191"/>
-<area shape="rect" id="node7" href="$namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="258,209,437,250"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="541,5,660,32"/>
-</map>

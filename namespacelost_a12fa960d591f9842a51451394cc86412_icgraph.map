@@ -1,0 +1,5 @@
+<map id="lost::SerializeCatalogStar" name="lost::SerializeCatalogStar">
+<area shape="rect" id="node1" title="Serialize a CatalogStar into a byte buffer." alt="" coords="444,5,631,32"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="236,5,396,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,32"/>
+</map>

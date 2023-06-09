@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['todo_20list_266',['Todo List',['../todo.html',1,'']]],
-  ['tospherical_267',['ToSpherical',['../classlost_1_1_quaternion.html#a565b9cb827d1938fe0b88aaa19093686',1,'lost::Quaternion::ToSpherical()'],['../classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee',1,'lost::Attitude::ToSpherical()']]],
-  ['trace_268',['Trace',['../classlost_1_1_mat3.html#a1264f9b036c9b3022651082ddc3efd84',1,'lost::Mat3']]],
-  ['transpose_269',['Transpose',['../classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf',1,'lost::Mat3']]],
-  ['triadalgorithm_270',['TriadAlgorithm',['../classlost_1_1_triad_algorithm.html',1,'lost']]]
+  ['todo_20list_278',['Todo List',['../todo.html',1,'']]],
+  ['tospherical_279',['ToSpherical',['../classlost_1_1_quaternion.html#a565b9cb827d1938fe0b88aaa19093686',1,'lost::Quaternion::ToSpherical()'],['../classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee',1,'lost::Attitude::ToSpherical()']]],
+  ['trace_280',['Trace',['../classlost_1_1_mat3.html#a1264f9b036c9b3022651082ddc3efd84',1,'lost::Mat3']]],
+  ['transpose_281',['Transpose',['../classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf',1,'lost::Mat3']]],
+  ['triadalgorithm_282',['TriadAlgorithm',['../classlost_1_1_triad_algorithm.html',1,'lost']]]
 ];

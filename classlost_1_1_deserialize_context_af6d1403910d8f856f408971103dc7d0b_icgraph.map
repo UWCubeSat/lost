@@ -1,0 +1,6 @@
+<map id="lost::DeserializeContext::MoveForward" name="lost::DeserializeContext::MoveForward">
+<area shape="rect" id="node1" title=" " alt="" coords="240,49,419,90"/>
+<area shape="rect" id="node2" href="$namespacelost.html#afeff6712fff1f0bfab088d35a25f52ab" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="17,5,180,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="9,56,188,83"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a808e750fa7f99bc945155638df303fb7" title=" " alt="" coords="5,107,192,133"/>
+</map>

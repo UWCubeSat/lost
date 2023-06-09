@@ -95,20 +95,24 @@ $(document).ready(function(){initNavTree('star-utils_8cpp.html',''); initResizab
 <code>#include &lt;assert.h&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;set&gt;</code><br />
+<code>#include &quot;<a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for star-utils.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="star-utils_8cpp__incl.png" border="0" usemap="#asrc_2star-utils_8cpp" alt=""/></div>
 <map name="asrc_2star-utils_8cpp" id="asrc_2star-utils_8cpp">
-<area shape="rect" title=" " alt="" coords="241,5,371,32"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="44,80,152,107"/>
-<area shape="rect" title=" " alt="" coords="176,80,244,107"/>
-<area shape="rect" title=" " alt="" coords="269,80,343,107"/>
-<area shape="rect" title=" " alt="" coords="367,80,453,107"/>
-<area shape="rect" title=" " alt="" coords="477,80,519,107"/>
-<area shape="rect" title=" " alt="" coords="5,155,68,181"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="92,155,227,181"/>
-<area shape="rect" title=" " alt="" coords="121,229,198,256"/>
+<area shape="rect" title=" " alt="" coords="343,5,474,32"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="135,80,243,107"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="176,229,335,256"/>
+<area shape="rect" title=" " alt="" coords="325,304,410,331"/>
+<area shape="rect" title=" " alt="" coords="411,80,479,107"/>
+<area shape="rect" title=" " alt="" coords="503,80,578,107"/>
+<area shape="rect" title=" " alt="" coords="602,80,645,107"/>
+<area shape="rect" title=" " alt="" coords="5,304,68,331"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="53,155,188,181"/>
+<area shape="rect" title=" " alt="" coords="74,229,151,256"/>
+<area shape="rect" title=" " alt="" coords="136,304,207,331"/>
+<area shape="rect" title=" " alt="" coords="231,304,291,331"/>
 </map>
 </div>
 </div>
@@ -130,22 +134,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ac722314f3b14385ade7e5f05699ef006"><td class="memItemLeft" align="right" valign="top">Catalog::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">lost::FindNamedStar</a> (const Catalog &amp;catalog, int name)</td></tr>
 <tr class="memdesc:ac722314f3b14385ade7e5f05699ef006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the star with the given name, or NULL if not found.  <a href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">More...</a><br /></td></tr>
 <tr class="separator:ac722314f3b14385ade7e5f05699ef006"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18edb7eda27b641f898fe6bcd9a37dc0"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">lost::SerializeLengthCatalogStar</a> (bool inclMagnitude, bool inclName)</td></tr>
-<tr class="separator:a18edb7eda27b641f898fe6bcd9a37dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">lost::SerializeCatalogStar</a> (const CatalogStar &amp;catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a> into a byte buffer.  <a href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">More...</a><br /></td></tr>
-<tr class="separator:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9238a92be7c82c102f015c90ce10536"><td class="memItemLeft" align="right" valign="top">CatalogStar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">lost::DeserializeCatalogStar</a> (const unsigned char *buffer, bool inclMagnitude, bool inclName)</td></tr>
-<tr class="memdesc:ae9238a92be7c82c102f015c90ce10536"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog star.  <a href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">More...</a><br /></td></tr>
-<tr class="separator:ae9238a92be7c82c102f015c90ce10536"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0b24b666a681eccbaacf52b37c6b09b"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">lost::SerializeLengthCatalog</a> (const Catalog &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
-<tr class="separator:ac0b24b666a681eccbaacf52b37c6b09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71348982edf43778012c9682bfa99521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a71348982edf43778012c9682bfa99521">lost::SerializeCatalog</a> (const Catalog &amp;catalog, bool inclMagnitude, bool inclName, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a71348982edf43778012c9682bfa99521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the catalog to <code>buffer</code>.  <a href="namespacelost.html#a71348982edf43778012c9682bfa99521">More...</a><br /></td></tr>
-<tr class="separator:a71348982edf43778012c9682bfa99521"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4b650ecb61d27c188477fc9fbf4c886"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">lost::DeserializeCatalog</a> (const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
-<tr class="memdesc:af4b650ecb61d27c188477fc9fbf4c886"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <a href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">More...</a><br /></td></tr>
-<tr class="separator:af4b650ecb61d27c188477fc9fbf4c886"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12fa960d591f9842a51451394cc86412"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a12fa960d591f9842a51451394cc86412">lost::SerializeCatalogStar</a> (SerializeContext *ser, const CatalogStar &amp;catalogStar, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:a12fa960d591f9842a51451394cc86412"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a> into a byte buffer.  <a href="namespacelost.html#a12fa960d591f9842a51451394cc86412">More...</a><br /></td></tr>
+<tr class="separator:a12fa960d591f9842a51451394cc86412"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b5da8e7e7f7a91826c99bcc2be8f482"><td class="memItemLeft" align="right" valign="top">CatalogStar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482">lost::DeserializeCatalogStar</a> (DeserializeContext *des, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:a7b5da8e7e7f7a91826c99bcc2be8f482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog star.  <a href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482">More...</a><br /></td></tr>
+<tr class="separator:a7b5da8e7e7f7a91826c99bcc2be8f482"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3">lost::SerializeCatalog</a> (SerializeContext *ser, const Catalog &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the catalog to <code>buffer</code>.  <a href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3">More...</a><br /></td></tr>
+<tr class="separator:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">lost::DeserializeCatalog</a> (DeserializeContext *des, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
+<tr class="memdesc:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <a href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">More...</a><br /></td></tr>
+<tr class="separator:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">lost::MagToBrightness</a> (int magnitude)</td></tr>
 <tr class="memdesc:a90ef8f69cd7b77ba05701f833fdaa320"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns some relative brightness measure, which is proportional to the total number of photons received from a star.  <a href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">More...</a><br /></td></tr>
 <tr class="separator:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,7 +156,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="star-utils_8cpp.html">star-utils.cpp</a></li>
-    <li class="footer">Generated on Sun May 28 2023 19:29:21 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Jun 9 2023 23:23:46 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

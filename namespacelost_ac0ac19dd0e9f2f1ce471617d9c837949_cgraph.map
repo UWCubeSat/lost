@@ -1,0 +1,13 @@
+<map id="lost::GenerateDatabases" name="lost::GenerateDatabases">
+<area shape="rect" id="node1" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,81,188,108"/>
+<area shape="rect" id="node2" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="272,5,391,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e" title=" " alt="" coords="247,56,415,83"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="251,107,411,133"/>
+<area shape="rect" id="node7" href="$namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,169,427,210"/>
+<area shape="rect" id="node5" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="485,96,671,123"/>
+<area shape="rect" id="node6" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="729,96,871,123"/>
+<area shape="rect" id="node8" href="$namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="475,147,681,173"/>
+<area shape="rect" id="node10" href="$namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="481,197,675,224"/>
+<area shape="rect" id="node11" href="$namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18" title="K&#45;vector index layout." alt="" coords="480,248,676,275"/>
+<area shape="rect" id="node9" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="741,147,859,173"/>
+</map>

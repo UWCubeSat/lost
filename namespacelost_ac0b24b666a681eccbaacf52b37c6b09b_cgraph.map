@@ -1,5 +1,0 @@
-<map id="lost::SerializeLengthCatalog" name="lost::SerializeLengthCatalog">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,209,32"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="257,5,488,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="536,5,721,32"/>
-</map>

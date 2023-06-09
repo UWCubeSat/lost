@@ -158,8 +158,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database.html">MultiDatabase</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.  <a href="classlost_1_1_multi_database.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_builder.html">MultiDatabaseBuilder</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for easily creating a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>.  <a href="classlost_1_1_multi_database_builder.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_entry.html">MultiDatabaseEntry</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_star.html">GeneratedStar</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A star used in simulated image generation. Contains extra data about how to simulate the star.  <a href="classlost_1_1_generated_star.html#details">More...</a><br /></td></tr>
@@ -197,6 +196,10 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Commannd line options when using the <code>database</code> command.  <a href="classlost_1_1_database_options.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_i_r_unidentified_centroid.html">IRUnidentifiedCentroid</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">unidentified centroid used in IdentifyRemainingStarsPairDistance The "angles" through here are "triangular angles".  <a href="classlost_1_1_i_r_unidentified_centroid.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -227,6 +230,8 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:aaa2e81369410c8a787ec643333d1a7a8"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1_multi_database_entry.html">MultiDatabaseEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">MultiDatabaseDescriptor</a></td></tr>
+<tr class="separator:aaa2e81369410c8a787ec643333d1a7a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92e491a9e204a882bc0635b7d943e085"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1_centroid_algorithm.html">CentroidAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a92e491a9e204a882bc0635b7d943e085">CentroidAlgorithmFactory</a>) ()</td></tr>
 <tr class="separator:a92e491a9e204a882bc0635b7d943e085"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a106f3da2d75b2af268f5e9abfc7ea681"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1_star_id_algorithm.html">StarIdAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a106f3da2d75b2af268f5e9abfc7ea681">StarIdAlgorithmFactory</a>) ()</td></tr>
@@ -283,14 +288,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a6bb9983e45dfa4b82b531ca96c397eed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_quaternion.html">Quaternion</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed">DCMToQuaternion</a> (const <a class="el" href="classlost_1_1_mat3.html">Mat3</a> &amp;dcm)</td></tr>
 <tr class="memdesc:a6bb9983e45dfa4b82b531ca96c397eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation.  <a href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed">More...</a><br /></td></tr>
 <tr class="separator:a6bb9983e45dfa4b82b531ca96c397eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe88691626edfb0955f7fe04bcec9375"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">SerializeLengthVec3</a> ()</td></tr>
-<tr class="memdesc:abe88691626edfb0955f7fe04bcec9375"><td class="mdescLeft">&#160;</td><td class="mdescRight">The length that a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> will take up when serialized.  <a href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">More...</a><br /></td></tr>
-<tr class="separator:abe88691626edfb0955f7fe04bcec9375"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65578753ccfdbffee5d561e99c7ccf19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">SerializeVec3</a> (const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;vec, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a65578753ccfdbffee5d561e99c7ccf19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3.  <a href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">More...</a><br /></td></tr>
-<tr class="separator:a65578753ccfdbffee5d561e99c7ccf19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a268223937ff19ee72a713631586557d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a268223937ff19ee72a713631586557d3">DeserializeVec3</a> (const unsigned char *buffer)</td></tr>
-<tr class="separator:a268223937ff19ee72a713631586557d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2e68349539a9ef5024920ac4595e7e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3">SerializeVec3</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;vec)</td></tr>
+<tr class="memdesc:aa2e68349539a9ef5024920ac4595e7e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3.  <a href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3">More...</a><br /></td></tr>
+<tr class="separator:aa2e68349539a9ef5024920ac4595e7e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5201d0881b201c54c1a7b7c293523ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba">DeserializeVec3</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des)</td></tr>
+<tr class="separator:ab5201d0881b201c54c1a7b7c293523ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b951e30f05e0a748e6c906697002093"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">Angle</a> (const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;vec1, const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;vec2)</td></tr>
 <tr class="memdesc:a6b951e30f05e0a748e6c906697002093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the inner angle, in radians, between two vectors.  <a href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">More...</a><br /></td></tr>
 <tr class="separator:a6b951e30f05e0a748e6c906697002093"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -319,26 +321,20 @@ Functions</h2></td></tr>
 <tr class="separator:a789d628bbeab011d5552a6dc551b77a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68f14b0d645721125203e669cde68358"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a68f14b0d645721125203e669cde68358">CompareKVectorPairs</a> (const <a class="el" href="structlost_1_1_k_vector_pair.html">KVectorPair</a> &amp;p1, const <a class="el" href="structlost_1_1_k_vector_pair.html">KVectorPair</a> &amp;p2)</td></tr>
 <tr class="separator:a68f14b0d645721125203e669cde68358"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32f9662c4f6edcf08e70e869e5c2fbdf"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf">SerializeLengthKVectorIndex</a> (long numBins)</td></tr>
-<tr class="memdesc:a32f9662c4f6edcf08e70e869e5c2fbdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">K-vector index layout.  <a href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf">More...</a><br /></td></tr>
-<tr class="separator:a32f9662c4f6edcf08e70e869e5c2fbdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27ceaf6d1d5d30db1fe89367989c642c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c">SerializeKVectorIndex</a> (const std::vector&lt; float &gt; &amp;values, float min, float max, long numBins, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a27ceaf6d1d5d30db1fe89367989c642c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a KVector index to disk.  <a href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c">More...</a><br /></td></tr>
-<tr class="separator:a27ceaf6d1d5d30db1fe89367989c642c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0c0c9865d2c16d74149bf85366cdc18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18">SerializeKVectorIndex</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const std::vector&lt; float &gt; &amp;values, float min, float max, long numBins)</td></tr>
+<tr class="memdesc:ac0c0c9865d2c16d74149bf85366cdc18"><td class="mdescLeft">&#160;</td><td class="mdescRight">K-vector index layout.  <a href="namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18">More...</a><br /></td></tr>
+<tr class="separator:ac0c0c9865d2c16d74149bf85366cdc18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63bf3cd684687462bda2231e2aa1f14c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structlost_1_1_k_vector_pair.html">KVectorPair</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c">CatalogToPairDistances</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, float minDistance, float maxDistance)</td></tr>
 <tr class="memdesc:a63bf3cd684687462bda2231e2aa1f14c"><td class="mdescLeft">&#160;</td><td class="mdescRight">pair K-vector database layout.  <a href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c">More...</a><br /></td></tr>
 <tr class="separator:a63bf3cd684687462bda2231e2aa1f14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afaa7020ad6a01645b45d4da236d4dfcb"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb">SerializeLengthPairDistanceKVector</a> (long numPairs, long numBins)</td></tr>
-<tr class="separator:afaa7020ad6a01645b45d4da236d4dfcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9c297050f327e91460630fa720ae93c"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c">SerializeLengthPairDistanceKVector</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
-<tr class="memdesc:ac9c297050f327e91460630fa720ae93c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes that a serialized KVectorDatabase will take up.  <a href="namespacelost.html#ac9c297050f327e91460630fa720ae93c">More...</a><br /></td></tr>
-<tr class="separator:ac9c297050f327e91460630fa720ae93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f6c4f99ab47d2c48676901452fb8634"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">SerializePairDistanceKVector</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a8f6c4f99ab47d2c48676901452fb8634"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634">More...</a><br /></td></tr>
-<tr class="separator:a8f6c4f99ab47d2c48676901452fb8634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefdad61aa2dbf38415d0345c1ff2916d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d">SerializePairDistanceKVector</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
+<tr class="memdesc:aefdad61aa2dbf38415d0345c1ff2916d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d">More...</a><br /></td></tr>
+<tr class="separator:aefdad61aa2dbf38415d0345c1ff2916d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4753c4aab04ad2deb202dd8be458e5d8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8">Clamp</a> (float num, float low, float high)</td></tr>
 <tr class="memdesc:a4753c4aab04ad2deb202dd8be458e5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value in the range [low,high] which is closest to num.  <a href="namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8">More...</a><br /></td></tr>
 <tr class="separator:a4753c4aab04ad2deb202dd8be458e5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56c54ae520919bdd6d87f291e02883d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a56c54ae520919bdd6d87f291e02883d3">SerializeMultiDatabase</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">MultiDatabaseDescriptor</a> &amp;dbs)</td></tr>
+<tr class="separator:a56c54ae520919bdd6d87f291e02883d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2de388cdf7e0c6b9c572903605480568"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2de388cdf7e0c6b9c572903605480568">BscParse</a> (std::string tsvPath)</td></tr>
 <tr class="memdesc:a2de388cdf7e0c6b9c572903605480568"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the bright star catalog from the TSV file on disk.  <a href="namespacelost.html#a2de388cdf7e0c6b9c572903605480568">More...</a><br /></td></tr>
 <tr class="separator:a2de388cdf7e0c6b9c572903605480568"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -353,12 +349,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a8298f03c0d1b408401e4200d17305018"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018">SurfacePlot</a> (std::string description, cairo_surface_t *cairoSurface, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *starIds, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> *catalog, const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *attitude, double red, double green, double blue, double alpha, bool rawStarIndexes=false)</td></tr>
 <tr class="memdesc:a8298f03c0d1b408401e4200d17305018"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plot information about an image onto the image using Cairo.  <a href="namespacelost.html#a8298f03c0d1b408401e4200d17305018">More...</a><br /></td></tr>
 <tr class="separator:a8298f03c0d1b408401e4200d17305018"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7affa1b0e82efc2065dbd3b1e83326e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7">BuildPairDistanceKVectorDatabase</a> (<a class="el" href="classlost_1_1_multi_database_builder.html">MultiDatabaseBuilder</a> *builder, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
-<tr class="memdesc:a7affa1b0e82efc2065dbd3b1e83326e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a pair-distance KVector database to the given builder.  <a href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7">More...</a><br /></td></tr>
-<tr class="separator:a7affa1b0e82efc2065dbd3b1e83326e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa309f1534940391b0d903f17a4c9be5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c">GenerateDatabases</a> (<a class="el" href="classlost_1_1_multi_database_builder.html">MultiDatabaseBuilder</a> *builder, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a> &amp;values)</td></tr>
-<tr class="memdesc:aa309f1534940391b0d903f17a4c9be5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate and add databases to the given multidatabase builder according to the command line options in <code>values</code>  <a href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c">More...</a><br /></td></tr>
-<tr class="separator:aa309f1534940391b0d903f17a4c9be5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca0350641c0c62bbf6ff900634e92b8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e">serFromDbValues</a> (const <a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a> &amp;values)</td></tr>
+<tr class="separator:aca0350641c0c62bbf6ff900634e92b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0ac19dd0e9f2f1ce471617d9c837949"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">MultiDatabaseDescriptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949">GenerateDatabases</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, const <a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a> &amp;values)</td></tr>
+<tr class="memdesc:ac0ac19dd0e9f2f1ce471617d9c837949"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appropriately create descriptors for all requested databases according to command-line options.  <a href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949">More...</a><br /></td></tr>
+<tr class="separator:ac0ac19dd0e9f2f1ce471617d9c837949"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd0ad3291fda13bb1bf50fb13906769c"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;camera)</td></tr>
 <tr class="memdesc:afd0ad3291fda13bb1bf50fb13906769c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print information about the camera in machine and human-readable form.  <a href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c">More...</a><br /></td></tr>
 <tr class="separator:afd0ad3291fda13bb1bf50fb13906769c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -396,6 +391,37 @@ Functions</h2></td></tr>
 <tr class="memitem:ad716669cae846c56701cf10aff6f8e5f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad716669cae846c56701cf10aff6f8e5f">atobool</a> (const char *cstr)</td></tr>
 <tr class="memdesc:ad716669cae846c56701cf10aff6f8e5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert string to boolean.  <a href="namespacelost.html#ad716669cae846c56701cf10aff6f8e5f">More...</a><br /></td></tr>
 <tr class="separator:ad716669cae846c56701cf10aff6f8e5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa3aa9350f84fa1b7725b5e3de8483ba"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aaa3aa9350f84fa1b7725b5e3de8483ba"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba">SwapEndianness</a> (unsigned char *buffer)</td></tr>
+<tr class="memdesc:aaa3aa9350f84fa1b7725b5e3de8483ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unconditionally swap the endianness of a value (uses sizeof T).  <a href="namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba">More...</a><br /></td></tr>
+<tr class="separator:aaa3aa9350f84fa1b7725b5e3de8483ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9704a9fb2cf67873155e69407a976074"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9704a9fb2cf67873155e69407a976074"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">SwapEndiannessIfNecessary</a> (unsigned char *buffer, <a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="memdesc:a9704a9fb2cf67873155e69407a976074"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap the endianness of a value if necessary.  <a href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">More...</a><br /></td></tr>
+<tr class="separator:a9704a9fb2cf67873155e69407a976074"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86727674f19d3158cb894b4518433477"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a86727674f19d3158cb894b4518433477"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#a86727674f19d3158cb894b4518433477">SwapEndiannessIfNecessary&lt; float &gt;</a> (unsigned char *buffer, <a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="separator:a86727674f19d3158cb894b4518433477"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a716dcaf4d1704aa422252fcbc182e259"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a716dcaf4d1704aa422252fcbc182e259"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#a716dcaf4d1704aa422252fcbc182e259">SwapEndiannessIfNecessary&lt; double &gt;</a> (unsigned char *buffer, <a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="separator:a716dcaf4d1704aa422252fcbc182e259"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6dcbacca390790e2623b918f25a0ed2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac6dcbacca390790e2623b918f25a0ed2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2">DeserializePadding</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des)</td></tr>
+<tr class="memdesc:ac6dcbacca390790e2623b918f25a0ed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move the cursor forward past any padding that would appear before a value of type T.  <a href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2">More...</a><br /></td></tr>
+<tr class="separator:ac6dcbacca390790e2623b918f25a0ed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a808e750fa7f99bc945155638df303fb7"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a808e750fa7f99bc945155638df303fb7"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#a808e750fa7f99bc945155638df303fb7">DeserializePrimitive</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des)</td></tr>
+<tr class="separator:a808e750fa7f99bc945155638df303fb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afeff6712fff1f0bfab088d35a25f52ab"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:afeff6712fff1f0bfab088d35a25f52ab"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#afeff6712fff1f0bfab088d35a25f52ab">DeserializeArray</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des, long arrLength)</td></tr>
+<tr class="memdesc:afeff6712fff1f0bfab088d35a25f52ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">return an array of items as a pointer. Will point into the buffer (mmap style).  <a href="namespacelost.html#afeff6712fff1f0bfab088d35a25f52ab">More...</a><br /></td></tr>
+<tr class="separator:afeff6712fff1f0bfab088d35a25f52ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a164fee04c6e5fd2fc2e2ca9274b745fa"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a164fee04c6e5fd2fc2e2ca9274b745fa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa">SerializePadding</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="separator:a164fee04c6e5fd2fc2e2ca9274b745fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9af0427ae10a3db5529f2f8c74497347"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9af0427ae10a3db5529f2f8c74497347"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9af0427ae10a3db5529f2f8c74497347">SerializePrimitive</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const T &amp;val)</td></tr>
+<tr class="separator:a9af0427ae10a3db5529f2f8c74497347"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6271e89ec246219f15d27942b98c8877"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6271e89ec246219f15d27942b98c8877">IdentifyThirdStar</a> (const <a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">PairDistanceKVectorDatabase</a> &amp;db, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, int16_t catalogIndex1, int16_t catalogIndex2, float distance1, float distance2, float tolerance)</td></tr>
 <tr class="memdesc:a6271e89ec246219f15d27942b98c8877"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given two already-identified centroids, and the distance from each to an as-yet unidentified third centroid, return a list of candidate catalog stars that could be the third centroid.  <a href="namespacelost.html#a6271e89ec246219f15d27942b98c8877">More...</a><br /></td></tr>
 <tr class="separator:a6271e89ec246219f15d27942b98c8877"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -423,22 +449,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ac722314f3b14385ade7e5f05699ef006"><td class="memItemLeft" align="right" valign="top">Catalog::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">FindNamedStar</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, int name)</td></tr>
 <tr class="memdesc:ac722314f3b14385ade7e5f05699ef006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the star with the given name, or NULL if not found.  <a href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">More...</a><br /></td></tr>
 <tr class="separator:ac722314f3b14385ade7e5f05699ef006"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18edb7eda27b641f898fe6bcd9a37dc0"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar</a> (bool inclMagnitude, bool inclName)</td></tr>
-<tr class="separator:a18edb7eda27b641f898fe6bcd9a37dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">SerializeCatalogStar</a> (const <a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a> into a byte buffer.  <a href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8">More...</a><br /></td></tr>
-<tr class="separator:a3b88c74fe43dd671f14f98525c7d4ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9238a92be7c82c102f015c90ce10536"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">DeserializeCatalogStar</a> (const unsigned char *buffer, bool inclMagnitude, bool inclName)</td></tr>
-<tr class="memdesc:ae9238a92be7c82c102f015c90ce10536"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog star.  <a href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536">More...</a><br /></td></tr>
-<tr class="separator:ae9238a92be7c82c102f015c90ce10536"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0b24b666a681eccbaacf52b37c6b09b"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">SerializeLengthCatalog</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
-<tr class="separator:ac0b24b666a681eccbaacf52b37c6b09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71348982edf43778012c9682bfa99521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a71348982edf43778012c9682bfa99521">SerializeCatalog</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, bool inclMagnitude, bool inclName, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a71348982edf43778012c9682bfa99521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the catalog to <code>buffer</code>.  <a href="namespacelost.html#a71348982edf43778012c9682bfa99521">More...</a><br /></td></tr>
-<tr class="separator:a71348982edf43778012c9682bfa99521"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4b650ecb61d27c188477fc9fbf4c886"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">DeserializeCatalog</a> (const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
-<tr class="memdesc:af4b650ecb61d27c188477fc9fbf4c886"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <a href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886">More...</a><br /></td></tr>
-<tr class="separator:af4b650ecb61d27c188477fc9fbf4c886"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12fa960d591f9842a51451394cc86412"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a12fa960d591f9842a51451394cc86412">SerializeCatalogStar</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;catalogStar, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:a12fa960d591f9842a51451394cc86412"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a> into a byte buffer.  <a href="namespacelost.html#a12fa960d591f9842a51451394cc86412">More...</a><br /></td></tr>
+<tr class="separator:a12fa960d591f9842a51451394cc86412"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b5da8e7e7f7a91826c99bcc2be8f482"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482">DeserializeCatalogStar</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:a7b5da8e7e7f7a91826c99bcc2be8f482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog star.  <a href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482">More...</a><br /></td></tr>
+<tr class="separator:a7b5da8e7e7f7a91826c99bcc2be8f482"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3">SerializeCatalog</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memdesc:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the catalog to <code>buffer</code>.  <a href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3">More...</a><br /></td></tr>
+<tr class="separator:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">DeserializeCatalog</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
+<tr class="memdesc:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <a href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">More...</a><br /></td></tr>
+<tr class="separator:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">MagToBrightness</a> (int magnitude)</td></tr>
 <tr class="memdesc:a90ef8f69cd7b77ba05701f833fdaa320"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns some relative brightness measure, which is proportional to the total number of photons received from a star.  <a href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">More...</a><br /></td></tr>
 <tr class="separator:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -452,12 +474,6 @@ Variables</h2></td></tr>
 <tr class="separator:adb169fa5f416a7acc9c7a9c52b2c86a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a280b11c878f729f878b2968037ccbc3d"><td class="memItemLeft" align="right" valign="top">const int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a280b11c878f729f878b2968037ccbc3d">kCatalogMagicValue</a> = 0xF9A283BC</td></tr>
 <tr class="separator:a280b11c878f729f878b2968037ccbc3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc0e4e86929e738c92ddef0732ea9afa"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa">kMultiDatabaseMaxDatabases</a> = 64</td></tr>
-<tr class="memdesc:afc0e4e86929e738c92ddef0732ea9afa"><td class="mdescLeft">&#160;</td><td class="mdescRight">maximum number of databases in a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a>  <a href="namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa">More...</a><br /></td></tr>
-<tr class="separator:afc0e4e86929e738c92ddef0732ea9afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9adbcdb10395a84290141accfd0377ce"><td class="memItemLeft" align="right" valign="top">const long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9adbcdb10395a84290141accfd0377ce">kMultiDatabaseTocLength</a> = 8*<a class="el" href="namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa">kMultiDatabaseMaxDatabases</a></td></tr>
-<tr class="memdesc:a9adbcdb10395a84290141accfd0377ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">The size of the table of contents in a multidatabase (stores subdatabase locations)  <a href="namespacelost.html#a9adbcdb10395a84290141accfd0377ce">More...</a><br /></td></tr>
-<tr class="separator:a9adbcdb10395a84290141accfd0377ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b3311f3ebda1282ad7bf650de30cf45"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45">kMaxBrightness</a> = 255</td></tr>
 <tr class="separator:a9b3311f3ebda1282ad7bf650de30cf45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbeb358ec7311bc89886a09aa017388c"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#adbeb358ec7311bc89886a09aa017388c">kNoDefaultArgument</a> = 0</td></tr>
@@ -467,7 +483,10 @@ Variables</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>LOST starting point. </p>
-<p>Reads in CLI arguments/flags and starts the appropriate pipelines </p>
+<p>Helpers to serialize and deserialize arbitrary data types to disk.</p>
+<p>Reads in CLI arguments/flags and starts the appropriate pipelines</p>
+<p>The serialization and deserialization helpers here assume that (a) integers and floating point numbers are stored in the same format on the source and target systems except for endianness, and (b) the target system requires no greater than n-byte alignment for n-byte values (eg, an int32_t only needs 4-byte alignment, not 8-byte), and (c) the database itself will be aligned at a multiple of the largest size of any value stored within (because we only align values relative to the start of the database, so everything breaks if the database itself is misaligned).</p>
+<p>Generally, the "bulk" of any database will not be explicitly deserialized into a data structure in memory, but instead will just effectively memory-mapped, by just storing a pointer to a certain offset into the database. The serialization functions in this file can still be used to create such a "bulk" section, but deserialization must be handled manually. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a21ee58ad60e736a58c95394ae5f799f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a21ee58ad60e736a58c95394ae5f799f4">&#9670;&nbsp;</a></span>AttitudeEstimationAlgorithmFactory</h2>
@@ -497,7 +516,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00099">99</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00100">100</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -517,6 +536,22 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="aaa2e81369410c8a787ec643333d1a7a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa2e81369410c8a787ec643333d1a7a8">&#9670;&nbsp;</a></span>MultiDatabaseDescriptor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;<a class="el" href="classlost_1_1_multi_database_entry.html">MultiDatabaseEntry</a>&gt; <a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">lost::MultiDatabaseDescriptor</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00117">117</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ab001adf3b7887c7b7a72d308893c48b2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab001adf3b7887c7b7a72d308893c48b2">&#9670;&nbsp;</a></span>PipelineComparator</h2>
 
@@ -529,7 +564,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01203">1203</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01202">1202</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -545,7 +580,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00800">800</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00798">798</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -593,7 +628,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00101">101</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00102">102</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -609,7 +644,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00100">100</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00101">101</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -684,7 +719,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00349">349</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00350">350</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -740,7 +775,7 @@ Here is the caller graph for this function:</div>
 <p>Calculate the inner angle, in radians, between two vectors. </p>
 <p>angle between two vectors, using dot product and magnitude division </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00472">472</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00468">468</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -796,32 +831,30 @@ Here is the caller graph for this function:</div>
 <p>angle between two vectors, /assuming/ that they are already unit length</p>
 <p>Slightly faster than <a class="el" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors.">Angle()</a> @warn If the vectors are not already unit vectors, will return the wrong result! </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00481">481</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00477">477</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespacelost_a07ccf05a4c7ac13fbee5edb5beb309bb_icgraph.png" border="0" usemap="#anamespacelost_a07ccf05a4c7ac13fbee5edb5beb309bb_icgraph" alt=""/></div>
 <map name="anamespacelost_a07ccf05a4c7ac13fbee5edb5beb309bb_icgraph" id="anamespacelost_a07ccf05a4c7ac13fbee5edb5beb309bb_icgraph">
-<area shape="rect" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1495,214,1613,241"/>
-<area shape="rect" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="1298,78,1389,105"/>
-<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="993,5,1182,47"/>
-<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="699,130,935,157"/>
-<area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="1240,239,1447,266"/>
-<area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1258,290,1429,317"/>
-<area shape="rect" href="namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1262,134,1425,161"/>
-<area shape="rect" href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="1268,341,1419,367"/>
-<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="1251,392,1436,433"/>
-<area shape="rect" href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="984,123,1191,164"/>
-<area shape="rect" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c" title="Number of bytes that a serialized KVectorDatabase will take up." alt="" coords="998,240,1177,281"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="992,305,1183,347"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="707,301,926,343"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="468,309,651,335"/>
-<area shape="rect" href="classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="983,374,1192,401"/>
-<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686" title="Create a generated pipeline input." alt="" coords="713,367,920,408"/>
-<area shape="rect" href="classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="723,433,911,459"/>
-<area shape="rect" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="495,433,623,459"/>
-<area shape="rect" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,425,420,467"/>
-<area shape="rect" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,433,189,459"/>
+<area shape="rect" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1440,214,1559,241"/>
+<area shape="rect" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="1243,78,1334,105"/>
+<area shape="rect" href="classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="938,5,1127,47"/>
+<area shape="rect" href="classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="644,130,880,157"/>
+<area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="1185,239,1392,266"/>
+<area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1203,290,1374,317"/>
+<area shape="rect" href="namespacelost.html#a6271e89ec246219f15d27942b98c8877" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1207,134,1370,161"/>
+<area shape="rect" href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="1213,341,1364,367"/>
+<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="1196,392,1381,433"/>
+<area shape="rect" href="namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="929,123,1136,164"/>
+<area shape="rect" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="937,240,1128,281"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="671,247,853,274"/>
+<area shape="rect" href="classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="928,306,1137,333"/>
+<area shape="rect" href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686" title="Create a generated pipeline input." alt="" coords="659,299,865,340"/>
+<area shape="rect" href="classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="668,365,856,391"/>
+<area shape="rect" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="468,365,596,391"/>
+<area shape="rect" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,357,420,399"/>
+<area shape="rect" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,365,189,391"/>
 </map>
 </div>
 
@@ -843,7 +876,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00160">160</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00162">162</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -874,7 +907,7 @@ Here is the call graph for this function:</div>
 
 <p>Convert string to boolean. </p>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00102">102</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00097">97</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
@@ -1039,81 +1072,6 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a7affa1b0e82efc2065dbd3b1e83326e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7affa1b0e82efc2065dbd3b1e83326e7">&#9670;&nbsp;</a></span>BuildPairDistanceKVectorDatabase()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void lost::BuildPairDistanceKVectorDatabase </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classlost_1_1_multi_database_builder.html">MultiDatabaseBuilder</a> *&#160;</td>
-          <td class="paramname"><em>builder</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
-          <td class="paramname"><em>catalog</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>minDistance</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>maxDistance</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numBins</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Add a pair-distance KVector database to the given builder. </p>
-
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00269">269</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_cgraph.png" border="0" usemap="#anamespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_cgraph" alt=""/></div>
-<map name="anamespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_cgraph" id="anamespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_cgraph">
-<area shape="rect" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="5,64,224,105"/>
-<area shape="rect" href="classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e" title="Add a database to a MultiDatabase." alt="" coords="272,5,467,47"/>
-<area shape="rect" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="529,51,707,92"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="274,135,465,176"/>
-<area shape="rect" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="769,109,973,151"/>
-<area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="515,218,721,245"/>
-<area shape="rect" href="namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="521,269,715,295"/>
-<area shape="rect" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="520,117,716,143"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="812,218,931,245"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_icgraph.png" border="0" usemap="#anamespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_icgraph" alt=""/></div>
-<map name="anamespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_icgraph" id="anamespacelost_a7affa1b0e82efc2065dbd3b1e83326e7_icgraph">
-<area shape="rect" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,5,455,47"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,13,188,39"/>
-</map>
-</div>
-
-</div>
-</div>
 <a id="a41f5bb669129790c12bd70e1d641441f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41f5bb669129790c12bd70e1d641441f">&#9670;&nbsp;</a></span>CatalogRead()</h2>
 
@@ -1182,7 +1140,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00011">11</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00013">13</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -1233,7 +1191,7 @@ Here is the caller graph for this function:</div>
 | sizeof kvectorIndex      | kVectorIndex | Serialized KVector index                                    |
 | 2*sizeof(int16)*numPairs | pairs        | Bulk pair data                                              |
 </pre> 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00187">187</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00171">171</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1248,11 +1206,9 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespacelost_a63bf3cd684687462bda2231e2aa1f14c_icgraph.png" border="0" usemap="#anamespacelost_a63bf3cd684687462bda2231e2aa1f14c_icgraph" alt=""/></div>
 <map name="anamespacelost_a63bf3cd684687462bda2231e2aa1f14c_icgraph" id="anamespacelost_a63bf3cd684687462bda2231e2aa1f14c_icgraph">
-<area shape="rect" title="pair K&#45;vector database layout." alt="" coords="741,46,948,73"/>
-<area shape="rect" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c" title="Number of bytes that a serialized KVectorDatabase will take up." alt="" coords="509,5,687,47"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,71,693,112"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,71,455,112"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,78,188,105"/>
+<area shape="rect" title="pair K&#45;vector database layout." alt="" coords="475,13,681,39"/>
+<area shape="rect" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,47"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,39"/>
 </map>
 </div>
 
@@ -1274,7 +1230,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01103">1103</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01102">1102</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -1318,7 +1274,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01077">1077</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01076">1076</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -1356,7 +1312,7 @@ Here is the caller graph for this function:</div>
 
 <p>Return the value in the range [low,high] which is closest to num. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00259">259</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00224">224</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 
 </div>
 </div>
@@ -1443,16 +1399,15 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00022">22</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00025">25</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="namespacelost_a68f14b0d645721125203e669cde68358_icgraph.png" border="0" usemap="#anamespacelost_a68f14b0d645721125203e669cde68358_icgraph" alt=""/></div>
 <map name="anamespacelost_a68f14b0d645721125203e669cde68358_icgraph" id="anamespacelost_a68f14b0d645721125203e669cde68358_icgraph">
-<area shape="rect" title=" " alt="" coords="741,13,936,39"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,5,693,47"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,5,455,47"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,13,188,39"/>
+<area shape="rect" title=" " alt="" coords="475,13,669,39"/>
+<area shape="rect" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,47"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,39"/>
 </map>
 </div>
 
@@ -1474,7 +1429,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00243">243</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00244">244</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1505,7 +1460,7 @@ Here is the call graph for this function:</div>
 
 <p>Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00363">363</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00365">365</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1556,7 +1511,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00152">152</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00154">154</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -1567,7 +1522,7 @@ Here is the caller graph for this function:</div>
 <area shape="rect" href="namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="759,157,871,184"/>
 <area shape="rect" href="namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,91,413,133"/>
 <area shape="rect" href="namespacelost.html#a1187da9a83232a720a84bef1b99c5b58" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,107,676,133"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="724,208,907,235"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="724,208,907,235"/>
 <area shape="rect" href="namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="500,157,637,184"/>
 <area shape="rect" href="namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,157,408,184"/>
 <area shape="rect" href="namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,128,168,155"/>
@@ -1576,8 +1531,52 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="af4b650ecb61d27c188477fc9fbf4c886"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4b650ecb61d27c188477fc9fbf4c886">&#9670;&nbsp;</a></span>DeserializeCatalog()</h2>
+<a id="afeff6712fff1f0bfab088d35a25f52ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afeff6712fff1f0bfab088d35a25f52ab">&#9670;&nbsp;</a></span>DeserializeArray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">const T* lost::DeserializeArray </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>arrLength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>return an array of items as a pointer. Will point into the buffer (mmap style). </p>
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00110">110</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_afeff6712fff1f0bfab088d35a25f52ab_cgraph.png" border="0" usemap="#anamespacelost_afeff6712fff1f0bfab088d35a25f52ab_cgraph" alt=""/></div>
+<map name="anamespacelost_afeff6712fff1f0bfab088d35a25f52ab_cgraph" id="anamespacelost_afeff6712fff1f0bfab088d35a25f52ab_cgraph">
+<area shape="rect" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="5,46,168,73"/>
+<area shape="rect" href="classlost_1_1_deserialize_context.html#ace579278804e203fa3464460704cd8a5" title=" " alt="" coords="216,5,395,47"/>
+<area shape="rect" href="classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="216,71,395,112"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a3d0e0e4b5dd7521775ee2d00143ab022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d0e0e4b5dd7521775ee2d00143ab022">&#9670;&nbsp;</a></span>DeserializeCatalog()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1585,8 +1584,8 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> lost::DeserializeCatalog </td>
           <td>(</td>
-          <td class="paramtype">const unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1611,29 +1610,27 @@ Here is the caller graph for this function:</div>
 <p>Deserialize a catalog. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">inclMagnitudeReturn,inclNameReturn</td><td>Will store whether <code>inclMagnitude</code> and <code>inclNameReturn</code> were set in the corresponding <a class="el" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer.">SerializeCatalog()</a> call. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">inclMagnitudeReturn,inclNameReturn</td><td>Will store whether <code>inclMagnitude</code> and <code>inclNameReturn</code> were set in the corresponding <a class="el" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer.">SerializeCatalog()</a> call. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00156">156</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00123">123</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_af4b650ecb61d27c188477fc9fbf4c886_cgraph.png" border="0" usemap="#anamespacelost_af4b650ecb61d27c188477fc9fbf4c886_cgraph" alt=""/></div>
-<map name="anamespacelost_af4b650ecb61d27c188477fc9fbf4c886_cgraph" id="anamespacelost_af4b650ecb61d27c188477fc9fbf4c886_cgraph">
-<area shape="rect" title="Deserialize a catalog." alt="" coords="5,31,183,57"/>
-<area shape="rect" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536" title="Deserialize a catalog star." alt="" coords="245,5,447,32"/>
-<area shape="rect" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="231,56,461,83"/>
-<area shape="rect" href="namespacelost.html#a268223937ff19ee72a713631586557d3" title=" " alt="" coords="523,5,681,32"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="509,56,695,83"/>
+<div class="center"><img src="namespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_cgraph.png" border="0" usemap="#anamespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_cgraph" alt=""/></div>
+<map name="anamespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_cgraph" id="anamespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_cgraph">
+<area shape="rect" title="Deserialize a catalog." alt="" coords="5,5,183,32"/>
+<area shape="rect" href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="231,5,433,32"/>
+<area shape="rect" href="namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba" title=" " alt="" coords="481,5,640,32"/>
 </map>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_af4b650ecb61d27c188477fc9fbf4c886_icgraph.png" border="0" usemap="#anamespacelost_af4b650ecb61d27c188477fc9fbf4c886_icgraph" alt=""/></div>
-<map name="anamespacelost_af4b650ecb61d27c188477fc9fbf4c886_icgraph" id="anamespacelost_af4b650ecb61d27c188477fc9fbf4c886_icgraph">
+<div class="center"><img src="namespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_icgraph.png" border="0" usemap="#anamespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_icgraph" alt=""/></div>
+<map name="anamespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_icgraph" id="anamespacelost_a3d0e0e4b5dd7521775ee2d00143ab022_icgraph">
 <area shape="rect" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
 <area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,5,317,32"/>
 <area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
@@ -1642,8 +1639,8 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="ae9238a92be7c82c102f015c90ce10536"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9238a92be7c82c102f015c90ce10536">&#9670;&nbsp;</a></span>DeserializeCatalogStar()</h2>
+<a id="a7b5da8e7e7f7a91826c99bcc2be8f482"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b5da8e7e7f7a91826c99bcc2be8f482">&#9670;&nbsp;</a></span>DeserializeCatalogStar()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1651,8 +1648,8 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname"><a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> lost::DeserializeCatalogStar </td>
           <td>(</td>
-          <td class="paramtype">const unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1675,26 +1672,25 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Deserialize a catalog star. </p>
-<p>@warn The <code>inclMagnitude</code> and <code>inclName</code> parameters must be the same as passed to <a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar()</a> </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar</a> </dd></dl>
+<p>@warn The <code>inclMagnitude</code> and <code>inclName</code> parameters must be the same as passed to <a class="el" href="namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar()</a> </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00099">99</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00086">86</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_ae9238a92be7c82c102f015c90ce10536_cgraph.png" border="0" usemap="#anamespacelost_ae9238a92be7c82c102f015c90ce10536_cgraph" alt=""/></div>
-<map name="anamespacelost_ae9238a92be7c82c102f015c90ce10536_cgraph" id="anamespacelost_ae9238a92be7c82c102f015c90ce10536_cgraph">
-<area shape="rect" title="Deserialize a catalog star." alt="" coords="5,31,208,57"/>
-<area shape="rect" href="namespacelost.html#a268223937ff19ee72a713631586557d3" title=" " alt="" coords="269,5,428,32"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="256,56,441,83"/>
+<div class="center"><img src="namespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_cgraph.png" border="0" usemap="#anamespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_cgraph" alt=""/></div>
+<map name="anamespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_cgraph" id="anamespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_cgraph">
+<area shape="rect" title="Deserialize a catalog star." alt="" coords="5,5,208,32"/>
+<area shape="rect" href="namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba" title=" " alt="" coords="256,5,415,32"/>
 </map>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_ae9238a92be7c82c102f015c90ce10536_icgraph.png" border="0" usemap="#anamespacelost_ae9238a92be7c82c102f015c90ce10536_icgraph" alt=""/></div>
-<map name="anamespacelost_ae9238a92be7c82c102f015c90ce10536_icgraph" id="anamespacelost_ae9238a92be7c82c102f015c90ce10536_icgraph">
+<div class="center"><img src="namespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_icgraph.png" border="0" usemap="#anamespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_icgraph" alt=""/></div>
+<map name="anamespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_icgraph" id="anamespacelost_a7b5da8e7e7f7a91826c99bcc2be8f482_icgraph">
 <area shape="rect" title="Deserialize a catalog star." alt="" coords="591,5,793,32"/>
-<area shape="rect" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
+<area shape="rect" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
 <area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,5,317,32"/>
 <area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
 </map>
@@ -1702,8 +1698,74 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a268223937ff19ee72a713631586557d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a268223937ff19ee72a713631586557d3">&#9670;&nbsp;</a></span>DeserializeVec3()</h2>
+<a id="ac6dcbacca390790e2623b918f25a0ed2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6dcbacca390790e2623b918f25a0ed2">&#9670;&nbsp;</a></span>DeserializePadding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void lost::DeserializePadding </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Move the cursor forward past any padding that would appear before a value of type T. </p>
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00096">96</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_ac6dcbacca390790e2623b918f25a0ed2_cgraph.png" border="0" usemap="#anamespacelost_ac6dcbacca390790e2623b918f25a0ed2_cgraph" alt=""/></div>
+<map name="anamespacelost_ac6dcbacca390790e2623b918f25a0ed2_cgraph" id="anamespacelost_ac6dcbacca390790e2623b918f25a0ed2_cgraph">
+<area shape="rect" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="5,46,184,73"/>
+<area shape="rect" href="classlost_1_1_deserialize_context.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="232,5,411,47"/>
+<area shape="rect" href="classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="232,71,411,112"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a808e750fa7f99bc945155638df303fb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a808e750fa7f99bc945155638df303fb7">&#9670;&nbsp;</a></span>DeserializePrimitive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">T lost::DeserializePrimitive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00101">101</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_a808e750fa7f99bc945155638df303fb7_cgraph.png" border="0" usemap="#anamespacelost_a808e750fa7f99bc945155638df303fb7_cgraph" alt=""/></div>
+<map name="anamespacelost_a808e750fa7f99bc945155638df303fb7_cgraph" id="anamespacelost_a808e750fa7f99bc945155638df303fb7_cgraph">
+<area shape="rect" title=" " alt="" coords="5,46,192,73"/>
+<area shape="rect" href="classlost_1_1_deserialize_context.html#ace579278804e203fa3464460704cd8a5" title=" " alt="" coords="240,5,419,47"/>
+<area shape="rect" href="classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="240,71,419,112"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="ab5201d0881b201c54c1a7b7c293523ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5201d0881b201c54c1a7b7c293523ba">&#9670;&nbsp;</a></span>DeserializeVec3()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1711,22 +1773,22 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname"><a class="el" href="classlost_1_1_vec3.html">Vec3</a> lost::DeserializeVec3 </td>
           <td>(</td>
-          <td class="paramtype">const unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00462">462</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00458">458</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a268223937ff19ee72a713631586557d3_icgraph.png" border="0" usemap="#anamespacelost_a268223937ff19ee72a713631586557d3_icgraph" alt=""/></div>
-<map name="anamespacelost_a268223937ff19ee72a713631586557d3_icgraph" id="anamespacelost_a268223937ff19ee72a713631586557d3_icgraph">
+<div class="center"><img src="namespacelost_ab5201d0881b201c54c1a7b7c293523ba_icgraph.png" border="0" usemap="#anamespacelost_ab5201d0881b201c54c1a7b7c293523ba_icgraph" alt=""/></div>
+<map name="anamespacelost_ab5201d0881b201c54c1a7b7c293523ba_icgraph" id="anamespacelost_ab5201d0881b201c54c1a7b7c293523ba_icgraph">
 <area shape="rect" title=" " alt="" coords="841,5,1000,32"/>
-<area shape="rect" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536" title="Deserialize a catalog star." alt="" coords="591,5,793,32"/>
-<area shape="rect" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
+<area shape="rect" href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="591,5,793,32"/>
+<area shape="rect" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
 <area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,5,317,32"/>
 <area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
 </map>
@@ -1818,7 +1880,7 @@ Here is the caller graph for this function:</div>
 
 <p>Return a pointer to the star with the given name, or NULL if not found. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00052">52</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00054">54</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -1869,7 +1931,7 @@ Here is the caller graph for this function:</div>
 <p>Return all the unidentified centroids within the requested distance bounds from <code>star</code> </p>
 <p>The returned vector has pointers into the vector passed as an argument. Thus, it's important not to modify the <code>centroids</code> argument after calling. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00298">298</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00299">299</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1925,7 +1987,7 @@ Here is the caller graph for this function:</div>
 <p>Given a float, find it "modulo" another float, in the true mathematical sense (not remainder). </p>
 <p>Always returns something in [0,mod) Eg -0.8 mod 0.6 = 0.4 </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00164">164</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00166">166</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -1948,7 +2010,7 @@ Here is the caller graph for this function:</div>
 <p>Calculate the focal length, in pixels, based on the given command line options. </p>
 <p>This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00313">313</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00311">311</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2061,23 +2123,17 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="aa309f1534940391b0d903f17a4c9be5c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa309f1534940391b0d903f17a4c9be5c">&#9670;&nbsp;</a></span>GenerateDatabases()</h2>
+<a id="ac0ac19dd0e9f2f1ce471617d9c837949"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0ac19dd0e9f2f1ce471617d9c837949">&#9670;&nbsp;</a></span>GenerateDatabases()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void lost::GenerateDatabases </td>
+          <td class="memname"><a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">MultiDatabaseDescriptor</a> lost::GenerateDatabases </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classlost_1_1_multi_database_builder.html">MultiDatabaseBuilder</a> *&#160;</td>
-          <td class="paramname"><em>builder</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
-          <td class="paramname"><em>catalog</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -2093,25 +2149,26 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Generate and add databases to the given multidatabase builder according to the command line options in <code>values</code> </p>
+<p>Appropriately create descriptors for all requested databases according to command-line options. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelost.html#a56c54ae520919bdd6d87f291e02883d3">SerializeMultiDatabase</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00283">283</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00272">272</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_aa309f1534940391b0d903f17a4c9be5c_cgraph.png" border="0" usemap="#anamespacelost_aa309f1534940391b0d903f17a4c9be5c_cgraph" alt=""/></div>
-<map name="anamespacelost_aa309f1534940391b0d903f17a4c9be5c_cgraph" id="anamespacelost_aa309f1534940391b0d903f17a4c9be5c_cgraph">
-<area shape="rect" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,101,188,127"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,64,455,105"/>
-<area shape="rect" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="286,130,405,157"/>
-<area shape="rect" href="classlost_1_1_multi_database_builder.html#ad0fd44e30041b65d3d2d61f905d8f63e" title="Add a database to a MultiDatabase." alt="" coords="503,5,697,47"/>
-<area shape="rect" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="759,51,938,92"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="505,135,695,176"/>
-<area shape="rect" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="1000,109,1204,151"/>
-<area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="745,218,952,245"/>
-<area shape="rect" href="namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="751,269,946,295"/>
-<area shape="rect" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="751,117,947,143"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1043,218,1161,245"/>
+<div class="center"><img src="namespacelost_ac0ac19dd0e9f2f1ce471617d9c837949_cgraph.png" border="0" usemap="#anamespacelost_ac0ac19dd0e9f2f1ce471617d9c837949_cgraph" alt=""/></div>
+<map name="anamespacelost_ac0ac19dd0e9f2f1ce471617d9c837949_cgraph" id="anamespacelost_ac0ac19dd0e9f2f1ce471617d9c837949_cgraph">
+<area shape="rect" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,81,188,108"/>
+<area shape="rect" href="namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="272,5,391,32"/>
+<area shape="rect" href="namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e" title=" " alt="" coords="247,56,415,83"/>
+<area shape="rect" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="251,107,411,133"/>
+<area shape="rect" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,169,427,210"/>
+<area shape="rect" href="namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="485,96,671,123"/>
+<area shape="rect" href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="729,96,871,123"/>
+<area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="475,147,681,173"/>
+<area shape="rect" href="namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="481,197,675,224"/>
+<area shape="rect" href="namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18" title="K&#45;vector index layout." alt="" coords="480,248,676,275"/>
+<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="741,147,859,173"/>
 </map>
 </div>
 
@@ -2135,7 +2192,7 @@ Here is the call graph for this function:</div>
 
 <p>Create a <a class="el" href="classlost_1_1_generated_pipeline_input.html" title="A pipeline input which is generated (fake image).">GeneratedPipelineInput</a> based on the command line options in <code>values</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00728">728</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00726">726</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2180,7 +2237,7 @@ Here is the caller graph for this function:</div>
 
 <p>Come up with a list of pipeline inputs based on command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00803">803</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00801">801</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2218,7 +2275,7 @@ Here is the call graph for this function:</div>
 
 <p>Create a <a class="el" href="classlost_1_1_png_pipeline_input.html" title="A pipeline input created by reading a PNG from a file on disk.">PngPipelineInput</a> using command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00373">373</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00371">371</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2342,7 +2399,7 @@ Here is the caller graph for this function:</div>
 <p>Given some identified stars, attempt to identify the rest. </p>
 <p>Requires a pair distance database to be present. Iterates through the unidentified centroids in an intelligent order, identifying them one by one. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00460">460</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00461">461</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2440,7 +2497,7 @@ Here is the caller graph for this function:</div>
 <p>Given two already-identified centroids, and the distance from each to an as-yet unidentified third centroid, return a list of candidate catalog stars that could be the third centroid. </p>
 <p>The order in which the two centroids are passed in /does/ matter wrt spectral-ness. If the first supplied catalog star is <code>a</code>, second is <code>b</code>, and the unidentified is <code>c</code>, then (<code>a</code> crossproduct <code>b</code>) dot <code>c</code> will be positive for all returned <code>c</code>. Intuitively, if the triangle is fairly small on the surface of the sphere, then viewed from the origin, the vertices <code>a</code>, <code>b</code>, and <code>c</code> should be clockwise (then, the cross product of <code>a</code> and <code>b</code> will point mostly towards <code>c</code>, and a little outwards, so that dot product with <code>c</code> captures that positive outward part). </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00383">383</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00384">384</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2566,7 +2623,7 @@ Here is the caller graph for this function:</div>
 <p>returns some relative brightness measure, which is proportional to the total number of photons received from a star. </p>
 <p>As always, the magnitude is actually 100* the usual magnitude </p>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00183">183</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00147">147</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -2628,7 +2685,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00015">15</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00017">17</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2670,7 +2727,7 @@ Here is the call graph for this function:</div>
 
 <p>Print information about the camera in machine and human-readable form. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00298">298</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00296">296</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2752,7 +2809,7 @@ Here is the call graph for this function:</div>
 <p>Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars that appeared with it in the query. </p>
 <p>The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then star A is also in the map for star B. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00258">258</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00259">259</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -2806,7 +2863,7 @@ Here is the caller graph for this function:</div>
 <p>Plot an annotated image where centroids are annotated with their centroid index. </p>
 <p>For debugging. Use whatever stars were input into the star-id algo (so either actual centroids, or inputstars) </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01400">1400</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01399">1399</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2877,7 +2934,7 @@ Here is the caller graph for this function:</div>
 <p>Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline. </p>
 <p>Uses the command line options in <code>values</code> to determine which analyses to run. Examples include plotting an annotated output image to a png file, comparing the actual and expected centroids, etc </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01692">1692</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01691">1691</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2923,7 +2980,7 @@ Here is the call graph for this function:</div>
 
 <p>Convert a quaternion to a rotation matrix (Direction Cosine Matrix) </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00351">351</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00353">353</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3160,7 +3217,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00156">156</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00158">158</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3189,7 +3246,7 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00148">148</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00150">150</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3231,7 +3288,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00428">428</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00429">429</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -3245,8 +3302,37 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a71348982edf43778012c9682bfa99521"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71348982edf43778012c9682bfa99521">&#9670;&nbsp;</a></span>SerializeCatalog()</h2>
+<a id="aca0350641c0c62bbf6ff900634e92b8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca0350641c0c62bbf6ff900634e92b8e">&#9670;&nbsp;</a></span>serFromDbValues()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> lost::serFromDbValues </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a> &amp;&#160;</td>
+          <td class="paramname"><em>values</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00268">268</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_aca0350641c0c62bbf6ff900634e92b8e_icgraph.png" border="0" usemap="#anamespacelost_aca0350641c0c62bbf6ff900634e92b8e_icgraph" alt=""/></div>
+<map name="anamespacelost_aca0350641c0c62bbf6ff900634e92b8e_icgraph" id="anamespacelost_aca0350641c0c62bbf6ff900634e92b8e_icgraph">
+<area shape="rect" title=" " alt="" coords="236,5,404,32"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,32"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a2cc7e2e970e07d707f25c00fcd3071a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cc7e2e970e07d707f25c00fcd3071a3">&#9670;&nbsp;</a></span>SerializeCatalog()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3254,6 +3340,12 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname">void lost::SerializeCatalog </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
           <td class="paramname"><em>catalog</em>, </td>
         </tr>
@@ -3267,13 +3359,7 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>inclName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>&#160;</td>
+          <td class="paramname"><em>inclName</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3284,32 +3370,38 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Serialize the catalog to <code>buffer</code>. </p>
-<p>Use <a class="el" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b">SerializeLengthCatalog()</a> to determine how many bytes to allocate in <code>buffer</code> </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Use SerializeLengthCatalog() to determine how many bytes to allocate in <code>buffer</code> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">inclMagnitude,inclName</td><td>See <a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar()</a> </td></tr>
+    <tr><td class="paramname">inclMagnitude,inclName</td><td>See <a class="el" href="namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar()</a> </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00128">128</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00107">107</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a71348982edf43778012c9682bfa99521_cgraph.png" border="0" usemap="#anamespacelost_a71348982edf43778012c9682bfa99521_cgraph" alt=""/></div>
-<map name="anamespacelost_a71348982edf43778012c9682bfa99521_cgraph" id="anamespacelost_a71348982edf43778012c9682bfa99521_cgraph">
-<area shape="rect" title="Serialize the catalog to buffer." alt="" coords="5,56,165,83"/>
-<area shape="rect" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer." alt="" coords="222,5,409,32"/>
-<area shape="rect" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b" title=" " alt="" coords="213,56,417,83"/>
-<area shape="rect" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="465,81,696,108"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="744,31,929,57"/>
-<area shape="rect" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="510,31,651,57"/>
+<div class="center"><img src="namespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_cgraph.png" border="0" usemap="#anamespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_cgraph" alt=""/></div>
+<map name="anamespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_cgraph" id="anamespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_cgraph">
+<area shape="rect" title="Serialize the catalog to buffer." alt="" coords="5,5,165,32"/>
+<area shape="rect" href="namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="213,5,400,32"/>
+<area shape="rect" href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="448,5,589,32"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_icgraph.png" border="0" usemap="#anamespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_icgraph" alt=""/></div>
+<map name="anamespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_icgraph" id="anamespacelost_a2cc7e2e970e07d707f25c00fcd3071a3_icgraph">
+<area shape="rect" title="Serialize the catalog to buffer." alt="" coords="236,5,396,32"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,32"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="a3b88c74fe43dd671f14f98525c7d4ae8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b88c74fe43dd671f14f98525c7d4ae8">&#9670;&nbsp;</a></span>SerializeCatalogStar()</h2>
+<a id="a12fa960d591f9842a51451394cc86412"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12fa960d591f9842a51451394cc86412">&#9670;&nbsp;</a></span>SerializeCatalogStar()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3317,6 +3409,12 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void lost::SerializeCatalogStar </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;&#160;</td>
           <td class="paramname"><em>catalogStar</em>, </td>
         </tr>
@@ -3330,13 +3428,7 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>inclName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>&#160;</td>
+          <td class="paramname"><em>inclName</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3347,7 +3439,7 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Serialize a <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a> into a byte buffer. </p>
-<p>Use <a class="el" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0">SerializeLengthCatalogStar()</a> to determine how many bytes to allocate in <code>buffer</code> </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Use SerializeLengthCatalogStar() to determine how many bytes to allocate in <code>buffer</code> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">inclMagnitude</td><td>Whether to include the magnitude of the star. </td></tr>
     <tr><td class="paramname">inclName</td><td>Whether to include the (numerical) name of the star. </td></tr>
@@ -3356,31 +3448,31 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00080">80</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00070">70</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_cgraph.png" border="0" usemap="#anamespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_cgraph" alt=""/></div>
-<map name="anamespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_cgraph" id="anamespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_cgraph">
-<area shape="rect" title="Serialize a CatalogStar into a byte buffer." alt="" coords="5,31,192,57"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="240,5,425,32"/>
-<area shape="rect" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="262,56,403,83"/>
+<div class="center"><img src="namespacelost_a12fa960d591f9842a51451394cc86412_cgraph.png" border="0" usemap="#anamespacelost_a12fa960d591f9842a51451394cc86412_cgraph" alt=""/></div>
+<map name="anamespacelost_a12fa960d591f9842a51451394cc86412_cgraph" id="anamespacelost_a12fa960d591f9842a51451394cc86412_cgraph">
+<area shape="rect" title="Serialize a CatalogStar into a byte buffer." alt="" coords="5,5,192,32"/>
+<area shape="rect" href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="240,5,381,32"/>
 </map>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_icgraph.png" border="0" usemap="#anamespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_icgraph" alt=""/></div>
-<map name="anamespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_icgraph" id="anamespacelost_a3b88c74fe43dd671f14f98525c7d4ae8_icgraph">
-<area shape="rect" title="Serialize a CatalogStar into a byte buffer." alt="" coords="213,5,400,32"/>
-<area shape="rect" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer." alt="" coords="5,5,165,32"/>
+<div class="center"><img src="namespacelost_a12fa960d591f9842a51451394cc86412_icgraph.png" border="0" usemap="#anamespacelost_a12fa960d591f9842a51451394cc86412_icgraph" alt=""/></div>
+<map name="anamespacelost_a12fa960d591f9842a51451394cc86412_icgraph" id="anamespacelost_a12fa960d591f9842a51451394cc86412_icgraph">
+<area shape="rect" title="Serialize a CatalogStar into a byte buffer." alt="" coords="444,5,631,32"/>
+<area shape="rect" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="236,5,396,32"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,32"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="a27ceaf6d1d5d30db1fe89367989c642c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a27ceaf6d1d5d30db1fe89367989c642c">&#9670;&nbsp;</a></span>SerializeKVectorIndex()</h2>
+<a id="ac0c0c9865d2c16d74149bf85366cdc18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0c0c9865d2c16d74149bf85366cdc18">&#9670;&nbsp;</a></span>SerializeKVectorIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3388,6 +3480,12 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname">void lost::SerializeKVectorIndex </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
           <td class="paramname"><em>values</em>, </td>
         </tr>
@@ -3407,13 +3505,7 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numBins</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>&#160;</td>
+          <td class="paramname"><em>numBins</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3423,8 +3515,8 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Serialize a KVector index to disk. </p>
-<p>Use SerializeLengthKVectorIndex to determine how long the buffer should be. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>K-vector index layout. </p>
+<p>No magic value because its never used on its own. | size | name | description | |------------&mdash;+---------&mdash;+----------------------------------------------------------&mdash;| | 4 | numEntries | | | sizeof float | min | minimum value contained in the database | | sizeof float | max | max value contained in index | | 4 | numBins | | | 4*(numBins+1) | bins | The `i'th bin (starting from zero) stores how many pairs of | | | | stars have a distance lesst han or equal to: | | | | min+i*(max-min)/numBins | Serialize a KVector index to disk. Use SerializeLengthKVectorIndex to determine how long the buffer should be. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">values</td><td>The actual entries the kvector should be referring to, sorted in ascending order. </td></tr>
   </table>
@@ -3446,206 +3538,37 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00062">62</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a27ceaf6d1d5d30db1fe89367989c642c_cgraph.png" border="0" usemap="#anamespacelost_a27ceaf6d1d5d30db1fe89367989c642c_cgraph" alt=""/></div>
-<map name="anamespacelost_a27ceaf6d1d5d30db1fe89367989c642c_cgraph" id="anamespacelost_a27ceaf6d1d5d30db1fe89367989c642c_cgraph">
-<area shape="rect" title="Serialize a KVector index to disk." alt="" coords="5,13,201,39"/>
-<area shape="rect" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="249,5,453,47"/>
-</map>
-</div>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00060">60</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a27ceaf6d1d5d30db1fe89367989c642c_icgraph.png" border="0" usemap="#anamespacelost_a27ceaf6d1d5d30db1fe89367989c642c_icgraph" alt=""/></div>
-<map name="anamespacelost_a27ceaf6d1d5d30db1fe89367989c642c_icgraph" id="anamespacelost_a27ceaf6d1d5d30db1fe89367989c642c_icgraph">
-<area shape="rect" title="Serialize a KVector index to disk." alt="" coords="741,13,937,39"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,5,693,47"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,5,455,47"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,13,188,39"/>
+<div class="center"><img src="namespacelost_ac0c0c9865d2c16d74149bf85366cdc18_icgraph.png" border="0" usemap="#anamespacelost_ac0c0c9865d2c16d74149bf85366cdc18_icgraph" alt=""/></div>
+<map name="anamespacelost_ac0c0c9865d2c16d74149bf85366cdc18_icgraph" id="anamespacelost_ac0c0c9865d2c16d74149bf85366cdc18_icgraph">
+<area shape="rect" title="K&#45;vector index layout." alt="" coords="475,13,671,39"/>
+<area shape="rect" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,47"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,39"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="ac0b24b666a681eccbaacf52b37c6b09b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0b24b666a681eccbaacf52b37c6b09b">&#9670;&nbsp;</a></span>SerializeLengthCatalog()</h2>
+<a id="a56c54ae520919bdd6d87f291e02883d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56c54ae520919bdd6d87f291e02883d3">&#9670;&nbsp;</a></span>SerializeMultiDatabase()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">long lost::SerializeLengthCatalog </td>
+          <td class="memname">void lost::SerializeMultiDatabase </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
-          <td class="paramname"><em>catalog</em>, </td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>inclMagnitude</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>inclName</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer.">SerializeCatalog</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00119">119</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_ac0b24b666a681eccbaacf52b37c6b09b_cgraph.png" border="0" usemap="#anamespacelost_ac0b24b666a681eccbaacf52b37c6b09b_cgraph" alt=""/></div>
-<map name="anamespacelost_ac0b24b666a681eccbaacf52b37c6b09b_cgraph" id="anamespacelost_ac0b24b666a681eccbaacf52b37c6b09b_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,209,32"/>
-<area shape="rect" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="257,5,488,32"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="536,5,721,32"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_ac0b24b666a681eccbaacf52b37c6b09b_icgraph.png" border="0" usemap="#anamespacelost_ac0b24b666a681eccbaacf52b37c6b09b_icgraph" alt=""/></div>
-<map name="anamespacelost_ac0b24b666a681eccbaacf52b37c6b09b_icgraph" id="anamespacelost_ac0b24b666a681eccbaacf52b37c6b09b_icgraph">
-<area shape="rect" title=" " alt="" coords="213,5,417,32"/>
-<area shape="rect" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer." alt="" coords="5,5,165,32"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="a18edb7eda27b641f898fe6bcd9a37dc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18edb7eda27b641f898fe6bcd9a37dc0">&#9670;&nbsp;</a></span>SerializeLengthCatalogStar()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">long lost::SerializeLengthCatalogStar </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>inclMagnitude</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>inclName</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer.">SerializeCatalogStar</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="star-utils_8cpp_source.html#l00062">62</a> of file <a class="el" href="star-utils_8cpp_source.html">star-utils.cpp</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_cgraph.png" border="0" usemap="#anamespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_cgraph" alt=""/></div>
-<map name="anamespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_cgraph" id="anamespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,236,32"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="284,5,469,32"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_icgraph.png" border="0" usemap="#anamespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_icgraph" alt=""/></div>
-<map name="anamespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_icgraph" id="anamespacelost_a18edb7eda27b641f898fe6bcd9a37dc0_icgraph">
-<area shape="rect" title=" " alt="" coords="645,56,876,83"/>
-<area shape="rect" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="407,5,584,32"/>
-<area shape="rect" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer." alt="" coords="185,81,345,108"/>
-<area shape="rect" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b" title=" " alt="" coords="393,107,597,133"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="199,5,331,32"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="a32f9662c4f6edcf08e70e869e5c2fbdf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32f9662c4f6edcf08e70e869e5c2fbdf">&#9670;&nbsp;</a></span>SerializeLengthKVectorIndex()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">long lost::SerializeLengthKVectorIndex </td>
-          <td>(</td>
-          <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numBins</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>K-vector index layout. </p>
-<p>No magic value because its never used on its own. | size | name | description | |------------&mdash;+---------&mdash;+----------------------------------------------------------&mdash;| | 4 | numEntries | | | sizeof float | min | minimum value contained in the database | | sizeof float | max | max value contained in index | | 4 | numBins | | | 4*(numBins+1) | bins | The `i'th bin (starting from zero) stores how many pairs of | | | | stars have a distance lesst han or equal to: | | | | min+i*(max-min)/numBins | The number of bytes that a kvector index will take up whe serialized </p>
-
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00042">42</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_a32f9662c4f6edcf08e70e869e5c2fbdf_icgraph.png" border="0" usemap="#anamespacelost_a32f9662c4f6edcf08e70e869e5c2fbdf_icgraph" alt=""/></div>
-<map name="anamespacelost_a32f9662c4f6edcf08e70e869e5c2fbdf_icgraph" id="anamespacelost_a32f9662c4f6edcf08e70e869e5c2fbdf_icgraph">
-<area shape="rect" title="K&#45;vector index layout." alt="" coords="1075,89,1279,131"/>
-<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a50d3f4dd6d53a9d20bf9fb282a99c81b" title="Create the database from a serialized buffer." alt="" coords="741,5,1027,47"/>
-<area shape="rect" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="786,71,982,98"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,115,693,156"/>
-<area shape="rect" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="795,173,973,215"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,144,455,185"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,151,188,178"/>
-<area shape="rect" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c" title="Number of bytes that a serialized KVectorDatabase will take up." alt="" coords="509,232,687,273"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="ac9c297050f327e91460630fa720ae93c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9c297050f327e91460630fa720ae93c">&#9670;&nbsp;</a></span>SerializeLengthPairDistanceKVector() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">long lost::SerializeLengthPairDistanceKVector </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
-          <td class="paramname"><em>catalog</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>minDistance</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>maxDistance</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numBins</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">MultiDatabaseDescriptor</a> &amp;&#160;</td>
+          <td class="paramname"><em>dbs</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3655,114 +3578,34 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Number of bytes that a serialized KVectorDatabase will take up. </p>
-
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00211">211</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_ac9c297050f327e91460630fa720ae93c_cgraph.png" border="0" usemap="#anamespacelost_ac9c297050f327e91460630fa720ae93c_cgraph" alt=""/></div>
-<map name="anamespacelost_ac9c297050f327e91460630fa720ae93c_cgraph" id="anamespacelost_ac9c297050f327e91460630fa720ae93c_cgraph">
-<area shape="rect" title="Number of bytes that a serialized KVectorDatabase will take up." alt="" coords="5,27,184,69"/>
-<area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="232,5,439,32"/>
-<area shape="rect" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="246,57,425,98"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="529,5,648,32"/>
-<area shape="rect" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="487,57,691,98"/>
-</map>
-</div>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00333">333</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 
 </div>
 </div>
-<a id="afaa7020ad6a01645b45d4da236d4dfcb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afaa7020ad6a01645b45d4da236d4dfcb">&#9670;&nbsp;</a></span>SerializeLengthPairDistanceKVector() <span class="overload">[2/2]</span></h2>
+<a id="a164fee04c6e5fd2fc2e2ca9274b745fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a164fee04c6e5fd2fc2e2ca9274b745fa">&#9670;&nbsp;</a></span>SerializePadding()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">long lost::SerializeLengthPairDistanceKVector </td>
+          <td class="memname">void lost::SerializePadding </td>
           <td>(</td>
-          <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numPairs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numBins</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00206">206</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_afaa7020ad6a01645b45d4da236d4dfcb_cgraph.png" border="0" usemap="#anamespacelost_afaa7020ad6a01645b45d4da236d4dfcb_cgraph" alt=""/></div>
-<map name="anamespacelost_afaa7020ad6a01645b45d4da236d4dfcb_cgraph" id="anamespacelost_afaa7020ad6a01645b45d4da236d4dfcb_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,184,47"/>
-<area shape="rect" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="232,5,436,47"/>
-</map>
-</div>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_afaa7020ad6a01645b45d4da236d4dfcb_icgraph.png" border="0" usemap="#anamespacelost_afaa7020ad6a01645b45d4da236d4dfcb_icgraph" alt=""/></div>
-<map name="anamespacelost_afaa7020ad6a01645b45d4da236d4dfcb_icgraph" id="anamespacelost_afaa7020ad6a01645b45d4da236d4dfcb_icgraph">
-<area shape="rect" title=" " alt="" coords="741,26,920,67"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,30,455,71"/>
-<area shape="rect" href="namespacelost.html#ac9c297050f327e91460630fa720ae93c" title="Number of bytes that a serialized KVectorDatabase will take up." alt="" coords="509,26,687,67"/>
-<area shape="rect" href="namespacelost.html#a8f6c4f99ab47d2c48676901452fb8634" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,91,693,132"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,37,188,64"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="abe88691626edfb0955f7fe04bcec9375"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe88691626edfb0955f7fe04bcec9375">&#9670;&nbsp;</a></span>SerializeLengthVec3()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">long lost::SerializeLengthVec3 </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The length that a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> will take up when serialized. </p>
-
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00450">450</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_abe88691626edfb0955f7fe04bcec9375_icgraph.png" border="0" usemap="#anamespacelost_abe88691626edfb0955f7fe04bcec9375_icgraph" alt=""/></div>
-<map name="anamespacelost_abe88691626edfb0955f7fe04bcec9375_icgraph" id="anamespacelost_abe88691626edfb0955f7fe04bcec9375_icgraph">
-<area shape="rect" title="The length that a Vec3 will take up when serialized." alt="" coords="924,56,1109,83"/>
-<area shape="rect" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536" title="Deserialize a catalog star." alt="" coords="659,5,862,32"/>
-<area shape="rect" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer." alt="" coords="402,157,589,184"/>
-<area shape="rect" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="645,56,876,83"/>
-<area shape="rect" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="407,5,584,32"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="199,5,331,32"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
-<area shape="rect" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer." alt="" coords="185,107,345,133"/>
-<area shape="rect" href="namespacelost.html#ac0b24b666a681eccbaacf52b37c6b09b" title=" " alt="" coords="393,56,597,83"/>
-</map>
-</div>
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00119">119</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a8f6c4f99ab47d2c48676901452fb8634"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f6c4f99ab47d2c48676901452fb8634">&#9670;&nbsp;</a></span>SerializePairDistanceKVector()</h2>
+<a id="aefdad61aa2dbf38415d0345c1ff2916d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefdad61aa2dbf38415d0345c1ff2916d">&#9670;&nbsp;</a></span>SerializePairDistanceKVector()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3770,6 +3613,12 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname">void lost::SerializePairDistanceKVector </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td>
           <td class="paramname"><em>catalog</em>, </td>
         </tr>
@@ -3789,13 +3638,7 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">long&#160;</td>
-          <td class="paramname"><em>numBins</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>&#160;</td>
+          <td class="paramname"><em>numBins</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3808,36 +3651,65 @@ Here is the caller graph for this function:</div>
 <p>Serialize a pair-distance KVector into buffer. </p>
 <p>Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00219">219</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00194">194</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a8f6c4f99ab47d2c48676901452fb8634_cgraph.png" border="0" usemap="#anamespacelost_a8f6c4f99ab47d2c48676901452fb8634_cgraph" alt=""/></div>
-<map name="anamespacelost_a8f6c4f99ab47d2c48676901452fb8634_cgraph" id="anamespacelost_a8f6c4f99ab47d2c48676901452fb8634_cgraph">
-<area shape="rect" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="5,99,196,141"/>
+<div class="center"><img src="namespacelost_aefdad61aa2dbf38415d0345c1ff2916d_cgraph.png" border="0" usemap="#anamespacelost_aefdad61aa2dbf38415d0345c1ff2916d_cgraph" alt=""/></div>
+<map name="anamespacelost_aefdad61aa2dbf38415d0345c1ff2916d_cgraph" id="anamespacelost_aefdad61aa2dbf38415d0345c1ff2916d_cgraph">
+<area shape="rect" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="5,49,196,90"/>
 <area shape="rect" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c" title="pair K&#45;vector database layout." alt="" coords="244,5,451,32"/>
 <area shape="rect" href="namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="250,56,445,83"/>
-<area shape="rect" href="namespacelost.html#a27ceaf6d1d5d30db1fe89367989c642c" title="Serialize a KVector index to disk." alt="" coords="249,107,445,133"/>
-<area shape="rect" href="namespacelost.html#a32f9662c4f6edcf08e70e869e5c2fbdf" title="K&#45;vector index layout." alt="" coords="499,150,703,191"/>
-<area shape="rect" href="namespacelost.html#afaa7020ad6a01645b45d4da236d4dfcb" title=" " alt="" coords="258,209,437,250"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="541,5,660,32"/>
+<area shape="rect" href="namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18" title="K&#45;vector index layout." alt="" coords="249,107,445,133"/>
+<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="499,5,617,32"/>
 </map>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a8f6c4f99ab47d2c48676901452fb8634_icgraph.png" border="0" usemap="#anamespacelost_a8f6c4f99ab47d2c48676901452fb8634_icgraph" alt=""/></div>
-<map name="anamespacelost_a8f6c4f99ab47d2c48676901452fb8634_icgraph" id="anamespacelost_a8f6c4f99ab47d2c48676901452fb8634_icgraph">
-<area shape="rect" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="503,5,693,47"/>
-<area shape="rect" href="namespacelost.html#a7affa1b0e82efc2065dbd3b1e83326e7" title="Add a pair&#45;distance KVector database to the given builder." alt="" coords="236,5,455,47"/>
-<area shape="rect" href="namespacelost.html#aa309f1534940391b0d903f17a4c9be5c" title="Generate and add databases to the given multidatabase builder according to the command line options i..." alt="" coords="5,13,188,39"/>
+<div class="center"><img src="namespacelost_aefdad61aa2dbf38415d0345c1ff2916d_icgraph.png" border="0" usemap="#anamespacelost_aefdad61aa2dbf38415d0345c1ff2916d_icgraph" alt=""/></div>
+<map name="anamespacelost_aefdad61aa2dbf38415d0345c1ff2916d_icgraph" id="anamespacelost_aefdad61aa2dbf38415d0345c1ff2916d_icgraph">
+<area shape="rect" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,47"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,39"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="a65578753ccfdbffee5d561e99c7ccf19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65578753ccfdbffee5d561e99c7ccf19">&#9670;&nbsp;</a></span>SerializeVec3()</h2>
+<a id="a9af0427ae10a3db5529f2f8c74497347"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9af0427ae10a3db5529f2f8c74497347">&#9670;&nbsp;</a></span>SerializePrimitive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void lost::SerializePrimitive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00126">126</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aa2e68349539a9ef5024920ac4595e7e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2e68349539a9ef5024920ac4595e7e3">&#9670;&nbsp;</a></span>SerializeVec3()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3845,14 +3717,14 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname">void lost::SerializeVec3 </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;&#160;</td>
-          <td class="paramname"><em>vec</em>, </td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="classlost_1_1_vec3.html">Vec3</a> &amp;&#160;</td>
+          <td class="paramname"><em>vec</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -3864,15 +3736,16 @@ Here is the caller graph for this function:</div>
 
 <p>Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00455">455</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00452">452</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_a65578753ccfdbffee5d561e99c7ccf19_icgraph.png" border="0" usemap="#anamespacelost_a65578753ccfdbffee5d561e99c7ccf19_icgraph" alt=""/></div>
-<map name="anamespacelost_a65578753ccfdbffee5d561e99c7ccf19_icgraph" id="anamespacelost_a65578753ccfdbffee5d561e99c7ccf19_icgraph">
-<area shape="rect" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="448,5,589,32"/>
-<area shape="rect" href="namespacelost.html#a3b88c74fe43dd671f14f98525c7d4ae8" title="Serialize a CatalogStar into a byte buffer." alt="" coords="213,5,400,32"/>
-<area shape="rect" href="namespacelost.html#a71348982edf43778012c9682bfa99521" title="Serialize the catalog to buffer." alt="" coords="5,5,165,32"/>
+<div class="center"><img src="namespacelost_aa2e68349539a9ef5024920ac4595e7e3_icgraph.png" border="0" usemap="#anamespacelost_aa2e68349539a9ef5024920ac4595e7e3_icgraph" alt=""/></div>
+<map name="anamespacelost_aa2e68349539a9ef5024920ac4595e7e3_icgraph" id="anamespacelost_aa2e68349539a9ef5024920ac4595e7e3_icgraph">
+<area shape="rect" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="679,5,820,32"/>
+<area shape="rect" href="namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="444,5,631,32"/>
+<area shape="rect" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="236,5,396,32"/>
+<area shape="rect" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,32"/>
 </map>
 </div>
 
@@ -3896,7 +3769,7 @@ Here is the caller graph for this function:</div>
 
 <p>Create a pipeline from command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00837">837</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00835">835</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -3934,7 +3807,7 @@ Here is the caller graph for this function:</div>
 
 <p>Convert from a 3d point on the unit sphere to right ascension &amp; declination. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00141">141</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00143">143</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -3973,7 +3846,7 @@ Here is the caller graph for this function:</div>
 <p>Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars will appear to rotate clockwise). </p>
 <p>This is an "improper" z-y'-x' Euler rotation. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00096">96</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00098">98</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -4016,7 +3889,7 @@ Here is the caller graph for this function:</div>
 <p>Convert from right ascension &amp; declination to a 3d point on the unit sphere. </p>
 <p>returns unit vector </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00132">132</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00134">134</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -4081,7 +3954,7 @@ Here is the caller graph for this function:</div>
 <p>The following description is compatible with, but more actionable than, the definitions in the documentation for <a class="el" href="structlost_1_1_star_id_comparison.html" title="The result of comparing an actual star identification with the true star idenification,...">StarIdComparison</a>. A star-id is <em>correct</em> if the centroid is the closest centroid to some expected centroid, and the referenced catalog star is the same one as in the expected star-ids for that centroid. Also permissible is if the centroid is not the closest to any expected centroid, but it has the same star-id as another star closer to the closest expected centroid. All other star-ids are <em>incorrect</em> (because they are either identifying false stars, or are incorrect identifications on true stars)</p>
 <p>The "total" in the result is just the number of input stars. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01122">1122</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01121">1121</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -4243,6 +4116,145 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
+<a id="aaa3aa9350f84fa1b7725b5e3de8483ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa3aa9350f84fa1b7725b5e3de8483ba">&#9670;&nbsp;</a></span>SwapEndianness()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void lost::SwapEndianness </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unconditionally swap the endianness of a value (uses sizeof T). </p>
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00062">62</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9704a9fb2cf67873155e69407a976074"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9704a9fb2cf67873155e69407a976074">&#9670;&nbsp;</a></span>SwapEndiannessIfNecessary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void lost::SwapEndiannessIfNecessary </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Swap the endianness of a value if necessary. </p>
+<p>Uses LOST_DATABASE_{SOURCE,TARGET}_INTEGER_ENDIANNESS to determine to switch all values but float and double, which use LOST_DATABASE_{SOURCE,TARGET}_FLOAT_ENDIANNESS. </p>
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00072">72</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a716dcaf4d1704aa422252fcbc182e259"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a716dcaf4d1704aa422252fcbc182e259">&#9670;&nbsp;</a></span>SwapEndiannessIfNecessary&lt; double &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">lost::SwapEndiannessIfNecessary</a>&lt; double &gt; </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00088">88</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a86727674f19d3158cb894b4518433477"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86727674f19d3158cb894b4518433477">&#9670;&nbsp;</a></span>SwapEndiannessIfNecessary&lt; float &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">lost::SwapEndiannessIfNecessary</a>&lt; float &gt; </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *&#160;</td>
+          <td class="paramname"><em>ser</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="serialize-helpers_8hpp_source.html#l00081">81</a> of file <a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="adb169fa5f416a7acc9c7a9c52b2c86a6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adb169fa5f416a7acc9c7a9c52b2c86a6">&#9670;&nbsp;</a></span>iWCoGMinChange</h2>
@@ -4272,7 +4284,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00452">452</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00453">453</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 
 </div>
 </div>
@@ -4288,7 +4300,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00012">12</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00013">13</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -4309,7 +4321,7 @@ Here is the caller graph for this function:</div>
 </div><!-- fragment -->
 <p>3x3 identity matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00340">340</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00342">342</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -4325,43 +4337,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00473">473</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
-
-</div>
-</div>
-<a id="afc0e4e86929e738c92ddef0732ea9afa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc0e4e86929e738c92ddef0732ea9afa">&#9670;&nbsp;</a></span>kMultiDatabaseMaxDatabases</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int lost::kMultiDatabaseMaxDatabases = 64</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>maximum number of databases in a <a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a> </p>
-
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00093">93</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a9adbcdb10395a84290141accfd0377ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9adbcdb10395a84290141accfd0377ce">&#9670;&nbsp;</a></span>kMultiDatabaseTocLength</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const long lost::kMultiDatabaseTocLength = 8*<a class="el" href="namespacelost.html#afc0e4e86929e738c92ddef0732ea9afa">kMultiDatabaseMaxDatabases</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The size of the table of contents in a multidatabase (stores subdatabase locations) </p>
-
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00095">95</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00471">471</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -4387,7 +4363,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li>
-    <li class="footer">Generated on Sun May 28 2023 19:29:21 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Jun 9 2023 23:23:46 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

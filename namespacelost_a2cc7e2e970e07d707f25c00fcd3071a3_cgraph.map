@@ -1,0 +1,5 @@
+<map id="lost::SerializeCatalog" name="lost::SerializeCatalog">
+<area shape="rect" id="node1" title="Serialize the catalog to buffer." alt="" coords="5,5,165,32"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="213,5,400,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="448,5,589,32"/>
+</map>

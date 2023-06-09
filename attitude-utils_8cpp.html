@@ -96,17 +96,23 @@ $(document).ready(function(){initNavTree('attitude-utils_8cpp.html',''); initRes
 <code>#include &lt;math.h&gt;</code><br />
 <code>#include &lt;assert.h&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
+<code>#include &quot;<a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for attitude-utils.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="attitude-utils_8cpp__incl.png" border="0" usemap="#asrc_2attitude-utils_8cpp" alt=""/></div>
 <map name="asrc_2attitude-utils_8cpp" id="asrc_2attitude-utils_8cpp">
-<area shape="rect" title=" " alt="" coords="168,5,324,32"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="5,80,140,107"/>
-<area shape="rect" title=" " alt="" coords="164,80,232,107"/>
-<area shape="rect" title=" " alt="" coords="257,80,331,107"/>
-<area shape="rect" title=" " alt="" coords="355,80,435,107"/>
-<area shape="rect" title=" " alt="" coords="34,155,111,181"/>
+<area shape="rect" title=" " alt="" coords="227,5,383,32"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="58,80,193,107"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="158,155,317,181"/>
+<area shape="rect" title=" " alt="" coords="271,80,339,107"/>
+<area shape="rect" title=" " alt="" coords="364,80,439,107"/>
+<area shape="rect" title=" " alt="" coords="463,80,543,107"/>
+<area shape="rect" title=" " alt="" coords="5,155,83,181"/>
+<area shape="rect" title=" " alt="" coords="89,229,151,256"/>
+<area shape="rect" title=" " alt="" coords="175,229,246,256"/>
+<area shape="rect" title=" " alt="" coords="270,229,330,256"/>
+<area shape="rect" title=" " alt="" coords="355,229,440,256"/>
 </map>
 </div>
 </div>
@@ -151,14 +157,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a6bb9983e45dfa4b82b531ca96c397eed"><td class="memItemLeft" align="right" valign="top">Quaternion&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed">lost::DCMToQuaternion</a> (const Mat3 &amp;dcm)</td></tr>
 <tr class="memdesc:a6bb9983e45dfa4b82b531ca96c397eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation.  <a href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed">More...</a><br /></td></tr>
 <tr class="separator:a6bb9983e45dfa4b82b531ca96c397eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe88691626edfb0955f7fe04bcec9375"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">lost::SerializeLengthVec3</a> ()</td></tr>
-<tr class="memdesc:abe88691626edfb0955f7fe04bcec9375"><td class="mdescLeft">&#160;</td><td class="mdescRight">The length that a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> will take up when serialized.  <a href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375">More...</a><br /></td></tr>
-<tr class="separator:abe88691626edfb0955f7fe04bcec9375"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65578753ccfdbffee5d561e99c7ccf19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">lost::SerializeVec3</a> (const Vec3 &amp;vec, unsigned char *buffer)</td></tr>
-<tr class="memdesc:a65578753ccfdbffee5d561e99c7ccf19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3.  <a href="namespacelost.html#a65578753ccfdbffee5d561e99c7ccf19">More...</a><br /></td></tr>
-<tr class="separator:a65578753ccfdbffee5d561e99c7ccf19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a268223937ff19ee72a713631586557d3"><td class="memItemLeft" align="right" valign="top">Vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a268223937ff19ee72a713631586557d3">lost::DeserializeVec3</a> (const unsigned char *buffer)</td></tr>
-<tr class="separator:a268223937ff19ee72a713631586557d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2e68349539a9ef5024920ac4595e7e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3">lost::SerializeVec3</a> (SerializeContext *ser, const Vec3 &amp;vec)</td></tr>
+<tr class="memdesc:aa2e68349539a9ef5024920ac4595e7e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classlost_1_1_vec3.html" title="Three dimensional vector with floating point components.">Vec3</a> to buffer. Takes up space according to SerializeLengthVec3.  <a href="namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3">More...</a><br /></td></tr>
+<tr class="separator:aa2e68349539a9ef5024920ac4595e7e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5201d0881b201c54c1a7b7c293523ba"><td class="memItemLeft" align="right" valign="top">Vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba">lost::DeserializeVec3</a> (DeserializeContext *des)</td></tr>
+<tr class="separator:ab5201d0881b201c54c1a7b7c293523ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b951e30f05e0a748e6c906697002093"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">lost::Angle</a> (const Vec3 &amp;vec1, const Vec3 &amp;vec2)</td></tr>
 <tr class="memdesc:a6b951e30f05e0a748e6c906697002093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the inner angle, in radians, between two vectors.  <a href="namespacelost.html#a6b951e30f05e0a748e6c906697002093">More...</a><br /></td></tr>
 <tr class="separator:a6b951e30f05e0a748e6c906697002093"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -207,7 +210,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="attitude-utils_8cpp.html">attitude-utils.cpp</a></li>
-    <li class="footer">Generated on Sun May 28 2023 19:29:21 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Jun 9 2023 23:23:46 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

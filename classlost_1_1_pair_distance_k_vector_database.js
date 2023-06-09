@@ -1,6 +1,6 @@
 var classlost_1_1_pair_distance_k_vector_database =
 [
-    [ "PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html#a50d3f4dd6d53a9d20bf9fb282a99c81b", null ],
+    [ "PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html#a63c9e16675f56b66cc3740fb96c55dfc", null ],
     [ "FindPairsExact", "classlost_1_1_pair_distance_k_vector_database.html#a892b10b967cbbad63625f807b8a73fa2", null ],
     [ "FindPairsLiberal", "classlost_1_1_pair_distance_k_vector_database.html#a8d2180c0b5a9900a967dfadac71e17b6", null ],
     [ "MaxDistance", "classlost_1_1_pair_distance_k_vector_database.html#a74b37c794ec625196a5bed9326501332", null ],

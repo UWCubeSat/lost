@@ -1,6 +1,0 @@
-<map id="lost::DeserializeCatalogStar" name="lost::DeserializeCatalogStar">
-<area shape="rect" id="node1" title="Deserialize a catalog star." alt="" coords="591,5,793,32"/>
-<area shape="rect" id="node2" href="$namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,5,317,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,5,137,32"/>
-</map>

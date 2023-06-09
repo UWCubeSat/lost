@@ -98,9 +98,9 @@ $(document).ready(function(){initNavTree('classlost_1_1_k_vector_index.html','')
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad3152d3e3f84e92175d1b7416391bb77"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_k_vector_index.html#ad3152d3e3f84e92175d1b7416391bb77">KVectorIndex</a> (const unsigned char *)</td></tr>
-<tr class="memdesc:ad3152d3e3f84e92175d1b7416391bb77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from serialized buffer.  <a href="classlost_1_1_k_vector_index.html#ad3152d3e3f84e92175d1b7416391bb77">More...</a><br /></td></tr>
-<tr class="separator:ad3152d3e3f84e92175d1b7416391bb77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cd151dd8a9224581c9fdeaa40831379"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_k_vector_index.html#a6cd151dd8a9224581c9fdeaa40831379">KVectorIndex</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des)</td></tr>
+<tr class="memdesc:a6cd151dd8a9224581c9fdeaa40831379"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from serialized buffer.  <a href="classlost_1_1_k_vector_index.html#a6cd151dd8a9224581c9fdeaa40831379">More...</a><br /></td></tr>
+<tr class="separator:a6cd151dd8a9224581c9fdeaa40831379"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36e6030ff35142ccbe2010fd0130a02c"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c">QueryLiberal</a> (float minQueryDistance, float maxQueryDistance, long *upperIndex) const</td></tr>
 <tr class="memdesc:a36e6030ff35142ccbe2010fd0130a02c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds all the entries in the given range, and possibly a few just outside the range on the ends.  <a href="classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c">More...</a><br /></td></tr>
 <tr class="separator:a36e6030ff35142ccbe2010fd0130a02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,10 +119,10 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>A data structure enabling constant-time range queries into fixed numerical data. </p>
 <dl class="section note"><dt>Note</dt><dd>Not an instantiable database on its own &ndash; used in other databases </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00020">20</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00021">21</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad3152d3e3f84e92175d1b7416391bb77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3152d3e3f84e92175d1b7416391bb77">&#9670;&nbsp;</a></span>KVectorIndex()</h2>
+<a id="a6cd151dd8a9224581c9fdeaa40831379"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cd151dd8a9224581c9fdeaa40831379">&#9670;&nbsp;</a></span>KVectorIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -133,8 +133,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">lost::KVectorIndex::KVectorIndex </td>
           <td>(</td>
-          <td class="paramtype">const unsigned char *&#160;</td>
-          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *&#160;</td>
+          <td class="paramname"><em>des</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -147,7 +147,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Construct from serialized buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00119">119</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00106">106</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 
 </div>
 </div>
@@ -177,7 +177,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Upper bound on elements. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00030">30</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00031">31</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -215,7 +215,7 @@ Here is the caller graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00032">32</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00033">33</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -253,16 +253,7 @@ Here is the caller graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00028">28</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="classlost_1_1_k_vector_index_a6f3ee957485b41a9bf8500232a8033fe_icgraph.png" border="0" usemap="#aclasslost_1_1_k_vector_index_a6f3ee957485b41a9bf8500232a8033fe_icgraph" alt=""/></div>
-<map name="aclasslost_1_1_k_vector_index_a6f3ee957485b41a9bf8500232a8033fe_icgraph" id="aclasslost_1_1_k_vector_index_a6f3ee957485b41a9bf8500232a8033fe_icgraph">
-<area shape="rect" title=" " alt="" coords="339,5,479,47"/>
-<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a50d3f4dd6d53a9d20bf9fb282a99c81b" title="Create the database from a serialized buffer." alt="" coords="5,5,291,47"/>
-</map>
-</div>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00029">29</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -291,14 +282,15 @@ Here is the caller graph for this function:</div>
 
 <p>The number of data points in the data referred to by the kvector. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00027">27</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00028">28</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_k_vector_index_aeb86d1680f58d5a5709618d615ea7267_icgraph.png" border="0" usemap="#aclasslost_1_1_k_vector_index_aeb86d1680f58d5a5709618d615ea7267_icgraph" alt=""/></div>
 <map name="aclasslost_1_1_k_vector_index_aeb86d1680f58d5a5709618d615ea7267_icgraph" id="aclasslost_1_1_k_vector_index_aeb86d1680f58d5a5709618d615ea7267_icgraph">
-<area shape="rect" title="The number of data points in the data referred to by the kvector." alt="" coords="472,5,612,47"/>
-<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="239,5,424,47"/>
+<area shape="rect" title="The number of data points in the data referred to by the kvector." alt="" coords="572,39,712,80"/>
+<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="289,5,474,47"/>
+<area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a63c9e16675f56b66cc3740fb96c55dfc" title="Create the database from a serialized buffer." alt="" coords="239,71,524,112"/>
 <area shape="rect" href="classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,5,191,47"/>
 </map>
 </div>
@@ -346,7 +338,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the index (starting from zero) of the first value matching the query </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00141">141</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00125">125</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -374,7 +366,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_k_vector_index.html">KVectorIndex</a></li>
-    <li class="footer">Generated on Sun May 28 2023 19:29:21 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Jun 9 2023 23:23:47 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

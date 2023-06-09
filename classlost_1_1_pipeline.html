@@ -194,7 +194,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00816">816</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00814">814</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -218,24 +218,22 @@ Friends</h2></td></tr>
 <p>Run all stages of a pipeline. </p>
 <p>This is the "main" method for pipelines. In space (or when using an image file as input), the <a class="el" href="classlost_1_1_pipeline_input.html" title="Represents the input and expected outputs of a pipeline run.">PipelineInput</a> will contain only an InputImage. In this case, <code>Go</code> runs each star tracking algorithm in turn, passing the result of each step into the next one. When running on a generated image (or any pipeline input where methods other than InputImage are available), or using a <a class="el" href="classlost_1_1_pipeline.html" title="A set of algorithms that describes all or part of the star-tracking &quot;pipeline&quot;.">Pipeline</a> where some algorithms are not set, the behavior is more nuanced. Each algorithm will be run on the return value of the corresponding input method from the <a class="el" href="classlost_1_1_pipeline_input.html" title="Represents the input and expected outputs of a pipeline run.">PipelineInput</a> object, unless an earlier algorithm in the <a class="el" href="classlost_1_1_pipeline.html" title="A set of algorithms that describes all or part of the star-tracking &quot;pipeline&quot;.">Pipeline</a> returned a result, in which case that intermediate value is used instead of the value from the <a class="el" href="classlost_1_1_pipeline_input.html" title="Represents the input and expected outputs of a pipeline run.">PipelineInput</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00903">903</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00901">901</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_aea0fe125836ac0c6906886ad320f5210_cgraph.png" border="0" usemap="#aclasslost_1_1_pipeline_aea0fe125836ac0c6906886ad320f5210_cgraph" alt=""/></div>
 <map name="aclasslost_1_1_pipeline_aea0fe125836ac0c6906886ad320f5210_cgraph" id="aclasslost_1_1_pipeline_aea0fe125836ac0c6906886ad320f5210_cgraph">
-<area shape="rect" title="Run all stages of a pipeline." alt="" coords="5,220,137,247"/>
-<area shape="rect" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="185,31,363,57"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="205,82,343,123"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785" title=" " alt="" coords="205,147,343,189"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="205,213,343,254"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="205,278,343,319"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486" title=" " alt="" coords="205,343,343,385"/>
-<area shape="rect" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="193,409,355,450"/>
-<area shape="rect" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536" title="Deserialize a catalog star." alt="" coords="425,5,627,32"/>
-<area shape="rect" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="411,56,641,83"/>
-<area shape="rect" href="namespacelost.html#a268223937ff19ee72a713631586557d3" title=" " alt="" coords="703,5,861,32"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="689,56,875,83"/>
+<area shape="rect" title="Run all stages of a pipeline." alt="" coords="5,195,137,221"/>
+<area shape="rect" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="185,5,363,32"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="205,57,343,98"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785" title=" " alt="" coords="205,122,343,163"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="205,187,343,229"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="205,253,343,294"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486" title=" " alt="" coords="205,318,343,359"/>
+<area shape="rect" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="193,383,355,425"/>
+<area shape="rect" href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="411,5,613,32"/>
+<area shape="rect" href="namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba" title=" " alt="" coords="661,5,820,32"/>
 </map>
 </div>
 <div class="dynheader">
@@ -268,25 +266,23 @@ Here is the caller graph for this function:</div>
 
 <p>Convenience function to run the main <code><a class="el" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline.">Pipeline::Go</a></code> function on each input. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01004">1004</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01003">1003</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classlost_1_1_pipeline_a880d560ff40f68a2bbdc2cacc943e09d_cgraph.png" border="0" usemap="#aclasslost_1_1_pipeline_a880d560ff40f68a2bbdc2cacc943e09d_cgraph" alt=""/></div>
 <map name="aclasslost_1_1_pipeline_a880d560ff40f68a2bbdc2cacc943e09d_cgraph" id="aclasslost_1_1_pipeline_a880d560ff40f68a2bbdc2cacc943e09d_cgraph">
-<area shape="rect" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,220,137,247"/>
-<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,220,317,247"/>
-<area shape="rect" href="namespacelost.html#af4b650ecb61d27c188477fc9fbf4c886" title="Deserialize a catalog." alt="" coords="365,31,543,57"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="385,82,523,123"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785" title=" " alt="" coords="385,147,523,189"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="385,213,523,254"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="385,278,523,319"/>
-<area shape="rect" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486" title=" " alt="" coords="385,343,523,385"/>
-<area shape="rect" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="373,409,535,450"/>
-<area shape="rect" href="namespacelost.html#ae9238a92be7c82c102f015c90ce10536" title="Deserialize a catalog star." alt="" coords="605,5,807,32"/>
-<area shape="rect" href="namespacelost.html#a18edb7eda27b641f898fe6bcd9a37dc0" title=" " alt="" coords="591,56,821,83"/>
-<area shape="rect" href="namespacelost.html#a268223937ff19ee72a713631586557d3" title=" " alt="" coords="883,5,1041,32"/>
-<area shape="rect" href="namespacelost.html#abe88691626edfb0955f7fe04bcec9375" title="The length that a Vec3 will take up when serialized." alt="" coords="869,56,1055,83"/>
+<area shape="rect" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,195,137,221"/>
+<area shape="rect" href="classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="185,195,317,221"/>
+<area shape="rect" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="365,5,543,32"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="385,57,523,98"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785" title=" " alt="" coords="385,122,523,163"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="385,187,523,229"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="385,253,523,294"/>
+<area shape="rect" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486" title=" " alt="" coords="385,318,523,359"/>
+<area shape="rect" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="373,383,535,425"/>
+<area shape="rect" href="namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="591,5,793,32"/>
+<area shape="rect" href="namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba" title=" " alt="" coords="841,5,1000,32"/>
 </map>
 </div>
 
@@ -319,7 +315,7 @@ Here is the call graph for this function:</div>
 
 <p>Create a pipeline from command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00837">837</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00835">835</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -333,7 +329,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_pipeline.html">Pipeline</a></li>
-    <li class="footer">Generated on Sun May 28 2023 19:29:21 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Fri Jun 9 2023 23:23:47 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

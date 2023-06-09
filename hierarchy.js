@@ -16,6 +16,7 @@ var hierarchy =
     [ "lost::CentroidComparison", "classlost_1_1_centroid_comparison.html", null ],
     [ "lost::CentroidParams", "structlost_1_1_centroid_params.html", null ],
     [ "lost::DatabaseOptions", "classlost_1_1_database_options.html", null ],
+    [ "lost::DeserializeContext", "classlost_1_1_deserialize_context.html", null ],
     [ "lost::EulerAngles", "classlost_1_1_euler_angles.html", null ],
     [ "lost::Image", "classlost_1_1_image.html", null ],
     [ "lost::IRUnidentifiedCentroid", "classlost_1_1_i_r_unidentified_centroid.html", null ],
@@ -24,7 +25,7 @@ var hierarchy =
     [ "lost::KVectorPair", "structlost_1_1_k_vector_pair.html", null ],
     [ "lost::Mat3", "classlost_1_1_mat3.html", null ],
     [ "lost::MultiDatabase", "classlost_1_1_multi_database.html", null ],
-    [ "lost::MultiDatabaseBuilder", "classlost_1_1_multi_database_builder.html", null ],
+    [ "lost::MultiDatabaseEntry", "classlost_1_1_multi_database_entry.html", null ],
     [ "lost::PairDistanceInvolvingIterator", "classlost_1_1_pair_distance_involving_iterator.html", null ],
     [ "lost::PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html", null ],
     [ "lost::Pipeline", "classlost_1_1_pipeline.html", null ],
@@ -35,6 +36,7 @@ var hierarchy =
     [ "lost::PipelineOptions", "classlost_1_1_pipeline_options.html", null ],
     [ "lost::PipelineOutput", "structlost_1_1_pipeline_output.html", null ],
     [ "lost::Quaternion", "classlost_1_1_quaternion.html", null ],
+    [ "lost::SerializeContext", "classlost_1_1_serialize_context.html", null ],
     [ "lost::Star", "classlost_1_1_star.html", [
       [ "lost::GeneratedStar", "classlost_1_1_generated_star.html", null ]
     ] ],
