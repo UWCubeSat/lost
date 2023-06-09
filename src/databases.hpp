@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "star-utils.hpp"
+#include "serialize-helpers.hpp"
 
 namespace lost {
 
@@ -19,7 +20,7 @@ const int32_t kCatalogMagicValue = 0xF9A283BC;
 // TODO: QueryConservative, QueryExact, QueryTrapezoidal?
 class KVectorIndex {
 public:
-    explicit KVectorIndex(const unsigned char *);
+    explicit KVectorIndex(DeserializeContext *des);
 
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
 
@@ -41,8 +42,7 @@ private:
     const int32_t *bins;
 };
 
-long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
-void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
+void SerializePairDistanceKVector(SerializeContext *, const Catalog &, float minDistance, float maxDistance, long numBins);
 
 /**
  * A database storing distances between pairs of stars.
@@ -51,7 +51,7 @@ void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxD
  */
 class PairDistanceKVectorDatabase {
 public:
-    explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
+    explicit PairDistanceKVectorDatabase(DeserializeContext *des);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
     const int16_t *FindPairsExact(const Catalog &, float min, float max, const int16_t **end) const;
@@ -65,7 +65,9 @@ public:
     long NumPairs() const;
 
     /// Magic value to use when storing inside a MultiDatabase
-    static const int32_t kMagicValue = 0x2536f009;
+    static const int32_t kMagicValue; // 0x2536f009
+    // apparently you're supposed to not actually put the value of the static variables here, but
+    // rather in a cpp implementation file.
 private:
     KVectorIndex index;
     // TODO: endianness
@@ -89,11 +91,6 @@ private:
 //     int16_t *triples;
 // };
 
-/// maximum number of databases in a MultiDatabase
-const int kMultiDatabaseMaxDatabases = 64;
-/// The size of the table of contents in a multidatabase (stores subdatabase locations)
-const long kMultiDatabaseTocLength = 8*kMultiDatabaseMaxDatabases;
-
 /**
  * A database that contains multiple databases
  * This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.
@@ -108,26 +105,18 @@ private:
     const unsigned char *buffer;
 };
 
-/// Class for easily creating a MultiDatabase
-class MultiDatabaseBuilder {
+class MultiDatabaseEntry {
 public:
-    MultiDatabaseBuilder()
-        : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
-    ~MultiDatabaseBuilder();
+    MultiDatabaseEntry(int32_t magicValue, std::vector<unsigned char> bytes) // I wonder if making `bytes` a reference would avoid making two copies, or maybe it would be worse by preventing copy-elision
+        : magicValue(magicValue), bytes(bytes) { }
 
-    unsigned char *AddSubDatabase(int32_t magicValue, long length);
-
-    /// When done adding databases, use this to get the buffer you should write to disk.
-    unsigned char *Buffer() { return buffer; };
-    /// The length of the buffer returned by Buffer
-    long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
-private:
-    // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to
-    // use unique pointers. Here, however, we use realloc, so C-style memory management.
-    unsigned char *buffer;
-    // how many bytes are presently allocated for databases (excluding map)
-    long bulkLength;
+    int32_t magicValue;
+    std::vector<unsigned char> bytes;
 };
+
+typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
+
+void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs);
 
 }
 

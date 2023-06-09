@@ -9,9 +9,12 @@
 #include <iostream>
 
 #include "attitude-utils.hpp"
+#include "serialize-helpers.hpp"
 #include "star-utils.hpp"
 
 namespace lost {
+
+const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
 
 struct KVectorPair {
     int16_t index1;
@@ -38,11 +41,6 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  |               |            | min+i*(max-min)/numBins                                     |
  */
 
-/// The number of bytes that a kvector index will take up whe serialized
-long SerializeLengthKVectorIndex(long numBins) {
-    return 4+sizeof(float)+sizeof(float)+4+4*(numBins+1);
-}
-
 // apparently there's no easy way to accept an iterator argument. Hate java all you want, but at
 // least it can do that!
 // https://stackoverflow.com/questions/5054087/declare-a-function-accepting-generic-iterator or
@@ -59,8 +57,8 @@ long SerializeLengthKVectorIndex(long numBins) {
  * @param numBins the number of "bins" the KVector should use. A higher number makes query results "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min) divided by the "width" of the typical query.
  * @param buffer[out] index is written here.
  */
-void SerializeKVectorIndex(const std::vector<float> &values, float min, float max, long numBins, unsigned char *buffer) {
-    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
+void SerializeKVectorIndex(SerializeContext *ser, const std::vector<float> &values, float min, float max, long numBins) {
+    std::vector<int32_t> kVector(numBins+1); // We store sums before and after each bin
     float binWidth = (max - min) / numBins;
 
     // generate the k-vector part
@@ -92,45 +90,31 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
         lastBinVal = bin;
     }
 
-    unsigned char *bufferStart = buffer;
     // metadata fields
-    *(int32_t *)buffer = values.size();
-    buffer += sizeof(int32_t);
-    *(float *)buffer = min;
-    buffer += sizeof(float);
-    *(float *)buffer = max;
-    buffer += sizeof(float);
-    *(int32_t *)buffer = numBins;
-    buffer += sizeof(int32_t);
+    SerializePrimitive<int32_t>(ser, values.size());
+    SerializePrimitive<float>(ser, min);
+    SerializePrimitive<float>(ser, max);
+    SerializePrimitive<int32_t>(ser, numBins);
 
     // kvector index field
-    // you could probably do this with memcpy instead, but the explicit loop is necessary for endian
-    // concerns? TODO endianness
     for (const int32_t &bin : kVector) {
-        *(int32_t *)buffer = bin;
-        buffer += sizeof(int32_t);
+        SerializePrimitive<int32_t>(ser, bin);
     }
-
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
 }
 
 /// Construct from serialized buffer.
-KVectorIndex::KVectorIndex(const unsigned char *buffer) {
-    numValues = *(int32_t *)buffer;
-    buffer += sizeof(int32_t);
-    min = *(float *)buffer;
-    buffer += sizeof(float);
-    max = *(float *)buffer;
-    buffer += sizeof(float);
-    numBins = *(int32_t *)buffer;
-    buffer += sizeof(int32_t);
+KVectorIndex::KVectorIndex(DeserializeContext *des) {
+
+    numValues = DeserializePrimitive<int32_t>(des);
+    min = DeserializePrimitive<float>(des);
+    max = DeserializePrimitive<float>(des);
+    numBins = DeserializePrimitive<int32_t>(des);
 
     assert(min >= 0.0f);
     assert(max > min);
     binWidth = (max - min) / numBins;
 
-    bins = (const int32_t *)buffer;
+    bins = DeserializeArray<int32_t>(des, numBins+1);
 }
 
 /**
@@ -203,20 +187,11 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
     return result;
 }
 
-long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
-    return SerializeLengthKVectorIndex(numBins) + 2*sizeof(int16_t)*numPairs;
-}
-
-/// Number of bytes that a serialized KVectorDatabase will take up
-long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    return SerializeLengthPairDistanceKVector(CatalogToPairDistances(catalog, minDistance, maxDistance).size(), numBins);
-}
-
 /**
  * Serialize a pair-distance KVector into buffer.
  * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
-void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
+void SerializePairDistanceKVector(SerializeContext *ser, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
 
@@ -228,31 +203,21 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
         distances.push_back(pair.distance);
     }
 
-    unsigned char *bufferStart = buffer;
-
     // index field
-    SerializeKVectorIndex(distances, minDistance, maxDistance, numBins, buffer);
-    buffer += SerializeLengthKVectorIndex(numBins);
+    SerializeKVectorIndex(ser, distances, minDistance, maxDistance, numBins);
 
     // bulk pairs field
     for (const KVectorPair &pair : pairs) {
-        *(int16_t *)buffer = pair.index1;
-        buffer += sizeof(int16_t);
-        *(int16_t *)buffer = pair.index2;
-        buffer += sizeof(int16_t);
+        SerializePrimitive<int16_t>(ser, pair.index1);
+        SerializePrimitive<int16_t>(ser, pair.index2);
     }
-
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
 /// Create the database from a serialized buffer.
-PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
-    : index(KVectorIndex(buffer)) {
+PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(DeserializeContext *des)
+    : index(KVectorIndex(des)) {
 
-    // TODO: errors? (not even sure what i meant by this comment anymore)
-    buffer += SerializeLengthKVectorIndex(index.NumBins());
-    pairs = (const int16_t *)buffer;
+    pairs = DeserializeArray<int16_t>(des, 2*index.NumValues());
 }
 
 /// Return the value in the range [low,high] which is closest to num
@@ -328,11 +293,13 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
 /**
    MultiDatabase memory layout:
 
-   | size           | name              | description                                             |
-   |----------------+-------------------+---------------------------------------------------------|
-   | 8*maxDatabases | table of contents | each 8-byte entry is the 4-byte magic value followed by |
-   |                |                   | a 4-byte index into the bulk where that db begins       |
-   | Large          | databases         | the database contents                                   |
+   | size | name           | description                                 |
+   |------+----------------+---------------------------------------------|
+   |    4 | magicValue     | unique database identifier                  |
+   |    4 | databaseLength | length in bytes (32-bit unsigned)           |
+   |    n | database       | the entire database. 8-byte aligned         |
+   |  ... | ...            | More databases (each has value, length, db) |
+   |    4 | caboose        | 4 null bytes indicate the end               |
  */
 
 /**
@@ -342,61 +309,36 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star, cons
  * @return Returns a pointer to the start of the database type indicated by the magic value, null if not found
  */
 const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const {
-    long databaseIndex = -1;
-    int32_t *toc = (int32_t *)buffer;
-    for (int i = 0; i < kMultiDatabaseMaxDatabases; i++) {
-        int32_t curMagicValue = *toc;
-        toc++;
+    DeserializeContext desValue(buffer);
+    DeserializeContext *des = &desValue; // just for naming consistency with how we use `des` elsewhere
+
+    assert(magicValue != 0);
+    while (true) {
+        int32_t curMagicValue = DeserializePrimitive<int32_t>(des);
+        if (curMagicValue == 0) {
+            return nullptr;
+        }
+        uint32_t dbLength = DeserializePrimitive<uint32_t>(des);
+        assert(dbLength > 0);
+        DeserializePadding<uint64_t>(des); // align to an 8-byte boundary
+        const unsigned char *curSubDatabasePointer = DeserializeArray<unsigned char>(des, dbLength);
         if (curMagicValue == magicValue) {
-            databaseIndex = *toc;
-            break;
+            return curSubDatabasePointer;
         }
-        toc++;
     }
-    // the database was not found
-    if (databaseIndex < 0) {
-        return NULL;
-    }
-
-    return buffer+kMultiDatabaseTocLength+databaseIndex;
+    // shouldn't ever make it here. Compiler should remove this assertion as unreachable.
+    assert(false);
 }
 
-/**
- * Add a database to a MultiDatabase
- * @param magicValue A value unique to this type of database which is used to extract it out of the database later.
- * @param length The number of bytes to allocate for this database.
- * @return Pointer to the start of the space allocated for said database. Return null if full (too many databases).
- */
-unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long length) {
-    // find unused spot in toc and take it!
-    int32_t *toc = (int32_t *)buffer;
-    bool foundSpot = false;
-    for (int i = 0; i < kMultiDatabaseMaxDatabases; i++) {
-        if (*toc == 0) {
-            *toc = magicValue;
-            toc++;
-            *toc = bulkLength;
-            foundSpot = true;
-            break;
-        }
-        // skip the entry
-        toc += 2;
+void SerializeMultiDatabase(SerializeContext *ser,
+                            const MultiDatabaseDescriptor &dbs) {
+    for (const MultiDatabaseEntry &multiDbEntry : dbs) {
+        SerializePrimitive<int32_t>(ser, multiDbEntry.magicValue);
+        SerializePrimitive<uint32_t>(ser, multiDbEntry.bytes.size());
+        SerializePadding<uint64_t>(ser);
+        std::copy(multiDbEntry.bytes.cbegin(), multiDbEntry.bytes.cend(), std::back_inserter(ser->buffer));
     }
-
-    // database is full
-    if (!foundSpot) {
-        return NULL;
-    }
-
-    buffer = (unsigned char *)realloc(buffer, kMultiDatabaseTocLength+bulkLength+length);
-    // just past the end of the last database
-    unsigned char *result = buffer+kMultiDatabaseTocLength+bulkLength;
-    bulkLength += length;
-    return result;
-}
-
-MultiDatabaseBuilder::~MultiDatabaseBuilder() {
-    free(buffer);
+    SerializePrimitive<int32_t>(ser, 0); // caboose
 }
 
 }

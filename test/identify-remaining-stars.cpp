@@ -2,6 +2,7 @@
 
 #include <catch.hpp>
 
+#include "databases.hpp"
 #include "star-id.hpp"
 #include "star-id-private.hpp"
 
@@ -51,16 +52,17 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 
 std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
                                            float dist1, float dist2, float tolerance) {
-    unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(integralCatalog, NULL, 0, M_PI, 1000);
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, integralCatalog, 0, M_PI, 1000);
+    DeserializeContext des(ser.buffer.data());
     auto cs1 = FindNamedStar(catalog, catalogName1);
     auto cs2 = FindNamedStar(catalog, catalogName2);
 
-    PairDistanceKVectorDatabase db(dbBytes);
+    PairDistanceKVectorDatabase db(&des);
     auto result = IdentifyThirdStar(db,
                                     catalog,
                                     cs1 - catalog.cbegin(), cs2 - catalog.cbegin(),
                                     dist1, dist2, tolerance);
-    delete[] dbBytes;
     return result;
 }
 
@@ -163,12 +165,12 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
         someFakeStarIds.push_back(fakeStarIdsCopy[i]);
     }
 
-    unsigned char *dbBytes = BuildPairDistanceKVectorDatabase(fakeCatalog, NULL, 0, M_PI, 1000);
-    PairDistanceKVectorDatabase db(dbBytes);
+    SerializeContext ser;
+    SerializePairDistanceKVector(&ser, fakeCatalog, 0, M_PI, 1000);
+    DeserializeContext des(ser.buffer.data());
+    PairDistanceKVectorDatabase db(&des);
 
     int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-5);
-
-    delete[] dbBytes;
 
     REQUIRE(numIdentified == numFakeStars - fakePatternSize);
     REQUIRE(AreStarIdentifiersEquivalent(fakeStarIds, someFakeStarIds));

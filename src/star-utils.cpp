@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <set>
 
+#include "serialize-helpers.hpp"
+
 namespace lost {
 
 // brightest star first
@@ -58,18 +60,6 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
     return catalog.cend();
 }
 
-/// @sa SerializeCatalogStar
-long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
-    long starSize = SerializeLengthVec3();
-    if (inclMagnitude) {
-        starSize += sizeof(float);
-    }
-    if (inclName) {
-        starSize += sizeof(int16_t);
-    }
-    return starSize;
-}
-
 /**
  * Serialize a CatalogStar into a byte buffer.
  * Use SerializeLengthCatalogStar() to determine how many bytes to allocate in `buffer`
@@ -77,17 +67,14 @@ long SerializeLengthCatalogStar(bool inclMagnitude, bool inclName) {
  * @param inclName Whether to include the (numerical) name of the star.
  * @param buffer[out] Where the serialized star is stored.
  */
-void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bool inclName, unsigned char *buffer) {
-    SerializeVec3(catalogStar.spatial, buffer);
-    buffer += SerializeLengthVec3();
+void SerializeCatalogStar(SerializeContext *ser, const CatalogStar &catalogStar, bool inclMagnitude, bool inclName) {
+    SerializeVec3(ser, catalogStar.spatial);
     if (inclMagnitude) {
-        *(float *)buffer = catalogStar.magnitude;
-        buffer += sizeof(float);
+        SerializePrimitive<float>(ser, catalogStar.magnitude);
     }
     if (inclName) {
         // TODO: double check that bools aren't some special bitwise thing in C++
-        *(int16_t *)buffer = catalogStar.name;
-        buffer += sizeof(int16_t);
+        SerializePrimitive<int16_t>(ser, catalogStar.name);
     }
 }
 
@@ -96,28 +83,20 @@ void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bo
  * @warn The `inclMagnitude` and `inclName` parameters must be the same as passed to SerializeCatalogStar()
  * @sa SerializeCatalogStar
  */
-CatalogStar DeserializeCatalogStar(const unsigned char *buffer, bool inclMagnitude, bool inclName) {
+CatalogStar DeserializeCatalogStar(DeserializeContext *des, bool inclMagnitude, bool inclName) {
     CatalogStar result;
-    result.spatial = DeserializeVec3(buffer);
-    buffer += SerializeLengthVec3();
+    result.spatial = DeserializeVec3(des);
     if (inclMagnitude) {
-        result.magnitude = *(float *)buffer;
-        buffer += sizeof(float);
+        result.magnitude = DeserializePrimitive<float>(des);
     } else {
         result.magnitude = -424242; // TODO, what to do about special values, since there's no good ones for ints.
     }
     if (inclName) {
-        result.name = *(int16_t *)buffer;
-        buffer += sizeof(int16_t);
+        result.name = DeserializePrimitive<int16_t>(des);
     } else {
         result.name = -1;
     }
     return result;
-}
-
-/// @sa SerializeCatalog
-long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName) {
-    return sizeof(int16_t) + sizeof(int8_t) + catalog.size()*SerializeLengthCatalogStar(inclMagnitude, inclName);
 }
 
 /**
@@ -125,56 +104,41 @@ long SerializeLengthCatalog(const Catalog &catalog, bool inclMagnitude, bool inc
  * Use SerializeLengthCatalog() to determine how many bytes to allocate in `buffer`
  * @param inclMagnitude,inclName See SerializeCatalogStar()
  */
-void SerializeCatalog(const Catalog &catalog, bool inclMagnitude, bool inclName, unsigned char *buffer) {
-    unsigned char *bufferStart = buffer;
-
-    // size
-    *(int16_t *)buffer = catalog.size();
-    buffer += sizeof(int16_t);
+void SerializeCatalog(SerializeContext *ser, const Catalog &catalog, bool inclMagnitude, bool inclName) {
+    SerializePrimitive<int16_t>(ser, catalog.size());
 
     // flags
     int8_t flags = (inclMagnitude) | (inclName << 1);
-    *(int8_t *)buffer = flags;
-    buffer += sizeof(int8_t);
+    SerializePrimitive<int8_t>(ser, flags);
 
-    long catalogStarLength = SerializeLengthCatalogStar(inclMagnitude, inclName);
     for (const CatalogStar &catalogStar : catalog) {
-        SerializeCatalogStar(catalogStar, inclMagnitude, inclName, buffer);
-        buffer += catalogStarLength;
+        SerializeCatalogStar(ser, catalogStar, inclMagnitude, inclName);
     }
-
-    assert(buffer-bufferStart == SerializeLengthCatalog(catalog, inclMagnitude, inclName));
 }
-
-// TODO (longer term): don't deserialize the catalog, store it on disk using the in-memory format so
-// we can just copy it to memory then cast
 
 /**
  * Deserialize a catalog.
  * @param[out] inclMagnitudeReturn,inclNameReturn Will store whether `inclMagnitude` and `inclNameReturn` were set in the corresponding SerializeCatalog() call.
  */
-Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn) {
+Catalog DeserializeCatalog(DeserializeContext *des, bool *inclMagnitudeReturn, bool *inclNameReturn) {
     bool inclName, inclMagnitude;
     Catalog result;
 
-    int16_t numStars = *(int16_t *)buffer;
-    buffer += sizeof(int16_t);
+    int16_t numStars = DeserializePrimitive<int16_t>(des);
 
-    int8_t flags = *(int8_t *)buffer;
+    int8_t flags = DeserializePrimitive<int8_t>(des);
     inclMagnitude = (flags) & 1;
     inclName = (flags>>1) & 1;
+
     if (inclMagnitudeReturn != NULL) {
         *inclMagnitudeReturn = inclMagnitude;
     }
     if (inclNameReturn != NULL) {
         *inclNameReturn = inclName;
     }
-    buffer += sizeof(int8_t);
 
-    int catalogStarLength = SerializeLengthCatalogStar(inclMagnitude, inclName);
     for (int i = 0; i < numStars; i++) {
-        result.push_back(DeserializeCatalogStar(buffer, inclMagnitude, inclName));
-        buffer += catalogStarLength;
+        result.push_back(DeserializeCatalogStar(des, inclMagnitude, inclName));
     }
 
     return result;

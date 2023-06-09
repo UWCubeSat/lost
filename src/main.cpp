@@ -28,19 +28,14 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
-    MultiDatabaseBuilder builder;
-    // TODO: allow magnitude and weird
-    unsigned char
-        *catalogBuffer =
-        builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
-    SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
+    MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
+    SerializeContext ser = serFromDbValues(values);
+    SerializeMultiDatabase(&ser, dbEntries);
 
-    GenerateDatabases(&builder, narrowedCatalog, values);
-
-    std::cerr << "Generated database with " << builder.BufferLength() << " bytes" << std::endl;
+    std::cerr << "Generated database with " << ser.buffer.size() << " bytes" << std::endl;
 
     UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
-    pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
+    pos.Stream().write((char *) ser.buffer.data(), ser.buffer.size());
 
 }
 

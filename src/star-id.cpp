@@ -35,7 +35,8 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     if (databaseBuffer == NULL) {
         return identified;
     }
-    PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
+    DeserializeContext des(databaseBuffer);
+    PairDistanceKVectorDatabase vectorDatabase(&des);
 
     for (int i = 0; i < (int)stars.size(); i++) {
         std::vector<int16_t> votes(catalog.size(), 0);
@@ -577,7 +578,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
         std::cerr << "Not enough stars, or database missing." << std::endl;
         return identified;
     }
-    PairDistanceKVectorDatabase vectorDatabase(databaseBuffer);
+    DeserializeContext des(databaseBuffer);
+    PairDistanceKVectorDatabase vectorDatabase(&des);
 
     // smallest normal single-precision float is around 10^-38 so we should be all good. See
     // Analytic_Star_Pattern_Probability on the HSL wiki for details.
