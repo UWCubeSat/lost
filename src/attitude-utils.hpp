@@ -2,6 +2,9 @@
 #define ATTITUDE_UTILS_H
 
 #include <memory>
+#include <vector>
+
+#include "serialize-helpers.hpp"
 
 namespace lost {
 
@@ -67,8 +70,8 @@ public:
 extern const Mat3 kIdentityMat3;
 
 long SerializeLengthVec3();
-void SerializeVec3(const Vec3 &, unsigned char *);
-Vec3 DeserializeVec3(const unsigned char *);
+void SerializeVec3(std::vector<unsigned char> *, const Vec3 &);
+Vec3 DeserializeVec3(DeserializeContext *des);
 
 float Distance(const Vec2 &, const Vec2 &);
 float Distance(const Vec3 &, const Vec3 &);

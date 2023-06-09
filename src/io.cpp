@@ -265,33 +265,28 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-/// Add a pair-distance KVector database to the given builder.
-void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
-    // database generation
-    long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
-    unsigned char *buffer = builder->AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
-    if (buffer == NULL) {
-        std::cerr << "No room for another database." << std::endl;
-    }
-    SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
+MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const DatabaseOptions &values) {
+    MultiDatabaseDescriptor dbEntries;
 
-    // TODO: also parse it and print out some stats before returning
-}
-
-/// Generate and add databases to the given multidatabase builder according to the command line options in `values`
-void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
+    // always include the serialized catalog
+    std::vector<unsigned char> catalogBuffer;
+    // TODO decide why we have this inclMagnitude and inclName and if we should change that
+    SerializeCatalog(&catalogBuffer, catalog, false, true);
+    dbEntries.emplace_back(kCatalogMagicValue, catalogBuffer);
 
     if (values.kvector) {
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
-        BuildPairDistanceKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+        std::vector<unsigned char> buffer;
+        SerializePairDistanceKVector(&buffer, catalog, minDistance, maxDistance, numBins);
+        dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, buffer);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
 
+    return dbEntries;
 }
 
 /// Print information about the camera in machine and human-readable form.
@@ -915,7 +910,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         MultiDatabase multiDatabase(database.get());
         const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
         if (catalogBuffer != NULL) {
-            result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+            DeserializeContext des(catalogBuffer);
+            result.catalog = DeserializeCatalog(&des, NULL, NULL);
         } else {
             std::cerr << "WARNING: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
             result.catalog = input.GetCatalog();
