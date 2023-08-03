@@ -952,7 +952,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;        <a class="code" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> unfilteredStars = centroidAlgorithm-&gt;Go(inputImage-&gt;<a class="code" href="classlost_1_1_image.html#a1cf1464da2a2b11d9983ed1f022da26b">image</a>, inputImage-&gt;<a class="code" href="classlost_1_1_image.html#af450eb35614041beeb2bec120aac739e">width</a>, inputImage-&gt;<a class="code" href="classlost_1_1_image.html#a705ef08de937ac85cf4a5c5e1084475e">height</a>);</div>
 <div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160; </div>
 <div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;        std::chrono::time_point&lt;std::chrono::steady_clock&gt; end = std::chrono::steady_clock::now();</div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;        result.<a class="code" href="structlost_1_1_pipeline_output.html#ab299485c94c8d2f5c4094869fadd8a62">centroidingTimeNs</a> = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(end - start).count();</div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;        result.<a class="code" href="structlost_1_1_pipeline_output.html#a36786786f6025272fc7befd01924d0d9">centroidingTimeNs</a> = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(end - start).count();</div>
 <div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160; </div>
 <div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;        <span class="comment">// MAGNITUDE FILTERING</span></div>
 <div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;        <span class="keywordtype">int</span> minMagnitude = centroidMinMagnitude;</div>
@@ -994,7 +994,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;            starIdAlgorithm-&gt;Go(database.get(), *inputStars, result.<a class="code" href="structlost_1_1_pipeline_output.html#a18bcd3f7aa001bd26cbc67a2ae3ffcca">catalog</a>, *input.<a class="code" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785">InputCamera</a>())));</div>
 <div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160; </div>
 <div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;        std::chrono::time_point&lt;std::chrono::steady_clock&gt; end = std::chrono::steady_clock::now();</div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;        result.<a class="code" href="structlost_1_1_pipeline_output.html#ab56fb6e6eafedf6134659395be542305">starIdTimeNs</a> = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(end - start).count();</div>
+<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;        result.<a class="code" href="structlost_1_1_pipeline_output.html#a7b5b37d2654b51a1c859866165481ce7">starIdTimeNs</a> = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(end - start).count();</div>
 <div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160; </div>
 <div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;        inputStarIds = result.<a class="code" href="structlost_1_1_pipeline_output.html#af5fb349aaee63e4e932069bc01743042">starIds</a>.get();</div>
 <div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (starIdAlgorithm) {</div>
@@ -1010,7 +1010,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;            <span class="keyword">new</span> <a class="code" href="classlost_1_1_attitude.html">Attitude</a>(attitudeEstimationAlgorithm-&gt;Go(*input.<a class="code" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785">InputCamera</a>(), *inputStars, result.<a class="code" href="structlost_1_1_pipeline_output.html#a18bcd3f7aa001bd26cbc67a2ae3ffcca">catalog</a>, *inputStarIds)));</div>
 <div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160; </div>
 <div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;        std::chrono::time_point&lt;std::chrono::steady_clock&gt; end = std::chrono::steady_clock::now();</div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;        result.<a class="code" href="structlost_1_1_pipeline_output.html#a49482206ef9a4c6baacb708433168010">attitudeEstimationTimeNs</a> = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(end - start).count();</div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;        result.<a class="code" href="structlost_1_1_pipeline_output.html#aa8e8e553d151f56f587d7906fd4a9229">attitudeEstimationTimeNs</a> = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(end - start).count();</div>
 <div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (attitudeEstimationAlgorithm) {</div>
 <div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;ERROR: Attitude estimation algorithm set, but either star IDs or camera are missing. One reason this can happen: Setting a centroid algorithm and attitude algorithm, but no star-id algorithm -- that can&#39;t work because the input star-ids won&#39;t properly correspond to the output centroids!&quot;</span> &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;        exit(1);</div>
@@ -1539,13 +1539,13 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l01559"></a><span class="lineno"> 1559</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;attitude_error_rate &quot;</span> &lt;&lt; fractionIncorrect &lt;&lt; std::endl;</div>
 <div class="line"><a name="l01560"></a><span class="lineno"> 1560</span>&#160;}</div>
 <div class="line"><a name="l01561"></a><span class="lineno"> 1561</span>&#160; </div>
-<div class="line"><a name="l01562"></a><span class="lineno"> 1562</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PrintTimeStats(std::ostream &amp;os, <span class="keyword">const</span> std::string &amp;prefix, <span class="keyword">const</span> std::vector&lt;long&gt; &amp;times) {</div>
+<div class="line"><a name="l01562"></a><span class="lineno"> 1562</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> PrintTimeStats(std::ostream &amp;os, <span class="keyword">const</span> std::string &amp;prefix, <span class="keyword">const</span> std::vector&lt;long long&gt; &amp;times) {</div>
 <div class="line"><a name="l01563"></a><span class="lineno"> 1563</span>&#160;    assert(times.size() &gt; 0);</div>
 <div class="line"><a name="l01564"></a><span class="lineno"> 1564</span>&#160; </div>
 <div class="line"><a name="l01565"></a><span class="lineno"> 1565</span>&#160;    <span class="comment">// print average, min, max, and 95% max</span></div>
-<div class="line"><a name="l01566"></a><span class="lineno"> 1566</span>&#160;    <span class="keywordtype">long</span> sum = 0;</div>
-<div class="line"><a name="l01567"></a><span class="lineno"> 1567</span>&#160;    <span class="keywordtype">long</span> min = LONG_MAX;</div>
-<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160;    <span class="keywordtype">long</span> max = 0;</div>
+<div class="line"><a name="l01566"></a><span class="lineno"> 1566</span>&#160;    <span class="keywordtype">long</span> <span class="keywordtype">long</span> sum = 0;</div>
+<div class="line"><a name="l01567"></a><span class="lineno"> 1567</span>&#160;    <span class="keywordtype">long</span> <span class="keywordtype">long</span> min = LONG_MAX;</div>
+<div class="line"><a name="l01568"></a><span class="lineno"> 1568</span>&#160;    <span class="keywordtype">long</span> <span class="keywordtype">long</span> max = 0;</div>
 <div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)times.size(); i++) {</div>
 <div class="line"><a name="l01570"></a><span class="lineno"> 1570</span>&#160;        assert(times[i] &gt; 0);</div>
 <div class="line"><a name="l01571"></a><span class="lineno"> 1571</span>&#160;        sum += times[i];</div>
@@ -1553,14 +1553,14 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l01573"></a><span class="lineno"> 1573</span>&#160;        max = std::max(max, times[i]);</div>
 <div class="line"><a name="l01574"></a><span class="lineno"> 1574</span>&#160;    }</div>
 <div class="line"><a name="l01575"></a><span class="lineno"> 1575</span>&#160;    <span class="keywordtype">long</span> average = sum / times.size();</div>
-<div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;    std::vector&lt;long&gt; sortedTimes = times;</div>
+<div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;    std::vector&lt;long long&gt; sortedTimes = times;</div>
 <div class="line"><a name="l01577"></a><span class="lineno"> 1577</span>&#160;    std::sort(sortedTimes.begin(), sortedTimes.end());</div>
 <div class="line"><a name="l01578"></a><span class="lineno"> 1578</span>&#160;    <span class="comment">// what really is the 95th percentile? Being conservative, we want to pick a value that at least</span></div>
 <div class="line"><a name="l01579"></a><span class="lineno"> 1579</span>&#160;    <span class="comment">// 95% of the times are less than. This means: (1) finding the number of times, (2) Finding</span></div>
 <div class="line"><a name="l01580"></a><span class="lineno"> 1580</span>&#160;    <span class="comment">// Math.ceil(0.95 * numTimes), and (3) subtracting 1 to get the index.</span></div>
 <div class="line"><a name="l01581"></a><span class="lineno"> 1581</span>&#160;    <span class="keywordtype">int</span> ninetyFiveIndex = (int)std::ceil(0.95 * times.size()) - 1;</div>
 <div class="line"><a name="l01582"></a><span class="lineno"> 1582</span>&#160;    assert(ninetyFiveIndex &gt;= 0);</div>
-<div class="line"><a name="l01583"></a><span class="lineno"> 1583</span>&#160;    <span class="keywordtype">long</span> ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];</div>
+<div class="line"><a name="l01583"></a><span class="lineno"> 1583</span>&#160;    <span class="keywordtype">long</span> <span class="keywordtype">long</span> ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];</div>
 <div class="line"><a name="l01584"></a><span class="lineno"> 1584</span>&#160; </div>
 <div class="line"><a name="l01585"></a><span class="lineno"> 1585</span>&#160;    os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_average_ns &quot;</span> &lt;&lt; average &lt;&lt; std::endl;</div>
 <div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;    os &lt;&lt; prefix &lt;&lt; <span class="stringliteral">&quot;_min_ns &quot;</span> &lt;&lt; min &lt;&lt; std::endl;</div>
@@ -1572,12 +1572,12 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l01593"></a><span class="lineno"> 1593</span>&#160;                                    <span class="keyword">const</span> <a class="code" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;,</div>
 <div class="line"><a name="l01594"></a><span class="lineno"> 1594</span>&#160;                                    <span class="keyword">const</span> std::vector&lt;PipelineOutput&gt; &amp;actual,</div>
 <div class="line"><a name="l01595"></a><span class="lineno"> 1595</span>&#160;                                    <span class="keyword">const</span> PipelineOptions &amp;) {</div>
-<div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;    std::vector&lt;long&gt; centroidingTimes;</div>
-<div class="line"><a name="l01597"></a><span class="lineno"> 1597</span>&#160;    std::vector&lt;long&gt; starIdTimes;</div>
-<div class="line"><a name="l01598"></a><span class="lineno"> 1598</span>&#160;    std::vector&lt;long&gt; attitudeTimes;</div>
-<div class="line"><a name="l01599"></a><span class="lineno"> 1599</span>&#160;    std::vector&lt;long&gt; totalTimes;</div>
+<div class="line"><a name="l01596"></a><span class="lineno"> 1596</span>&#160;    std::vector&lt;long long&gt; centroidingTimes;</div>
+<div class="line"><a name="l01597"></a><span class="lineno"> 1597</span>&#160;    std::vector&lt;long long&gt; starIdTimes;</div>
+<div class="line"><a name="l01598"></a><span class="lineno"> 1598</span>&#160;    std::vector&lt;long long&gt; attitudeTimes;</div>
+<div class="line"><a name="l01599"></a><span class="lineno"> 1599</span>&#160;    std::vector&lt;long long&gt; totalTimes;</div>
 <div class="line"><a name="l01600"></a><span class="lineno"> 1600</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; (int)actual.size(); i++) {</div>
-<div class="line"><a name="l01601"></a><span class="lineno"> 1601</span>&#160;        <span class="keywordtype">long</span> totalTime = 0;</div>
+<div class="line"><a name="l01601"></a><span class="lineno"> 1601</span>&#160;        <span class="keywordtype">long</span> <span class="keywordtype">long</span> totalTime = 0;</div>
 <div class="line"><a name="l01602"></a><span class="lineno"> 1602</span>&#160;        <span class="keywordflow">if</span> (actual[i].centroidingTimeNs &gt; 0) {</div>
 <div class="line"><a name="l01603"></a><span class="lineno"> 1603</span>&#160;            centroidingTimes.push_back(actual[i].centroidingTimeNs);</div>
 <div class="line"><a name="l01604"></a><span class="lineno"> 1604</span>&#160;            totalTime += actual[i].centroidingTimeNs;</div>
@@ -2005,10 +2005,10 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="ttc" id="astar-utils_8hpp_html"><div class="ttname"><a href="star-utils_8hpp.html">star-utils.hpp</a></div></div>
 <div class="ttc" id="astructlost_1_1_pipeline_output_html"><div class="ttname"><a href="structlost_1_1_pipeline_output.html">lost::PipelineOutput</a></div><div class="ttdoc">The result of running a pipeline.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00189">io.hpp:189</a></div></div>
 <div class="ttc" id="astructlost_1_1_pipeline_output_html_a18bcd3f7aa001bd26cbc67a2ae3ffcca"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#a18bcd3f7aa001bd26cbc67a2ae3ffcca">lost::PipelineOutput::catalog</a></div><div class="ttdeci">Catalog catalog</div><div class="ttdoc">The catalog that the indices in starIds refer to.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00204">io.hpp:204</a></div></div>
-<div class="ttc" id="astructlost_1_1_pipeline_output_html_a49482206ef9a4c6baacb708433168010"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#a49482206ef9a4c6baacb708433168010">lost::PipelineOutput::attitudeEstimationTimeNs</a></div><div class="ttdeci">long attitudeEstimationTimeNs</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00198">io.hpp:198</a></div></div>
+<div class="ttc" id="astructlost_1_1_pipeline_output_html_a36786786f6025272fc7befd01924d0d9"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#a36786786f6025272fc7befd01924d0d9">lost::PipelineOutput::centroidingTimeNs</a></div><div class="ttdeci">long long centroidingTimeNs</div><div class="ttdoc">How many nanoseconds the centroiding stage of the pipeline took.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00196">io.hpp:196</a></div></div>
 <div class="ttc" id="astructlost_1_1_pipeline_output_html_a7743f8496f64299c8af36ac0ec080699"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#a7743f8496f64299c8af36ac0ec080699">lost::PipelineOutput::stars</a></div><div class="ttdeci">std::unique_ptr&lt; Stars &gt; stars</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00190">io.hpp:190</a></div></div>
-<div class="ttc" id="astructlost_1_1_pipeline_output_html_ab299485c94c8d2f5c4094869fadd8a62"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#ab299485c94c8d2f5c4094869fadd8a62">lost::PipelineOutput::centroidingTimeNs</a></div><div class="ttdeci">long centroidingTimeNs</div><div class="ttdoc">How many nanoseconds the centroiding stage of the pipeline took.</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00196">io.hpp:196</a></div></div>
-<div class="ttc" id="astructlost_1_1_pipeline_output_html_ab56fb6e6eafedf6134659395be542305"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#ab56fb6e6eafedf6134659395be542305">lost::PipelineOutput::starIdTimeNs</a></div><div class="ttdeci">long starIdTimeNs</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00197">io.hpp:197</a></div></div>
+<div class="ttc" id="astructlost_1_1_pipeline_output_html_a7b5b37d2654b51a1c859866165481ce7"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#a7b5b37d2654b51a1c859866165481ce7">lost::PipelineOutput::starIdTimeNs</a></div><div class="ttdeci">long long starIdTimeNs</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00197">io.hpp:197</a></div></div>
+<div class="ttc" id="astructlost_1_1_pipeline_output_html_aa8e8e553d151f56f587d7906fd4a9229"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#aa8e8e553d151f56f587d7906fd4a9229">lost::PipelineOutput::attitudeEstimationTimeNs</a></div><div class="ttdeci">long long attitudeEstimationTimeNs</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00198">io.hpp:198</a></div></div>
 <div class="ttc" id="astructlost_1_1_pipeline_output_html_ad2be75247ab893fb920ece9f2eb800f8"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#ad2be75247ab893fb920ece9f2eb800f8">lost::PipelineOutput::attitude</a></div><div class="ttdeci">std::unique_ptr&lt; Attitude &gt; attitude</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00192">io.hpp:192</a></div></div>
 <div class="ttc" id="astructlost_1_1_pipeline_output_html_af5fb349aaee63e4e932069bc01743042"><div class="ttname"><a href="structlost_1_1_pipeline_output.html#af5fb349aaee63e4e932069bc01743042">lost::PipelineOutput::starIds</a></div><div class="ttdeci">std::unique_ptr&lt; StarIdentifiers &gt; starIds</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00191">io.hpp:191</a></div></div>
 <div class="ttc" id="astructlost_1_1_star_id_comparison_html"><div class="ttname"><a href="structlost_1_1_star_id_comparison.html">lost::StarIdComparison</a></div><div class="ttdoc">The result of comparing an actual star identification with the true star idenification,...</div><div class="ttdef"><b>Definition:</b> <a href="io_8hpp_source.html#l00208">io.hpp:208</a></div></div>
@@ -2026,7 +2026,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Fri Jun 9 2023 23:23:46 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Thu Aug 3 2023 00:31:15 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

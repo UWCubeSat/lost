@@ -19,7 +19,7 @@ var searchData=
   ['centroidcomparisonscombine_43',['CentroidComparisonsCombine',['../namespacelost.html#a0fe01051c958fa8ced02e772aefdc991',1,'lost']]],
   ['centroiders_2ecpp_44',['centroiders.cpp',['../centroiders_8cpp.html',1,'']]],
   ['centroiders_2ehpp_45',['centroiders.hpp',['../centroiders_8hpp.html',1,'']]],
-  ['centroidingtimens_46',['centroidingTimeNs',['../structlost_1_1_pipeline_output.html#ab299485c94c8d2f5c4094869fadd8a62',1,'lost::PipelineOutput']]],
+  ['centroidingtimens_46',['centroidingTimeNs',['../structlost_1_1_pipeline_output.html#a36786786f6025272fc7befd01924d0d9',1,'lost::PipelineOutput']]],
   ['centroidparams_47',['CentroidParams',['../structlost_1_1_centroid_params.html',1,'lost']]],
   ['centroidscompare_48',['CentroidsCompare',['../namespacelost.html#afd017fba4090829c28c431509c4cfc1c',1,'lost']]],
   ['checkedindices_49',['checkedIndices',['../structlost_1_1_i_w_co_g_params.html#a95fa4a77be6b192d6d114f9d520cb061',1,'lost::IWCoGParams::checkedIndices()'],['../structlost_1_1_centroid_params.html#ae13910601515db040c7f164b8b1730f2',1,'lost::CentroidParams::checkedIndices()']]],

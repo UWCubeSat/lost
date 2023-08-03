@@ -38,7 +38,7 @@ var searchData=
   ['staridentifiers_261',['StarIdentifiers',['../namespacelost.html#a288b872531de219e9cfc87beb8d8bada',1,'lost']]],
   ['starids_262',['starIds',['../structlost_1_1_pipeline_output.html#af5fb349aaee63e4e932069bc01743042',1,'lost::PipelineOutput']]],
   ['staridscompare_263',['StarIdsCompare',['../namespacelost.html#ab6f75e99dbde3eede31e0b3a7c56878e',1,'lost']]],
-  ['staridtimens_264',['starIdTimeNs',['../structlost_1_1_pipeline_output.html#ab56fb6e6eafedf6134659395be542305',1,'lost::PipelineOutput']]],
+  ['staridtimens_264',['starIdTimeNs',['../structlost_1_1_pipeline_output.html#a7b5b37d2654b51a1c859866165481ce7',1,'lost::PipelineOutput']]],
   ['starindex_265',['starIndex',['../classlost_1_1_star_identifier.html#afb04c9b116a8a67e31083d50e28cdce2',1,'lost::StarIdentifier']]],
   ['stars_266',['stars',['../structlost_1_1_pipeline_output.html#a7743f8496f64299c8af36ac0ec080699',1,'lost::PipelineOutput']]],
   ['stars_267',['Stars',['../namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5',1,'lost']]],
