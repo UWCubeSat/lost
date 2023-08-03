@@ -29,15 +29,22 @@ static float FitModel2D(float x, float y, float a, float xb, float yb, float sig
 
 static std::vector<unsigned char> CopyImage(const unsigned char* const image, int w, int h);
 
-// Structure: (x, y, size of floodfill around (x, y))
-typedef std::vector<int> Point;
+class Point {
+public:
+    int x;
+    int y;
+
+    bool operator<(const Point &other) const {
+        return x<other.x || y<other.y;
+    }
+};
 
 /**
  * @brief Get a candidate point for each possible star cluster by running a floodfill through image
  *
  * Eliminates possibility of detecting multiple centroids for a single star
  */
-std::vector<Point> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
+std::vector<std::vector<int>> FloodfillPreproc(unsigned char *image, int imageWidth, int imageHeight);
 
 /// A simple, but well tested thresholding algorithm that works well with star images
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight, float* const noise);
@@ -68,8 +75,8 @@ struct FloodParams{
     int yMax;
 };
 
-std::vector<Point> FloodfillPreproc(unsigned char *img, int imageWidth, int imageHeight) {
-    std::vector<Point> res;
+std::vector<std::vector<int>> FloodfillPreproc(unsigned char *img, int imageWidth, int imageHeight) {
+    std::vector<std::vector<int>> res;
     std::set<Point> checkedPoints;
 
     std::vector<unsigned char> image = CopyImage(img, imageWidth, imageHeight);
@@ -109,20 +116,18 @@ std::vector<Point> FloodfillPreproc(unsigned char *img, int imageWidth, int imag
                 Point p = queue[0];
                 queue.pop_front();
 
-                int px = p[0];
-                int py = p[1];
-                if (px < 0 || px >= imageWidth || py < 0 || py >= imageHeight) continue;
+                if (p.x < 0 || p.x >= imageWidth || p.y < 0 || p.y >= imageHeight) continue;
                 if (checkedPoints.count(p) != 0) continue;
 
-                int mag = Get(px, py, image.data(), imageWidth);
+                int mag = Get(p.x, p.y, image.data(), imageWidth);
                 if (mag < cutoff) continue;
 
                 floodSize++;
 
-                fp.xMin = std::min(fp.xMin, px);
-                fp.xMax = std::max(fp.xMax, px);
-                fp.yMin = std::min(fp.yMin, py);
-                fp.yMax = std::max(fp.yMax, py);
+                fp.xMin = std::min(fp.xMin, p.x);
+                fp.xMax = std::max(fp.xMax, p.x);
+                fp.yMin = std::min(fp.yMin, p.y);
+                fp.yMax = std::max(fp.yMax, p.y);
 
                 // Add this point to pts and checkedPoints
                 // We can add to checkedPoints since cutoff is global - ensure no 2 fills collide
@@ -132,14 +137,14 @@ std::vector<Point> FloodfillPreproc(unsigned char *img, int imageWidth, int imag
                 // Update max pixel value in fill
                 if (mag > maxMag) {
                     maxMag = mag;
-                    x0 = px;
-                    y0 = py;
+                    x0 = p.x;
+                    y0 = p.y;
                 }
 
                 // Add all 8 adjacent points to the queue
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
-                        queue.push_back({px + dx, py + dy});
+                        queue.push_back({p.x + dx, p.y + dy});
                     }
                 }
             }
@@ -415,9 +420,9 @@ std::vector<Star> LeastSquaresGaussianFit1D::Go(unsigned char *image, int imageW
 
     std::cout << "1D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
-    std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
+    std::vector<std::vector<int>> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
-    for (const Point &pt : candidatePts) {
+    for (const std::vector<int> &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
         // TODO: just taking largest diameter right now
@@ -482,9 +487,9 @@ std::vector<Star> LeastSquaresGaussianFit2D::Go(unsigned char *image, int imageW
 
     std::cout << "2D Gaussian Fit (" << np << "x" << np << ")" << std::endl;
 
-    std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
+    std::vector<std::vector<int>> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
-    for (const Point &pt : candidatePts) {
+    for (const std::vector<int> &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
 
@@ -556,9 +561,9 @@ Stars GaussianGrid::Go(unsigned char *image, int imageWidth, int imageHeight) co
 
     std::cout << "Gaussian Grid (" << np << "x" << np << ")" << std::endl;
 
-    std::vector<Point> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
+    std::vector<std::vector<int>> candidatePts = FloodfillPreproc(image, imageWidth, imageHeight);
 
-    for (const Point &pt : candidatePts) {
+    for (const std::vector<int> &pt : candidatePts) {
         int x = pt[0];
         int y = pt[1];
         if (x - nb < 0 || x + nb >= imageWidth || y - nb < 0 || y + nb >= imageHeight) continue;
