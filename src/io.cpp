@@ -101,12 +101,13 @@ const Catalog &CatalogRead() {
         std::sort(catalog.begin(), catalog.end(), [](const CatalogStar &a, const CatalogStar &b) {
             return a.spatial.x < b.spatial.x;
         });
-        for (int i = catalog.size(); i > 0; i--) {
+        for (int i = catalog.size()-1; i > 0; i--) { // [BUG]? catalog[catalog.size()] is invalid
             if ((catalog[i].spatial - catalog[i-1].spatial).Magnitude() < 5e-5) { // 70 stars removed at this threshold.
                 if (catalog[i].magnitude > catalog[i-1].magnitude) {
-                    catalog.erase(catalog.begin() + i);
-                } else {
+                    // [BUG]? If mag of i > mag of i-1, we want to keep i? Here we remove i
                     catalog.erase(catalog.begin() + i - 1);
+                } else {
+                    catalog.erase(catalog.begin() + i);
                 }
             }
         }
