@@ -1,4 +1,4 @@
-.TH PIPELINE 3 "06 November 2021" 
+.TH PIPELINE 3 "06 November 2021"
 
 .SH NAME
 
@@ -89,21 +89,6 @@ The field of view of the camera that took the picture (in degrees). Defaults to 
 .SH MISC PIPELINE OPTIONS
 
 .TP
-\fB--centroid-mag-filter\fP \fImin-mag\fP
-Will not consider centroids with magnitude below \fImin-mag\fP.
-
-.TP
-\fB--centroid-filter-brightest\fP \fInum-stars\fP
-Remove all but the brightest \fInum-stars\fP many stars from the list of centroids before sending to
-star-id. Often a better choice than \fB--centroid-mag-filter\fP, because you can ensure that you
-keep enough stars to do star-id. If both this option and \fB--centroid-mag-filter\fP are provided,
-then all stars satisfying both criteria are kept (intersection).
-
-.TP
-\fB--database\fP \fIfilename\fP
-Chooses \fIfilename\fP as the database to use during star identification.
-
-.TP
 \fB--help\fI
 Prints the contents of the manual entry for the command to the terminal.
 
@@ -117,11 +102,26 @@ Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random
 \fB--centroid-dummy-stars\fP \fInum-stars\fP
 Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-stars\fP stars centroided. Defaults to 5 if option is not selected.
 
+.TP
+\fB--centroid-mag-filter\fP \fImin-mag\fP
+Argument is optional. Will not consider centroids with magnitude below \fImin-mag\fP.
+
+.TP
+\fB--centroid-filter-brightest\fP \fInum-stars\fP
+Argument is optional. Remove all but the brightest \fInum-stars\fP many stars from the list of centroids before sending to
+star-id. Often a better choice than \fB--centroid-mag-filter\fP, because you can ensure that you
+keep enough stars to do star-id. If both this option and \fB--centroid-mag-filter\fP are provided,
+then all stars satisfying both criteria are kept (intersection).
+
 .SH STAR IDENTIFICATION OPTIONS
 
 .TP
 \fB--star-id-algo\fP \fIalgo\fP
 Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", and "pyramid". Defaults to "dummy" if option is not selected.
+
+.TP
+\fB--database\fP \fIfilename\fP
+Chooses \fIfilename\fP as the database to use during star identification.
 
 .TP
 \fB--angular-tolerance\fP [\fItolerance\fP] Sets the estimated angular centroiding error tolerance,
