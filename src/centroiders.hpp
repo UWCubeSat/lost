@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
+#include <unordered_multimap>
 
 #include "star-utils.hpp"
 
@@ -19,6 +21,99 @@ public:
     virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight) const = 0;
 
     virtual ~CentroidAlgorithm() { };
+};
+
+/**
+ * @param Thresholder a class with a constructor that takes a pointer to an image (bytes), int imageWidth, and int imageHeight, then has a method .PixelThreshold(int,int) which returns the threshold for the given x/y coordinate (a pixel must be strictly brighter than the threshold to be considered).
+ * @param ConnectedComponentCentroider a class with a zero argument constructor, then two methods: update(int,int,unsigned char), which updates it with information about a new pixel, and merge(const ConnectedComponentThresholder &other), which merges the other into the current, and Vec2 finalize(void), which returns the centroiding result.
+ */
+template <typename Thresholder, typename ConnectedComponentCentroider>
+class ThresholdedConnectedComponentsCentroidAlgorithm : public CentroidAlgorithm {
+public:
+
+    virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override {
+        Thresholder thresholder = MakeThresholder(image, imageWidth, imageHeight);
+
+        // Weird merging situations should be very rare, so we don't really need a union-find here.
+
+        // owns all the connected components, for garbage collection. We use unique_ptrs so that pointers don't break when the vector is resized.
+        std::vector<std::unique_ptr<ConnectedComponentCentroider>> connectedComponentCentroiders;
+        std::unordered_map<int, ConnectedComponentCentroider *> idToCC; // this could/should be a vector?
+        std::unordered_multimap<ConnectedComponentCentroider *, int> ccToIds;
+        
+        // At the beginning of iteration for each row, stores the connected component id for each pixel of the preceding row (or -1 if it was below threshold), 
+        std::vector<int> rowConnectedComponents(imageWidth, -1);
+        for (int y = 0; y < imageHeight; y++) {
+            for (int x = 0; x < imageWidth; x++) {
+                if (image[y*imageHeight + x] <= thresholder.PixelThreshold(x, y)) {
+                    rowConnectedComponents[x] = -1;
+                    continue;
+                }
+
+                // TODO handle subtracting the threshold. I'm of the opinion we should just pass in the adjusted pixel brightness to the cc centroider and it shouldn't use the image at all.
+
+                int leftCCId = x == 0 ? -1 : rowConnectedComponents[x-1];
+                int upCCId = rowConnectedComponents[x]; // already initialized to -1 at start
+                int minId = std::min(leftCCId, upCCId);
+                int maxId = std::max(leftCCId, upCCId);
+
+                if (maxId < 0) { // neither neighbor is in a CC, create a new one
+                    ConnectedComponentCentroider *newCC = new ConnectedComponentCentroider();
+                    int newCCId = connectedComponentCentroiders.size();
+                    connectedComponentCentroiders.emplace_back(newCC);
+                    newCC->update(x, y, image[y*imageHeight + x]);
+
+                    idToCC.emplace(newCCId, newCC);
+                    ccToIds.emplace(newCC, newCCId);
+
+                    rowConnectedComponents[x] = newCCId;
+
+                } else if (minId < 0) { // only one neighbor belongs to a CC, assign pixel to that one.
+                    int ccId = maxId;
+                    rowConnectedComponents[x] = ccId;
+                    idToCC[ccId]->update(x, y, image[y*imageHeight + x]);
+
+                } else { // both neighbors in a CC, merge into the one with larger ID
+                    ConnectedComponentCentroider *minCC = idToCC[minId];
+                    ConnectedComponentCentroider *maxCC = idToCC[maxId];
+
+                    maxCC->merge(minCC);
+
+                    // loop through the ids in the minCC, assign each to the max
+                    // using equal_range
+                    for (auto it = ccToIds.equal_range(minCC); it.first != it.second; it.first++) {
+                        idToCC[it.first->second] = maxCC;
+                        ccToIds.emplace(idToCC[maxId], it.first->second);
+                    }
+
+                    // we're leaving behind the minCC's old IDs in ccsToIds. But that's okay, because nothing should point to it anymore.
+
+                    rowConnectedComponents[x] = maxId;
+                }
+            }
+        }
+
+        Stars stars;
+        // Check which connected components were never merged, and finalize them
+        for (auto &cc : connectedComponentCentroiders) {
+            // check that it wasn't merged by finding an arbitrary id assigned to the cc, and checking whether that points back to the cc. If the cc was merged, none of its ids point back to it.
+            auto idIt = ccToIds.find(cc.get());
+            assert(idIt != ccToIds.end());
+            if (idToCC[idIt->second] == cc.get()) {
+                stars.push_back(cc->finalize());
+            }
+        }
+
+        return stars;
+    }
+
+private:
+
+    /// Make a thresholder. Virtual so that a subclass could override the arguments passed to the thresholder without needing to resort to adding template parameters to the thresholder.
+    virtual Thresholder MakeThresholder(unsigned char *image, int imageWidth, int imageHeight) const {
+        return Thresholder(image, imageWidth, imageHeight);
+    }
+
 };
 
 /**

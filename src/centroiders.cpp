@@ -12,11 +12,117 @@
 // #include <eigen3/unsupported/Eigen/NumericalDiff>
 #include <iostream>
 #include <set>  // TODO: remove later, this is just lazy to implement hash for unordered_set
+#include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 namespace lost {
+
+/// A simple thresholder that accepts pixels a certain number of standard deviations above the mean brightness.
+class StddevGlobalThresholder {
+public:
+    StddevGlobalThresholder(unsigned char *image, int imageWidth, int imageHeight, float stddevs) {
+        unsigned long totalMag = 0;
+        float std = 0;
+        long totalPixels = imageHeight * imageWidth;
+        for (long i = 0; i < totalPixels; i++) {
+            totalMag += image[i];
+        }
+        float mean = totalMag / totalPixels;
+
+        for (long i = 0; i < totalPixels; i++) {
+            std += std::pow(image[i] - mean, 2);
+        }
+        std = std::sqrt(std / totalPixels);
+        threshold = std::min(255, mean + std*stddevs);
+    }
+
+    unsigned char PixelThreshold(int x, int y) const {
+        return threshold;
+    }
+
+private:
+    unsigned char threshold;
+};
+
+/// A version of StddevGlobalThresholder, but with the threshold fixed at 5 stddevs above the mean (as suggested by a Liebe paper)
+class Stddev5GlobalThresholder : public StddevGlobalThresholder {
+public:
+    Stddev5GlobalThresholder(unsigned char *image, int imageWidth, int imageHeight)
+        : StddevGlobalThresholder(image, imageWidth, imageHeight, 5.0) { }
+};
+
+/// Each pixel's threshold is a certain number of stddevs above the mean, all calculated according to a local square window around the pixel (truncated near image edges).
+class SlidingWindowLocalThresholder {
+public:
+    SlidingWindowLocalThresholder(unsigned char *image, int imageWidth, int imageHeight, int windowSize, float stddevs)
+        : imageWidth(imageWidth), windowSize(windowSize), nwSums(imageWidth*imageHeight) {
+        
+        assert(windowSize%2 == 1 && windowSize > 1); // only odd window sizes, so we can put an even amount on each side
+        int windowRadius = windowSize/2; // rounds down, so the number of pixels to each side not counting the center
+
+        // this sorta uses a lot of memory (4MiB for a 1MiB image). We could just compute for smaller squares at a time and save some memory, but oh well.
+        std::vector<unsigned long> nwSums(imageWidth*imageHeight);
+        long long sumOfSquares = 0;
+        for (int y = 0; y < imageHeight; y++) {
+            for (int x = 0; x < imageWidth; x++) {
+                long nSum = y == 0 ? 0 : nwSums[(y-1)*imageWidth + x];
+                long wSum = x == 0 ? 0 : nwSums[y*imageWidth + (x-1)];
+                long nwSum = (x == 0 || y == 0) ? 0 : nwSums[(y-1)*imageWidth + (x-1)];
+                nwSums[y*imageWidth + x] = nSum + wSum - nwSum;
+                sumOfSquares += image[y*imageWidth + x] * image[y*imageWidth + x];
+            }
+        }
+
+        // just compute one global stddev
+        float mean = (float)nwSums[imageWidth*imageHeight - 1] / (imageWidth*imageHeight);
+        float stddev = std::sqrt((float)sumOfSquares / (imageWidth*imageHeight) - mean*mean);
+
+        for (int y = 0; y < imageHeight; y++) {
+            for (int x = 0; x < imageWidth; x++) {
+                int xMin = std::max(0, x-windowSize);
+                int xMax = std::min(imageWidth-1, x+windowSize);
+                int yMin = std::max(0, y-windowSize);
+                int yMax = std::min(imageHeight-1, y+windowSize);
+
+                thresholds[y*imageWidth + x] = (
+                    nwSums[yMax*imageWidth + xMax]
+                    - (xMin == 0 ? 0 : nwSums[yMax*imageWidth + xMin-1])
+                    - (yMin == 0 ? 0 : nwSums[(yMin-1)*imageWidth + xMax])
+                    // if either yMin or xMin is zero, then there was no overlap to be double counted.
+                    + (xMin == 0 || yMin == 0 ? 0 : nwSums[(yMin-1)*imageWidth + xMin-1])
+                    ) / ((xMax-xMin+1)*(yMax-yMin+1))
+                    // and add the user-specified number of stddevs
+                    + stddevs*stddev;
+            }
+        }
+    }
+
+    unsigned char PixelThreshold(int x, int y) const {
+        return thresholds[y*imageWidth + x];
+    }
+
+private:
+    int imageWidth;
+    std::vector<unsigned char> thresholds;
+};
+
+class CenterOfGravityCCCentroider {
+public:
+    void update(int x, int y, unsigned char intensity) {
+        float newMass = mass + intensity;
+        center = center*(mass/newMass) + Vec2(x,y)*(intensity/newMass);
+        mass = newMass;
+    }
+
+    void merge(const CenterOfGravityCCCentroider &other) {
+        update(other.center.x(), other.center.y(), other.mass);
+    }
+private:
+    Vec2 center;
+    float mass;
+};
 
 /**
 Prediction of 1D Gaussian model for 1D LSGF method
