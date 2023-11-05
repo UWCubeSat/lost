@@ -39,6 +39,7 @@ You need Linux or macOS. On Windows, we recommend installing the Windows Subsyst
 - Install [cairo](https://formulae.brew.sh/formula/cairo#default) via homebrew `brew install cairo`
 - Install [Eigen]("https://formulae.brew.sh/formula/eigen#default") via homebrew `brew install eigen`
     - Locate Eigen files and move them to `vendor/eigen3/Eigen` under the LOST repository
+- Install [groff]("https://formulae.brew.sh/formula/groff#default") via homebrew `brew install groff`
 	
 ### Building
 
