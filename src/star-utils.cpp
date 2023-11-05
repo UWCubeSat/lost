@@ -84,17 +84,8 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
  * @param inclName Whether to include the (numerical) name of the star.
  * @param buffer[out] Where the serialized star is stored.
  */
-<<<<<<< HEAD
-// TODO: make inclusion of name/magnitude true by default?
-// Actually why give the option in the first place, algos like Tetra need this to work
-void SerializeCatalogStar(const CatalogStar &catalogStar, bool inclMagnitude, bool inclName,
-                          unsigned char *buffer) {
-    SerializeVec3(catalogStar.spatial, buffer);
-    buffer += SerializeLengthVec3();
-=======
 void SerializeCatalogStar(SerializeContext *ser, const CatalogStar &catalogStar, bool inclMagnitude, bool inclName) {
     SerializeVec3(ser, catalogStar.spatial);
->>>>>>> master
     if (inclMagnitude) {
         SerializePrimitive<float>(ser, catalogStar.magnitude);
     }

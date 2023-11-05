@@ -295,10 +295,10 @@ SerializeContext serFromDbValues(const DatabaseOptions &values);
 /// @sa SerializeMultiDatabase
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &, const DatabaseOptions &values);
 
-// TODO:  can we avoid the split?
-void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,
-                            const std::vector<uint16_t> &pattStars,
-                            const std::vector<uint16_t> &catIndices);
+// // TODO:  can we avoid the split?
+// void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,
+//                             const std::vector<uint16_t> &pattStars,
+//                             const std::vector<uint16_t> &catIndices);
 
 /////////////////////
 // INSPECT CATALOG //

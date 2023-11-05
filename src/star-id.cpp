@@ -114,7 +114,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         std::cerr << "Could not get to Tetra database" << std::endl;
         return result;
     }
-    TetraDatabase tetraDatabase(databaseBuffer);
+    DeserializeContext des(databaseBuffer);
+    TetraDatabase tetraDatabase(&des);
 
     const long long catLength = tetraDatabase.PattCatSize();
     const float maxFov = tetraDatabase.MaxAngle();
@@ -219,7 +220,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
             int hashIndex = KeyToIndex(code, numPattBins, catLength);
             // Get a list of Pattern Catalog rows with hash code == hashIndex
             // One of these Patterns in the database could be a match to our constructed Pattern
-            std::vector<Pattern> matches = tetraDatabase.GetPatternMatches(hashIndex);
+            std::vector<TetraPatt> matches = tetraDatabase.GetPatternMatches(hashIndex);
 
             if ((int)matches.size() == 0) {
                 // std::cerr << "Alert: matches size = 0, continuing" << std::endl;
@@ -228,7 +229,7 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
 
             bool alrFoundMatch = false;
             int numMatches = 0;
-            for (std::vector<int> matchRow : matches) {
+            for (TetraPatt matchRow : matches) {
                 // Construct the pattern we found in the Pattern Catalog
                 std::vector<int> catStarInds;
                 std::vector<Vec3> catStarVecs;
@@ -573,7 +574,7 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
 /**
  * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
  * that appeared with it in the query.
- * 
+ *
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */

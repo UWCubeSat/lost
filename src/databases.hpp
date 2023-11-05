@@ -85,12 +85,12 @@ Return:
 std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &,
                                                                             const float maxFovDeg);
 
-void SerializeTetraDatabase(SerializeContext *, Catalog &, float maxFovDeg,
-                            const std::vector<uint16_t>& pattStarIndices,
-                            const std::vector<uint16_t>& catIndices);
+void SerializeTetraDatabase(SerializeContext *, const Catalog &, float maxFovDeg,
+                            const std::vector<uint16_t> &pattStarIndices,
+                            const std::vector<uint16_t> &catIndices);
 
 /// Tetra star pattern = vector of 4 star IDs
-using TetraPatt = std::vector<int>;
+using TetraPatt = std::vector<uint16_t>;
 
 /**
  * A database storing Tetra star patterns
@@ -98,13 +98,15 @@ using TetraPatt = std::vector<int>;
  * (or guarantee load factor < 0.5)
  *
  * Layout:
- * | size (bytes)    | name         | description                                                 |
- * |-----------------+--------------+-------------------------------------------------------------|                                 |
- * | sizeof float    | maxFov       | max angle (degrees) allowed between any 2 stars             |
- * |                 |              | in the same pattern                                         |
- * | 8               | pattCatSize  | number of rows in pattern catalog                           |
- * | 4*pattCatSize*2 | pattCat      | hash table for Tetra star patternss                         |
- * | 2*tetraCatSize  | tetraStarCat | list of catalog indices to use for Tetra star-id algo       |
+ * | size (bytes)                     | name         | description                                                 |
+ * |----------------------------------+--------------+-------------------------------------------------------------|                                 |
+ * | sizeof float                     | maxFov       | max angle (degrees) allowed between any 2 stars             |
+ * |                                  |              | in the same pattern                                         |
+ * | sizeof(uint64_t)                 | pattCatSize  | number of rows in pattern catalog                           |
+ * | sizeof(uint64_t)                 | tetraCatSize | number of Tetra catalog indices                             |
+ * | 4*pattCatSize * sizeof(uint16_t) | pattCat      | hash table for Tetra star patternss                         |
+ * | tetraCatSize * sizeof(uint16_t)  | tetraStarCat | list of catalog indices to use for Tetra star-id algo       |
+ * |----------------------------------+--------------+-------------------------------------------------------------|
  */
 class TetraDatabase {
    public:
@@ -115,7 +117,7 @@ class TetraDatabase {
 
     /// Number of rows in pattern catalog
     // With load factor of just under 0.5, size = numPatterns*2 + 1
-    int PattCatSize() const {return catalogSize_;}
+    uint64_t PattCatSize() const {return pattCatSize_;}
 
     /// Get the 4-tuple pattern at row=index, 0-based
     TetraPatt GetPattern(int index) const;
@@ -129,13 +131,15 @@ class TetraDatabase {
     // TODO: should probably have a field describing number of indices for future updates to db
 
     /// Magic value to use when storing inside a MultiDatabase
-    static const int32_t kMagicValue = 0xDEADBEEF;
-    static const int headerSize = sizeof(float) + sizeof(uint64_t);
+    static const int32_t kMagicValue;
+    // static const int headerSize = sizeof(float) + sizeof(uint64_t);
 
    private:
-    // const unsigned char *buffer_;
     float maxAngle_;
-    uint32_t catalogSize_;
+    uint64_t pattCatSize_;
+    uint16_t tetraStarCatSize_;
+    const uint16_t* pattCats_;
+    const uint16_t* starCatInds_;
 };
 
 // /**

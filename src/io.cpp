@@ -299,14 +299,36 @@ MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const Database
     SerializeCatalog(&catalogSer, catalog, false, true);
     dbEntries.emplace_back(kCatalogMagicValue, catalogSer.buffer);
 
+    bool dbProvided = false;
+
     if (values.kvector) {
+        dbProvided = true;
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
         SerializeContext ser = serFromDbValues(values);
         SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
         dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
-    } else {
+    }
+
+    if (values.tetra) {
+        dbProvided = true;
+        float maxAngleDeg = values.tetraMaxAngle;
+        std::cerr << "Tetra max angle: " << maxAngleDeg << std::endl;
+
+        auto tetraPrepRes = TetraPreparePattCat(catalog, maxAngleDeg);
+        std::vector<uint16_t> catIndices = tetraPrepRes.first;
+        std::vector<uint16_t> pattStarsInds = tetraPrepRes.second;
+
+        std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+        std::cerr << "Number of pattern stars: " << pattStarsInds.size() << std::endl;
+
+        SerializeContext ser = serFromDbValues(values);
+        SerializeTetraDatabase(&ser, catalog, maxAngleDeg, pattStarsInds, catIndices);
+        dbEntries.emplace_back(TetraDatabase::kMagicValue, ser.buffer);
+    }
+
+    if (!dbProvided) {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }

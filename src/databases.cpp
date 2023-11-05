@@ -21,6 +21,7 @@
 namespace lost {
 
 const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
+const int32_t TetraDatabase::kMagicValue = 0x26683787;
 
 struct KVectorPair {
     int16_t index1;
@@ -344,27 +345,23 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
 }
 
 TetraDatabase::TetraDatabase(DeserializeContext *des) {
-    // maxAngle_ = *(float*)buffer;
-    // buffer += sizeof(float);
-    // catalogSize_ = *(int32_t *)buffer;
     maxAngle_ = DeserializePrimitive<float>(des);
-    catalogSize_ = DeserializePrimitive<int32_t>(des);
+    pattCatSize_ = DeserializePrimitive<uint64_t>(des);
+    tetraStarCatSize_ = DeserializePrimitive<uint64_t>(des);
+    pattCats_ = DeserializeArray<uint16_t>(des, 4 * pattCatSize_);
+    starCatInds_ = DeserializeArray<uint16_t>(des, tetraStarCatSize_);
 }
 
 TetraPatt TetraDatabase::GetPattern(int index) const {
-    std::vector<int> res;
-    const unsigned char *p = buffer_ + headerSize;
+    TetraPatt res;
     for (int i = 0; i < 4; i++) {
-        res.push_back(*((uint16_t *)p + 4 * index + i));
+        res.push_back(pattCats_[4*index + i]);
     }
-
     return res;
 }
 
 uint16_t TetraDatabase::GetTrueCatInd(int tetraInd) const {
-    // TODO: don't harcode this 4
-    const unsigned char *p = buffer_ + headerSize + PattCatSize() * 4 * sizeof(uint16_t);
-    return *((uint16_t *)p + tetraInd);
+    return starCatInds_[tetraInd];
 }
 
 std::vector<TetraPatt> TetraDatabase::GetPatternMatches(int index) const {
@@ -471,7 +468,7 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 
 ///////////////////// Tetra database //////////////////////
 
-void SerializeTetraDatabase(SerializeContext *ser, Catalog &catalog, float maxFovDeg,
+void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float maxFovDeg,
                             const std::vector<uint16_t> &pattStarIndices,
                             const std::vector<uint16_t> &catIndices) {
     const float maxFovRad = DegToRad(maxFovDeg);
@@ -631,6 +628,7 @@ void SerializeTetraDatabase(SerializeContext *ser, Catalog &catalog, float maxFo
     }
     SerializePrimitive<float>(ser, maxFovDeg);
     SerializePrimitive<uint64_t>(ser, pattCatalog.size());
+    SerializePrimitive<uint64_t>(ser, catIndices.size());
     for (Pattern patt : pattCatalog) {
         for (int i = 0; i < pattSize; i++) {
             SerializePrimitive<uint16_t>(ser, patt[i]);
