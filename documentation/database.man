@@ -96,6 +96,14 @@ Sets the maximum allowable angle between stars in a Tetra pattern to \fImax\fP (
 .SH OTHER OPTIONS
 
 .TP
+\fB--swap-integer-endianness\fP
+If true, generate databases with all integer values having opposite endianness than the generating machine. It will not be possible to use the generated databases on the system they were generated on.
+
+.TP
+\fB--swap-float-endianness\fP
+If true, generate databases with all floating point values having opposite endianness than the generating machine. It will not be possible to use the generated databases on the system they were generated on.
+
+.TP
 \fB--output\fP \fIoutput-path\fP
 The file to output the database to. Defaults to stdout.
 

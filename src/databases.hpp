@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "star-utils.hpp"
+#include "serialize-helpers.hpp"
 
 namespace lost {
 
@@ -15,13 +16,13 @@ const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
- * 
+ *
  * @note Not an instantiable database on its own -- used in other databases
  */
 // TODO: QueryConservative, QueryExact, QueryTrapezoidal?
 class KVectorIndex {
 public:
-    explicit KVectorIndex(const unsigned char *);
+    explicit KVectorIndex(DeserializeContext *des);
 
     long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
 
@@ -43,8 +44,7 @@ private:
     const int32_t *bins;
 };
 
-long SerializeLengthPairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins);
-void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxDistance, long numBins, unsigned char *buffer);
+void SerializePairDistanceKVector(SerializeContext *, const Catalog &, float minDistance, float maxDistance, long numBins);
 
 /**
  * A database storing distances between pairs of stars.
@@ -53,7 +53,7 @@ void SerializePairDistanceKVector(const Catalog &, float minDistance, float maxD
  */
 class PairDistanceKVectorDatabase {
 public:
-    explicit PairDistanceKVectorDatabase(const unsigned char *databaseBytes);
+    explicit PairDistanceKVectorDatabase(DeserializeContext *des);
 
     const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
     const int16_t *FindPairsExact(const Catalog &, float min, float max, const int16_t **end) const;
@@ -67,9 +67,10 @@ public:
     long NumPairs() const;
 
     /// Magic value to use when storing inside a MultiDatabase
-    static const int32_t kMagicValue = 0x2536f009;
-
-   private:
+    static const int32_t kMagicValue; // 0x2536f009
+    // apparently you're supposed to not actually put the value of the static variables here, but
+    // rather in a cpp implementation file.
+private:
     KVectorIndex index;
     // TODO: endianness
     const int16_t *pairs;
@@ -84,61 +85,55 @@ Return:
 std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &,
                                                                             const float maxFovDeg);
 
-// long SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
-//                             const std::vector<uint16_t> &,
-//                             const std::vector<uint16_t> &, bool ser);
+void SerializeTetraDatabase(SerializeContext *, Catalog &, float maxFovDeg,
+                            const std::vector<uint16_t>& pattStarIndices,
+                            const std::vector<uint16_t>& catIndices);
 
-long SerializeLengthTetraDatabase(const Catalog &, float maxFov,
-                            const std::vector<uint16_t> &,
-                            const std::vector<uint16_t> &);
+/// Tetra star pattern = vector of 4 star IDs
+using TetraPatt = std::vector<int>;
 
-void SerializeTetraDatabase(const Catalog &, float maxFov, unsigned char *buffer,
-                            const std::vector<uint16_t> &,
-                            const std::vector<uint16_t> &);
-
-typedef std::vector<int> Pattern;
-
-/*
-Layout:
-
-/////////////////// Header //////////////////////////////
-- Max FOV (float)
-- Number of patterns in pattern catalog (int)
-////////////////////////////////////////////////////////
-- All patterns (number of patterns * pattSize=4 * sizeof(uint16_t))
-- List of Catalog indices to use for Tetra star ID algo
-/////////////////////////////////////////////////////////
-
-*/
+/**
+ * A database storing Tetra star patterns
+ * TODO: implement something to prevent cycling in quadratic probe
+ * (or guarantee load factor < 0.5)
+ *
+ * Layout:
+ * | size (bytes)    | name         | description                                                 |
+ * |-----------------+--------------+-------------------------------------------------------------|                                 |
+ * | sizeof float    | maxFov       | max angle (degrees) allowed between any 2 stars             |
+ * |                 |              | in the same pattern                                         |
+ * | 8               | pattCatSize  | number of rows in pattern catalog                           |
+ * | 4*pattCatSize*2 | pattCat      | hash table for Tetra star patternss                         |
+ * | 2*tetraCatSize  | tetraStarCat | list of catalog indices to use for Tetra star-id algo       |
+ */
 class TetraDatabase {
    public:
-    explicit TetraDatabase(const unsigned char *buffer);
+    explicit TetraDatabase(DeserializeContext *des);
 
-    // Get max angle (in degrees) allowed between stars in the same pattern
-    float MaxAngle() const;
+    /// Max angle (in degrees) allowed between stars in the same pattern
+    float MaxAngle() const {return maxAngle_;}
 
     /// Number of rows in pattern catalog
-    // With load factor of 0.5, size = number of patterns * 2
-    int PattCatSize() const;
+    // With load factor of just under 0.5, size = numPatterns*2 + 1
+    int PattCatSize() const {return catalogSize_;}
 
-    // Get the 4-tuple pattern at row=index, 0-based
-    Pattern GetPattern(int index) const;
+    /// Get the 4-tuple pattern at row=index, 0-based
+    TetraPatt GetPattern(int index) const;
 
-    /*
-    Returns a list of rows (4-tuples) from the Pattern Catalog
-    Start from index and does quadratic probing
-    */
-    std::vector<Pattern> GetPatternMatches(int index) const;
+    /// Returns a list of patterns from the pattern catalog
+    // Starts from index and does quadratic probing
+    // We assume that collisions mean the pattern stored there COULD be a match
+    std::vector<TetraPatt> GetPatternMatches(int index) const;
 
     uint16_t GetTrueCatInd(int tetraIndex) const;
     // TODO: should probably have a field describing number of indices for future updates to db
 
     /// Magic value to use when storing inside a MultiDatabase
     static const int32_t kMagicValue = 0xDEADBEEF;
-    static const int headerSize = sizeof(float) + sizeof(int32_t);
+    static const int headerSize = sizeof(float) + sizeof(uint64_t);
 
    private:
-    const unsigned char *buffer_;
+    // const unsigned char *buffer_;
     float maxAngle_;
     uint32_t catalogSize_;
 };
@@ -160,11 +155,6 @@ class TetraDatabase {
 //     int16_t *triples;
 // };
 
-/// maximum number of databases in a MultiDatabase
-const int kMultiDatabaseMaxDatabases = 64;
-/// The size of the table of contents in a multidatabase (stores subdatabase locations)
-const long kMultiDatabaseTocLength = 8*kMultiDatabaseMaxDatabases;
-
 /**
  * A database that contains multiple databases
  * This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.
@@ -179,26 +169,18 @@ private:
     const unsigned char *buffer;
 };
 
-/// Class for easily creating a MultiDatabase
-class MultiDatabaseBuilder {
+class MultiDatabaseEntry {
 public:
-    MultiDatabaseBuilder()
-        : buffer((unsigned char *)calloc(1, kMultiDatabaseTocLength)), bulkLength(0) { };
-    ~MultiDatabaseBuilder();
+    MultiDatabaseEntry(int32_t magicValue, std::vector<unsigned char> bytes) // I wonder if making `bytes` a reference would avoid making two copies, or maybe it would be worse by preventing copy-elision
+        : magicValue(magicValue), bytes(bytes) { }
 
-    unsigned char *AddSubDatabase(int32_t magicValue, long length);
-
-    /// When done adding databases, use this to get the buffer you should write to disk.
-    unsigned char *Buffer() { return buffer; };
-    /// The length of the buffer returned by Buffer
-    long BufferLength() { return kMultiDatabaseTocLength+bulkLength; };
-private:
-    // Throughout LOST, most dynamic memory is managed with `new` and `delete` to make it easier to
-    // use unique pointers. Here, however, we use realloc, so C-style memory management.
-    unsigned char *buffer;
-    // how many bytes are presently allocated for databases (excluding map)
-    long bulkLength;
+    int32_t magicValue;
+    std::vector<unsigned char> bytes;
 };
+
+using MultiDatabaseDescriptor = std::vector<MultiDatabaseEntry>;
+
+void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs);
 
 }
 

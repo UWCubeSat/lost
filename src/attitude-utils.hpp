@@ -7,6 +7,8 @@
 #include <numeric>  // iota
 #include <vector>
 
+#include "serialize-helpers.hpp"
+
 namespace lost {
 
 // At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
@@ -78,9 +80,8 @@ public:
 
 extern const Mat3 kIdentityMat3;
 
-long SerializeLengthVec3();
-void SerializeVec3(const Vec3 &, unsigned char *);
-Vec3 DeserializeVec3(const unsigned char *);
+void SerializeVec3(SerializeContext *, const Vec3 &);
+Vec3 DeserializeVec3(DeserializeContext *des);
 
 float Distance(const Vec2 &, const Vec2 &);
 float Distance(const Vec3 &, const Vec3 &);

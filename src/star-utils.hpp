@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "attitude-utils.hpp"
+#include "serialize-helpers.hpp"
 
 namespace lost {
 
@@ -101,10 +102,9 @@ typedef std::vector<CatalogStar> Catalog;
 typedef std::vector<Star> Stars;
 typedef std::vector<StarIdentifier> StarIdentifiers;
 
-long SerializeLengthCatalog(const Catalog &, bool inclMagnitude, bool inclName);
-void SerializeCatalog(const Catalog &, bool inclMagnitude, bool inclName, unsigned char *buffer);
+void SerializeCatalog(SerializeContext *, const Catalog &, bool inclMagnitude, bool inclName);
 // sets magnited and name to whether the catalog in the database contained magnitude and name
-Catalog DeserializeCatalog(const unsigned char *buffer, bool *inclMagnitudeReturn, bool *inclNameReturn);
+Catalog DeserializeCatalog(DeserializeContext *des, bool *inclMagnitudeReturn, bool *inclNameReturn);
 Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
 /// returns some relative brightness measure, which is proportional to the total number of photons received from a star.

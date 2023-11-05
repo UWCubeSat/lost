@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <iostream>
 
+#include "serialize-helpers.hpp"
+
 namespace lost {
 
 /// Multiply two quaternions using the usual definition of quaternion multiplication (effectively composes rotations)
@@ -460,25 +462,19 @@ bool Attitude::IsKnown() const {
     }
 }
 
-/// The length that a Vec3 will take up when serialized
-long SerializeLengthVec3() {
-    return sizeof(float)*3;
-}
-
 /// Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3
-void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
-    float *fBuffer = (float *)buffer;
-    *fBuffer++ = vec.x;
-    *fBuffer++ = vec.y;
-    *fBuffer = vec.z;
+void SerializeVec3(SerializeContext *ser, const Vec3 &vec) {
+    SerializePrimitive<float>(ser, vec.x);
+    SerializePrimitive<float>(ser, vec.y);
+    SerializePrimitive<float>(ser, vec.z);
 }
 
-Vec3 DeserializeVec3(const unsigned char *buffer) {
-    Vec3 result;
-    const float *fBuffer = (float *)buffer;
-    result.x = *fBuffer++;
-    result.y = *fBuffer++;
-    result.z = *fBuffer;
+Vec3 DeserializeVec3(DeserializeContext *des) {
+    Vec3 result = {
+        DeserializePrimitive<float>(des),
+        DeserializePrimitive<float>(des),
+        DeserializePrimitive<float>(des),
+    };
     return result;
 }
 

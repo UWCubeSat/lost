@@ -265,52 +265,53 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
-/// Add a pair-distance KVector database to the given builder.
-void BuildPairDistanceKVectorDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    // TODO: calculating the length of the vector duplicates a lot of the work, slowing down
-    // database generation
-    long length = SerializeLengthPairDistanceKVector(catalog, minDistance, maxDistance, numBins);
-    unsigned char *buffer = builder->AddSubDatabase(PairDistanceKVectorDatabase::kMagicValue, length);
-    if (buffer == NULL) {
-        std::cerr << "No room for another database." << std::endl;
-    }
-    SerializePairDistanceKVector(catalog, minDistance, maxDistance, numBins, buffer);
-
-    // TODO: also parse it and print out some stats before returning
+SerializeContext serFromDbValues(const DatabaseOptions &values) {
+    return SerializeContext(values.swapIntegerEndianness, values.swapFloatEndianness);
 }
 
-void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float maxAngle,
-                        const std::vector<uint16_t> &pattStars,
-                        const std::vector<uint16_t> &catIndices) {
-    // long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, catIndices, false);
-    long length = SerializeLengthTetraDatabase(catalog, maxAngle, pattStars, catIndices);
-    unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
-    if (buffer == nullptr) {
-        std::cerr << "Error: No room for Tetra database" << std::endl;
-    }
-    // SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices, true);
-    SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices);
-}
+// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float maxAngle,
+//                         const std::vector<uint16_t> &pattStars,
+//                         const std::vector<uint16_t> &catIndices) {
+//     // long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, catIndices, false);
+//     long length = SerializeLengthTetraDatabase(catalog, maxAngle, pattStars, catIndices);
+//     unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
+//     if (buffer == nullptr) {
+//         std::cerr << "Error: No room for Tetra database" << std::endl;
+//     }
+//     // SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices, true);
+//     SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices);
+// }
 
-void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
-                            const DatabaseOptions &values, const std::vector<uint16_t> &pattStars,
-                            const std::vector<uint16_t> &catIndices) {
-    float maxAngle = values.tetraMaxAngle;
-    BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
-}
-/// Generate and add databases to the given multidatabase builder according to the command line options in `values`
-void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
+// void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
+//                             const DatabaseOptions &values, const std::vector<uint16_t> &pattStars,
+//                             const std::vector<uint16_t> &catIndices) {
+//     float maxAngle = values.tetraMaxAngle;
+//     BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
+// }
+// /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
+// void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
+
+MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const DatabaseOptions &values) {
+    MultiDatabaseDescriptor dbEntries;
+
+    SerializeContext catalogSer = serFromDbValues(values);
+    // TODO decide why we have this inclMagnitude and inclName and if we should change that
+    SerializeCatalog(&catalogSer, catalog, false, true);
+    dbEntries.emplace_back(kCatalogMagicValue, catalogSer.buffer);
 
     if (values.kvector) {
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
-        BuildPairDistanceKVectorDatabase(builder, catalog, minDistance, maxDistance, numBins);
+        SerializeContext ser = serFromDbValues(values);
+        SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
+        dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
     } else {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
 
+    return dbEntries;
 }
 
 /// Print information about the camera in machine and human-readable form.
@@ -938,7 +939,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         MultiDatabase multiDatabase(database.get());
         const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
         if (catalogBuffer != NULL) {
-            result.catalog = DeserializeCatalog(multiDatabase.SubDatabasePointer(kCatalogMagicValue), NULL, NULL);
+            DeserializeContext des(catalogBuffer);
+            result.catalog = DeserializeCatalog(&des, NULL, NULL);
         } else {
             std::cerr << "WARNING: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
             result.catalog = input.GetCatalog();
@@ -1583,13 +1585,13 @@ static void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_error_rate " << fractionIncorrect << std::endl;
 }
 
-static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long> &times) {
+static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long long> &times) {
     assert(times.size() > 0);
 
     // print average, min, max, and 95% max
-    long sum = 0;
-    long min = LONG_MAX;
-    long max = 0;
+    long long sum = 0;
+    long long min = LONG_MAX;
+    long long max = 0;
     for (int i = 0; i < (int)times.size(); i++) {
         assert(times[i] > 0);
         sum += times[i];
@@ -1597,14 +1599,14 @@ static void PrintTimeStats(std::ostream &os, const std::string &prefix, const st
         max = std::max(max, times[i]);
     }
     long average = sum / times.size();
-    std::vector<long> sortedTimes = times;
+    std::vector<long long> sortedTimes = times;
     std::sort(sortedTimes.begin(), sortedTimes.end());
     // what really is the 95th percentile? Being conservative, we want to pick a value that at least
     // 95% of the times are less than. This means: (1) finding the number of times, (2) Finding
     // Math.ceil(0.95 * numTimes), and (3) subtracting 1 to get the index.
     int ninetyFiveIndex = (int)std::ceil(0.95 * times.size()) - 1;
     assert(ninetyFiveIndex >= 0);
-    long ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];
+    long long ninetyFifthPercentile = sortedTimes[ninetyFiveIndex];
 
     os << prefix << "_average_ns " << average << std::endl;
     os << prefix << "_min_ns " << min << std::endl;
@@ -1617,12 +1619,12 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
                                     const PipelineInputList &,
                                     const std::vector<PipelineOutput> &actual,
                                     const PipelineOptions &) {
-    std::vector<long> centroidingTimes;
-    std::vector<long> starIdTimes;
-    std::vector<long> attitudeTimes;
-    std::vector<long> totalTimes;
+    std::vector<long long> centroidingTimes;
+    std::vector<long long> starIdTimes;
+    std::vector<long long> attitudeTimes;
+    std::vector<long long> totalTimes;
     for (int i = 0; i < (int)actual.size(); i++) {
-        long totalTime = 0;
+        long long totalTime = 0;
         if (actual[i].centroidingTimeNs > 0) {
             centroidingTimes.push_back(actual[i].centroidingTimeNs);
             totalTime += actual[i].centroidingTimeNs;

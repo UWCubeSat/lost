@@ -192,9 +192,9 @@ struct PipelineOutput {
 
     /// How many nanoseconds the centroiding stage of the pipeline took. Similarly for the other
     /// fields. If negative, the centroiding stage was not run.
-    long centroidingTimeNs = -1;
-    long starIdTimeNs = -1;
-    long attitudeEstimationTimeNs = -1;
+    long long centroidingTimeNs = -1;
+    long long starIdTimeNs = -1;
+    long long attitudeEstimationTimeNs = -1;
 
     /**
      * @brief The catalog that the indices in starIds refer to
@@ -289,10 +289,11 @@ public:
 #undef LOST_CLI_OPTION
 };
 
-// unlike the other algorithm prompters, db builders aren't a
-// typedef void (*DbBuilder)(MultiDatabaseBuilder &, const Catalog &);
-void GenerateDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values);
-// void PromptDatabases(MultiDatabaseBuilder &, const Catalog &);
+SerializeContext serFromDbValues(const DatabaseOptions &values);
+
+/// Appropriately create descriptors for all requested databases according to command-line options.
+/// @sa SerializeMultiDatabase
+MultiDatabaseDescriptor GenerateDatabases(const Catalog &, const DatabaseOptions &values);
 
 // TODO:  can we avoid the split?
 void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,

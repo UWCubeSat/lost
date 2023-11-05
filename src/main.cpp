@@ -29,36 +29,35 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
-    MultiDatabaseBuilder builder;
-    // TODO: allow magnitude and weird
-    unsigned char
-        *catalogBuffer =
-        builder.AddSubDatabase(kCatalogMagicValue, SerializeLengthCatalog(narrowedCatalog, false, true));
-    SerializeCatalog(narrowedCatalog, false, true, catalogBuffer);
+    MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
+    SerializeContext ser = serFromDbValues(values);
+    SerializeMultiDatabase(&ser, dbEntries);
 
-    if (values.tetra) {
-        std::cerr << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
-        auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
-        std::vector<uint16_t> catIndices = tetraStuff.first;
-        std::vector<uint16_t> pattStars = tetraStuff.second;
+    // if (values.tetra) {
+    //     std::cerr << "Tetra max angle is: " << values.tetraMaxAngle << std::endl;
+    //     auto tetraStuff = TetraPreparePattCat(narrowedCatalog, values.tetraMaxAngle);
+    //     std::vector<uint16_t> catIndices = tetraStuff.first;
+    //     std::vector<uint16_t> pattStars = tetraStuff.second;
 
-        std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
-        std::cerr << "Number of pattern stars: " << pattStars.size() << std::endl;
+    //     std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+    //     std::cerr << "Number of pattern stars: " << pattStars.size() << std::endl;
 
-        GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars, catIndices);
-        std::cerr << "Generated TETRA database with " << builder.BufferLength() << " bytes"
-                  << std::endl;
-    }
-    // We should allow for multiple databases at the same tme
-    // Do NOT make this an if...else if...else
-    if (values.kvector) {
-        GenerateDatabases(&builder, narrowedCatalog, values);
-        std::cerr << "Generated kvector database with " << builder.BufferLength() << " bytes"
-                  << std::endl;
-    }
+    //     GenerateTetraDatabases(&builder, narrowedCatalog, values, pattStars, catIndices);
+    //     std::cerr << "Generated TETRA database with " << builder.BufferLength() << " bytes"
+    //               << std::endl;
+    // }
+    // // We should allow for multiple databases at the same tme
+    // // Do NOT make this an if...else if...else
+    // if (values.kvector) {
+    //     GenerateDatabases(&builder, narrowedCatalog, values);
+    //     std::cerr << "Generated kvector database with " << builder.BufferLength() << " bytes"
+    //               << std::endl;
+    // }
+
+    std::cerr << "Generated database with " << ser.buffer.size() << " bytes" << std::endl;
 
     UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
-    pos.Stream().write((char *) builder.Buffer(), builder.BufferLength());
+    pos.Stream().write((char *) ser.buffer.data(), ser.buffer.size());
 
 }
 

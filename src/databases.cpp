@@ -15,9 +15,12 @@
 #include <vector>
 
 #include "attitude-utils.hpp"
+#include "serialize-helpers.hpp"
 #include "star-utils.hpp"
 
 namespace lost {
+
+const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
 
 struct KVectorPair {
     int16_t index1;
@@ -44,11 +47,6 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  |               |            | min+i*(max-min)/numBins                                     |
  */
 
-/// The number of bytes that a kvector index will take up whe serialized
-long SerializeLengthKVectorIndex(long numBins) {
-    return 4+sizeof(float)+sizeof(float)+4+4*(numBins+1);
-}
-
 // apparently there's no easy way to accept an iterator argument. Hate java all you want, but at
 // least it can do that!
 // https://stackoverflow.com/questions/5054087/declare-a-function-accepting-generic-iterator or
@@ -65,8 +63,8 @@ long SerializeLengthKVectorIndex(long numBins) {
  * @param numBins the number of "bins" the KVector should use. A higher number makes query results "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min) divided by the "width" of the typical query.
  * @param buffer[out] index is written here.
  */
-void SerializeKVectorIndex(const std::vector<float> &values, float min, float max, long numBins, unsigned char *buffer) {
-    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
+void SerializeKVectorIndex(SerializeContext *ser, const std::vector<float> &values, float min, float max, long numBins) {
+    std::vector<int32_t> kVector(numBins+1); // We store sums before and after each bin
     float binWidth = (max - min) / numBins;
 
     // generate the k-vector part
@@ -98,45 +96,31 @@ void SerializeKVectorIndex(const std::vector<float> &values, float min, float ma
         lastBinVal = bin;
     }
 
-    unsigned char *bufferStart = buffer;
     // metadata fields
-    *(int32_t *)buffer = values.size();
-    buffer += sizeof(int32_t);
-    *(float *)buffer = min;
-    buffer += sizeof(float);
-    *(float *)buffer = max;
-    buffer += sizeof(float);
-    *(int32_t *)buffer = numBins;
-    buffer += sizeof(int32_t);
+    SerializePrimitive<int32_t>(ser, values.size());
+    SerializePrimitive<float>(ser, min);
+    SerializePrimitive<float>(ser, max);
+    SerializePrimitive<int32_t>(ser, numBins);
 
     // kvector index field
-    // you could probably do this with memcpy instead, but the explicit loop is necessary for endian
-    // concerns? TODO endianness
     for (const int32_t &bin : kVector) {
-        *(int32_t *)buffer = bin;
-        buffer += sizeof(int32_t);
+        SerializePrimitive<int32_t>(ser, bin);
     }
-
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthKVectorIndex(numBins));
 }
 
 /// Construct from serialized buffer.
-KVectorIndex::KVectorIndex(const unsigned char *buffer) {
-    numValues = *(int32_t *)buffer;
-    buffer += sizeof(int32_t);
-    min = *(float *)buffer;
-    buffer += sizeof(float);
-    max = *(float *)buffer;
-    buffer += sizeof(float);
-    numBins = *(int32_t *)buffer;
-    buffer += sizeof(int32_t);
+KVectorIndex::KVectorIndex(DeserializeContext *des) {
+
+    numValues = DeserializePrimitive<int32_t>(des);
+    min = DeserializePrimitive<float>(des);
+    max = DeserializePrimitive<float>(des);
+    numBins = DeserializePrimitive<int32_t>(des);
 
     assert(min >= 0.0f);
     assert(max > min);
     binWidth = (max - min) / numBins;
 
-    bins = (const int32_t *)buffer;
+    bins = DeserializeArray<int32_t>(des, numBins+1);
 }
 
 /**
@@ -209,20 +193,11 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, float mi
     return result;
 }
 
-long SerializeLengthPairDistanceKVector(long numPairs, long numBins) {
-    return SerializeLengthKVectorIndex(numBins) + 2*sizeof(int16_t)*numPairs;
-}
-
-/// Number of bytes that a serialized KVectorDatabase will take up
-long SerializeLengthPairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
-    return SerializeLengthPairDistanceKVector(CatalogToPairDistances(catalog, minDistance, maxDistance).size(), numBins);
-}
-
 /**
  * Serialize a pair-distance KVector into buffer.
  * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
-void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, float maxDistance, long numBins, unsigned char *buffer) {
+void SerializePairDistanceKVector(SerializeContext *ser, const Catalog &catalog, float minDistance, float maxDistance, long numBins) {
     std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
     std::vector<KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
 
@@ -234,22 +209,14 @@ void SerializePairDistanceKVector(const Catalog &catalog, float minDistance, flo
         distances.push_back(pair.distance);
     }
 
-    unsigned char *bufferStart = buffer;
-
     // index field
-    SerializeKVectorIndex(distances, minDistance, maxDistance, numBins, buffer);
-    buffer += SerializeLengthKVectorIndex(numBins);
+    SerializeKVectorIndex(ser, distances, minDistance, maxDistance, numBins);
 
     // bulk pairs field
     for (const KVectorPair &pair : pairs) {
-        *(int16_t *)buffer = pair.index1;
-        buffer += sizeof(int16_t);
-        *(int16_t *)buffer = pair.index2;
-        buffer += sizeof(int16_t);
+        SerializePrimitive<int16_t>(ser, pair.index1);
+        SerializePrimitive<int16_t>(ser, pair.index2);
     }
-
-    // verify length
-    assert(buffer - bufferStart == SerializeLengthPairDistanceKVector(pairs.size(), numBins));
 }
 
 std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &catalog,
@@ -376,18 +343,15 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
     return std::pair<std::vector<uint16_t>, std::vector<uint16_t>>{finalCatIndices, pattStarIndices};
 }
 
-TetraDatabase::TetraDatabase(const unsigned char *buffer) : buffer_(buffer) {
-    maxAngle_ = *(float*)buffer;
-    buffer += sizeof(float);
-    catalogSize_ = *(int32_t *)buffer;
-    // std::cout << "Tetra database, size= " << catalogSize_ << std::endl;
+TetraDatabase::TetraDatabase(DeserializeContext *des) {
+    // maxAngle_ = *(float*)buffer;
+    // buffer += sizeof(float);
+    // catalogSize_ = *(int32_t *)buffer;
+    maxAngle_ = DeserializePrimitive<float>(des);
+    catalogSize_ = DeserializePrimitive<int32_t>(des);
 }
 
-float TetraDatabase::MaxAngle() const { return maxAngle_; }
-
-int TetraDatabase::PattCatSize() const { return catalogSize_; }
-
-std::vector<int> TetraDatabase::GetPattern(int index) const {
+TetraPatt TetraDatabase::GetPattern(int index) const {
     std::vector<int> res;
     const unsigned char *p = buffer_ + headerSize;
     for (int i = 0; i < 4; i++) {
@@ -403,12 +367,12 @@ uint16_t TetraDatabase::GetTrueCatInd(int tetraInd) const {
     return *((uint16_t *)p + tetraInd);
 }
 
-std::vector<Pattern> TetraDatabase::GetPatternMatches(int index) const {
-    std::vector<Pattern> res;
+std::vector<TetraPatt> TetraDatabase::GetPatternMatches(int index) const {
+    std::vector<TetraPatt> res;
     for (int c = 0;; c++) {
         int i = (index + c * c) % PattCatSize();
 
-        Pattern tableRow = GetPattern(i);
+        TetraPatt tableRow = GetPattern(i);
 
         if (tableRow[0] == 0 && tableRow[1] == 0) {
             break;
@@ -420,12 +384,10 @@ std::vector<Pattern> TetraDatabase::GetPatternMatches(int index) const {
 }
 
 /// Create the database from a serialized buffer.
-PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(const unsigned char *buffer)
-    : index(KVectorIndex(buffer)) {
+PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(DeserializeContext *des)
+    : index(KVectorIndex(des)) {
 
-    // TODO: errors? (not even sure what i meant by this comment anymore)
-    buffer += SerializeLengthKVectorIndex(index.NumBins());
-    pairs = (const int16_t *)buffer;
+    pairs = DeserializeArray<int16_t>(des, 2*index.NumValues());
 }
 
 /// Return the value in the range [low,high] which is closest to num
@@ -509,40 +471,42 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
 
 ///////////////////// Tetra database //////////////////////
 
-static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsigned char *buffer,
+void SerializeTetraDatabase(SerializeContext *ser, Catalog &catalog, float maxFovDeg,
                             const std::vector<uint16_t> &pattStarIndices,
-                            const std::vector<uint16_t> &catIndices, bool ser) {
-    const float maxFov = DegToRad(maxFovDeg);
+                            const std::vector<uint16_t> &catIndices) {
+    const float maxFovRad = DegToRad(maxFovDeg);
 
-    // TODO: pattBins here and numPattBins in TetraStarIDAlgorithm::numPattBins should be the same
-    // Otherwise we break things
+    // TODO: these are hardcoded values
+    // pattBins here and numPattBins in TetraStarIDAlgorithm::numPattBins must be the same
     const int pattBins = 50;
     const int tempBins = 4;
+    const int pattSize = 4;
 
-    // Preprocessed star table for Tetra
     Catalog tetraCatalog;
-    for (int ind : catIndices) {
+    for (int ind : catIndices){
         tetraCatalog.push_back(catalog[ind]);
     }
 
-    struct CmpSpatialHash {
-        bool operator()(const Vec3 &vec1, const Vec3 &vec2) const {
-            if (vec1.x != vec2.x) return (vec1.x < vec2.x);
-            if (vec1.y != vec2.y) return (vec1.y < vec2.y);
-            return vec1.z < vec2.z;
-        };
+    auto spatialHash = [](const Vec3 &vec){
+        std::hash<float> hasher;
+        return hasher(vec.x) ^ hasher(vec.y) ^ hasher(vec.z);
     };
+    auto spatialEquals = [](const Vec3 &vec1, const Vec3 &vec2){
+        return vec1.x==vec2.x && vec1.y==vec2.y && vec1.z==vec2.z;
+    };
+    std::unordered_map<Vec3, std::vector<uint16_t>, decltype(spatialHash), decltype(spatialEquals)>
+        tempCoarseSkyMap(8, spatialHash, spatialEquals);
 
-    std::map<Vec3, std::vector<uint16_t>, CmpSpatialHash> tempCoarseSkyMap;
-
-    for (const int starID : pattStarIndices) {
-        Vec3 v(tetraCatalog[starID].spatial);
-        Vec3 hash{floor((v.x + 1) * tempBins), floor((v.y + 1) * tempBins),
-                  floor((v.z + 1) * tempBins)};
+    for (int starID : pattStarIndices){
+        Vec3 v{tetraCatalog[starID].spatial};
+        Vec3 hash{
+            floor((v.x+1) * tempBins),
+            floor((v.y+1) * tempBins),
+            floor((v.z+1) * tempBins)
+        };
         tempCoarseSkyMap[hash].push_back(starID);
     }
 
-    // Return a list of stars that are nearby
     auto tempGetNearbyStars = [&tempCoarseSkyMap, &tetraCatalog](const Vec3 &vec, float radius) {
         std::vector<float> components{vec.x, vec.y, vec.z};
 
@@ -557,11 +521,8 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
             range.push_back(hi);
             hcSpace.push_back(range);
         }
-
-        // hashcode space has 3 ranges, one for each of [x, y, z]
-
-        std::vector<uint16_t> nearbyStarIDs;
-
+        // Hashcode space has 3 ranges, one for each of [x, y, z]
+        std::vector<uint16_t> nearbyStarIDs; // TODO: typedef this
         for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
             for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
                 for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
@@ -578,38 +539,28 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
                 }
             }
         }
-
         return nearbyStarIDs;
     };
-
-    const int pattSize = 4;
-    typedef std::array<uint16_t, pattSize> Pattern;
+    using Pattern = std::array<uint16_t, pattSize>;
     std::vector<Pattern> pattList;
     Pattern patt{0, 0, 0, 0};
 
     // Construct all possible patterns
-    for (int ind = 0; ind < (int)pattStarIndices.size(); ind++) {
-        uint16_t firstStarID = pattStarIndices[ind];
-        patt[0] = firstStarID;
+    for(int firstStarInd : pattStarIndices){
+        patt[0] = firstStarInd;
 
-        Vec3 v(tetraCatalog[firstStarID].spatial);
+        Vec3 v{tetraCatalog[firstStarInd].spatial};
         Vec3 hashCode{floor((v.x + 1) * tempBins), floor((v.y + 1) * tempBins),
                       floor((v.z + 1) * tempBins)};
 
-        // Remove star i from its sky map partition
+        // Remove star=firstStarInd from its sky map partition
         auto removeIt = std::find(tempCoarseSkyMap[hashCode].begin(),
-                                  tempCoarseSkyMap[hashCode].end(), firstStarID);
-
-        // TODO: an assertion is more appropriate
-        if (removeIt == tempCoarseSkyMap[hashCode].end()) {
-            std::cerr << "Fatal error with hashing" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+                                  tempCoarseSkyMap[hashCode].end(), firstStarInd);
+        assert(removeIt != tempCoarseSkyMap[hashCode].end());
         tempCoarseSkyMap[hashCode].erase(removeIt);
 
-        auto nearbyStars = tempGetNearbyStars(v, maxFov);
+        auto nearbyStars = tempGetNearbyStars(v, maxFovRad);
         const int n = nearbyStars.size();
-
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = j + 1; k < n; k++) {
@@ -618,18 +569,16 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
                     patt[3] = nearbyStars[k];
 
                     bool pattFits = true;
-                    // TODO: why do we need to check this?
-                    // If we do nearbyStars, we already guarantee that this spatial is at most maxFOV away from all in nearby?
-                    // No guarantee that all stars in nearBy are at most maxFOV from each other though
                     for (int pair1 = 0; pair1 < pattSize; pair1++) {
                         for (int pair2 = pair1 + 1; pair2 < pattSize; pair2++) {
                             float dotProd = tetraCatalog[patt[pair1]].spatial *
                                             tetraCatalog[patt[pair2]].spatial;
-                            if (dotProd <= std::cos(maxFov)) {
+                            if (dotProd <= std::cos(maxFovRad)) {
                                 pattFits = false;
                                 break;
                             }
                         }
+                        if (!pattFits) break;
                     }
 
                     if (pattFits) {
@@ -640,42 +589,39 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
         }
     }
 
-    std::cerr << "Found " << pattList.size() << " patterns" << std::endl;
-
-    // Load factor of 0.5
-    long long pattCatalogLength = 2 * (int)pattList.size();
-    std::vector<Pattern> pattCatalog(pattCatalogLength);
-
+    std::cerr << "Tetra found " << pattList.size() << " patterns" << std::endl;
+    // Ensure load factor just < 0.5
+    long long pattCatalogLen = 2 * (int)pattList.size() + 1;
+    std::vector<Pattern> pattCatalog(pattCatalogLen);
     for (Pattern patt : pattList) {
-        std::vector<float> pattEdgeLengths;
+        std::vector<double> pattEdgeLengths;
         for (int i = 0; i < pattSize; i++) {
             CatalogStar star1 = tetraCatalog[patt[i]];
             for (int j = i + 1; j < pattSize; j++) {
                 // calculate distance between vectors
                 CatalogStar star2 = tetraCatalog[patt[j]];
-                float edgeLen = (star2.spatial - star1.spatial).Magnitude();
+                double edgeLen = (star2.spatial - star1.spatial).Magnitude();
                 pattEdgeLengths.push_back(edgeLen);
             }
         }
         std::sort(pattEdgeLengths.begin(), pattEdgeLengths.end());
-
-        float pattLargestEdge = pattEdgeLengths[(int)(pattEdgeLengths.size() - 1)];
-        std::vector<float> pattEdgeRatios;
-        for (int i = 0; i < (int)pattEdgeLengths.size() - 1;
-             i++) {  // size()-1, since we ignore the largest edge
+        double pattLargestEdge = pattEdgeLengths.back();
+        std::vector<double> pattEdgeRatios;
+        // Skip last edge since ratio is just 1
+        for (int i = 0; i < pattEdgeLengths.size() - 1; i++) {
             pattEdgeRatios.push_back(pattEdgeLengths[i] / pattLargestEdge);
         }
 
         std::vector<int> key;
-        for (float edgeRatio : pattEdgeRatios) {
+        for (double edgeRatio : pattEdgeRatios) {
             key.push_back(int(edgeRatio * pattBins));
         }
 
-        int hashIndex = KeyToIndex(key, pattBins, pattCatalogLength);
+        int hashIndex = KeyToIndex(key, pattBins, pattCatalogLen);
         long long offset = 0;
         // Quadratic probing to find next available bucket for element with key=hashIndex
         while (true) {
-            int index = int(hashIndex + std::pow(offset, 2)) % pattCatalogLength;
+            int index = int(hashIndex + std::pow(offset, 2)) % pattCatalogLen;
             offset++;
             if (pattCatalog[index][0] == 0 && pattCatalog[index][1] == 0) {
                 pattCatalog[index] = patt;
@@ -683,55 +629,28 @@ static long SerializeTetraHelper(const Catalog &catalog, float maxFovDeg, unsign
             }
         }
     }
-
-    // Done with everything, write to buffer
-    // See TetraDatabase for layout of db
-
-    if (ser) {
-        *((float *)buffer) = maxFovDeg;
-        buffer += sizeof(float);
-        *((int32_t *)buffer) = (int)pattCatalog.size();
-        buffer += sizeof(int32_t);
-
-        for (Pattern patt : pattCatalog) {
-            for (int i = 0; i < pattSize; i++) {
-                *((uint16_t *)buffer) = patt[i];
-                buffer += sizeof(uint16_t);
-            }
+    SerializePrimitive<float>(ser, maxFovDeg);
+    SerializePrimitive<uint64_t>(ser, pattCatalog.size());
+    for (Pattern patt : pattCatalog) {
+        for (int i = 0; i < pattSize; i++) {
+            SerializePrimitive<uint16_t>(ser, patt[i]);
         }
-
-        for (uint16_t ind : catIndices) {
-            *((uint16_t *)buffer) = ind;
-            buffer += sizeof(uint16_t);
-        }
-
-        return -1;
-    } else {
-        return sizeof(float) + sizeof(int32_t) + sizeof(uint16_t) * pattCatalog.size() * pattSize +
-               catIndices.size() * sizeof(uint16_t);
     }
-}
-
-long SerializeLengthTetraDatabase(const Catalog &cat, float maxFov,
-                                  const std::vector<uint16_t> &pattStarIndices,
-                                  const std::vector<uint16_t> &catIndices) {
-    return SerializeTetraHelper(cat, maxFov, nullptr, pattStarIndices, catIndices, false);
-}
-
-void SerializeTetraDatabase(const Catalog &cat, float maxFov, unsigned char *buffer,
-                            const std::vector<uint16_t> &pattStarIndices,
-                            const std::vector<uint16_t> &catIndices) {
-    SerializeTetraHelper(cat, maxFov, buffer, pattStarIndices, catIndices, true);
+    for (uint16_t ind : catIndices) {
+        SerializePrimitive<uint16_t>(ser, ind);
+    }
 }
 
 /**
    MultiDatabase memory layout:
 
-   | size           | name              | description                                             |
-   |----------------+-------------------+---------------------------------------------------------|
-   | 8*maxDatabases | table of contents | each 8-byte entry is the 4-byte magic value followed by |
-   |                |                   | a 4-byte index into the bulk where that db begins       |
-   | Large          | databases         | the database contents                                   |
+   | size | name           | description                                 |
+   |------+----------------+---------------------------------------------|
+   |    4 | magicValue     | unique database identifier                  |
+   |    4 | databaseLength | length in bytes (32-bit unsigned)           |
+   |    n | database       | the entire database. 8-byte aligned         |
+   |  ... | ...            | More databases (each has value, length, db) |
+   |    4 | caboose        | 4 null bytes indicate the end               |
  */
 
 /**
@@ -741,61 +660,36 @@ void SerializeTetraDatabase(const Catalog &cat, float maxFov, unsigned char *buf
  * @return Returns a pointer to the start of the database type indicated by the magic value, null if not found
  */
 const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const {
-    long databaseIndex = -1;
-    int32_t *toc = (int32_t *)buffer;
-    for (int i = 0; i < kMultiDatabaseMaxDatabases; i++) {
-        int32_t curMagicValue = *toc;
-        toc++;
+    DeserializeContext desValue(buffer);
+    DeserializeContext *des = &desValue; // just for naming consistency with how we use `des` elsewhere
+
+    assert(magicValue != 0);
+    while (true) {
+        int32_t curMagicValue = DeserializePrimitive<int32_t>(des);
+        if (curMagicValue == 0) {
+            return nullptr;
+        }
+        uint32_t dbLength = DeserializePrimitive<uint32_t>(des);
+        assert(dbLength > 0);
+        DeserializePadding<uint64_t>(des); // align to an 8-byte boundary
+        const unsigned char *curSubDatabasePointer = DeserializeArray<unsigned char>(des, dbLength);
         if (curMagicValue == magicValue) {
-            databaseIndex = *toc;
-            break;
+            return curSubDatabasePointer;
         }
-        toc++;
     }
-    // the database was not found
-    if (databaseIndex < 0) {
-        return NULL;
-    }
-
-    return buffer+kMultiDatabaseTocLength+databaseIndex;
+    // shouldn't ever make it here. Compiler should remove this assertion as unreachable.
+    assert(false);
 }
 
-/**
- * Add a database to a MultiDatabase
- * @param magicValue A value unique to this type of database which is used to extract it out of the database later.
- * @param length The number of bytes to allocate for this database.
- * @return Pointer to the start of the space allocated for said database. Return null if full (too many databases).
- */
-unsigned char *MultiDatabaseBuilder::AddSubDatabase(int32_t magicValue, long length) {
-    // find unused spot in toc and take it!
-    int32_t *toc = (int32_t *)buffer;
-    bool foundSpot = false;
-    for (int i = 0; i < kMultiDatabaseMaxDatabases; i++) {
-        if (*toc == 0) {
-            *toc = magicValue;
-            toc++;
-            *toc = bulkLength;
-            foundSpot = true;
-            break;
-        }
-        // skip the entry
-        toc += 2;
+void SerializeMultiDatabase(SerializeContext *ser,
+                            const MultiDatabaseDescriptor &dbs) {
+    for (const MultiDatabaseEntry &multiDbEntry : dbs) {
+        SerializePrimitive<int32_t>(ser, multiDbEntry.magicValue);
+        SerializePrimitive<uint32_t>(ser, multiDbEntry.bytes.size());
+        SerializePadding<uint64_t>(ser);
+        std::copy(multiDbEntry.bytes.cbegin(), multiDbEntry.bytes.cend(), std::back_inserter(ser->buffer));
     }
-
-    // database is full
-    if (!foundSpot) {
-        return NULL;
-    }
-
-    buffer = (unsigned char *)realloc(buffer, kMultiDatabaseTocLength+bulkLength+length);
-    // just past the end of the last database
-    unsigned char *result = buffer+kMultiDatabaseTocLength+bulkLength;
-    bulkLength += length;
-    return result;
-}
-
-MultiDatabaseBuilder::~MultiDatabaseBuilder() {
-    free(buffer);
+    SerializePrimitive<int32_t>(ser, 0); // caboose
 }
 
 }
