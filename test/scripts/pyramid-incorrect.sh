@@ -32,7 +32,7 @@ for _ in $(seq "${1:-10}"); do
   de=$(rand_int -89 89)
   roll=$(rand_int 0 359)
   tolerance=$(awk "BEGIN{print $RANDOM%10/100+.002}") # floating point numbers are hard, alright?
-  set -x
+  # set -x
   lost_output=$(
     ./lost pipeline \
       --generate 1 \
@@ -52,7 +52,7 @@ for _ in $(seq "${1:-10}"); do
       --max-mismatch-prob 0.001 \
       --compare-star-ids
   )
-  set +x
+  # set +x
   num_incorrect_stars=$(grep -oP "(?<=starid_num_incorrect )\\d+" <<<"$lost_output")
   num_correct_stars=$(grep -oP "(?<=starid_num_correct )\\d+" <<<"$lost_output")
   if ((num_correct_stars > 0 && num_incorrect_stars == 0)); then

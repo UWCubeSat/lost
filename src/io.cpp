@@ -841,11 +841,23 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.centroidDummyNumStars));
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(
+            new DummyCentroidAlgorithm(values.centroidDummyNumStars));
     } else if (values.centroidAlgo == "cog") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
     } else if (values.centroidAlgo == "iwcog") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo == "lsgf1d") {
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit1D(values.centroidFitRadius, values.centroidFitDynamic));
+    } else if (values.centroidAlgo == "lsgf2d") {
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new LeastSquaresGaussianFit2D(values.centroidFitRadius, values.centroidFitDynamic));
+    } else if (values.centroidAlgo == "ggrid"){
+        result.centroidAlgorithm =
+            std::unique_ptr<CentroidAlgorithm>(new GaussianGrid());
     } else if (values.centroidAlgo != "") {
         std::cout << "Illegal centroid algorithm." << std::endl;
         exit(1);
