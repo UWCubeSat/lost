@@ -475,27 +475,24 @@ void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float
     const int tempBins = 4;
 
     Catalog tetraCatalog;
-    for (int ind : catIndices){
+    for (int ind : catIndices) {
         tetraCatalog.push_back(catalog[ind]);
     }
 
-    auto spatialHash = [](const Vec3 &vec){
+    auto spatialHash = [](const Vec3 &vec) {
         std::hash<float> hasher;
         return hasher(vec.x) ^ hasher(vec.y) ^ hasher(vec.z);
     };
-    auto spatialEquals = [](const Vec3 &vec1, const Vec3 &vec2){
-        return vec1.x==vec2.x && vec1.y==vec2.y && vec1.z==vec2.z;
+    auto spatialEquals = [](const Vec3 &vec1, const Vec3 &vec2) {
+        return vec1.x == vec2.x && vec1.y == vec2.y && vec1.z == vec2.z;
     };
     std::unordered_map<Vec3, std::vector<uint16_t>, decltype(spatialHash), decltype(spatialEquals)>
         tempCoarseSkyMap(8, spatialHash, spatialEquals);
 
-    for (int starID : pattStarIndices){
+    for (int starID : pattStarIndices) {
         Vec3 v{tetraCatalog[starID].spatial};
-        Vec3 hash{
-            floor((v.x+1) * tempBins),
-            floor((v.y+1) * tempBins),
-            floor((v.z+1) * tempBins)
-        };
+        Vec3 hash{floor((v.x + 1) * tempBins), floor((v.y + 1) * tempBins),
+                  floor((v.z + 1) * tempBins)};
         tempCoarseSkyMap[hash].push_back(starID);
     }
 
@@ -514,7 +511,7 @@ void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float
             hcSpace.push_back(range);
         }
         // Hashcode space has 3 ranges, one for each of [x, y, z]
-        std::vector<uint16_t> nearbyStarIDs; // TODO: typedef this
+        std::vector<uint16_t> nearbyStarIDs;  // TODO: typedef this
         for (int a = hcSpace[0][0]; a < hcSpace[0][1]; a++) {
             for (int b = hcSpace[1][0]; b < hcSpace[1][1]; b++) {
                 for (int c = hcSpace[2][0]; c < hcSpace[2][1]; c++) {
@@ -538,7 +535,7 @@ void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float
     Pattern patt{0, 0, 0, 0};
 
     // Construct all possible patterns
-    for(int firstStarInd : pattStarIndices){
+    for (int firstStarInd : pattStarIndices) {
         patt[0] = firstStarInd;
 
         Vec3 v{tetraCatalog[firstStarInd].spatial};
