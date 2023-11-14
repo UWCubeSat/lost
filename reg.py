@@ -5,6 +5,7 @@
 # CLI:
 # test directory name, output log name
 # (optional) attitude estimator
+# Example usage: python reg.py samples/ log.txt -att_estimator quest
 
 import subprocess
 import argparse

@@ -101,7 +101,7 @@ const Catalog &CatalogRead() {
         std::sort(catalog.begin(), catalog.end(), [](const CatalogStar &a, const CatalogStar &b) {
             return a.spatial.x < b.spatial.x;
         });
-        for (int i = catalog.size(); i > 0; i--) {
+        for (int i = catalog.size()-1; i > 0; i--) {
             if ((catalog[i].spatial - catalog[i-1].spatial).Magnitude() < 5e-5) { // 70 stars removed at this threshold.
                 if (catalog[i].magnitude > catalog[i-1].magnitude) {
                     catalog.erase(catalog.begin() + i);

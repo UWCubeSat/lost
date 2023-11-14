@@ -12,6 +12,11 @@
 
 namespace lost {
 
+const int TetraConstants::numPattStars = 4;
+const int TetraConstants::numPattBins = 50;
+const float TetraConstants::pattErrorRange = 0.001;
+const float TetraConstants::pattMaxError = 0.001;
+
 // brightest star first
 bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;

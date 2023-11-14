@@ -289,7 +289,6 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
 
         // Same thing here, we should test each new star's angular distance to all
         // stars we've already selected to be kept for verification
-        // std::vector<float> angsVerifying;
         for (int j = 0; j < i; j++) {
             if (keepForVerifying[j]) {
                 float angle = Angle(vec, catalog[j].spatial);
@@ -329,9 +328,9 @@ std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(cons
     // Find which stars in the final star table
     // should be used for pattern construction later in Tetra's database generation step
     // pattStarIndices will be a double-index:
-    //  our "final star table" is a list of indices into the original (unchanged) catalog
-    //  pattStarIndices is a list of indices into the final star table to tell Tetra which ones
-    //  to use for pattern construction
+    // our "final star table" is a list of indices into the original (unchanged) catalog
+    // pattStarIndices is a list of indices into the final star table to tell Tetra which ones
+    // to use for pattern construction
     int cumulativeSum = -1;
     for (int i = 0; i < (int)keepForVerifying.size(); i++) {
         if (keepForVerifying[i]) {
@@ -466,18 +465,14 @@ std::vector<float> PairDistanceKVectorDatabase::StarDistances(int16_t star,
     return result;
 }
 
-///////////////////// Tetra database //////////////////////
-
 void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float maxFovDeg,
                             const std::vector<uint16_t> &pattStarIndices,
                             const std::vector<uint16_t> &catIndices) {
     const float maxFovRad = DegToRad(maxFovDeg);
 
-    // TODO: these are hardcoded values
-    // pattBins here and numPattBins in TetraStarIDAlgorithm::numPattBins must be the same
-    const int pattBins = 50;
+    const int pattBins = TetraConstants::numPattBins;
+    const int pattSize = TetraConstants::numPattStars;
     const int tempBins = 4;
-    const int pattSize = 4;
 
     Catalog tetraCatalog;
     for (int ind : catIndices){
@@ -538,7 +533,7 @@ void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float
         }
         return nearbyStarIDs;
     };
-    using Pattern = std::array<uint16_t, pattSize>;
+    using Pattern = std::array<uint16_t, 4>;
     std::vector<Pattern> pattList;
     Pattern patt{0, 0, 0, 0};
 
@@ -587,7 +582,7 @@ void SerializeTetraDatabase(SerializeContext *ser, const Catalog &catalog, float
     }
 
     std::cerr << "Tetra found " << pattList.size() << " patterns" << std::endl;
-    // Ensure load factor just < 0.5
+    // Ensure load factor just < 0.5 to prevent against cycling
     long long pattCatalogLen = 2 * (int)pattList.size() + 1;
     std::vector<Pattern> pattCatalog(pattCatalogLen);
     for (Pattern patt : pattList) {
