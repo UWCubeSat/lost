@@ -9,7 +9,9 @@
 
 import subprocess
 import argparse
-import os
+
+# import os
+import glob
 import datetime
 
 parser = argparse.ArgumentParser()
@@ -29,13 +31,14 @@ def get_diff(expected, actual):
 
 
 output_log = open(args.log, "a+")  # append to end of log, don't overwrite
-for img_name in os.listdir(args.test_dir):
+for img_name in glob.glob(args.test_dir + "**/*.png", recursive=True):
+    print(f"===================={img_name}====================")
     cmd = (
         f"./lost pipeline \
       --png {img_name} \
       --fov 17 \
       --centroid-algo cog \
-      --centroid-filter-brightest 6 \
+      --centroid-filter-brightest 8 \
       --star-id-algo tetra \
       --database tetra-algo-12.dat \
       --false-stars 0 \
