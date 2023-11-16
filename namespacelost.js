@@ -86,7 +86,7 @@ var namespacelost =
     [ "FindNamedStar", "namespacelost.html#ac722314f3b14385ade7e5f05699ef006", null ],
     [ "FindUnidentifiedCentroidsInRange", "namespacelost.html#a0f709f580bfbe3bd0196b50226f22683", null ],
     [ "FloatModulo", "namespacelost.html#a01c855b3690f601ec92a40471aa05ebd", null ],
-    [ "FocalLengthFromOptions", "namespacelost.html#a1187da9a83232a720a84bef1b99c5b58", null ],
+    [ "FocalLengthFromOptions", "namespacelost.html#a9eaa81a9fc5f13a447e4209b5b230308", null ],
     [ "FocalLengthToFov", "namespacelost.html#ae05e275818c57f3b736b70236d0e6703", null ],
     [ "FovToFocalLength", "namespacelost.html#a5e7d67bec758d4922935c84b8a0f8526", null ],
     [ "GenerateDatabases", "namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949", null ],
