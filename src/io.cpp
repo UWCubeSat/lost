@@ -308,7 +308,7 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
  * Calculate the focal length, in pixels, based on the given command line options.
  * This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras.
  */
-float FocalLengthFromOptions(const PipelineOptions &values) {
+float FocalLengthFromOptions(const PipelineOptions &values, int xResolution) {
     if ((values.pixelSize != -1) ^ (values.focalLength != 0)) {
         std::cerr << "ERROR: Exactly one of --pixel-size or --focal-length were set." << std::endl;
         exit(1);
@@ -321,7 +321,7 @@ float FocalLengthFromOptions(const PipelineOptions &values) {
     }
 
     if (values.pixelSize == -1) {
-        return FovToFocalLength(DegToRad(values.fov), values.generateXRes);
+        return FovToFocalLength(DegToRad(values.fov), xResolution);
     } else {
         return values.focalLength * 1000 / values.pixelSize;
     }
@@ -383,7 +383,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
 
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
-    float focalLengthPixels = FocalLengthFromOptions(values);
+    float focalLengthPixels = FocalLengthFromOptions(values, xResolution);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
     result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
@@ -748,8 +748,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                                                                   DegToRad(values.generateBlurRoll)));
     PipelineInputList result;
 
-    float focalLength = FocalLengthFromOptions(values);
-
+    float focalLength = FocalLengthFromOptions(values, values.generateXRes);
 
 
     for (int i = 0; i < values.generate; i++) {
