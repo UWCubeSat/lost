@@ -35,23 +35,23 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, fl
 
     // TODO: bug? Why remove both i and j
     // remove stars that are too close to each other
-    // std::set<int> tooCloseIndices;
-    // // filter out stars that are too close together
-    // // easy enough to n^2 brute force, the catalog isn't that big
-    // for (int i = 0; i < (int)result.size(); i++) {
-    //     for (int j = i + 1; j < (int)result.size(); j++) {
-    //         if (AngleUnit(result[i].spatial.Normalize(), result[j].spatial.Normalize()) < minSeparation) {
-    //             tooCloseIndices.insert(i);
-    //             tooCloseIndices.insert(j);
-    //         }
-    //     }
-    // }
+    std::set<int> tooCloseIndices;
+    // filter out stars that are too close together
+    // easy enough to n^2 brute force, the catalog isn't that big
+    for (int i = 0; i < (int)result.size(); i++) {
+        for (int j = i + 1; j < (int)result.size(); j++) {
+            if (AngleUnit(result[i].spatial.Normalize(), result[j].spatial.Normalize()) < minSeparation) {
+                tooCloseIndices.insert(i);
+                tooCloseIndices.insert(j);
+            }
+        }
+    }
 
     // // Erase all the stars whose indices are in tooCloseIndices from the result.
     // // Loop backwards so indices don't get messed up as we iterate.
-    // for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
-    //     result.erase(result.begin() + *it);
-    // }
+    for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
+        result.erase(result.begin() + *it);
+    }
 
     // and finally limit to n brightest stars
     if (maxStars < (int)result.size()) {

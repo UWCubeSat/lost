@@ -952,6 +952,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // (human centipede) until there are no more stages set.
     PipelineOutput result;
 
+    std::cerr << *input.InputCamera() << std::endl;
+
     const Image *inputImage = input.InputImage();
     const Stars *inputStars = input.InputStars();
     const StarIdentifiers *inputStarIds = input.InputStarIds();
