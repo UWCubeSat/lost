@@ -1,6 +1,7 @@
 #ifndef STAR_UTILS_H
 #define STAR_UTILS_H
 
+#include <utility>  // pair
 #include <vector>
 
 #include "attitude-utils.hpp"
@@ -131,6 +132,18 @@ float MagToBrightness(int magnitude);
  */
 Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, float minSeparation);
 
-}
+/// Hash function for Tetra, convert from star pattern representation into index in pattern catalog
+int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex);
+
+struct TetraConstants{
+    static const int numPattStars;
+    // Do NOT modify the following parameters unless you know what you're doing
+    static const int numPattBins;
+    static const float pattErrorRange;
+    static const float pattMaxError;
+};
+
+
+}  // namespace lost
 
 #endif

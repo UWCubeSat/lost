@@ -1,23 +1,23 @@
 #include "io.hpp"
 
-#include <cairo/cairo.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <math.h>
-#include <errno.h>
 #include <assert.h>
-#include <stdlib.h>
+#include <cairo/cairo.h>
+#include <errno.h>
+#include <inttypes.h>
 #include <limits.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include <vector>
-#include <string>
+#include <algorithm>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <cstring>
 #include <random>
-#include <algorithm>
+#include <string>
+#include <vector>
 #include <map>
 #include <chrono>
 
@@ -101,7 +101,7 @@ const Catalog &CatalogRead() {
         std::sort(catalog.begin(), catalog.end(), [](const CatalogStar &a, const CatalogStar &b) {
             return a.spatial.x < b.spatial.x;
         });
-        for (int i = catalog.size(); i > 0; i--) {
+        for (int i = catalog.size()-1; i > 0; i--) {
             if ((catalog[i].spatial - catalog[i-1].spatial).Magnitude() < 5e-5) { // 70 stars removed at this threshold.
                 if (catalog[i].magnitude > catalog[i-1].magnitude) {
                     catalog.erase(catalog.begin() + i);
@@ -269,6 +269,28 @@ SerializeContext serFromDbValues(const DatabaseOptions &values) {
     return SerializeContext(values.swapIntegerEndianness, values.swapFloatEndianness);
 }
 
+// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float maxAngle,
+//                         const std::vector<uint16_t> &pattStars,
+//                         const std::vector<uint16_t> &catIndices) {
+//     // long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, catIndices, false);
+//     long length = SerializeLengthTetraDatabase(catalog, maxAngle, pattStars, catIndices);
+//     unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
+//     if (buffer == nullptr) {
+//         std::cerr << "Error: No room for Tetra database" << std::endl;
+//     }
+//     // SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices, true);
+//     SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices);
+// }
+
+// void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
+//                             const DatabaseOptions &values, const std::vector<uint16_t> &pattStars,
+//                             const std::vector<uint16_t> &catIndices) {
+//     float maxAngle = values.tetraMaxAngle;
+//     BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
+// }
+// /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
+// void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
+
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const DatabaseOptions &values) {
     MultiDatabaseDescriptor dbEntries;
 
@@ -277,14 +299,36 @@ MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const Database
     SerializeCatalog(&catalogSer, catalog, false, true);
     dbEntries.emplace_back(kCatalogMagicValue, catalogSer.buffer);
 
+    bool dbProvided = false;
+
     if (values.kvector) {
+        dbProvided = true;
         float minDistance = DegToRad(values.kvectorMinDistance);
         float maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
         SerializeContext ser = serFromDbValues(values);
         SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
         dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
-    } else {
+    }
+
+    if (values.tetra) {
+        dbProvided = true;
+        float maxAngleDeg = values.tetraMaxAngle;
+        std::cerr << "Tetra max angle: " << maxAngleDeg << std::endl;
+
+        auto tetraPrepRes = TetraPreparePattCat(catalog, maxAngleDeg);
+        std::vector<uint16_t> catIndices = tetraPrepRes.first;
+        std::vector<uint16_t> pattStarsInds = tetraPrepRes.second;
+
+        std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+        std::cerr << "Number of pattern stars: " << pattStarsInds.size() << std::endl;
+
+        SerializeContext ser = serFromDbValues(values);
+        SerializeTetraDatabase(&ser, catalog, maxAngleDeg, pattStarsInds, catIndices);
+        dbEntries.emplace_back(TetraDatabase::kMagicValue, ser.buffer);
+    }
+
+    if (!dbProvided) {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
@@ -872,7 +916,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.idAlgo == "gv") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(
+            DegToRad(values.angularTolerance), values.estimatedNumFalseStars,
+            values.maxMismatchProb, 1000));
+    } else if (values.idAlgo == "tetra") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TetraStarIdAlgorithm());
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
@@ -902,6 +950,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // there, execute each successive stage of the pipeline using the output of the last stage
     // (human centipede) until there are no more stages set.
     PipelineOutput result;
+
+    std::cerr << *input.InputCamera() << std::endl;
 
     const Image *inputImage = input.InputImage();
     const Stars *inputStars = input.InputStars();

@@ -5,27 +5,26 @@
 
 #include <cairo/cairo.h>
 
-#include <random>
-#include <vector>
-#include <map>
-#include <utility>
-#include <string>
-#include <sstream>
 #include <iostream>
+#include <map>
 #include <memory>
-
+#include <random>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
 #endif
 
-#include "centroiders.hpp"
-#include "star-utils.hpp"
-#include "star-id.hpp"
-#include "camera.hpp"
-#include "attitude-utils.hpp"
 #include "attitude-estimators.hpp"
+#include "attitude-utils.hpp"
+#include "camera.hpp"
+#include "centroiders.hpp"
 #include "databases.hpp"
+#include "star-id.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -295,6 +294,11 @@ SerializeContext serFromDbValues(const DatabaseOptions &values);
 /// Appropriately create descriptors for all requested databases according to command-line options.
 /// @sa SerializeMultiDatabase
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &, const DatabaseOptions &values);
+
+// // TODO:  can we avoid the split?
+// void GenerateTetraDatabases(MultiDatabaseBuilder *, const Catalog &, const DatabaseOptions &values,
+//                             const std::vector<uint16_t> &pattStars,
+//                             const std::vector<uint16_t> &catIndices);
 
 /////////////////////
 // INSPECT CATALOG //

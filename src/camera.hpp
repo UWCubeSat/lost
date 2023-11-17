@@ -41,7 +41,7 @@ public:
     /// Focal length in pixels
     float FocalLength() const { return focalLength; };
     /// Horizontal field of view in radians
-    float Fov() const;
+    float Fov() const; // in radians
 
     void SetFocalLength(float focalLength) { this->focalLength = focalLength; }
 

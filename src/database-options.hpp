@@ -11,4 +11,6 @@ LOST_CLI_OPTION("kvector-max-distance"   , float      , kvectorMaxDistance    , 
 LOST_CLI_OPTION("kvector-distance-bins"  , long       , kvectorNumDistanceBins, 10000 , atol(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("swap-integer-endianness", bool       , swapIntegerEndianness , false , atobool(optarg), true)
 LOST_CLI_OPTION("swap-float-endianness"  , bool       , swapFloatEndianness   , false , atobool(optarg), true)
+LOST_CLI_OPTION("tetra"                  , bool       , tetra                 , false , atobool(optarg), true)
+LOST_CLI_OPTION("tetra-max-angle"        , float      , tetraMaxAngle         , 12    , atof(optarg)   , kNoDefaultArgument)
 LOST_CLI_OPTION("output"                 , std::string, outputPath            , "-"   , optarg         , kNoDefaultArgument)

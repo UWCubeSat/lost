@@ -1,21 +1,329 @@
-#include <stdlib.h>
-#include <math.h>
+#include "star-id.hpp"
+
 #include <assert.h>
-#include <vector>
+#include <math.h>
+#include <stdlib.h>
+
 #include <algorithm>
 #include <chrono>
+#include <set>
 #include <unordered_map>
+#include <utility>  // std::pair
 
-#include "star-id.hpp"
-#include "star-id-private.hpp"
-#include "databases.hpp"
 #include "attitude-utils.hpp"
+#include "databases.hpp"
+#include "star-id-private.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
-StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *, const Stars &stars, const Catalog &catalog, const Camera &) const {
+/**
+ * @brief Tetra only: construct a Tetra star pattern from spatial vectors
+ *
+ * This is one possible way to represent the pattern, somewhat naive but good enough in practice
+ * For each pair of spatial vectors, calculate the magnitude of their difference, the "edge length"
+ * Calculate the largest such difference, i.e. the "largest edge"
+ * Divide all edge lengths by the largest edge (except the LE itself) to get edge ratios
+ * Return the pattern = vector of edge ratios in sorted order
+ */
+static std::vector<double> TetraConstructPattern(const std::vector<Vec3> &spats);
 
+static std::vector<double> TetraConstructPattern(const std::vector<Vec3> &spats) {
+    std::vector<double> edgeLengths;
+    // C(numPattStars, 2) edge lengths calculated
+    for (int i = 0; i < (int)spats.size(); i++) {
+        for (int j = i + 1; j < (int)spats.size(); j++) {
+            Vec3 diff = spats[i] - spats[j];
+            edgeLengths.push_back(diff.Magnitude());
+        }
+    }
+
+    std::sort(edgeLengths.begin(), edgeLengths.end());
+    double largestEdge = edgeLengths.back();  // largest edge value
+
+    // size==C(numPattStars, 2) - 1
+    // We don't calculate ratio for largest edge, which would just be 1
+    std::vector<double> edgeRatios;  // size() = C(numPattStars, 2) - 1
+    for (int i = 0; i < edgeLengths.size() - 1; i++) {
+        edgeRatios.push_back(edgeLengths[i] / largestEdge);
+    }
+    return edgeRatios;
+}
+
+class TetraCentroidComboIterator {
+   public:
+    TetraCentroidComboIterator(int numPattStars, int numCentroids)
+        : firstTime_(true), pattSize_(numPattStars), numCentroids_(numCentroids) {}
+
+    /**
+     * @brief Tetra only: get indices of centroids for new star pattern, store in res
+     *
+     * Assumes that your centroids have already been sorted in decreasing order of brightness
+     * Bright stars tend to have lower centroiding error
+     */
+    bool getCentroidCombo(std::vector<int> *const res) {
+        if (numCentroids_ < pattSize_) {
+            return false;
+        }
+
+        if (firstTime_) {
+            firstTime_ = false;
+            indices_.push_back(-1);
+            for (int i = 0; i < pattSize_; i++) {
+                indices_.push_back(i);
+            }
+            indices_.push_back(numCentroids_);
+            *res = std::vector<int>(indices_.begin() + 1, indices_.end() - 1);
+            return true;
+        }
+
+        if (indices_[1] >= numCentroids_ - pattSize_) {
+            return false;
+        }
+
+        for (int i = 1; i <= pattSize_; i++) {
+            indices_[i]++;
+            if (indices_[i] < indices_[i + 1]) {
+                break;
+            }
+            indices_[i] = indices_[i - 1] + 1;
+        }
+        *res = std::vector<int>(indices_.begin() + 1, indices_.end() - 1);
+        return true;
+    }
+
+private:
+ bool firstTime_;
+ std::vector<int> indices_;
+ int pattSize_;
+ int numCentroids_;
+};
+
+StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const Stars &stars,
+                                         const Catalog &catalog, const Camera &camera) const {
+    // Result format: (centroidIndex, catalogIndex)
+    StarIdentifiers result;
+
+    MultiDatabase multiDatabase(database);
+    const unsigned char *databaseBuffer =
+        multiDatabase.SubDatabasePointer(TetraDatabase::kMagicValue);
+    if (databaseBuffer == nullptr) {
+        std::cerr << "Could not get to Tetra database" << std::endl;
+        return result;
+    }
+    DeserializeContext des(databaseBuffer);
+    TetraDatabase tetraDatabase(&des);
+
+    const long long catLength = tetraDatabase.PattCatSize();
+    const float maxFov = tetraDatabase.MaxAngle();
+
+    std::vector<int> centroidIndices;
+    for (int i = 0; i < stars.size(); i++) {
+        centroidIndices.push_back(i);
+    }
+
+    // Sort centroided stars by brightness, high to low. Larger is brighter
+    std::sort(centroidIndices.begin(), centroidIndices.end(),
+              [&stars](int a, int b) { return stars[a].magnitude > stars[b].magnitude; });
+
+    // Index of centroid indices list
+    std::vector<int> chosenCentroidIndices(TetraConstants::numPattStars);
+    TetraCentroidComboIterator tetraCentroidComboIt(TetraConstants::numPattStars, centroidIndices.size());
+
+    // TODO: In practice, maybe cap this at some number of combinations, maybe 10 or so
+    while (tetraCentroidComboIt.getCentroidCombo(&chosenCentroidIndices)) {
+        // Index in centroid indices list
+        std::vector<int> chosenIndIndices;
+        std::vector<Star> chosenStars;
+
+        for (int i = 0; i < TetraConstants::numPattStars; i++) {
+            chosenIndIndices.push_back(centroidIndices[chosenCentroidIndices[i]]);
+            chosenStars.push_back(stars[chosenIndIndices[i]]);
+        }
+
+        // Compute Vec3 spatial vectors for each star chosen
+        // to be in the Pattern
+        std::vector<Vec3> pattStarVecs;  // size==numPattStars
+        for (const Star &star : chosenStars) {
+            Vec3 spatialVec = camera.CameraToSpatial(star.position);
+            pattStarVecs.push_back(spatialVec.Normalize());  // important!
+        }
+
+        // Compute angle between each pair of stars chosen to be in the Pattern
+        // If any angle > maxFov, then we should throw away this Pattern
+        // choice, since our database will not store it
+        bool angleAcceptable = true;
+        for (int i = 0; i < (int)pattStarVecs.size(); i++) {
+            Vec3 u = pattStarVecs[i];
+            for (int j = i + 1; j < (int)pattStarVecs.size(); j++) {
+                Vec3 v = pattStarVecs[j];
+                float angle = Angle(u, v);  // in radians
+                if (RadToDeg(angle) > maxFov) {
+                    angleAcceptable = false;
+                    break;
+                }
+            }
+        }
+
+        if (!angleAcceptable) {
+            // std::cerr << "Skipping combination, some angle is too large" << std::endl;
+            // Try again, some angle is too large
+            continue;
+        }
+
+        std::vector<double> pattEdgeRatios = TetraConstructPattern(pattStarVecs);
+
+        // Binning step
+        // Account for potential error in calculated values by
+        // testing hash codes in a range
+        std::vector<std::pair<int, int>> hcSpace;
+        for (double edgeRatio : pattEdgeRatios) {
+            std::pair<int, int> range;
+            int lo =
+                int((edgeRatio - TetraConstants::pattErrorRange) * TetraConstants::numPattBins);
+            lo = std::max(lo, 0);
+            int hi =
+                int((edgeRatio + TetraConstants::pattErrorRange) * TetraConstants::numPattBins);
+            hi = std::min(hi + 1, TetraConstants::numPattBins);
+            range = std::make_pair(lo, hi);
+            hcSpace.push_back(range);
+        }
+
+        std::set<std::vector<int>> finalCodes;
+        // Go through all the actual hash codes
+        for (int a = hcSpace[0].first; a < hcSpace[0].second; a++) {
+            for (int b = hcSpace[1].first; b < hcSpace[1].second; b++) {
+                for (int c = hcSpace[2].first; c < hcSpace[2].second; c++) {
+                    for (int d = hcSpace[3].first; d < hcSpace[3].second; d++) {
+                        for (int e = hcSpace[4].first; e < hcSpace[4].second; e++) {
+                            std::vector<int> code{a, b, c, d, e};
+                            std::sort(code.begin(), code.end());
+                            finalCodes.insert(code);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (std::vector<int> code : finalCodes) {
+            // Must clear results list here
+            result.clear();
+
+            int hashIndex = KeyToIndex(code, TetraConstants::numPattBins, catLength);
+            // Get a list of Pattern Catalog rows with hash code == hashIndex
+            // One of these Patterns in the database could be a match to our constructed Pattern
+            std::vector<TetraPatt> matches = tetraDatabase.GetPatternMatches(hashIndex);
+
+            if (matches.size() == 0) {
+                // No matches for this pattern
+                continue;
+            }
+
+            bool alrFoundMatch = false;
+            int numMatches = 0;
+            for (TetraPatt matchRow : matches) {
+                // Construct the pattern we found in the Pattern Catalog
+                std::vector<int> catStarInds;
+                std::vector<Vec3> catStarVecs;
+                for (int star : matchRow) {
+                    int catInd = tetraDatabase.GetTrueCatInd(star);
+                    CatalogStar catStar = catalog[catInd];
+                    Vec3 catVec = catStar.spatial;
+                    catStarInds.push_back(catInd);
+                    catStarVecs.push_back(catVec);
+                }
+
+                std::vector<double> catEdgeRatios = TetraConstructPattern(catStarVecs);
+
+                bool skipMatchRow = false;
+                for (int i = 0; i < (int)catEdgeRatios.size(); i++) {
+                    float val = catEdgeRatios[i] - pattEdgeRatios[i];
+                    val = std::abs(val);
+                    // Test that our pattern and PC pattern roughly match up
+                    // For now, just compare edge ratios
+                    if (val > TetraConstants::pattMaxError) {
+                        skipMatchRow = true;
+                    }
+                }
+
+                // Very common to skip here, database Pattern is NOT a match to ours
+                if (skipMatchRow) {
+                    continue;
+                }
+
+                // Awesome! The PC pattern does match ours
+                // Reorder star vectors in both Patterns so we can match them up by ID
+
+                numMatches++;
+
+                if (alrFoundMatch)
+                    continue;  // If we already found a match, don't add new ID'd stars
+                alrFoundMatch = true;
+
+                Vec3 pattCentroid{0, 0, 0};
+                for (Vec3 pattStarVec : pattStarVecs) {
+                    pattCentroid = pattCentroid + pattStarVec;
+                }
+                pattCentroid = pattCentroid * (1.0 / pattStarVecs.size());
+
+                std::vector<float> pattRadii;
+                for (Vec3 pattStarVec : pattStarVecs) {
+                    pattRadii.push_back((pattStarVec - pattCentroid).Magnitude());
+                }
+
+                std::vector<int> sortedCentroidIndices =
+                    ArgsortVector<int, float>(chosenIndIndices, pattRadii);
+
+                std::vector<Vec3> pattSortedVecs =
+                    ArgsortVector<Vec3, float>(pattStarVecs, pattRadii);
+
+                Vec3 catCentroid{0, 0, 0};
+                for (Vec3 catStarVec : catStarVecs) {
+                    catCentroid = catCentroid + catStarVec;
+                }
+                catCentroid = catCentroid * (1.0 / catStarVecs.size());
+
+                std::vector<float> catRadii;
+                for (Vec3 catStarVec : catStarVecs) {
+                    catRadii.push_back((catStarVec - catCentroid).Magnitude());
+                }
+
+                std::vector<int> catSortedStarIDs = ArgsortVector<int, float>(catStarInds, catRadii);
+                std::vector<Vec3> catSortedVecs = ArgsortVector<Vec3, float>(catStarVecs, catRadii);
+
+                for (int i = 0; i < TetraConstants::numPattStars; i++) {
+                    int centroidIndex = sortedCentroidIndices[i];
+
+                    int catInd = catSortedStarIDs[i];
+
+                    // std::cerr << "Centroid Index: " << centroidIndex
+                    //           << ", Result StarID: " << resultStarID << std::endl;
+
+                    result.push_back(StarIdentifier(centroidIndex, catInd));
+                }
+
+                // Note: StarIdentifier wants the catalog INDEX, not the real star ID
+                // TODO: we used to consider early return here
+            }
+
+            // If we've looked at all possible matches and found a unique one, return it
+            // TODO: in practice, this seems to have almost no effect
+            // Surprisingly almost always, if the hashed pattern has at least 1 one match in the PC,
+            // then it can find a unique match
+            if (numMatches == 1) {
+                return result;
+            }
+        }
+    }
+
+    std::cerr << "TETRA FAIL: nothing could be matched" << std::endl;
+
+    result.clear();
+    return result;
+}
+
+StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *, const Stars &stars,
+                                         const Catalog &catalog, const Camera &) const {
     StarIdentifiers result;
 
     unsigned int randomSeed = 123456;
@@ -252,7 +560,7 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
 /**
  * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
  * that appeared with it in the query.
- * 
+ *
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */

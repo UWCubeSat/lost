@@ -1,7 +1,10 @@
 #ifndef ATTITUDE_UTILS_H
 #define ATTITUDE_UTILS_H
 
+#include <algorithm>
+#include <fstream>
 #include <memory>
+#include <numeric>  // iota
 #include <vector>
 
 #include "serialize-helpers.hpp"
@@ -26,6 +29,8 @@ struct Vec2 {
     Vec2 operator*(const float &) const;
     Vec2 operator-(const Vec2 &) const;
     Vec2 operator+(const Vec2 &) const;
+
+    friend std::ostream &operator<<(std::ostream &output, const Vec2 &vec);
 };
 
 class Mat3; // define above so we can use in Vec3 class
@@ -37,6 +42,9 @@ public:
     float y;
     float z;
 
+    Vec3(){};
+    Vec3(float x, float y, float z) : x(x), y(y), z(z){};
+
     float Magnitude() const;
     float MagnitudeSq() const;
     Vec3 Normalize() const;
@@ -45,8 +53,11 @@ public:
     Vec3 operator*(const float &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
+    Vec3 operator+(const Vec3 &) const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
+
+    friend std::ostream &operator<<(std::ostream &output, const Vec3 &vec);
 };
 
 /// 3x3 vector with floating point components
@@ -183,8 +194,24 @@ float ArcSecToRad(float);
 /// Always returns something in [0,mod) Eg -0.8 mod 0.6 = 0.4
 float FloatModulo(float x, float mod);
 
+// Argsort function - Tetra
+// Sort first vector based on values of second vector (asc)
+template <class T, class U>
+std::vector<T> ArgsortVector(std::vector<T> arr, std::vector<U> cmp) {
+    std::vector<T> res;
+    std::vector<int> indices(arr.size());
+    std::iota(indices.begin(), indices.end(), 0);
+    std::sort(indices.begin(), indices.end(),
+              [&](int a, int b) -> bool { return cmp[a] < cmp[b]; });
+
+    for (int ind : indices) {
+        res.push_back(arr[ind]);
+    }
+    return res;
+}
+
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
-}
+}  // namespace lost
 
 #endif

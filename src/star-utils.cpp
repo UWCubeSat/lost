@@ -1,13 +1,21 @@
 #include "star-utils.hpp"
 
-#include <math.h>
 #include <assert.h>
+#include <math.h>
+
 #include <algorithm>
+#include <iostream>  // TODO: remove
+#include <vector>
 #include <set>
 
 #include "serialize-helpers.hpp"
 
 namespace lost {
+
+const int TetraConstants::numPattStars = 4;
+const int TetraConstants::numPattBins = 50;
+const float TetraConstants::pattErrorRange = 0.001;
+const float TetraConstants::pattMaxError = 0.001;
 
 // brightest star first
 bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
@@ -17,37 +25,51 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, float minSeparation) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
+        // Higher magnitude implies the star is dimmer
         if (catalog[i].magnitude <= maxMagnitude) {
             result.push_back(catalog[i]);
         }
     }
+    // TODO: sort regardless?
+    std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
 
+    // TODO: bug? Why remove both i and j
     // remove stars that are too close to each other
     std::set<int> tooCloseIndices;
     // filter out stars that are too close together
     // easy enough to n^2 brute force, the catalog isn't that big
     for (int i = 0; i < (int)result.size(); i++) {
-        for (int j = i+1; j < (int)result.size(); j++) {
-            if (AngleUnit(result[i].spatial, result[j].spatial) < minSeparation) {
+        for (int j = i + 1; j < (int)result.size(); j++) {
+            if (AngleUnit(result[i].spatial.Normalize(), result[j].spatial.Normalize()) < minSeparation) {
                 tooCloseIndices.insert(i);
                 tooCloseIndices.insert(j);
             }
         }
     }
 
-    // Erase all the stars whose indices are in tooCloseIndices from the result.
-    // Loop backwards so indices don't get messed up as we iterate.
+    // // Erase all the stars whose indices are in tooCloseIndices from the result.
+    // // Loop backwards so indices don't get messed up as we iterate.
     for (auto it = tooCloseIndices.rbegin(); it != tooCloseIndices.rend(); it++) {
         result.erase(result.begin() + *it);
     }
 
     // and finally limit to n brightest stars
     if (maxStars < (int)result.size()) {
-        std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
+        // std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
         result.resize(maxStars);
     }
 
     return result;
+}
+
+int KeyToIndex(std::vector<int> key, int binFactor, long long maxIndex) {
+    const long long MAGIC_RAND = 2654435761;
+    long index = 0;
+    for (int i = 0; i < (int)key.size(); i++) {
+        index += key[i] * std::pow(binFactor, i);
+    }
+
+    return ((index % maxIndex) * (MAGIC_RAND % maxIndex)) % maxIndex;
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.
