@@ -14,7 +14,7 @@ const int32_t kCatalogMagicValue = 0xF9A283BC;
 
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
- * 
+ *
  * @note Not an instantiable database on its own -- used in other databases
  */
 // TODO: QueryConservative, QueryExact, QueryTrapezoidal?
@@ -114,7 +114,7 @@ public:
     std::vector<unsigned char> bytes;
 };
 
-typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
+using MultiDatabaseDescriptor = std::vector<MultiDatabaseEntry>;
 
 void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs);
 

@@ -32,7 +32,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
     const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
-    if (databaseBuffer == NULL) {
+    if (databaseBuffer == nullptr) {
         return identified;
     }
     DeserializeContext des(databaseBuffer);
@@ -173,7 +173,7 @@ public:
      * If another PairDistanceInvolvingIterator is equal to this, then it is done iterating.
      */
     PairDistanceInvolvingIterator()
-        : pairs(NULL), end(NULL) { };
+        : pairs(nullptr), end(nullptr) { };
 
     /**
      * The main constructor.
@@ -252,7 +252,7 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
 /**
  * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
  * that appeared with it in the query.
- * 
+ *
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */
@@ -447,7 +447,7 @@ IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifie
         return result;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const float kAngleFrom90SoftThreshold = M_PI_4; // TODO: tune this
@@ -510,7 +510,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     while (!belowThresholdUnidentifiedCentroids.empty() || !aboveThresholdUnidentifiedCentroids.empty()) {
         IRUnidentifiedCentroid *nextUnidentifiedCentroid
             = SelectNextUnidentifiedCentroid(&aboveThresholdUnidentifiedCentroids, &belowThresholdUnidentifiedCentroids);
-        if (nextUnidentifiedCentroid == NULL) {
+        if (nextUnidentifiedCentroid == nullptr) {
             break;
         }
 
@@ -574,7 +574,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     StarIdentifiers identified;
     MultiDatabase multiDatabase(database);
     const unsigned char *databaseBuffer = multiDatabase.SubDatabasePointer(PairDistanceKVectorDatabase::kMagicValue);
-    if (databaseBuffer == NULL || stars.size() < 4) {
+    if (databaseBuffer == nullptr || stars.size() < 4) {
         std::cerr << "Not enough stars, or database missing." << std::endl;
         return identified;
     }
@@ -643,7 +643,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                         / std::max(std::max(iSinInner, jSinInner), kSinInner);
 
                     if (expectedMismatches > maxMismatchProbability) {
-                        std::cout << "skip: mismatch prob." << std::endl;
+                        std::cerr << "skip: mismatch prob." << std::endl;
                         continue;
                     }
 

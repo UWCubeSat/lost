@@ -97,16 +97,24 @@ const Catalog &CatalogRead() {
         char *tsvPath = getenv("LOST_BSC_PATH");
         catalog = BscParse(tsvPath ? tsvPath : DEFAULT_BSC_PATH);
         // perform essential narrowing
-        // remove all stars with exactly the same position as another, keeping the one with brighter magnitude
+        // remove all stars with exactly the same position as another, keeping the one with brighter
+        // magnitude
         std::sort(catalog.begin(), catalog.end(), [](const CatalogStar &a, const CatalogStar &b) {
-            return a.spatial.x < b.spatial.x;
+            if (a.spatial.x != b.spatial.x) {
+                return a.spatial.x < b.spatial.x;
+            } else if (a.spatial.y != b.spatial.y) {
+                return a.spatial.y < b.spatial.y;
+            }
+            return a.spatial.z < b.spatial.z;
         });
-        for (int i = catalog.size(); i > 0; i--) {
-            if ((catalog[i].spatial - catalog[i-1].spatial).Magnitude() < 5e-5) { // 70 stars removed at this threshold.
-                if (catalog[i].magnitude > catalog[i-1].magnitude) {
-                    catalog.erase(catalog.begin() + i);
-                } else {
+        for (int i = catalog.size() - 1; i > 0; i--) {  // [BUG]? catalog[catalog.size()] is invalid
+            if ((catalog[i].spatial - catalog[i - 1].spatial).Magnitude() < 5e-5) {  // 70 stars removed at this threshold.
+                if (catalog[i].magnitude > catalog[i - 1].magnitude) {
+                    // [BUG]? If mag of i > mag of i-1, we want to keep i, not i-1
                     catalog.erase(catalog.begin() + i - 1);
+                    i--;
+                } else {
+                    catalog.erase(catalog.begin() + i);
                 }
             }
         }
