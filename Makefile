@@ -47,7 +47,11 @@ endif
 RELEASE_LDFLAGS := $(LDFLAGS)
 
 # debug link flags:
-ifndef LOST_DISABLE_ASAN
+DISABLE_ASAN = $(or $(LOST_DISABLE_ASAN),$(release))
+
+ifeq ($(DISABLE_ASAN),1)
+	LDFLAGS := $(LDFLAGS)
+else
 	LDFLAGS := $(LDFLAGS) -fsanitize=address
 endif
 
