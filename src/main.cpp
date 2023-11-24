@@ -31,7 +31,6 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
     SerializeContext ser = serFromDbValues(values);
-    
     // Inject flags into the Serialized Database.
     uint32_t dbFlags = typeid(decimal) == typeid(double) ? MULTI_DB_IS_DOUBLE : MULTI_DB_IS_FLOAT;
     SerializeMultiDatabase(&ser, dbEntries, dbFlags);

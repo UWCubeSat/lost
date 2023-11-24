@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -320,9 +319,8 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
             return nullptr;
         }
         uint32_t dbFlags = DeserializePrimitive<uint32_t>(des);
-        
         // Ensure that our database is using the same type as the runtime.
-        if(dbFlags & MULTI_DB_IS_DOUBLE) {
+        if (dbFlags & MULTI_DB_IS_DOUBLE) {
             assert(typeid(decimal) == typeid(double));
         } else {
             assert(typeid(decimal) == typeid(float));
