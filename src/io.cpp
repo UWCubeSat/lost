@@ -267,7 +267,7 @@ typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
 typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 SerializeContext serFromDbValues(const DatabaseOptions &values) {
-    return SerializeContext(values.swapIntegerEndianness, values.swapFloatEndianness);
+    return SerializeContext(values.swapIntegerEndianness, values.swapDecimalEndianness);
 }
 
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const DatabaseOptions &values) {
