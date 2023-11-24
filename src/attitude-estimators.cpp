@@ -36,7 +36,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     // S = B + Transpose(B)
     Eigen::Matrix3f S = B + B.transpose();
     //sigma = B[0][0] + B[1][1] + B[2][2]
-    float sigma = B.trace();
+    decimal sigma = B.trace();
     //Z = [[B[1][2] - B[2][1]], [B[2][0] - B[0][2]], [B[0][1] - B[1][0]]]
     Eigen::Vector3f Z;
     Z << B(1,2) - B(2,1),
@@ -56,7 +56,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     Eigen::Vector4cf values = solver.eigenvalues();
     Eigen::Matrix4cf vectors = solver.eigenvectors();
     int maxIndex = 0;
-    float maxEigenvalue = values(0).real();
+    decimal maxEigenvalue = values(0).real();
     for (int i = 1; i < values.size(); i++) {
         if (values(i).real() > maxEigenvalue) {
             maxIndex = i;
@@ -117,19 +117,19 @@ Attitude TriadAlgorithm::Go(const Camera &camera,
  * Characteristic polynomial of the quest K-matrix
  * @see equation 19b of https://arc.aiaa.org/doi/pdf/10.2514/1.62549
  */
-float QuestCharPoly(float x, float a, float b, float c, float d, float s) {return (pow(x,2)-a) * (pow(x,2)-b) - (c*x) + (c*s) - d;}
+decimal QuestCharPoly(decimal x, decimal a, decimal b, decimal c, decimal d, decimal s) {return (pow(x,2)-a) * (pow(x,2)-b) - (c*x) + (c*s) - d;}
 
 /**
  * Derivitive of the characteristic polynomial of the quest K-matrix
  */
-float QuestCharPolyPrime(float x, float a, float b, float c) {return 4*pow(x,3) - 2*(a+b)*x - c;}
+decimal QuestCharPolyPrime(decimal x, decimal a, decimal b, decimal c) {return 4*pow(x,3) - 2*(a+b)*x - c;}
 
 /**
  * Approximates roots of a real function using the Newton-Raphson algorithm 
  * @see https://www.geeksforgeeks.org/program-for-newton-raphson-method/
  */
-float QuestEigenvalueEstimator(float guess, float a, float b, float c, float d, float s) {
-    float height;
+decimal QuestEigenvalueEstimator(decimal guess, decimal a, decimal b, decimal c, decimal d, decimal s) {
+    decimal height;
     do {
         height = QuestCharPoly(guess, a, b, c, d, s) / QuestCharPolyPrime(guess, a, b, c);
         guess -= height;
@@ -149,7 +149,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     assert(stars.size() >= 2);
 
     // initial guess for eigenvalue (sum of the weights)
-    float guess = 0;
+    decimal guess = 0;
 
     // attitude profile matrix
     Mat3 B = {0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -171,7 +171,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     // S = B + Transpose(B)
     Mat3 S = B + B.Transpose();
     //sigma = B[0][0] + B[1][1] + B[2][2]
-    float sigma = B.Trace();
+    decimal sigma = B.Trace();
     //Z = [[B[1][2] - B[2][1]], [B[2][0] - B[0][2]], [B[0][1] - B[1][0]]]
     Vec3 Z = {
         B.At(1,2) - B.At(2,1),
@@ -180,23 +180,23 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     };
 
     // calculate coefficients for characteristic polynomial
-    float delta = S.Det();
-    float kappa = (S.Inverse() * delta).Trace();
-    float a = pow(sigma,2) - kappa;
-    float b = pow(sigma,2) + (Z * Z);
-    float c = delta + (Z * S * Z);
-    float d = Z * (S * S) * Z;
+    decimal delta = S.Det();
+    decimal kappa = (S.Inverse() * delta).Trace();
+    decimal a = pow(sigma,2) - kappa;
+    decimal b = pow(sigma,2) + (Z * Z);
+    decimal c = delta + (Z * S * Z);
+    decimal d = Z * (S * S) * Z;
 
     // Newton-Raphson method for estimating the largest eigenvalue
-    float eig = QuestEigenvalueEstimator(guess, a, b, c, d, sigma);
+    decimal eig = QuestEigenvalueEstimator(guess, a, b, c, d, sigma);
 
     // solve for the optimal quaternion: from https://ahrs.readthedocs.io/en/latest/filters/quest.html
-    float alpha = pow(eig,2) - pow(sigma, 2) + kappa;
-    float beta = eig - sigma;
-    float gamma = (eig + sigma) * alpha - delta;
+    decimal alpha = pow(eig,2) - pow(sigma, 2) + kappa;
+    decimal beta = eig - sigma;
+    decimal gamma = (eig + sigma) * alpha - delta;
 
     Vec3 X = ((kIdentityMat3 * alpha) + (S * beta) + (S * S)) * Z;
-    float scalar = 1 / sqrt(pow(gamma,2) + X.MagnitudeSq());
+    decimal scalar = 1 / sqrt(pow(gamma,2) + X.MagnitudeSq());
     X = X * scalar;
     gamma *= scalar;
 

@@ -41,7 +41,7 @@ Quaternion::Quaternion(const Vec3 &input) {
 }
 
 /// Create a quaternion which represents a rotation of theta around the axis input
-Quaternion::Quaternion(const Vec3 &input, float theta) {
+Quaternion::Quaternion(const Vec3 &input, decimal theta) {
     real = cos(theta/2);
     // the compiler will optimize it. Right?
     i = input.x * sin(theta/2);
@@ -56,7 +56,7 @@ Vec3 Quaternion::Rotate(const Vec3 &input) const {
 }
 
 /// How many radians the rotation represented by this quaternion has.
-float Quaternion::Angle() const {
+decimal Quaternion::Angle() const {
     if (real <= -1) {
         return 0; // 180*2=360=0
     }
@@ -64,14 +64,14 @@ float Quaternion::Angle() const {
     return (real >= 1 ? 0 : acos(real))*2;
 }
 
-float Quaternion::SmallestAngle() const {
-    float rawAngle = Angle();
+decimal Quaternion::SmallestAngle() const {
+    decimal rawAngle = Angle();
     return rawAngle > M_PI
         ? 2*M_PI - rawAngle
         : rawAngle;
 }
 
-void Quaternion::SetAngle(float newAngle) {
+void Quaternion::SetAngle(decimal newAngle) {
     real = cos(newAngle/2);
     SetVector(Vector().Normalize() * sin(newAngle/2));
 }
@@ -84,18 +84,18 @@ EulerAngles Quaternion::ToSpherical() const {
     // and 2, we store the conjugate of the quaternion (double check why?), which means we need to
     // invert the final de and roll terms, as well as negate all the terms involving a mix between
     // the real and imaginary parts.
-    float ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
+    decimal ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
     if (ra < 0)
         ra += 2*M_PI;
-    float de = -asin(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
-    float roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
+    decimal de = -asin(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
+    decimal roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
     if (roll < 0)
         roll += 2*M_PI;
 
     return EulerAngles(ra, de, roll);
 }
 
-Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
+Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     assert(roll >= 0.0 && roll <= 2*M_PI);
     assert(ra >= 0 && ra <= 2*M_PI);
     assert(dec >= -M_PI && dec <= M_PI);
@@ -115,7 +115,7 @@ Quaternion SphericalToQuaternion(float ra, float dec, float roll) {
 }
 
 /// Whether the quaternion is a unit quaternion. All quaternions representing rotations should be units.
-bool Quaternion::IsUnit(float tolerance) const {
+bool Quaternion::IsUnit(decimal tolerance) const {
     return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
@@ -131,7 +131,7 @@ Quaternion Quaternion::Canonicalize() const {
 }
 
 /// Convert from right ascension & declination to a 3d point on the unit sphere.
-Vec3 SphericalToSpatial(float ra, float de) {
+Vec3 SphericalToSpatial(decimal ra, decimal de) {
     return {
         cos(ra)*cos(de),
         sin(ra)*cos(de),
@@ -140,73 +140,73 @@ Vec3 SphericalToSpatial(float ra, float de) {
 }
 
 /// Convert from a 3d point on the unit sphere to right ascension & declination.
-void SpatialToSpherical(const Vec3 &vec, float *ra, float *de) {
+void SpatialToSpherical(const Vec3 &vec, decimal *ra, decimal *de) {
     *ra = atan2(vec.y, vec.x);
     if (*ra < 0)
         *ra += M_PI*2;
     *de = asin(vec.z);
 }
 
-float RadToDeg(float rad) {
+decimal RadToDeg(decimal rad) {
     return rad*180.0/M_PI;
 }
 
-float DegToRad(float deg) {
+decimal DegToRad(decimal deg) {
     return deg/180.0*M_PI;
 }
 
-float RadToArcSec(float rad) {
+decimal RadToArcSec(decimal rad) {
     return RadToDeg(rad) * 3600.0;
 }
 
-float ArcSecToRad(float arcSec) {
+decimal ArcSecToRad(decimal arcSec) {
     return DegToRad(arcSec / 3600.0);
 }
 
-float FloatModulo(float x, float mod) {
+decimal FloatModulo(decimal x, decimal mod) {
     // first but not last chatgpt generated code in lost:
-    float result = x - mod * floor(x / mod);
+    decimal result = x - mod * floor(x / mod);
     return result >= 0 ? result : result + mod;
 }
 
 /// The square of the magnitude
-float Vec3::MagnitudeSq() const {
+decimal Vec3::MagnitudeSq() const {
     return fma(x,x,fma(y,y, z*z));
 }
 
 /// The square of the magnitude
-float Vec2::MagnitudeSq() const {
+decimal Vec2::MagnitudeSq() const {
     return fma(x,x, y*y);
 }
 
-float Vec3::Magnitude() const {
+decimal Vec3::Magnitude() const {
     return hypot(hypot(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
 }
 
-float Vec2::Magnitude() const {
+decimal Vec2::Magnitude() const {
     return hypot(x, y);
 }
 
 /// Create a vector pointing in the same direction with magnitude 1
 Vec3 Vec3::Normalize() const {
-    float mag = Magnitude();
+    decimal mag = Magnitude();
     return {
         x/mag, y/mag, z/mag,
     };
 }
 
 /// Dot product
-float Vec3::operator*(const Vec3 &other) const {
+decimal Vec3::operator*(const Vec3 &other) const {
     return fma(x,other.x, fma(y,other.y, z*other.z));
 }
 
 /// Dot product
-Vec2 Vec2::operator*(const float &other) const {
+Vec2 Vec2::operator*(const decimal &other) const {
     return { x*other, y*other };
 }
 
 /// Vector-Scalar multiplication
-Vec3 Vec3::operator*(const float &other) const {
+Vec3 Vec3::operator*(const decimal &other) const {
     return { x*other, y*other, z*other };
 }
 
@@ -253,7 +253,7 @@ Vec3 Vec3::operator*(const Mat3 &other) const {
 }
 
 /// Access the i,j-th element of the matrix
-float Mat3::At(int i, int j) const {
+decimal Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
@@ -297,7 +297,7 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
 }
 
 /// Matrix-Scalar multiplication
-Mat3 Mat3::operator*(const float &s) const {
+Mat3 Mat3::operator*(const decimal &s) const {
     return {
         s*At(0,0), s*At(0,1), s*At(0,2),
         s*At(1,0), s*At(1,1), s*At(1,2),
@@ -315,19 +315,19 @@ Mat3 Mat3::Transpose() const {
 }
 
 /// Trace of a matrix
-float Mat3::Trace() const {
+decimal Mat3::Trace() const {
     return At(0,0) + At(1,1) + At(2,2);
 }
 
 /// Determinant of a matrix
-float Mat3::Det() const {
+decimal Mat3::Det() const {
     return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
 }
 
 /// Inverse of a matrix
 Mat3 Mat3::Inverse() const {
     // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
-    float scalar = 1 / Det();
+    decimal scalar = 1 / Det();
 
     Mat3 res = {
         At(1,1)*At(2,2) - At(1,2)*At(2,1), At(0,2)*At(2,1) - At(0,1)*At(2,2), At(0,1)*At(1,2) - At(0,2)*At(1,1),
@@ -369,7 +369,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
     assert(abs(newXAxis.Magnitude()-1) < 0.001);
     Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
-    float xAlignAngle = AngleUnit(oldXAxis, newXAxis);
+    decimal xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
 
     // Make a quaternion that will rotate the Y-axis into place
@@ -450,22 +450,22 @@ bool Attitude::IsKnown() const {
 
 /// Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3
 void SerializeVec3(SerializeContext *ser, const Vec3 &vec) {
-    SerializePrimitive<float>(ser, vec.x);
-    SerializePrimitive<float>(ser, vec.y);
-    SerializePrimitive<float>(ser, vec.z);
+    SerializePrimitive<decimal>(ser, vec.x);
+    SerializePrimitive<decimal>(ser, vec.y);
+    SerializePrimitive<decimal>(ser, vec.z);
 }
 
 Vec3 DeserializeVec3(DeserializeContext *des) {
     Vec3 result = {
-        DeserializePrimitive<float>(des),
-        DeserializePrimitive<float>(des),
-        DeserializePrimitive<float>(des),
+        DeserializePrimitive<decimal>(des),
+        DeserializePrimitive<decimal>(des),
+        DeserializePrimitive<decimal>(des),
     };
     return result;
 }
 
 /// Calculate the inner angle, in radians, between two vectors.
-float Angle(const Vec3 &vec1, const Vec3 &vec2) {
+decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }
 
@@ -474,8 +474,8 @@ float Angle(const Vec3 &vec1, const Vec3 &vec2) {
  * Slightly faster than Angle()
  * @warn If the vectors are not already unit vectors, will return the wrong result!
  */
-float AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
-    float dot = vec1*vec2;
+decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
+    decimal dot = vec1*vec2;
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
     return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
 }

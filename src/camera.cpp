@@ -16,10 +16,10 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     assert(vector.x > 0);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
 
-    float focalFactor = focalLength/vector.x;
+    decimal focalFactor = focalLength/vector.x;
 
-    float yPixel = vector.y*focalFactor;
-    float zPixel = vector.z*focalFactor;
+    decimal yPixel = vector.y*focalFactor;
+    decimal zPixel = vector.z*focalFactor;
 
     return { -yPixel + xCenter, -zPixel + yCenter };
 }
@@ -36,8 +36,8 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
 
     // isn't it interesting: To convert from center-based to left-corner-based coordinates is the
     // same formula; f(x)=f^{-1}(x) !
-    float xPixel = -vector.x + xCenter;
-    float yPixel = -vector.y + yCenter;
+    decimal xPixel = -vector.x + xCenter;
+    decimal yPixel = -vector.y + yCenter;
 
     return {
         1,
@@ -54,15 +54,15 @@ bool Camera::InSensor(const Vec2 &vector) const {
         && vector.y >= 0 && vector.y <= yResolution;
 }
 
-float FovToFocalLength(float xFov, float xResolution) {
+decimal FovToFocalLength(decimal xFov, decimal xResolution) {
     return xResolution / 2.0f / tan(xFov/2);
 }
 
-float FocalLengthToFov(float focalLength, float xResolution, float pixelSize) {
+decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize) {
     return atan(xResolution/2 * pixelSize / focalLength) * 2;
 }
 
-float Camera::Fov() const {
+decimal Camera::Fov() const {
     return FocalLengthToFov(focalLength, xResolution, 1.0);
 }
 

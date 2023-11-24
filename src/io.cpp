@@ -24,6 +24,7 @@
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
 #include "databases.hpp"
+#include "decimal.hpp"
 #include "star-id.hpp"
 #include "star-utils.hpp"
 
@@ -196,8 +197,8 @@ void SurfacePlot(std::string description,
     for (const Star &centroid : stars) {
         // plot the box around the star
         if (centroid.radiusX > 0.0f) {
-            float radiusX = centroid.radiusX;
-            float radiusY = centroid.radiusY > 0.0f ?
+            decimal radiusX = centroid.radiusX;
+            decimal radiusY = centroid.radiusY > 0.0f ?
                 centroid.radiusY : radiusX;
 
             // Rectangles should be entirely /outside/ the radius of the star, so the star is
@@ -278,8 +279,8 @@ MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const Database
     dbEntries.emplace_back(kCatalogMagicValue, catalogSer.buffer);
 
     if (values.kvector) {
-        float minDistance = DegToRad(values.kvectorMinDistance);
-        float maxDistance = DegToRad(values.kvectorMaxDistance);
+        decimal minDistance = DegToRad(values.kvectorMinDistance);
+        decimal maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
         SerializeContext ser = serFromDbValues(values);
         SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
@@ -308,7 +309,7 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
  * Calculate the focal length, in pixels, based on the given command line options.
  * This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras.
  */
-float FocalLengthFromOptions(const PipelineOptions &values, int xResolution) {
+decimal FocalLengthFromOptions(const PipelineOptions &values, int xResolution) {
     if ((values.pixelSize != -1) ^ (values.focalLength != 0)) {
         std::cerr << "ERROR: Exactly one of --pixel-size or --focal-length were set." << std::endl;
         exit(1);
@@ -383,7 +384,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
 
     int xResolution = cairo_image_surface_get_width(cairoSurface);
     int yResolution = cairo_image_surface_get_height(cairoSurface);
-    float focalLengthPixels = FocalLengthFromOptions(values, xResolution);
+    decimal focalLengthPixels = FocalLengthFromOptions(values, xResolution);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
     result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
@@ -406,11 +407,11 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
 /// A star used in simulated image generation. Contains extra data about how to simulate the star.
 class GeneratedStar : public Star {
 public:
-    GeneratedStar(Star star, float peakBrightness, Vec2 motionBlurDelta)
+    GeneratedStar(Star star, decimal peakBrightness, Vec2 motionBlurDelta)
         : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
 
     /// the brightness density per time unit at the center of the star. 0.0 is black, 1.0 is white.
-    float peakBrightness;
+    decimal peakBrightness;
 
     /// (only meaningful with motion blur) Where the star will appear one time unit in the future.
     Vec2 delta;
@@ -432,8 +433,8 @@ public:
  * @param stddev The standard deviation of spread of the star. Higher values make stars more spread out. See command line documentation.
  * @return Indefinite integral of brightness density.
  */
-static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
-                                          float t, float stddev) {
+static decimal MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+                                          decimal t, decimal stddev) {
     const Vec2 &p0 = generatedStar.position;
     const Vec2 &delta = generatedStar.delta;
     const Vec2 d0 = p0 - pixel;
@@ -445,8 +446,8 @@ static float MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar
 }
 
 /// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
-static float StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
-                                   float t, float stddev) {
+static decimal StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+                                   decimal t, decimal stddev) {
     const Vec2 d0 = generatedStar.position - pixel;
     return generatedStar.peakBrightness * t * exp(-d0.MagnitudeSq() / (2 * stddev * stddev));
 }
@@ -460,10 +461,10 @@ static float StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &gener
  * deviation 1/5th of the cutoff brightness. We compute the probability that, taking read noise into
  * account, the observed energy would be less than the cutoff energy.
  */
-static float CentroidImagingProbability(float mag, float cutoffMag) {
-    float brightness = MagToBrightness(mag);
-    float cutoffBrightness = MagToBrightness(cutoffMag);
-    float stddev = cutoffBrightness/5.0;
+static decimal CentroidImagingProbability(decimal mag, decimal cutoffMag) {
+    decimal brightness = MagToBrightness(mag);
+    decimal cutoffBrightness = MagToBrightness(cutoffMag);
+    decimal stddev = cutoffBrightness/5.0;
     // CDF of Normal distribution with given mean and stddev
     return 1 - (0.5 * (1 + erf((cutoffBrightness-brightness)/(stddev*sqrt(2.0)))));
 }
@@ -480,21 +481,21 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                std::default_random_engine *rng,
 
                                                bool centroidsOnly,
-                                               float zeroMagTotalPhotons,
-                                               float starSpreadStdDev,
-                                               float saturationPhotons,
-                                               float darkCurrent,
-                                               float readNoiseStdDev,
+                                               decimal zeroMagTotalPhotons,
+                                               decimal starSpreadStdDev,
+                                               decimal saturationPhotons,
+                                               decimal darkCurrent,
+                                               decimal readNoiseStdDev,
                                                Attitude motionBlurDirection, // applied on top of the attitude
-                                               float exposureTime,
-                                               float readoutTime, // zero for no rolling shutter
+                                               decimal exposureTime,
+                                               decimal readoutTime, // zero for no rolling shutter
                                                bool shotNoise,
                                                int oversampling,
                                                int numFalseStars,
                                                int falseStarMinMagnitude,
                                                int falseStarMaxMagnitude,
                                                int cutoffMag,
-                                               float perturbationStddev)
+                                               decimal perturbationStddev)
     : camera(camera), attitude(attitude), catalog(catalog) {
 
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
@@ -521,20 +522,20 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
     // a star with 1 photon has peak density 1/(2pi sigma^2), because 2d gaussian formula. Then just
     // multiply up proportionally!
-    float zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*M_PI * starSpreadStdDev*starSpreadStdDev);
+    decimal zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*M_PI * starSpreadStdDev*starSpreadStdDev);
 
     // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
-    std::normal_distribution<float> perturbation1DDistribution(0.0, perturbationStddev);
+    std::normal_distribution<decimal> perturbation1DDistribution(0.0, perturbationStddev);
 
     Catalog catalogWithFalse = catalog;
 
-    std::uniform_real_distribution<float> uniformDistribution(0.0, 1.0);
+    std::uniform_real_distribution<decimal> uniformDistribution(0.0, 1.0);
     std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
     for (int i = 0; i < numFalseStars; i++) {
-        float ra = uniformDistribution(*rng) * 2*M_PI;
+        decimal ra = uniformDistribution(*rng) * 2*M_PI;
         // to be uniform around sphere. Borel-Kolmogorov paradox is calling
-        float de = asin(uniformDistribution(*rng)*2 - 1);
-        float magnitude = magnitudeDistribution(*rng);
+        decimal de = asin(uniformDistribution(*rng)*2 - 1);
+        decimal magnitude = magnitudeDistribution(*rng);
 
         catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
     }
@@ -553,15 +554,15 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             Vec3 futureSpatial = futureAttitude.Rotate(catalogWithFalse[i].spatial);
             Vec2 delta = camera.SpatialToCamera(futureSpatial) - camCoords;
             if (!motionBlurEnabled) {
-                delta = {0, 0}; // avoid floating point funny business
+                delta = {0, 0}; // avoid decimaling point funny business
             }
             // radiant intensity, in photons per time unit per pixel, at the center of the star.
-            float peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
-            float interestingThreshold = 0.05; // we don't need to check pixels that are expected to
+            decimal peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
+            decimal interestingThreshold = 0.05; // we don't need to check pixels that are expected to
                                                // receive this many photons or fewer.
             // inverse of the function defining the Gaussian distribution: Find out how far from the
             // mean we'll have to go until the number of photons is less than interestingThreshold
-            float radius = ceil(sqrt(-log(interestingThreshold/peakBrightnessPerTime/exposureTime)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
+            decimal radius = ceil(sqrt(-log(interestingThreshold/peakBrightnessPerTime/exposureTime)*2*M_PI*starSpreadStdDev*starSpreadStdDev));
             Star star = Star(camCoords.x, camCoords.y,
                              radius, radius,
                              // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
@@ -608,7 +609,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         return;
     }
 
-    std::vector<float> photonsBuffer(image.width*image.height, 0);
+    std::vector<decimal> photonsBuffer(image.width*image.height, 0);
 
     for (const GeneratedStar &star : generatedStars) {
         // delta will be exactly (0,0) when motion blur disabled
@@ -621,7 +622,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
         // peak brightness is measured in photons per time unit per pixel, so if oversampling, we
         // need to convert units to photons per time unit per sample
-        float oversamplingBrightnessFactor = oversamplingPerAxis*oversamplingPerAxis;
+        decimal oversamplingBrightnessFactor = oversamplingPerAxis*oversamplingPerAxis;
 
         // the star.x and star.y refer to the pixel whose top left corner the star should appear at
         // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
@@ -631,17 +632,17 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             for (int yPixel = yMin; yPixel <= yMax; yPixel++) {
                 // offset of beginning & end of readout compared to beginning & end of readout for
                 // center row
-                float readoutOffset = readoutTime * (yPixel - image.height/2.0) / image.height;
-                float tStart = -exposureTime/2.0 + readoutOffset;
-                float tEnd = exposureTime/2.0 + readoutOffset;
+                decimal readoutOffset = readoutTime * (yPixel - image.height/2.0) / image.height;
+                decimal tStart = -exposureTime/2.0 + readoutOffset;
+                decimal tEnd = exposureTime/2.0 + readoutOffset;
 
                 // loop through all samples in the current pixel
                 for (int xSample = 0; xSample < oversamplingPerAxis; xSample++) {
                     for (int ySample = 0; ySample < oversamplingPerAxis; ySample++) {
-                        float x = xPixel + (xSample+0.5)/oversamplingPerAxis;
-                        float y = yPixel + (ySample+0.5)/oversamplingPerAxis;
+                        decimal x = xPixel + (xSample+0.5)/oversamplingPerAxis;
+                        decimal y = yPixel + (ySample+0.5)/oversamplingPerAxis;
 
-                        float curPhotons;
+                        decimal curPhotons;
                         if (motionBlurEnabled) {
                             curPhotons =
                                 (MotionBlurredPixelBrightness({x, y}, star, tEnd, starSpreadStdDev)
@@ -661,13 +662,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
     }
 
-    std::normal_distribution<float> readNoiseDist(0.0, readNoiseStdDev);
+    std::normal_distribution<decimal> readNoiseDist(0.0, readNoiseStdDev);
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
     imageData = std::vector<unsigned char>(image.width*image.height);
     image.image = imageData.data();
     for (int i = 0; i < image.width * image.height; i++) {
-        float curBrightness = 0;
+        decimal curBrightness = 0;
 
         // dark current (Constant)
         curBrightness += darkCurrent;
@@ -682,8 +683,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // range. This is problematic if the mean is far above the max long value, because then it
             // might have to sample many many times (and furthermore, the results won't be useful
             // anyway)
-            float photons = photonsBuffer[i];
-            if (photons > (float)LONG_MAX - 3.0*sqrt(LONG_MAX)) {
+            decimal photons = photonsBuffer[i];
+            if (photons > (decimal)LONG_MAX - 3.0*sqrt(LONG_MAX)) {
                 std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
@@ -695,7 +696,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += quantizedPhotons / saturationPhotons;
 
         // std::clamp not introduced until C++17, so we avoid it.
-        float clampedBrightness = std::max(std::min(curBrightness, (float)1.0), (float)0.0);
+        decimal clampedBrightness = std::max(std::min(curBrightness, (decimal)1.0), (decimal)0.0);
         imageData[i] = floor(clampedBrightness * kMaxBrightness); // TODO: off-by-one, 256?
     }
 }
@@ -705,7 +706,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
  * Takes a random engine as a parameter.
  */
 static Attitude RandomAttitude(std::default_random_engine* pReng) {
-    std::uniform_real_distribution<float> randomAngleDistribution(0, 1);
+    std::uniform_real_distribution<decimal> randomAngleDistribution(0, 1);
 
     // normally the ranges of the Ra and Dec are:
     // Dec: [-90 deg, 90 deg] --> [-pi/2 rad, pi/2 rad], where negative means south
@@ -713,9 +714,9 @@ static Attitude RandomAttitude(std::default_random_engine* pReng) {
     // Ra: [0 deg, 360 deg] --> [0 rad, 2pi rad ]
     // Roll: [0 rad, 2 pi rad]
 
-    float randomRa = 2 *  M_PI * randomAngleDistribution(*pReng);
-    float randomDec = (M_PI / 2) - acos(1 - 2 * randomAngleDistribution(*pReng)); //acos returns a float in range [0, pi]
-    float randomRoll = 2 *  M_PI * randomAngleDistribution(*pReng);
+    decimal randomRa = 2 *  M_PI * randomAngleDistribution(*pReng);
+    decimal randomDec = (M_PI / 2) - acos(1 - 2 * randomAngleDistribution(*pReng)); //acos returns a decimal in range [0, pi]
+    decimal randomRoll = 2 *  M_PI * randomAngleDistribution(*pReng);
 
     Attitude randAttitude = Attitude(SphericalToQuaternion(randomRa, randomDec, randomRoll));
 
@@ -748,7 +749,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                                                                   DegToRad(values.generateBlurRoll)));
     PipelineInputList result;
 
-    float focalLength = FocalLengthFromOptions(values, values.generateXRes);
+    decimal focalLength = FocalLengthFromOptions(values, values.generateXRes);
 
 
     for (int i = 0; i < values.generate; i++) {
@@ -837,6 +838,7 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     // TODO: more flexible or sth
     // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
     // choices to those compatible with the database?
+    //
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
@@ -1025,18 +1027,18 @@ public:
      * Average distance from actual to expected centroids (in pixels)
      * Only correct centroids are considered in this average.
      */
-    float meanError;
+    decimal meanError;
 
     /**
      * Number of actual stars within the centroiding threshold of an expected star.
      */
-    float numCorrectCentroids;
+    decimal numCorrectCentroids;
 
     /**
      * Stars in actual but not expected. Ideally 0
-     * This is a float because we may average multiple centroid comparisons together.
+     * This is a decimal because we may average multiple centroid comparisons together.
      */
-    float numExtraCentroids;
+    decimal numExtraCentroids;
 
     // We no longer have a num missing because often generated stars have too low of a signal-to-noise ratio and the centroid algo won't pick them up.
 };
@@ -1045,21 +1047,21 @@ public:
 /// `two` whose distance to the current `one` star is <=threshold. In a (ordered) multimap, the
 /// insertion order is preserved for elements with the same key, and indeed we'll sort the elements
 /// corresponding to each key by distance from the corresponding `one` star.
-static std::multimap<int, int> FindClosestCentroids(float threshold,
+static std::multimap<int, int> FindClosestCentroids(decimal threshold,
                                                     const Stars &one,
                                                     const Stars &two) {
     std::multimap<int, int> result;
 
     for (int i = 0; i < (int)one.size(); i++) {
-        std::vector<std::pair<float, int>> closest;
+        std::vector<std::pair<decimal, int>> closest;
         for (int k = 0; k < (int)two.size(); k++) {
-            float currDistance = (one[i].position - two[k].position).Magnitude();
+            decimal currDistance = (one[i].position - two[k].position).Magnitude();
             if (currDistance <= threshold) {
                 closest.emplace_back(currDistance, k);
             }
         }
         std::sort(closest.begin(), closest.end());
-        for (const std::pair<float, int> &pair : closest) {
+        for (const std::pair<decimal, int> &pair : closest) {
             result.emplace(i, pair.second);
         }
     }
@@ -1072,7 +1074,7 @@ static std::multimap<int, int> FindClosestCentroids(float threshold,
  * Useful for debugging and benchmarking.
  * @param threshold The maximum number of pixels apart two centroids can be to be considered the same.
  */
-CentroidComparison CentroidsCompare(float threshold,
+CentroidComparison CentroidsCompare(decimal threshold,
                                     const Stars &expected,
                                     const Stars &actual) {
 
@@ -1120,7 +1122,7 @@ CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> co
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
                                 // use these to map indices to names for the respective lists of StarIdentifiers
                                 const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                float centroidThreshold,
+                                decimal centroidThreshold,
                                 const Stars &expectedStars, const Stars &inputStars) {
 
     StarIdComparison result = {
@@ -1266,7 +1268,7 @@ static void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineOptions &values) {
     int size = (int)expected.size();
 
-    float threshold = values.centroidCompareThreshold;
+    decimal threshold = values.centroidCompareThreshold;
 
     std::vector<CentroidComparison> comparisons;
     for (int i = 0; i < size; i++) {
@@ -1288,7 +1290,7 @@ static void PrintCentroids(const std::string &prefix,
                            // May be NULL. Should be the only the first starId, because we don't have any reasonable aggregative action to perform.
                            const StarIdentifiers *starIds) {
     assert(starses.size() > 0);
-    float avgNumStars = 0;
+    decimal avgNumStars = 0;
     for (const Stars &stars : starses) {
         avgNumStars += stars.size();
     }
@@ -1527,9 +1529,9 @@ static void PipelineComparatorAttitude(std::ostream &os,
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
     // apart roll error from boresight error. This is just quick and dirty for testing
 
-    float angleThreshold = DegToRad(values.attitudeCompareThreshold);
+    decimal angleThreshold = DegToRad(values.attitudeCompareThreshold);
 
-    float attitudeErrorSum = 0.0f;
+    decimal attitudeErrorSum = 0.0f;
     int numCorrect = 0;
     int numIncorrect = 0;
 
@@ -1537,7 +1539,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
         if (actual[i].attitude->IsKnown()) {
             Quaternion expectedQuaternion = expected[i]->ExpectedAttitude()->GetQuaternion();
             Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
-            float attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).SmallestAngle();
+            decimal attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).SmallestAngle();
             assert(attitudeError >= 0);
 
             if (attitudeError <= angleThreshold) {
@@ -1549,9 +1551,9 @@ static void PipelineComparatorAttitude(std::ostream &os,
         }
     }
 
-    float attitudeErrorMean = attitudeErrorSum / numCorrect;
-    float fractionCorrect = (float)numCorrect / expected.size();
-    float fractionIncorrect = (float)numIncorrect / expected.size();
+    decimal attitudeErrorMean = attitudeErrorSum / numCorrect;
+    decimal fractionCorrect = (decimal)numCorrect / expected.size();
+    decimal fractionIncorrect = (decimal)numIncorrect / expected.size();
 
     os << "attitude_error_mean " << attitudeErrorMean << std::endl;
     os << "attitude_availability " << fractionCorrect << std::endl;
@@ -1830,13 +1832,13 @@ void PipelineComparison(const PipelineInputList &expected,
 // void InspectFindStar(const Catalog &catalog) {
 //     std::string raStr = PromptLine("Right Ascension");
 
-//     float raRadians;
+//     decimal raRadians;
 
 //     int raHours, raMinutes;
-//     float raSeconds;
+//     decimal raSeconds;
 //     int raFormatTime = sscanf(raStr.c_str(), "%dh %dm %fs", &raHours, &raMinutes, &raSeconds);
 
-//     float raDeg;
+//     decimal raDeg;
 //     int raFormatDeg = sscanf(raStr.c_str(), "%f", &raDeg);
 
 //     if (raFormatTime == 3) {
@@ -1850,18 +1852,18 @@ void PipelineComparison(const PipelineInputList &expected,
 
 //     std::string deStr = PromptLine("Declination");
 
-//     float deRadians;
+//     decimal deRadians;
 
 //     int deDegPart, deMinPart;
-//     float deSecPart;
+//     decimal deSecPart;
 //     char dummy[8];
 //     int deFormatParts = sscanf(deStr.c_str(), "%d%s %d%s %f%s", &deDegPart, dummy, &deMinPart, dummy, &deSecPart, dummy);
 
-//     float deDeg;
+//     decimal deDeg;
 //     int deFormatDeg = sscanf(deStr.c_str(), "%f", &deDeg);
 
 //     if (deFormatParts == 6) {
-//         deRadians = DegToRad(deDegPart + (float)deMinPart/60 + (float)deSecPart/60/60);
+//         deRadians = DegToRad(deDegPart + (decimal)deMinPart/60 + (decimal)deSecPart/60/60);
 //     } else if (deFormatDeg == 1) {
 //         deRadians = DegToRad(deFormatDeg);
 //     } else {
@@ -1871,7 +1873,7 @@ void PipelineComparison(const PipelineInputList &expected,
 
 //     // find the star
 
-//     float tolerance = 0.001;
+//     decimal tolerance = 0.001;
 //     Vec3 userSpatial = SphericalToSpatial(raRadians, deRadians);
 //     int i = 0;
 //     for (const CatalogStar &curStar : catalog) {
@@ -1888,7 +1890,7 @@ void PipelineComparison(const PipelineInputList &expected,
 
 // void InspectPrintStar(const Catalog &catalog) {
 //     auto stars = PromptCatalogStars(catalog, 1);
-//     float ra, de;
+//     decimal ra, de;
 //     SpatialToSpherical(stars[0]->spatial, &ra, &de);
 
 //     std::cout << "star_ra " << RadToDeg(ra) << std::endl;
