@@ -51,6 +51,11 @@ ifndef LOST_DISABLE_ASAN
 	LDFLAGS := $(LDFLAGS) -fsanitize=address
 endif
 
+# Define if the Databases will be using Doubles.
+ifdef LOST_DATABASE_DOUBLE
+	CXXFLAGS := $(CXXFLAGS) -D LOST_DATABASE_DOUBLE
+endif
+
 all: $(BIN) $(BSC)
 
 release: CXXFLAGS := $(RELEASE_CXXFLAGS)
