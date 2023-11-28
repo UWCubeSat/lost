@@ -57,6 +57,10 @@ release: CXXFLAGS := $(RELEASE_CXXFLAGS)
 release: LDFLAGS := $(RELEASE_LDFLAGS)
 release: all
 
+flight: CXXFLAGS := $(RELEASE_CXXFLAGS) -DFLIGHT
+flight: LDFLAGS := $(RELEASE_LDFLAGS)
+flight: all
+
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
 
@@ -96,4 +100,4 @@ clean:
 clean_all: clean
 	rm -f $(BSC)
 
-.PHONY: all clean test docs lint
+.PHONY: all clean test docs lint flight
