@@ -15,6 +15,10 @@ namespace lost {
 
 const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
 
+inline bool isFlagSet(uint8_t dbFlags, uint8_t flag) {
+   return (dbFlags & flag) != 0; 
+}
+
 struct KVectorPair {
     int16_t index1;
     int16_t index2;
@@ -109,7 +113,7 @@ KVectorIndex::KVectorIndex(DeserializeContext *des) {
     max = DeserializePrimitive<decimal>(des);
     numBins = DeserializePrimitive<int32_t>(des);
 
-    assert(min >= 0.0f);
+    assert(min >= DECIMAL(0.0));
     assert(max > min);
     binWidth = (max - min) / numBins;
 
@@ -124,10 +128,10 @@ KVectorIndex::KVectorIndex(DeserializeContext *des) {
 long KVectorIndex::QueryLiberal(decimal minQueryDistance, decimal maxQueryDistance, long *upperIndex) const {
     assert(maxQueryDistance > minQueryDistance);
     if (maxQueryDistance >= max) {
-        maxQueryDistance = max - 0.00001; // TODO: better way to avoid hitting the bottom bin
+        maxQueryDistance = max - DECIMAL(0.00001); // TODO: better way to avoid hitting the bottom bin
     }
     if (minQueryDistance <= min) {
-        minQueryDistance = min + 0.00001;
+        minQueryDistance = min + DECIMAL(0.00001);
     }
     if (minQueryDistance > max || maxQueryDistance < min) {
         *upperIndex = 0;
@@ -175,7 +179,7 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, decimal 
             KVectorPair pair = { i, k, AngleUnit(catalog[i].spatial, catalog[k].spatial) };
             assert(isfinite(pair.distance));
             assert(pair.distance >= 0);
-            assert(pair.distance <= M_PI);
+            assert(pair.distance <= DECIMAL_M_PI);
 
             if (pair.distance >= minDistance && pair.distance <= maxDistance) {
                 // we'll sort later
@@ -232,7 +236,7 @@ decimal Clamp(decimal num, decimal low, decimal high) {
 const int16_t *PairDistanceKVectorDatabase::FindPairsLiberal(
     decimal minQueryDistance, decimal maxQueryDistance, const int16_t **end) const {
 
-    assert(maxQueryDistance <= M_PI);
+    assert(maxQueryDistance <= DECIMAL_M_PI);
 
     long upperIndex = -1;
     long lowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &upperIndex);
@@ -245,9 +249,9 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalo
 
     // Instead of computing the angle for every pair in the database, we pre-compute the /cosines/
     // of the min and max query distances so that we can compare against dot products directly! As
-    // angle increases, cosine decreases, up to M_PI (and queries larger than that don't really make
+    // angle increases, cosine decreases, up to DECIMAL_M_PI (and queries larger than that don't really make
     // sense anyway)
-    assert(maxQueryDistance <= M_PI);
+    assert(maxQueryDistance <= DECIMAL_M_PI);
 
     decimal maxQueryCos = cos(minQueryDistance);
     decimal minQueryCos = cos(maxQueryDistance);
@@ -318,13 +322,20 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
         if (curMagicValue == 0) {
             return nullptr;
         }
-        uint32_t dbFlags = DeserializePrimitive<uint32_t>(des);
+        uint8_t dbFlags = DeserializePrimitive<uint8_t>(des);
+
         // Ensure that our database is using the same type as the runtime.
-        if (dbFlags & MULTI_DB_IS_DOUBLE) {
-            assert(typeid(decimal) == typeid(double));
-        } else {
-            assert(typeid(decimal) == typeid(float));
-        }
+        #ifdef LOST_FLOAT_MODE
+            if(!isFlagSet(dbFlags, MULTI_DB_FLOAT_FLAG)) {
+                std::cerr << "LOST was compiled in float mode. This database was serialized in double mode and is incompatible." << std::endl;
+                exit(1);
+            }
+        #else
+            if(isFlagSet(dbFlags, MULTI_DB_FLOAT_FLAG)) {
+                std::cerr << "LOST was compiled in double mode. This database was serialized in float mode and is incompatible." << std::endl;
+                exit(1);
+            }
+        #endif
 
         uint32_t dbLength = DeserializePrimitive<uint32_t>(des);
         assert(dbLength > 0);
@@ -340,10 +351,10 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
 
 void SerializeMultiDatabase(SerializeContext *ser,
                             const MultiDatabaseDescriptor &dbs,
-                            uint32_t flags) {
+                            uint8_t flags) {
     for (const MultiDatabaseEntry &multiDbEntry : dbs) {
         SerializePrimitive<int32_t>(ser, multiDbEntry.magicValue);
-        SerializePrimitive<uint32_t>(ser, flags);
+        SerializePrimitive<uint8_t>(ser, flags);
         SerializePrimitive<uint32_t>(ser, multiDbEntry.bytes.size());
         SerializePadding<uint64_t>(ser);
         std::copy(multiDbEntry.bytes.cbegin(), multiDbEntry.bytes.cend(), std::back_inserter(ser->buffer));

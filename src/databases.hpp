@@ -12,6 +12,8 @@ namespace lost {
 
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
+inline bool isFlagSet(uint8_t dbFlags, uint8_t flag);
+
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
  * 
@@ -97,8 +99,7 @@ private:
  * Multi-databases are essentially a map from "magic values" to database buffers.
  */
 
-#define MULTI_DB_IS_DOUBLE 0x0001
-#define MULTI_DB_IS_FLOAT 0x0000
+#define MULTI_DB_FLOAT_FLAG 0x0001 // By default, our DB is in double mode.
 
 class MultiDatabase {
 public:
@@ -115,13 +116,13 @@ public:
         : magicValue(magicValue), bytes(bytes) { }
 
     int32_t magicValue;
-    uint32_t flags;
+    uint8_t flags;
     std::vector<unsigned char> bytes;
 };
 
 typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
 
-void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint32_t flags);
+void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint8_t flags);
 
 }
 
