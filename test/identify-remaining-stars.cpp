@@ -51,7 +51,7 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 // TODO: Tests for FindAllInRange if we ever make the logic more complicated
 
 std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
-                                           float dist1, float dist2, float tolerance) {
+                                           decimal dist1, decimal dist2, decimal tolerance) {
     SerializeContext ser;
     SerializePairDistanceKVector(&ser, integralCatalog, 0, M_PI, 1000);
     DeserializeContext des(ser.buffer.data());
@@ -140,7 +140,7 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     int numFakeStars = 100;
 
     std::default_random_engine rng(GENERATE(take(kIdentifyRemainingNumImages, random(0, 1000000))));
-    std::uniform_real_distribution<float> yDist(0.0, 256.0);
+    std::uniform_real_distribution<decimal> yDist(0.0, 256.0);
     std::uniform_int_distribution<int> starIndexDist(0, numFakeStars - 1);
     std::uniform_int_distribution<int> moreStartingStars(0, 1);
 
@@ -149,8 +149,8 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     Catalog fakeCatalog;
     for (int i = 0; i < numFakeStars; i++) {
         // smolCamera has width 256
-        float x = i * 256.0 / numFakeStars;
-        float y = yDist(rng);
+        decimal x = i * 256.0 / numFakeStars;
+        decimal y = yDist(rng);
         fakeCentroids.emplace_back(x, y, 1);
         fakeCatalog.emplace_back(smolCamera.CameraToSpatial({x, y}).Normalize(), 1, i);
         fakeStarIds.emplace_back(i, i);
