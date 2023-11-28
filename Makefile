@@ -57,8 +57,21 @@ release: CXXFLAGS := $(RELEASE_CXXFLAGS)
 release: LDFLAGS := $(RELEASE_LDFLAGS)
 release: all
 
+
+# perhaps very dumb, but for now, clean and rebuild everything :)))
+beaglebone: CXX := arm-linux-gnueabihf-g++
+# beaglebone: LD := arm-linux-gnueabihf-ld
+beaglebone: CXXFLAGS :=  -I/usr/arm-linux-gnueabihf/include -Dmain=cairo_main $(CXXFLAGS)
+beaglebone: LIBS := -L/usr/arm-linux-gnueabihf/lib $(LIBS)
+#-fPIC -S
+#  -I/usr/include/ doesn't solve the problems, it looks like
+beaglebone: clean all
+
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
+#$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
+# $(CXX) $(LDFLAGS) -S -c $(SRCS) $(LIBS)
+
 
 documentation/%.txt: documentation/%.man
 	groff -mandoc -Tascii $< > $@
@@ -96,4 +109,4 @@ clean:
 clean_all: clean
 	rm -f $(BSC)
 
-.PHONY: all clean test docs lint
+.PHONY: all clean test docs lint beaglebone
