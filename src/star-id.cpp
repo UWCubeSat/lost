@@ -1,3 +1,4 @@
+#include <ios>
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
@@ -266,7 +267,7 @@ std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *
 }
 
 decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal v2) {
-    return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
+    return abs(FloatModulo(v1-v2, DECIMAL_M_PI) - DECIMAL_M_PI_2);
 }
 
 /**
@@ -440,7 +441,7 @@ IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifie
             return a->bestAngleFrom90 < b->bestAngleFrom90;
         });
 
-    // 10 is arbitrary; but really it should be less than M_PI_2 when set
+    // 10 is arbitrary; but really it should be less than DECIMAL_M_PI_2 when set
     if (bestAboveThreshold != aboveThresholdCentroids->end() && (*bestAboveThreshold)->bestAngleFrom90 < 10) {
         auto result = *bestAboveThreshold;
         aboveThresholdCentroids->erase(bestAboveThreshold);
@@ -450,7 +451,7 @@ IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifie
     return NULL;
 }
 
-const decimal kAngleFrom90SoftThreshold = M_PI_4; // TODO: tune this
+const decimal kAngleFrom90SoftThreshold = DECIMAL_M_PI_4; // TODO: tune this
 
 /**
  * Given some identified stars, attempt to identify the rest.
@@ -583,7 +584,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
     // smallest normal single-precision decimal is around 10^-38 so we should be all good. See
     // Analytic_Star_Pattern_Probability on the HSL wiki for details.
-    decimal expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
+    decimal expectedMismatchesConstant = DECIMAL_POW(numFalseStars, 4) * DECIMAL_POW(tolerance, 5) / 2 / DECIMAL_POW(DECIMAL_M_PI, 2);
 
     // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
     // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and
@@ -630,15 +631,15 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
                     decimal ijDist = AngleUnit(iSpatial, jSpatial);
 
-                    decimal iSinInner = sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
-                    decimal jSinInner = sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
-                    decimal kSinInner = sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
+                    decimal iSinInner = DECIMAL_SIN(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
+                    decimal jSinInner = DECIMAL_SIN(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
+                    decimal kSinInner = DECIMAL_SIN(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
 
                     // if we made it this far, all 6 angles are confirmed! Now check
                     // that this match would not often occur due to chance.
                     // See Analytic_Star_Pattern_Probability on the HSL wiki for details
                     decimal expectedMismatches = expectedMismatchesConstant
-                        * sin(ijDist)
+                        * DECIMAL_SIN(ijDist)
                         / kSinInner
                         / std::max(std::max(iSinInner, jSinInner), kSinInner);
 
@@ -745,7 +746,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     }
 
                     if (iMatch != -1) {
-                        printf("Matched unique pyramid!\nExpected mismatches: %e\n", expectedMismatches);
+                        std::cout.precision(6);
+                        std::cout << "Matched unique pyramid!" << std::endl << "Expected mismatches: " << std::scientific << expectedMismatches << std::endl << std::fixed;
                         identified.push_back(StarIdentifier(i, iMatch));
                         identified.push_back(StarIdentifier(j, jMatch));
                         identified.push_back(StarIdentifier(k, kMatch));

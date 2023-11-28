@@ -1,4 +1,5 @@
 #include "centroiders.hpp"
+#include "decimal.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,9 +86,9 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     }
     decimal mean = totalMag / totalPixels;
     for (long i = 0; i < totalPixels; i++) {
-        std += std::pow(image[i] - mean, 2);
+        std += DECIMAL_POW(image[i] - mean, 2);
     }
-    std = std::sqrt(std / totalPixels);
+    std = DECIMAL_SQRT(std / totalPixels);
     return mean + (std * 5);
 }
 
@@ -103,7 +104,7 @@ int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight)
     }
     decimal mean = totalMag / totalPixels;
     decimal variance = (sq_totalMag / totalPixels) - (mean * mean);
-    std = std::sqrt(variance);
+    std = DECIMAL_SQRT(variance);
     return mean + (std * 5);
 }
 
@@ -182,11 +183,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             yDiameter = (p.yMax - p.yMin) + 1;
 
             //use the sums to finish CoG equation and add stars to the result
-            decimal xCoord = (p.xCoordMagSum / (p.magSum * 1.0));
-            decimal yCoord = (p.yCoordMagSum / (p.magSum * 1.0));
+            decimal xCoord = (p.xCoordMagSum / (p.magSum * DECIMAL(1.0)));
+            decimal yCoord = (p.yCoordMagSum / (p.magSum * DECIMAL(1.0)));
 
             if (p.isValid) {
-                result.push_back(Star(xCoord + 0.5f, yCoord + 0.5f, ((decimal)(xDiameter))/2.0f, ((decimal)(yDiameter))/2.0f, p.checkedIndices.size() - sizeBefore));
+                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), p.checkedIndices.size() - sizeBefore));
             }
         }
     }
@@ -280,9 +281,9 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                     count++;
                 }
             }
-            fwhm = sqrt(count);
-            standardDeviation = fwhm / (2.0 * sqrt(2.0 * log(2.0)));
-            decimal modifiedStdDev = 2.0 * pow(standardDeviation, 2);
+            fwhm = DECIMAL_SQRT(count);
+            standardDeviation = fwhm / (DECIMAL(2.0) * DECIMAL_SQRT(DECIMAL(2.0) * DECIMAL_LOG(2.0)));
+            decimal modifiedStdDev = DECIMAL(2.0) * DECIMAL_POW(standardDeviation, 2);
             // TODO: Why are these decimals? --Mark
             decimal guessXCoord = (decimal) (p.guess % imageWidth);
             decimal guessYCoord = (decimal) (p.guess / imageWidth);
@@ -300,7 +301,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                     //calculate w
                     decimal currXCoord = (decimal) (starIndices.at(j) % imageWidth);
                     decimal currYCoord = (decimal) (starIndices.at(j) / imageWidth);
-                    w = p.maxIntensity * exp(-1.0 * ((pow(currXCoord - guessXCoord, 2) / modifiedStdDev) + (pow(currYCoord - guessYCoord, 2) / modifiedStdDev)));
+                    w = p.maxIntensity * DECIMAL_EXP(DECIMAL(-1.0) * ((DECIMAL_POW(currXCoord - guessXCoord, 2) / modifiedStdDev) + (DECIMAL_POW(currYCoord - guessYCoord, 2) / modifiedStdDev)));
 
                     xWeightedCoordMagSum += w * currXCoord * ((decimal) image[starIndices.at(j)]);
                     yWeightedCoordMagSum += w * currYCoord * ((decimal) image[starIndices.at(j)]);
@@ -315,7 +316,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 guessYCoord = yTemp;
             }
             if (p.isValid) {
-                result.push_back(Star(guessXCoord + 0.5f, guessYCoord + 0.5f, ((decimal)(xDiameter))/2.0f, ((decimal)(yDiameter))/2.0f, starIndices.size()));
+                result.push_back(Star(guessXCoord + DECIMAL(0.5), guessYCoord + DECIMAL(0.5), xDiameter/DECIMAL(2.0), yDiameter/DECIMAL(2.0), starIndices.size()));
             }
         }
     }

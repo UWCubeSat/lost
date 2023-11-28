@@ -4,6 +4,7 @@
 #include <assert.h>
 
 #include "attitude-utils.hpp"
+#include "decimal.hpp"
 
 namespace lost {
 
@@ -55,11 +56,11 @@ bool Camera::InSensor(const Vec2 &vector) const {
 }
 
 decimal FovToFocalLength(decimal xFov, decimal xResolution) {
-    return xResolution / 2.0f / tan(xFov/2);
+    return xResolution / DECIMAL(2.0) / DECIMAL_TAN(xFov/2);
 }
 
 decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize) {
-    return atan(xResolution/2 * pixelSize / focalLength) * 2;
+    return DECIMAL_ATAN(xResolution/2 * pixelSize / focalLength) * 2;
 }
 
 decimal Camera::Fov() const {

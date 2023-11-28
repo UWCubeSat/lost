@@ -39,9 +39,9 @@ public:
     /**
      * @param tolerance Angular tolerance (Two inter-star distances are considered the same if within this many radians)
      */
-    explicit GeometricVotingStarIdAlgorithm(float tolerance): tolerance(tolerance) { };
+    explicit GeometricVotingStarIdAlgorithm(decimal tolerance): tolerance(tolerance) { };
 private:
-    float tolerance;
+    decimal tolerance;
 };
 
 
@@ -60,13 +60,13 @@ public:
      * @param maxMismatchProbability The maximum allowable probability for any star to be mis-id'd.
      * @param cutoff Maximum number of pyramids to iterate through before giving up.
      */
-    PyramidStarIdAlgorithm(float tolerance, int numFalseStars, float maxMismatchProbability, long cutoff)
+    PyramidStarIdAlgorithm(decimal tolerance, int numFalseStars, decimal maxMismatchProbability, long cutoff)
         : tolerance(tolerance), numFalseStars(numFalseStars),
           maxMismatchProbability(maxMismatchProbability), cutoff(cutoff) { };
 private:
-    float tolerance;
+    decimal tolerance;
     int numFalseStars;
-    float maxMismatchProbability;
+    decimal maxMismatchProbability;
     long cutoff;
 };
 

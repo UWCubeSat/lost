@@ -5,6 +5,8 @@
  */
 
 #include <assert.h>
+#include <bitset>
+#include <sys/types.h>
 #include <unistd.h>
 #include <getopt.h>
 
@@ -31,12 +33,16 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
     SerializeContext ser = serFromDbValues(values);
-    // Inject flags into the Serialized Database.
-    uint32_t dbFlags = typeid(decimal) == typeid(double) ? MULTI_DB_IS_DOUBLE : MULTI_DB_IS_FLOAT;
+
+    // Create & Set Flags.
+    uint8_t dbFlags = 0;
+    dbFlags |= typeid(decimal) == typeid(float) ? MULTI_DB_FLOAT_FLAG : 0;
+
+    // Serialize Flags
     SerializeMultiDatabase(&ser, dbEntries, dbFlags);
 
     std::cerr << "Generated database with " << ser.buffer.size() << " bytes" << std::endl;
-    std::cerr << "Database flagged with " << dbFlags << std::endl;
+    std::cerr << "Database flagged with " << std::bitset<8*sizeof(dbFlags)>(dbFlags) << std::endl;
 
     UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
     pos.Stream().write((char *) ser.buffer.data(), ser.buffer.size());
