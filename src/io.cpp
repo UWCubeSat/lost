@@ -94,7 +94,6 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
     #endif
 
     fclose(file);
-    std::cerr << result.size() << std::endl;
     assert(result.size() > 9000); // basic sanity check
     return result;
 }
