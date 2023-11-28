@@ -182,7 +182,7 @@ decimal RadToArcSec(decimal);
 decimal ArcSecToRad(decimal);
 /// Given a decimal, find it "modulo" another decimal, in the true mathematical sense (not remainder).
 /// Always returns something in [0,mod) Eg -0.8 mod 0.6 = 0.4
-decimal FloatModulo(decimal x, decimal mod);
+decimal DecimalModulo(decimal x, decimal mod);
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 

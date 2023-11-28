@@ -1,5 +1,6 @@
 #include "attitude-utils.hpp"
 
+#include <cmath>
 #include <math.h>
 #include <assert.h>
 #include <iostream>
@@ -43,11 +44,11 @@ Quaternion::Quaternion(const Vec3 &input) {
 
 /// Create a quaternion which represents a rotation of theta around the axis input
 Quaternion::Quaternion(const Vec3 &input, decimal theta) {
-    real = cos(theta/2);
+    real = DECIMAL_COS(theta/2);
     // the compiler will optimize it. Right?
-    i = input.x * sin(theta/2);
-    j = input.y * sin(theta/2);
-    k = input.z * sin(theta/2);
+    i = input.x * DECIMAL_SIN(theta/2);
+    j = input.y * DECIMAL_SIN(theta/2);
+    k = input.z * DECIMAL_SIN(theta/2);
 }
 
 /// Rotate a 3d vector according to the rotation represented by the quaternion.
@@ -62,7 +63,7 @@ decimal Quaternion::Angle() const {
         return 0; // 180*2=360=0
     }
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
-    return (real >= 1 ? 0 : acos(real))*2;
+    return (real >= 1 ? 0 : DECIMAL_ACOS(real))*2;
 }
 
 decimal Quaternion::SmallestAngle() const {
@@ -73,8 +74,8 @@ decimal Quaternion::SmallestAngle() const {
 }
 
 void Quaternion::SetAngle(decimal newAngle) {
-    real = cos(newAngle/2);
-    SetVector(Vector().Normalize() * sin(newAngle/2));
+    real = DECIMAL_COS(newAngle/2);
+    SetVector(Vector().Normalize() * DECIMAL_SIN(newAngle/2));
 }
 
 EulerAngles Quaternion::ToSpherical() const {
@@ -85,11 +86,11 @@ EulerAngles Quaternion::ToSpherical() const {
     // and 2, we store the conjugate of the quaternion (double check why?), which means we need to
     // invert the final de and roll terms, as well as negate all the terms involving a mix between
     // the real and imaginary parts.
-    decimal ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
+    decimal ra = DECIMAL_ATAN2(2*(-real*k+i*j), 1-2*(j*j+k*k));
     if (ra < 0)
         ra += 2*DECIMAL_M_PI;
-    decimal de = -asin(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
-    decimal roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
+    decimal de = -DECIMAL_ASIN(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
+    decimal roll = -DECIMAL_ATAN2(2*(-real*i+j*k), 1-2*(i*i+j*j));
     if (roll < 0)
         roll += 2*DECIMAL_M_PI;
 
@@ -134,18 +135,18 @@ Quaternion Quaternion::Canonicalize() const {
 /// Convert from right ascension & declination to a 3d point on the unit sphere.
 Vec3 SphericalToSpatial(decimal ra, decimal de) {
     return {
-        cos(ra)*cos(de),
-        sin(ra)*cos(de),
-        sin(de),
+        DECIMAL_COS(ra)*DECIMAL_COS(de),
+        DECIMAL_SIN(ra)*DECIMAL_COS(de),
+        DECIMAL_SIN(de),
     };
 }
 
 /// Convert from a 3d point on the unit sphere to right ascension & declination.
 void SpatialToSpherical(const Vec3 &vec, decimal *ra, decimal *de) {
-    *ra = atan2(vec.y, vec.x);
+    *ra = DECIMAL_ATAN2(vec.y, vec.x);
     if (*ra < 0)
         *ra += DECIMAL_M_PI*2;
-    *de = asin(vec.z);
+    *de = DECIMAL_ASIN(vec.z);
 }
 
 decimal RadToDeg(decimal rad) {
@@ -164,28 +165,28 @@ decimal ArcSecToRad(decimal arcSec) {
     return DegToRad(arcSec / DECIMAL(3600.0));
 }
 
-decimal FloatModulo(decimal x, decimal mod) {
+decimal DecimalModulo(decimal x, decimal mod) {
     // first but not last chatgpt generated code in lost:
-    decimal result = x - mod * floor(x / mod);
+    decimal result = x - mod * DECIMAL_FLOOR(x / mod);
     return result >= 0 ? result : result + mod;
 }
 
 /// The square of the magnitude
 decimal Vec3::MagnitudeSq() const {
-    return fma(x,x,fma(y,y, z*z));
+    return DECIMAL_FMA(x,x,DECIMAL_FMA(y,y, z*z));
 }
 
 /// The square of the magnitude
 decimal Vec2::MagnitudeSq() const {
-    return fma(x,x, y*y);
+    return DECIMAL_FMA(x,x, y*y);
 }
 
 decimal Vec3::Magnitude() const {
-    return hypot(hypot(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
+    return DECIMAL_HYPOT(DECIMAL_HYPOT(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
 }
 
 decimal Vec2::Magnitude() const {
-    return hypot(x, y);
+    return DECIMAL_HYPOT(x, y);
 }
 
 /// Create a vector pointing in the same direction with magnitude 1
@@ -198,7 +199,7 @@ Vec3 Vec3::Normalize() const {
 
 /// Dot product
 decimal Vec3::operator*(const Vec3 &other) const {
-    return fma(x,other.x, fma(y,other.y, z*other.z));
+    return DECIMAL_FMA(x,other.x, DECIMAL_FMA(y,other.y, z*other.z));
 }
 
 /// Dot product
@@ -368,7 +369,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // the DCM itself does
     Vec3 oldXAxis = Vec3({1, 0, 0});
     Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
-    assert(abs(newXAxis.Magnitude()-1) < DECIMAL(0.001));
+    assert(DECIMAL_ABS(newXAxis.Magnitude()-1) < DECIMAL(0.001));
     Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
     decimal xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
@@ -478,7 +479,7 @@ decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
 decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
     decimal dot = vec1*vec2;
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
-    return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : acos(dot);
+    return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : DECIMAL_ACOS(dot);
 }
 
 }

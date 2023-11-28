@@ -43,6 +43,7 @@
 #define DECIMAL_ROUND(x)        (decimal) std::round(x)
 #define DECIMAL_CEIL(x)         (decimal) std::ceil(x)
 #define DECIMAL_FLOOR(x)        (decimal) std::floor(x)
+#define DECIMAL_ABS(x)          (decimal) std::abs(x)
 
 // Trig Methods wrapped with Decimal typecast
 #define DECIMAL_SIN(x)          (decimal) std::sin(x)
@@ -51,5 +52,10 @@
 #define DECIMAL_ASIN(x)         (decimal) std::asin(x)
 #define DECIMAL_ACOS(x)         (decimal) std::acos(x)
 #define DECIMAL_ATAN(x)         (decimal) std::atan(x)
+#define DECIMAL_ATAN2(x,y)      (decimal) std::atan2(x,y)
+
+// Float methods wrapped with Decimal typecast
+#define DECIMAL_FMA(x,y,z)      (decimal) std::fma(x,y,z)
+#define DECIMAL_HYPOT(x,y)      (decimal) std::hypot(x,y)
 
 #endif // decimal.hpp

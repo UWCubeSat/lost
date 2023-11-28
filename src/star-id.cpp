@@ -122,7 +122,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
 
             //if sDist is in the range of (distance between stars in the image +- R)
             //add a vote for the match
-            if (abs(sDist - cDist) < tolerance) {
+            if (DECIMAL_ABS(sDist - cDist) < tolerance) {
                 verificationVotes[i]++;
                 verificationVotes[j]++;
             }
@@ -266,7 +266,7 @@ std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *
 }
 
 decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal v2) {
-    return abs(FloatModulo(v1-v2, DECIMAL_M_PI) - DECIMAL_M_PI_2);
+    return DECIMAL_ABS(DecimalModulo(v1-v2, DECIMAL_M_PI) - DECIMAL_M_PI_2);
 }
 
 /**
@@ -276,7 +276,7 @@ decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal 
 void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
     const Star &otherStar = stars[starId.starIndex];
     Vec2 positionDifference = otherStar.position - star->position;
-    decimal angleFromVertical = atan2(positionDifference.y, positionDifference.x);
+    decimal angleFromVertical = DECIMAL_ATAN2(positionDifference.y, positionDifference.x);
 
     for (const auto &otherPair : identifiedStarsInRange) {
         decimal curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
@@ -302,8 +302,8 @@ std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCen
 
     Vec3 ourSpatial = camera.CameraToSpatial(star.position).Normalize();
 
-    decimal minCos = cos(maxDistance);
-    decimal maxCos = cos(minDistance);
+    decimal minCos = DECIMAL_COS(maxDistance);
+    decimal maxCos = DECIMAL_COS(minDistance);
 
     std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> result;
     for (auto it = centroids->begin(); it != centroids->end(); ++it) {
