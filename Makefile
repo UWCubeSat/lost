@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Mark Polyakov, Karen Haining (If you edit the file, add your name here!)
+# Copyright (c) 2020 Mark Polyakov, Karen Haining, Muki Kiboigo (If you edit the file, add your name here!)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -51,9 +51,10 @@ ifndef LOST_DISABLE_ASAN
 	LDFLAGS := $(LDFLAGS) -fsanitize=address
 endif
 
-# Define if the Databases will be using Doubles.
-ifdef LOST_DATABASE_DOUBLE
-	CXXFLAGS := $(CXXFLAGS) -D LOST_DATABASE_DOUBLE
+# Use Double Mode by default.
+# If compiled with LOST_FLOAT_MODE=1, we will use floats.
+ifdef LOST_FLOAT_MODE
+	CXXFLAGS := $(CXXFLAGS) -D LOST_FLOAT_MODE
 endif
 
 all: $(BIN) $(BSC)
