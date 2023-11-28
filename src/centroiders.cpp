@@ -1,5 +1,4 @@
 #include "centroiders.hpp"
-#include "decimal.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +9,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
+
+#include "decimal.hpp"
 
 namespace lost {
 

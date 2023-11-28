@@ -1,7 +1,9 @@
 #include "attitude-estimators.hpp"
-#include "decimal.hpp"
+
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Eigenvalues>
+
+#include "decimal.hpp"
 
 namespace lost {
 
@@ -16,7 +18,6 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     }
     assert(stars.size() >= 2);
 
-    
     // attitude profile matrix
     #ifdef LOST_FLOAT_MODE
         Eigen::Matrix3f B;
@@ -37,7 +38,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
             Eigen::Vector3d bi;
             Eigen::Vector3d ri;
         #endif
-        
+
         bi << bStarSpatial.x, bStarSpatial.y, bStarSpatial.z;
 
         CatalogStar rStar = catalog[s.catalogIndex];
@@ -63,7 +64,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     #else
         Eigen::Vector3d Z;
     #endif
-    
+
     Z << B(1,2) - B(2,1),
         B(2,0) - B(0,2),
         B(0,1) - B(1,0);
@@ -91,7 +92,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
         Eigen::Vector4cd values = solver.eigenvalues();
         Eigen::Matrix4cd vectors = solver.eigenvectors();
     #endif
-        
+
     int maxIndex = 0;
     decimal maxEigenvalue = values(0).real();
     for (int i = 1; i < values.size(); i++) {

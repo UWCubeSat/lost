@@ -5,11 +5,11 @@
  */
 
 #include <assert.h>
-#include <bitset>
 #include <sys/types.h>
 #include <unistd.h>
 #include <getopt.h>
 
+#include <bitset>
 #include <string>
 #include <iostream>
 #include <fstream>

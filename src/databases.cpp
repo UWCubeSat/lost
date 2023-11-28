@@ -16,7 +16,7 @@ namespace lost {
 const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
 
 inline bool isFlagSet(uint8_t dbFlags, uint8_t flag) {
-   return (dbFlags & flag) != 0; 
+   return (dbFlags & flag) != 0;
 }
 
 struct KVectorPair {
@@ -326,12 +326,12 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
 
         // Ensure that our database is using the same type as the runtime.
         #ifdef LOST_FLOAT_MODE
-            if(!isFlagSet(dbFlags, MULTI_DB_FLOAT_FLAG)) {
+            if (!isFlagSet(dbFlags, MULTI_DB_FLOAT_FLAG)) {
                 std::cerr << "LOST was compiled in float mode. This database was serialized in double mode and is incompatible." << std::endl;
                 exit(1);
             }
         #else
-            if(isFlagSet(dbFlags, MULTI_DB_FLOAT_FLAG)) {
+            if (isFlagSet(dbFlags, MULTI_DB_FLOAT_FLAG)) {
                 std::cerr << "LOST was compiled in double mode. This database was serialized in float mode and is incompatible." << std::endl;
                 exit(1);
             }

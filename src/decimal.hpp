@@ -13,7 +13,6 @@
 // It's better to verbosely typecast sometimes. Only use these to prevent promotions.
 // The reason why this isn't used everywhere instead of the wrapped macros is
 // because the code becomes hard to read when there are multiple layers of typecasting.
-// 
 // With this method, we might have more preprocessing to do BUT the code remains readable
 // as the methods remain relatively the same.
 #define DECIMAL(x) (decimal) x
