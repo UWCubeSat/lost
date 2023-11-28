@@ -1,8 +1,8 @@
 #include "attitude-utils.hpp"
 
-#include <cmath>
 #include <math.h>
 #include <assert.h>
+#include <cmath>
 #include <iostream>
 
 #include "decimal.hpp"
