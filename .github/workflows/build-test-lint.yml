@@ -17,8 +17,7 @@ jobs:
     - name: Test Double
       run: CXXFLAGS=-Werror make test -j$(($(nproc)+1))
     - name: Test Float
-      run:
-        # Recompile with LOST_FLOAT_MODE
+      run: | 
         make clean
         CXXFLAGS=-Werror make test LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
   
