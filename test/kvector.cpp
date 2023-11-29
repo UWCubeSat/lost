@@ -21,7 +21,7 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
         long lastNumReturnedPairs = 999999;
         for (decimal i = DECIMAL(1.1); i < DECIMAL(1.99); i += DECIMAL(0.1)) {
             const int16_t *end;
-            const int16_t *pairs = db.FindPairsLiberal(i * DECIMAL_M_PI/DECIMAL(180.0), DECIMAL(2.0) * M_PI/DECIMAL(180.0), &end);
+            const int16_t *pairs = db.FindPairsExact(catalog, i * DECIMAL_M_PI/DECIMAL(180.0), DECIMAL(2.0) * M_PI/DECIMAL(180.0), &end);
             decimal shortestDistance = INFINITY;
             for (const int16_t *pair = pairs; pair != end; pair += 2) {
                 decimal distance = AngleUnit(catalog[pair[0]].spatial, catalog[pair[1]].spatial);
