@@ -71,18 +71,12 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
     }
 
     #ifdef LOST_FLOAT_MODE
-    while (EOF != fscanf(file, "%f|%f|%d|%c|%d.%d",
-                         &raj2000, &dej2000,
-                         &name, &weird,
-                         &magnitudeHigh, &magnitudeLow)) {
-        result.push_back(CatalogStar(DegToRad(raj2000),
-                                     DegToRad(dej2000),
-                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
-                                     name));
-    }
-
+        std::string format = "%f|%f|%d|%c|%d.%d";
     #else
-    while (EOF != fscanf(file, "%lf|%lf|%d|%c|%d.%d",
+        std::string format = "%lf|%lf|%d|%c|%d.%d";
+    #endif
+
+    while (EOF != fscanf(file, format.c_str(),
                          &raj2000, &dej2000,
                          &name, &weird,
                          &magnitudeHigh, &magnitudeLow)) {
@@ -91,7 +85,6 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
                                      magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
                                      name));
     }
-    #endif
 
     fclose(file);
     assert(result.size() > 9000); // basic sanity check
