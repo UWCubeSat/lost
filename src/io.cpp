@@ -199,7 +199,7 @@ void SurfacePlot(std::string description,
     cairo_set_font_options(cairoCtx, cairoFontOptions);
     cairo_text_extents_t cairoTextExtents;
     cairo_text_extents(cairoCtx, "1234567890", &cairoTextExtents);
-    decimal textHeight = (decimal) cairoTextExtents.height;
+    decimal textHeight = cairoTextExtents.height;
 
     for (const Star &centroid : stars) {
         // plot the box around the star
@@ -691,7 +691,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // might have to sample many many times (and furthermore, the results won't be useful
             // anyway)
             decimal photons = photonsBuffer[i];
-            if (photons > (decimal)LONG_MAX - DECIMAL(3.0) * DECIMAL_SQRT(LONG_MAX)) {
+            if (photons > DECIMAL(LONG_MAX) - DECIMAL(3.0) * DECIMAL_SQRT(LONG_MAX)) {
                 std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
@@ -1558,9 +1558,9 @@ static void PipelineComparatorAttitude(std::ostream &os,
         }
     }
 
-    decimal attitudeErrorMean = attitudeErrorSum / numCorrect;
-    decimal fractionCorrect = (decimal)numCorrect / expected.size();
-    decimal fractionIncorrect = (decimal)numIncorrect / expected.size();
+    decimal attitudeErrorMean = DECIMAL(attitudeErrorSum) / numCorrect;
+    decimal fractionCorrect = DECIMAL(numCorrect) / expected.size();
+    decimal fractionIncorrect = DECIMAL(numIncorrect) / expected.size();
 
     os << "attitude_error_mean " << attitudeErrorMean << std::endl;
     os << "attitude_availability " << fractionCorrect << std::endl;

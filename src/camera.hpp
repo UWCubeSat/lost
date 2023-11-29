@@ -22,7 +22,7 @@ public:
 
     Camera(decimal focalLength, int xResolution, int yResolution)
         : Camera(focalLength,
-                 xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
+                 xResolution / DECIMAL(2.0), yResolution / DECIMAL(2.0),
                  xResolution, yResolution) {};
 
     Vec2 SpatialToCamera(const Vec3 &) const;

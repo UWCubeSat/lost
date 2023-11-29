@@ -7,7 +7,7 @@
 
 namespace lost {
 
-#define EPSILON (decimal) 0.0001       // threshold for 0 for Newton-Raphson method
+#define EPSILON DECIMAL(0.0001)       // threshold for 0 for Newton-Raphson method
 
 Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,

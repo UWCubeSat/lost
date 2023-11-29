@@ -2,9 +2,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 
+#include <cmath>
 #include <vector>
 #include <iostream>
 #include <unordered_map>
@@ -21,7 +21,7 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *, int imageWidth, in
 
     unsigned int randomSeed = 123456;
     for (int i = 0; i < numStars; i++) {
-        result.push_back(Star(rand_r(&randomSeed) % imageWidth, rand_r(&randomSeed) % imageHeight, 10.0));
+        result.push_back(Star(rand_r(&randomSeed) % imageWidth, rand_r(&randomSeed) % imageHeight, DECIMAL(10.0)));
     }
 
     return result;
@@ -197,7 +197,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
 //Determines how accurate and how much iteration is done by the IWCoG algorithm,
 //smaller means more accurate and more iterations.
-decimal iWCoGMinChange = 0.0002;
+decimal iWCoGMinChange = DECIMAL(0.0002);
 
 struct IWCoGParams {
     int xMin;
@@ -286,8 +286,8 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             standardDeviation = fwhm / (DECIMAL(2.0) * DECIMAL_SQRT(DECIMAL(2.0) * DECIMAL_LOG(2.0)));
             decimal modifiedStdDev = DECIMAL(2.0) * DECIMAL_POW(standardDeviation, 2);
             // TODO: Why are these decimals? --Mark
-            decimal guessXCoord = (decimal) (p.guess % imageWidth);
-            decimal guessYCoord = (decimal) (p.guess / imageWidth);
+            decimal guessXCoord = (p.guess % imageWidth);
+            decimal guessYCoord = (p.guess / imageWidth);
             //how much our new centroid estimate changes w each iteration
             decimal change = INFINITY;
             int stop = 0;
@@ -300,13 +300,13 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 stop++;
                 for (long j = 0; j < (long)starIndices.size(); j++) {
                     //calculate w
-                    decimal currXCoord = (decimal) (starIndices.at(j) % imageWidth);
-                    decimal currYCoord = (decimal) (starIndices.at(j) / imageWidth);
+                    decimal currXCoord = starIndices.at(j) % imageWidth;
+                    decimal currYCoord = starIndices.at(j) / imageWidth;
                     w = p.maxIntensity * DECIMAL_EXP(DECIMAL(-1.0) * ((DECIMAL_POW(currXCoord - guessXCoord, 2) / modifiedStdDev) + (DECIMAL_POW(currYCoord - guessYCoord, 2) / modifiedStdDev)));
 
-                    xWeightedCoordMagSum += w * currXCoord * ((decimal) image[starIndices.at(j)]);
-                    yWeightedCoordMagSum += w * currYCoord * ((decimal) image[starIndices.at(j)]);
-                    weightedMagSum += w * ((decimal) image[starIndices.at(j)]);
+                    xWeightedCoordMagSum += w * currXCoord * DECIMAL(image[starIndices.at(j)]);
+                    yWeightedCoordMagSum += w * currYCoord * DECIMAL(image[starIndices.at(j)]);
+                    weightedMagSum += w * DECIMAL(image[starIndices.at(j)]);
                 }
                 decimal xTemp = xWeightedCoordMagSum / weightedMagSum;
                 decimal yTemp = yWeightedCoordMagSum / weightedMagSum;
