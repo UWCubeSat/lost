@@ -13,19 +13,19 @@ using namespace lost; // NOLINT
 
 TEST_CASE("IRUnidentifiedCentroid simple orthogonal", "[identify-remaining] [fast]") {
     IRUnidentifiedCentroid centroid(elevenStars[3], 0);
-    REQUIRE(centroid.bestAngleFrom90 > 9e9);
+    REQUIRE(centroid.bestAngleFrom90 > DECIMAL(9e9));
     centroid.AddIdentifiedStar(elevenStarIds[1], elevenStars);
     // one star is not enough to get angle
-    REQUIRE(centroid.bestAngleFrom90 > 9e9);
+    REQUIRE(centroid.bestAngleFrom90 > DECIMAL(9e9));
     centroid.AddIdentifiedStar(elevenStarIds[2], elevenStars);
     // we've set them up to be almost orthogonal
-    REQUIRE(centroid.bestAngleFrom90 == Approx(0).margin(1e-6));
+    REQUIRE(centroid.bestAngleFrom90 == Approx(0).margin(DECIMAL(1e-6)));
     REQUIRE(((centroid.bestStar1 == elevenStarIds[1] && centroid.bestStar2 == elevenStarIds[2]) ||
              (centroid.bestStar1 == elevenStarIds[2] && centroid.bestStar2 == elevenStarIds[1])));
 
     // adding another, non-orthogonal one shouldn't break it
     centroid.AddIdentifiedStar(elevenStarIds[0], elevenStars);
-    REQUIRE(centroid.bestAngleFrom90 == Approx(0).margin(1e-6));
+    REQUIRE(centroid.bestAngleFrom90 == Approx(0).margin(DECIMAL(1e-6)));
     REQUIRE(((centroid.bestStar1 == elevenStarIds[1] && centroid.bestStar2 == elevenStarIds[2]) ||
              (centroid.bestStar1 == elevenStarIds[2] && centroid.bestStar2 == elevenStarIds[1])));
 }
@@ -34,18 +34,18 @@ TEST_CASE("IRUnidentifiedCentroid not orthogonal until they are", "[identify-rem
     IRUnidentifiedCentroid centroid(elevenStars[3], 0);
     centroid.AddIdentifiedStar(elevenStarIds[1], elevenStars);
     centroid.AddIdentifiedStar(elevenStarIds[0], elevenStars);
-    REQUIRE(centroid.bestAngleFrom90 == Approx(M_PI_4));
+    REQUIRE(centroid.bestAngleFrom90 == Approx(DECIMAL_M_PI_4));
     centroid.AddIdentifiedStar(elevenStarIds[6], elevenStars);
-    REQUIRE(centroid.bestAngleFrom90 == Approx(M_PI_4));
+    REQUIRE(centroid.bestAngleFrom90 == Approx(DECIMAL_M_PI_4));
     centroid.AddIdentifiedStar(elevenStarIds[8], elevenStars);
-    REQUIRE(centroid.bestAngleFrom90 == Approx(0).margin(1e-6));
+    REQUIRE(centroid.bestAngleFrom90 == Approx(0).margin(DECIMAL(1e-6)));
 }
 
 TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") {
     IRUnidentifiedCentroid centroid(elevenStars[3], 0);
     centroid.AddIdentifiedStar(elevenStarIds[1], elevenStars);
     centroid.AddIdentifiedStar(elevenStarIds[6], elevenStars);
-    REQUIRE(centroid.bestAngleFrom90 == Approx(M_PI_4));
+    REQUIRE(centroid.bestAngleFrom90 == Approx(DECIMAL_M_PI_4));
 }
 
 // TODO: Tests for FindAllInRange if we ever make the logic more complicated
@@ -53,7 +53,7 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
                                            decimal dist1, decimal dist2, decimal tolerance) {
     SerializeContext ser;
-    SerializePairDistanceKVector(&ser, integralCatalog, 0, M_PI, 1000);
+    SerializePairDistanceKVector(&ser, integralCatalog, 0, DECIMAL_M_PI, 1000);
     DeserializeContext des(ser.buffer.data());
     auto cs1 = FindNamedStar(catalog, catalogName1);
     auto cs2 = FindNamedStar(catalog, catalogName2);
@@ -70,8 +70,8 @@ TEST_CASE("IdentifyThirdStar", "[identify-remaining] [fast]") { // TODO: does it
 
     std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
                                                        42, 44, // (1,0,0), (0,1,0)
-                                                       M_PI_2, M_PI_2,
-                                                       1e-6);
+                                                       DECIMAL_M_PI_2, DECIMAL_M_PI_2,
+                                                       DECIMAL(1e-6));
     REQUIRE(stars.size() == 1);
     REQUIRE(integralCatalog[stars[0]].name == 50);
 
@@ -82,8 +82,8 @@ TEST_CASE("IdentifyThirdStar with tolerance", "[identify-remaining] [fast]") {
     // try it again where we actually need the tolerance
     std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
                                                        42, 44, // (1,0,0), (0,1,0)
-                                                       M_PI_2 - DegToRad(1.0), M_PI_2 + DegToRad(1.0),
-                                                       0.1);
+                                                       DECIMAL_M_PI_2 - DegToRad(1.0), DECIMAL_M_PI_2 + DegToRad(1.0),
+                                                       DECIMAL(0.1));
     REQUIRE(stars.size() == 1);
     REQUIRE(integralCatalog[stars[0]].name == 50);
 }
@@ -91,8 +91,8 @@ TEST_CASE("IdentifyThirdStar with tolerance", "[identify-remaining] [fast]") {
 TEST_CASE("IdentifyThirdStar reversed spectrality", "[identify-remaining] [fast]") {
     std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
                                                        44, 42, // (0,1,0), (1,0,0)
-                                                       M_PI_2, M_PI_2,
-                                                       1e-6);
+                                                       DECIMAL_M_PI_2, DECIMAL_M_PI_2,
+                                                       DECIMAL(1e-6));
     REQUIRE(stars.size() == 1);
     REQUIRE(integralCatalog[stars[0]].name == 58);
 }
@@ -100,16 +100,16 @@ TEST_CASE("IdentifyThirdStar reversed spectrality", "[identify-remaining] [fast]
 TEST_CASE("IdentifyThirdStar no third star", "[identify-remaining] [fast]") {
     std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
                                                        42, 44, // (1,0,0), (0,1,0)
-                                                       1, M_PI_2,
-                                                       1e-6);
+                                                       1, DECIMAL_M_PI_2,
+                                                       DECIMAL(1e-6));
     REQUIRE(stars.size() == 0);
 }
 
 TEST_CASE("IdentifyThirdStar just out of tolerance", "[identify-remaining] [fast]") {
     std::vector<int16_t> stars2 = IdentifyThirdStarTest(integralCatalog,
                                                         42, 44, // (1,0,0), (0,1,0)
-                                                        M_PI_2 - 2e-6, M_PI_2,
-                                                        1e-6);
+                                                        DECIMAL_M_PI_2 - DECIMAL(2e-6), DECIMAL_M_PI_2,
+                                                        DECIMAL(1e-6));
     REQUIRE(stars2.size() == 0);
 }
 
@@ -140,7 +140,7 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     int numFakeStars = 100;
 
     std::default_random_engine rng(GENERATE(take(kIdentifyRemainingNumImages, random(0, 1000000))));
-    std::uniform_real_distribution<decimal> yDist(0.0, 256.0);
+    std::uniform_real_distribution<decimal> yDist(DECIMAL(0.0), DECIMAL(256.0));
     std::uniform_int_distribution<int> starIndexDist(0, numFakeStars - 1);
     std::uniform_int_distribution<int> moreStartingStars(0, 1);
 
@@ -149,7 +149,7 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     Catalog fakeCatalog;
     for (int i = 0; i < numFakeStars; i++) {
         // smolCamera has width 256
-        decimal x = i * 256.0 / numFakeStars;
+        decimal x = i * DECIMAL(256.0) / numFakeStars;
         decimal y = yDist(rng);
         fakeCentroids.emplace_back(x, y, 1);
         fakeCatalog.emplace_back(smolCamera.CameraToSpatial({x, y}).Normalize(), 1, i);
@@ -166,11 +166,11 @@ TEST_CASE("IdentifyRemainingStars fuzz", "[identify-remaining] [fuzz]") {
     }
 
     SerializeContext ser;
-    SerializePairDistanceKVector(&ser, fakeCatalog, 0, M_PI, 1000);
+    SerializePairDistanceKVector(&ser, fakeCatalog, 0, DECIMAL_M_PI, 1000);
     DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);
 
-    int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, 1e-5);
+    int numIdentified = IdentifyRemainingStarsPairDistance(&someFakeStarIds, fakeCentroids, db, fakeCatalog, smolCamera, DECIMAL(1e-5));
 
     REQUIRE(numIdentified == numFakeStars - fakePatternSize);
     REQUIRE(AreStarIdentifiersEquivalent(fakeStarIds, someFakeStarIds));
