@@ -18,12 +18,16 @@ import pathlib
 lost_dir = os.path.dirname(os.path.realpath(__file__))
 
 lost_path = f"{lost_dir}/lost"
-raw_input_path = f'{lost_dir}/tmp/raw-input.png'
-annotated_input_path = f'{lost_dir}/tmp/input.png'
-annotated_output_path = f'{lost_dir}/tmp/annotated_output.png'
-attitude_path = f'{lost_dir}/tmp/attitude.txt'
-database_path = f'{lost_dir}/tmp/tmp_database.dat'
+temp_dir_path = f'{lost_dir}/tmp'
 
+raw_input_path = f'{temp_dir_path}/raw-input.png'
+annotated_input_path = f'{temp_dir_path}/input.png'
+annotated_output_path = f'{temp_dir_path}/annotated_output.png'
+attitude_path = f'{temp_dir_path}/attitude.txt'
+database_path = f'{temp_dir_path}/tmp_database.dat'
+
+# make temporary directory if it doesn't exist
+pathlib.Path(temp_dir_path).mkdir(exist_ok=True)
 
 # runs lost with the provided array of command line arguments
 # TODO: investigate return/command line output
@@ -34,13 +38,16 @@ def lost(args):
 # generates kvector database (required before identifying images)
 def database(max_stars=5000, kvector=True, kvector_min_distance=0.2,
              kvector_max_distance=15.0, kvector_distance_bins=10000):
-    lost(['database',
-          '--max-stars', str(max_stars),
-          '--kvector',
-          '--kvector-min-distance', str(kvector_min_distance),
-          '--kvector-max-distance', str(kvector_max_distance),
-          '--kvector-distance-bins', str(kvector_distance_bins),
-          '--output', database_path])
+    args = [
+        'database',
+        '--max-stars', str(max_stars),
+        '--kvector',
+        '--kvector-min-distance', str(kvector_min_distance),
+        '--kvector-max-distance', str(kvector_max_distance),
+        '--kvector-distance-bins', str(kvector_distance_bins),
+        '--output', database_path,
+    ]
+    lost(args)
 
 
 def generate(x_resolution=1024, y_resolution=1024, fov=30,

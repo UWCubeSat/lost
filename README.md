@@ -155,6 +155,85 @@ noisiness of your images. If the output file has many centroids (red boxes) wher
 visible stars, then the filter should be increased. If there are many stars without centroids, the
 filter should be decreased.
 
+# Python Interface
+
+LOST also has a basic Python interface.
+
+Note that the Python interface is under heavy development, so documentation is
+sparse, interfaces are likely to change, and things might not work properly.
+
+## Building the Python Interface
+
+First, follow the build instructions for local installation so you have a LOST
+executable.
+
+To build & install the python interface, run `pip3 install --upgrade .`
+
+*Note: the `--upgrade` isn't necessary for a fresh install, but it will make sure you're up
+to date with what's in this repo if you previously installed LOST.*
+
+To uninstall, run `pip3 uninstall lost`
+
+If you are suspicious that the built & installed version is not up to date with
+changes you've made in this repo, even after running the install command,
+deleting the `/build` and `/lost.egg-info` folders may help (maybe we should
+add this as a part of the setup script?).
+
+## Using the Python Interface
+
+Set up LOST by generating the database:
+
+```Python
+import lost
+lost.database()
+```
+
+Set up a visualization helper method:
+
+```Python
+import matplotlib as mpl
+from matplotlib import pyplot as plt
+
+def show(im):
+    mpl.rcParams['figure.dpi'] = 600
+    plt.imshow(im)
+    plt.show()
+```
+
+Read and identify an image:
+
+```Python
+# read in a test image as a numpy array
+import imageio.v3 as imageio
+im = imageio.imread('IMAGE_NAME.png')
+
+# you may need to change ID algorithms to match your camera parameters:
+# lost.focal_length = 49
+# lost.pixel_size = 22.2
+
+# identify attitude of satellite
+result = lost.identify(im, plot_output=True)
+
+# extract the annotated output image from the result
+result_image = result['annotated_output_image']
+del result['annotated_output_image']
+
+# pretty print attitude info with JSON module
+import json
+print(json.dumps(result, indent=True))
+
+show(result_image)
+```
+
+Generate a sample image:
+
+```Python
+im1, im2 = lost.generate(generate_annotated=True)
+show(im2)
+```
+
+For more usage details, see the source code in `/lostpy/__init__.py`.
+
 <!-- # Parts of a Star Tracking System -->
 
 <!-- - **Undistortion or cropping:** It's critical for captured images to be "flat". Unfortunately, real-world lenses make -->

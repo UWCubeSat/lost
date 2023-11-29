@@ -113,3 +113,7 @@ pyramid-incorrect.dat
 
 # macOS
 .DS_Store
+
+# Python interface
+lost.egg-info/*
+build/lib/*
