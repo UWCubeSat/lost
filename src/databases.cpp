@@ -1,5 +1,6 @@
 #include "databases.hpp"
 
+#include <cstdint>
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
@@ -15,7 +16,7 @@ namespace lost {
 
 const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
 
-inline bool isFlagSet(uint8_t dbFlags, uint8_t flag) {
+inline bool isFlagSet(uint32_t dbFlags, uint32_t flag) {
    return (dbFlags & flag) != 0;
 }
 
@@ -253,8 +254,8 @@ const int16_t *PairDistanceKVectorDatabase::FindPairsExact(const Catalog &catalo
     // sense anyway)
     assert(maxQueryDistance <= DECIMAL_M_PI);
 
-    decimal maxQueryCos = cos(minQueryDistance);
-    decimal minQueryCos = cos(maxQueryDistance);
+    decimal maxQueryCos = DECIMAL_COS(minQueryDistance);
+    decimal minQueryCos = DECIMAL_COS(maxQueryDistance);
 
     long liberalUpperIndex;
     long liberalLowerIndex = index.QueryLiberal(minQueryDistance, maxQueryDistance, &liberalUpperIndex);
@@ -322,7 +323,7 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
         if (curMagicValue == 0) {
             return nullptr;
         }
-        uint8_t dbFlags = DeserializePrimitive<uint8_t>(des);
+        uint32_t dbFlags = DeserializePrimitive<uint32_t>(des);
 
         // Ensure that our database is using the same type as the runtime.
         #ifdef LOST_FLOAT_MODE
@@ -351,10 +352,10 @@ const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const
 
 void SerializeMultiDatabase(SerializeContext *ser,
                             const MultiDatabaseDescriptor &dbs,
-                            uint8_t flags) {
+                            uint32_t flags) {
     for (const MultiDatabaseEntry &multiDbEntry : dbs) {
         SerializePrimitive<int32_t>(ser, multiDbEntry.magicValue);
-        SerializePrimitive<uint8_t>(ser, flags);
+        SerializePrimitive<uint32_t>(ser, flags);
         SerializePrimitive<uint32_t>(ser, multiDbEntry.bytes.size());
         SerializePadding<uint64_t>(ser);
         std::copy(multiDbEntry.bytes.cbegin(), multiDbEntry.bytes.cend(), std::back_inserter(ser->buffer));

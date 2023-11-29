@@ -35,7 +35,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     SerializeContext ser = serFromDbValues(values);
 
     // Create & Set Flags.
-    uint8_t dbFlags = 0;
+    uint32_t dbFlags = 0;
     dbFlags |= typeid(decimal) == typeid(float) ? MULTI_DB_FLOAT_FLAG : 0;
 
     // Serialize Flags

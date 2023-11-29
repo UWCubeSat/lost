@@ -12,7 +12,7 @@ namespace lost {
 
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
-inline bool isFlagSet(uint8_t dbFlags, uint8_t flag);
+inline bool isFlagSet(uint32_t dbFlags, uint32_t flag);
 
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
@@ -116,13 +116,13 @@ public:
         : magicValue(magicValue), bytes(bytes) { }
 
     int32_t magicValue;
-    uint8_t flags;
+    uint32_t flags;
     std::vector<unsigned char> bytes;
 };
 
 typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
 
-void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint8_t flags);
+void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint32_t flags);
 
 }
 
