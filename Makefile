@@ -54,7 +54,7 @@ endif
 # Use Double Mode by default.
 # If compiled with LOST_FLOAT_MODE=1, we will use floats.
 ifdef LOST_FLOAT_MODE
-	CXXFLAGS := $(CXXFLAGS) -D LOST_FLOAT_MODE
+	CXXFLAGS := $(CXXFLAGS) -Wdouble-promotion -Werror=double-promotion -D LOST_FLOAT_MODE
 endif
 
 all: $(BIN) $(BSC)
