@@ -22,7 +22,7 @@ var io_8hpp =
     [ "PipelineComparison", "io_8hpp.html#ad2caa7f022ed5c5dba03ab479414dafc", null ],
     [ "serFromDbValues", "io_8hpp.html#aca0350641c0c62bbf6ff900634e92b8e", null ],
     [ "SetPipeline", "io_8hpp.html#ad4bb00e632a9200a8e42f620e460dd60", null ],
-    [ "StarIdsCompare", "io_8hpp.html#ab6f75e99dbde3eede31e0b3a7c56878e", null ],
+    [ "StarIdsCompare", "io_8hpp.html#a863cf60540007697be2b6572e6a2e614", null ],
     [ "SurfaceToGrayscaleImage", "io_8hpp.html#a1c3caf3f02508df448ec6c761a2d764e", null ],
     [ "kNoDefaultArgument", "io_8hpp.html#adbeb358ec7311bc89886a09aa017388c", null ]
 ];

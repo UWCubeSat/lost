@@ -1,0 +1,9 @@
+<map id="lost::KVectorIndex::QueryLiberal" name="lost::KVectorIndex::QueryLiberal">
+<area shape="rect" id="node1" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="1024,39,1164,80"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pair_distance_k_vector_database.html#ad76a05c909ea68d6084f942f3623b8ed" title=" " alt="" coords="785,5,972,47"/>
+<area shape="rect" id="node6" href="$classlost_1_1_pair_distance_k_vector_database.html#ae88622306fc1b554a5c86476b0e815af" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="781,71,976,112"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="557,13,720,39"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,47"/>
+<area shape="rect" id="node5" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,42,241,69"/>
+<area shape="rect" id="node7" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="544,123,733,164"/>
+</map>

@@ -1,5 +1,5 @@
 <map id="lost::Mat3::Inverse" name="lost::Mat3::Inverse">
 <area shape="rect" id="node1" title="Inverse of a matrix." alt="" coords="5,5,148,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="363,5,472,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_mat3.html#add91dc6b5fbc16af21c0467bbdb13ae2" title="Determinant of a matrix." alt="" coords="196,31,315,57"/>
+<area shape="rect" id="node2" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="363,5,472,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_mat3.html#a5a3c5d3bb1e90373f8ac1d2c16fca504" title="Determinant of a matrix." alt="" coords="196,31,315,57"/>
 </map>

@@ -1,0 +1,5 @@
+<map id="lost::CatalogToPairDistances" name="lost::CatalogToPairDistances">
+<area shape="rect" id="node1" title="pair K&#45;vector database layout." alt="" coords="475,13,681,39"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a98d1507ab3e305ab47846133d82e4467" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,47"/>
+<area shape="rect" id="node3" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,39"/>
+</map>

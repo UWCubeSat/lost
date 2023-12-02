@@ -96,6 +96,7 @@ $(document).ready(function(){initNavTree('databases_8cpp.html',''); initResizabl
 <code>#include &lt;assert.h&gt;</code><br />
 <code>#include &lt;math.h&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &quot;<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>&quot;</code><br />
@@ -106,21 +107,25 @@ Include dependency graph for databases.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="databases_8cpp__incl.png" border="0" usemap="#asrc_2databases_8cpp" alt=""/></div>
 <map name="asrc_2databases_8cpp" id="asrc_2databases_8cpp">
-<area shape="rect" title=" " alt="" coords="417,5,555,32"/>
-<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="227,80,345,107"/>
-<area shape="rect" title=" " alt="" coords="5,155,76,181"/>
-<area shape="rect" title=" " alt="" coords="204,379,267,405"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="315,155,423,181"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="288,229,423,256"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="425,304,584,331"/>
-<area shape="rect" title=" " alt="" coords="574,379,659,405"/>
-<area shape="rect" title=" " alt="" coords="626,80,701,107"/>
-<area shape="rect" title=" " alt="" coords="725,80,793,107"/>
-<area shape="rect" title=" " alt="" coords="818,80,898,107"/>
-<area shape="rect" title=" " alt="" coords="152,155,239,181"/>
-<area shape="rect" title=" " alt="" coords="323,304,401,331"/>
-<area shape="rect" title=" " alt="" coords="385,379,456,405"/>
-<area shape="rect" title=" " alt="" coords="480,379,540,405"/>
+<area shape="rect" title=" " alt="" coords="487,5,625,32"/>
+<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="237,80,355,107"/>
+<area shape="rect" title=" " alt="" coords="43,155,114,181"/>
+<area shape="rect" title=" " alt="" coords="211,379,274,405"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="353,155,461,181"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="499,229,634,256"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="331,304,490,331"/>
+<area shape="rect" title=" " alt="" coords="620,379,705,405"/>
+<area shape="rect" title=" " alt="" coords="644,80,719,107"/>
+<area shape="rect" title=" " alt="" coords="743,80,811,107"/>
+<area shape="rect" title=" " alt="" coords="836,80,903,107"/>
+<area shape="rect" title=" " alt="" coords="927,80,1007,107"/>
+<area shape="rect" title=" " alt="" coords="190,155,277,181"/>
+<area shape="rect" title=" " alt="" coords="565,304,643,331"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="477,379,579,405"/>
+<area shape="rect" title=" " alt="" coords="382,379,453,405"/>
+<area shape="rect" title=" " alt="" coords="298,379,358,405"/>
+<area shape="rect" title=" " alt="" coords="454,453,517,480"/>
+<area shape="rect" title=" " alt="" coords="541,453,600,480"/>
 </map>
 </div>
 </div>
@@ -139,22 +144,24 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a9a6ccd2f576c452a68db8152dc2edb24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24">lost::isFlagSet</a> (uint32_t dbFlags, uint32_t flag)</td></tr>
+<tr class="separator:a9a6ccd2f576c452a68db8152dc2edb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68f14b0d645721125203e669cde68358"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a68f14b0d645721125203e669cde68358">lost::CompareKVectorPairs</a> (const KVectorPair &amp;p1, const KVectorPair &amp;p2)</td></tr>
 <tr class="separator:a68f14b0d645721125203e669cde68358"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0c0c9865d2c16d74149bf85366cdc18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18">lost::SerializeKVectorIndex</a> (SerializeContext *ser, const std::vector&lt; float &gt; &amp;values, float min, float max, long numBins)</td></tr>
-<tr class="memdesc:ac0c0c9865d2c16d74149bf85366cdc18"><td class="mdescLeft">&#160;</td><td class="mdescRight">K-vector index layout.  <a href="namespacelost.html#ac0c0c9865d2c16d74149bf85366cdc18">More...</a><br /></td></tr>
-<tr class="separator:ac0c0c9865d2c16d74149bf85366cdc18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63bf3cd684687462bda2231e2aa1f14c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; KVectorPair &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c">lost::CatalogToPairDistances</a> (const Catalog &amp;catalog, float minDistance, float maxDistance)</td></tr>
-<tr class="memdesc:a63bf3cd684687462bda2231e2aa1f14c"><td class="mdescLeft">&#160;</td><td class="mdescRight">pair K-vector database layout.  <a href="namespacelost.html#a63bf3cd684687462bda2231e2aa1f14c">More...</a><br /></td></tr>
-<tr class="separator:a63bf3cd684687462bda2231e2aa1f14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefdad61aa2dbf38415d0345c1ff2916d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d">lost::SerializePairDistanceKVector</a> (SerializeContext *ser, const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
-<tr class="memdesc:aefdad61aa2dbf38415d0345c1ff2916d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d">More...</a><br /></td></tr>
-<tr class="separator:aefdad61aa2dbf38415d0345c1ff2916d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4753c4aab04ad2deb202dd8be458e5d8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8">lost::Clamp</a> (float num, float low, float high)</td></tr>
-<tr class="memdesc:a4753c4aab04ad2deb202dd8be458e5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value in the range [low,high] which is closest to num.  <a href="namespacelost.html#a4753c4aab04ad2deb202dd8be458e5d8">More...</a><br /></td></tr>
-<tr class="separator:a4753c4aab04ad2deb202dd8be458e5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56c54ae520919bdd6d87f291e02883d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a56c54ae520919bdd6d87f291e02883d3">lost::SerializeMultiDatabase</a> (SerializeContext *ser, const MultiDatabaseDescriptor &amp;dbs)</td></tr>
-<tr class="separator:a56c54ae520919bdd6d87f291e02883d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0227319e45ff29d6f61b7e083d01e31f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a0227319e45ff29d6f61b7e083d01e31f">lost::SerializeKVectorIndex</a> (SerializeContext *ser, const std::vector&lt; <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> &gt; &amp;values, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> min, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> max, long numBins)</td></tr>
+<tr class="memdesc:a0227319e45ff29d6f61b7e083d01e31f"><td class="mdescLeft">&#160;</td><td class="mdescRight">K-vector index layout.  <a href="namespacelost.html#a0227319e45ff29d6f61b7e083d01e31f">More...</a><br /></td></tr>
+<tr class="separator:a0227319e45ff29d6f61b7e083d01e31f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7df31f0f6e3ed20311231573630124dc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; KVectorPair &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7df31f0f6e3ed20311231573630124dc">lost::CatalogToPairDistances</a> (const Catalog &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance)</td></tr>
+<tr class="memdesc:a7df31f0f6e3ed20311231573630124dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">pair K-vector database layout.  <a href="namespacelost.html#a7df31f0f6e3ed20311231573630124dc">More...</a><br /></td></tr>
+<tr class="separator:a7df31f0f6e3ed20311231573630124dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98d1507ab3e305ab47846133d82e4467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">lost::SerializePairDistanceKVector</a> (SerializeContext *ser, const Catalog &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance, long numBins)</td></tr>
+<tr class="memdesc:a98d1507ab3e305ab47846133d82e4467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">More...</a><br /></td></tr>
+<tr class="separator:a98d1507ab3e305ab47846133d82e4467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae06c1b87a560fb7d9de673b46ff60d9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae06c1b87a560fb7d9de673b46ff60d9c">lost::Clamp</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> num, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> low, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> high)</td></tr>
+<tr class="memdesc:ae06c1b87a560fb7d9de673b46ff60d9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value in the range [low,high] which is closest to num.  <a href="namespacelost.html#ae06c1b87a560fb7d9de673b46ff60d9c">More...</a><br /></td></tr>
+<tr class="separator:ae06c1b87a560fb7d9de673b46ff60d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad14088462298249d31b2c396c3be86f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad14088462298249d31b2c396c3be86f9">lost::SerializeMultiDatabase</a> (SerializeContext *ser, const MultiDatabaseDescriptor &amp;dbs, uint32_t flags)</td></tr>
+<tr class="separator:ad14088462298249d31b2c396c3be86f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -162,7 +169,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="databases_8cpp.html">databases.cpp</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

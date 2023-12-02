@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['magicvalue_581',['magicValue',['../classlost_1_1_multi_database_entry.html#aeede63708b59ea0086338286eef438c8',1,'lost::MultiDatabaseEntry']]],
-  ['magnitude_582',['magnitude',['../classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a',1,'lost::CatalogStar::magnitude()'],['../classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf',1,'lost::Star::magnitude()']]],
-  ['magsum_583',['magSum',['../structlost_1_1_centroid_params.html#aedcfd69a00c255c1e9166508ee5e58ff',1,'lost::CentroidParams']]],
-  ['maxintensity_584',['maxIntensity',['../structlost_1_1_i_w_co_g_params.html#a0b8ea8754acc0d8d48f6ef9cb1cc326c',1,'lost::IWCoGParams']]],
-  ['meanerror_585',['meanError',['../classlost_1_1_centroid_comparison.html#ac1e005780ebb245a3baafde37654aafa',1,'lost::CentroidComparison']]]
+  ['k_613',['k',['../classlost_1_1_quaternion.html#a5b3471fa3003bd2cfa1ec40dfe75bcca',1,'lost::Quaternion']]],
+  ['kanglefrom90softthreshold_614',['kAngleFrom90SoftThreshold',['../namespacelost.html#a10f83f3109f16381af2ee6b56e586271',1,'lost']]],
+  ['kcatalogmagicvalue_615',['kCatalogMagicValue',['../namespacelost.html#a280b11c878f729f878b2968037ccbc3d',1,'lost']]],
+  ['kidentitymat3_616',['kIdentityMat3',['../namespacelost.html#a66abb8e44054268322b5ccba535bb975',1,'lost']]],
+  ['kmagicvalue_617',['kMagicValue',['../classlost_1_1_pair_distance_k_vector_database.html#a6d5d477e5e2d9557f0e284e917361a54',1,'lost::PairDistanceKVectorDatabase']]],
+  ['kmaxbrightness_618',['kMaxBrightness',['../namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45',1,'lost']]],
+  ['knodefaultargument_619',['kNoDefaultArgument',['../namespacelost.html#adbeb358ec7311bc89886a09aa017388c',1,'lost']]]
 ];

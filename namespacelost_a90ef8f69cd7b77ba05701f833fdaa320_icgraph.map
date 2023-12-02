@@ -1,4 +1,0 @@
-<map id="lost::MagToBrightness" name="lost::MagToBrightness">
-<area shape="rect" id="node1" title="returns some relative brightness measure, which is proportional to the total number of photons receiv..." alt="" coords="260,13,425,39"/>
-<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
-</map>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['guess_564',['guess',['../structlost_1_1_i_w_co_g_params.html#ac76a11e21cf5252a2077908357540ad7',1,'lost::IWCoGParams']]]
+  ['flags_602',['flags',['../classlost_1_1_multi_database_entry.html#ace2cf20a17ec8c58e40965438df8df06',1,'lost::MultiDatabaseEntry']]]
 ];

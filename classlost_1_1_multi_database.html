@@ -91,9 +91,6 @@ $(document).ready(function(){initNavTree('classlost_1_1_multi_database.html','')
 </div><!--header-->
 <div class="contents">
 
-<p>A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.  
- <a href="classlost_1_1_multi_database.html#details">More...</a></p>
-
 <p><code>#include &lt;<a class="el" href="databases_8hpp_source.html">databases.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -102,14 +99,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a51b6553e5466c57c9ff0ae9655e35639"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a multidatabase from a serialized multidatabase.  <a href="classlost_1_1_multi_database.html#a51b6553e5466c57c9ff0ae9655e35639">More...</a><br /></td></tr>
 <tr class="separator:a51b6553e5466c57c9ff0ae9655e35639"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad013d7640b19cb78268c9be5f6c64544"><td class="memItemLeft" align="right" valign="top">const unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544">SubDatabasePointer</a> (int32_t magicValue) const</td></tr>
-<tr class="memdesc:ad013d7640b19cb78268c9be5f6c64544"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a> memory layout:  <a href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544">More...</a><br /></td></tr>
+<tr class="memdesc:ad013d7640b19cb78268c9be5f6c64544"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classlost_1_1_multi_database.html">MultiDatabase</a> memory layout:  <a href="classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544">More...</a><br /></td></tr>
 <tr class="separator:ad013d7640b19cb78268c9be5f6c64544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database. </p>
-<p>Multi-databases are essentially a map from "magic values" to database buffers. </p>
-
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00099">99</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00104">104</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a51b6553e5466c57c9ff0ae9655e35639"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a51b6553e5466c57c9ff0ae9655e35639">&#9670;&nbsp;</a></span>MultiDatabase()</h2>
@@ -137,7 +132,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Create a multidatabase from a serialized multidatabase. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00102">102</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00107">107</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>
@@ -158,8 +153,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="classlost_1_1_multi_database.html" title="A database that contains multiple databases This is almost always the database that is actually passe...">MultiDatabase</a> memory layout: </p>
-<p>| size | name | description | |---&mdash;+-------------&mdash;+------------------------------------------&mdash;| | 4 | magicValue | unique database identifier | | 4 | databaseLength | length in bytes (32-bit unsigned) | | n | database | the entire database. 8-byte aligned | | ... | ... | More databases (each has value, length, db) | | 4 | caboose | 4 null bytes indicate the end |</p>
+<p><a class="el" href="classlost_1_1_multi_database.html">MultiDatabase</a> memory layout: </p>
+<p>| size | name | description | |---&mdash;+-------------&mdash;+------------------------------------------&mdash;| | 4 | magicValue | unique database identifier | | 4 | flags | [X, X, X, isDouble?] | | 4 | databaseLength | length in bytes (32-bit unsigned) | | n | database | the entire database. 8-byte aligned | | ... | ... | More databases (each has value, length, db) | | 4 | caboose | 4 null bytes indicate the end |</p>
 <p>return a pointer to the start of the database type indicated by the magic value, if such a sub-database is present in the database </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">magicValue</td><td></td></tr>
@@ -168,7 +163,16 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns a pointer to the start of the database type indicated by the magic value, null if not found </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00311">311</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00316">316</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1_multi_database_ad013d7640b19cb78268c9be5f6c64544_cgraph.png" border="0" usemap="#aclasslost_1_1_multi_database_ad013d7640b19cb78268c9be5f6c64544_cgraph" alt=""/></div>
+<map name="aclasslost_1_1_multi_database_ad013d7640b19cb78268c9be5f6c64544_cgraph" id="aclasslost_1_1_multi_database_ad013d7640b19cb78268c9be5f6c64544_cgraph">
+<area shape="rect" title="MultiDatabase memory layout:" alt="" coords="5,5,168,47"/>
+<area shape="rect" href="namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24" title=" " alt="" coords="216,13,331,39"/>
+</map>
+</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -194,7 +198,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_multi_database.html">MultiDatabase</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

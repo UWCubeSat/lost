@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['staridalgorithmfactory_625',['StarIdAlgorithmFactory',['../namespacelost.html#a106f3da2d75b2af268f5e9abfc7ea681',1,'lost']]],
-  ['staridentifiers_626',['StarIdentifiers',['../namespacelost.html#a288b872531de219e9cfc87beb8d8bada',1,'lost']]],
-  ['stars_627',['Stars',['../namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5',1,'lost']]]
+  ['pipelinecomparator_662',['PipelineComparator',['../namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2',1,'lost']]],
+  ['pipelineinputfactory_663',['PipelineInputFactory',['../namespacelost.html#a5552f98af725481dee70b9b39e12e064',1,'lost']]],
+  ['pipelineinputlist_664',['PipelineInputList',['../namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84',1,'lost']]]
 ];

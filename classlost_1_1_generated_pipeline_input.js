@@ -1,6 +1,6 @@
 var classlost_1_1_generated_pipeline_input =
 [
-    [ "GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686", null ],
+    [ "GeneratedPipelineInput", "classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098", null ],
     [ "ExpectedStarIds", "classlost_1_1_generated_pipeline_input.html#a9b4e6a0cea348568381061b6ebd1f926", null ],
     [ "ExpectedStars", "classlost_1_1_generated_pipeline_input.html#a5bb4d8d26f136ff61250e6ab70437f15", null ],
     [ "GetCatalog", "classlost_1_1_generated_pipeline_input.html#a6aa7ffe5170d43fe925fdf668a54cc9f", null ],

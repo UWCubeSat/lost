@@ -1,7 +1,7 @@
 var attitude_estimators_8cpp =
 [
     [ "EPSILON", "attitude-estimators_8cpp.html#a002b2f4894492820fe708b1b7e7c5e70", null ],
-    [ "QuestCharPoly", "attitude-estimators_8cpp.html#ab1a9beb3699da6901d13dcebcb0e987b", null ],
-    [ "QuestCharPolyPrime", "attitude-estimators_8cpp.html#aecb22b335d98f9abefb94e377afa3bdb", null ],
-    [ "QuestEigenvalueEstimator", "attitude-estimators_8cpp.html#aa3cff2017989bf09b8b4111c1a0bfdf5", null ]
+    [ "QuestCharPoly", "attitude-estimators_8cpp.html#a94bdddcfa030dfce3201661f42cc7d01", null ],
+    [ "QuestCharPolyPrime", "attitude-estimators_8cpp.html#ae543ffda8031beff6f8015261f1c495c", null ],
+    [ "QuestEigenvalueEstimator", "attitude-estimators_8cpp.html#a4c5445cb888227769955b2cdda5ee93a", null ]
 ];

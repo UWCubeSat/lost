@@ -116,9 +116,9 @@ Collaboration diagram for lost::GeneratedPipelineInput:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1b473186f7c725b5e59dcfe95be1f686"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686">GeneratedPipelineInput</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <a class="el" href="classlost_1_1_attitude.html">Attitude</a>, <a class="el" href="classlost_1_1_camera.html">Camera</a>, std::default_random_engine *, bool centroidsOnly, float observedReferenceBrightness, float starSpreadStdDev, float sensitivity, float darkCurrent, float readNoiseStdDev, <a class="el" href="classlost_1_1_attitude.html">Attitude</a> motionBlurDirection, float exposureTime, float readoutTime, bool shotNoise, int oversampling, int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude, int cutoffMag, float perturbationStddev)</td></tr>
-<tr class="memdesc:a1b473186f7c725b5e59dcfe95be1f686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a generated pipeline input.  <a href="classlost_1_1_generated_pipeline_input.html#a1b473186f7c725b5e59dcfe95be1f686">More...</a><br /></td></tr>
-<tr class="separator:a1b473186f7c725b5e59dcfe95be1f686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e48b3e9c25cfd4fb36cd600f05f5098"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098">GeneratedPipelineInput</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <a class="el" href="classlost_1_1_attitude.html">Attitude</a>, <a class="el" href="classlost_1_1_camera.html">Camera</a>, std::default_random_engine *, bool centroidsOnly, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> observedReferenceBrightness, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> starSpreadStdDev, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> sensitivity, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> darkCurrent, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> readNoiseStdDev, <a class="el" href="classlost_1_1_attitude.html">Attitude</a> motionBlurDirection, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> exposureTime, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> readoutTime, bool shotNoise, int oversampling, int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude, int cutoffMag, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> perturbationStddev)</td></tr>
+<tr class="memdesc:a7e48b3e9c25cfd4fb36cd600f05f5098"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a generated pipeline input.  <a href="classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098">More...</a><br /></td></tr>
+<tr class="separator:a7e48b3e9c25cfd4fb36cd600f05f5098"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cbfa2300553ec4942d124e456d0ed4a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classlost_1_1_image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a0cbfa2300553ec4942d124e456d0ed4a">InputImage</a> () const override</td></tr>
 <tr class="separator:a0cbfa2300553ec4942d124e456d0ed4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46251e73597d285c1988fffd243185e0"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_pipeline_input.html#a46251e73597d285c1988fffd243185e0">InputStars</a> () const override</td></tr>
@@ -152,10 +152,10 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>A pipeline input which is generated (fake image). </p>
 <p>Uses a pretty decent image generation algorithm to create a fake image as the basis for a pipeline input. Since we know everything about the generated image, all of the input and expected methods are available. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00124">124</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00125">125</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1b473186f7c725b5e59dcfe95be1f686"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b473186f7c725b5e59dcfe95be1f686">&#9670;&nbsp;</a></span>GeneratedPipelineInput()</h2>
+<a id="a7e48b3e9c25cfd4fb36cd600f05f5098"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e48b3e9c25cfd4fb36cd600f05f5098">&#9670;&nbsp;</a></span>GeneratedPipelineInput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -193,31 +193,31 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>zeroMagTotalPhotons</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>starSpreadStdDev</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>saturationPhotons</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>darkCurrent</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>readNoiseStdDev</em>, </td>
         </tr>
         <tr>
@@ -229,13 +229,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>exposureTime</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>readoutTime</em>, </td>
         </tr>
         <tr>
@@ -277,7 +277,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
           <td class="paramname"><em>perturbationStddev</em>&#160;</td>
         </tr>
         <tr>
@@ -291,29 +291,29 @@ Public Member Functions</h2></td></tr>
 <p>Create a generated pipeline input. </p>
 <p>The parameters correspond directly to command line options. See the command line documentation for more details. This constructor performs the actual image generation. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00477">477</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00485">485</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classlost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph.png" border="0" usemap="#aclasslost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph" alt=""/></div>
-<map name="aclasslost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph" id="aclasslost_1_1_generated_pipeline_input_a1b473186f7c725b5e59dcfe95be1f686_cgraph">
+<div class="center"><img src="classlost_1_1_generated_pipeline_input_a7e48b3e9c25cfd4fb36cd600f05f5098_cgraph.png" border="0" usemap="#aclasslost_1_1_generated_pipeline_input_a7e48b3e9c25cfd4fb36cd600f05f5098_cgraph" alt=""/></div>
+<map name="aclasslost_1_1_generated_pipeline_input_a7e48b3e9c25cfd4fb36cd600f05f5098_cgraph" id="aclasslost_1_1_generated_pipeline_input_a7e48b3e9c25cfd4fb36cd600f05f5098_cgraph">
 <area shape="rect" title="Create a generated pipeline input." alt="" coords="5,251,212,293"/>
-<area shape="rect" href="classlost_1_1_quaternion.html#a819b0f409e60886138c0fae47c21e250" title="How many radians the rotation represented by this quaternion has." alt="" coords="286,56,457,83"/>
+<area shape="rect" href="classlost_1_1_quaternion.html#a4122fd09cf9e8d1ecf408873881da55e" title="How many radians the rotation represented by this quaternion has." alt="" coords="286,56,457,83"/>
 <area shape="rect" href="classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="267,107,476,133"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="750,208,927,235"/>
 <area shape="rect" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="287,208,456,235"/>
-<area shape="rect" href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320" title="returns some relative brightness measure, which is proportional to the total number of photons receiv..." alt="" coords="289,259,454,285"/>
+<area shape="rect" href="namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7" title="returns some relative brightness measure, which is proportional to the total number of photons receiv..." alt="" coords="289,259,454,285"/>
 <area shape="rect" href="classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf" title="Convert a vector from the reference frame to the body frame." alt="" coords="537,259,695,285"/>
 <area shape="rect" href="classlost_1_1_camera.html#a2282f819be792d84f3168032a9cf457b" title="Converts from a 3D point in space to a 2D point on the camera sensor." alt="" coords="260,360,483,387"/>
 <area shape="rect" href="classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title="Width of the sensor in pixels." alt="" coords="276,411,467,437"/>
 <area shape="rect" href="classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title="Height of the sensor in pixels." alt="" coords="276,461,467,488"/>
 <area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="531,107,701,133"/>
-<area shape="rect" href="namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="779,5,898,32"/>
+<area shape="rect" href="namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="779,5,898,32"/>
 <area shape="rect" href="classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title="Get the column at index j." alt="" coords="766,56,911,83"/>
 <area shape="rect" href="classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="749,107,928,133"/>
 <area shape="rect" href="classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="759,157,919,184"/>
-<area shape="rect" href="classlost_1_1_mat3.html#a672afcf04908553ca8fedd27b1004002" title="Access the i,j&#45;th element of the matrix." alt="" coords="1021,56,1131,83"/>
-<area shape="rect" href="classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="995,157,1157,184"/>
+<area shape="rect" href="classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="1021,56,1131,83"/>
+<area shape="rect" href="classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="995,157,1157,184"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="976,208,1176,235"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="1224,233,1431,260"/>
 </map>
@@ -350,7 +350,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a9cdd08fecc4186dd3b9263c1a7de2047">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00143">143</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00144">144</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -379,7 +379,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a3d0edc6bfda801512627d6bb1bc39c4a">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00140">140</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00141">141</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -410,7 +410,7 @@ Here is the call graph for this function:</div>
 
 <p>Implements <a class="el" href="classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00145">145</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00146">146</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -441,7 +441,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a19bb4239a2e3b6622aa168959be70d98">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00144">144</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00145">145</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -470,7 +470,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00141">141</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00142">142</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -499,7 +499,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00138">138</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00139">139</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -530,7 +530,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00142">142</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00143">143</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -559,7 +559,7 @@ Here is the call graph for this function:</div>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486">lost::PipelineInput</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00139">139</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00140">140</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -573,7 +573,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelost.html">lost</a></li><li class="navelem"><a class="el" href="classlost_1_1_generated_pipeline_input.html">GeneratedPipelineInput</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

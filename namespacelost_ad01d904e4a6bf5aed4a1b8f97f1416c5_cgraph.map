@@ -3,9 +3,9 @@
 <area shape="rect" id="node2" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,70,413,111"/>
 <area shape="rect" id="node9" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,136,408,163"/>
 <area shape="rect" id="node3" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="500,157,637,184"/>
-<area shape="rect" id="node5" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="941,107,1060,133"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a9eaa81a9fc5f13a447e4209b5b230308" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,107,676,133"/>
-<area shape="rect" id="node8" href="$namespacelost.html#a7057fa740aebe1cbd43f3bafafff4ac1" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="469,5,669,32"/>
+<area shape="rect" id="node5" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="941,107,1060,133"/>
+<area shape="rect" id="node6" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,107,676,133"/>
+<area shape="rect" id="node8" href="$namespacelost.html#a562a86693dfa8ef7024526934fbfa8bb" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="469,5,669,32"/>
 <area shape="rect" id="node4" href="$namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="753,208,865,235"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a5e7d67bec758d4922935c84b8a0f8526" title=" " alt="" coords="724,157,893,184"/>
+<area shape="rect" id="node7" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="724,157,893,184"/>
 </map>

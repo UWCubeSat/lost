@@ -1,0 +1,7 @@
+<map id="lost::RadToDeg" name="lost::RadToDeg">
+<area shape="rect" id="node1" title=" " alt="" coords="653,31,772,57"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a0b4575c6e2f6eb0bc7faebf429fb9b7d" title=" " alt="" coords="468,5,605,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="473,56,601,83"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,49,420,90"/>
+<area shape="rect" id="node5" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,56,189,83"/>
+</map>

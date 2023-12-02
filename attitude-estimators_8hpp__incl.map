@@ -1,16 +1,19 @@
 <map id="src/attitude&#45;estimators.hpp" name="src/attitude&#45;estimators.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="209,5,407,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="167,5,366,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,195,107"/>
-<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="319,304,454,331"/>
-<area shape="rect" id="node10" href="$camera_8hpp.html" title=" " alt="" coords="303,155,401,181"/>
-<area shape="rect" id="node11" href="$star-id_8hpp.html" title=" " alt="" coords="219,80,311,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="412,379,489,405"/>
-<area shape="rect" id="node5" title=" " alt="" coords="102,453,165,480"/>
-<area shape="rect" id="node6" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="229,379,387,405"/>
-<area shape="rect" id="node7" title=" " alt="" coords="189,453,259,480"/>
-<area shape="rect" id="node8" title=" " alt="" coords="283,453,343,480"/>
-<area shape="rect" id="node9" title=" " alt="" coords="368,453,453,480"/>
-<area shape="rect" id="node12" href="$centroiders_8hpp.html" title=" " alt="" coords="105,155,228,181"/>
-<area shape="rect" id="node14" href="$star-utils_8hpp.html" title=" " alt="" coords="231,229,339,256"/>
-<area shape="rect" id="node13" title=" " alt="" coords="127,229,207,256"/>
+<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="214,304,349,331"/>
+<area shape="rect" id="node13" href="$camera_8hpp.html" title=" " alt="" coords="269,155,368,181"/>
+<area shape="rect" id="node14" href="$star-id_8hpp.html" title=" " alt="" coords="359,80,451,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="49,379,127,405"/>
+<area shape="rect" id="node5" title=" " alt="" coords="457,453,519,480"/>
+<area shape="rect" id="node6" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="202,379,361,405"/>
+<area shape="rect" id="node10" href="$decimal_8hpp.html" title=" " alt="" coords="41,453,143,480"/>
+<area shape="rect" id="node7" title=" " alt="" coords="167,453,238,480"/>
+<area shape="rect" id="node8" title=" " alt="" coords="262,453,322,480"/>
+<area shape="rect" id="node9" title=" " alt="" coords="347,453,432,480"/>
+<area shape="rect" id="node11" title=" " alt="" coords="18,528,81,555"/>
+<area shape="rect" id="node12" title=" " alt="" coords="105,528,164,555"/>
+<area shape="rect" id="node15" href="$centroiders_8hpp.html" title=" " alt="" coords="443,155,565,181"/>
+<area shape="rect" id="node17" href="$star-utils_8hpp.html" title=" " alt="" coords="351,229,459,256"/>
+<area shape="rect" id="node16" title=" " alt="" coords="537,229,617,256"/>
 </map>

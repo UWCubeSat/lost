@@ -1,12 +1,15 @@
 <map id="src/centroiders.hpp" name="src/centroiders.hpp">
 <area shape="rect" id="node1" title=" " alt="" coords="49,5,196,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,85,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="167,304,230,331"/>
-<area shape="rect" id="node4" href="$star-utils_8hpp.html" title=" " alt="" coords="198,80,306,107"/>
-<area shape="rect" id="node5" href="$attitude-utils_8hpp.html" title=" " alt="" coords="222,155,357,181"/>
-<area shape="rect" id="node7" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="363,229,522,256"/>
-<area shape="rect" id="node6" title=" " alt="" coords="261,229,339,256"/>
-<area shape="rect" id="node8" title=" " alt="" coords="318,304,389,331"/>
-<area shape="rect" id="node9" title=" " alt="" coords="413,304,473,331"/>
-<area shape="rect" id="node10" title=" " alt="" coords="497,304,583,331"/>
+<area shape="rect" id="node3" title=" " alt="" coords="133,304,195,331"/>
+<area shape="rect" id="node4" href="$star-utils_8hpp.html" title=" " alt="" coords="169,80,277,107"/>
+<area shape="rect" id="node5" href="$attitude-utils_8hpp.html" title=" " alt="" coords="274,155,409,181"/>
+<area shape="rect" id="node7" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="262,229,421,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="445,229,523,256"/>
+<area shape="rect" id="node11" href="$decimal_8hpp.html" title=" " alt="" coords="509,304,611,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="219,304,290,331"/>
+<area shape="rect" id="node9" title=" " alt="" coords="314,304,374,331"/>
+<area shape="rect" id="node10" title=" " alt="" coords="399,304,484,331"/>
+<area shape="rect" id="node12" title=" " alt="" coords="486,379,549,405"/>
+<area shape="rect" id="node13" title=" " alt="" coords="573,379,632,405"/>
 </map>

@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['quaternion_494',['Quaternion',['../classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873',1,'lost::Quaternion::Quaternion()=default'],['../classlost_1_1_quaternion.html#aaf73dff6f30d740ded0ea2be0449b3b2',1,'lost::Quaternion::Quaternion(const Vec3 &amp;)'],['../classlost_1_1_quaternion.html#adcebe15481e86e3908caff22865b6742',1,'lost::Quaternion::Quaternion(const Vec3 &amp;, float)'],['../classlost_1_1_quaternion.html#aef18b43911c9bc9ca7bb1590efec9bff',1,'lost::Quaternion::Quaternion(float real, float i, float j, float k)']]],
-  ['quaterniontodcm_495',['QuaternionToDCM',['../namespacelost.html#a08209cdf2c6b9415866d576343c35bf2',1,'lost']]],
-  ['queryliberal_496',['QueryLiberal',['../classlost_1_1_k_vector_index.html#a36e6030ff35142ccbe2010fd0130a02c',1,'lost::KVectorIndex']]],
-  ['questcharpoly_497',['QuestCharPoly',['../namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b',1,'lost']]],
-  ['questcharpolyprime_498',['QuestCharPolyPrime',['../namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb',1,'lost']]],
-  ['questeigenvalueestimator_499',['QuestEigenvalueEstimator',['../namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5',1,'lost']]]
+  ['quaternion_533',['Quaternion',['../classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873',1,'lost::Quaternion::Quaternion()=default'],['../classlost_1_1_quaternion.html#aaf73dff6f30d740ded0ea2be0449b3b2',1,'lost::Quaternion::Quaternion(const Vec3 &amp;)'],['../classlost_1_1_quaternion.html#a017e02bf5ca5630d4469755e3fed0b54',1,'lost::Quaternion::Quaternion(const Vec3 &amp;, decimal)'],['../classlost_1_1_quaternion.html#a6128486aac9faa766c2605f54dfc3647',1,'lost::Quaternion::Quaternion(decimal real, decimal i, decimal j, decimal k)']]],
+  ['quaterniontodcm_534',['QuaternionToDCM',['../namespacelost.html#a08209cdf2c6b9415866d576343c35bf2',1,'lost']]],
+  ['queryliberal_535',['QueryLiberal',['../classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05',1,'lost::KVectorIndex']]],
+  ['questcharpoly_536',['QuestCharPoly',['../namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01',1,'lost']]],
+  ['questcharpolyprime_537',['QuestCharPolyPrime',['../namespacelost.html#ae543ffda8031beff6f8015261f1c495c',1,'lost']]],
+  ['questeigenvalueestimator_538',['QuestEigenvalueEstimator',['../namespacelost.html#a4c5445cb888227769955b2cdda5ee93a',1,'lost']]]
 ];

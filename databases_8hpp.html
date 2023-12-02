@@ -86,6 +86,7 @@ $(document).ready(function(){initNavTree('databases_8hpp.html',''); initResizabl
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -103,17 +104,20 @@ Include dependency graph for databases.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="databases_8hpp__incl.png" border="0" usemap="#asrc_2databases_8hpp" alt=""/></div>
 <map name="asrc_2databases_8hpp" id="asrc_2databases_8hpp">
-<area shape="rect" title=" " alt="" coords="155,5,295,32"/>
-<area shape="rect" title=" " alt="" coords="5,80,76,107"/>
-<area shape="rect" title=" " alt="" coords="100,80,187,107"/>
-<area shape="rect" title=" " alt="" coords="269,304,332,331"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="297,80,405,107"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="465,229,624,256"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="317,155,452,181"/>
-<area shape="rect" title=" " alt="" coords="363,229,441,256"/>
-<area shape="rect" title=" " alt="" coords="420,304,491,331"/>
-<area shape="rect" title=" " alt="" coords="515,304,575,331"/>
-<area shape="rect" title=" " alt="" coords="599,304,685,331"/>
+<area shape="rect" title=" " alt="" coords="177,5,317,32"/>
+<area shape="rect" title=" " alt="" coords="28,80,99,107"/>
+<area shape="rect" title=" " alt="" coords="123,80,209,107"/>
+<area shape="rect" title=" " alt="" coords="492,304,555,331"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="317,80,425,107"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="149,229,308,256"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="336,155,471,181"/>
+<area shape="rect" title=" " alt="" coords="383,229,461,256"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="295,304,397,331"/>
+<area shape="rect" title=" " alt="" coords="200,304,271,331"/>
+<area shape="rect" title=" " alt="" coords="5,304,65,331"/>
+<area shape="rect" title=" " alt="" coords="90,304,175,331"/>
+<area shape="rect" title=" " alt="" coords="272,379,335,405"/>
+<area shape="rect" title=" " alt="" coords="359,379,418,405"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -142,7 +146,6 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database storing distances between pairs of stars.  <a href="classlost_1_1_pair_distance_k_vector_database.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database.html">lost::MultiDatabase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.  <a href="classlost_1_1_multi_database.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_entry.html">lost::MultiDatabaseEntry</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,6 +156,12 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacelost"><td class="mdescLeft">&#160;</td><td class="mdescRight">LOST starting point. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:af8eb463b9b79255956d34ca51d58754f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="databases_8hpp.html#af8eb463b9b79255956d34ca51d58754f">MULTI_DB_FLOAT_FLAG</a>&#160;&#160;&#160;0x0001</td></tr>
+<tr class="memdesc:af8eb463b9b79255956d34ca51d58754f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.  <a href="databases_8hpp.html#af8eb463b9b79255956d34ca51d58754f">More...</a><br /></td></tr>
+<tr class="separator:af8eb463b9b79255956d34ca51d58754f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:aaa2e81369410c8a787ec643333d1a7a8"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; MultiDatabaseEntry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">lost::MultiDatabaseDescriptor</a></td></tr>
@@ -160,24 +169,46 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aefdad61aa2dbf38415d0345c1ff2916d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d">lost::SerializePairDistanceKVector</a> (SerializeContext *ser, const Catalog &amp;catalog, float minDistance, float maxDistance, long numBins)</td></tr>
-<tr class="memdesc:aefdad61aa2dbf38415d0345c1ff2916d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d">More...</a><br /></td></tr>
-<tr class="separator:aefdad61aa2dbf38415d0345c1ff2916d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56c54ae520919bdd6d87f291e02883d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a56c54ae520919bdd6d87f291e02883d3">lost::SerializeMultiDatabase</a> (SerializeContext *ser, const MultiDatabaseDescriptor &amp;dbs)</td></tr>
-<tr class="separator:a56c54ae520919bdd6d87f291e02883d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a6ccd2f576c452a68db8152dc2edb24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24">lost::isFlagSet</a> (uint32_t dbFlags, uint32_t flag)</td></tr>
+<tr class="separator:a9a6ccd2f576c452a68db8152dc2edb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98d1507ab3e305ab47846133d82e4467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">lost::SerializePairDistanceKVector</a> (SerializeContext *ser, const Catalog &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance, long numBins)</td></tr>
+<tr class="memdesc:a98d1507ab3e305ab47846133d82e4467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <a href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">More...</a><br /></td></tr>
+<tr class="separator:a98d1507ab3e305ab47846133d82e4467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad14088462298249d31b2c396c3be86f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad14088462298249d31b2c396c3be86f9">lost::SerializeMultiDatabase</a> (SerializeContext *ser, const MultiDatabaseDescriptor &amp;dbs, uint32_t flags)</td></tr>
+<tr class="separator:ad14088462298249d31b2c396c3be86f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a280b11c878f729f878b2968037ccbc3d"><td class="memItemLeft" align="right" valign="top">const int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a280b11c878f729f878b2968037ccbc3d">lost::kCatalogMagicValue</a> = 0xF9A283BC</td></tr>
 <tr class="separator:a280b11c878f729f878b2968037ccbc3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="af8eb463b9b79255956d34ca51d58754f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8eb463b9b79255956d34ca51d58754f">&#9670;&nbsp;</a></span>MULTI_DB_FLOAT_FLAG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MULTI_DB_FLOAT_FLAG&#160;&#160;&#160;0x0001</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database. </p>
+<p>Multi-databases are essentially a map from "magic values" to database buffers. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00102">102</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="databases_8hpp.html">databases.hpp</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

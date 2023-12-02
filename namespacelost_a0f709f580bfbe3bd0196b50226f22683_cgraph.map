@@ -1,7 +1,0 @@
-<map id="lost::FindUnidentifiedCentroidsInRange" name="lost::FindUnidentifiedCentroidsInRange">
-<area shape="rect" id="node1" title="Return all the unidentified centroids within the requested distance bounds from star" alt="" coords="5,23,228,65"/>
-<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,5,499,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="307,56,467,83"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,5,716,32"/>
-<area shape="rect" id="node5" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="550,56,713,83"/>
-</map>

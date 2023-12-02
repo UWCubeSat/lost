@@ -1,0 +1,6 @@
+<map id="lost::PairDistanceKVectorDatabase::StarDistances" name="lost::PairDistanceKVectorDatabase::StarDistances">
+<area shape="rect" id="node1" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,27,191,69"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="272,5,391,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pair_distance_k_vector_database.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="239,57,424,98"/>
+<area shape="rect" id="node4" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title="The number of data points in the data referred to by the kvector." alt="" coords="472,57,612,98"/>
+</map>

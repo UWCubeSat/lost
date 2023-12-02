@@ -1,13 +1,16 @@
 <map id="src/camera.cpp" name="src/camera.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="139,5,261,32"/>
-<area shape="rect" id="node2" href="$camera_8hpp.html" title=" " alt="" coords="28,80,127,107"/>
-<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="53,155,187,181"/>
-<area shape="rect" id="node10" title=" " alt="" coords="202,80,270,107"/>
-<area shape="rect" id="node11" title=" " alt="" coords="295,80,369,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,229,83,256"/>
-<area shape="rect" id="node5" title=" " alt="" coords="89,304,151,331"/>
-<area shape="rect" id="node6" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="158,229,317,256"/>
-<area shape="rect" id="node7" title=" " alt="" coords="175,304,246,331"/>
-<area shape="rect" id="node8" title=" " alt="" coords="270,304,330,331"/>
-<area shape="rect" id="node9" title=" " alt="" coords="355,304,440,331"/>
+<area shape="rect" id="node1" title=" " alt="" coords="348,5,469,32"/>
+<area shape="rect" id="node2" href="$camera_8hpp.html" title=" " alt="" coords="199,80,298,107"/>
+<area shape="rect" id="node3" href="$attitude-utils_8hpp.html" title=" " alt="" coords="177,155,312,181"/>
+<area shape="rect" id="node10" href="$decimal_8hpp.html" title=" " alt="" coords="381,304,484,331"/>
+<area shape="rect" id="node13" title=" " alt="" coords="447,80,515,107"/>
+<area shape="rect" id="node14" title=" " alt="" coords="539,80,614,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="9,229,86,256"/>
+<area shape="rect" id="node5" title=" " alt="" coords="5,304,68,331"/>
+<area shape="rect" id="node6" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="161,229,320,256"/>
+<area shape="rect" id="node7" title=" " alt="" coords="92,304,163,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="187,304,247,331"/>
+<area shape="rect" id="node9" title=" " alt="" coords="271,304,357,331"/>
+<area shape="rect" id="node11" title=" " alt="" coords="359,379,421,405"/>
+<area shape="rect" id="node12" title=" " alt="" coords="446,379,505,405"/>
 </map>

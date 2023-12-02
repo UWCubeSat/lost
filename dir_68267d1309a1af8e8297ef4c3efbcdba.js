@@ -21,6 +21,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "database-options.hpp", "database-options_8hpp.html", null ],
     [ "databases.cpp", "databases_8cpp.html", "databases_8cpp" ],
     [ "databases.hpp", "databases_8hpp.html", "databases_8hpp" ],
+    [ "decimal.hpp", "decimal_8hpp.html", "decimal_8hpp" ],
     [ "io.cpp", "io_8cpp.html", "io_8cpp" ],
     [ "io.hpp", "io_8hpp.html", "io_8hpp" ],
     [ "main.cpp", "main_8cpp.html", "main_8cpp" ],

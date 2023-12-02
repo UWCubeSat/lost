@@ -100,14 +100,17 @@ Include dependency graph for star-utils.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="star-utils_8hpp__incl.png" border="0" usemap="#asrc_2star-utils_8hpp" alt=""/></div>
 <map name="asrc_2star-utils_8hpp" id="asrc_2star-utils_8hpp">
-<area shape="rect" title=" " alt="" coords="47,5,178,32"/>
-<area shape="rect" title=" " alt="" coords="5,229,68,256"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="45,80,180,107"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="176,155,335,181"/>
-<area shape="rect" title=" " alt="" coords="74,155,151,181"/>
-<area shape="rect" title=" " alt="" coords="131,229,201,256"/>
-<area shape="rect" title=" " alt="" coords="225,229,285,256"/>
-<area shape="rect" title=" " alt="" coords="310,229,395,256"/>
+<area shape="rect" title=" " alt="" coords="318,5,449,32"/>
+<area shape="rect" title=" " alt="" coords="467,229,529,256"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="316,80,451,107"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="149,155,308,181"/>
+<area shape="rect" title=" " alt="" coords="383,155,461,181"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="295,229,397,256"/>
+<area shape="rect" title=" " alt="" coords="200,229,271,256"/>
+<area shape="rect" title=" " alt="" coords="5,229,65,256"/>
+<area shape="rect" title=" " alt="" coords="90,229,175,256"/>
+<area shape="rect" title=" " alt="" coords="272,304,335,331"/>
+<area shape="rect" title=" " alt="" coords="359,304,418,331"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -172,12 +175,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ac722314f3b14385ade7e5f05699ef006"><td class="memItemLeft" align="right" valign="top">Catalog::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">lost::FindNamedStar</a> (const Catalog &amp;catalog, int name)</td></tr>
 <tr class="memdesc:ac722314f3b14385ade7e5f05699ef006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the star with the given name, or NULL if not found.  <a href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">More...</a><br /></td></tr>
 <tr class="separator:ac722314f3b14385ade7e5f05699ef006"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">lost::MagToBrightness</a> (int magnitude)</td></tr>
-<tr class="memdesc:a90ef8f69cd7b77ba05701f833fdaa320"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns some relative brightness measure, which is proportional to the total number of photons received from a star.  <a href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">More...</a><br /></td></tr>
-<tr class="separator:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af37c1bfa9d31aeb6fcd705fffd13497c"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">lost::NarrowCatalog</a> (const Catalog &amp;, int maxMagnitude, int maxStars, float minSeparation)</td></tr>
-<tr class="memdesc:af37c1bfa9d31aeb6fcd705fffd13497c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove unwanted stars from an unfiltered catalog.  <a href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">More...</a><br /></td></tr>
-<tr class="separator:af37c1bfa9d31aeb6fcd705fffd13497c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a433010bbab5f3763241a7aa3f87fbfc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7">lost::MagToBrightness</a> (int magnitude)</td></tr>
+<tr class="memdesc:a433010bbab5f3763241a7aa3f87fbfc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns some relative brightness measure, which is proportional to the total number of photons received from a star.  <a href="namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7">More...</a><br /></td></tr>
+<tr class="separator:a433010bbab5f3763241a7aa3f87fbfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97bab24607652ec26c12d9a3d3aa52b2"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2">lost::NarrowCatalog</a> (const Catalog &amp;, int maxMagnitude, int maxStars, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minSeparation)</td></tr>
+<tr class="memdesc:a97bab24607652ec26c12d9a3d3aa52b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove unwanted stars from an unfiltered catalog.  <a href="namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2">More...</a><br /></td></tr>
+<tr class="separator:a97bab24607652ec26c12d9a3d3aa52b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -185,7 +188,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="star-utils_8hpp.html">star-utils.hpp</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -1,5 +1,0 @@
-<map id="lost::IdentifyThirdStar" name="lost::IdentifyThirdStar">
-<area shape="rect" id="node1" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="544,13,707,39"/>
-<area shape="rect" id="node2" href="$namespacelost.html#adb9048b631cf1af6c33af2b0dca53c41" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,47"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,39"/>
-</map>

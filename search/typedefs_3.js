@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['pipelinecomparator_622',['PipelineComparator',['../namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2',1,'lost']]],
-  ['pipelineinputfactory_623',['PipelineInputFactory',['../namespacelost.html#a5552f98af725481dee70b9b39e12e064',1,'lost']]],
-  ['pipelineinputlist_624',['PipelineInputList',['../namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84',1,'lost']]]
+  ['multidatabasedescriptor_661',['MultiDatabaseDescriptor',['../namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8',1,'lost']]]
 ];

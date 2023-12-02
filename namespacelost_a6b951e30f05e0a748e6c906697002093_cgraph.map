@@ -1,6 +1,0 @@
-<map id="lost::Angle" name="lost::Angle">
-<area shape="rect" id="node1" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="5,31,96,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a07ccf05a4c7ac13fbee5edb5beb309bb" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="165,5,283,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="144,56,304,83"/>
-<area shape="rect" id="node4" href="$classlost_1_1_vec3.html#a0d3ab5c494dfd3538f1be078c3e3b19e" title=" " alt="" coords="352,56,515,83"/>
-</map>

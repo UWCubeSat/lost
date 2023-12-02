@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['spatial_599',['spatial',['../classlost_1_1_catalog_star.html#abd0b2df829476183297af1ac072c0802',1,'lost::CatalogStar']]],
-  ['star_600',['star',['../classlost_1_1_i_r_unidentified_centroid.html#a60b94d7e80d7e60c5a2d94d746f0362b',1,'lost::IRUnidentifiedCentroid']]],
-  ['starids_601',['starIds',['../structlost_1_1_pipeline_output.html#af5fb349aaee63e4e932069bc01743042',1,'lost::PipelineOutput']]],
-  ['staridtimens_602',['starIdTimeNs',['../structlost_1_1_pipeline_output.html#a7b5b37d2654b51a1c859866165481ce7',1,'lost::PipelineOutput']]],
-  ['starindex_603',['starIndex',['../classlost_1_1_star_identifier.html#afb04c9b116a8a67e31083d50e28cdce2',1,'lost::StarIdentifier']]],
-  ['stars_604',['stars',['../structlost_1_1_pipeline_output.html#a7743f8496f64299c8af36ac0ec080699',1,'lost::PipelineOutput']]],
-  ['swapfloatendianness_605',['swapFloatEndianness',['../classlost_1_1_serialize_context.html#ae3fb3b0e7864f28aed9403532f676d24',1,'lost::SerializeContext']]],
-  ['swapintegerendianness_606',['swapIntegerEndianness',['../classlost_1_1_serialize_context.html#a93856379ded65d82189d464c8a384596',1,'lost::SerializeContext']]]
+  ['ra_633',['ra',['../classlost_1_1_euler_angles.html#ae52017b1b9cc1063704bcc2b25500783',1,'lost::EulerAngles']]],
+  ['radiusx_634',['radiusX',['../classlost_1_1_star.html#a9cb9dd9f12c0e538eb55c0775505158a',1,'lost::Star']]],
+  ['radiusy_635',['radiusY',['../classlost_1_1_star.html#a1773623d5ae06132be712c11eaff2844',1,'lost::Star']]],
+  ['real_636',['real',['../classlost_1_1_quaternion.html#aba059c6fa2c2f4df17eecf36d12050d7',1,'lost::Quaternion']]],
+  ['roll_637',['roll',['../classlost_1_1_euler_angles.html#a7965e0a2c260109c23c85f120b9db75f',1,'lost::EulerAngles']]]
 ];

@@ -2,5 +2,5 @@
 <area shape="rect" id="node1" title="The number of data points in the data referred to by the kvector." alt="" coords="572,39,712,80"/>
 <area shape="rect" id="node2" href="$classlost_1_1_pair_distance_k_vector_database.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="289,5,474,47"/>
 <area shape="rect" id="node4" href="$classlost_1_1_pair_distance_k_vector_database.html#a63c9e16675f56b66cc3740fb96c55dfc" title="Create the database from a serialized buffer." alt="" coords="239,71,524,112"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pair_distance_k_vector_database.html#a203c5b10c6490adaf102d016a160b3f9" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,5,191,47"/>
+<area shape="rect" id="node3" href="$classlost_1_1_pair_distance_k_vector_database.html#a2df6cf629cb564bc9ad47f724cbf10b0" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,5,191,47"/>
 </map>

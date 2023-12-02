@@ -1,0 +1,11 @@
+<map id="lost::DegToRad" name="lost::DegToRad">
+<area shape="rect" id="node1" title=" " alt="" coords="955,107,1073,133"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a0bf2bbf8b3bc82f9647c9f327d1369de" title=" " alt="" coords="747,5,884,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="759,157,871,184"/>
+<area shape="rect" id="node5" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,91,413,133"/>
+<area shape="rect" id="node8" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,107,676,133"/>
+<area shape="rect" id="node9" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="724,208,907,235"/>
+<area shape="rect" id="node4" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="500,157,637,184"/>
+<area shape="rect" id="node7" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,157,408,184"/>
+<area shape="rect" id="node6" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,128,168,155"/>
+</map>

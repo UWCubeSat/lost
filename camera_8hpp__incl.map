@@ -1,10 +1,13 @@
 <map id="src/camera.hpp" name="src/camera.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="59,5,181,32"/>
-<area shape="rect" id="node2" href="$attitude-utils_8hpp.html" title=" " alt="" coords="53,80,187,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="117,5,240,32"/>
+<area shape="rect" id="node2" href="$attitude-utils_8hpp.html" title=" " alt="" coords="111,80,246,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="5,155,83,181"/>
-<area shape="rect" id="node4" title=" " alt="" coords="89,229,151,256"/>
+<area shape="rect" id="node4" title=" " alt="" coords="26,229,89,256"/>
 <area shape="rect" id="node5" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="158,155,317,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="175,229,246,256"/>
-<area shape="rect" id="node7" title=" " alt="" coords="270,229,330,256"/>
-<area shape="rect" id="node8" title=" " alt="" coords="355,229,440,256"/>
+<area shape="rect" id="node9" href="$decimal_8hpp.html" title=" " alt="" coords="402,229,505,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="113,229,183,256"/>
+<area shape="rect" id="node7" title=" " alt="" coords="207,229,267,256"/>
+<area shape="rect" id="node8" title=" " alt="" coords="292,229,377,256"/>
+<area shape="rect" id="node10" title=" " alt="" coords="379,304,442,331"/>
+<area shape="rect" id="node11" title=" " alt="" coords="467,304,525,331"/>
 </map>

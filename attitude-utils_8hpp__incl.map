@@ -1,9 +1,12 @@
 <map id="src/attitude&#45;utils.hpp" name="src/attitude&#45;utils.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="41,5,199,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="100,5,257,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,83,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="89,155,151,181"/>
+<area shape="rect" id="node3" title=" " alt="" coords="26,155,89,181"/>
 <area shape="rect" id="node4" href="$serialize-helpers_8hpp.html" title=" " alt="" coords="158,80,317,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="175,155,246,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="270,155,330,181"/>
-<area shape="rect" id="node7" title=" " alt="" coords="355,155,440,181"/>
+<area shape="rect" id="node8" href="$decimal_8hpp.html" title=" " alt="" coords="402,155,505,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="113,155,183,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="207,155,267,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="292,155,377,181"/>
+<area shape="rect" id="node9" title=" " alt="" coords="379,229,442,256"/>
+<area shape="rect" id="node10" title=" " alt="" coords="467,229,525,256"/>
 </map>

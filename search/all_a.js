@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['j_140',['j',['../classlost_1_1_quaternion.html#a815259d4abdb84d5b3edbededb0764a8',1,'lost::Quaternion']]]
+  ['j_176',['j',['../classlost_1_1_quaternion.html#a8955013a6ea860afd03c4f7b6c1f7e90',1,'lost::Quaternion']]]
 ];

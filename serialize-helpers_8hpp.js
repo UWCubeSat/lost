@@ -9,6 +9,5 @@ var serialize_helpers_8hpp =
     [ "SerializePrimitive", "serialize-helpers_8hpp.html#a9af0427ae10a3db5529f2f8c74497347", null ],
     [ "SwapEndianness", "serialize-helpers_8hpp.html#aaa3aa9350f84fa1b7725b5e3de8483ba", null ],
     [ "SwapEndiannessIfNecessary", "serialize-helpers_8hpp.html#a9704a9fb2cf67873155e69407a976074", null ],
-    [ "SwapEndiannessIfNecessary< double >", "serialize-helpers_8hpp.html#a716dcaf4d1704aa422252fcbc182e259", null ],
-    [ "SwapEndiannessIfNecessary< float >", "serialize-helpers_8hpp.html#a86727674f19d3158cb894b4518433477", null ]
+    [ "SwapEndiannessIfNecessary< decimal >", "serialize-helpers_8hpp.html#a3493422e7893b68e566182e4e2372a6e", null ]
 ];

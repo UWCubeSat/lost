@@ -1,0 +1,6 @@
+<map id="lost::KVectorIndex::Min" name="lost::KVectorIndex::Min">
+<area shape="rect" id="node1" title=" " alt="" coords="777,13,949,39"/>
+<area shape="rect" id="node2" href="$classlost_1_1_pair_distance_k_vector_database.html#a4db3849497b621317addfb332fd743cc" title="Lower bound on stored star pair distances." alt="" coords="544,5,729,47"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,47"/>
+<area shape="rect" id="node4" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,39"/>
+</map>

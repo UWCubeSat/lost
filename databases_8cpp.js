@@ -1,10 +1,11 @@
 var databases_8cpp =
 [
     [ "KVectorPair", "structlost_1_1_k_vector_pair.html", "structlost_1_1_k_vector_pair" ],
-    [ "CatalogToPairDistances", "databases_8cpp.html#a63bf3cd684687462bda2231e2aa1f14c", null ],
-    [ "Clamp", "databases_8cpp.html#a4753c4aab04ad2deb202dd8be458e5d8", null ],
+    [ "CatalogToPairDistances", "databases_8cpp.html#a7df31f0f6e3ed20311231573630124dc", null ],
+    [ "Clamp", "databases_8cpp.html#ae06c1b87a560fb7d9de673b46ff60d9c", null ],
     [ "CompareKVectorPairs", "databases_8cpp.html#a68f14b0d645721125203e669cde68358", null ],
-    [ "SerializeKVectorIndex", "databases_8cpp.html#ac0c0c9865d2c16d74149bf85366cdc18", null ],
-    [ "SerializeMultiDatabase", "databases_8cpp.html#a56c54ae520919bdd6d87f291e02883d3", null ],
-    [ "SerializePairDistanceKVector", "databases_8cpp.html#aefdad61aa2dbf38415d0345c1ff2916d", null ]
+    [ "isFlagSet", "databases_8cpp.html#a9a6ccd2f576c452a68db8152dc2edb24", null ],
+    [ "SerializeKVectorIndex", "databases_8cpp.html#a0227319e45ff29d6f61b7e083d01e31f", null ],
+    [ "SerializeMultiDatabase", "databases_8cpp.html#ad14088462298249d31b2c396c3be86f9", null ],
+    [ "SerializePairDistanceKVector", "databases_8cpp.html#a98d1507ab3e305ab47846133d82e4467", null ]
 ];

@@ -2,5 +2,5 @@
 <area shape="rect" id="node1" title="unidentified centroid used in IdentifyRemainingStarsPairDistance The &quot;angles&quot; through here are &quot;trian..." alt="" coords="31,199,233,225"/>
 <area shape="rect" id="node2" href="$classlost_1_1_star_identifier.html" title="Records that a certain Star (detected in the image) corresponds to a certain CatalogStar." alt="" coords="5,95,144,121"/>
 <area shape="rect" id="node3" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="168,95,248,121"/>
-<area shape="rect" id="node4" href="$structlost_1_1_vec2.html" title="A two dimensional vector with floating point components." alt="" coords="165,5,251,32"/>
+<area shape="rect" id="node4" href="$structlost_1_1_vec2.html" title="A two dimensional vector with decimaling point components." alt="" coords="165,5,251,32"/>
 </map>

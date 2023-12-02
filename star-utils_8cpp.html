@@ -101,18 +101,21 @@ Include dependency graph for star-utils.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="star-utils_8cpp__incl.png" border="0" usemap="#asrc_2star-utils_8cpp" alt=""/></div>
 <map name="asrc_2star-utils_8cpp" id="asrc_2star-utils_8cpp">
-<area shape="rect" title=" " alt="" coords="343,5,474,32"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="135,80,243,107"/>
+<area shape="rect" title=" " alt="" coords="394,5,525,32"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="161,80,269,107"/>
 <area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="176,229,335,256"/>
-<area shape="rect" title=" " alt="" coords="325,304,410,331"/>
-<area shape="rect" title=" " alt="" coords="411,80,479,107"/>
-<area shape="rect" title=" " alt="" coords="503,80,578,107"/>
-<area shape="rect" title=" " alt="" coords="602,80,645,107"/>
+<area shape="rect" title=" " alt="" coords="417,304,502,331"/>
+<area shape="rect" title=" " alt="" coords="461,80,529,107"/>
+<area shape="rect" title=" " alt="" coords="554,80,629,107"/>
+<area shape="rect" title=" " alt="" coords="653,80,695,107"/>
 <area shape="rect" title=" " alt="" coords="5,304,68,331"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="53,155,188,181"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="83,155,217,181"/>
 <area shape="rect" title=" " alt="" coords="74,229,151,256"/>
-<area shape="rect" title=" " alt="" coords="136,304,207,331"/>
-<area shape="rect" title=" " alt="" coords="231,304,291,331"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="289,304,392,331"/>
+<area shape="rect" title=" " alt="" coords="111,304,181,331"/>
+<area shape="rect" title=" " alt="" coords="205,304,265,331"/>
+<area shape="rect" title=" " alt="" coords="267,379,329,405"/>
+<area shape="rect" title=" " alt="" coords="354,379,413,405"/>
 </map>
 </div>
 </div>
@@ -128,9 +131,9 @@ Namespaces</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a5c01d4154fbfefd3af1f3c081a372035"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035">lost::CatalogStarMagnitudeCompare</a> (const CatalogStar &amp;a, const CatalogStar &amp;b)</td></tr>
 <tr class="separator:a5c01d4154fbfefd3af1f3c081a372035"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af37c1bfa9d31aeb6fcd705fffd13497c"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">lost::NarrowCatalog</a> (const Catalog &amp;, int maxMagnitude, int maxStars, float minSeparation)</td></tr>
-<tr class="memdesc:af37c1bfa9d31aeb6fcd705fffd13497c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove unwanted stars from an unfiltered catalog.  <a href="namespacelost.html#af37c1bfa9d31aeb6fcd705fffd13497c">More...</a><br /></td></tr>
-<tr class="separator:af37c1bfa9d31aeb6fcd705fffd13497c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97bab24607652ec26c12d9a3d3aa52b2"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2">lost::NarrowCatalog</a> (const Catalog &amp;, int maxMagnitude, int maxStars, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minSeparation)</td></tr>
+<tr class="memdesc:a97bab24607652ec26c12d9a3d3aa52b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove unwanted stars from an unfiltered catalog.  <a href="namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2">More...</a><br /></td></tr>
+<tr class="separator:a97bab24607652ec26c12d9a3d3aa52b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac722314f3b14385ade7e5f05699ef006"><td class="memItemLeft" align="right" valign="top">Catalog::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">lost::FindNamedStar</a> (const Catalog &amp;catalog, int name)</td></tr>
 <tr class="memdesc:ac722314f3b14385ade7e5f05699ef006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the star with the given name, or NULL if not found.  <a href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">More...</a><br /></td></tr>
 <tr class="separator:ac722314f3b14385ade7e5f05699ef006"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,9 +149,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memItemLeft" align="right" valign="top">Catalog&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">lost::DeserializeCatalog</a> (DeserializeContext *des, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
 <tr class="memdesc:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <a href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">More...</a><br /></td></tr>
 <tr class="separator:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">lost::MagToBrightness</a> (int magnitude)</td></tr>
-<tr class="memdesc:a90ef8f69cd7b77ba05701f833fdaa320"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns some relative brightness measure, which is proportional to the total number of photons received from a star.  <a href="namespacelost.html#a90ef8f69cd7b77ba05701f833fdaa320">More...</a><br /></td></tr>
-<tr class="separator:a90ef8f69cd7b77ba05701f833fdaa320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a433010bbab5f3763241a7aa3f87fbfc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7">lost::MagToBrightness</a> (int magnitude)</td></tr>
+<tr class="memdesc:a433010bbab5f3763241a7aa3f87fbfc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns some relative brightness measure, which is proportional to the total number of photons received from a star.  <a href="namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7">More...</a><br /></td></tr>
+<tr class="separator:a433010bbab5f3763241a7aa3f87fbfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -156,7 +159,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="star-utils_8cpp.html">star-utils.cpp</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -1,0 +1,4 @@
+<map id="lost::PairDistanceKVectorDatabase::FindPairsLiberal" name="lost::PairDistanceKVectorDatabase::FindPairsLiberal">
+<area shape="rect" id="node1" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="5,5,200,47"/>
+<area shape="rect" id="node2" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="248,5,388,47"/>
+</map>

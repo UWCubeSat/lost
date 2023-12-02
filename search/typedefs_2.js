@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['multidatabasedescriptor_621',['MultiDatabaseDescriptor',['../namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8',1,'lost']]]
+  ['decimal_660',['decimal',['../decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57',1,'decimal.hpp']]]
 ];

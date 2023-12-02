@@ -1,0 +1,8 @@
+<map id="lost::IdentifyThirdStar" name="lost::IdentifyThirdStar">
+<area shape="rect" id="node1" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="5,85,168,112"/>
+<area shape="rect" id="node2" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="254,5,373,32"/>
+<area shape="rect" id="node3" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="224,56,403,83"/>
+<area shape="rect" id="node4" href="$classlost_1_1_pair_distance_k_vector_database.html#ad76a05c909ea68d6084f942f3623b8ed" title=" " alt="" coords="220,107,407,149"/>
+<area shape="rect" id="node6" href="$classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="216,173,411,214"/>
+<area shape="rect" id="node5" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="459,107,599,149"/>
+</map>

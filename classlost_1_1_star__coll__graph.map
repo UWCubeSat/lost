@@ -1,4 +1,4 @@
 <map id="lost::Star" name="lost::Star">
 <area shape="rect" id="node1" title="A &quot;centroid&quot; detected in an image." alt="" coords="8,95,88,121"/>
-<area shape="rect" id="node2" href="$structlost_1_1_vec2.html" title="A two dimensional vector with floating point components." alt="" coords="5,5,91,32"/>
+<area shape="rect" id="node2" href="$structlost_1_1_vec2.html" title="A two dimensional vector with decimaling point components." alt="" coords="5,5,91,32"/>
 </map>

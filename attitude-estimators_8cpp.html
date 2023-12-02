@@ -94,27 +94,31 @@ $(document).ready(function(){initNavTree('attitude-estimators_8cpp.html',''); in
 <div class="textblock"><code>#include &quot;<a class="el" href="attitude-estimators_8hpp_source.html">attitude-estimators.hpp</a>&quot;</code><br />
 <code>#include &lt;eigen3/Eigen/Dense&gt;</code><br />
 <code>#include &lt;eigen3/Eigen/Eigenvalues&gt;</code><br />
+<code>#include &quot;<a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for attitude-estimators.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="attitude-estimators_8cpp__incl.png" border="0" usemap="#asrc_2attitude-estimators_8cpp" alt=""/></div>
 <map name="asrc_2attitude-estimators_8cpp" id="asrc_2attitude-estimators_8cpp">
-<area shape="rect" title=" " alt="" coords="133,5,331,32"/>
-<area shape="rect" href="attitude-estimators_8hpp.html" title=" " alt="" coords="144,80,320,107"/>
-<area shape="rect" title=" " alt="" coords="5,155,195,181"/>
-<area shape="rect" title=" " alt="" coords="345,80,495,107"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="186,379,321,405"/>
-<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="147,229,245,256"/>
-<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="322,155,414,181"/>
-<area shape="rect" title=" " alt="" coords="67,453,144,480"/>
-<area shape="rect" title=" " alt="" coords="397,528,459,555"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="169,453,327,480"/>
-<area shape="rect" title=" " alt="" coords="302,528,373,555"/>
-<area shape="rect" title=" " alt="" coords="107,528,167,555"/>
-<area shape="rect" title=" " alt="" coords="192,528,277,555"/>
-<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="405,229,528,256"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="321,304,429,331"/>
-<area shape="rect" title=" " alt="" coords="504,304,584,331"/>
+<area shape="rect" title=" " alt="" coords="349,5,547,32"/>
+<area shape="rect" href="attitude-estimators_8hpp.html" title=" " alt="" coords="281,80,457,107"/>
+<area shape="rect" title=" " alt="" coords="25,155,215,181"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="442,528,545,555"/>
+<area shape="rect" title=" " alt="" coords="582,80,733,107"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="302,379,437,405"/>
+<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="301,229,400,256"/>
+<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="239,155,331,181"/>
+<area shape="rect" title=" " alt="" coords="379,453,456,480"/>
+<area shape="rect" title=" " alt="" coords="65,528,127,555"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="195,453,354,480"/>
+<area shape="rect" title=" " alt="" coords="151,528,222,555"/>
+<area shape="rect" title=" " alt="" coords="246,528,306,555"/>
+<area shape="rect" title=" " alt="" coords="331,528,416,555"/>
+<area shape="rect" title=" " alt="" coords="419,603,482,629"/>
+<area shape="rect" title=" " alt="" coords="507,603,565,629"/>
+<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="93,229,216,256"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="210,304,318,331"/>
+<area shape="rect" title=" " alt="" coords="105,304,185,331"/>
 </map>
 </div>
 </div>
@@ -128,20 +132,20 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a002b2f4894492820fe708b1b7e7c5e70"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="attitude-estimators_8cpp.html#a002b2f4894492820fe708b1b7e7c5e70">EPSILON</a>&#160;&#160;&#160;0.0001</td></tr>
+<tr class="memitem:a002b2f4894492820fe708b1b7e7c5e70"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="attitude-estimators_8cpp.html#a002b2f4894492820fe708b1b7e7c5e70">EPSILON</a>&#160;&#160;&#160;<a class="el" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0001)</td></tr>
 <tr class="separator:a002b2f4894492820fe708b1b7e7c5e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab1a9beb3699da6901d13dcebcb0e987b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b">lost::QuestCharPoly</a> (float x, float a, float b, float c, float d, float s)</td></tr>
-<tr class="memdesc:ab1a9beb3699da6901d13dcebcb0e987b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Characteristic polynomial of the quest K-matrix.  <a href="namespacelost.html#ab1a9beb3699da6901d13dcebcb0e987b">More...</a><br /></td></tr>
-<tr class="separator:ab1a9beb3699da6901d13dcebcb0e987b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aecb22b335d98f9abefb94e377afa3bdb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb">lost::QuestCharPolyPrime</a> (float x, float a, float b, float c)</td></tr>
-<tr class="memdesc:aecb22b335d98f9abefb94e377afa3bdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivitive of the characteristic polynomial of the quest K-matrix.  <a href="namespacelost.html#aecb22b335d98f9abefb94e377afa3bdb">More...</a><br /></td></tr>
-<tr class="separator:aecb22b335d98f9abefb94e377afa3bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5">lost::QuestEigenvalueEstimator</a> (float guess, float a, float b, float c, float d, float s)</td></tr>
-<tr class="memdesc:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Approximates roots of a real function using the Newton-Raphson algorithm.  <a href="namespacelost.html#aa3cff2017989bf09b8b4111c1a0bfdf5">More...</a><br /></td></tr>
-<tr class="separator:aa3cff2017989bf09b8b4111c1a0bfdf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94bdddcfa030dfce3201661f42cc7d01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01">lost::QuestCharPoly</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> x, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> a, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> b, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> c, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> d, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> s)</td></tr>
+<tr class="memdesc:a94bdddcfa030dfce3201661f42cc7d01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Characteristic polynomial of the quest K-matrix.  <a href="namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01">More...</a><br /></td></tr>
+<tr class="separator:a94bdddcfa030dfce3201661f42cc7d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae543ffda8031beff6f8015261f1c495c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae543ffda8031beff6f8015261f1c495c">lost::QuestCharPolyPrime</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> x, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> a, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> b, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> c)</td></tr>
+<tr class="memdesc:ae543ffda8031beff6f8015261f1c495c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivitive of the characteristic polynomial of the quest K-matrix.  <a href="namespacelost.html#ae543ffda8031beff6f8015261f1c495c">More...</a><br /></td></tr>
+<tr class="separator:ae543ffda8031beff6f8015261f1c495c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c5445cb888227769955b2cdda5ee93a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a4c5445cb888227769955b2cdda5ee93a">lost::QuestEigenvalueEstimator</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> guess, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> a, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> b, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> c, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> d, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> s)</td></tr>
+<tr class="memdesc:a4c5445cb888227769955b2cdda5ee93a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Approximates roots of a real function using the Newton-Raphson algorithm.  <a href="namespacelost.html#a4c5445cb888227769955b2cdda5ee93a">More...</a><br /></td></tr>
+<tr class="separator:a4c5445cb888227769955b2cdda5ee93a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a002b2f4894492820fe708b1b7e7c5e70"></a>
@@ -151,12 +155,12 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define EPSILON&#160;&#160;&#160;0.0001</td>
+          <td class="memname">#define EPSILON&#160;&#160;&#160;<a class="el" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0001)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00007">7</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-estimators_8cpp_source.html#l00010">10</a> of file <a class="el" href="attitude-estimators_8cpp_source.html">attitude-estimators.cpp</a>.</p>
 
 </div>
 </div>
@@ -166,7 +170,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="attitude-estimators_8cpp.html">attitude-estimators.cpp</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

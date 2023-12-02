@@ -1,5 +1,5 @@
 <map id="lost::CatalogRead" name="lost::CatalogRead">
 <area shape="rect" id="node1" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="5,5,143,32"/>
 <area shape="rect" id="node2" href="$namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="191,5,303,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#abf3a90819d379c9a4d0c48f385f52613" title=" " alt="" coords="351,5,469,32"/>
+<area shape="rect" id="node3" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="351,5,469,32"/>
 </map>

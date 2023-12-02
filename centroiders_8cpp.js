@@ -8,5 +8,5 @@ var centroiders_8cpp =
     [ "CogHelper", "centroiders_8cpp.html#ab27cb6dc471b1c682f9dc67f41097529", null ],
     [ "IWCoGHelper", "centroiders_8cpp.html#a789d628bbeab011d5552a6dc551b77a2", null ],
     [ "OtsusThreshold", "centroiders_8cpp.html#a1c383b038ea9376eacf4858247d765be", null ],
-    [ "iWCoGMinChange", "centroiders_8cpp.html#adb169fa5f416a7acc9c7a9c52b2c86a6", null ]
+    [ "iWCoGMinChange", "centroiders_8cpp.html#aad95264f15efbc0e15b439142007354c", null ]
 ];

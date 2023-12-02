@@ -117,6 +117,7 @@ $(document).ready(function(){initNavTree('io_8cpp.html',''); initResizable(); })
 <code>#include &quot;<a class="el" href="attitude-estimators_8hpp_source.html">attitude-estimators.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="databases_8hpp_source.html">databases.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -124,41 +125,43 @@ Include dependency graph for io.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="io_8cpp__incl.png" border="0" usemap="#asrc_2io_8cpp" alt=""/></div>
 <map name="asrc_2io_8cpp" id="asrc_2io_8cpp">
-<area shape="rect" title=" " alt="" coords="1947,5,2031,32"/>
-<area shape="rect" href="io_8hpp.html" title=" " alt="" coords="1075,80,1138,107"/>
-<area shape="rect" title=" " alt="" coords="145,155,247,181"/>
-<area shape="rect" title=" " alt="" coords="323,155,395,181"/>
-<area shape="rect" title=" " alt="" coords="1634,603,1697,629"/>
-<area shape="rect" title=" " alt="" coords="1652,155,1703,181"/>
-<area shape="rect" title=" " alt="" coords="731,229,789,256"/>
-<area shape="rect" title=" " alt="" coords="443,379,523,405"/>
-<area shape="rect" title=" " alt="" coords="992,528,1069,555"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="1713,379,1821,405"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="1421,453,1555,480"/>
-<area shape="rect" title=" " alt="" coords="2064,603,2149,629"/>
-<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="1611,229,1703,256"/>
-<area shape="rect" href="attitude-estimators_8hpp.html" title=" " alt="" coords="1349,155,1525,181"/>
-<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="1931,155,2048,181"/>
-<area shape="rect" title=" " alt="" coords="1881,229,1951,256"/>
-<area shape="rect" title=" " alt="" coords="2129,229,2215,256"/>
-<area shape="rect" title=" " alt="" coords="2201,80,2268,107"/>
-<area shape="rect" title=" " alt="" coords="2293,80,2361,107"/>
-<area shape="rect" title=" " alt="" coords="2385,80,2453,107"/>
-<area shape="rect" title=" " alt="" coords="2477,80,2552,107"/>
-<area shape="rect" title=" " alt="" coords="2577,80,2647,107"/>
-<area shape="rect" title=" " alt="" coords="2672,80,2747,107"/>
-<area shape="rect" title=" " alt="" coords="2771,80,2845,107"/>
-<area shape="rect" title=" " alt="" coords="2869,80,2936,107"/>
-<area shape="rect" title=" " alt="" coords="2960,80,3027,107"/>
-<area shape="rect" title=" " alt="" coords="750,603,810,629"/>
-<area shape="rect" title=" " alt="" coords="520,155,595,181"/>
-<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="1144,304,1267,331"/>
-<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="1415,304,1513,331"/>
-<area shape="rect" href="pipeline-options_8hpp.html" title=" " alt="" coords="856,155,1019,181"/>
-<area shape="rect" href="database-options_8hpp.html" title=" " alt="" coords="619,155,781,181"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="1729,528,1887,555"/>
-<area shape="rect" title=" " alt="" coords="1773,603,1843,629"/>
-<area shape="rect" title=" " alt="" coords="1397,229,1587,256"/>
+<area shape="rect" title=" " alt="" coords="1661,5,1745,32"/>
+<area shape="rect" href="io_8hpp.html" title=" " alt="" coords="905,80,967,107"/>
+<area shape="rect" title=" " alt="" coords="297,155,399,181"/>
+<area shape="rect" title=" " alt="" coords="424,155,496,181"/>
+<area shape="rect" title=" " alt="" coords="697,603,759,629"/>
+<area shape="rect" title=" " alt="" coords="1645,155,1696,181"/>
+<area shape="rect" title=" " alt="" coords="1525,677,1584,704"/>
+<area shape="rect" title=" " alt="" coords="387,379,467,405"/>
+<area shape="rect" title=" " alt="" coords="561,528,639,555"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="1063,379,1171,405"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="714,453,849,480"/>
+<area shape="rect" title=" " alt="" coords="1432,603,1517,629"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="1066,603,1169,629"/>
+<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="647,229,739,256"/>
+<area shape="rect" href="attitude-estimators_8hpp.html" title=" " alt="" coords="973,155,1149,181"/>
+<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="1453,155,1571,181"/>
+<area shape="rect" title=" " alt="" coords="1586,229,1657,256"/>
+<area shape="rect" title=" " alt="" coords="1681,229,1767,256"/>
+<area shape="rect" title=" " alt="" coords="1923,80,1989,107"/>
+<area shape="rect" title=" " alt="" coords="2014,80,2082,107"/>
+<area shape="rect" title=" " alt="" coords="2106,80,2174,107"/>
+<area shape="rect" title=" " alt="" coords="2199,80,2273,107"/>
+<area shape="rect" title=" " alt="" coords="2298,80,2369,107"/>
+<area shape="rect" title=" " alt="" coords="2393,80,2468,107"/>
+<area shape="rect" title=" " alt="" coords="2493,80,2566,107"/>
+<area shape="rect" title=" " alt="" coords="2591,80,2657,107"/>
+<area shape="rect" title=" " alt="" coords="2681,80,2748,107"/>
+<area shape="rect" title=" " alt="" coords="1347,603,1407,629"/>
+<area shape="rect" title=" " alt="" coords="824,155,899,181"/>
+<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="464,304,587,331"/>
+<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="815,304,913,331"/>
+<area shape="rect" href="pipeline-options_8hpp.html" title=" " alt="" coords="1447,528,1609,555"/>
+<area shape="rect" href="database-options_8hpp.html" title=" " alt="" coords="1025,528,1188,555"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="1213,528,1371,555"/>
+<area shape="rect" title=" " alt="" coords="1253,603,1323,629"/>
+<area shape="rect" title=" " alt="" coords="1086,677,1149,704"/>
+<area shape="rect" title=" " alt="" coords="967,229,1156,256"/>
 </map>
 </div>
 </div>
@@ -223,9 +226,9 @@ Functions</h2></td></tr>
 <tr class="memitem:afd0ad3291fda13bb1bf50fb13906769c"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c">lost::operator&lt;&lt;</a> (std::ostream &amp;os, const Camera &amp;camera)</td></tr>
 <tr class="memdesc:afd0ad3291fda13bb1bf50fb13906769c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print information about the camera in machine and human-readable form.  <a href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c">More...</a><br /></td></tr>
 <tr class="separator:afd0ad3291fda13bb1bf50fb13906769c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eaa81a9fc5f13a447e4209b5b230308"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9eaa81a9fc5f13a447e4209b5b230308">lost::FocalLengthFromOptions</a> (const PipelineOptions &amp;values, int xResolution)</td></tr>
-<tr class="memdesc:a9eaa81a9fc5f13a447e4209b5b230308"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the focal length, in pixels, based on the given command line options.  <a href="namespacelost.html#a9eaa81a9fc5f13a447e4209b5b230308">More...</a><br /></td></tr>
-<tr class="separator:a9eaa81a9fc5f13a447e4209b5b230308"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2788319f0c0f74fbd29f5249501482be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2788319f0c0f74fbd29f5249501482be">lost::FocalLengthFromOptions</a> (const PipelineOptions &amp;values, int xResolution)</td></tr>
+<tr class="memdesc:a2788319f0c0f74fbd29f5249501482be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the focal length, in pixels, based on the given command line options.  <a href="namespacelost.html#a2788319f0c0f74fbd29f5249501482be">More...</a><br /></td></tr>
+<tr class="separator:a2788319f0c0f74fbd29f5249501482be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72e465adc8dcb532e46b956261bf93fe"><td class="memItemLeft" align="right" valign="top">PipelineInputList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a72e465adc8dcb532e46b956261bf93fe">lost::GetPngPipelineInput</a> (const PipelineOptions &amp;values)</td></tr>
 <tr class="memdesc:a72e465adc8dcb532e46b956261bf93fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classlost_1_1_png_pipeline_input.html" title="A pipeline input created by reading a PNG from a file on disk.">PngPipelineInput</a> using command line options.  <a href="namespacelost.html#a72e465adc8dcb532e46b956261bf93fe">More...</a><br /></td></tr>
 <tr class="separator:a72e465adc8dcb532e46b956261bf93fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -238,14 +241,14 @@ Functions</h2></td></tr>
 <tr class="memitem:ad4bb00e632a9200a8e42f620e460dd60"><td class="memItemLeft" align="right" valign="top">Pipeline&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad4bb00e632a9200a8e42f620e460dd60">lost::SetPipeline</a> (const PipelineOptions &amp;values)</td></tr>
 <tr class="memdesc:ad4bb00e632a9200a8e42f620e460dd60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a pipeline from command line options.  <a href="namespacelost.html#ad4bb00e632a9200a8e42f620e460dd60">More...</a><br /></td></tr>
 <tr class="separator:ad4bb00e632a9200a8e42f620e460dd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd017fba4090829c28c431509c4cfc1c"><td class="memItemLeft" align="right" valign="top">CentroidComparison&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afd017fba4090829c28c431509c4cfc1c">lost::CentroidsCompare</a> (float threshold, const Stars &amp;expected, const Stars &amp;actual)</td></tr>
-<tr class="memdesc:afd017fba4090829c28c431509c4cfc1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare expected and actual centroids.  <a href="namespacelost.html#afd017fba4090829c28c431509c4cfc1c">More...</a><br /></td></tr>
-<tr class="separator:afd017fba4090829c28c431509c4cfc1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae28fabb74b772e447140deee8de524f0"><td class="memItemLeft" align="right" valign="top">CentroidComparison&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae28fabb74b772e447140deee8de524f0">lost::CentroidsCompare</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> threshold, const Stars &amp;expected, const Stars &amp;actual)</td></tr>
+<tr class="memdesc:ae28fabb74b772e447140deee8de524f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare expected and actual centroids.  <a href="namespacelost.html#ae28fabb74b772e447140deee8de524f0">More...</a><br /></td></tr>
+<tr class="separator:ae28fabb74b772e447140deee8de524f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fe01051c958fa8ced02e772aefdc991"><td class="memItemLeft" align="right" valign="top">CentroidComparison&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a0fe01051c958fa8ced02e772aefdc991">lost::CentroidComparisonsCombine</a> (std::vector&lt; CentroidComparison &gt; comparisons)</td></tr>
 <tr class="separator:a0fe01051c958fa8ced02e772aefdc991"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6f75e99dbde3eede31e0b3a7c56878e"><td class="memItemLeft" align="right" valign="top">StarIdComparison&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab6f75e99dbde3eede31e0b3a7c56878e">lost::StarIdsCompare</a> (const StarIdentifiers &amp;expected, const StarIdentifiers &amp;actual, const Catalog &amp;expectedCatalog, const Catalog &amp;actualCatalog, float centroidThreshold, const Stars &amp;expectedStars, const Stars &amp;inputStars)</td></tr>
-<tr class="memdesc:ab6f75e99dbde3eede31e0b3a7c56878e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare expected and actual star identifications.  <a href="namespacelost.html#ab6f75e99dbde3eede31e0b3a7c56878e">More...</a><br /></td></tr>
-<tr class="separator:ab6f75e99dbde3eede31e0b3a7c56878e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a863cf60540007697be2b6572e6a2e614"><td class="memItemLeft" align="right" valign="top">StarIdComparison&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a863cf60540007697be2b6572e6a2e614">lost::StarIdsCompare</a> (const StarIdentifiers &amp;expected, const StarIdentifiers &amp;actual, const Catalog &amp;expectedCatalog, const Catalog &amp;actualCatalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> centroidThreshold, const Stars &amp;expectedStars, const Stars &amp;inputStars)</td></tr>
+<tr class="memdesc:a863cf60540007697be2b6572e6a2e614"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare expected and actual star identifications.  <a href="namespacelost.html#a863cf60540007697be2b6572e6a2e614">More...</a><br /></td></tr>
+<tr class="separator:a863cf60540007697be2b6572e6a2e614"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69cfc1189a8f18fb6e6a6d400a8a1311"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">lost::PipelineComparatorPlotCentroidIndices</a> (std::ostream &amp;os, const PipelineInputList &amp;expected, const std::vector&lt; PipelineOutput &gt; &amp;actual, const PipelineOptions &amp;)</td></tr>
 <tr class="memdesc:a69cfc1189a8f18fb6e6a6d400a8a1311"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plot an annotated image where centroids are annotated with their centroid index.  <a href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">More...</a><br /></td></tr>
 <tr class="separator:a69cfc1189a8f18fb6e6a6d400a8a1311"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -271,7 +274,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00087">87</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00095">95</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -336,7 +339,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Thu Nov 16 2023 22:58:30 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

@@ -1,5 +1,0 @@
-<map id="lost::SerializeKVectorIndex" name="lost::SerializeKVectorIndex">
-<area shape="rect" id="node1" title="K&#45;vector index layout." alt="" coords="475,13,671,39"/>
-<area shape="rect" id="node2" href="$namespacelost.html#aefdad61aa2dbf38415d0345c1ff2916d" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,47"/>
-<area shape="rect" id="node3" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,39"/>
-</map>
