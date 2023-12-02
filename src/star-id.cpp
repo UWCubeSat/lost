@@ -46,17 +46,17 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
                 // TODO: find a faster way to do this:
                 std::vector<bool> votedInPair(catalog.size(), false);
                 Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
-                float greatCircleDistance = AngleUnit(iSpatial, jSpatial);
+                decimal greatCircleDistance = AngleUnit(iSpatial, jSpatial);
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
-                float lowerBoundRange = greatCircleDistance - tolerance;
-                float upperBoundRange = greatCircleDistance + tolerance;
+                decimal lowerBoundRange = greatCircleDistance - tolerance;
+                decimal upperBoundRange = greatCircleDistance + tolerance;
                 const int16_t *upperBoundSearch;
                 const int16_t *lowerBoundSearch = vectorDatabase.FindPairsLiberal(
                     lowerBoundRange, upperBoundRange, &upperBoundSearch);
                 //loop from lowerBoundSearch till numReturnedPairs, add one vote to each star in the pairs in the datastructure
                 for (const int16_t *k = lowerBoundSearch; k != upperBoundSearch; k++) {
                     if ((k - lowerBoundSearch) % 2 == 0) {
-                        float actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
+                        decimal actualAngle = AngleUnit(catalog[*k].spatial, catalog[*(k+1)].spatial);
                         assert(actualAngle <= greatCircleDistance + tolerance * 2);
                         assert(actualAngle >= greatCircleDistance - tolerance * 2);
                     }
@@ -82,7 +82,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
             }
         }
         // if (i == 542) {
-        //     for (float dist : vectorDatabase.StarDistances(9085, catalog)) {
+        //     for (decimal dist : vectorDatabase.StarDistances(9085, catalog)) {
         //         printf("Actual 9085 distance: %f\n", dist);
         //     }
         //     puts("Debug star.");
@@ -112,17 +112,17 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
             // Calculate distance between catalog stars
             CatalogStar first = catalog[identified[i].catalogIndex];
             CatalogStar second = catalog[identified[j].catalogIndex];
-            float cDist = AngleUnit(first.spatial, second.spatial);
+            decimal cDist = AngleUnit(first.spatial, second.spatial);
 
             Star firstIdentified = stars[identified[i].starIndex];
             Star secondIdentified = stars[identified[j].starIndex];
             Vec3 firstSpatial = camera.CameraToSpatial(firstIdentified.position);
             Vec3 secondSpatial = camera.CameraToSpatial(secondIdentified.position);
-            float sDist = Angle(firstSpatial, secondSpatial);
+            decimal sDist = Angle(firstSpatial, secondSpatial);
 
             //if sDist is in the range of (distance between stars in the image +- R)
             //add a vote for the match
-            if (abs(sDist - cDist) < tolerance) {
+            if (DECIMAL_ABS(sDist - cDist) < tolerance) {
                 verificationVotes[i]++;
                 verificationVotes[j]++;
             }
@@ -265,8 +265,8 @@ std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *
     return result;
 }
 
-float IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(float v1, float v2) {
-    return abs(FloatModulo(v1-v2, M_PI) - M_PI_2);
+decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal v2) {
+    return DECIMAL_ABS(DecimalModulo(v1-v2, DECIMAL_M_PI) - DECIMAL_M_PI_2);
 }
 
 /**
@@ -276,10 +276,10 @@ float IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(float v1, float v2) {
 void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars) {
     const Star &otherStar = stars[starId.starIndex];
     Vec2 positionDifference = otherStar.position - star->position;
-    float angleFromVertical = atan2(positionDifference.y, positionDifference.x);
+    decimal angleFromVertical = DECIMAL_ATAN2(positionDifference.y, positionDifference.x);
 
     for (const auto &otherPair : identifiedStarsInRange) {
-        float curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
+        decimal curAngleFrom90 = VerticalAnglesToAngleFrom90(otherPair.first, angleFromVertical);
         if (curAngleFrom90 < bestAngleFrom90) {
             bestAngleFrom90 = curAngleFrom90;
             bestStar1 = starId;
@@ -298,17 +298,17 @@ void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, con
  */
 std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCentroidsInRange(
     std::vector<IRUnidentifiedCentroid *> *centroids, const Star &star, const Camera &camera,
-    float minDistance, float maxDistance) {
+    decimal minDistance, decimal maxDistance) {
 
     Vec3 ourSpatial = camera.CameraToSpatial(star.position).Normalize();
 
-    float minCos = cos(maxDistance);
-    float maxCos = cos(minDistance);
+    decimal minCos = DECIMAL_COS(maxDistance);
+    decimal maxCos = DECIMAL_COS(minDistance);
 
     std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> result;
     for (auto it = centroids->begin(); it != centroids->end(); ++it) {
         Vec3 theirSpatial = camera.CameraToSpatial((*it)->star->position).Normalize();
-        float angleCos = ourSpatial * theirSpatial;
+        decimal angleCos = ourSpatial * theirSpatial;
         if (angleCos >= minCos && angleCos <= maxCos) {
             result.push_back(it);
         }
@@ -320,19 +320,19 @@ std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCen
 
     // // Find the first centroid that is within range of the given centroid.
     // auto firstInRange = std::lower_bound(centroids->begin(), centroids->end(), star.position.x - maxDistance,
-    //     [](const IRUnidentifiedCentroid &centroid, float x) {
+    //     [](const IRUnidentifiedCentroid &centroid, decimal x) {
     //         return centroid.star.position.x < x;
     //     });
 
     // // Find the first centroid that is not within range of the given centroid.
     // auto firstNotInRange = std::lower_bound(firstInRange, centroids->end(), star.position.x + maxDistance,
-    //     [](const IRUnidentifiedCentroid &centroid, float x) {
+    //     [](const IRUnidentifiedCentroid &centroid, decimal x) {
     //         return centroid.star.position.x <= x;
     //     });
 
     // // Copy the pointers to the stars into the result vector.
     // for (auto it = firstInRange; it != firstNotInRange; ++it) {
-    //     float distance = Distance(star.position, it->star.position);
+    //     decimal distance = Distance(star.position, it->star.position);
     //     if (distance >= minDistance && distance <= maxDistance) {
     //         result.push_back(&*it);
     //     }
@@ -350,8 +350,8 @@ std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCen
 void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &stars,
                                    std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
                                    std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids,
-                                   float minDistance, float maxDistance,
-                                   float angleFrom90Threshold,
+                                   decimal minDistance, decimal maxDistance,
+                                   decimal angleFrom90Threshold,
                                    const Camera &camera) {
 
     std::vector<int16_t> nowBelowThreshold; // centroid indices newly moved above the threshold
@@ -384,8 +384,8 @@ void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &st
 std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
                                        const Catalog &catalog,
                                        int16_t catalogIndex1, int16_t catalogIndex2,
-                                       float distance1, float distance2,
-                                       float tolerance) {
+                                       decimal distance1, decimal distance2,
+                                       decimal tolerance) {
 
     const int16_t *query1End;
     const int16_t *query1 = db.FindPairsExact(catalog, distance1-tolerance, distance1+tolerance, &query1End);
@@ -404,7 +404,7 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
 
         Vec3 candidateSpatial = catalog[*candidateIt].spatial;
 
-        float angle2 = AngleUnit(candidateSpatial, spatial2);
+        decimal angle2 = AngleUnit(candidateSpatial, spatial2);
 
         // check distance to second star
         if (!(angle2 >= distance2-tolerance && angle2 <= distance2+tolerance)) {
@@ -412,7 +412,7 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
         }
 
         // check spectrality
-        float spectralTorch = cross * candidateSpatial;
+        decimal spectralTorch = cross * candidateSpatial;
         // if they are nearly coplanar, don't need to check spectrality
         // TODO: Implement ^^. Not high priority, since always checking spectrality is conservative.
         if (spectralTorch <= 0) {
@@ -440,7 +440,7 @@ IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifie
             return a->bestAngleFrom90 < b->bestAngleFrom90;
         });
 
-    // 10 is arbitrary; but really it should be less than M_PI_2 when set
+    // 10 is arbitrary; but really it should be less than DECIMAL_M_PI_2 when set
     if (bestAboveThreshold != aboveThresholdCentroids->end() && (*bestAboveThreshold)->bestAngleFrom90 < 10) {
         auto result = *bestAboveThreshold;
         aboveThresholdCentroids->erase(bestAboveThreshold);
@@ -450,7 +450,7 @@ IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifie
     return NULL;
 }
 
-const float kAngleFrom90SoftThreshold = M_PI_4; // TODO: tune this
+const decimal kAngleFrom90SoftThreshold = DECIMAL_M_PI_4; // TODO: tune this
 
 /**
  * Given some identified stars, attempt to identify the rest.
@@ -463,7 +463,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
                                        const PairDistanceKVectorDatabase &db,
                                        const Catalog &catalog,
                                        const Camera &camera,
-                                       float tolerance) {
+                                       decimal tolerance) {
 #ifdef LOST_DEBUG_PERFORMANCE
     auto startTimestamp = std::chrono::steady_clock::now();
 #endif
@@ -518,9 +518,9 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
         Vec3 unidentifiedSpatial = camera.CameraToSpatial(nextUnidentifiedCentroid->star->position);
         Vec3 spatial1 = camera.CameraToSpatial(stars[nextUnidentifiedCentroid->bestStar1.starIndex].position);
         Vec3 spatial2 = camera.CameraToSpatial(stars[nextUnidentifiedCentroid->bestStar2.starIndex].position);
-        float d1 = Angle(spatial1, unidentifiedSpatial);
-        float d2 = Angle(spatial2, unidentifiedSpatial);
-        float spectralTorch = spatial1.CrossProduct(spatial2) * unidentifiedSpatial;
+        decimal d1 = Angle(spatial1, unidentifiedSpatial);
+        decimal d2 = Angle(spatial2, unidentifiedSpatial);
+        decimal spectralTorch = spatial1.CrossProduct(spatial2) * unidentifiedSpatial;
 
         // find all the catalog stars that are in both annuli
         // flip arguments for appropriate spectrality.
@@ -581,9 +581,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     DeserializeContext des(databaseBuffer);
     PairDistanceKVectorDatabase vectorDatabase(&des);
 
-    // smallest normal single-precision float is around 10^-38 so we should be all good. See
+    // smallest normal single-precision decimal is around 10^-38 so we should be all good. See
     // Analytic_Star_Pattern_Probability on the HSL wiki for details.
-    float expectedMismatchesConstant = pow(numFalseStars, 4) * pow(tolerance, 5) / 2 / pow(M_PI, 2);
+    decimal expectedMismatchesConstant = DECIMAL_POW(numFalseStars, 4) * DECIMAL_POW(tolerance, 5) / 2 / DECIMAL_POW(DECIMAL_M_PI, 2);
 
     // this iteration technique is described in the Pyramid paper. Briefly: i will always be the
     // lowest index, then dj and dk are how many indexes ahead the j-th star is from the i-th, and
@@ -628,17 +628,17 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
                     Vec3 kSpatial = camera.CameraToSpatial(stars[k].position).Normalize();
 
-                    float ijDist = AngleUnit(iSpatial, jSpatial);
+                    decimal ijDist = AngleUnit(iSpatial, jSpatial);
 
-                    float iSinInner = sin(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
-                    float jSinInner = sin(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
-                    float kSinInner = sin(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
+                    decimal iSinInner = DECIMAL_SIN(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
+                    decimal jSinInner = DECIMAL_SIN(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
+                    decimal kSinInner = DECIMAL_SIN(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
 
                     // if we made it this far, all 6 angles are confirmed! Now check
                     // that this match would not often occur due to chance.
                     // See Analytic_Star_Pattern_Probability on the HSL wiki for details
-                    float expectedMismatches = expectedMismatchesConstant
-                        * sin(ijDist)
+                    decimal expectedMismatches = expectedMismatchesConstant
+                        * DECIMAL_SIN(ijDist)
                         / kSinInner
                         / std::max(std::max(iSinInner, jSinInner), kSinInner);
 
@@ -652,11 +652,11 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     // sign of determinant, to detect flipped patterns
                     bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
 
-                    float ikDist = AngleUnit(iSpatial, kSpatial);
-                    float irDist = AngleUnit(iSpatial, rSpatial);
-                    float jkDist = AngleUnit(jSpatial, kSpatial);
-                    float jrDist = AngleUnit(jSpatial, rSpatial);
-                    float krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
+                    decimal ikDist = AngleUnit(iSpatial, kSpatial);
+                    decimal irDist = AngleUnit(iSpatial, rSpatial);
+                    decimal jkDist = AngleUnit(jSpatial, kSpatial);
+                    decimal jrDist = AngleUnit(jSpatial, rSpatial);
+                    decimal krDist = AngleUnit(kSpatial, rSpatial); // TODO: we don't really need to
                                                                   // check krDist, if k has been
                                                                   // verified by i and j it's fine.
 
@@ -704,7 +704,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             }
 
                             // small optimization: We can calculate jk before iterating through r, so we will!
-                            float jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
+                            decimal jkCandidateDist = AngleUnit(jCandidateSpatial, kCandidateSpatial);
                             if (jkCandidateDist < jkDist - tolerance || jkCandidateDist > jkDist + tolerance) {
                                 continue;
                             }
@@ -715,8 +715,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
                                 int rCandidate = rCandidateIt.first->second;
                                 const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
-                                float jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
-                                float krCandidateDist;
+                                decimal jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
+                                decimal krCandidateDist;
                                 if (jrCandidateDist < jrDist - tolerance || jrCandidateDist > jrDist + tolerance) {
                                     continue;
                                 }
@@ -745,7 +745,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     }
 
                     if (iMatch != -1) {
-                        printf("Matched unique pyramid!\nExpected mismatches: %e\n", expectedMismatches);
+                        std::cout.precision(6);
+                        std::cout << "Matched unique pyramid!" << std::endl << "Expected mismatches: " << std::scientific << expectedMismatches << std::endl << std::fixed;
                         identified.push_back(StarIdentifier(i, iMatch));
                         identified.push_back(StarIdentifier(j, jMatch));
                         identified.push_back(StarIdentifier(k, kMatch));

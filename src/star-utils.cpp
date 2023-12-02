@@ -14,7 +14,7 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
 }
 
-Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, float minSeparation) {
+Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, decimal minSeparation) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
         if (catalog[i].magnitude <= maxMagnitude) {
@@ -70,7 +70,7 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name) {
 void SerializeCatalogStar(SerializeContext *ser, const CatalogStar &catalogStar, bool inclMagnitude, bool inclName) {
     SerializeVec3(ser, catalogStar.spatial);
     if (inclMagnitude) {
-        SerializePrimitive<float>(ser, catalogStar.magnitude);
+        SerializePrimitive<decimal>(ser, catalogStar.magnitude);
     }
     if (inclName) {
         // TODO: double check that bools aren't some special bitwise thing in C++
@@ -87,7 +87,7 @@ CatalogStar DeserializeCatalogStar(DeserializeContext *des, bool inclMagnitude, 
     CatalogStar result;
     result.spatial = DeserializeVec3(des);
     if (inclMagnitude) {
-        result.magnitude = DeserializePrimitive<float>(des);
+        result.magnitude = DeserializePrimitive<decimal>(des);
     } else {
         result.magnitude = -424242; // TODO, what to do about special values, since there's no good ones for ints.
     }
@@ -144,8 +144,8 @@ Catalog DeserializeCatalog(DeserializeContext *des, bool *inclMagnitudeReturn, b
     return result;
 }
 
-float MagToBrightness(int mag) {
-    return pow(10.0, -mag/250.0);
+decimal MagToBrightness(int mag) {
+    return DECIMAL_POW(DECIMAL(10.0), -mag/DECIMAL(250.0));
 }
 
 }
