@@ -3,8 +3,9 @@
 #ifndef IO_H
 #define IO_H
 
-#include <cairo/cairo.h>
-
+#ifndef FLIGHT
+    #include <cairo/cairo.h>
+#endif
 #include <random>
 #include <vector>
 #include <map>
@@ -14,8 +15,7 @@
 #include <iostream>
 #include <memory>
 
-
-#ifndef CAIRO_HAS_PNG_FUNCTIONS
+#if ! defined (FLIGHT) && ! defined CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
 #endif
 

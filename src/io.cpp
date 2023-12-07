@@ -1,6 +1,8 @@
 #include "io.hpp"
 
-#include <cairo/cairo.h>
+#ifndef FLIGHT
+    #include <cairo/cairo.h>
+#endif
 #include <stdio.h>
 #include <inttypes.h>
 #include <math.h>
