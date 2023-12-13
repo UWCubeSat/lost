@@ -1,4 +1,49 @@
+'''
+Python interface to the LOST Open-source Star Tracker.
+
+Depends on the LOST binary being properly built & in the same folder as this
+Python module.
+
+# Usage
+-------
+
+For general usage, first run :func:`lost.database` to initialize the star
+identification database. Then, run :func:`lost.identify` to identify
+images, or :func:`lost.generate` to generate simulated images. Example:
+
+```
+import lost
+lost.database()
+
+# read in the test image as a numpy array
+import imageio.v3 as imageio
+im = imageio.imread('img_7660.png')
+
+# identify attitude of satellite using default parameters
+result = lost.identify(im)
+
+# pretty print attitude info with JSON module
+import json
+print(json.dumps(result, indent=True))
+
+# generate image using default parameters
+raw, annotated = lost.generate()
+show(raw)
+show(annotated)
+```
+
+# Detailed documentation
+------------------------
+
+For detailed usage documentation, run the LOST binary's help commands:
+
+* `./lost database --help`: database command
+* `./lost pipeline --help`: image generation & identification pipeline command
+'''
+
+
 import imageio
+import numpy as np
 import subprocess
 import os
 import pathlib
@@ -13,131 +58,195 @@ import pathlib
 # [ ] Add docstrings/documentation
 # [ ] Example code/usage
 # [ ] Properly bundle into a python package
+# [ ] Properly handle CLI print output
+# [ ] Error trapping/self-consistency checking
+# [ ] Type hints & docstrings
+# [ ] Add LOST help functionality
+# [ ] Filesystem pipes instead of files
+# [ ] Bundle package to minimal set of files for install
+# [ ] Review package files and consider adding symlink for lost binary
+# [ ] Consider changing from `X_default_args` to `X_args(overrides: dict)`
+# [ ] Plotting helper commands using matplotlib
 
 
-lost_dir = os.path.dirname(os.path.realpath(__file__))
+# paths for important things
+LOST_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+LOST_EXECUTABLE_PATH = f"{LOST_DIR_PATH}/lost"
+TEMP_DIR_PATH = f'{LOST_DIR_PATH}/tmp'
 
-lost_path = f"{lost_dir}/lost"
-temp_dir_path = f'{lost_dir}/tmp'
 
-raw_input_path = f'{temp_dir_path}/raw-input.png'
-annotated_input_path = f'{temp_dir_path}/input.png'
-annotated_output_path = f'{temp_dir_path}/annotated_output.png'
-attitude_path = f'{temp_dir_path}/attitude.txt'
-database_path = f'{temp_dir_path}/tmp_database.dat'
+# paths for temporary files
+RAW_INPUT_PATH = f'{TEMP_DIR_PATH}/raw-input.png'
+ANNOTATED_INPUT_PATH = f'{TEMP_DIR_PATH}/input.png'
+ANNOTATED_OUTPUT_PATH = f'{TEMP_DIR_PATH}/annotated_output.png'
+ATTITUDE_PATH = f'{TEMP_DIR_PATH}/attitude.txt'
+DATABASE_PATH = f'{TEMP_DIR_PATH}/tmp_database.dat'
+
 
 # make temporary directory if it doesn't exist
-pathlib.Path(temp_dir_path).mkdir(exist_ok=True)
-
-# runs lost with the provided array of command line arguments
-# TODO: investigate return/command line output
-def lost(args):
-    subprocess.run([lost_path] + args, cwd=lost_dir)
+pathlib.Path(TEMP_DIR_PATH).mkdir(exist_ok=True)
 
 
-# generates kvector database (required before identifying images)
-def database(max_stars=5000, kvector=True, kvector_min_distance=0.2,
-             kvector_max_distance=15.0, kvector_distance_bins=10000):
-    args = [
-        'database',
-        '--max-stars', str(max_stars),
-        '--kvector',
-        '--kvector-min-distance', str(kvector_min_distance),
-        '--kvector-max-distance', str(kvector_max_distance),
-        '--kvector-distance-bins', str(kvector_distance_bins),
-        '--output', database_path,
-    ]
+# TODO: revisit return type (string output from LOST?)
+def lost(args: dict) -> None:
+    '''Call LOST, passing a `dict` of arguments.'''
+    lost_cli_list(flatten_dict_to_list(args))
+
+
+def lost_cli_list(args: list) -> None:
+    '''Call LOST command line interface, passing a `list` of arguments.'''
+    pass_args = [str(arg) for arg in args]
+    subprocess.run([LOST_EXECUTABLE_PATH] + pass_args, cwd=LOST_DIR_PATH)
+
+
+#######################
+# DATABASE GENERATION #
+#######################
+
+
+def database_default_args() -> dict:
+    '''Returns dictionary of default arguments for :func:`lost.database`.'''
+    return {
+        'database': None,
+        '--max-stars': 5000,
+        '--kvector': None,
+        '--kvector-min-distance': 0.2,
+        '--kvector-max-distance': 15.0,
+        '--kvector-distance-bins': 10_000,
+        '--output': DATABASE_PATH,
+    }
+
+
+def database(args: dict = database_default_args()) -> None:
+    '''
+    Calls LOST's database generation command.
+
+    Must be called before :func:`lost.identify` to initialize LOST.
+
+    See :func:`lost.database_default_args` for arguments.
+    '''
+    # TODO: validate sanity of database parameters
     lost(args)
 
 
-def generate(x_resolution=1024, y_resolution=1024, fov=30,
-             reference_brightness=100, spread_stddev=1, read_noise_stddev=0.05,
-             ra=88, de=7, roll=0, generate_raw=True, generate_annotated=True):
+####################
+# IMAGE GENERATION #
+####################
 
-    # general arguments
-    args = [
-        'pipeline',
-        '--generate', '1',
-        '--generate-x-resolution', str(x_resolution),
-        '--generate-y-resolution', str(y_resolution),
-        '--fov', str(fov),
+
+def generate_default_args(generate_raw: bool = True,
+                          generate_annotated: bool = True) -> dict:
+    '''
+    Returns `dict` of default arguments for :func:`lost.generate`.
+
+    If `generate_raw` is `True`, include command to generate raw input image.
+
+    If `generate_annotated` is `True`, include command to generate annotated
+        input image.
+    '''
+    args = {
+        'pipeline': None,
+        '--generate': '1',
+        '--generate-x-resolution': 1024,
+        '--generate-y-resolution': 1024,
+        '--fov': 30,
+        # what to do with read_noise_stddev=0.05 ?
         # this is an unrecognized parameter?
         # '--generate-reference-brightness', str(reference_brightness),
-        '--generate-spread-stddev', str(spread_stddev),
-        '--generate-ra', str(ra),
-        '--generate-de', str(de),
-        '--generate-roll', str(roll)
-    ]
+        '--generate-spread-stddev': 1,
+        '--generate-ra': 88,
+        '--generate-de': 7,
+        '--generate-roll': 0,
+    }
 
     # add image generation arguments as applicable
     if generate_raw:
-        args.extend(['--plot-raw-input', raw_input_path])
+        args['--plot-raw-input'] = RAW_INPUT_PATH
     if generate_annotated:
-        args.extend(['--plot-input', annotated_input_path])
+        args['--plot-input'] = ANNOTATED_INPUT_PATH
 
-    # execute LOST
+    return args
+
+
+def generate(args: dict = generate_default_args()) -> \
+        tuple[np.ndarray, np.ndarray]:
+    '''
+    Calls LOST's image generation command, returning generated images.
+
+    See :func:`lost.generate_default_args` for parameters.
+
+    Returns `(raw_result: np.ndarray, annotated_result: np.ndarray)`.
+    '''
     lost(args)
 
-    # load image to memory
     raw_result = None
-    if generate_raw:
-        raw_result = imread(raw_input_path)
-        delete_file(raw_input_path)
+    if '--plot-raw-input' in args:
+        # TODO: use appropriate raw input path
+        raw_result = imread(RAW_INPUT_PATH)
+        print(type(raw_result))
+        delete_file(RAW_INPUT_PATH)
 
     annotated_result = None
-    if generate_annotated:
-        annotated_result = imread(annotated_input_path)
-        delete_file(annotated_input_path)
+    if '--plot-input' in args:
+        # TODO: use appropriate annotated input path
+        annotated_result = imread(ANNOTATED_INPUT_PATH)
+        delete_file(ANNOTATED_INPUT_PATH)
 
-    # return image as array, optionally annotated too
     return (raw_result, annotated_result)
 
 
-focal_length = 49
-
-centroid_algo = 'cog'  # 'cog', 'dummy', 'iwcog'
-star_id_algo = 'py'  # 'dummy', 'gv', 'py', 'tetra'
-attitude_algo = 'dqm'  # 'dqm' (Davenport Q), 'triad', 'quest'
-
-centroid_mag_filter = 5
-
-pixel_size = 22.2
-angular_tolerance = 0.05
-
-false_stars = 1000
-
-max_mismatch_prob = 0.0001
+########################
+# IMAGE IDENTIFICATION #
+########################
 
 
-def identify(image, plot_output=False):
+def identify_default_args() -> dict:
+    '''Returns `dict` of default arguments for :func:`lost.identify`.'''
+    return {
+        'pipeline': None,
+        '--png': RAW_INPUT_PATH,
+        '--focal-length': 49,
+        '--pixel-size': 22.2,
+        '--centroid-algo': 'cog',  # 'cog', 'dummy', 'iwcog'
+        '--centroid-mag-filter': 5,
+        '--database': DATABASE_PATH,
+        '--star-id-algo': 'py',  # 'dummy', 'gv', 'py', 'tetra'
+        '--angular-tolerance': 0.05,
+        '--false-stars': 1000,
+        '--max-mismatch-prob': 0.0001,
+        '--attitude-algo': 'dqm',  # 'dqm' (Davenport Q), 'triad', 'quest'
+        '--print-attitude': ATTITUDE_PATH,
+    }
+
+
+def identify(image: np.ndarray, args: dict = identify_default_args()) -> dict:
+    '''
+    Identifies `image: np.ndarray`, returning attitude information as `dict`.
+
+    Running :func:`lost.database` is a prerequisite.
+
+    Returns dictionary of attitude information:
+    ```
+    {
+        "attitude_known": int,   # 1 if identified successfully
+        "attitude_ra": float,    # right ascension, degrees
+        "attitude_de": float,    # declination, degrees
+        "attitude_roll": float,  # roll, degrees
+        "attitude_i": float,     # attitude quaternion i
+        "attitude_j": float,     # attitude quaternion j
+        "attitude_k": float,     # attitude quaternion k
+        "attitude_real": float,  # attitude quaternion real part
+    }
+    ```
+    '''
     # save the given image to disk so LOST can use it
-    imwrite(raw_input_path, image)
-
-    args = [
-        'pipeline',
-        '--png', raw_input_path,
-        '--focal-length', str(focal_length),
-        '--pixel-size', str(pixel_size),
-        '--centroid-algo', centroid_algo,
-        '--centroid-mag-filter', str(centroid_mag_filter),
-        '--database', database_path,
-        '--star-id-algo', star_id_algo,
-        '--angular-tolerance', str(angular_tolerance),
-        '--false-stars', str(false_stars),
-        '--max-mismatch-prob', str(max_mismatch_prob),
-        '--attitude-algo', attitude_algo,
-        '--print-attitude', attitude_path,
-        # '--plot-output', annotated_output_path,  # TODO: option to return
-    ]
-
-    if plot_output:
-        args += ['--plot-output', annotated_output_path]
+    imwrite(RAW_INPUT_PATH, image)
 
     # identify image
     lost(args)
 
     # parse/load attitude file
-    with open(attitude_path) as f:
+    with open(ATTITUDE_PATH) as f:
         read_data = f.read()
 
     result = {}
@@ -152,25 +261,39 @@ def identify(image, plot_output=False):
             result[sp[0]] = float(sp[1])
 
     # clean up leftover junk (image, attitude file)
-    delete_file(attitude_path)
-    delete_file(raw_input_path)
-
-    if plot_output:
-        result['annotated_output_image'] = imread(annotated_output_path)
-        delete_file(annotated_output_path)
+    delete_file(ATTITUDE_PATH)
+    delete_file(RAW_INPUT_PATH)
 
     # return attitue information, optionally output
     return result
 
 
-def imread(path):
-    im = imageio.imread(path)
-    return im
+###########################
+# MISCELLANEOUS UTILITIES #
+###########################
 
 
-def imwrite(path, image):
+def flatten_dict_to_list(dictionary: dict) -> list:
+    '''
+    'flattens' a dictionary into a list, skipping None values.
+
+    {'a': 'b', 'c': None, 'd': 3.14} -> ['a', 'b', 'c', 'd', 3.14]
+    '''
+    arr = []
+    for key, value in dictionary.items():
+        arr.append(key)
+        if not (value is None):
+            arr.append(value)
+    return arr
+
+
+def imread(path: str) -> np.ndarray:
+    return imageio.imread(path)
+
+
+def imwrite(path: str, image: np.ndarray) -> None:
     imageio.imwrite(path, image)
 
 
-def delete_file(path):
+def delete_file(path: str) -> None:
     pathlib.Path(path).unlink()
