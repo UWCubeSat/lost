@@ -124,15 +124,16 @@ import pathlib
 # [x] Change from `X_default_args` to `X_args(overrides: dict)`
 # [x] Type hints
 # [x] Debug flag to print CLI args
-# [ ] ** Example code/usage, incl. in docstrings
+# [x] ** Example code/usage, incl. in docstrings
+# [x] Thorough docstrings
+# [x] Update readme (or make python-specific readme?)
+# [ ] Filesystem pipes instead of files
+#     https://tutorialspoint.com/How-to-create-and-use-a-named-pipe-in-Python
+# [ ] Error trapping/self-consistency checking (presence of LOST bin, params...)
 # [ ] Ensure all parameters are available
 # [ ] Test that all parameters work correctly
-# [ ] Thorough docstrings
 # [ ] Properly handle CLI print output
-# [ ] Error trapping/self-consistency checking (presence of LOST bin, params...)
 # [ ] Add LOST help functionality
-# [ ] Update readme (or make python-specific readme?)
-# [ ] Filesystem pipes instead of files
 # [ ] Plotting helper commands using matplotlib
 # [ ] Propose future work/splitting things out (python vs cli vs others)
 # [ ] Incorporate wheel check https://github.com/jwodder/check-wheel-contents
