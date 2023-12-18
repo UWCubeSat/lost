@@ -159,8 +159,8 @@ filter should be decreased.
 
 LOST also has a basic Python interface.
 
-Note that the Python interface is under heavy development, so documentation is
-sparse, interfaces are likely to change, and things might not work properly.
+Note that the Python interface is less thoroughly developed and tested at the
+moment, so please report any issues you encounter.
 
 ## Building the Python Interface
 
@@ -169,10 +169,10 @@ sparse, interfaces are likely to change, and things might not work properly.
 First, follow the build instructions for local installation so you have a LOST
 executable.
 
-To build & install the python interface, run `pip3 install --upgrade .`
+To build & install the python interface locally, run `pip3 install --upgrade .`
 
-*Note: the `--upgrade` isn't necessary for a fresh install, but it will make sure you're up
-to date with what's in this repo if you previously installed LOST.*
+*Note: the `--upgrade` isn't necessary for a fresh install, but it'll make sure
+you're up to date with what's in this repo if you previously installed LOST.*
 
 To uninstall, run `pip3 uninstall lost`
 
@@ -183,67 +183,22 @@ add this as a part of the setup script?).
 
 ### For Distribution (Python Wheel)
 
+To build LOST as a `.whl` file that can be easily distributed and installed
+across machines, do the following steps:
+
 1. Build LOST binary for the target platform & put it in the root directory of the LOST repo (i.e., run `make`) (note: this binary must be compatible with the target system)
-1. Run `python3 setup.py bdist_wheel`
-1. Copy the `lost-....whl` from the dist/ folder to the target machine
-1. On the target machine, run `pip3 install lost-...whl` in the same directory as the `.whl` file
-1. On the target machine, `import lost` and you are good to go!
+2. Run `python3 setup.py bdist_wheel`
+3. Copy the `lost-....whl` from the dist/ folder to the target machine
+4. On the target machine, run `pip3 install lost-...whl` in the same directory as the `.whl` file
+5. On the target machine, `import lost` and you are good to go!
 
 
 ## Using the Python Interface
 
-Set up LOST by generating the database:
+See the docstrings, for example by running `help(lost)` in Python, or hovering
+over symbols in your IDE.
 
-```Python
-import lost
-lost.database()
-```
-
-Set up a visualization helper method:
-
-```Python
-import matplotlib as mpl
-from matplotlib import pyplot as plt
-
-def show(im):
-    mpl.rcParams['figure.dpi'] = 600
-    plt.imshow(im)
-    plt.show()
-```
-
-Read and identify an image:
-
-```Python
-# read in a test image as a numpy array
-import imageio.v3 as imageio
-im = imageio.imread('IMAGE_NAME.png')
-
-# you may need to change ID algorithms to match your camera parameters:
-# lost.focal_length = 49
-# lost.pixel_size = 22.2
-
-# identify attitude of satellite
-result = lost.identify(im, plot_output=True)
-
-# extract the annotated output image from the result
-result_image = result['annotated_output_image']
-del result['annotated_output_image']
-
-# pretty print attitude info with JSON module
-import json
-print(json.dumps(result, indent=True))
-
-show(result_image)
-```
-
-Generate a sample image:
-
-```Python
-im1, im2 = lost.generate(generate_annotated=True)
-show(im2)
-```
-
-For more usage details, see the source code in `/lostpy/__init__.py`.
+The `lost` module's docstring contains a quick tutorial with basic usage.
 
 <!-- # Parts of a Star Tracking System -->
 

@@ -1,44 +1,109 @@
 '''
-Python interface to the LOST Open-source Star Tracker.
+LOST Open-source Star Tracker (Python Interface)
 
-Depends on the LOST binary being properly built & in the same folder as this
-Python module.
+This module is a Python interface to the LOST Open-source Star Tracker. It is
+based on the Command Line Interface (CLI) for LOST.
 
-# Usage
+It depends on the LOST binary being properly built & bundled in the same folder
+with this Python module.
+
+To report issues and learn more, visit https://github.com/UWCubeSat/lost.
+
+
+## Usage
 -------
 
 For general usage, first run :func:`lost.database` to initialize the star
-identification database. Then, run :func:`lost.identify` to identify
-images, or :func:`lost.generate` to generate simulated images. Example:
+identification database.
 
-```
-import lost
-lost.database()
+Then, run :func:`lost.identify` to identify images, or :func:`lost.generate`
+to generate simulated images.
 
-# read in the test image as a numpy array
-import imageio.v3 as imageio
-im = imageio.imread('img_7660.png')
+In general, `database`, `identify`, and `generate` work like the CLI
+equivalents, and arguments are specified in a similar way, too. Methods ending
+in `_args` are helper methods that create reasonable arguments for each command,
+with the option to override or add parameters:
 
-# identify attitude of satellite using default parameters
-result = lost.identify(im)
-
-# pretty print attitude info with JSON module
-import json
-print(json.dumps(result, indent=True))
-
-# generate image using default parameters
-raw, annotated = lost.generate()
-show(raw)
-show(annotated)
+```Python
+args = lost.X_args({ '--foo': 'override value' })
+lost.X(args)
 ```
 
-# Detailed documentation
-------------------------
-
-For detailed usage documentation, run the LOST binary's help commands:
+For detailed LOST documentation, run the LOST binary's help commands:
 
 * `./lost database --help`: database command
 * `./lost pipeline --help`: image generation & identification pipeline command
+
+For more usage details, see the following tutorial, docstrings for methods, and
+the source code in `__init__.py`.
+
+## Tutorial
+-----------
+
+### Setup
+
+Set up LOST by generating the database. You can add overrides to the `args`
+`dict` by passing in a `dict` to `database_args`. In this case, the override is
+redundant (5000 is the default), but it illustrates the approach:
+
+```Python
+import lost
+
+args = lost.database_args({ '--max-stars': 5000 })
+lost.database(args)
+```
+
+### Load Image
+
+Load our test image (downloadable at https://markasoftware.com/img_7660.png).
+It's a PNG loaded from disk, which results in an `np.ndarray` of shape
+`(667, 1000, 3)` (height, width, spectra) and data type `uint8`.
+
+```Python
+import imageio.v3 as imageio
+im = imageio.imread('img_7660.png')
+```
+
+### Identify Image
+
+Identify the image. Overrides specified the same way as for `database_args`.
+
+```Python
+# identify attitude of satellite
+args = lost.identify_args({ '--star-id-algo': 'py' })
+result = lost.identify(im)
+
+# pretty print attitude info using JSON module
+import json
+print(json.dumps(result, indent=True))
+```
+
+### Generate Images
+
+Generate simulated images. Overrides work as before.
+
+```Python
+import matplotlib as mpl
+from matplotlib import pyplot as plt
+
+# Show some number of np.ndarray images side-by-side using pyplot.
+def show(*ims) -> None:
+    mpl.rcParams['figure.dpi'] = 600
+    fig, axes = plt.subplots(1, len(ims), tight_layout=True, squeeze=False)
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(ims[i])
+        ax.axis('off')
+    plt.show()
+
+# Generate images using LOST.
+args = lost.generate_args({ '--generate-de': 8 })
+raw1, annotated1 = lost.generate(args)
+
+args = lost.generate_args({ '--generate-de': 5 })
+raw2, annotated2 = lost.generate(args)
+
+show(raw1, annotated1, raw2, annotated2)
+```
 '''
 
 
@@ -64,7 +129,7 @@ import pathlib
 # [ ] Test that all parameters work correctly
 # [ ] Thorough docstrings
 # [ ] Properly handle CLI print output
-# [ ] Error trapping/self-consistency checking
+# [ ] Error trapping/self-consistency checking (presence of LOST bin, params...)
 # [ ] Add LOST help functionality
 # [ ] Update readme (or make python-specific readme?)
 # [ ] Filesystem pipes instead of files
