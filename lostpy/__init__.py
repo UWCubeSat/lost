@@ -56,6 +56,7 @@ import pathlib
 # [x] Properly bundle into a python package (wheel, .whl)
 # [x] Bundle package to minimal set of files for install
 # [x] Review package files and consider adding symlink for lost binary
+# [x] Change from `X_default_args` to `X_args(overrides: dict)`
 # [ ] ** Example code/usage, incl. in docstrings
 # [ ] Ensure all parameters are available
 # [ ] Test that all parameters work correctly
@@ -66,7 +67,6 @@ import pathlib
 # [ ] Add LOST help functionality
 # [ ] Update readme (or make python-specific readme?)
 # [ ] Filesystem pipes instead of files
-# [ ] Consider changing from `X_default_args` to `X_args(overrides: dict)`
 # [ ] Plotting helper commands using matplotlib
 # [ ] Propose future work/splitting things out (python vs cli vs others)
 # [ ] Incorporate wheel check https://github.com/jwodder/check-wheel-contents
@@ -108,9 +108,15 @@ def lost_cli_list(args: list) -> None:
 #######################
 
 
-def database_default_args() -> dict:
-    '''Returns dictionary of default arguments for :func:`lost.database`.'''
-    return {
+def database_args(overrides: dict = {}) -> dict:
+    '''
+    Returns dictionary of default arguments for :func:`lost.database`.
+    
+    Applies `overrides` dict over generated/default values. For example,
+    `database_args({'--max-stars': 4000})` will result in '--max-stars' mapping
+    to 4000 in the returned dict.
+    '''
+    args = {
         'database': None,
         '--max-stars': 5000,
         '--kvector': None,
@@ -119,15 +125,17 @@ def database_default_args() -> dict:
         '--kvector-distance-bins': 10_000,
         '--output': DATABASE_PATH,
     }
+    args.update(overrides)
+    return args
 
 
-def database(args: dict = database_default_args()) -> None:
+def database(args: dict = database_args()) -> None:
     '''
     Calls LOST's database generation command.
 
     Must be called before :func:`lost.identify` to initialize LOST.
 
-    See :func:`lost.database_default_args` for arguments.
+    See :func:`lost.database_args` for arguments.
     '''
     # TODO: validate sanity of database parameters
     lost(args)
@@ -138,10 +146,15 @@ def database(args: dict = database_default_args()) -> None:
 ####################
 
 
-def generate_default_args(generate_raw: bool = True,
-                          generate_annotated: bool = True) -> dict:
+def generate_args(overrides: dict = {},
+                  generate_raw: bool = True,
+                  generate_annotated: bool = True) -> dict:
     '''
     Returns `dict` of default arguments for :func:`lost.generate`.
+
+    Applies `overrides` dict over generated/default values. For example,
+    `generate_args({'--generate-de': 8})` will result in '--generate-de' mapping
+    to 8 in the returned dict.
 
     If `generate_raw` is `True`, include command to generate raw input image.
 
@@ -169,15 +182,16 @@ def generate_default_args(generate_raw: bool = True,
     if generate_annotated:
         args['--plot-input'] = ANNOTATED_INPUT_PATH
 
+    args.update(overrides)
     return args
 
 
-def generate(args: dict = generate_default_args()) -> \
+def generate(args: dict = generate_args()) -> \
         tuple[np.ndarray, np.ndarray]:
     '''
     Calls LOST's image generation command, returning generated images.
 
-    See :func:`lost.generate_default_args` for parameters.
+    See :func:`lost.generate_args` for parameters.
 
     Returns `(raw_result: np.ndarray, annotated_result: np.ndarray)`.
     '''
@@ -187,7 +201,6 @@ def generate(args: dict = generate_default_args()) -> \
     if '--plot-raw-input' in args:
         # TODO: use appropriate raw input path
         raw_result = imread(RAW_INPUT_PATH)
-        print(type(raw_result))
         delete_file(RAW_INPUT_PATH)
 
     annotated_result = None
@@ -204,9 +217,15 @@ def generate(args: dict = generate_default_args()) -> \
 ########################
 
 
-def identify_default_args() -> dict:
-    '''Returns `dict` of default arguments for :func:`lost.identify`.'''
-    return {
+def identify_args(overrides: dict = {}) -> dict:
+    '''
+    Returns `dict` of default arguments for :func:`lost.identify`.
+    
+    Applies `overrides` dict over generated/default values. For example,
+    `identify_args({'--star-id-algo': 'tetra'})` will result in
+    '--star-id-algo' mapping to 'tetra' in the returned dict.
+    '''
+    args = {
         'pipeline': None,
         '--png': RAW_INPUT_PATH,
         '--focal-length': 49,
@@ -221,13 +240,17 @@ def identify_default_args() -> dict:
         '--attitude-algo': 'dqm',  # 'dqm' (Davenport Q), 'triad', 'quest'
         '--print-attitude': ATTITUDE_PATH,
     }
+    args.update(overrides)
+    return args
 
 
-def identify(image: np.ndarray, args: dict = identify_default_args()) -> dict:
+def identify(image: np.ndarray, args: dict = identify_args()) -> dict:
     '''
     Identifies `image: np.ndarray`, returning attitude information as `dict`.
 
     Running :func:`lost.database` is a prerequisite.
+
+    See :func:`lost.identify_args` for parameters.
 
     Returns dictionary of attitude information:
     ```
