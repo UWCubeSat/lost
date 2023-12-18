@@ -57,13 +57,14 @@ import pathlib
 # [x] Bundle package to minimal set of files for install
 # [x] Review package files and consider adding symlink for lost binary
 # [x] Change from `X_default_args` to `X_args(overrides: dict)`
+# [x] Type hints
+# [x] Debug flag to print CLI args
 # [ ] ** Example code/usage, incl. in docstrings
 # [ ] Ensure all parameters are available
 # [ ] Test that all parameters work correctly
 # [ ] Thorough docstrings
 # [ ] Properly handle CLI print output
 # [ ] Error trapping/self-consistency checking
-# [ ] Type hints
 # [ ] Add LOST help functionality
 # [ ] Update readme (or make python-specific readme?)
 # [ ] Filesystem pipes instead of files
@@ -87,6 +88,10 @@ ATTITUDE_PATH = f'{TEMP_DIR_PATH}/attitude.txt'
 DATABASE_PATH = f'{TEMP_DIR_PATH}/tmp_database.dat'
 
 
+# module configuration flags
+debug_print_cli_args = False
+
+
 # make temporary directory if it doesn't exist
 pathlib.Path(TEMP_DIR_PATH).mkdir(exist_ok=True)
 
@@ -100,6 +105,8 @@ def lost(args: dict) -> None:
 def lost_cli_list(args: list) -> None:
     '''Call LOST command line interface, passing a `list` of arguments.'''
     pass_args = [str(arg) for arg in args]
+    if debug_print_cli_args:
+        print('calling lost CLI with args:', pass_args)
     subprocess.run([LOST_EXECUTABLE_PATH] + pass_args, cwd=LOST_DIR_PATH)
 
 
@@ -111,7 +118,7 @@ def lost_cli_list(args: list) -> None:
 def database_args(overrides: dict = {}) -> dict:
     '''
     Returns dictionary of default arguments for :func:`lost.database`.
-    
+
     Applies `overrides` dict over generated/default values. For example,
     `database_args({'--max-stars': 4000})` will result in '--max-stars' mapping
     to 4000 in the returned dict.
@@ -220,7 +227,7 @@ def generate(args: dict = generate_args()) -> \
 def identify_args(overrides: dict = {}) -> dict:
     '''
     Returns `dict` of default arguments for :func:`lost.identify`.
-    
+
     Applies `overrides` dict over generated/default values. For example,
     `identify_args({'--star-id-algo': 'tetra'})` will result in
     '--star-id-algo' mapping to 'tetra' in the returned dict.
