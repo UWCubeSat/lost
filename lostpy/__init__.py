@@ -51,23 +51,27 @@ import pathlib
 
 # TODO:
 # [x] Bare bones MVP of database, generation, and identification working
-# [ ] Organize this file
-# [ ] Solidify interfaces (especially around setting parameters)
+# [x] Organize this file
+# [x] Solidify interfaces (especially around setting parameters)
+# [x] Properly bundle into a python package (wheel, .whl)
+# [x] Bundle package to minimal set of files for install
+# [x] Review package files and consider adding symlink for lost binary
+# [ ] ** Example code/usage, incl. in docstrings
 # [ ] Ensure all parameters are available
 # [ ] Test that all parameters work correctly
-# [ ] Add docstrings/documentation
-# [ ] Example code/usage
-# [ ] Properly bundle into a python package
+# [ ] Thorough docstrings
 # [ ] Properly handle CLI print output
 # [ ] Error trapping/self-consistency checking
-# [ ] Type hints & docstrings
+# [ ] Type hints
 # [ ] Add LOST help functionality
+# [ ] Update readme (or make python-specific readme?)
 # [ ] Filesystem pipes instead of files
-# [ ] Bundle package to minimal set of files for install
-# [ ] Review package files and consider adding symlink for lost binary
 # [ ] Consider changing from `X_default_args` to `X_args(overrides: dict)`
 # [ ] Plotting helper commands using matplotlib
-
+# [ ] Propose future work/splitting things out (python vs cli vs others)
+# [ ] Incorporate wheel check https://github.com/jwodder/check-wheel-contents
+# [ ] Architecture packages: https://github.com/python-poetry/poetry/issues/5205
+# [ ] Investigate "Package would be ignored" warning on wheel build ('lost.tmp')
 
 # paths for important things
 LOST_DIR_PATH = os.path.dirname(os.path.realpath(__file__))

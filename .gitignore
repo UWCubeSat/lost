@@ -117,3 +117,4 @@ pyramid-incorrect.dat
 # Python interface
 lost.egg-info/*
 build/lib/*
+dist/*.whl
