@@ -202,7 +202,7 @@ decimal Vec3::operator*(const Vec3 &other) const {
     return DECIMAL_FMA(x,other.x, DECIMAL_FMA(y,other.y, z*other.z));
 }
 
-/// Dot product
+/// Vector-Scalar multiplication
 Vec2 Vec2::operator*(const decimal &other) const {
     return { x*other, y*other };
 }
@@ -217,7 +217,7 @@ Vec2 Vec2::operator+(const Vec2 &other) const {
     return {x + other.x, y + other.y };
 }
 
-/// Usual vector addition
+/// Usual vector subtraction
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
