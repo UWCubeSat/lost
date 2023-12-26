@@ -195,7 +195,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        std::sort(catalog.begin(), catalog.end(), [](<span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;a, <span class="keyword">const</span> <a class="code" href="classlost_1_1_catalog_star.html">CatalogStar</a> &amp;b) {</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            return a.spatial.x &lt; b.spatial.x;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        });</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = catalog.size(); i &gt; 0; i--) {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = catalog.size()-1; i &gt; 0; i--) {</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keywordflow">if</span> ((catalog[i].spatial - catalog[i-1].spatial).Magnitude() &lt; <a class="code" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(5e-5)) { <span class="comment">// 70 stars removed at this threshold.</span></div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keywordflow">if</span> (catalog[i].magnitude &gt; catalog[i-1].magnitude) {</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    catalog.erase(catalog.begin() + i);</div>
@@ -2046,7 +2046,7 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on Sat Dec 2 2023 20:48:51 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Tue Dec 26 2023 07:18:06 for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>
