@@ -152,6 +152,8 @@ ANNOTATED_INPUT_PATH = f'{TEMP_DIR_PATH}/input.png'
 ANNOTATED_OUTPUT_PATH = f'{TEMP_DIR_PATH}/annotated_output.png'
 ATTITUDE_PATH = f'{TEMP_DIR_PATH}/attitude.txt'
 DATABASE_PATH = f'{TEMP_DIR_PATH}/tmp_database.dat'
+TETRA_DATABASE_PATH = f'{TEMP_DIR_PATH}/tetra_database.dat'
+PY_DATABASE_PATH = f'{TEMP_DIR_PATH}/py_database.dat'  # pyramidal, not python
 
 
 # module configuration flags
@@ -181,23 +183,36 @@ def lost_cli_list(args: list) -> None:
 #######################
 
 
-def database_args(overrides: dict = {}) -> dict:
+def database_args(overrides: dict = {}, algo: str = 'py') -> dict:
     '''
     Returns dictionary of default arguments for :func:`lost.database`.
 
     Applies `overrides` dict over generated/default values. For example,
     `database_args({'--max-stars': 4000})` will result in '--max-stars' mapping
     to 4000 in the returned dict.
+
+    Sets up for pyramidal if `algo` is `'py'`, or tetra if `algo` is `'tetra'`.
     '''
-    args = {
-        'database': None,
-        '--max-stars': 5000,
-        '--kvector': None,
-        '--kvector-min-distance': 0.2,
-        '--kvector-max-distance': 15.0,
-        '--kvector-distance-bins': 10_000,
-        '--output': DATABASE_PATH,
-    }
+    if algo == 'py':
+        args = {
+            'database': None,
+            '--max-stars': 5000,
+            '--kvector': None,
+            '--kvector-min-distance': 0.2,
+            '--kvector-max-distance': 15.0,
+            '--kvector-distance-bins': 10_000,
+            '--output': PY_DATABASE_PATH,
+        }
+    elif algo == 'tetra':
+        args = {
+            'database': None,
+            '--min-mag': 7,
+            '--tetra': None,
+            '--tetra-max-angle': 12,
+            '--output': TETRA_DATABASE_PATH,
+        }
+    else:
+        raise f"Invalid database algo {algo}. Must be 'py' or 'tetra'."
     args.update(overrides)
     return args
 
@@ -221,7 +236,8 @@ def database(args: dict = database_args()) -> None:
 
 def generate_args(overrides: dict = {},
                   generate_raw: bool = True,
-                  generate_annotated: bool = True) -> dict:
+                  generate_annotated: bool = True,
+                  gen_type: str = 'default') -> dict:
     '''
     Returns `dict` of default arguments for :func:`lost.generate`.
 
@@ -233,21 +249,42 @@ def generate_args(overrides: dict = {},
 
     If `generate_annotated` is `True`, include command to generate annotated
         input image.
+
+    If `gen_type` is `'default'`, generates according to example in README. If
+        it's `'oresat'`, uses OreSat-like image generation.
     '''
-    args = {
-        'pipeline': None,
-        '--generate': '1',
-        '--generate-x-resolution': 1024,
-        '--generate-y-resolution': 1024,
-        '--fov': 30,
-        # what to do with read_noise_stddev=0.05 ?
-        # this is an unrecognized parameter?
-        # '--generate-reference-brightness', str(reference_brightness),
-        '--generate-spread-stddev': 1,
-        '--generate-ra': 88,
-        '--generate-de': 7,
-        '--generate-roll': 0,
-    }
+    if gen_type == 'default':
+        args = {
+            'pipeline': None,
+            '--generate': '1',
+            '--generate-x-resolution': 1024,
+            '--generate-y-resolution': 1024,
+            '--fov': 30,
+            # what to do with read_noise_stddev=0.05 ?
+            # this is an unrecognized parameter?
+            # '--generate-reference-brightness', str(reference_brightness),
+            '--generate-spread-stddev': 1,
+            '--generate-ra': 88,
+            '--generate-de': 7,
+            '--generate-roll': 0,
+        }
+    elif gen_type == 'oresat':
+        args = {
+            'pipeline': None,
+            '--generate': 1,
+            '--fov': 17,
+            '--generate-x-resolution': 1280,
+            '--generate-y-resolution': 960,
+            '--generate-ra': 79.4232,
+            '--generate-de': 46.2072,
+            '--generate-roll': 78.2978,
+            '--generate-perturb-centroids': 0,
+            '--generate-shot-noise': 'true',
+            '--generate-read-noise-stddev': 0.01,
+            '--generate-dark-current': 0.07,
+        }
+    else:
+        raise f"Invalid gen_type {gen_type}. Must be 'default' or 'oresat'."
 
     # add image generation arguments as applicable
     if generate_raw:
@@ -290,29 +327,46 @@ def generate(args: dict = generate_args()) -> \
 ########################
 
 
-def identify_args(overrides: dict = {}) -> dict:
+def identify_args(overrides: dict = {}, algo: str = 'py') -> dict:
     '''
     Returns `dict` of default arguments for :func:`lost.identify`.
 
     Applies `overrides` dict over generated/default values. For example,
     `identify_args({'--star-id-algo': 'tetra'})` will result in
     '--star-id-algo' mapping to 'tetra' in the returned dict.
+
+    Sets up for pyramidal if `algo` is `'py'`, or tetra if `algo` is `'tetra'`.
     '''
-    args = {
-        'pipeline': None,
-        '--png': RAW_INPUT_PATH,
-        '--focal-length': 49,
-        '--pixel-size': 22.2,
-        '--centroid-algo': 'cog',  # 'cog', 'dummy', 'iwcog'
-        '--centroid-mag-filter': 5,
-        '--database': DATABASE_PATH,
-        '--star-id-algo': 'py',  # 'dummy', 'gv', 'py', 'tetra'
-        '--angular-tolerance': 0.05,
-        '--false-stars': 1000,
-        '--max-mismatch-prob': 0.0001,
-        '--attitude-algo': 'dqm',  # 'dqm' (Davenport Q), 'triad', 'quest'
-        '--print-attitude': ATTITUDE_PATH,
-    }
+    if algo == 'py':
+        args = {
+            'pipeline': None,
+            '--png': RAW_INPUT_PATH,
+            '--focal-length': 49,
+            '--pixel-size': 22.2,
+            '--centroid-algo': 'cog',  # 'cog', 'dummy', 'iwcog'
+            '--centroid-mag-filter': 5,
+            '--database': PY_DATABASE_PATH,
+            '--star-id-algo': 'py',  # 'dummy', 'gv', 'py', 'tetra'
+            '--angular-tolerance': 0.05,
+            '--false-stars': 1000,
+            '--max-mismatch-prob': 0.0001,
+            '--attitude-algo': 'dqm',  # 'dqm' (Davenport Q), 'triad', 'quest'
+            '--print-attitude': ATTITUDE_PATH,
+        }
+    elif algo == 'tetra':
+        args = {
+            'pipeline': None,
+            '--png': RAW_INPUT_PATH,
+            '--fov': 17,
+            '--centroid-algo': 'cog',
+            '--centroid-filter-brightest': 4,
+            '--database': TETRA_DATABASE_PATH,
+            '--false-stars': 0,
+            '--attitude-algo': 'dqm',
+            '--print-attitude': ATTITUDE_PATH,
+        }
+    else:
+        raise f"Invalid identification algo {algo}. Must be 'py' or 'tetra'."
     args.update(overrides)
     return args
 
