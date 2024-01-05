@@ -70,7 +70,7 @@ Identify the image. Overrides specified the same way as for `database_args`.
 
 ```Python
 # identify attitude of satellite
-args = lost.identify_args({ '--star-id-algo': 'py' })
+args = lost.identify_args(algo='py')
 result = lost.identify(im)
 
 # pretty print attitude info using JSON module
@@ -332,10 +332,10 @@ def identify_args(overrides: dict = {}, algo: str = 'py') -> dict:
     Returns `dict` of default arguments for :func:`lost.identify`.
 
     Applies `overrides` dict over generated/default values. For example,
-    `identify_args({'--star-id-algo': 'tetra'})` will result in
-    '--star-id-algo' mapping to 'tetra' in the returned dict.
+    `identify_args({'--fov': 18})` will result in
+    `'--fov'` mapping to `18` in the returned dict.
 
-    Sets up for pyramidal if `algo` is `'py'`, or tetra if `algo` is `'tetra'`.
+    Sets up for pyramidal if `algo` is `'py'`,s or tetra if `algo` is `'tetra'`.
     '''
     if algo == 'py':
         args = {
@@ -361,6 +361,7 @@ def identify_args(overrides: dict = {}, algo: str = 'py') -> dict:
             '--centroid-algo': 'cog',
             '--centroid-filter-brightest': 4,
             '--database': TETRA_DATABASE_PATH,
+            '--star-id-algo': 'tetra',
             '--false-stars': 0,
             '--attitude-algo': 'dqm',
             '--print-attitude': ATTITUDE_PATH,
