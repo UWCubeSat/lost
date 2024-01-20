@@ -870,6 +870,10 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         fs.seekg(0, fs.end);
         long length = fs.tellg();
         fs.seekg(0, fs.beg);
+        if (fs.fail()) {
+            std::cerr << "Error reading database! " << strerror(errno) << std::endl;
+            exit(1);
+        }
         std::cerr << "Reading " << length << " bytes of database" << std::endl;
         result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
         fs.read((char *)result.database.get(), length);

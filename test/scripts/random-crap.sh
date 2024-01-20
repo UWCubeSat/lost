@@ -31,6 +31,10 @@ echo 'Issue #36: Cog and Attitude without Star-ID'
 echo 'Run the generator without centroids a whole bunch and make sure no assertions go off'
 ./lost pipeline --generate 200 --generate-perturb-centroids 5 --generate-centroids-only
 
+echo 'Error message for database that does not exist'
+no_database_out=$(./lost pipeline --generate 1 --database 'does not.exist' --star-id-algo py 2>&1) && exit 1
+[[ $no_database_out == 'Error reading database!'* ]] || exit 1
+
 echo 'Speed 95-th percentile should be different than max for 20 but not 19 trials'
 nineteen_out=$(./lost pipeline --generate 19 --generate-centroids-only --attitude-algo quest --print-speed -)
 nineteen_max_ns=$(echo "$nineteen_out" | grep total_max_ns | cut -d' ' -f2)
