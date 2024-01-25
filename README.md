@@ -157,6 +157,51 @@ noisiness of your images. If the output file has many centroids (red boxes) wher
 visible stars, then the filter should be increased. If there are many stars without centroids, the
 filter should be decreased.
 
+# Python Interface
+
+LOST also has a basic Python interface.
+
+Note that the Python interface is less thoroughly developed and tested at the
+moment, so please report any issues you encounter.
+
+## Building the Python Interface
+
+### For Local Use
+
+First, follow the build instructions for local installation so you have a LOST
+executable.
+
+To build & install the python interface locally, run `pip3 install --upgrade .`
+
+*Note: the `--upgrade` isn't necessary for a fresh install, but it'll make sure
+you're up to date with what's in this repo if you previously installed LOST.*
+
+To uninstall, run `pip3 uninstall lost`
+
+If you are suspicious that the built & installed version is not up to date with
+changes you've made in this repo, even after running the install command,
+deleting the `/build` and `/lost.egg-info` folders may help (maybe we should
+add this as a part of the setup script?).
+
+### For Distribution (Python Wheel)
+
+To build LOST as a `.whl` file that can be easily distributed and installed
+across machines, do the following steps:
+
+1. Build LOST binary for the target platform & put it in the root directory of the LOST repo (i.e., run `make`) (note: this binary must be compatible with the target system)
+2. Run `python3 setup.py bdist_wheel`
+3. Copy the `lost-....whl` from the dist/ folder to the target machine
+4. On the target machine, run `pip3 install lost-...whl` in the same directory as the `.whl` file
+5. On the target machine, `import lost` and you are good to go!
+
+
+## Using the Python Interface
+
+See the docstrings, for example by running `help(lost)` in Python, or hovering
+over symbols in your IDE.
+
+The `lost` module's docstring contains a quick tutorial with basic usage.
+
 <!-- # Parts of a Star Tracking System -->
 
 <!-- - **Undistortion or cropping:** It's critical for captured images to be "flat". Unfortunately, real-world lenses make -->
