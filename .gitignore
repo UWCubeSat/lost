@@ -111,3 +111,6 @@ pyramid-incorrect.dat
 
 # macOS
 .DS_Store
+
+# Nix
+result
