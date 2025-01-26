@@ -42,7 +42,7 @@ You need Linux or macOS. On Windows, we recommend installing the Windows Subsyst
     - Locate the eigen3 folder within the 'include' directory of the installed Eigen package. Move it into the vendor directory so that the eigen files are in `vendor/eigen3/Eigen` under the LOST repository
 - Install [groff]("https://formulae.brew.sh/formula/groff#default") via homebrew `brew install groff`
 - If you get errors mentioning 'ASAN' or 'AddressSanitizer', try `make clean` and then `make LOST_DISABLE_ASAN=1` to disable ASAN. See the Linux section above for more details.
-- If you an error like `error: linker command failed with exit code 1` or `library 'cairo' not found`, set LIBS in the Makefile to `LIBS = -L/opt/homebrew/lib -lcairo` and add a line `CFLAGS = -I/opt/homebrew/include/cairo` under it.
+- On Apple Silicon, if you an error like `error: linker command failed with exit code 1` or `library 'cairo' not found`, set LIBS in the Makefile to `LIBS = -L/opt/homebrew/lib -lcairo` and add a line `CFLAGS = -I/opt/homebrew/include/cairo` under it.
 	
 ### Building
 
