@@ -26,7 +26,7 @@ You need Linux or macOS. On Windows, we recommend installing the Windows Subsyst
 - (Recommended) ASAN (Address Sanitizer). We use this to catch memory errors early. `apt install libasan`. (If you wish to use LOST without the address sanitizer, build it with `make LOST_DISABLE_ASAN=1`, or set `export LOST_DISABLE_ASAN=1` in your `~/.bashrc` file to disable it every time you build).
 - Git. On Debian, `apt install git`
 - Cairo, to read and write PNGs as well as draw on them for debugging and demo purposes. You won't
-  need this on your CubeSat. On Debian, `apt install libcairo2-dev`. Elsewhere, follow the
+  need this on your CubeSat. On Debian, `sudo apt-get install libcairo2-dev`. Elsewhere, follow the
   instructions here: https://www.cairographics.org/download/ under the Binary Packages section.
 - Eigen3, a header-only linear algebra and numerical methods library. On Debian, `apt install
   libeigen3-dev`. Elsewhere, download the latest stable release from https://eigen.tuxfamily.org/.
@@ -37,10 +37,12 @@ You need Linux or macOS. On Windows, we recommend installing the Windows Subsyst
 
 - Download [Homebrew](https://brew.sh/), run `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` in terminal
 - Install [cairo](https://formulae.brew.sh/formula/cairo#default) via homebrew `brew install cairo`
+    - Locate the cairo folder within the 'include' directory of the installed cairo package. Move it into the vendor directory so that the cairo files are in `vendor/cairo` under the LOST repository
 - Install [Eigen]("https://formulae.brew.sh/formula/eigen#default") via homebrew `brew install eigen`
-    - Locate Eigen files and move them to `vendor/eigen3/Eigen` under the LOST repository
+    - Locate the eigen3 folder within the 'include' directory of the installed Eigen package. Move it into the vendor directory so that the eigen files are in `vendor/eigen3/Eigen` under the LOST repository
 - Install [groff]("https://formulae.brew.sh/formula/groff#default") via homebrew `brew install groff`
 - If you get errors mentioning 'ASAN' or 'AddressSanitizer', try `make clean` and then `make LOST_DISABLE_ASAN=1` to disable ASAN. See the Linux section above for more details.
+- If you an error like `error: linker command failed with exit code 1` or `library 'cairo' not found`, set LIBS in the Makefile to `LIBS = -L/opt/homebrew/lib -lcairo` and add a line `CFLAGS = -I/opt/homebrew/include/cairo` under it.
 	
 ### Building
 
