@@ -122,6 +122,8 @@ StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char *database, const St
         centroidIndices.push_back(i);
     }
 
+    std::cout << "num centroids: " << centroidIndices.size() << std::endl;
+
     // Sort centroided stars by brightness, high to low. Larger is brighter
     std::sort(centroidIndices.begin(), centroidIndices.end(),
               [&stars](int a, int b) { return stars[a].magnitude > stars[b].magnitude; });

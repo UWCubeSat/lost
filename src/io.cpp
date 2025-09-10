@@ -583,6 +583,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
     }
 
+    std::cout << "catalog size: " << catalog.size() << ", with false stars: " << catalogWithFalse.size() << std::endl;
     for (int i = 0; i < (int)catalogWithFalse.size(); i++) {
         bool isTrueStar = i < (int)catalog.size();
 
@@ -770,17 +771,12 @@ static Attitude RandomAttitude(std::default_random_engine* pReng) {
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
 
-    int seed;
-
-    // time based seed if option specified
-    if (values.timeSeed) {
-        seed = time(0);
-    } else {
-        seed = values.generateSeed;
-    }
+    // Always use std::random_device for non-deterministic seed
+    std::random_device rd;
+    int seed = rd();
 
     std::default_random_engine attitudeRng(seed);
-    std::default_random_engine noiseRng(seed);
+    std::default_random_engine noiseRng(values.generateSeed);
 
     // TODO: allow random angle generation?
     Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
@@ -796,13 +792,17 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
 
 
     for (int i = 0; i < values.generate; i++) {
-
-
         Attitude inputAttitude;
         if (values.generateRandomAttitudes) {
             inputAttitude = RandomAttitude(&attitudeRng);
+            std::cout << "Random attitude:" << std::endl;
+            EulerAngles attitudeAngles = inputAttitude.ToSpherical();
+            std::cout << RadToDeg(attitudeAngles.ra) << ", " << RadToDeg(attitudeAngles.de) << ", "
+                      << RadToDeg(attitudeAngles.roll) << std::endl;
         } else {
             inputAttitude = attitude;
+            std::cout << "Given attitude:" << std::endl;
+            std::cout << values.generateRa << ", " << values.generateDe << ", " << values.generateRoll << std::endl;
         }
 
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(

@@ -190,6 +190,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             }
         }
     }
+    std::cout << "centroiding: " << result.size() << std::endl;
     return result;
 }
 
