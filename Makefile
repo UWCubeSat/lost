@@ -36,8 +36,9 @@ TEST_BIN := ./lost-test
 
 BSC  := bright-star-catalog.tsv
 
-LIBS     := -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
+LIBS     := -L/opt/homebrew/lib -lcairo
+CFLAGS = -I/opt/homebrew/include/cairo
+CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14
 RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
 # debug flags:
 CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
