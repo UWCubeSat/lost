@@ -1,13 +1,35 @@
 <map id="lost::GenerateDatabases" name="lost::GenerateDatabases">
-<area shape="rect" id="node1" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,81,188,108"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="272,5,391,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e" title=" " alt="" coords="247,56,415,83"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="251,107,411,133"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a98d1507ab3e305ab47846133d82e4467" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,169,427,210"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="485,96,671,123"/>
-<area shape="rect" id="node6" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="729,96,871,123"/>
-<area shape="rect" id="node8" href="$namespacelost.html#a7df31f0f6e3ed20311231573630124dc" title="pair K&#45;vector database layout." alt="" coords="475,147,681,173"/>
-<area shape="rect" id="node10" href="$namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="481,197,675,224"/>
-<area shape="rect" id="node11" href="$namespacelost.html#a0227319e45ff29d6f61b7e083d01e31f" title="K&#45;vector index layout." alt="" coords="480,248,676,275"/>
-<area shape="rect" id="node9" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="741,147,859,173"/>
+<area shape="rect" id="Node000001" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,107,188,132"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="272,5,391,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="120,104,172,77,235,48,275,33,277,38,237,52,174,82,122,109"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e" title=" " alt="" coords="743,56,911,81"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,104,236,98,503,79,729,69,729,74,504,84,236,103,184,109"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="972,284,1141,309"/>
+<area shape="poly" id="edge21_Node000001_Node000004" title=" " alt="" coords="188,115,364,115,578,122,684,130,781,141,864,156,925,176,960,196,992,221,1039,271,1035,275,988,225,957,200,923,180,862,161,780,146,683,135,577,128,364,121,188,121"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="251,157,411,183"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="157,130,259,152,258,157,156,135"/>
+<area shape="rect" id="Node000008" href="$namespacelost.html#a98d1507ab3e305ab47846133d82e4467" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,359,427,399"/>
+<area shape="poly" id="edge11_Node000001_Node000008" title=" " alt="" coords="111,130,305,347,301,351,108,134"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="888,79,926,98,968,139,1002,186,1029,232,1047,270,1042,272,1024,235,998,189,964,143,922,103,885,84"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="1019,286,1011,276,1015,266,1031,260,1057,257,1089,261,1101,271,1098,275,1087,266,1057,263,1032,265,1019,270,1016,275,1023,282"/>
+<area shape="poly" id="edge10_Node000005_Node000004" title=" " alt="" coords="411,162,516,160,645,164,786,181,857,195,925,214,983,242,1031,273,1028,278,981,246,923,219,856,200,785,186,645,170,516,165,412,167"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="485,208,671,233"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="395,180,503,203,502,208,394,185"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="672,217,793,224,859,232,925,243,974,258,1018,276,1016,281,972,263,923,249,858,237,792,229,671,223"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="756,259,897,284"/>
+<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="642,231,751,253,750,258,641,236"/>
+<area shape="poly" id="edge9_Node000007_Node000004" title=" " alt="" coords="898,276,959,283,958,289,897,282"/>
+<area shape="poly" id="edge20_Node000008_Node000004" title=" " alt="" coords="426,359,474,351,737,321,958,301,959,307,737,326,475,357,427,364"/>
+<area shape="rect" id="Node000009" href="$namespacelost.html#a787971c8764f348166cc197813d98307" title="pair K&#45;vector database layout." alt="" coords="475,367,681,392"/>
+<area shape="poly" id="edge12_Node000008_Node000009" title=" " alt="" coords="427,377,461,377,461,382,427,382"/>
+<area shape="rect" id="Node000011" href="$namespacelost.html#a68f14b0d645721125203e669cde68358" title=" " alt="" coords="729,460,924,485"/>
+<area shape="poly" id="edge16_Node000008_Node000011" title=" " alt="" coords="428,395,745,455,744,460,427,400"/>
+<area shape="rect" id="Node000012" href="$namespacelost.html#a0227319e45ff29d6f61b7e083d01e31f" title="K&#45;vector index layout." alt="" coords="480,504,676,529"/>
+<area shape="poly" id="edge18_Node000008_Node000012" title=" " alt="" coords="369,397,476,458,542,495,540,500,473,463,366,402"/>
+<area shape="poly" id="edge15_Node000009_Node000004" title=" " alt="" coords="681,371,798,359,923,338,1010,312,1011,317,925,343,799,364,682,376"/>
+<area shape="rect" id="Node000010" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="767,411,886,436"/>
+<area shape="poly" id="edge13_Node000009_Node000010" title=" " alt="" coords="651,389,754,408,753,413,650,395"/>
+<area shape="poly" id="edge14_Node000010_Node000004" title=" " alt="" coords="875,408,923,389,981,353,1028,316,1032,321,984,357,925,394,877,413"/>
+<area shape="poly" id="edge17_Node000011_Node000004" title=" " alt="" coords="896,458,923,445,960,417,992,383,1039,319,1043,322,996,386,963,421,925,450,898,462"/>
+<area shape="poly" id="edge19_Node000012_Node000004" title=" " alt="" coords="643,527,705,534,778,534,853,523,889,512,923,496,947,479,968,458,1003,411,1029,362,1045,321,1050,323,1033,364,1008,414,972,462,950,483,925,500,891,517,854,528,778,539,705,539,642,532"/>
 </map>

@@ -1,4 +1,8 @@
 <map id="lost::Camera::Fov" name="lost::Camera::Fov">
-<area shape="rect" id="node1" title="Horizontal field of view in radians." alt="" coords="5,5,141,32"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a96ba4670682e2bfdbe3fd350b0162e38" title=" " alt="" coords="189,5,359,32"/>
+<area shape="rect" id="Node000001" title="Horizontal field of view in radians." alt="" coords="5,29,141,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a96ba4670682e2bfdbe3fd350b0162e38" title=" " alt="" coords="189,29,359,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,39,176,39,176,45,142,45"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="407,29,576,55"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="359,39,393,39,393,45,359,45"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="456,31,448,21,452,11,467,5,491,3,521,6,533,15,530,20,519,11,491,8,468,10,456,15,454,20,460,28"/>
 </map>

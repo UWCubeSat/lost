@@ -9,7 +9,7 @@ var indexSectionsWithContent =
   6: "acdmps",
   7: "s",
   8: "_delms",
-  9: "lt"
+  9: "cdlt"
 };
 
 var indexSectionNames =

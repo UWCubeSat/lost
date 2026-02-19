@@ -1,0 +1,7 @@
+<map id="lost::IWCoGHelper" name="lost::IWCoGHelper">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,147,55"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="43,31,36,21,39,11,53,5,76,3,104,6,116,16,112,20,102,11,76,8,54,10,43,15,41,20,47,28"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="195,29,364,55"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="147,39,181,39,181,45,147,45"/>
+<area shape="poly" id="edge3_Node000002_Node000002" title=" " alt="" coords="246,31,239,21,243,11,256,5,279,3,308,6,319,16,315,20,305,11,279,8,258,10,246,15,244,20,250,28"/>
+</map>

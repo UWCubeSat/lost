@@ -1,0 +1,6 @@
+<map id="lost::OtsusThreshold" name="lost::OtsusThreshold">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,160,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="208,29,377,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,39,194,39,194,45,160,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="259,31,251,21,255,11,269,5,293,3,322,6,333,15,330,20,320,11,293,8,271,10,259,15,256,20,263,28"/>
+</map>

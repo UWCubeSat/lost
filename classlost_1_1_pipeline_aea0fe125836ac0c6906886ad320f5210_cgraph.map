@@ -1,13 +1,15 @@
 <map id="lost::Pipeline::Go" name="lost::Pipeline::Go">
-<area shape="rect" id="node1" title="Run all stages of a pipeline." alt="" coords="5,195,137,221"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="185,5,363,32"/>
-<area shape="rect" id="node5" href="$classlost_1_1_pipeline_input.html#a31278ee2b910cf3e8af25f71aefcf295" title="The catalog to which catalog indexes returned from other methods refer." alt="" coords="205,57,343,98"/>
-<area shape="rect" id="node6" href="$classlost_1_1_pipeline_input.html#af88962a236353e511724a699dab7a785" title=" " alt="" coords="205,122,343,163"/>
-<area shape="rect" id="node7" href="$classlost_1_1_pipeline_input.html#a4df52c585005abf1154699cb89570db8" title=" " alt="" coords="205,187,343,229"/>
-<area shape="rect" id="node8" href="$classlost_1_1_pipeline_input.html#a3942b6fcacd994b5d9f841a770d895bc" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="205,253,343,294"/>
-<area shape="rect" id="node9" href="$classlost_1_1_pipeline_input.html#aa6c9969bb4118ddf877a1000636f6486" title=" " alt="" coords="205,318,343,359"/>
-<area shape="rect" id="node10" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="193,383,355,425"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="411,5,613,32"/>
-<area shape="rect" id="node4" href="$namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba" title=" " alt="" coords="661,5,820,32"/>
-<area shape="rect" id="node11" href="$namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24" title=" " alt="" coords="455,391,569,417"/>
+<area shape="rect" id="Node000001" title="Run all stages of a pipeline." alt="" coords="5,132,137,157"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022" title="Deserialize a catalog." alt="" coords="185,107,363,132"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="137,134,171,129,172,135,138,139"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="868,81,1037,107"/>
+<area shape="poly" id="edge8_Node000001_Node000005" title=" " alt="" coords="138,143,363,142,591,128,820,106,854,103,854,108,820,111,592,134,363,147,138,149"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a7b5da8e7e7f7a91826c99bcc2be8f482" title="Deserialize a catalog star." alt="" coords="411,56,613,81"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="334,104,438,82,439,87,335,109"/>
+<area shape="poly" id="edge7_Node000002_Node000005" title=" " alt="" coords="363,113,854,95,854,100,363,119"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba" title=" " alt="" coords="661,5,820,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="570,53,669,31,670,36,571,58"/>
+<area shape="poly" id="edge6_Node000003_Node000005" title=" " alt="" coords="614,72,855,86,854,91,614,77"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="778,28,904,74,902,79,776,33"/>
+<area shape="poly" id="edge5_Node000005_Node000005" title=" " alt="" coords="918,83,911,73,915,63,929,57,953,55,982,58,994,67,990,72,980,63,953,60,930,62,918,67,916,72,922,80"/>
 </map>

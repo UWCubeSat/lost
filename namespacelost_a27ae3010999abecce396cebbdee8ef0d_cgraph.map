@@ -1,0 +1,6 @@
+<map id="lost::BadThreshold" name="lost::BadThreshold">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,148,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="196,29,365,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,39,182,39,182,45,148,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="247,31,240,21,244,11,258,5,281,3,309,6,320,16,317,20,307,11,281,8,259,10,248,15,245,20,252,28"/>
+</map>

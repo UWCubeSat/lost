@@ -1,9 +1,9 @@
 var databases_8hpp =
 [
-    [ "KVectorIndex", "classlost_1_1_k_vector_index.html", "classlost_1_1_k_vector_index" ],
-    [ "PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html", "classlost_1_1_pair_distance_k_vector_database" ],
-    [ "MultiDatabase", "classlost_1_1_multi_database.html", "classlost_1_1_multi_database" ],
-    [ "MultiDatabaseEntry", "classlost_1_1_multi_database_entry.html", "classlost_1_1_multi_database_entry" ],
+    [ "lost::KVectorIndex", "classlost_1_1_k_vector_index.html", "classlost_1_1_k_vector_index" ],
+    [ "lost::PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html", "classlost_1_1_pair_distance_k_vector_database" ],
+    [ "lost::MultiDatabase", "classlost_1_1_multi_database.html", "classlost_1_1_multi_database" ],
+    [ "lost::MultiDatabaseEntry", "classlost_1_1_multi_database_entry.html", "classlost_1_1_multi_database_entry" ],
     [ "MULTI_DB_FLOAT_FLAG", "databases_8hpp.html#af8eb463b9b79255956d34ca51d58754f", null ],
     [ "MultiDatabaseDescriptor", "databases_8hpp.html#aaa2e81369410c8a787ec643333d1a7a8", null ],
     [ "isFlagSet", "databases_8hpp.html#a9a6ccd2f576c452a68db8152dc2edb24", null ],

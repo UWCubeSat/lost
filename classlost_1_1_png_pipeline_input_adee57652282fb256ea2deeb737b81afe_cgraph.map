@@ -1,4 +1,9 @@
 <map id="lost::PngPipelineInput::PngPipelineInput" name="lost::PngPipelineInput::PngPipelineInput">
-<area shape="rect" id="node1" title="A pipeline input coming from an image with no extra metadata." alt="" coords="5,5,168,47"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e" title="Convert a colored Cairo image surface into a row&#45;major array of grayscale pixels." alt="" coords="216,5,399,47"/>
+<area shape="rect" id="Node000001" title="A pipeline input coming from an image with no extra metadata." alt="" coords="5,22,168,62"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="447,29,616,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,36,216,35,399,35,433,36,433,41,399,41,216,41,168,42"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e" title="Convert a colored Cairo image surface into a row&#45;major array of grayscale pixels." alt="" coords="216,50,399,90"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="169,50,203,54,202,59,168,55"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="495,31,487,21,491,11,506,5,531,3,563,7,575,16,572,20,561,11,531,8,507,10,495,15,492,20,499,27"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="398,56,433,52,433,57,399,61"/>
 </map>

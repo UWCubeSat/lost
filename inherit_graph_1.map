@@ -1,6 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="5,49,181,90"/>
-<area shape="rect" id="node2" href="$classlost_1_1_davenport_q_algorithm.html" title="A slow but reliable attitude estimation algorithm." alt="" coords="229,5,425,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_quest_algorithm.html" title="A faster and just as accurate attitude estimator as the Davenport Q algorithm." alt="" coords="249,56,405,83"/>
-<area shape="rect" id="node4" href="$classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="253,107,402,133"/>
+<area shape="rect" id="Node000000" href="$classlost_1_1_attitude_estimation_algorithm.html" title="An attitude estimation algorithm estimates the orientation of the camera based on identified stars." alt="" coords="5,47,181,87"/>
+<area shape="rect" id="Node000001" href="$classlost_1_1_davenport_q_algorithm.html" title="A slow but reliable attitude estimation algorithm." alt="" coords="229,5,425,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="194,43,266,28,267,33,195,49"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quest_algorithm.html" title="A faster and just as accurate attitude estimator as the Davenport Q algorithm." alt="" coords="249,55,405,80"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="195,65,249,65,249,70,195,70"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_triad_algorithm.html" title="A fast attitude estimator which only takes into account information from two stars." alt="" coords="253,104,402,129"/>
+<area shape="poly" id="edge3_Node000000_Node000003" title=" " alt="" coords="195,86,267,101,266,107,194,91"/>
 </map>

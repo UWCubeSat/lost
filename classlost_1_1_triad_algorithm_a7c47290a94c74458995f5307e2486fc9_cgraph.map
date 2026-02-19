@@ -1,7 +1,15 @@
 <map id="lost::TriadAlgorithm::Go" name="lost::TriadAlgorithm::Go">
-<area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,31,180,57"/>
-<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="228,5,451,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf" title="Transpose of a matrix." alt="" coords="259,56,419,83"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="499,5,668,32"/>
-<area shape="rect" id="node5" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="529,56,638,83"/>
+<area shape="rect" id="Node000001" title="Actually run the star&#45;id algorithm." alt="" coords="5,81,180,107"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="228,56,451,81"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,82,214,79,215,84,180,88"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf" title="Transpose of a matrix." alt="" coords="259,105,419,131"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="180,100,246,106,246,112,180,105"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="499,5,668,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="401,53,508,31,509,36,402,58"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="716,31,885,56"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="451,60,702,46,702,51,451,65"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="669,25,703,29,702,35,668,31"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="765,32,758,22,762,12,776,6,801,4,831,8,843,17,839,21,829,13,801,9,778,11,765,16,763,22,769,29"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="529,107,638,132"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="420,116,515,116,515,122,420,121"/>
 </map>

@@ -1,5 +1,13 @@
 <map id="lost::CenterOfGravityAlgorithm::Go" name="lost::CenterOfGravityAlgorithm::Go">
-<area shape="rect" id="node1" title="Actually perform the centroid detection." alt="" coords="5,31,256,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#ae369ca6366d9b3c350a14a403107641a" title=" " alt="" coords="304,5,457,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529" title=" " alt="" coords="319,56,442,83"/>
+<area shape="rect" id="Node000001" title="Actually perform the centroid detection." alt="" coords="5,56,256,81"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#ae369ca6366d9b3c350a14a403107641a" title=" " alt="" coords="304,5,457,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,53,304,31,305,36,195,58"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="505,56,675,81"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="256,66,492,66,492,71,256,71"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529" title=" " alt="" coords="319,131,442,156"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="175,79,325,124,324,129,174,84"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="435,28,524,50,523,55,434,33"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="556,58,549,48,552,38,567,32,590,29,619,33,630,42,627,46,617,38,590,35,568,37,556,41,554,47,560,54"/>
+<area shape="poly" id="edge6_Node000004_Node000003" title=" " alt="" coords="417,128,540,83,542,88,418,133"/>
+<area shape="poly" id="edge5_Node000004_Node000004" title=" " alt="" coords="347,132,339,122,343,112,357,106,381,104,410,108,421,117,418,121,408,113,381,109,359,111,347,116,344,122,351,129"/>
 </map>

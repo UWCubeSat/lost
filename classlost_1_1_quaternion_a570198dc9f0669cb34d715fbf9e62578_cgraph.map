@@ -1,5 +1,8 @@
 <map id="lost::Quaternion::Rotate" name="lost::Quaternion::Rotate">
-<area shape="rect" id="node1" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="5,31,183,57"/>
-<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="231,5,431,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="479,31,685,57"/>
+<area shape="rect" id="Node000001" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="5,31,183,56"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="231,5,431,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="183,31,217,27,217,33,183,36"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="479,31,685,56"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="183,41,465,41,465,46,183,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="431,25,465,29,465,34,431,31"/>
 </map>

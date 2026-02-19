@@ -1,5 +1,7 @@
 <map id="lost::Camera::YResolution" name="lost::Camera::YResolution">
-<area shape="rect" id="node1" title="Height of the sensor in pixels." alt="" coords="260,42,451,69"/>
-<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="5,5,212,47"/>
-<area shape="rect" id="node3" href="$namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="43,71,174,98"/>
+<area shape="rect" id="Node000001" title="Height of the sensor in pixels." alt="" coords="260,42,451,67"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="5,5,212,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="246,44,212,40,212,35,247,39"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="43,70,174,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="246,70,175,78,174,73,246,64"/>
 </map>

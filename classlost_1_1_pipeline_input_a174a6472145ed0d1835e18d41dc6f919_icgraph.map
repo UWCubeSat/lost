@@ -1,0 +1,5 @@
+<map id="lost::PipelineInput::InputAttitude" name="lost::PipelineInput::InputAttitude">
+<area shape="rect" id="Node000001" title="Only used in tracking mode, in which case it is an estimate of the current attitude based on the last..." alt="" coords="196,5,335,45"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_pipeline_input.html#aa6683b0cdedbbaa247d399aa251a083c" title=" " alt="" coords="5,5,148,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,28,148,28,148,23,182,23"/>
+</map>

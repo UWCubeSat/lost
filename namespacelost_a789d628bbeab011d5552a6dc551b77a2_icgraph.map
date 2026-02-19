@@ -1,4 +1,6 @@
 <map id="lost::IWCoGHelper" name="lost::IWCoGHelper">
-<area shape="rect" id="node1" title=" " alt="" coords="267,13,408,39"/>
-<area shape="rect" id="node2" href="$classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6" title="Actually perform the centroid detection." alt="" coords="5,5,219,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="267,29,408,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="378,20,367,11,337,8,313,10,301,15,298,20,305,27,301,31,293,21,297,11,312,5,337,3,369,7,381,16"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6" title="Actually perform the centroid detection." alt="" coords="5,22,219,62"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="252,45,219,45,219,39,252,39"/>
 </map>

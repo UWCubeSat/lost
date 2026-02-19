@@ -1,5 +1,8 @@
 <map id="lost::GeneratedStar" name="lost::GeneratedStar">
-<area shape="rect" id="node1" title="A star used in simulated image generation. Contains extra data about how to simulate the star." alt="" coords="5,171,153,197"/>
-<area shape="rect" id="node2" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="107,95,187,121"/>
-<area shape="rect" id="node3" href="$structlost_1_1_vec2.html" title="A two dimensional vector with decimaling point components." alt="" coords="25,5,110,32"/>
+<area shape="rect" id="Node000001" title="A star used in simulated image generation. Contains extra data about how to simulate the star." alt="" coords="5,168,153,193"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="107,93,187,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,131,92,169,88,166,125,127"/>
+<area shape="rect" id="Node000003" href="$structlost_1_1_vec2.html" title="A two dimensional vector with decimaling point components." alt="" coords="25,5,110,31"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="64,45,59,80,61,118,76,167,71,168,55,119,54,80,59,44"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,39,138,91,134,95,85,43"/>
 </map>

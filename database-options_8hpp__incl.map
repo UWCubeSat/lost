@@ -1,6 +1,10 @@
 <map id="src/database&#45;options.hpp" name="src/database&#45;options.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,192,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="28,155,87,181"/>
-<area shape="rect" id="node3" href="$decimal_8hpp.html" title=" " alt="" coords="93,80,195,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="113,155,175,181"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,192,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="28,152,87,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,31,84,79,67,139,62,138,79,78,93,30"/>
+<area shape="rect" id="Node000003" href="$decimal_8hpp.html" title=" " alt="" coords="93,79,195,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="108,30,132,66,127,69,104,32"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="132,106,84,145,80,141,128,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="113,152,175,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="147,104,147,138,141,138,141,104"/>
 </map>

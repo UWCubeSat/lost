@@ -1,5 +1,8 @@
 <map id="lost::Mat3::Det" name="lost::Mat3::Det">
-<area shape="rect" id="node1" title="Determinant of a matrix." alt="" coords="427,5,545,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_mat3.html#a155df2c02f28acae5a3b59757eca0945" title="Inverse of a matrix." alt="" coords="236,31,379,57"/>
+<area shape="rect" id="Node000001" title="Determinant of a matrix." alt="" coords="427,5,545,31"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,188,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="413,21,188,21,188,15,413,15"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_mat3.html#a155df2c02f28acae5a3b59757eca0945" title="Inverse of a matrix." alt="" coords="236,31,379,56"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="413,31,379,36,379,31,413,26"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="222,36,188,32,189,26,222,30"/>
 </map>

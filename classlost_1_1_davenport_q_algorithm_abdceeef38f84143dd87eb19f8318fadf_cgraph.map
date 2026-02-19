@@ -1,5 +1,11 @@
 <map id="lost::DavenportQAlgorithm::Go" name="lost::DavenportQAlgorithm::Go">
-<area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,228,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,5,499,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,5,716,32"/>
+<area shape="rect" id="Node000001" title="Actually run the star&#45;id algorithm." alt="" coords="5,31,228,56"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,31,499,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="228,41,262,41,262,46,228,46"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,5,716,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="498,29,533,26,533,31,499,34"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="764,31,933,56"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="499,41,750,41,750,46,499,46"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="717,25,751,29,750,35,716,31"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="813,32,806,22,810,12,824,6,849,4,879,8,891,17,887,21,877,13,849,9,826,11,813,16,811,22,817,29"/>
 </map>

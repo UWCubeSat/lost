@@ -1,4 +1,5 @@
 <map id="lost::Quaternion::Quaternion" name="lost::Quaternion::Quaternion">
-<area shape="rect" id="node1" title="Creates a &quot;pure quaternion&quot; with the given vector for imaginary parts and zero for real part." alt="" coords="5,5,212,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a6d8e723c0c49869742c938a0dcb38d2f" title="Set imaginary components." alt="" coords="260,5,456,32"/>
+<area shape="rect" id="Node000001" title="Creates a &quot;pure quaternion&quot; with the given vector for imaginary parts and zero for real part." alt="" coords="5,5,212,31"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quaternion.html#a6d8e723c0c49869742c938a0dcb38d2f" title="Set imaginary components." alt="" coords="260,5,456,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,15,246,15,246,21,212,21"/>
 </map>

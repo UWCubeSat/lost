@@ -1,0 +1,6 @@
+<map id="lost::SerializeVec3" name="lost::SerializeVec3">
+<area shape="rect" id="Node000001" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="5,29,147,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="195,29,364,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="147,39,181,39,181,45,147,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="246,31,239,21,243,11,256,5,279,3,308,6,319,16,315,20,305,11,279,8,258,10,246,15,244,20,250,28"/>
+</map>

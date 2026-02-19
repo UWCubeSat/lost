@@ -1,5 +1,7 @@
 <map id="lost::PipelineInput" name="lost::PipelineInput">
-<area shape="rect" id="node1" title="Represents the input and expected outputs of a pipeline run." alt="" coords="143,5,282,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_generated_pipeline_input.html" title="A pipeline input which is generated (fake image)." alt="" coords="5,80,212,107"/>
-<area shape="rect" id="node3" href="$classlost_1_1_png_pipeline_input.html" title="A pipeline input created by reading a PNG from a file on disk." alt="" coords="237,80,399,107"/>
+<area shape="rect" id="Node000001" title="Represents the input and expected outputs of a pipeline run." alt="" coords="143,5,282,31"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_generated_pipeline_input.html" title="A pipeline input which is generated (fake image)." alt="" coords="5,79,212,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="186,41,127,81,124,76,183,36"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_png_pipeline_input.html" title="A pipeline input created by reading a PNG from a file on disk." alt="" coords="237,79,399,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="243,36,302,76,299,81,240,41"/>
 </map>

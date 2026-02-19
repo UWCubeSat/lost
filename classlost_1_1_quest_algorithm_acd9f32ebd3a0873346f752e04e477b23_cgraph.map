@@ -1,15 +1,36 @@
 <map id="lost::QuestAlgorithm::Go" name="lost::QuestAlgorithm::Go">
-<area shape="rect" id="node1" title="Actually run the star&#45;id algorithm." alt="" coords="5,240,188,266"/>
-<area shape="rect" id="node2" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="747,214,856,241"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="238,88,461,114"/>
-<area shape="rect" id="node5" href="$classlost_1_1_mat3.html#a5a3c5d3bb1e90373f8ac1d2c16fca504" title="Determinant of a matrix." alt="" coords="545,164,664,190"/>
-<area shape="rect" id="node6" href="$classlost_1_1_mat3.html#a155df2c02f28acae5a3b59757eca0945" title="Inverse of a matrix." alt="" coords="278,189,421,216"/>
-<area shape="rect" id="node7" href="$classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e" title="The square of the magnitude." alt="" coords="260,240,439,266"/>
-<area shape="rect" id="node8" href="$classlost_1_1_vec3.html#a571a631a6bd21ff61f9111c98f751e5f" title="The outer product of two vectors." alt="" coords="260,290,439,317"/>
-<area shape="rect" id="node9" href="$namespacelost.html#a4c5445cb888227769955b2cdda5ee93a" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,341,463,368"/>
-<area shape="rect" id="node12" href="$classlost_1_1_mat3.html#aba95326b3dbabb03c53de174faf22383" title="Trace of a matrix." alt="" coords="540,392,669,418"/>
-<area shape="rect" id="node13" href="$classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf" title="Transpose of a matrix." alt="" coords="525,442,685,469"/>
-<area shape="rect" id="node4" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="520,88,689,114"/>
-<area shape="rect" id="node10" href="$namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="529,290,680,317"/>
-<area shape="rect" id="node11" href="$namespacelost.html#ae543ffda8031beff6f8015261f1c495c" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="511,341,699,368"/>
+<area shape="rect" id="Node000001" title="Actually run the star&#45;id algorithm." alt="" coords="5,259,188,284"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="777,208,886,233"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,256,236,243,383,230,529,223,763,218,763,223,530,228,383,236,236,249,158,261"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="238,56,461,81"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="102,257,121,225,150,182,189,137,235,98,264,84,267,88,237,103,192,141,155,185,126,228,107,260"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_mat3.html#a5a3c5d3bb1e90373f8ac1d2c16fca504" title="Determinant of a matrix." alt="" coords="545,107,664,132"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="105,257,155,199,192,167,235,142,272,129,311,118,391,107,467,105,532,108,531,113,467,110,391,113,312,124,274,134,237,147,195,171,159,203,109,260"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1_mat3.html#a155df2c02f28acae5a3b59757eca0945" title="Inverse of a matrix." alt="" coords="278,157,421,183"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="119,256,171,228,235,200,282,184,284,189,237,204,174,233,122,261"/>
+<area shape="rect" id="Node000008" href="$classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e" title="The square of the magnitude." alt="" coords="260,259,439,284"/>
+<area shape="poly" id="edge12_Node000001_Node000008" title=" " alt="" coords="188,269,246,269,246,274,188,274"/>
+<area shape="rect" id="Node000009" href="$classlost_1_1_vec3.html#a571a631a6bd21ff61f9111c98f751e5f" title="The outer product of two vectors." alt="" coords="260,308,439,333"/>
+<area shape="poly" id="edge13_Node000001_Node000009" title=" " alt="" coords="163,281,270,303,269,308,162,287"/>
+<area shape="rect" id="Node000010" href="$namespacelost.html#a4c5445cb888227769955b2cdda5ee93a" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="236,357,463,383"/>
+<area shape="poly" id="edge14_Node000001_Node000010" title=" " alt="" coords="119,282,171,312,237,342,266,351,265,356,235,347,169,317,116,286"/>
+<area shape="rect" id="Node000013" href="$classlost_1_1_mat3.html#aba95326b3dbabb03c53de174faf22383" title="Trace of a matrix." alt="" coords="540,407,669,432"/>
+<area shape="poly" id="edge17_Node000001_Node000013" title=" " alt="" coords="109,282,159,338,196,369,237,393,311,415,388,426,462,429,526,426,526,431,462,434,387,432,310,421,235,398,193,373,155,342,105,286"/>
+<area shape="rect" id="Node000014" href="$classlost_1_1_mat3.html#ab850e8ba04b6d4822798379ba1c56dcf" title="Transpose of a matrix." alt="" coords="525,457,685,483"/>
+<area shape="poly" id="edge19_Node000001_Node000014" title=" " alt="" coords="107,283,124,315,153,358,191,400,213,419,237,434,270,449,305,460,377,474,447,479,511,478,511,483,447,485,376,480,303,466,268,454,235,439,210,423,187,404,149,361,120,318,102,285"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="520,5,689,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="414,53,526,31,527,36,415,58"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="747,31,916,56"/>
+<area shape="poly" id="edge6_Node000003_Node000005" title=" " alt="" coords="461,60,733,46,733,51,461,65"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="690,25,734,30,733,35,689,30"/>
+<area shape="poly" id="edge5_Node000005_Node000005" title=" " alt="" coords="794,32,786,22,791,12,806,6,831,4,863,8,875,17,872,21,861,13,831,9,807,11,794,16,792,22,798,29"/>
+<area shape="poly" id="edge8_Node000006_Node000002" title=" " alt="" coords="648,130,700,149,798,199,795,203,698,154,646,135"/>
+<area shape="poly" id="edge10_Node000007_Node000002" title=" " alt="" coords="421,173,699,199,764,208,763,213,698,205,421,178"/>
+<area shape="poly" id="edge11_Node000007_Node000006" title=" " alt="" coords="414,155,531,131,533,136,415,160"/>
+<area shape="rect" id="Node000011" href="$namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="529,357,680,383"/>
+<area shape="poly" id="edge15_Node000010_Node000011" title=" " alt="" coords="463,367,516,367,516,373,463,373"/>
+<area shape="rect" id="Node000012" href="$namespacelost.html#ae543ffda8031beff6f8015261f1c495c" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="511,308,699,333"/>
+<area shape="poly" id="edge16_Node000010_Node000012" title=" " alt="" coords="415,355,524,333,525,339,416,360"/>
+<area shape="poly" id="edge18_Node000013_Node000002" title=" " alt="" coords="669,406,697,393,737,359,771,319,797,278,816,244,821,247,802,281,775,322,741,363,700,398,671,411"/>
+<area shape="poly" id="edge20_Node000014_Node000002" title=" " alt="" coords="675,455,697,442,721,421,743,397,778,342,803,289,820,245,825,247,808,291,783,345,747,400,725,425,700,447,677,460"/>
 </map>

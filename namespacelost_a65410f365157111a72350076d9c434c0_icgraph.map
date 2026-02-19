@@ -1,7 +1,11 @@
 <map id="lost::RadToDeg" name="lost::RadToDeg">
-<area shape="rect" id="node1" title=" " alt="" coords="653,31,772,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a0b4575c6e2f6eb0bc7faebf429fb9b7d" title=" " alt="" coords="468,5,605,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="473,56,601,83"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,49,420,90"/>
-<area shape="rect" id="node5" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,56,189,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="653,31,772,56"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a0b4575c6e2f6eb0bc7faebf429fb9b7d" title=" " alt="" coords="468,5,605,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="639,36,606,31,606,25,640,30"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="473,55,601,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="640,56,601,61,601,56,639,51"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,47,420,87"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="459,70,420,70,420,65,459,65"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,55,189,80"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="223,70,190,70,190,65,223,65"/>
 </map>

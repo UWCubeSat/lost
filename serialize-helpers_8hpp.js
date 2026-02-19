@@ -1,8 +1,8 @@
 var serialize_helpers_8hpp =
 [
-    [ "SerializeContext", "classlost_1_1_serialize_context.html", "classlost_1_1_serialize_context" ],
-    [ "DeserializeContext", "classlost_1_1_deserialize_context.html", "classlost_1_1_deserialize_context" ],
-    [ "DeserializeArray", "serialize-helpers_8hpp.html#afeff6712fff1f0bfab088d35a25f52ab", null ],
+    [ "lost::SerializeContext", "classlost_1_1_serialize_context.html", "classlost_1_1_serialize_context" ],
+    [ "lost::DeserializeContext", "classlost_1_1_deserialize_context.html", "classlost_1_1_deserialize_context" ],
+    [ "DeserializeArray", "serialize-helpers_8hpp.html#a6708c85ee599d39a129c12aff85de26d", null ],
     [ "DeserializePadding", "serialize-helpers_8hpp.html#ac6dcbacca390790e2623b918f25a0ed2", null ],
     [ "DeserializePrimitive", "serialize-helpers_8hpp.html#a808e750fa7f99bc945155638df303fb7", null ],
     [ "SerializePadding", "serialize-helpers_8hpp.html#a164fee04c6e5fd2fc2e2ca9274b745fa", null ],

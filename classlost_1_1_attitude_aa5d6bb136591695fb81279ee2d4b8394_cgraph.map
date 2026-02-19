@@ -1,7 +1,12 @@
 <map id="lost::Attitude::GetDCM" name="lost::Attitude::GetDCM">
-<area shape="rect" id="node1" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="5,31,173,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="221,31,392,57"/>
-<area shape="rect" id="node3" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="440,31,617,57"/>
-<area shape="rect" id="node4" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="665,5,865,32"/>
-<area shape="rect" id="node5" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="913,31,1120,57"/>
+<area shape="rect" id="Node000001" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="5,31,173,56"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="221,31,392,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,41,207,41,207,46,174,46"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="440,31,617,56"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="392,41,426,41,426,46,392,46"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="665,5,865,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="618,31,651,27,652,33,618,36"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="913,31,1120,56"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="618,41,899,41,899,46,618,46"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="866,25,900,29,899,34,865,31"/>
 </map>

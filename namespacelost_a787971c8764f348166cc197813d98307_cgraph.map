@@ -1,0 +1,9 @@
+<map id="lost::CatalogToPairDistances" name="lost::CatalogToPairDistances">
+<area shape="rect" id="Node000001" title="pair K&#45;vector database layout." alt="" coords="5,31,212,56"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="260,5,379,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,28,246,24,246,29,212,34"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="427,31,596,56"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="212,41,413,41,413,46,212,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="379,23,413,28,413,33,379,28"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="480,32,473,22,476,12,490,6,511,4,538,8,549,16,545,20,536,12,511,9,491,11,480,16,478,22,484,29"/>
+</map>

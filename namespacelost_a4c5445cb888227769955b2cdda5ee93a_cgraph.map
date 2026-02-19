@@ -1,5 +1,7 @@
 <map id="lost::QuestEigenvalueEstimator" name="lost::QuestEigenvalueEstimator">
-<area shape="rect" id="node1" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="5,31,232,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="299,5,449,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#ae543ffda8031beff6f8015261f1c495c" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="280,56,468,83"/>
+<area shape="rect" id="Node000001" title="Approximates roots of a real function using the Newton&#45;Raphson algorithm." alt="" coords="5,31,232,56"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01" title="Characteristic polynomial of the quest K&#45;matrix." alt="" coords="299,5,449,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="232,29,285,24,285,29,233,35"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ae543ffda8031beff6f8015261f1c495c" title="Derivitive of the characteristic polynomial of the quest K&#45;matrix." alt="" coords="280,55,468,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="233,51,266,55,266,60,232,57"/>
 </map>

@@ -1,4 +1,8 @@
 <map id="lost::PairDistanceKVectorDatabase::PairDistanceKVectorDatabase" name="lost::PairDistanceKVectorDatabase::PairDistanceKVectorDatabase">
-<area shape="rect" id="node1" title="Create the database from a serialized buffer." alt="" coords="5,5,291,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title="The number of data points in the data referred to by the kvector." alt="" coords="339,5,479,47"/>
+<area shape="rect" id="Node000001" title="Create the database from a serialized buffer." alt="" coords="5,47,291,87"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title="The number of data points in the data referred to by the kvector." alt="" coords="353,5,493,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="281,44,340,35,340,40,282,49"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="339,94,508,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="286,84,325,90,324,95,285,89"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="379,96,369,86,374,76,393,69,423,67,463,71,473,76,477,82,473,85,470,80,461,77,423,73,394,75,378,80,375,85,383,92"/>
 </map>

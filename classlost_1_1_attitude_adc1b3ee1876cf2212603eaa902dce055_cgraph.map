@@ -1,13 +1,27 @@
 <map id="lost::Attitude::GetQuaternion" name="lost::Attitude::GetQuaternion">
-<area shape="rect" id="node1" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="5,107,215,133"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="263,107,433,133"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="511,5,630,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title="Get the column at index j." alt="" coords="498,56,643,83"/>
-<area shape="rect" id="node6" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="481,107,660,133"/>
-<area shape="rect" id="node7" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="491,157,651,184"/>
-<area shape="rect" id="node9" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="482,208,659,235"/>
-<area shape="rect" id="node5" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="753,56,863,83"/>
-<area shape="rect" id="node8" href="$classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="727,157,889,184"/>
-<area shape="rect" id="node10" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="708,208,908,235"/>
-<area shape="rect" id="node11" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="956,233,1163,260"/>
+<area shape="rect" id="Node000001" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="5,128,215,153"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="263,128,433,153"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="215,138,249,138,249,143,215,143"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="511,29,630,55"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="367,126,417,95,480,64,500,56,502,61,482,68,420,100,370,130"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_mat3.html#a3975740eea4c1c33289feefb81453e6e" title="Get the column at index j." alt="" coords="498,79,643,104"/>
+<area shape="poly" id="edge5_Node000002_Node000005" title=" " alt="" coords="405,125,499,104,500,110,407,131"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="481,128,660,153"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="434,138,467,138,467,143,434,143"/>
+<area shape="rect" id="Node000008" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="491,177,651,203"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="407,151,500,172,499,177,405,156"/>
+<area shape="rect" id="Node000010" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="482,227,659,252"/>
+<area shape="poly" id="edge10_Node000002_Node000010" title=" " alt="" coords="371,151,420,181,482,212,506,220,504,225,480,216,418,186,368,156"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="723,29,893,55"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="630,39,710,39,710,45,630,45"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="769,31,761,21,765,11,781,5,808,3,841,7,854,16,851,20,839,11,808,8,783,10,769,15,766,20,773,27"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="753,79,863,104"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="644,89,740,89,740,94,644,94"/>
+<area shape="rect" id="Node000009" href="$classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="727,177,889,203"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="651,187,713,187,713,193,651,193"/>
+<area shape="rect" id="Node000011" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="708,227,908,252"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="659,237,694,237,694,242,659,242"/>
+<area shape="rect" id="Node000012" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="956,252,1163,277"/>
+<area shape="poly" id="edge13_Node000010_Node000012" title=" " alt="" coords="628,249,708,262,829,268,943,267,943,273,829,273,708,267,627,255"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="909,247,943,250,942,256,908,252"/>
 </map>

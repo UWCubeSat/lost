@@ -1,12 +1,27 @@
 <map id="src/camera.hpp" name="src/camera.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="157,5,279,32"/>
-<area shape="rect" id="node2" href="$attitude-estimators_8hpp.html" title=" " alt="" coords="145,155,344,181"/>
-<area shape="rect" id="node5" href="$io_8hpp.html" title=" " alt="" coords="15,229,101,256"/>
-<area shape="rect" id="node7" href="$camera_8cpp.html" title=" " alt="" coords="207,80,328,107"/>
-<area shape="rect" id="node8" href="$star-id_8hpp.html" title=" " alt="" coords="353,80,467,107"/>
-<area shape="rect" id="node3" href="$attitude-estimators_8cpp.html" title=" " alt="" coords="124,229,323,256"/>
-<area shape="rect" id="node4" href="$io_8cpp.html" title=" " alt="" coords="317,304,401,331"/>
-<area shape="rect" id="node6" href="$main_8cpp.html" title=" " alt="" coords="5,304,111,331"/>
-<area shape="rect" id="node9" href="$star-id-private_8hpp.html" title=" " alt="" coords="448,155,615,181"/>
-<area shape="rect" id="node10" href="$star-id_8cpp.html" title=" " alt="" coords="534,229,649,256"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="157,5,279,31"/>
+<area shape="rect" id="Node000002" href="$attitude-estimators_8hpp.html" title=" " alt="" coords="145,152,344,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="206,44,195,73,194,88,196,103,212,130,232,150,228,154,208,133,192,105,188,88,190,72,201,42"/>
+<area shape="rect" id="Node000005" href="$io_8hpp.html" title=" " alt="" coords="15,225,101,251"/>
+<area shape="poly" id="edge8_Node000001_Node000005" title=" " alt="" coords="197,42,149,90,99,153,78,192,64,226,59,224,73,190,94,151,145,87,194,38"/>
+<area shape="rect" id="Node000007" href="$camera_8cpp.html" title=" " alt="" coords="207,79,328,104"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="236,41,262,77,257,80,232,44"/>
+<area shape="rect" id="Node000008" href="$star-id_8hpp.html" title=" " alt="" coords="353,79,467,104"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="263,33,380,76,378,81,261,38"/>
+<area shape="rect" id="Node000003" href="$attitude-estimators_8cpp.html" title=" " alt="" coords="124,225,323,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="240,192,229,226,224,224,235,190"/>
+<area shape="rect" id="Node000004" href="$io_8cpp.html" title=" " alt="" coords="317,299,401,324"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="284,181,312,199,336,224,347,243,354,263,361,298,356,299,349,265,342,245,332,227,309,204,281,186"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="203,185,89,228,88,223,201,180"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="115,250,318,298,317,303,114,255"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html" title=" " alt="" coords="5,299,111,324"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="61,264,61,299,55,299,55,264"/>
+<area shape="poly" id="edge10_Node000008_Node000002" title=" " alt="" coords="372,112,273,154,271,149,370,107"/>
+<area shape="poly" id="edge11_Node000008_Node000004" title=" " alt="" coords="407,118,365,299,359,298,402,117"/>
+<area shape="poly" id="edge12_Node000008_Node000005" title=" " alt="" coords="340,108,215,133,162,145,134,154,112,171,93,190,67,227,62,224,89,187,109,167,131,150,161,140,213,128,339,103"/>
+<area shape="rect" id="Node000009" href="$star-id-private_8hpp.html" title=" " alt="" coords="448,152,615,177"/>
+<area shape="poly" id="edge13_Node000008_Node000009" title=" " alt="" coords="443,109,513,149,510,154,440,113"/>
+<area shape="rect" id="Node000010" href="$star-id_8cpp.html" title=" " alt="" coords="534,225,649,251"/>
+<area shape="poly" id="edge15_Node000008_Node000010" title=" " alt="" coords="482,100,569,120,605,134,628,150,635,171,629,192,618,211,605,227,601,224,613,208,624,190,629,171,624,154,603,138,567,125,481,105"/>
+<area shape="poly" id="edge14_Node000009_Node000010" title=" " alt="" coords="552,186,584,223,580,227,548,190"/>
 </map>

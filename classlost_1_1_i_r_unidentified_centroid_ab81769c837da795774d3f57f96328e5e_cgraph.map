@@ -1,0 +1,6 @@
+<map id="lost::IRUnidentifiedCentroid::AddIdentifiedStar" name="lost::IRUnidentifiedCentroid::AddIdentifiedStar">
+<area shape="rect" id="Node000001" title="When a centroid within range of this centroid is identified, call this function." alt="" coords="5,22,207,62"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="255,29,424,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,39,241,39,241,45,207,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="302,31,293,21,298,11,313,5,339,3,372,7,384,16,381,20,370,11,339,8,314,10,301,15,299,20,306,27"/>
+</map>

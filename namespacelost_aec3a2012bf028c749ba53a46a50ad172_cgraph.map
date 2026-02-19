@@ -1,9 +1,24 @@
 <map id="lost::GetGeneratedPipelineInput" name="lost::GetGeneratedPipelineInput">
-<area shape="rect" id="node1" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="5,74,203,115"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="289,5,427,32"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="731,56,849,83"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="251,107,465,133"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a562a86693dfa8ef7024526934fbfa8bb" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="258,157,458,184"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="542,5,654,32"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="513,157,683,184"/>
+<area shape="rect" id="Node000001" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="5,199,203,239"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="289,207,427,232"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="203,217,276,217,276,222,203,222"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="756,5,875,31"/>
+<area shape="poly" id="edge7_Node000001_Node000004" title=" " alt="" coords="121,197,175,145,210,117,249,93,313,66,379,45,447,30,515,20,641,11,742,11,742,16,641,16,516,25,448,35,381,50,315,71,252,98,214,121,178,149,125,201"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="731,156,900,181"/>
+<area shape="poly" id="edge13_Node000001_Node000005" title=" " alt="" coords="203,236,251,242,373,251,468,251,563,239,682,213,770,184,772,189,683,218,564,244,469,256,373,256,250,247,202,241"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="251,107,465,132"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="155,197,311,135,313,140,157,202"/>
+<area shape="rect" id="Node000008" href="$namespacelost.html#a562a86693dfa8ef7024526934fbfa8bb" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="258,308,458,333"/>
+<area shape="poly" id="edge14_Node000001_Node000008" title=" " alt="" coords="145,237,252,286,297,302,295,307,250,291,142,242"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="542,107,654,132"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="382,204,440,174,512,142,537,134,538,139,514,147,443,179,384,209"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="427,214,546,206,682,191,741,181,742,187,683,197,547,211,427,219"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="625,104,773,34,776,39,628,109"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="655,129,746,150,745,156,653,135"/>
+<area shape="poly" id="edge5_Node000005_Node000005" title=" " alt="" coords="780,158,772,148,776,138,791,132,815,129,845,133,857,142,854,146,843,138,815,135,792,137,780,142,778,147,784,154"/>
+<area shape="poly" id="edge9_Node000006_Node000004" title=" " alt="" coords="394,104,513,67,634,42,742,25,743,30,634,48,514,73,395,109"/>
+<area shape="poly" id="edge12_Node000006_Node000005" title=" " alt="" coords="405,104,462,92,532,83,608,82,646,85,683,93,713,103,741,116,788,146,785,150,739,121,711,108,682,98,645,91,608,87,532,88,463,97,406,109"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="513,156,683,181"/>
+<area shape="poly" id="edge10_Node000006_Node000007" title=" " alt="" coords="421,129,523,151,522,156,420,135"/>
+<area shape="poly" id="edge11_Node000007_Node000005" title=" " alt="" coords="683,166,717,166,717,171,683,171"/>
 </map>

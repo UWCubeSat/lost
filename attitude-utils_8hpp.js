@@ -1,11 +1,11 @@
 var attitude_utils_8hpp =
 [
-    [ "Vec2", "structlost_1_1_vec2.html", "structlost_1_1_vec2" ],
-    [ "Vec3", "classlost_1_1_vec3.html", "classlost_1_1_vec3" ],
-    [ "Mat3", "classlost_1_1_mat3.html", "classlost_1_1_mat3" ],
-    [ "EulerAngles", "classlost_1_1_euler_angles.html", "classlost_1_1_euler_angles" ],
-    [ "Quaternion", "classlost_1_1_quaternion.html", "classlost_1_1_quaternion" ],
-    [ "Attitude", "classlost_1_1_attitude.html", "classlost_1_1_attitude" ],
+    [ "lost::Vec2", "structlost_1_1_vec2.html", "structlost_1_1_vec2" ],
+    [ "lost::Vec3", "classlost_1_1_vec3.html", "classlost_1_1_vec3" ],
+    [ "lost::Mat3", "classlost_1_1_mat3.html", "classlost_1_1_mat3" ],
+    [ "lost::EulerAngles", "classlost_1_1_euler_angles.html", "classlost_1_1_euler_angles" ],
+    [ "lost::Quaternion", "classlost_1_1_quaternion.html", "classlost_1_1_quaternion" ],
+    [ "lost::Attitude", "classlost_1_1_attitude.html", "classlost_1_1_attitude" ],
     [ "Angle", "attitude-utils_8hpp.html#a6bdf1016fe03a8c46f98bc4633f644d3", null ],
     [ "AngleUnit", "attitude-utils_8hpp.html#a4d066d222770cdbde925ab67813193dc", null ],
     [ "ArcSecToRad", "attitude-utils_8hpp.html#a0bf2bbf8b3bc82f9647c9f327d1369de", null ],

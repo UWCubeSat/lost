@@ -1,4 +1,5 @@
 <map id="lost::CatalogStarMagnitudeCompare" name="lost::CatalogStarMagnitudeCompare">
-<area shape="rect" id="node1" title=" " alt="" coords="204,5,403,47"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="5,13,156,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="204,5,403,45"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="5,13,156,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,28,157,28,157,23,190,23"/>
 </map>

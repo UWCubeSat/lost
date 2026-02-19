@@ -1,0 +1,6 @@
+<map id="lost::MagToBrightness" name="lost::MagToBrightness">
+<area shape="rect" id="Node000001" title="returns some relative brightness measure, which is proportional to the total number of photons receiv..." alt="" coords="5,29,171,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="219,29,388,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="171,39,205,39,205,45,171,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="268,31,261,21,265,11,279,5,303,3,333,6,345,15,342,20,331,11,303,8,281,10,269,15,266,20,273,28"/>
+</map>

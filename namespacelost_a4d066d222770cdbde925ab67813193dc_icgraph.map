@@ -1,20 +1,41 @@
 <map id="lost::AngleUnit" name="lost::AngleUnit">
-<area shape="rect" id="node1" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1440,214,1559,241"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a6bdf1016fe03a8c46f98bc4633f644d3" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="1243,78,1334,105"/>
-<area shape="rect" id="node3" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="938,5,1127,47"/>
-<area shape="rect" id="node4" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="644,130,880,157"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a7df31f0f6e3ed20311231573630124dc" title="pair K&#45;vector database layout." alt="" coords="1185,239,1392,266"/>
-<area shape="rect" id="node9" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1203,290,1374,317"/>
-<area shape="rect" id="node16" href="$namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1207,134,1370,161"/>
-<area shape="rect" id="node17" href="$namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="1213,341,1364,367"/>
-<area shape="rect" id="node18" href="$classlost_1_1_pair_distance_k_vector_database.html#a2df6cf629cb564bc9ad47f724cbf10b0" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="1196,392,1381,433"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="929,123,1136,164"/>
-<area shape="rect" id="node7" href="$namespacelost.html#a98d1507ab3e305ab47846133d82e4467" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="937,240,1128,281"/>
-<area shape="rect" id="node8" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="671,247,853,274"/>
-<area shape="rect" id="node10" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="928,306,1137,333"/>
-<area shape="rect" id="node11" href="$classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="659,299,865,340"/>
-<area shape="rect" id="node12" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="668,365,856,391"/>
-<area shape="rect" id="node13" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="468,365,596,391"/>
-<area shape="rect" id="node14" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,357,420,399"/>
-<area shape="rect" id="node15" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,365,189,391"/>
+<area shape="rect" id="Node000001" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="1440,210,1559,235"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a6bdf1016fe03a8c46f98bc4633f644d3" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="1243,77,1334,102"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1478,201,1440,160,1417,139,1391,121,1363,108,1333,100,1335,94,1364,103,1393,116,1420,135,1444,156,1482,197"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="938,5,1127,45"/>
+<area shape="poly" id="edge16_Node000001_Node000003" title=" " alt="" coords="1486,198,1472,166,1452,130,1425,94,1391,66,1360,50,1327,38,1258,22,1190,17,1128,17,1128,12,1190,11,1259,17,1329,33,1362,45,1393,62,1428,91,1456,127,1477,164,1491,196"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="644,127,880,153"/>
+<area shape="poly" id="edge17_Node000001_Node000004" title=" " alt="" coords="1426,221,1203,205,1065,192,928,175,821,155,821,150,928,169,1066,186,1203,200,1426,216"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a787971c8764f348166cc197813d98307" title="pair K&#45;vector database layout." alt="" coords="1185,235,1392,261"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="1426,234,1392,238,1392,233,1426,229"/>
+<area shape="rect" id="Node000009" href="$namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1203,285,1374,310"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="1463,244,1393,275,1350,287,1349,282,1391,269,1461,239"/>
+<area shape="rect" id="Node000016" href="$namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="1207,131,1370,157"/>
+<area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="1455,207,1391,181,1329,159,1330,154,1393,176,1457,202"/>
+<area shape="rect" id="Node000017" href="$namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="1213,334,1364,359"/>
+<area shape="poly" id="edge20_Node000001_Node000017" title=" " alt="" coords="1481,248,1443,288,1419,308,1393,325,1365,337,1363,332,1391,320,1416,304,1440,284,1477,245"/>
+<area shape="rect" id="Node000018" href="$classlost_1_1_pair_distance_k_vector_database.html#a2df6cf629cb564bc9ad47f724cbf10b0" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="1196,384,1381,424"/>
+<area shape="poly" id="edge21_Node000001_Node000018" title=" " alt="" coords="1489,249,1452,312,1426,345,1394,374,1373,386,1370,382,1390,370,1422,342,1448,309,1484,246"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1229,77,1113,48,1114,43,1231,72"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1229,93,1092,97,928,111,819,130,818,125,928,105,1092,92,1229,87"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="929,120,1136,160"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1230,103,1135,123,1134,117,1229,98"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="916,143,880,143,880,137,916,137"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a98d1507ab3e305ab47846133d82e4467" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="937,235,1128,275"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="1171,254,1128,255,1128,250,1171,248"/>
+<area shape="rect" id="Node000008" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="671,242,853,267"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="924,257,854,257,854,252,924,252"/>
+<area shape="rect" id="Node000010" href="$classlost_1_1_attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="928,299,1137,325"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="1190,306,1138,309,1137,303,1190,300"/>
+<area shape="rect" id="Node000011" href="$classlost_1_1_generated_pipeline_input.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="659,292,865,332"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="914,315,865,315,865,309,914,309"/>
+<area shape="rect" id="Node000012" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="668,357,856,382"/>
+<area shape="poly" id="edge12_Node000010_Node000012" title=" " alt="" coords="959,330,823,359,822,354,958,325"/>
+<area shape="rect" id="Node000013" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="468,357,596,382"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="654,372,596,372,596,367,654,367"/>
+<area shape="rect" id="Node000014" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,349,420,389"/>
+<area shape="poly" id="edge14_Node000013_Node000014" title=" " alt="" coords="454,372,420,372,420,367,454,367"/>
+<area shape="rect" id="Node000015" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,357,189,382"/>
+<area shape="poly" id="edge15_Node000014_Node000015" title=" " alt="" coords="223,372,190,372,190,367,223,367"/>
+<area shape="poly" id="edge19_Node000016_Node000005" title=" " alt="" coords="1194,145,1136,144,1136,139,1194,140"/>
 </map>

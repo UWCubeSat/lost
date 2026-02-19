@@ -1,4 +1,9 @@
 <map id="lost::SerializeCatalogStar" name="lost::SerializeCatalogStar">
-<area shape="rect" id="node1" title="Serialize a CatalogStar into a byte buffer." alt="" coords="5,5,192,32"/>
-<area shape="rect" id="node2" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="240,5,381,32"/>
+<area shape="rect" id="Node000001" title="Serialize a CatalogStar into a byte buffer." alt="" coords="5,29,192,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="429,29,599,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,39,416,39,416,45,192,45"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="240,55,381,80"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="193,51,226,55,226,60,192,56"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="481,31,474,21,477,11,491,5,514,3,542,6,554,16,550,20,540,11,514,8,492,10,481,15,479,20,485,28"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="381,56,415,52,416,57,382,61"/>
 </map>

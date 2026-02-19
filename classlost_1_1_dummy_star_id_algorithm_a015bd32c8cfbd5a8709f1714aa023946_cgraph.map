@@ -1,0 +1,6 @@
+<map id="lost::DummyStarIdAlgorithm::Go" name="lost::DummyStarIdAlgorithm::Go">
+<area shape="rect" id="Node000001" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,29,240,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="288,29,457,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,39,274,39,274,45,240,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="332,31,324,21,328,11,345,5,373,3,408,7,418,11,421,17,417,20,414,15,406,12,373,8,346,10,332,15,329,20,336,27"/>
+</map>

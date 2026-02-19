@@ -1,8 +1,13 @@
 <map id="lost::IdentifyThirdStar" name="lost::IdentifyThirdStar">
-<area shape="rect" id="node1" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="5,85,168,112"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="254,5,373,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="224,56,403,83"/>
-<area shape="rect" id="node4" href="$classlost_1_1_pair_distance_k_vector_database.html#ad76a05c909ea68d6084f942f3623b8ed" title=" " alt="" coords="220,107,407,149"/>
-<area shape="rect" id="node6" href="$classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="216,173,411,214"/>
-<area shape="rect" id="node5" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="459,107,599,149"/>
+<area shape="rect" id="Node000001" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="5,81,168,107"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="254,5,373,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,79,215,47,260,32,262,37,217,53,126,84"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="459,31,628,56"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="168,82,445,52,445,57,168,88"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_vec3.html#abe2b5a170b77a7b1e17008fa9dca20ba" title="Usual vector cross product." alt="" coords="224,107,403,132"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="169,100,211,105,210,111,168,106"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_pair_distance_involving_iterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)" alt="" coords="216,157,411,197"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="121,104,217,141,241,150,239,155,215,146,119,109"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="374,22,445,30,445,35,373,27"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="506,32,498,22,502,12,518,6,543,4,576,8,588,17,585,22,574,13,543,9,519,11,506,16,503,22,510,29"/>
 </map>

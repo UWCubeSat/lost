@@ -1,8 +1,21 @@
 <map id="lost::GetPngPipelineInput" name="lost::GetPngPipelineInput">
-<area shape="rect" id="node1" title="Create a PngPipelineInput using command line options." alt="" coords="5,31,192,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="279,5,416,32"/>
-<area shape="rect" id="node5" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="240,56,455,83"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a2de388cdf7e0c6b9c572903605480568" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="531,5,643,32"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="720,31,839,57"/>
-<area shape="rect" id="node6" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="503,107,672,133"/>
+<area shape="rect" id="Node000001" title="Create a PngPipelineInput using command line options." alt="" coords="5,180,192,205"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="279,180,416,205"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,190,265,190,265,195,192,195"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="720,129,889,154"/>
+<area shape="poly" id="edge12_Node000001_Node000005" title=" " alt="" coords="157,202,240,215,362,222,457,218,552,203,671,176,749,156,750,161,673,182,553,208,458,224,362,228,240,220,157,208"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="240,80,455,105"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="131,177,301,108,303,113,133,182"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="531,78,643,104"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="378,177,543,107,545,112,380,182"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="416,182,706,150,707,155,417,187"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="745,17,864,42"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="632,76,745,44,747,49,634,81"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="643,101,737,123,736,129,642,106"/>
+<area shape="poly" id="edge5_Node000005_Node000005" title=" " alt="" coords="769,131,762,121,766,111,780,105,805,102,835,106,847,115,843,119,833,111,805,108,782,110,769,115,767,120,773,127"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="366,77,425,43,462,26,502,14,562,5,623,3,681,7,732,13,731,18,680,12,623,8,562,10,503,19,464,31,427,48,369,82"/>
+<area shape="poly" id="edge11_Node000006_Node000005" title=" " alt="" coords="424,102,503,114,706,133,706,138,502,119,423,108"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="503,29,672,54"/>
+<area shape="poly" id="edge9_Node000006_Node000007" title=" " alt="" coords="408,77,513,55,514,60,409,82"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="638,52,673,65,727,92,774,119,771,124,725,96,671,69,636,57"/>
 </map>

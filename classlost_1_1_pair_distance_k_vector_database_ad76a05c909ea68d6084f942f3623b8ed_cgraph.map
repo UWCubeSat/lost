@@ -1,4 +1,9 @@
 <map id="lost::PairDistanceKVectorDatabase::FindPairsExact" name="lost::PairDistanceKVectorDatabase::FindPairsExact">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,192,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="240,5,380,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,35,192,75"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="240,5,380,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,39,226,34,227,40,193,44"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="428,42,597,67"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="192,54,240,55,380,55,414,54,414,60,380,60,240,60,192,59"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="381,33,415,38,414,43,380,38"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="479,44,472,34,476,24,490,18,513,15,541,19,552,28,549,32,539,24,513,21,491,23,480,27,477,33,484,40"/>
 </map>

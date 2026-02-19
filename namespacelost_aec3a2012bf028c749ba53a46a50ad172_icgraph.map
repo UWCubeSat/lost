@@ -1,4 +1,5 @@
 <map id="lost::GetGeneratedPipelineInput" name="lost::GetGeneratedPipelineInput">
-<area shape="rect" id="node1" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,47"/>
-<area shape="rect" id="node2" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,13,168,39"/>
+<area shape="rect" id="Node000001" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,45"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,13,168,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,28,168,28,168,23,202,23"/>
 </map>

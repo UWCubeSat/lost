@@ -1,5 +1,11 @@
 <map id="lost::FocalLengthFromOptions" name="lost::FocalLengthFromOptions">
-<area shape="rect" id="node1" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="5,31,220,57"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="293,5,412,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="268,56,437,83"/>
+<area shape="rect" id="Node000001" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="5,55,220,80"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="293,5,412,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="175,52,279,30,280,35,176,57"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="268,55,437,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="220,65,254,65,254,70,220,70"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="485,80,655,105"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="182,77,268,89,373,93,471,93,471,99,373,99,268,94,181,83"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="438,75,472,79,472,84,437,80"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="535,82,527,72,531,62,546,56,570,53,600,57,612,66,609,70,598,62,570,59,547,61,535,66,532,71,539,78"/>
 </map>

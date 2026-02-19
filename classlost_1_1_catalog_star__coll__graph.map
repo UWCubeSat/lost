@@ -1,4 +1,5 @@
 <map id="lost::CatalogStar" name="lost::CatalogStar">
-<area shape="rect" id="node1" title="A star from the Bright Star Catalog." alt="" coords="5,95,136,121"/>
-<area shape="rect" id="node2" href="$classlost_1_1_vec3.html" title="Three dimensional vector with decimaling point components." alt="" coords="28,5,113,32"/>
+<area shape="rect" id="Node000001" title="A star from the Bright Star Catalog." alt="" coords="5,93,136,119"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_vec3.html" title="Three dimensional vector with decimaling point components." alt="" coords="28,5,113,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,45,73,93,68,93,68,45"/>
 </map>

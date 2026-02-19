@@ -1,0 +1,6 @@
+<map id="lost::AngleUnit" name="lost::AngleUnit">
+<area shape="rect" id="Node000001" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="5,29,124,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="172,29,341,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,39,158,39,158,45,124,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="225,31,218,21,222,11,235,5,257,3,283,6,294,15,291,19,281,11,257,8,236,10,226,15,223,20,229,28"/>
+</map>

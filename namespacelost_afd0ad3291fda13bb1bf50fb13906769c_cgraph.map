@@ -1,8 +1,17 @@
 <map id="lost::operator&lt;&lt;" name="lost::operator&lt;&lt;">
-<area shape="rect" id="node1" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="5,81,136,108"/>
-<area shape="rect" id="node2" href="$classlost_1_1_camera.html#af484e8b4890c20ca02d05f907ba958b8" title="Focal length in pixels." alt="" coords="184,5,375,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_camera.html#a8452608ad72efc8e93378f33eb981c0a" title="Horizontal field of view in radians." alt="" coords="211,56,347,83"/>
-<area shape="rect" id="node5" href="$classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title="Width of the sensor in pixels." alt="" coords="184,107,375,133"/>
-<area shape="rect" id="node6" href="$classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title="Height of the sensor in pixels." alt="" coords="184,157,375,184"/>
-<area shape="rect" id="node4" href="$namespacelost.html#a96ba4670682e2bfdbe3fd350b0162e38" title=" " alt="" coords="423,56,592,83"/>
+<area shape="rect" id="Node000001" title="Print information about the camera in machine and human&#45;readable form." alt="" coords="5,105,136,131"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_camera.html#af484e8b4890c20ca02d05f907ba958b8" title="Focal length in pixels." alt="" coords="184,5,375,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,103,128,71,183,40,201,32,203,37,185,44,131,76,89,107"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_camera.html#a8452608ad72efc8e93378f33eb981c0a" title="Horizontal field of view in radians." alt="" coords="211,55,347,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,103,212,81,214,86,125,108"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="640,80,809,105"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="136,113,626,94,626,99,136,118"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_camera.html#a6a6a4bd2d5daf114108e73126568369d" title="Width of the sensor in pixels." alt="" coords="184,156,375,181"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="125,128,214,150,212,155,123,133"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1_camera.html#a75f02f56900338580a9cacc2f9131d70" title="Height of the sensor in pixels." alt="" coords="184,205,375,231"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="89,129,131,160,185,192,203,199,201,204,183,196,128,165,86,133"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a96ba4670682e2bfdbe3fd350b0162e38" title=" " alt="" coords="423,55,592,80"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="348,65,409,65,409,70,348,70"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="593,75,627,79,626,84,592,80"/>
+<area shape="poly" id="edge5_Node000005_Node000005" title=" " alt="" coords="689,82,682,72,686,62,700,56,725,53,755,57,767,66,763,70,753,62,725,59,702,61,689,66,687,71,693,78"/>
 </map>

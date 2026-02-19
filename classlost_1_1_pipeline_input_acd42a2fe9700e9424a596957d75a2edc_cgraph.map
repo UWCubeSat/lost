@@ -1,0 +1,8 @@
+<map id="lost::PipelineInput::ExpectedStarIds" name="lost::PipelineInput::ExpectedStarIds">
+<area shape="rect" id="Node000001" title="Centroid indices in the StarIdentifiers returned from ExpectedStarIds should be indices into Expected..." alt="" coords="5,22,144,62"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_pipeline_input.html#a651db34b783023d0e84444ab20491337" title="The centroid indices in the StarIdentifiers returned from InputStarIds should be indices into InputSt..." alt="" coords="192,22,331,62"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,39,178,39,178,45,145,45"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="379,29,548,55"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="331,39,365,39,365,45,331,45"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="430,31,423,21,427,11,441,5,463,3,491,6,502,16,499,20,489,11,463,8,442,10,431,15,429,20,435,28"/>
+</map>

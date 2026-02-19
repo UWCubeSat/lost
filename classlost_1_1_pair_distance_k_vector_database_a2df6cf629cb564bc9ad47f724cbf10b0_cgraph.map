@@ -1,6 +1,13 @@
 <map id="lost::PairDistanceKVectorDatabase::StarDistances" name="lost::PairDistanceKVectorDatabase::StarDistances">
-<area shape="rect" id="node1" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,27,191,69"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="272,5,391,32"/>
-<area shape="rect" id="node3" href="$classlost_1_1_pair_distance_k_vector_database.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="239,57,424,98"/>
-<area shape="rect" id="node4" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title="The number of data points in the data referred to by the kvector." alt="" coords="472,57,612,98"/>
+<area shape="rect" id="Node000001" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,49,191,89"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="272,5,391,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,46,259,31,260,36,191,51"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="472,31,641,56"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="191,61,458,46,459,51,191,66"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_pair_distance_k_vector_database.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="239,106,424,146"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="181,86,237,100,235,105,179,91"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="391,22,459,30,458,35,391,27"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="520,32,512,22,516,12,532,6,557,4,588,8,600,17,597,21,586,13,557,9,533,11,520,16,517,22,524,29"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_k_vector_index.html#aeb86d1680f58d5a5709618d615ea7267" title="The number of data points in the data referred to by the kvector." alt="" coords="487,106,627,146"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="425,123,473,123,473,129,425,129"/>
 </map>

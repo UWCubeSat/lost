@@ -1,4 +1,5 @@
 <map id="lost::GeometricVotingStarIdAlgorithm" name="lost::GeometricVotingStarIdAlgorithm">
-<area shape="rect" id="node1" title="A star&#45;id algorithm based on assigning votes for each centroid&#45;catalog pair then choosing the highest..." alt="" coords="5,80,195,121"/>
-<area shape="rect" id="node2" href="$classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="22,5,178,32"/>
+<area shape="rect" id="Node000001" title="A star&#45;id algorithm based on assigning votes for each centroid&#45;catalog pair then choosing the highest..." alt="" coords="5,79,195,119"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="22,5,178,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,44,103,79,97,79,97,44"/>
 </map>

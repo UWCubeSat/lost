@@ -1,4 +1,5 @@
 <map id="lost::Quaternion::operator*" name="lost::Quaternion::operator*">
-<area shape="rect" id="node1" title="Multiply two quaternions using the usual definition of quaternion multiplication (effectively compose..." alt="" coords="5,5,201,32"/>
-<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="249,5,456,32"/>
+<area shape="rect" id="Node000001" title="Multiply two quaternions using the usual definition of quaternion multiplication (effectively compose..." alt="" coords="5,5,201,31"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="249,5,456,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="201,15,236,15,236,21,201,21"/>
 </map>

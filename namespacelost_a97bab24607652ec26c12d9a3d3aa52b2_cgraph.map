@@ -1,5 +1,12 @@
 <map id="lost::NarrowCatalog" name="lost::NarrowCatalog">
-<area shape="rect" id="node1" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="5,35,156,61"/>
-<area shape="rect" id="node2" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="244,5,363,32"/>
-<area shape="rect" id="node3" href="$namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035" title=" " alt="" coords="204,57,403,98"/>
+<area shape="rect" id="Node000001" title="Remove unwanted stars from an unfiltered catalog." alt="" coords="5,56,156,81"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="244,5,363,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="137,53,233,31,234,36,138,58"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="451,56,620,81"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="156,66,437,66,437,71,156,71"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035" title=" " alt="" coords="204,106,403,146"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="131,79,213,100,211,105,130,84"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="363,28,464,50,463,56,362,33"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="498,58,489,48,494,38,509,32,535,29,568,33,580,43,577,47,566,38,535,35,510,37,497,42,495,47,502,54"/>
+<area shape="poly" id="edge5_Node000004_Node000003" title=" " alt="" coords="384,103,470,82,471,87,386,109"/>
 </map>

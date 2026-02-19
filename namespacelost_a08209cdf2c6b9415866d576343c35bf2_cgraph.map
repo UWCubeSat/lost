@@ -1,6 +1,10 @@
 <map id="lost::QuaternionToDCM" name="lost::QuaternionToDCM">
-<area shape="rect" id="node1" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="5,31,176,57"/>
-<area shape="rect" id="node2" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="224,31,401,57"/>
-<area shape="rect" id="node3" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="449,5,649,32"/>
-<area shape="rect" id="node4" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="697,31,904,57"/>
+<area shape="rect" id="Node000001" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)" alt="" coords="5,31,176,56"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="224,31,401,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="176,41,210,41,210,46,176,46"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="449,5,649,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="402,31,435,27,436,33,402,36"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="697,31,904,56"/>
+<area shape="poly" id="edge4_Node000002_Node000004" title=" " alt="" coords="402,41,683,41,683,46,402,46"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="650,25,684,29,683,34,649,31"/>
 </map>

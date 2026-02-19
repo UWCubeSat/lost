@@ -1,0 +1,7 @@
+<map id="lost::CogHelper" name="lost::CogHelper">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,128,55"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="35,31,28,21,32,11,45,5,67,3,93,6,104,15,101,19,91,11,67,8,46,10,36,15,33,20,39,28"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="176,29,345,55"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="128,39,162,39,162,45,128,45"/>
+<area shape="poly" id="edge3_Node000002_Node000002" title=" " alt="" coords="229,31,222,21,226,11,239,5,261,3,287,6,298,15,295,19,285,11,261,8,240,10,230,15,227,20,233,28"/>
+</map>

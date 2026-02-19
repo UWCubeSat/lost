@@ -25,10 +25,7 @@
 var NAVTREE =
 [
   [ "LOST", "index.html", [
-    [ "LOST Code Documentation", "index.html", [
-      [ "Contents", "index.html#autotoc_md1", null ],
-      [ "To contribute to this documentation...", "index.html#autotoc_md2", null ]
-    ] ],
+    [ "LOST Code Documentation", "index.html", "index" ],
     [ "Todo List", "todo.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
@@ -47,7 +44,7 @@ var NAVTREE =
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
-        [ "Related Functions", "functions_rela.html", null ]
+        [ "Related Symbols", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -65,8 +62,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classlost_1_1_serialize_context.html#a336ba4abc0106fd590f9eae9dbb16f04",
-"namespacelost.html#a9704a9fb2cf67873155e69407a976074"
+"classlost_1_1_k_vector_index.html",
+"classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e",
+"namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

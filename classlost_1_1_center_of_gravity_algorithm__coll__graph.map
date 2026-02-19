@@ -1,4 +1,5 @@
 <map id="lost::CenterOfGravityAlgorithm" name="lost::CenterOfGravityAlgorithm">
-<area shape="rect" id="node1" title="A simple, fast, and pretty decent centroid algorithm." alt="" coords="5,80,229,107"/>
-<area shape="rect" id="node2" href="$classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="31,5,204,32"/>
+<area shape="rect" id="Node000001" title="A simple, fast, and pretty decent centroid algorithm." alt="" coords="5,79,229,104"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_centroid_algorithm.html" title="An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;." alt="" coords="31,5,204,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="120,44,120,79,115,79,115,44"/>
 </map>

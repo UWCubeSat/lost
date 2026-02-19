@@ -1,6 +1,10 @@
 <map id="src/pipeline&#45;options.hpp" name="src/pipeline&#45;options.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,184,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="24,155,83,181"/>
-<area shape="rect" id="node3" href="$decimal_8hpp.html" title=" " alt="" coords="89,80,191,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="109,155,171,181"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,184,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="24,152,83,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,31,80,79,63,139,58,138,75,78,89,30"/>
+<area shape="rect" id="Node000003" href="$decimal_8hpp.html" title=" " alt="" coords="89,79,191,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="104,30,128,66,123,69,100,32"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="128,106,80,145,76,141,124,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="109,152,171,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="143,104,143,138,137,138,137,104"/>
 </map>

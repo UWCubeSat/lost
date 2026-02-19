@@ -1,0 +1,6 @@
+<map id="lost::Clamp" name="lost::Clamp">
+<area shape="rect" id="Node000001" title="Return the value in the range [low,high] which is closest to num." alt="" coords="5,29,101,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="149,29,319,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,39,136,39,136,45,101,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="204,31,198,21,201,11,214,5,234,3,259,6,269,15,265,19,256,11,234,8,215,10,205,15,203,20,209,28"/>
+</map>

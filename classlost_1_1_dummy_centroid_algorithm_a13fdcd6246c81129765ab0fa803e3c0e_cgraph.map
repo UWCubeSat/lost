@@ -1,0 +1,6 @@
+<map id="lost::DummyCentroidAlgorithm::Go" name="lost::DummyCentroidAlgorithm::Go">
+<area shape="rect" id="Node000001" title="Actually perform the centroid detection." alt="" coords="5,29,256,55"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="304,29,473,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="256,39,290,39,290,45,256,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="347,31,338,21,343,11,360,5,389,3,425,7,435,11,439,17,434,20,432,15,423,12,389,8,361,10,346,15,344,20,351,27"/>
+</map>

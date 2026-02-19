@@ -1,0 +1,9 @@
+<map id="lost::FindUnidentifiedCentroidsInRange" name="lost::FindUnidentifiedCentroidsInRange">
+<area shape="rect" id="Node000001" title="Return all the unidentified centroids within the requested distance bounds from star" alt="" coords="781,5,1004,45"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#af9b934e077b49bfc0b7eca88188013fe" title="Given a list of unidentified centroids not yet at the soft threshold, and a list of unidentified cent..." alt="" coords="544,5,733,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="768,28,734,28,734,23,768,23"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,496,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="531,28,496,28,496,23,531,23"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,13,241,38"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="275,28,241,28,241,23,275,23"/>
+</map>

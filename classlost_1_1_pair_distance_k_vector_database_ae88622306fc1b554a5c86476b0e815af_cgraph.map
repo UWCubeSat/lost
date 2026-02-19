@@ -1,4 +1,9 @@
 <map id="lost::PairDistanceKVectorDatabase::FindPairsLiberal" name="lost::PairDistanceKVectorDatabase::FindPairsLiberal">
-<area shape="rect" id="node1" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="5,5,200,47"/>
-<area shape="rect" id="node2" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="248,5,388,47"/>
+<area shape="rect" id="Node000001" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="5,35,200,75"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_k_vector_index.html#a6f3c702412e3a12501bfabb5d7936b05" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="248,5,388,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,39,234,34,235,39,201,44"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="436,42,605,67"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="200,54,248,55,388,55,422,54,422,60,388,60,248,60,200,59"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="389,33,423,38,422,43,388,38"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="487,44,480,34,484,24,498,18,521,15,549,19,560,28,557,32,547,24,521,21,499,23,488,27,485,33,492,40"/>
 </map>

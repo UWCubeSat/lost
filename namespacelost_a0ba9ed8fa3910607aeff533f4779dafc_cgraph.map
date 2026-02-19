@@ -1,0 +1,16 @@
+<map id="lost::FindUnidentifiedCentroidsInRange" name="lost::FindUnidentifiedCentroidsInRange">
+<area shape="rect" id="Node000001" title="Return all the unidentified centroids within the requested distance bounds from star" alt="" coords="5,99,228,139"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="276,56,499,81"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,97,305,81,306,86,224,102"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="764,56,933,81"/>
+<area shape="poly" id="edge8_Node000001_Node000004" title=" " alt="" coords="228,109,750,73,750,78,229,114"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="307,157,467,183"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="224,137,306,152,305,157,223,142"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="547,5,716,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="449,53,556,31,557,36,450,58"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="499,66,750,66,750,71,499,71"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="687,28,781,50,780,55,686,33"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="813,58,806,48,810,38,824,32,849,29,879,33,891,42,887,46,877,38,849,35,826,37,813,42,811,47,817,54"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="550,157,713,183"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="468,167,536,167,536,173,468,173"/>
+</map>
