@@ -12,15 +12,12 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include <bitset>
 #include <string>
 #include <iostream>
-#include <fstream>
-#include <chrono>
 #include <cstring>
-#include <map>
 
 #include "databases.hpp"
+#include "databases-builder.hpp"
 #include "centroiders.hpp"
 #include "decimal.hpp"
 #include "io.hpp"
@@ -28,28 +25,6 @@
 #include "man-pipeline.h"
 
 namespace lost {
-
-/// Build a star database from the catalog and write it to the output path.
-static void DatabaseBuild(const DatabaseOptions &values) {
-    Catalog narrowedCatalog = NarrowCatalog(CatalogRead(), (int) (values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
-    std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
-
-    MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
-    SerializeContext ser = serFromDbValues(values);
-
-    // Build the flags word. Currently the only flag indicates whether the
-    // database was built with single-precision (float) or double-precision decimals.
-    uint32_t dbFlags = 0;
-    dbFlags |= typeid(decimal) == typeid(float) ? MULTI_DB_FLOAT_FLAG : 0;
-
-    SerializeMultiDatabase(&ser, dbEntries, dbFlags);
-
-    std::cerr << "Generated database with " << ser.buffer.size() << " bytes" << std::endl;
-    std::cerr << "Database flagged with " << std::bitset<8*sizeof(dbFlags)>(dbFlags) << std::endl;
-
-    UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
-    pos.Stream().write((char *) ser.buffer.data(), ser.buffer.size());
-}
 
 /// Run a star-tracking pipeline and compare outputs against expected values.
 static void PipelineRun(const PipelineOptions &values) {
@@ -283,3 +258,49 @@ static int LostMain(int argc, char **argv) {
 int main(int argc, char **argv) {
     return lost::LostMain(argc, argv);
 }
+
+// DO NOT DELETE
+// static void PipelineBenchmark() {
+//     PipelineInputList input = PromptPipelineInput();
+//     Pipeline pipeline = PromptPipeline();
+//     int iterations = Prompt<int>("Times to run the pipeline");
+//     std::cerr << "Benchmarking..." << std::endl;
+
+//     // TODO: we can do better than this :| maybe include mean time, 99% time, or allow a vector of
+//     // input and determine which one took the longest
+//     auto startTime = std::chrono::high_resolution_clock::now();
+//     for (int i = 0; i < iterations; i++) {
+//         pipeline.Go(input);
+//     }
+//     auto endTime = std::chrono::high_resolution_clock::now();
+//     auto totalTime = std::chrono::duration<double, std::milli>(endTime - startTime);
+//     std::cout << "total_ms " << totalTime.count() << std::endl;
+// }
+
+// static void EstimateCamera() {
+//     std::cerr << "Enter estimated camera details when prompted." << std::endl;
+//     PipelineInputList inputs = PromptPngPipelineInput();
+//     float baseFocalLength = inputs[0]->InputCamera()->FocalLength();
+//     float deviationIncrement = Prompt<float>("Focal length increment (base: " + std::to_string(baseFocalLength) + ")");
+//     float deviationMax = Prompt<float>("Maximum focal length deviation to attempt");
+//     Pipeline pipeline = PromptPipeline();
+
+//     while (inputs[0]->InputCamera()->FocalLength() - baseFocalLength <= deviationMax) {
+//         std::cerr << "Attempt focal length " << inputs[0]->InputCamera()->FocalLength() << std::endl;
+//         std::vector<PipelineOutput> outputs = pipeline.Go(inputs);
+//         if (outputs[0].nice) {
+//             std::cout << "camera_identified true" << std::endl << *inputs[0]->InputCamera();
+//             return;
+//         }
+
+//         Camera camera(*inputs[0]->InputCamera());
+//         if (camera.FocalLength() - baseFocalLength > 0) {
+//             // yes i know this expression can be simplified shut up
+//             camera.SetFocalLength(camera.FocalLength() - 2*(camera.FocalLength() - baseFocalLength));
+//         } else {
+//             camera.SetFocalLength(camera.FocalLength() + 2*(baseFocalLength - camera.FocalLength()) + deviationIncrement);
+//         }
+//         ((PngPipelineInput *)(inputs[0].get()))->SetCamera(camera);
+//     }
+//     std::cout << "camera_identified false" << std::endl;
+// }

@@ -26,6 +26,9 @@ SerializeContext serFromDbValues(const DatabaseOptions &values);
 /// @sa SerializeMultiDatabase
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &, const DatabaseOptions &values);
 
+/// Build a star database from the catalog and write it to the output path.
+void DatabaseBuild(const DatabaseOptions &values);
+
 std::ostream &operator<<(std::ostream &, const Camera &);
 
 }
