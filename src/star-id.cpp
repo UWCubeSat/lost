@@ -8,8 +8,10 @@
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
+#include "algorithm-registry.hpp"
 #include "databases.hpp"
 #include "attitude-utils.hpp"
+#include "pipeline-input.hpp"
 
 namespace lost {
 
@@ -768,5 +770,26 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     std::cerr << "Tried all pyramids; none matched." << std::endl;
     return identified;
 }
+
+static struct StarIdRegistry {
+    StarIdRegistry() {
+        auto &reg = AlgorithmRegistry<StarIdAlgorithm>::Instance();
+        reg.Register("dummy", [](const PipelineOptions &) {
+            return std::unique_ptr<StarIdAlgorithm>(
+                new DummyStarIdAlgorithm());
+        });
+        reg.Register("gv", [](const PipelineOptions &opts) {
+            return std::unique_ptr<StarIdAlgorithm>(
+                new GeometricVotingStarIdAlgorithm(DegToRad(opts.angularTolerance)));
+        });
+        reg.Register("py", [](const PipelineOptions &opts) {
+            return std::unique_ptr<StarIdAlgorithm>(
+                new PyramidStarIdAlgorithm(DegToRad(opts.angularTolerance),
+                                           opts.estimatedNumFalseStars,
+                                           opts.maxMismatchProb,
+                                           1000));
+        });
+    }
+} starIdRegistry;
 
 }

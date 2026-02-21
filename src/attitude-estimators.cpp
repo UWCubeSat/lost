@@ -3,7 +3,9 @@
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Eigenvalues>
 
+#include "algorithm-registry.hpp"
 #include "decimal.hpp"
+#include "pipeline-input.hpp"
 
 namespace lost {
 
@@ -245,5 +247,23 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
 
     return Attitude(Quaternion(gamma, X.x, X.y, X.z));
 }
+
+static struct AttitudeRegistry {
+    AttitudeRegistry() {
+        auto &reg = AlgorithmRegistry<AttitudeEstimationAlgorithm>::Instance();
+        reg.Register("dqm", [](const PipelineOptions &) {
+            return std::unique_ptr<AttitudeEstimationAlgorithm>(
+                new DavenportQAlgorithm());
+        });
+        reg.Register("triad", [](const PipelineOptions &) {
+            return std::unique_ptr<AttitudeEstimationAlgorithm>(
+                new TriadAlgorithm());
+        });
+        reg.Register("quest", [](const PipelineOptions &) {
+            return std::unique_ptr<AttitudeEstimationAlgorithm>(
+                new QuestAlgorithm());
+        });
+    }
+} attitudeRegistry;
 
 }

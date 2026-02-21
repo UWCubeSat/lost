@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <chrono>
 
+#include "algorithm-registry.hpp"
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
 #include "cairo-utils.hpp"
@@ -531,21 +532,14 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
 Pipeline SetPipeline(const PipelineOptions &values) {
     Pipeline result;
 
-    // TODO: more flexible or sth
-    // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
-    // choices to those compatible with the database?
-    //
-
     // centroid algorithm stage
-    if (values.centroidAlgo == "dummy") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.centroidDummyNumStars));
-    } else if (values.centroidAlgo == "cog") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
-    } else if (values.centroidAlgo == "iwcog") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
-    } else if (values.centroidAlgo != "") {
-        std::cout << "Illegal centroid algorithm." << std::endl;
-        exit(1);
+    if (values.centroidAlgo != "") {
+        result.centroidAlgorithm = AlgorithmRegistry<CentroidAlgorithm>::Instance()
+            .Create(values.centroidAlgo, values);
+        if (!result.centroidAlgorithm) {
+            std::cout << "Illegal centroid algorithm." << std::endl;
+            exit(1);
+        }
     }
 
     // centroid magnitude filter stage
@@ -569,26 +563,24 @@ Pipeline SetPipeline(const PipelineOptions &values) {
         std::cerr << "Done" << std::endl;
     }
 
-    if (values.idAlgo == "dummy") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
-    } else if (values.idAlgo == "gv") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
-    } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
-    } else if (values.idAlgo != "") {
-        std::cout << "Illegal id algorithm." << std::endl;
-        exit(1);
+    // star-id algorithm stage
+    if (values.idAlgo != "") {
+        result.starIdAlgorithm = AlgorithmRegistry<StarIdAlgorithm>::Instance()
+            .Create(values.idAlgo, values);
+        if (!result.starIdAlgorithm) {
+            std::cout << "Illegal id algorithm." << std::endl;
+            exit(1);
+        }
     }
 
-    if (values.attitudeAlgo == "dqm") {
-        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
-    } else if (values.attitudeAlgo == "triad") {
-        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
-    } else if (values.attitudeAlgo == "quest") {
-        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new QuestAlgorithm());
-    } else if (values.attitudeAlgo != "") {
-        std::cout << "Illegal attitude algorithm." << std::endl;
-        exit(1);
+    // attitude estimation algorithm stage
+    if (values.attitudeAlgo != "") {
+        result.attitudeEstimationAlgorithm = AlgorithmRegistry<AttitudeEstimationAlgorithm>::Instance()
+            .Create(values.attitudeAlgo, values);
+        if (!result.attitudeEstimationAlgorithm) {
+            std::cout << "Illegal attitude algorithm." << std::endl;
+            exit(1);
+        }
     }
 
     return result;

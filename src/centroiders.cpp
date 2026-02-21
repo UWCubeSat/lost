@@ -10,7 +10,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "algorithm-registry.hpp"
 #include "decimal.hpp"
+#include "pipeline-input.hpp"
 
 namespace lost {
 
@@ -323,5 +325,23 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
     }
     return result;
 }
+
+static struct CentroidRegistry {
+    CentroidRegistry() {
+        auto &reg = AlgorithmRegistry<CentroidAlgorithm>::Instance();
+        reg.Register("dummy", [](const PipelineOptions &opts) {
+            return std::unique_ptr<CentroidAlgorithm>(
+                new DummyCentroidAlgorithm(opts.centroidDummyNumStars));
+        });
+        reg.Register("cog", [](const PipelineOptions &) {
+            return std::unique_ptr<CentroidAlgorithm>(
+                new CenterOfGravityAlgorithm());
+        });
+        reg.Register("iwcog", [](const PipelineOptions &) {
+            return std::unique_ptr<CentroidAlgorithm>(
+                new IterativeWeightedCenterOfGravityAlgorithm());
+        });
+    }
+} centroidRegistry;
 
 }
