@@ -7,7 +7,7 @@
 #include "attitude-utils.hpp"
 #include "databases.hpp"
 #include "decimal.hpp"
-#include "io.hpp"
+#include "io-util.hpp"
 #include "star-utils.hpp"
 
 namespace lost {

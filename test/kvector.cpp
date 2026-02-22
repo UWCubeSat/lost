@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 #include "databases.hpp"
-#include "io.hpp"
+#include "io-util.hpp"
 #include "attitude-utils.hpp"
 #include "serialize-helpers.hpp"
 

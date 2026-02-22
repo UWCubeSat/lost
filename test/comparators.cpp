@@ -3,7 +3,7 @@
 
 #include <catch.hpp>
 
-#include "io.hpp"
+#include "pipeline-output.hpp"
 #include "star-utils.hpp"
 
 #include "fixtures.hpp"

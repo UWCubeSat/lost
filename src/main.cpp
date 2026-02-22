@@ -20,7 +20,8 @@
 #include "databases-builder.hpp"
 #include "centroiders.hpp"
 #include "decimal.hpp"
-#include "io.hpp"
+#include "pipeline-input.hpp"
+#include "pipeline-output.hpp"
 #include "man-database.h"
 #include "man-pipeline.h"
 
