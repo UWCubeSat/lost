@@ -1,23 +1,12 @@
-// I/O stuff, such as Cairo and star catalog interactions.
-
-#ifndef IO_H
-#define IO_H
+#ifndef PIPELINE_INPUT_H
+#define PIPELINE_INPUT_H
 
 #include <cairo/cairo.h>
 
 #include <random>
 #include <vector>
-#include <map>
-#include <utility>
 #include <string>
-#include <sstream>
-#include <iostream>
 #include <memory>
-
-
-#ifndef CAIRO_HAS_PNG_FUNCTIONS
-#error LOST requires Cairo to be compiled with PNG support
-#endif
 
 #include "centroiders.hpp"
 #include "star-utils.hpp"
@@ -26,56 +15,18 @@
 #include "attitude-utils.hpp"
 #include "attitude-estimators.hpp"
 #include "databases.hpp"
+#include "io-util.hpp"
+#include "cairo-utils.hpp"
+
+#ifndef CAIRO_HAS_PNG_FUNCTIONS
+#error LOST requires Cairo to be compiled with PNG support
+#endif
 
 namespace lost {
-
-const char kNoDefaultArgument = 0;
-
-/// An output stream which might be a file or stdout
-class UserSpecifiedOutputStream {
-public:
-    explicit UserSpecifiedOutputStream(std::string filePath, bool isBinary);
-    ~UserSpecifiedOutputStream();
-
-    /// return the inner output stream, suitable for use with <<
-    std::ostream &Stream() { return *stream; };
-
-private:
-    bool isFstream;
-    std::ostream *stream;
-};
-
-// use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
-const Catalog &CatalogRead();
-// Convert a cairo surface to array of grayscale bytes
-unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
-cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
-
-// take an astrometry download from the bash script, and parse it into stuff.
-// void v_astrometry_parse(std::string
-//                         cairo_surface_t **pcairoSurface,   // image data
-//                         Star      **ppx_centroids, // centroids according to astrometry
-//                         int             *pi_centroids_length); // TODO: fov, actual angle, etc
-
-// type for functions that create a centroid algorithm (by prompting the user usually)
-
-/// An 8-bit grayscale 2d image
-class Image {
-public:
-    /**
-     * The raw pixel data in the image.
-     * This is an array of pixels, of length width*height. Each pixel is a single byte. A zero byte is pure black, and a 255 byte is pure white. Support for pixel resolution greater than 8 bits may be added in the future.
-     */
-    unsigned char *image;
-
-    int width;
-    int height;
-};
 
 ////////////////////
 // PIPELINE INPUT //
 ////////////////////
-
 
 /// The command line options passed when running a pipeline
 class PipelineOptions {
@@ -205,23 +156,6 @@ struct PipelineOutput {
     Catalog catalog;
 };
 
-/// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
-struct StarIdComparison {
-    /// The number of centroids in the image which are close to an expected centroid that had an
-    /// expected identification the same as the actual identification.
-    int numCorrect;
-
-    /// The number of centroids which were either:
-    /// + False, but identified as something anyway.
-    /// + True, with an identification that did not agree with any sufficiently close expected centroid's expected identification.
-    int numIncorrect;
-
-    /// The number of centroids sufficiently close to a true expected star.
-    int numTotal;
-};
-
-std::ostream &operator<<(std::ostream &, const Camera &);
-
 //////////////
 // PIPELINE //
 //////////////
@@ -252,56 +186,6 @@ private:
 };
 
 Pipeline SetPipeline(const PipelineOptions &values);
-
-// TODO: rename. Do something with the output
-void PipelineComparison(const PipelineInputList &expected,
-                        const std::vector<PipelineOutput> &actual,
-                        const PipelineOptions &values);
-
-/**
- * Compare expected and actual star identifications.
- * Useful for debugging and benchmarking.
- *
- * The following description is compatible with, but more actionable than, the definitions in the
- * documentation for StarIdComparison. A star-id is *correct* if the centroid is the closest
- * centroid to some expected centroid, and the referenced catalog star is the same one as in the
- * expected star-ids for that centroid. Also permissible is if the centroid is not the closest to
- * any expected centroid, but it has the same star-id as another star closer to the closest expected
- * centroid. All other star-ids are *incorrect* (because they are either identifying false stars, or
- * are incorrect identifications on true stars)
- *
- * The "total" in the result is just the number of input stars.
- */
-StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
-                                // use these to map indices to names for the respective lists of StarIdentifiers
-                                const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                decimal centroidThreshold,
-                                const Stars &expectedStars, const Stars &inputStars);
-
-////////////////
-// DB BUILDER //
-////////////////
-
-/// Commannd line options when using the `database` command.
-class DatabaseOptions {
-public:
-#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    type prop = defaultVal;
-#include "database-options.hpp"
-#undef LOST_CLI_OPTION
-};
-
-SerializeContext serFromDbValues(const DatabaseOptions &values);
-
-/// Appropriately create descriptors for all requested databases according to command-line options.
-/// @sa SerializeMultiDatabase
-MultiDatabaseDescriptor GenerateDatabases(const Catalog &, const DatabaseOptions &values);
-
-/////////////////////
-// INSPECT CATALOG //
-/////////////////////
-
-void InspectCatalog();
 
 }
 
