@@ -130,6 +130,7 @@ $(ETL_TEST_BIN): $(ETL_TEST_OBJS) | $(ETL_CACHE_DIR)
 
 clean:
 	rm -f $(OBJS) $(DEPS) $(ETL_OBJS) $(ETL_DEPS) $(TEST_OBJS) $(ETL_TEST_OBJS) $(ETL_TEST_DEPS) $(MAN_HS)
+	rm -f $(BIN) $(TEST_BIN)
 	rm -f $(ETL_BIN) $(ETL_TEST_BIN)
 	rm -rf $(DOXYGEN_DIR)
 
