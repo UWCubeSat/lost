@@ -5,6 +5,7 @@
 
 #include <limits>
 #include <utility>
+#include <vector>
 #include "star-id.hpp"
 #include "databases.hpp"
 

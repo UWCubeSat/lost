@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "containers.hpp"
 #include "etl_config.hpp"

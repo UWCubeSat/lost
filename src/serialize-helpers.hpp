@@ -21,6 +21,7 @@
 
 #include <utility>
 #include <algorithm>
+#include <vector>
 
 #include "containers.hpp"
 #include "etl_config.hpp"

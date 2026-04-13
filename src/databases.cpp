@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 #include "attitude-utils.hpp"
 #include "serialize-helpers.hpp"

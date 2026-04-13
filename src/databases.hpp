@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <inttypes.h>
+#include <vector>
 
 #include "star-utils.hpp"
 #include "serialize-helpers.hpp"

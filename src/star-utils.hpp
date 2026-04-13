@@ -1,6 +1,8 @@
 #ifndef STAR_UTILS_H
 #define STAR_UTILS_H
 
+#include <vector>
+
 #include "containers.hpp"
 #include "etl_config.hpp"
 #include "attitude-utils.hpp"

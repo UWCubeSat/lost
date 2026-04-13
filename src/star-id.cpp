@@ -3,7 +3,10 @@
 #include <assert.h>
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
+#include <iostream>
 #include <unordered_map>
+#include <vector>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -661,7 +664,11 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     // there isn't some pyramid that's just outside the database's bounds, but
                     // within measurement tolerance of the observed pyramid, since that would
                     // possibly cause a non-unique pyramid to be identified as unique.
-#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
+#define _CHECK_DISTANCE(_dist) \
+    if ((_dist) < vectorDatabase.MinDistance() + tolerance || \
+        (_dist) > vectorDatabase.MaxDistance() - tolerance) { \
+        continue; \
+    }
                     _CHECK_DISTANCE(ikDist);
                     _CHECK_DISTANCE(irDist);
                     _CHECK_DISTANCE(jkDist);
