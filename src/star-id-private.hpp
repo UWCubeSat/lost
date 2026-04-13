@@ -5,8 +5,6 @@
 
 #include <limits>
 #include <utility>
-#include <vector>
-
 #include "star-id.hpp"
 #include "databases.hpp"
 
@@ -20,9 +18,7 @@ public:
         : bestAngleFrom90(std::numeric_limits<decimal>::max()), // should be infinity
           bestStar1(0,0), bestStar2(0,0),
           index(index),
-          star(&star) {
-        identifiedStarsInRange.reserve(10); // this does quite measurably improve performance, at least on desktop
-    }
+                    star(&star) { }
 
     // "null" has index=-1
     IRUnidentifiedCentroid()
@@ -37,7 +33,7 @@ public:
 
 private:
     // possible improvement: Use a tree map here to allow binary search
-    std::vector<std::pair<decimal, StarIdentifier>> identifiedStarsInRange;
+    vector<std::pair<decimal, StarIdentifier>, LOST_ETL_MAX_IDENTIFIED_STARS_IN_RANGE> identifiedStarsInRange;
 
 private:
     decimal VerticalAnglesToAngleFrom90(decimal v1, decimal v2);
@@ -46,11 +42,11 @@ public:
     void AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars);
 };
 
-std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
-                                       const Catalog &catalog,
-                                       int16_t catalogIndex1, int16_t catalogIndex2,
-                                       decimal distance1, decimal distance2,
-                                       decimal tolerance);
+vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
+                                                                       const Catalog &catalog,
+                                                                       int16_t catalogIndex1, int16_t catalogIndex2,
+                                                                       decimal distance1, decimal distance2,
+                                                                       decimal tolerance);
 
 int IdentifyRemainingStarsPairDistance(StarIdentifiers *,
                                        const Stars &,

@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <inttypes.h>
-#include <vector>
 
 #include "star-utils.hpp"
 #include "serialize-helpers.hpp"
@@ -57,7 +56,7 @@ public:
 
     const int16_t *FindPairsLiberal(decimal min, decimal max, const int16_t **end) const;
     const int16_t *FindPairsExact(const Catalog &, decimal min, decimal max, const int16_t **end) const;
-    std::vector<decimal> StarDistances(int16_t star, const Catalog &) const;
+    vector<decimal, LOST_ETL_MAX_CATALOG_STARS> StarDistances(int16_t star, const Catalog &) const;
 
     /// Upper bound on stored star pair distances
     decimal MaxDistance() const { return index.Max(); };
@@ -112,15 +111,15 @@ private:
 
 class MultiDatabaseEntry {
 public:
-    MultiDatabaseEntry(int32_t magicValue, std::vector<unsigned char> bytes) // I wonder if making `bytes` a reference would avoid making two copies, or maybe it would be worse by preventing copy-elision
+    MultiDatabaseEntry(int32_t magicValue, vector<unsigned char, LOST_ETL_MAX_SERIALIZE_BUFFER_BYTES> bytes) // I wonder if making `bytes` a reference would avoid making two copies, or maybe it would be worse by preventing copy-elision
         : magicValue(magicValue), bytes(bytes) { }
 
     int32_t magicValue;
     uint32_t flags;
-    std::vector<unsigned char> bytes;
+    vector<unsigned char, LOST_ETL_MAX_SERIALIZE_BUFFER_BYTES> bytes;
 };
 
-typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
+using MultiDatabaseDescriptor = vector<MultiDatabaseEntry, LOST_ETL_MAX_MULTI_DATABASE_ENTRIES>;
 
 void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint32_t flags);
 

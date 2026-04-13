@@ -5,10 +5,8 @@
 #include <string.h>
 
 #include <cmath>
-#include <vector>
 #include <iostream>
 #include <unordered_map>
-#include <unordered_set>
 
 #include "decimal.hpp"
 
@@ -16,8 +14,8 @@ namespace lost {
 
 // DUMMY
 
-std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *, int imageWidth, int imageHeight) const {
-    std::vector<Star> result;
+Stars DummyCentroidAlgorithm::Go(unsigned char *, int imageWidth, int imageHeight) const {
+    Stars result;
 
     unsigned int randomSeed = 123456;
     for (int i = 0; i < numStars; i++) {
@@ -119,50 +117,73 @@ struct CentroidParams {
     int yMax;
     int cutoff;
     bool isValid;
-    std::unordered_set<int> checkedIndices;
+    size_t checkedCount;
 };
 
-//recursive helper here
-void CogHelper(CentroidParams *p, long i, unsigned char *image, int imageWidth, int imageHeight) {
+template <typename VisitPixelFunc>
+void TraverseConnectedPixels(long startIndex,
+                             unsigned char *image,
+                             int imageWidth,
+                             int imageHeight,
+                             int cutoff,
+                             vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> *checked,
+                             size_t *checkedCount,
+                             bool *isValid,
+                             VisitPixelFunc visitPixel) {
+    vector<int, LOST_ETL_MAX_IMAGE_PIXELS> stack;
+    stack.push_back(static_cast<int>(startIndex));
+    long imageSize = static_cast<long>(imageWidth) * imageHeight;
 
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p->cutoff && p->checkedIndices.count(i) == 0) {
-        //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
-        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
-            p->isValid = false;
+    while (!stack.empty()) {
+        int i = stack.back();
+        stack.pop_back();
+
+        if (i < 0 || i >= imageSize) {
+            continue;
         }
-        p->checkedIndices.insert(i);
-        if (i % imageWidth > p->xMax) {
-            p->xMax = i % imageWidth;
-        } else if (i % imageWidth < p->xMin) {
-            p->xMin = i % imageWidth;
+        if (image[i] < cutoff || (*checked)[i] != 0) {
+            continue;
         }
-        if (i / imageWidth > p->yMax) {
-            p->yMax = i / imageWidth;
-        } else if (i / imageWidth < p->yMin) {
-            p->yMin = i / imageWidth;
+
+        int x = i % imageWidth;
+        int y = i / imageWidth;
+        // Reject components touching the image border as before.
+        if (x == 0 || x == imageWidth - 1 || y == 0 || y == imageHeight - 1) {
+            *isValid = false;
         }
-        p->magSum += image[i];
-        p->xCoordMagSum += ((i % imageWidth)) * image[i];
-        p->yCoordMagSum += ((i / imageWidth)) * image[i];
-        if (i % imageWidth != imageWidth - 1) {
-            CogHelper(p, i + 1, image, imageWidth, imageHeight);
+
+        (*checked)[i] = 1;
+        (*checkedCount)++;
+        visitPixel(i, x, y);
+
+        if (x < imageWidth - 1) {
+            stack.push_back(i + 1);
         }
-        if (i % imageWidth != 0) {
-            CogHelper(p, i - 1, image, imageWidth, imageHeight);
+        if (x > 0) {
+            stack.push_back(i - 1);
         }
-        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
-        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
+        if (y < imageHeight - 1) {
+            stack.push_back(i + imageWidth);
+        }
+        if (y > 0) {
+            stack.push_back(i - imageWidth);
+        }
     }
 }
 
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
+Stars CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     CentroidParams p;
 
-    std::vector<Star> result;
+    Stars result;
+    EtlRuntimeBoundCheck((size_t)imageWidth * (size_t)imageHeight,
+                         LOST_ETL_MAX_IMAGE_PIXELS,
+                         "centroid image pixel count");
+    vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> checked(imageHeight * imageWidth, 0);
+    p.checkedCount = 0;
 
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.cutoff && checked[i] == 0) {
 
             //iterate over pixels that are part of the star
             int xDiameter = 0; //radius of current star
@@ -177,9 +198,32 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             p.yMin = i / imageWidth;
             p.isValid = true;
 
-            int sizeBefore = p.checkedIndices.size();
+            size_t sizeBefore = p.checkedCount;
 
-            CogHelper(&p, i, image, imageWidth, imageHeight);
+            TraverseConnectedPixels(
+                i,
+                image,
+                imageWidth,
+                imageHeight,
+                p.cutoff,
+                &checked,
+                &p.checkedCount,
+                &p.isValid,
+                [&](long index, int x, int y) {
+                    if (x > p.xMax) {
+                        p.xMax = x;
+                    } else if (x < p.xMin) {
+                        p.xMin = x;
+                    }
+                    if (y > p.yMax) {
+                        p.yMax = y;
+                    } else if (y < p.yMin) {
+                        p.yMin = y;
+                    }
+                    p.magSum += image[index];
+                    p.xCoordMagSum += x * image[index];
+                    p.yCoordMagSum += y * image[index];
+                });
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;
 
@@ -188,7 +232,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             decimal yCoord = (p.yCoordMagSum / (p.magSum * DECIMAL(1.0)));
 
             if (p.isValid) {
-                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), p.checkedIndices.size() - sizeBefore));
+                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), p.checkedCount - sizeBefore));
             }
         }
     }
@@ -208,51 +252,23 @@ struct IWCoGParams {
     int maxIntensity;
     int guess;
     bool isValid;
-    std::unordered_set<int> checkedIndices;
+    size_t checkedCount;
 };
-
-void IWCoGHelper(IWCoGParams *p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector<int> *starIndices) {
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p->cutoff && p->checkedIndices.count(i) == 0) {
-        //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
-        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
-            p->isValid = false;
-        }
-        p->checkedIndices.insert(i);
-        starIndices->push_back(i);
-        if (image[i] > p->maxIntensity) {
-            p->maxIntensity = image[i];
-            p->guess = i;
-        }
-        if (i % imageWidth > p->xMax) {
-            p->xMax = i % imageWidth;
-        } else if (i % imageWidth < p->xMin) {
-            p->xMin = i % imageWidth;
-        }
-        if (i / imageWidth > p->yMax) {
-            p->yMax = i / imageWidth;
-        } else if (i / imageWidth < p->yMin) {
-            p->yMin = i / imageWidth;
-        }
-        if (i % imageWidth != imageWidth - 1) {
-            IWCoGHelper(p, i + 1, image, imageWidth, imageHeight, starIndices);
-        }
-        if (i % imageWidth != 0) {
-            IWCoGHelper(p, i - 1, image, imageWidth, imageHeight, starIndices);
-        }
-        IWCoGHelper(p, i + imageWidth, image, imageWidth, imageHeight, starIndices);
-        IWCoGHelper(p, i - imageWidth, image, imageWidth, imageHeight, starIndices);
-    }
-}
 
 Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
     IWCoGParams p;
-    std::vector<Star> result;
+    Stars result;
+    EtlRuntimeBoundCheck((size_t)imageWidth * (size_t)imageHeight,
+                         LOST_ETL_MAX_IMAGE_PIXELS,
+                         "iwcog image pixel count");
+    vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> checked(imageHeight * imageWidth, 0);
+    p.checkedCount = 0;
     p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
     for (long i = 0; i < imageHeight * imageWidth; i++) {
         //check if pixel is part of a "star" and has not been iterated over
-        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+        if (image[i] >= p.cutoff && checked[i] == 0) {
             // TODO: store longs --Mark
-            std::vector<int> starIndices; //indices of the current star
+            vector<int, LOST_ETL_MAX_STARS> starIndices; //indices of the current star
             p.maxIntensity = 0;
             int xDiameter = 0;
             int yDiameter = 0;
@@ -270,7 +286,32 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.isValid = true;
 
 
-            IWCoGHelper(&p, i, image, imageWidth, imageHeight, &starIndices);
+            TraverseConnectedPixels(
+                i,
+                image,
+                imageWidth,
+                imageHeight,
+                p.cutoff,
+                &checked,
+                &p.checkedCount,
+                &p.isValid,
+                [&](long index, int x, int y) {
+                    starIndices.push_back(static_cast<int>(index));
+                    if (image[index] > p.maxIntensity) {
+                        p.maxIntensity = image[index];
+                        p.guess = index;
+                    }
+                    if (x > p.xMax) {
+                        p.xMax = x;
+                    } else if (x < p.xMin) {
+                        p.xMin = x;
+                    }
+                    if (y > p.yMax) {
+                        p.yMax = y;
+                    } else if (y < p.yMin) {
+                        p.yMin = y;
+                    }
+                });
 
             xDiameter = (p.xMax - p.xMin) + 1;
             yDiameter = (p.yMax - p.yMin) + 1;

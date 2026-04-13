@@ -12,8 +12,10 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <memory>
+#include <fstream>
 
+#include "containers.hpp"
+#include "etl_config.hpp"
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
@@ -41,14 +43,15 @@ public:
     std::ostream &Stream() { return *stream; };
 
 private:
-    bool isFstream;
+    std::fstream fileStream;
     std::ostream *stream;
 };
 
 // use the environment variable LOST_BSC_PATH, or read from ./bright-star-catalog.tsv
 const Catalog &CatalogRead();
 // Convert a cairo surface to array of grayscale bytes
-unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface);
+void SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface,
+                             vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> *result);
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *, const int width, const int height);
 
 // take an astrometry download from the bash script, and parse it into stuff.
@@ -146,7 +149,7 @@ public:
     const Catalog &GetCatalog() const override { return catalog; };
 
 private:
-    std::vector<unsigned char> imageData;
+    vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> imageData;
     Image image;
     /// Includes false stars and very dim stars. Any further filtering that needs to happen before comparison happens in the comparator itself.
     Stars expectedStars;
@@ -159,7 +162,8 @@ private:
     StarIdentifiers expectedStarIds;
 };
 
-typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;
+using PipelineInputPtr = unique_ptr<PipelineInput>;
+using PipelineInputList = vector<PipelineInputPtr, LOST_ETL_MAX_PIPELINE_INPUTS>;
 
 PipelineInputList GetPipelineInput(const PipelineOptions &values);
 
@@ -167,13 +171,13 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values);
 class PngPipelineInput : public PipelineInput {
 public:
     PngPipelineInput(cairo_surface_t *, Camera, const Catalog &);
-    ~PngPipelineInput();
 
     const Image *InputImage() const override { return &image; };
     const Camera *InputCamera() const override { return &camera; };
     const Catalog &GetCatalog() const override { return catalog; };
 
 private:
+    vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> imageData;
     Image image;
     Camera camera;
     const Catalog &catalog;
@@ -188,9 +192,9 @@ private:
  * @details Also stores intermediate outputs, not just the final attitude.
  */
 struct PipelineOutput {
-    std::unique_ptr<Stars> stars = nullptr;
-    std::unique_ptr<StarIdentifiers> starIds = nullptr;
-    std::unique_ptr<Attitude> attitude = nullptr;
+    unique_ptr<Stars> stars;
+    unique_ptr<StarIdentifiers> starIds;
+    unique_ptr<Attitude> attitude;
 
     /// How many nanoseconds the centroiding stage of the pipeline took. Similarly for the other
     /// fields. If negative, the centroiding stage was not run.
@@ -204,6 +208,10 @@ struct PipelineOutput {
      */
     Catalog catalog;
 };
+
+using PipelineOutputList = vector<PipelineOutput, LOST_ETL_MAX_PIPELINE_OUTPUTS>;
+using StarsList = vector<Stars, LOST_ETL_MAX_PIPELINE_OUTPUTS>;
+using TimeNsList = vector<long long, LOST_ETL_MAX_PIPELINE_OUTPUTS>;
 
 /// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
@@ -237,25 +245,25 @@ public:
     Pipeline() = default;
     Pipeline(CentroidAlgorithm *, StarIdAlgorithm *, AttitudeEstimationAlgorithm *, unsigned char *);
     PipelineOutput Go(const PipelineInput &);
-    std::vector<PipelineOutput> Go(const PipelineInputList &);
+    PipelineOutputList Go(const PipelineInputList &);
 
 private:
-    std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
+    unique_ptr<CentroidAlgorithm> centroidAlgorithm;
 
     // next two options are for magnitude filter:
     int centroidMinMagnitude = 0;
     int centroidMinStars = 0;
 
-    std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
-    std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
-    std::unique_ptr<unsigned char[]> database;
+    unique_ptr<StarIdAlgorithm> starIdAlgorithm;
+    unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+    vector<unsigned char, LOST_ETL_MAX_SERIALIZE_BUFFER_BYTES> database;
 };
 
 Pipeline SetPipeline(const PipelineOptions &values);
 
 // TODO: rename. Do something with the output
 void PipelineComparison(const PipelineInputList &expected,
-                        const std::vector<PipelineOutput> &actual,
+                        const PipelineOutputList &actual,
                         const PipelineOptions &values);
 
 /**

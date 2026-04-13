@@ -1,8 +1,8 @@
 #ifndef STAR_UTILS_H
 #define STAR_UTILS_H
 
-#include <vector>
-
+#include "containers.hpp"
+#include "etl_config.hpp"
 #include "attitude-utils.hpp"
 #include "serialize-helpers.hpp"
 
@@ -97,9 +97,9 @@ public:
     decimal weight;
 };
 
-typedef std::vector<CatalogStar> Catalog;
-typedef std::vector<Star> Stars;
-typedef std::vector<StarIdentifier> StarIdentifiers;
+using Catalog = vector<CatalogStar, LOST_ETL_MAX_CATALOG_STARS>;
+using Stars = vector<Star, LOST_ETL_MAX_STARS>;
+using StarIdentifiers = vector<StarIdentifier, LOST_ETL_MAX_STAR_IDENTIFIERS>;
 
 void SerializeCatalog(SerializeContext *, const Catalog &, bool inclMagnitude, bool inclName);
 // sets magnited and name to whether the catalog in the database contained magnitude and name

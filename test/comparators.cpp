@@ -70,7 +70,7 @@ TEST_CASE("Star IDs compare: Some perturbations", "[comparators] [fast]") {
 
 TEST_CASE("Star IDs compare: Permute a few things", "[comparators] [fast]") {
     // swap the first two star-ids
-    std::vector<StarIdentifier> permutedStarIds = elevenStarIds;
+    StarIdentifiers permutedStarIds = elevenStarIds;
     std::swap(permutedStarIds[0], permutedStarIds[1]);
     StarIdComparison result1 = StarIdsCompare(elevenStarIds, permutedStarIds,
                                               integralCatalog, integralCatalog,

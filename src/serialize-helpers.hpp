@@ -20,9 +20,10 @@
 #include <string.h>
 
 #include <utility>
-#include <vector>
 #include <algorithm>
 
+#include "containers.hpp"
+#include "etl_config.hpp"
 #include "decimal.hpp"
 
 namespace lost {
@@ -35,7 +36,7 @@ public:
 
     bool swapIntegerEndianness;
     bool swapDecimalEndianness;
-    std::vector<unsigned char> buffer;
+    vector<unsigned char, LOST_ETL_MAX_SERIALIZE_BUFFER_BYTES> buffer;
 };
 
 class DeserializeContext {

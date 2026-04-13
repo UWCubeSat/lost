@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-#include <vector>
 #include <algorithm>
 #include <chrono>
 #include <unordered_map>
@@ -39,12 +38,12 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     PairDistanceKVectorDatabase vectorDatabase(&des);
 
     for (int i = 0; i < (int)stars.size(); i++) {
-        std::vector<int16_t> votes(catalog.size(), 0);
+        vector<int16_t, LOST_ETL_MAX_CATALOG_STARS> votes(catalog.size(), 0);
         Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
         for (int j = 0; j < (int)stars.size(); j++) {
             if (i != j) {
                 // TODO: find a faster way to do this:
-                std::vector<bool> votedInPair(catalog.size(), false);
+                vector<bool, LOST_ETL_MAX_CATALOG_STARS> votedInPair(catalog.size(), false);
                 Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
                 decimal greatCircleDistance = AngleUnit(iSpatial, jSpatial);
                 //give a greater range for min-max Query for bigger radius (GreatCircleDistance)
@@ -105,7 +104,7 @@ StarIdentifiers GeometricVotingStarIdAlgorithm::Go(
     //
     // Do we have a metric for localization uncertainty? Star brighntess?
     //loop i from 1 through n
-    std::vector<int16_t> verificationVotes(identified.size(), 0);
+    vector<int16_t, LOST_ETL_MAX_STAR_IDENTIFIERS> verificationVotes(identified.size(), 0);
     for (int i = 0; i < (int)identified.size(); i++) {
         //loop j from i+1 through n
         for (int j = i + 1; j < (int)identified.size(); j++) {
@@ -241,8 +240,8 @@ private:
     }
 };
 
-std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) {
-    std::vector<int16_t> result;
+vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) {
+    vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> result;
     for (; it.HasValue(); ++it) {
         result.push_back(*it);
     }
@@ -296,8 +295,8 @@ void IRUnidentifiedCentroid::AddIdentifiedStar(const StarIdentifier &starId, con
  * The returned vector has pointers into the vector passed as an argument. Thus, it's important not
  * to modify the `centroids` argument after calling.
  */
-std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCentroidsInRange(
-    std::vector<IRUnidentifiedCentroid *> *centroids, const Star &star, const Camera &camera,
+vector<vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS>::iterator, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> FindUnidentifiedCentroidsInRange(
+    vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> *centroids, const Star &star, const Camera &camera,
     decimal minDistance, decimal maxDistance) {
 
     Vec3 ourSpatial = camera.CameraToSpatial(star.position).Normalize();
@@ -305,7 +304,7 @@ std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCen
     decimal minCos = DECIMAL_COS(maxDistance);
     decimal maxCos = DECIMAL_COS(minDistance);
 
-    std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> result;
+    vector<vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS>::iterator, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> result;
     for (auto it = centroids->begin(); it != centroids->end(); ++it) {
         Vec3 theirSpatial = camera.CameraToSpatial((*it)->star->position).Normalize();
         decimal angleCos = ourSpatial * theirSpatial;
@@ -348,13 +347,13 @@ std::vector<std::vector<IRUnidentifiedCentroid *>::iterator> FindUnidentifiedCen
  * @param angleFrom90Threshold Once an IRUnidentifiedCentroid's best angle from 90 goes below this threshold
  */
 void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &stars,
-                                   std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
-                                   std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids,
+                                   vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> *aboveThresholdCentroids,
+                                   vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> *belowThresholdCentroids,
                                    decimal minDistance, decimal maxDistance,
                                    decimal angleFrom90Threshold,
                                    const Camera &camera) {
 
-    std::vector<int16_t> nowBelowThreshold; // centroid indices newly moved above the threshold
+    vector<int16_t, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> nowBelowThreshold; // centroid indices newly moved above the threshold
     // don't need to iterate through the centroids that are already below the threshold, for performance.
     for (auto centroidIt : FindUnidentifiedCentroidsInRange(aboveThresholdCentroids, stars[starId.starIndex], camera, minDistance, maxDistance)) {
         (*centroidIt)->AddIdentifiedStar(starId, stars);
@@ -381,11 +380,11 @@ void AddToAllUnidentifiedCentroids(const StarIdentifier &starId, const Stars &st
  * be clockwise (then, the cross product of `a` and `b` will point mostly towards `c`, and a little
  * outwards, so that dot product with `c` captures that positive outward part).
  */
-std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
-                                       const Catalog &catalog,
-                                       int16_t catalogIndex1, int16_t catalogIndex2,
-                                       decimal distance1, decimal distance2,
-                                       decimal tolerance) {
+vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
+                                                                       const Catalog &catalog,
+                                                                       int16_t catalogIndex1, int16_t catalogIndex2,
+                                                                       decimal distance1, decimal distance2,
+                                                                       decimal tolerance) {
 
     const int16_t *query1End;
     const int16_t *query1 = db.FindPairsExact(catalog, distance1-tolerance, distance1+tolerance, &query1End);
@@ -396,7 +395,7 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
 
     // Use PairDistanceInvolvingIterator to find catalog candidates for the unidentified centroid from both sides.
 
-    std::vector<int16_t> result;
+    vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> result;
     // find all the catalog stars that are in both annuli
     for (PairDistanceInvolvingIterator candidateIt(query1, query1End, catalogIndex1);
          candidateIt.HasValue();
@@ -426,8 +425,8 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
     return result;
 }
 
-IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
-                                                      std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids) {
+IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> *aboveThresholdCentroids,
+                                                      vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> *belowThresholdCentroids) {
     if (!belowThresholdCentroids->empty()) {
         auto result = belowThresholdCentroids->back();
         belowThresholdCentroids->pop_back();
@@ -468,15 +467,13 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
     auto startTimestamp = std::chrono::steady_clock::now();
 #endif
     // initialize all unidentified centroids
-    std::vector<IRUnidentifiedCentroid> allUnidentifiedCentroids;
-    std::vector<IRUnidentifiedCentroid *> aboveThresholdUnidentifiedCentroids;
-    std::vector<IRUnidentifiedCentroid *> belowThresholdUnidentifiedCentroids;
-    allUnidentifiedCentroids.reserve(stars.size());
+    vector<IRUnidentifiedCentroid, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> allUnidentifiedCentroids;
+    vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> aboveThresholdUnidentifiedCentroids;
+    vector<IRUnidentifiedCentroid *, LOST_ETL_MAX_UNIDENTIFIED_CENTROIDS> belowThresholdUnidentifiedCentroids;
     for (size_t i = 0; i < stars.size(); i++) {
         allUnidentifiedCentroids.push_back(IRUnidentifiedCentroid(stars[i], i));
     }
     // add everything from allUnidentifiedCentroids to above threshold
-    aboveThresholdUnidentifiedCentroids.reserve(allUnidentifiedCentroids.size());
     for (size_t i = 0; i < allUnidentifiedCentroids.size(); i++) {
         // only add if index is not equal to any starIndex in identifiers already
         if (std::find_if(identifiers->begin(), identifiers->end(),
@@ -524,7 +521,7 @@ int IdentifyRemainingStarsPairDistance(StarIdentifiers *identifiers,
 
         // find all the catalog stars that are in both annuli
         // flip arguments for appropriate spectrality.
-        std::vector<int16_t> candidates =
+        vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> candidates =
             spectralTorch > 0
             ? IdentifyThirdStar(db,
                                 catalog,

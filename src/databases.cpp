@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <vector>
 #include <cstdint>
 #include <algorithm>
 #include <iostream>
@@ -61,8 +60,8 @@ bool CompareKVectorPairs(const KVectorPair &p1, const KVectorPair &p2) {
  * @param numBins the number of "bins" the KVector should use. A higher number makes query results "tighter" but takes up more disk space. Usually should be set somewhat smaller than (max-min) divided by the "width" of the typical query.
  * @param buffer[out] index is written here.
  */
-void SerializeKVectorIndex(SerializeContext *ser, const std::vector<decimal> &values, decimal min, decimal max, long numBins) {
-    std::vector<int32_t> kVector(numBins+1); // We store sums before and after each bin
+void SerializeKVectorIndex(SerializeContext *ser, const vector<decimal, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> &values, decimal min, decimal max, long numBins) {
+    vector<int32_t, LOST_ETL_MAX_KVECTOR_DISTANCE_BINS_PLUS_ONE> kVector(numBins+1); // We store sums before and after each bin
     decimal binWidth = (max - min) / numBins;
 
     // generate the k-vector part
@@ -172,8 +171,11 @@ long KVectorIndex::BinFor(decimal query) const {
      | sizeof kvectorIndex      | kVectorIndex | Serialized KVector index                                    |
      | 2*sizeof(int16)*numPairs | pairs        | Bulk pair data                                              |
  */
-std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, decimal minDistance, decimal maxDistance) {
-    std::vector<KVectorPair> result;
+void CatalogToPairDistances(const Catalog &catalog,
+                            decimal minDistance,
+                            decimal maxDistance,
+                            vector<KVectorPair, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> *result) {
+    result->clear();
     for (int16_t i = 0; i < (int16_t)catalog.size(); i++) {
         for (int16_t k = i+1; k < (int16_t)catalog.size(); k++) {
 
@@ -184,11 +186,13 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, decimal 
 
             if (pair.distance >= minDistance && pair.distance <= maxDistance) {
                 // we'll sort later
-                result.push_back(pair);
+                EtlRuntimeBoundCheck(result->size() + 1,
+                                     LOST_ETL_MAX_PAIR_DISTANCE_PAIRS,
+                                     "catalog filtered pair-distance entries");
+                result->push_back(pair);
             }
         }
     }
-    return result;
 }
 
 /**
@@ -196,12 +200,19 @@ std::vector<KVectorPair> CatalogToPairDistances(const Catalog &catalog, decimal 
  * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
 void SerializePairDistanceKVector(SerializeContext *ser, const Catalog &catalog, decimal minDistance, decimal maxDistance, long numBins) {
-    std::vector<int32_t> kVector(numBins+1); // numBins = length, all elements zero
-    std::vector<KVectorPair> pairs = CatalogToPairDistances(catalog, minDistance, maxDistance);
+    vector<int32_t, LOST_ETL_MAX_KVECTOR_DISTANCE_BINS_PLUS_ONE> kVector(numBins+1); // numBins = length, all elements zero
+#ifdef LOST_USE_ETL_CONTAINERS
+    static vector<KVectorPair, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> pairs;
+    static vector<decimal, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> distances;
+#else
+    vector<KVectorPair, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> pairs;
+    vector<decimal, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> distances;
+#endif
+    CatalogToPairDistances(catalog, minDistance, maxDistance, &pairs);
 
     // sort pairs in increasing order.
     std::sort(pairs.begin(), pairs.end(), CompareKVectorPairs);
-    std::vector<decimal> distances;
+    distances.clear();
 
     for (const KVectorPair &pair : pairs) {
         distances.push_back(pair.distance);
@@ -284,8 +295,8 @@ long PairDistanceKVectorDatabase::NumPairs() const {
 }
 
 /// Return the distances from the given star to each star it's paired with in the database (for debugging).
-std::vector<decimal> PairDistanceKVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
-    std::vector<decimal> result;
+vector<decimal, LOST_ETL_MAX_CATALOG_STARS> PairDistanceKVectorDatabase::StarDistances(int16_t star, const Catalog &catalog) const {
+    vector<decimal, LOST_ETL_MAX_CATALOG_STARS> result;
     for (int i = 0; i < NumPairs(); i++) {
         if (pairs[i*2] == star || pairs[i*2+1] == star) {
             result.push_back(AngleUnit(catalog[pairs[i*2]].spatial, catalog[pairs[i*2+1]].spatial));
