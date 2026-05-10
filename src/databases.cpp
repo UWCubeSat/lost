@@ -201,7 +201,6 @@ void CatalogToPairDistances(const Catalog &catalog,
  * Use SerializeLengthPairDistanceKVector to determine how large the buffer needs to be. See command line documentation for other options.
  */
 void SerializePairDistanceKVector(SerializeContext *ser, const Catalog &catalog, decimal minDistance, decimal maxDistance, long numBins) {
-    vector<int32_t, LOST_ETL_MAX_KVECTOR_DISTANCE_BINS_PLUS_ONE> kVector(numBins+1); // numBins = length, all elements zero
 #ifdef LOST_USE_ETL_CONTAINERS
     static vector<KVectorPair, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> pairs;
     static vector<decimal, LOST_ETL_MAX_PAIR_DISTANCE_PAIRS> distances;

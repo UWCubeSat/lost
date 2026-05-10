@@ -51,7 +51,7 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 
 // TODO: Tests for FindAllInRange if we ever make the logic more complicated
 
-vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> IdentifyThirdStarTest(const Catalog &catalog,
+vector<int16_t, LOST_ETL_MAX_CATALOG_STARS> IdentifyThirdStarTest(const Catalog &catalog,
                                                                            int16_t catalogName1,
                                                                            int16_t catalogName2,
                                                                            decimal dist1,

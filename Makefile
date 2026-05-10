@@ -53,17 +53,36 @@ CXXFLAGS := $(CXXFLAGS) -Ivendor -I/opt/homebrew/include -Isrc -Idocumentation -
 LDFLAGS  := $(LDFLAGS) -L/opt/homebrew/lib
 ETL_CXXFLAGS := $(CXXFLAGS) -I$(ETL_INCLUDE_DIR) -DLOST_USE_ETL_CONTAINERS
 RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
+UNAME_S := $(shell uname -s)
+CXX_VERSION_LINE := $(shell $(CXX) --version 2>/dev/null | head -n 1)
+ASAN_RUNTIME := $(shell $(CXX) -print-file-name=libasan.dylib 2>/dev/null)
 # debug flags:
 CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
+
+LOST_CAN_USE_ASAN := 1
+ifeq ($(UNAME_S),Darwin)
+ifneq ($(findstring GCC,$(CXX_VERSION_LINE)),)
+ifeq ($(ASAN_RUNTIME),libasan.dylib)
+LOST_CAN_USE_ASAN := 0
+endif
+endif
+endif
+
 ifndef LOST_DISABLE_ASAN
+ifeq ($(LOST_CAN_USE_ASAN),1)
 	CXXFLAGS := $(CXXFLAGS) -fsanitize=address
+else
+$(warning AddressSanitizer runtime not available for $(CXX); building without ASAN.)
+endif
 endif
 
 RELEASE_LDFLAGS := $(LDFLAGS)
 
 # debug link flags:
 ifndef LOST_DISABLE_ASAN
+ifeq ($(LOST_CAN_USE_ASAN),1)
 	LDFLAGS := $(LDFLAGS) -fsanitize=address
+endif
 endif
 
 # Use Double Mode by default.

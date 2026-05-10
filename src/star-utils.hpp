@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "containers.hpp"
-#include "etl_config.hpp"
 #include "attitude-utils.hpp"
 #include "serialize-helpers.hpp"
 
@@ -101,7 +100,7 @@ public:
 
 using Catalog = vector<CatalogStar, LOST_ETL_MAX_CATALOG_STARS>;
 using Stars = vector<Star, LOST_ETL_MAX_STARS>;
-using StarIdentifiers = vector<StarIdentifier, LOST_ETL_MAX_STAR_IDENTIFIERS>;
+using StarIdentifiers = vector<StarIdentifier, LOST_ETL_MAX_STARS>;
 
 void SerializeCatalog(SerializeContext *, const Catalog &, bool inclMagnitude, bool inclName);
 // sets magnited and name to whether the catalog in the database contained magnitude and name

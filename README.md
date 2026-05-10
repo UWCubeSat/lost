@@ -62,7 +62,7 @@ When compiled with ETL mode, LOST switches to ETL-backed containers and pooled o
 
 This creates a `./lost-etl` binary and a `./lost-test-etl` test binary.
 
-ETL capacity limits are configured in `src/etl_config.hpp` and can be overridden at compile time,
+ETL capacity limits are configured in `src/containers.hpp` and can be overridden at compile time,
 for example:
 
 ```shell

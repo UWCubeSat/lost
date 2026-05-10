@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "containers.hpp"
-#include "etl_config.hpp"
 #include "decimal.hpp"
 
 namespace lost {

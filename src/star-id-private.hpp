@@ -43,7 +43,7 @@ public:
     void AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars);
 };
 
-vector<int16_t, LOST_ETL_MAX_THIRD_STAR_CANDIDATES> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
+vector<int16_t, LOST_ETL_MAX_CATALOG_STARS> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
                                                                        const Catalog &catalog,
                                                                        int16_t catalogIndex1, int16_t catalogIndex2,
                                                                        decimal distance1, decimal distance2,

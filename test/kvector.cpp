@@ -13,9 +13,7 @@ using namespace lost; // NOLINT
 
 TEST_CASE("Kvector full database stuff", "[kvector]") {
     const Catalog &catalog = CatalogRead();
-    std::vector<unsigned char> dbBytes;
-    static SerializeContext ser;
-    ser.buffer.clear();
+    SerializeContext ser;
     SerializePairDistanceKVector(&ser, catalog, DegToRad(DECIMAL(1.0)), DegToRad(DECIMAL(2.0)), 100);
     DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);

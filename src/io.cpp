@@ -551,14 +551,15 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     Quaternion currentAttitude = attitude.GetQuaternion();
     // attitude 1 time unit after middle of exposure
     Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
-    vector<GeneratedStar, LOST_ETL_MAX_GENERATED_STARS> generatedStars;
+    vector<GeneratedStar, LOST_ETL_MAX_CATALOG_STARS> generatedStars;
 
     // a star with 1 photon has peak density 1/(2pi sigma^2), because 2d gaussian formula. Then just
     // multiply up proportionally!
     decimal zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*DECIMAL_M_PI * starSpreadStdDev*starSpreadStdDev);
 
-    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
-    std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
+    // GNU libstdc++ asserts on zero stddev, so only sample these distributions when enabled.
+    std::normal_distribution<decimal> perturbation1DDistribution(
+        DECIMAL(0.0), perturbationStddev > DECIMAL(0.0) ? perturbationStddev : DECIMAL(1.0));
 
     Catalog catalogWithFalse = catalog;
 
@@ -695,7 +696,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
     }
 
-    std::normal_distribution<decimal> readNoiseDist(DECIMAL(0.0), readNoiseStdDev);
+    std::normal_distribution<decimal> readNoiseDist(
+        DECIMAL(0.0), readNoiseStdDev > DECIMAL(0.0) ? readNoiseStdDev : DECIMAL(1.0));
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
     imageData = vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS>(image.width*image.height);
@@ -707,7 +709,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += darkCurrent;
 
         // read noise (Gaussian)
-        curBrightness += readNoiseDist(*rng);
+        if (readNoiseStdDev > DECIMAL(0.0)) {
+            curBrightness += readNoiseDist(*rng);
+        }
 
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
@@ -721,8 +725,12 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
-            std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
-            quantizedPhotons = shotNoiseDist(*rng);
+            if (photons > DECIMAL(0.0)) {
+                std::poisson_distribution<long> shotNoiseDist(photons);
+                quantizedPhotons = shotNoiseDist(*rng);
+            } else {
+                quantizedPhotons = 0;
+            }
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }
@@ -1025,7 +1033,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         result.starIds = MakeOwned<StarIdentifiers>(
             gStarIdsPool, starIdAlgorithm->Go(database.data(), *inputStars, result.catalog, *input.InputCamera()));
-        EtlRuntimeBoundCheck(result.starIds->size(), LOST_ETL_MAX_STAR_IDENTIFIERS, "identified star count");
+        EtlRuntimeBoundCheck(result.starIds->size(), LOST_ETL_MAX_STARS, "identified star count");
 
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.starIdTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
@@ -1106,7 +1114,7 @@ static std::multimap<int, int> FindClosestCentroids(decimal threshold,
     std::multimap<int, int> result;
 
     for (int i = 0; i < (int)one.size(); i++) {
-        vector<std::pair<decimal, int>, LOST_ETL_MAX_CLOSEST_STAR_CANDIDATES> closest;
+        vector<std::pair<decimal, int>, LOST_ETL_MAX_STARS> closest;
         for (int k = 0; k < (int)two.size(); k++) {
             decimal currDistance = (one[i].position - two[k].position).Magnitude();
             if (currDistance <= threshold) {
@@ -1153,7 +1161,7 @@ CentroidComparison CentroidsCompare(decimal threshold,
     return result;
 }
 
-CentroidComparison CentroidComparisonsCombine(vector<CentroidComparison, LOST_ETL_MAX_CENTROID_COMPARISONS> comparisons) {
+CentroidComparison CentroidComparisonsCombine(vector<CentroidComparison, LOST_ETL_MAX_PIPELINE_INPUTS> comparisons) {
     assert(comparisons.size() > 0);
 
     CentroidComparison result;
@@ -1323,7 +1331,7 @@ static void PipelineComparatorCentroids(std::ostream &os,
 
     decimal threshold = values.centroidCompareThreshold;
 
-    vector<CentroidComparison, LOST_ETL_MAX_CENTROID_COMPARISONS> comparisons;
+    vector<CentroidComparison, LOST_ETL_MAX_PIPELINE_INPUTS> comparisons;
     for (int i = 0; i < size; i++) {
         comparisons.push_back(CentroidsCompare(threshold,
                                                *(expected[i]->ExpectedStars()),

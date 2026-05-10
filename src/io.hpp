@@ -16,7 +16,6 @@
 #include <memory>
 
 #include "containers.hpp"
-#include "etl_config.hpp"
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
@@ -210,9 +209,9 @@ struct PipelineOutput {
     Catalog catalog;
 };
 
-using PipelineOutputList = vector<PipelineOutput, LOST_ETL_MAX_PIPELINE_OUTPUTS>;
-using StarsList = vector<Stars, LOST_ETL_MAX_PIPELINE_OUTPUTS>;
-using TimeNsList = vector<long long, LOST_ETL_MAX_PIPELINE_OUTPUTS>;
+using PipelineOutputList = vector<PipelineOutput, LOST_ETL_MAX_PIPELINE_INPUTS>;
+using StarsList = vector<Stars, LOST_ETL_MAX_PIPELINE_INPUTS>;
+using TimeNsList = vector<long long, LOST_ETL_MAX_PIPELINE_INPUTS>;
 
 /// The result of comparing an actual star identification with the true star idenification, used for testing and benchmarking.
 struct StarIdComparison {
