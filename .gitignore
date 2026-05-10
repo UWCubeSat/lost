@@ -20,8 +20,9 @@ BSC5
 /documentation/man-*.h
 
 /lost
+/lost-etl
 *.jpg
-
+.cache/
 /vendor/eigen3
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -108,6 +109,7 @@ fabric.properties
 # Generated files in testing
 pyramid-incorrect.dat
 /lost-test
+/lost-test-etl
 
 # macOS
 .DS_Store

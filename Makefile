@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Mark Polyakov, Karen Haining, Muki Kiboigo, Edward Zhang
+# Copyright (c) 2020 Mark Polyakov, Karen Haining, Muki Kiboigo, Edward Zhang, Mahir Emran
 # (If you edit the file, add your name here!)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,25 +32,57 @@ OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS) $(TESTS)) # includes tests
 BIN  := lost
+ETL_BIN := lost-etl
 TEST_BIN := ./lost-test
+ETL_TEST_BIN := ./lost-test-etl
+
+ETL_OBJS := $(patsubst %.cpp,%.etl.o,$(SRCS))
+ETL_DEPS := $(patsubst %.cpp,%.etl.d,$(SRCS))
+ETL_TEST_OBJS := $(patsubst %.cpp,%.etl-test.o,$(TESTS) $(filter-out src/main.cpp, $(SRCS)))
+ETL_TEST_DEPS := $(patsubst %.cpp,%.etl-test.d,$(TESTS) $(filter-out src/main.cpp, $(SRCS)))
 
 BSC  := bright-star-catalog.tsv
+
+ETL_VERSION := 20.46.2
+ETL_URL := https://github.com/ETLCPP/etl.git
+ETL_CACHE_DIR := .cache/etl-$(ETL_VERSION)
+ETL_INCLUDE_DIR := $(ETL_CACHE_DIR)/include
 
 LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Ivendor -I/opt/homebrew/include -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14
 LDFLAGS  := $(LDFLAGS) -L/opt/homebrew/lib
+ETL_CXXFLAGS := $(CXXFLAGS) -I$(ETL_INCLUDE_DIR) -DLOST_USE_ETL_CONTAINERS
 RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
+UNAME_S := $(shell uname -s)
+CXX_VERSION_LINE := $(shell $(CXX) --version 2>/dev/null | head -n 1)
+ASAN_RUNTIME := $(shell $(CXX) -print-file-name=libasan.dylib 2>/dev/null)
 # debug flags:
 CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
+
+LOST_CAN_USE_ASAN := 1
+ifeq ($(UNAME_S),Darwin)
+ifneq ($(findstring GCC,$(CXX_VERSION_LINE)),)
+ifeq ($(ASAN_RUNTIME),libasan.dylib)
+LOST_CAN_USE_ASAN := 0
+endif
+endif
+endif
+
 ifndef LOST_DISABLE_ASAN
+ifeq ($(LOST_CAN_USE_ASAN),1)
 	CXXFLAGS := $(CXXFLAGS) -fsanitize=address
+else
+$(warning AddressSanitizer runtime not available for $(CXX); building without ASAN.)
+endif
 endif
 
 RELEASE_LDFLAGS := $(LDFLAGS)
 
 # debug link flags:
 ifndef LOST_DISABLE_ASAN
+ifeq ($(LOST_CAN_USE_ASAN),1)
 	LDFLAGS := $(LDFLAGS) -fsanitize=address
+endif
 endif
 
 # Use Double Mode by default.
@@ -61,12 +93,17 @@ endif
 
 all: $(BIN) $(BSC)
 
+etl: $(ETL_BIN) $(BSC)
+
 release: CXXFLAGS := $(RELEASE_CXXFLAGS)
 release: LDFLAGS := $(RELEASE_LDFLAGS)
 release: all
 
 $(BIN): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
+
+$(ETL_BIN): $(ETL_OBJS) | $(ETL_CACHE_DIR)
+	$(CXX) $(LDFLAGS) -o $(ETL_BIN) $(ETL_OBJS) $(LIBS)
 
 documentation/%.txt: documentation/%.man
 	groff -mandoc -Tascii $< > $@
@@ -76,6 +113,7 @@ documentation/man-%.h: documentation/%.txt
 	xxd -i $< > $@
 
 src/main.o: $(MAN_HS)
+src/main.etl.o: $(MAN_HS)
 
 docs:
 	doxygen
@@ -86,7 +124,10 @@ lint:
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
--include $(DEPS)
+%.etl.o: %.cpp | $(ETL_CACHE_DIR)
+	$(CXX) $(ETL_CXXFLAGS) -MMD -c $< -o $@
+
+-include $(DEPS) $(ETL_DEPS) $(ETL_TEST_DEPS)
 
 test: $(BIN) $(BSC) $(TEST_BIN)
 	$(TEST_BIN)
@@ -94,14 +135,30 @@ test: $(BIN) $(BSC) $(TEST_BIN)
 	bash ./test/scripts/readme-examples-test.sh
 	bash ./test/scripts/random-crap.sh
 
+test-etl: $(ETL_BIN) $(BSC) $(ETL_TEST_BIN)
+	$(ETL_TEST_BIN)
+
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
+$(ETL_TEST_BIN): $(ETL_TEST_OBJS) | $(ETL_CACHE_DIR)
+	$(CXX) $(LDFLAGS) -o $(ETL_TEST_BIN) $(ETL_TEST_OBJS) $(LIBS)
+
+%.etl-test.o: %.cpp | $(ETL_CACHE_DIR)
+	$(CXX) $(ETL_CXXFLAGS) -MMD -c $< -o $@
+
 clean:
-	rm -f $(OBJS) $(DEPS) $(TEST_OBJS) $(MAN_HS)
+	rm -f $(OBJS) $(DEPS) $(ETL_OBJS) $(ETL_DEPS) $(TEST_OBJS) $(ETL_TEST_OBJS) $(ETL_TEST_DEPS) $(MAN_HS)
+	rm -f $(BIN) $(TEST_BIN)
+	rm -f $(ETL_BIN) $(ETL_TEST_BIN)
 	rm -rf $(DOXYGEN_DIR)
 
 clean_all: clean
 	rm -f $(BSC)
+	rm -rf $(ETL_CACHE_DIR)
 
-.PHONY: all clean test docs lint
+$(ETL_CACHE_DIR):
+	mkdir -p .cache
+	git clone --branch $(ETL_VERSION) --depth 1 $(ETL_URL) $(ETL_CACHE_DIR)
+
+.PHONY: all etl clean test test-etl docs lint

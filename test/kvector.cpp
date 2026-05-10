@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <catch.hpp>
 
 #include "databases.hpp"
@@ -11,7 +13,6 @@ using namespace lost; // NOLINT
 
 TEST_CASE("Kvector full database stuff", "[kvector]") {
     const Catalog &catalog = CatalogRead();
-    std::vector<unsigned char> dbBytes;
     SerializeContext ser;
     SerializePairDistanceKVector(&ser, catalog, DegToRad(DECIMAL(1.0)), DegToRad(DECIMAL(2.0)), 100);
     DeserializeContext des(ser.buffer.data());
@@ -53,7 +54,8 @@ TEST_CASE("Kvector full database stuff", "[kvector]") {
 
 TEST_CASE("Tighter tolerance test", "[kvector]") {
     const Catalog &catalog = CatalogRead();
-    SerializeContext ser;
+    static SerializeContext ser;
+    ser.buffer.clear();
     SerializePairDistanceKVector(&ser, catalog, DegToRad(DECIMAL(0.5)), DegToRad(DECIMAL(5.0)), 1000);
     DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);
@@ -107,7 +109,8 @@ TEST_CASE("3-star database, check exact results", "[kvector] [fast]") {
         CatalogStar(DegToRad(4), DegToRad(7), DECIMAL(2.0), 43),
         CatalogStar(DegToRad(2), DegToRad(6), DECIMAL(4.0), 44),
     };
-    SerializeContext ser;
+    static SerializeContext ser;
+    ser.buffer.clear();
     SerializePairDistanceKVector(&ser, tripleCatalog, DegToRad(DECIMAL(0.5)), DegToRad(DECIMAL(20.0)), 1000);
     DeserializeContext des(ser.buffer.data());
     PairDistanceKVectorDatabase db(&des);

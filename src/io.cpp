@@ -19,6 +19,7 @@
 #include <random>
 #include <algorithm>
 #include <map>
+#include <utility>
 #include <chrono>
 
 #include "attitude-estimators.hpp"
@@ -30,6 +31,16 @@
 
 namespace lost {
 
+template <typename BaseType, typename DerivedType, typename... Args>
+std::unique_ptr<BaseType> MakeOwnedBase(Args &&...args) {
+    return std::unique_ptr<BaseType>(new DerivedType(std::forward<Args>(args)...));
+}
+
+template <typename T, typename... Args>
+std::unique_ptr<T> MakeOwned(Args &&...args) {
+    return std::make_unique<T>(std::forward<Args>(args)...);
+}
+
 /// Create a PromptedOutputStream which will output to the given file.
 UserSpecifiedOutputStream::UserSpecifiedOutputStream(std::string filePath, bool isBinary) {
     if (isBinary && isatty(fileno(stdout)) && (filePath == "stdout" || filePath == "-")) {
@@ -39,24 +50,17 @@ UserSpecifiedOutputStream::UserSpecifiedOutputStream(std::string filePath, bool 
 
     if (filePath == "stdout" || filePath == "-") {
         stream = &std::cout;
-        isFstream = false;
     } else {
-        std::fstream *fs = new std::fstream();
-        fs->open(filePath, std::fstream::out);
-        stream = fs;
-        isFstream = true;
+        fileStream.open(filePath, std::fstream::out);
+        stream = &fileStream;
     }
 }
 
-UserSpecifiedOutputStream::~UserSpecifiedOutputStream() {
-    if (isFstream) {
-        delete stream;
-    }
-}
+UserSpecifiedOutputStream::~UserSpecifiedOutputStream() { }
 
 /// Parse the bright star catalog from the TSV file on disk.
-std::vector<CatalogStar> BscParse(std::string tsvPath) {
-    std::vector<CatalogStar> result;
+Catalog BscParse(std::string tsvPath) {
+    Catalog result;
     FILE *file;
     decimal raj2000, dej2000;
     int magnitudeHigh, magnitudeLow, name;
@@ -87,6 +91,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
     }
 
     fclose(file);
+    EtlRuntimeBoundCheck(result.size(), LOST_ETL_MAX_CATALOG_STARS, "catalog star count");
     assert(result.size() > 9000); // basic sanity check
     return result;
 }
@@ -98,7 +103,7 @@ std::vector<CatalogStar> BscParse(std::string tsvPath) {
 /// Read and parse the full catalog from disk. If called multiple times, will re-use the first result.
 const Catalog &CatalogRead() {
     static bool readYet = false;
-    static std::vector<CatalogStar> catalog;
+    static Catalog catalog;
 
     if (!readYet) {
         readYet = true;
@@ -123,34 +128,33 @@ const Catalog &CatalogRead() {
 }
 
 /// Convert a colored Cairo image surface into a row-major array of grayscale pixels.
-/// Result is allocated with new[]
-unsigned char *SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface) {
+void SurfaceToGrayscaleImage(cairo_surface_t *cairoSurface,
+                             vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS> *result) {
     int width, height;
-    unsigned char *result;
     uint32_t *cairoImage, pixel;
 
     if (cairo_image_surface_get_format(cairoSurface) != CAIRO_FORMAT_ARGB32 &&
         cairo_image_surface_get_format(cairoSurface) != CAIRO_FORMAT_RGB24) {
         puts("Can't convert weird image formats to grayscale.");
-        return NULL;
+        return;
     }
 
     width  = cairo_image_surface_get_width(cairoSurface);
     height = cairo_image_surface_get_height(cairoSurface);
-
-    result = new unsigned char[width*height];
+    EtlRuntimeBoundCheck((size_t)width * (size_t)height,
+                         LOST_ETL_MAX_IMAGE_PIXELS,
+                         "surface grayscale pixel count");
+    result->resize(width*height);
     cairoImage = (uint32_t *)cairo_image_surface_get_data(cairoSurface);
 
     for (int i = 0; i < height * width; i++) {
         pixel = cairoImage[i];
         // use "luminosity" method of grayscaling
-        result[i] = round(
+        (*result)[i] = round(
             (pixel>>16 &0xFF) *0.21 +
             (pixel>>8  &0xFF) *0.71 +
             (pixel     &0xFF) *0.07);
     }
-
-    return result;
 }
 
 cairo_surface_t *GrayscaleImageToSurface(const unsigned char *image,
@@ -366,13 +370,13 @@ cairo_surface_t *PipelineInput::InputImageSurface() const {
 PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
     : camera(camera), catalog(catalog) {
 
-    image.image = SurfaceToGrayscaleImage(cairoSurface);
+    SurfaceToGrayscaleImage(cairoSurface, &imageData);
+    image.image = imageData.data();
     image.width = cairo_image_surface_get_width(cairoSurface);
     image.height = cairo_image_surface_get_height(cairoSurface);
-}
-
-PngPipelineInput::~PngPipelineInput() {
-    delete[] image.image;
+    EtlRuntimeBoundCheck((size_t)image.width * (size_t)image.height,
+                         LOST_ETL_MAX_IMAGE_PIXELS,
+                         "input image pixel count");
 }
 
 /// Create a PngPipelineInput using command line options.
@@ -394,7 +398,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     decimal focalLengthPixels = FocalLengthFromOptions(values, xResolution);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
-    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
+    result.push_back(MakeOwnedBase<PipelineInput, PngPipelineInput>(cairoSurface, cam, CatalogRead()));
     cairo_surface_destroy(cairoSurface);
     return result;
 }
@@ -510,6 +514,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
 
     image.width = camera.XResolution();
     image.height = camera.YResolution();
+    EtlRuntimeBoundCheck((size_t)image.width * (size_t)image.height,
+                         LOST_ETL_MAX_IMAGE_PIXELS,
+                         "generated image pixel count");
     // number of true photons each pixel receives.
 
     assert(oversampling >= 1);
@@ -525,14 +532,15 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     Quaternion currentAttitude = attitude.GetQuaternion();
     // attitude 1 time unit after middle of exposure
     Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
-    std::vector<GeneratedStar> generatedStars;
+    vector<GeneratedStar, LOST_ETL_MAX_CATALOG_STARS> generatedStars;
 
     // a star with 1 photon has peak density 1/(2pi sigma^2), because 2d gaussian formula. Then just
     // multiply up proportionally!
     decimal zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*DECIMAL_M_PI * starSpreadStdDev*starSpreadStdDev);
 
-    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
-    std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
+    // GNU libstdc++ asserts on zero stddev, so only sample these distributions when enabled.
+    std::normal_distribution<decimal> perturbation1DDistribution(
+        DECIMAL(0.0), perturbationStddev > DECIMAL(0.0) ? perturbationStddev : DECIMAL(1.0));
 
     Catalog catalogWithFalse = catalog;
 
@@ -616,7 +624,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         return;
     }
 
-    std::vector<decimal> photonsBuffer(image.width*image.height, 0);
+    vector<decimal, LOST_ETL_MAX_IMAGE_PIXELS> photonsBuffer(image.width*image.height, 0);
 
     for (const GeneratedStar &star : generatedStars) {
         // delta will be exactly (0,0) when motion blur disabled
@@ -669,10 +677,11 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
     }
 
-    std::normal_distribution<decimal> readNoiseDist(DECIMAL(0.0), readNoiseStdDev);
+    std::normal_distribution<decimal> readNoiseDist(
+        DECIMAL(0.0), readNoiseStdDev > DECIMAL(0.0) ? readNoiseStdDev : DECIMAL(1.0));
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
-    imageData = std::vector<unsigned char>(image.width*image.height);
+    imageData = vector<unsigned char, LOST_ETL_MAX_IMAGE_PIXELS>(image.width*image.height);
     image.image = imageData.data();
     for (int i = 0; i < image.width * image.height; i++) {
         decimal curBrightness = 0;
@@ -681,7 +690,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += darkCurrent;
 
         // read noise (Gaussian)
-        curBrightness += readNoiseDist(*rng);
+        if (readNoiseStdDev > DECIMAL(0.0)) {
+            curBrightness += readNoiseDist(*rng);
+        }
 
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
@@ -695,8 +706,12 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
-            std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
-            quantizedPhotons = shotNoiseDist(*rng);
+            if (photons > DECIMAL(0.0)) {
+                std::poisson_distribution<long> shotNoiseDist(photons);
+                quantizedPhotons = shotNoiseDist(*rng);
+            } else {
+                quantizedPhotons = 0;
+            }
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }
@@ -755,6 +770,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                                                                   DegToRad(values.generateBlurDe),
                                                                   DegToRad(values.generateBlurRoll)));
     PipelineInputList result;
+    EtlRuntimeBoundCheck(values.generate, LOST_ETL_MAX_PIPELINE_INPUTS, "number of generated inputs");
 
     decimal focalLength = FocalLengthFromOptions(values, values.generateXRes);
 
@@ -769,30 +785,28 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
             inputAttitude = attitude;
         }
 
-        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
-                CatalogRead(),
-                inputAttitude,
-                Camera(focalLength, values.generateXRes, values.generateYRes),
-                &noiseRng,
+        result.push_back(MakeOwnedBase<PipelineInput, GeneratedPipelineInput>(
+            CatalogRead(),
+            inputAttitude,
+            Camera(focalLength, values.generateXRes, values.generateYRes),
+            &noiseRng,
 
-                values.generateCentroidsOnly,
-                values.generateZeroMagPhotons,
-                values.generateSpreadStdDev,
-                values.generateSaturationPhotons,
-                values.generateDarkCurrent,
-                values.generateReadNoiseStdDev,
-                motionBlurDirection,
-                values.generateExposure,
-                values.generateReadoutTime,
-                values.generateShotNoise,
-                values.generateOversampling,
-                values.generateNumFalseStars,
-                (values.generateFalseMinMag * 100),
-                (values.generateFalseMaxMag * 100),
-                (values.generateCutoffMag * 100),
-                values.generatePerturbationStddev);
-
-            result.push_back(std::unique_ptr<PipelineInput>(curr));
+            values.generateCentroidsOnly,
+            values.generateZeroMagPhotons,
+            values.generateSpreadStdDev,
+            values.generateSaturationPhotons,
+            values.generateDarkCurrent,
+            values.generateReadNoiseStdDev,
+            motionBlurDirection,
+            values.generateExposure,
+            values.generateReadoutTime,
+            values.generateShotNoise,
+            values.generateOversampling,
+            values.generateNumFalseStars,
+            (values.generateFalseMinMag * 100),
+            (values.generateFalseMaxMag * 100),
+            (values.generateCutoffMag * 100),
+            values.generatePerturbationStddev));
 
 
     }
@@ -833,7 +847,9 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
         this->attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
     }
     if (database) {
-        this->database = std::unique_ptr<unsigned char[]>(database);
+        std::cerr << "ERROR: Raw database pointer constructor input is unsupported. "
+                  << "Use --database to load from file." << std::endl;
+        exit(1);
     }
 }
 
@@ -849,11 +865,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.centroidDummyNumStars));
+        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, DummyCentroidAlgorithm>(values.centroidDummyNumStars);
     } else if (values.centroidAlgo == "cog") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
+        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, CenterOfGravityAlgorithm>();
     } else if (values.centroidAlgo == "iwcog") {
-        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, IterativeWeightedCenterOfGravityAlgorithm>();
     } else if (values.centroidAlgo != "") {
         std::cout << "Illegal centroid algorithm." << std::endl;
         exit(1);
@@ -874,29 +890,32 @@ Pipeline SetPipeline(const PipelineOptions &values) {
             std::cerr << "Error reading database! " << strerror(errno) << std::endl;
             exit(1);
         }
+        EtlRuntimeBoundCheck(length,
+                             LOST_ETL_MAX_SERIALIZE_BUFFER_BYTES,
+                             "database byte length");
         std::cerr << "Reading " << length << " bytes of database" << std::endl;
-        result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
-        fs.read((char *)result.database.get(), length);
+        result.database.resize(length);
+        fs.read((char *)result.database.data(), length);
         std::cerr << "Done" << std::endl;
     }
 
     if (values.idAlgo == "dummy") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
+        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, DummyStarIdAlgorithm>();
     } else if (values.idAlgo == "gv") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
+        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, GeometricVotingStarIdAlgorithm>(DegToRad(values.angularTolerance));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, PyramidStarIdAlgorithm>(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000);
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
     }
 
     if (values.attitudeAlgo == "dqm") {
-        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
+        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, DavenportQAlgorithm>();
     } else if (values.attitudeAlgo == "triad") {
-        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
+        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, TriadAlgorithm>();
     } else if (values.attitudeAlgo == "quest") {
-        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new QuestAlgorithm());
+        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, QuestAlgorithm>();
     } else if (values.attitudeAlgo != "") {
         std::cout << "Illegal attitude algorithm." << std::endl;
         exit(1);
@@ -921,8 +940,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     const StarIdentifiers *inputStarIds = input.InputStarIds();
 
     // if database is provided, that's where we get catalog from.
-    if (database) {
-        MultiDatabase multiDatabase(database.get());
+    if (!database.empty()) {
+        MultiDatabase multiDatabase(database.data());
         const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
         if (catalogBuffer != NULL) {
             DeserializeContext des(catalogBuffer);
@@ -942,6 +961,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 
         // TODO: we should probably modify Go to just take an image argument
         Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
+        EtlRuntimeBoundCheck(unfilteredStars.size(), LOST_ETL_MAX_STARS, "centroid count");
 
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.centroidingTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
@@ -958,7 +978,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             minMagnitude = std::max(minMagnitude, magSortedStars[centroidMinStars - 1].magnitude);
         }
         // determine the minimum magnitude according to sorted stars
-        Stars *filteredStars = new std::vector<Star>();
+        std::unique_ptr<Stars> filteredStars = MakeOwned<Stars>();
         for (const Star &star : unfilteredStars) {
             assert(star.magnitude >= 0); // catalog stars can have negative magnitude, but by our
                                          // conventions, centroids shouldn't.
@@ -966,24 +986,26 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
                 filteredStars->push_back(star);
             }
         }
-        result.stars = std::unique_ptr<Stars>(filteredStars);
-        inputStars = filteredStars;
+        inputStars = filteredStars.get();
+        result.stars = std::move(filteredStars);
+        EtlRuntimeBoundCheck(result.stars->size(), LOST_ETL_MAX_STARS, "filtered centroid count");
 
         // any starid set up to this point needs to be discarded, because it's based on input
         // centroids instead of our new centroids.
         inputStarIds = NULL;
-        result.starIds = NULL;
+        result.starIds = std::unique_ptr<StarIdentifiers>();
     } else if (centroidAlgorithm) {
         std::cerr << "ERROR: Centroid algorithm specified, but no input image to run it on." << std::endl;
         exit(1);
     }
 
-    if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
+    if (starIdAlgorithm && !database.empty() && inputStars && input.InputCamera()) {
         // TODO: don't copy the vector!
         std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
 
-        result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
-            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
+        result.starIds = MakeOwned<StarIdentifiers>(
+            starIdAlgorithm->Go(database.data(), *inputStars, result.catalog, *input.InputCamera()));
+        EtlRuntimeBoundCheck(result.starIds->size(), LOST_ETL_MAX_STARS, "identified star count");
 
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.starIdTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
@@ -998,8 +1020,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         assert(inputStars); // ensure that starIds doesn't exist without stars
         std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
 
-        result.attitude = std::unique_ptr<Attitude>(
-            new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
+        result.attitude = MakeOwned<Attitude>(
+            attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds));
 
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.attitudeEstimationTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
@@ -1012,11 +1034,11 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
 }
 
 /// Convenience function to run the main `Pipeline::Go` function on each input
-std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
-    std::vector<PipelineOutput> result;
+PipelineOutputList Pipeline::Go(const PipelineInputList &inputs) {
+    PipelineOutputList result;
 
 
-    for (const std::unique_ptr<PipelineInput> &input : inputs) {
+    for (const PipelineInputPtr &input : inputs) {
         result.push_back(Go(*input));
     }
 
@@ -1064,7 +1086,7 @@ static std::multimap<int, int> FindClosestCentroids(decimal threshold,
     std::multimap<int, int> result;
 
     for (int i = 0; i < (int)one.size(); i++) {
-        std::vector<std::pair<decimal, int>> closest;
+        vector<std::pair<decimal, int>, LOST_ETL_MAX_STARS> closest;
         for (int k = 0; k < (int)two.size(); k++) {
             decimal currDistance = (one[i].position - two[k].position).Magnitude();
             if (currDistance <= threshold) {
@@ -1111,7 +1133,7 @@ CentroidComparison CentroidsCompare(decimal threshold,
     return result;
 }
 
-CentroidComparison CentroidComparisonsCombine(std::vector<CentroidComparison> comparisons) {
+CentroidComparison CentroidComparisonsCombine(vector<CentroidComparison, LOST_ETL_MAX_PIPELINE_INPUTS> comparisons) {
     assert(comparisons.size() > 0);
 
     CentroidComparison result;
@@ -1145,7 +1167,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
     // EXPECTED STAR IDS
 
     // map from expected star indices to expected catalog indices (basically flattening the expected star-ids)
-    std::vector<int> expectedCatalogIndices(expectedStars.size(), -1);
+    vector<int, LOST_ETL_MAX_STARS> expectedCatalogIndices(expectedStars.size(), -1);
     for (const StarIdentifier &starId : expected) {
         assert(0 <= starId.starIndex && starId.starIndex <= (int)expectedStars.size());
         assert(0 <= starId.catalogIndex && starId.catalogIndex <= (int)expectedCatalog.size());
@@ -1176,7 +1198,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
     // COMPUTE CORRECT AND INCORRECT
 
-    std::vector<bool> identifiedInputCentroids(inputStars.size(), false);
+    vector<bool, LOST_ETL_MAX_STARS> identifiedInputCentroids(inputStars.size(), false);
     for (const StarIdentifier &starId : actual) {
         // as later, there shouldn't be duplicate starIndex. This indicates a bug in the star-id algorithm, not comparison code.
         assert(!identifiedInputCentroids[starId.starIndex]);
@@ -1213,7 +1235,7 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 
 typedef void (*PipelineComparator)(std::ostream &os,
                                    const PipelineInputList &,
-                                   const std::vector<PipelineOutput> &,
+                                   const PipelineOutputList &,
                                    const PipelineOptions &);
 
 /// Plotter suitable for `cairo_surface_write_to_png_stream` which simply writes to an std::ostream
@@ -1226,7 +1248,7 @@ static cairo_status_t OstreamPlotter(void *closure, const unsigned char *data, u
 /// Plots the input image with no annotation to `os`
 static void PipelineComparatorPlotRawInput(std::ostream &os,
                                     const PipelineInputList &expected,
-                                    const std::vector<PipelineOutput> &,
+                                    const PipelineOutputList &,
                                     const PipelineOptions &) {
 
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
@@ -1238,7 +1260,7 @@ static void PipelineComparatorPlotRawInput(std::ostream &os,
 // TODO: should probably use Expected methods, not Input methods, because future PipelineInputs could add noise to the result of the Input methods.
 static void PipelineComparatorPlotInput(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &,
+                                 const PipelineOutputList &,
                                  const PipelineOptions &) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->InputStars() != NULL);
@@ -1256,7 +1278,7 @@ static void PipelineComparatorPlotInput(std::ostream &os,
 
 static void PipelineComparatorPlotExpected(std::ostream &os,
                                     const PipelineInputList &expected,
-                                    const std::vector<PipelineOutput> &,
+                                    const PipelineOutputList &,
                                     const PipelineOptions &) {
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
     assert(expected[0]->ExpectedStars() != NULL);
@@ -1275,13 +1297,13 @@ static void PipelineComparatorPlotExpected(std::ostream &os,
 /// Compare the actual and expected centroids, printing key stats to `os`
 static void PipelineComparatorCentroids(std::ostream &os,
                                  const PipelineInputList &expected,
-                                 const std::vector<PipelineOutput> &actual,
+                                 const PipelineOutputList &actual,
                                  const PipelineOptions &values) {
     int size = (int)expected.size();
 
     decimal threshold = values.centroidCompareThreshold;
 
-    std::vector<CentroidComparison> comparisons;
+    vector<CentroidComparison, LOST_ETL_MAX_PIPELINE_INPUTS> comparisons;
     for (int i = 0; i < size; i++) {
         comparisons.push_back(CentroidsCompare(threshold,
                                                *(expected[i]->ExpectedStars()),
@@ -1297,7 +1319,7 @@ static void PipelineComparatorCentroids(std::ostream &os,
 static void PrintCentroids(const std::string &prefix,
                            std::ostream &os,
                            const Catalog &catalog,
-                           const std::vector<Stars> &starses,
+                           const StarsList &starses,
                            // May be NULL. Should be the only the first starId, because we don't have any reasonable aggregative action to perform.
                            const StarIdentifiers *starIds) {
     assert(starses.size() > 0);
@@ -1327,12 +1349,12 @@ static void PrintCentroids(const std::string &prefix,
 /// Print a list of centroids to `os`
 static void PipelineComparatorPrintExpectedCentroids(std::ostream &os,
                                                      const PipelineInputList &expected,
-                                                     const std::vector<PipelineOutput> &, // actual
+                                                     const PipelineOutputList &, // actual
                                                      const PipelineOptions &) {
     assert(expected.size() > 0);
     assert(expected[0]->ExpectedStars());
 
-    std::vector<Stars> expectedStarses;
+    StarsList expectedStarses;
     for (const auto &input : expected) {
         expectedStarses.push_back(*input->ExpectedStars());
     }
@@ -1345,12 +1367,12 @@ static void PipelineComparatorPrintExpectedCentroids(std::ostream &os,
 
 static void PipelineComparatorPrintInputCentroids(std::ostream &os,
                                                   const PipelineInputList &expected,
-                                                  const std::vector<PipelineOutput> &, // actual
+                                                  const PipelineOutputList &, // actual
                                                   const PipelineOptions &) {
     assert(expected.size() > 0);
     assert(expected[0]->InputStars());
 
-    std::vector<Stars> inputStarses;
+    StarsList inputStarses;
     for (const auto &input : expected) {
         inputStarses.push_back(*input->InputStars());
     }
@@ -1363,12 +1385,12 @@ static void PipelineComparatorPrintInputCentroids(std::ostream &os,
 
 static void PipelineComparatorPrintActualCentroids(std::ostream &os,
                                                    const PipelineInputList &expected, // expected
-                                                   const std::vector<PipelineOutput> &actual,
+                                                   const PipelineOutputList &actual,
                                                    const PipelineOptions &values) {
     assert(actual.size() > 0);
     assert(actual[0].stars);
 
-    std::vector<Stars> actualStarses;
+    StarsList actualStarses;
     for (const auto &output : actual) {
         actualStarses.push_back(*output.stars);
     }
@@ -1410,7 +1432,7 @@ static void PipelineComparatorPrintActualCentroids(std::ostream &os,
 /// Use whatever stars were input into the star-id algo (so either actual centroids, or inputstars)
 void PipelineComparatorPlotCentroidIndices(std::ostream &os,
                                            const PipelineInputList &expected,
-                                           const std::vector<PipelineOutput> &actual,
+                                           const PipelineOutputList &actual,
                                            const PipelineOptions &) {
     const Stars &stars = actual[0].stars ? *actual[0].stars : *expected[0]->InputStars();
     StarIdentifiers identifiers;
@@ -1435,7 +1457,7 @@ void PipelineComparatorPlotCentroidIndices(std::ostream &os,
 /// Plot the image annotated with output data computed by the star tracking algorithms.
 static void PipelineComparatorPlotOutput(std::ostream &os,
                                          const PipelineInputList &expected,
-                                         const std::vector<PipelineOutput> &actual,
+                                         const PipelineOutputList &actual,
                                          const PipelineOptions &) {
     // don't need to worry about mutating the surface; InputImageSurface returns a fresh one
     cairo_surface_t *cairoSurface = expected[0]->InputImageSurface();
@@ -1454,7 +1476,7 @@ static void PipelineComparatorPlotOutput(std::ostream &os,
 /// Compare the expected and actual star identifiers.
 static void PipelineComparatorStarIds(std::ostream &os,
                                       const PipelineInputList &expected,
-                                      const std::vector<PipelineOutput> &actual,
+                                      const PipelineOutputList &actual,
                                       const PipelineOptions &values) {
     int numImagesCorrect = 0;
     int numImagesIncorrect = 0;
@@ -1515,7 +1537,7 @@ static void PrintAttitude(std::ostream &os, const std::string &prefix, const Att
 /// Print the identifed attitude to `os` in Euler angle format.
 static void PipelineComparatorPrintAttitude(std::ostream &os,
                                             const PipelineInputList &,
-                                            const std::vector<PipelineOutput> &actual,
+                                            const PipelineOutputList &actual,
                                             const PipelineOptions &) {
     assert(actual.size() == 1);
     assert(actual[0].attitude);
@@ -1524,7 +1546,7 @@ static void PipelineComparatorPrintAttitude(std::ostream &os,
 
 static void PipelineComparatorPrintExpectedAttitude(std::ostream &os,
                                                    const PipelineInputList &expected,
-                                                   const std::vector<PipelineOutput> &,
+                                                   const PipelineOutputList &,
                                                    const PipelineOptions &) {
     assert(expected.size() == 1);
     assert(expected[0]->ExpectedAttitude());
@@ -1534,7 +1556,7 @@ static void PipelineComparatorPrintExpectedAttitude(std::ostream &os,
 /// Compare the actual and expected attitudes.
 static void PipelineComparatorAttitude(std::ostream &os,
                                        const PipelineInputList &expected,
-                                       const std::vector<PipelineOutput> &actual,
+                                       const PipelineOutputList &actual,
                                        const PipelineOptions &values) {
 
     // TODO: use Wahba loss function (maybe average per star) instead of just angle. Also break
@@ -1571,7 +1593,7 @@ static void PipelineComparatorAttitude(std::ostream &os,
     os << "attitude_error_rate " << fractionIncorrect << std::endl;
 }
 
-static void PrintTimeStats(std::ostream &os, const std::string &prefix, const std::vector<long long> &times) {
+static void PrintTimeStats(std::ostream &os, const std::string &prefix, const TimeNsList &times) {
     assert(times.size() > 0);
 
     // print average, min, max, and 95% max
@@ -1585,7 +1607,7 @@ static void PrintTimeStats(std::ostream &os, const std::string &prefix, const st
         max = std::max(max, times[i]);
     }
     long average = sum / times.size();
-    std::vector<long long> sortedTimes = times;
+    TimeNsList sortedTimes = times;
     std::sort(sortedTimes.begin(), sortedTimes.end());
     // what really is the 95th percentile? Being conservative, we want to pick a value that at least
     // 95% of the times are less than. This means: (1) finding the number of times, (2) Finding
@@ -1603,12 +1625,12 @@ static void PrintTimeStats(std::ostream &os, const std::string &prefix, const st
 /// For each stage of the pipeline, print statistics about how long it took to run.
 static void PipelineComparatorPrintSpeed(std::ostream &os,
                                     const PipelineInputList &,
-                                    const std::vector<PipelineOutput> &actual,
+                                    const PipelineOutputList &actual,
                                     const PipelineOptions &) {
-    std::vector<long long> centroidingTimes;
-    std::vector<long long> starIdTimes;
-    std::vector<long long> attitudeTimes;
-    std::vector<long long> totalTimes;
+    TimeNsList centroidingTimes;
+    TimeNsList starIdTimes;
+    TimeNsList attitudeTimes;
+    TimeNsList totalTimes;
     for (int i = 0; i < (int)actual.size(); i++) {
         long long totalTime = 0;
         if (actual[i].centroidingTimeNs > 0) {
@@ -1642,7 +1664,7 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
 // TODO: add these debug comparators back in!
 // void PipelineComparatorPrintPairDistance(std::ostream &os,
 //                                          const PipelineInputList &expected,
-//                                          const std::vector<PipelineOutput> &actual) {
+//                                          const PipelineOutputList &actual) {
 //     int index1 = Prompt<int>("Index of first star");
 //     int index2 = Prompt<int>("Index of second star");
 
@@ -1657,7 +1679,7 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
 
 // void PipelineComparatorPrintPyramidDistances(std::ostream &os,
 //                                              const PipelineInputList &expected,
-//                                              const std::vector<PipelineOutput> &actual) {
+//                                              const PipelineOutputList &actual) {
 //     int index1 = Prompt<int>("Catalog name/index of first star");
 //     int index2 = Prompt<int>("Catalog name/index of second star");
 //     int index3 = Prompt<int>("Catalog name/index of third star");
@@ -1681,7 +1703,7 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
 
 // void PipelineComparatorPrintTripleAngle(std::ostream &os,
 //                                         const PipelineInputList &expected,
-//                                         const std::vector<PipelineOutput> &actual) {
+//                                         const PipelineOutputList &actual) {
 //     int index1 = Prompt<int>("Index of first star");
 //     int index2 = Prompt<int>("Index of second star");
 //     int index3 = Prompt<int>("Index of third star");
@@ -1701,7 +1723,7 @@ static void PipelineComparatorPrintSpeed(std::ostream &os,
  * Uses the command line options in `values` to determine which analyses to run. Examples include plotting an annotated output image to a png file, comparing the actual and expected centroids, etc
  */
 void PipelineComparison(const PipelineInputList &expected,
-                        const std::vector<PipelineOutput> &actual,
+                        const PipelineOutputList &actual,
                         const PipelineOptions &values) {
     if (actual.size() == 0) {
         std::cerr << "ERROR: No output! Did you specify any input images? Try --png or --generate." << std::endl;
