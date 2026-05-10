@@ -31,33 +31,14 @@
 
 namespace lost {
 
-static pool<PngPipelineInput, LOST_ETL_MAX_PIPELINE_INPUTS> gPngPipelineInputPool;
-static pool<GeneratedPipelineInput, LOST_ETL_MAX_PIPELINE_INPUTS> gGeneratedPipelineInputPool;
-
-static pool<DummyCentroidAlgorithm, LOST_ETL_MAX_CENTROID_ALGO_OBJECTS> gDummyCentroidAlgorithmPool;
-static pool<CenterOfGravityAlgorithm, LOST_ETL_MAX_CENTROID_ALGO_OBJECTS> gCenterOfGravityAlgorithmPool;
-static pool<IterativeWeightedCenterOfGravityAlgorithm, LOST_ETL_MAX_CENTROID_ALGO_OBJECTS> gIwCogAlgorithmPool;
-
-static pool<DummyStarIdAlgorithm, LOST_ETL_MAX_STAR_ID_ALGO_OBJECTS> gDummyStarIdAlgorithmPool;
-static pool<GeometricVotingStarIdAlgorithm, LOST_ETL_MAX_STAR_ID_ALGO_OBJECTS> gGeometricVotingAlgorithmPool;
-static pool<PyramidStarIdAlgorithm, LOST_ETL_MAX_STAR_ID_ALGO_OBJECTS> gPyramidAlgorithmPool;
-
-static pool<DavenportQAlgorithm, LOST_ETL_MAX_ATTITUDE_ALGO_OBJECTS> gDavenportAlgorithmPool;
-static pool<TriadAlgorithm, LOST_ETL_MAX_ATTITUDE_ALGO_OBJECTS> gTriadAlgorithmPool;
-static pool<QuestAlgorithm, LOST_ETL_MAX_ATTITUDE_ALGO_OBJECTS> gQuestAlgorithmPool;
-
-static pool<Stars, LOST_ETL_MAX_PIPELINE_STARS_OBJECTS> gStarsPool;
-static pool<StarIdentifiers, LOST_ETL_MAX_PIPELINE_STAR_IDS_OBJECTS> gStarIdsPool;
-static pool<Attitude, LOST_ETL_MAX_PIPELINE_ATTITUDE_OBJECTS> gAttitudePool;
-
-template <typename BaseType, typename DerivedType, typename PoolType, typename... Args>
-unique_ptr<BaseType> MakeOwnedBase(PoolType &pool_ref, Args &&...args) {
-    return make_unique_base<BaseType, 0, DerivedType>(pool_ref, std::forward<Args>(args)...);
+template <typename BaseType, typename DerivedType, typename... Args>
+std::unique_ptr<BaseType> MakeOwnedBase(Args &&...args) {
+    return std::unique_ptr<BaseType>(new DerivedType(std::forward<Args>(args)...));
 }
 
-template <typename T, typename PoolType, typename... Args>
-unique_ptr<T> MakeOwned(PoolType &pool_ref, Args &&...args) {
-    return make_unique<T, 0>(pool_ref, std::forward<Args>(args)...);
+template <typename T, typename... Args>
+std::unique_ptr<T> MakeOwned(Args &&...args) {
+    return std::make_unique<T>(std::forward<Args>(args)...);
 }
 
 /// Create a PromptedOutputStream which will output to the given file.
@@ -417,7 +398,7 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     decimal focalLengthPixels = FocalLengthFromOptions(values, xResolution);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
-    result.push_back(MakeOwnedBase<PipelineInput, PngPipelineInput>(gPngPipelineInputPool, cairoSurface, cam, CatalogRead()));
+    result.push_back(MakeOwnedBase<PipelineInput, PngPipelineInput>(cairoSurface, cam, CatalogRead()));
     cairo_surface_destroy(cairoSurface);
     return result;
 }
@@ -805,7 +786,6 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
         }
 
         result.push_back(MakeOwnedBase<PipelineInput, GeneratedPipelineInput>(
-            gGeneratedPipelineInputPool,
             CatalogRead(),
             inputAttitude,
             Camera(focalLength, values.generateXRes, values.generateYRes),
@@ -857,28 +837,20 @@ Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
                    AttitudeEstimationAlgorithm *attitudeEstimationAlgorithm,
                    unsigned char *database)
     : Pipeline() {
-#ifdef LOST_USE_ETL_CONTAINERS
-    if (centroidAlgorithm || starIdAlgorithm || attitudeEstimationAlgorithm || database) {
-        std::cerr << "ERROR: Raw-pointer Pipeline constructor is not supported in ETL mode. "
-                  << "Use SetPipeline options-based construction instead." << std::endl;
-        exit(1);
-    }
-#else
     if (centroidAlgorithm) {
-        this->centroidAlgorithm = unique_ptr<CentroidAlgorithm>(centroidAlgorithm);
+        this->centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(centroidAlgorithm);
     }
     if (starIdAlgorithm) {
-        this->starIdAlgorithm = unique_ptr<StarIdAlgorithm>(starIdAlgorithm);
+        this->starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(starIdAlgorithm);
     }
     if (attitudeEstimationAlgorithm) {
-        this->attitudeEstimationAlgorithm = unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
+        this->attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
     }
     if (database) {
         std::cerr << "ERROR: Raw database pointer constructor input is unsupported. "
                   << "Use --database to load from file." << std::endl;
         exit(1);
     }
-#endif
 }
 
 
@@ -893,11 +865,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
 
     // centroid algorithm stage
     if (values.centroidAlgo == "dummy") {
-        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, DummyCentroidAlgorithm>(gDummyCentroidAlgorithmPool, values.centroidDummyNumStars);
+        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, DummyCentroidAlgorithm>(values.centroidDummyNumStars);
     } else if (values.centroidAlgo == "cog") {
-        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, CenterOfGravityAlgorithm>(gCenterOfGravityAlgorithmPool);
+        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, CenterOfGravityAlgorithm>();
     } else if (values.centroidAlgo == "iwcog") {
-        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, IterativeWeightedCenterOfGravityAlgorithm>(gIwCogAlgorithmPool);
+        result.centroidAlgorithm = MakeOwnedBase<CentroidAlgorithm, IterativeWeightedCenterOfGravityAlgorithm>();
     } else if (values.centroidAlgo != "") {
         std::cout << "Illegal centroid algorithm." << std::endl;
         exit(1);
@@ -928,22 +900,22 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     }
 
     if (values.idAlgo == "dummy") {
-        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, DummyStarIdAlgorithm>(gDummyStarIdAlgorithmPool);
+        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, DummyStarIdAlgorithm>();
     } else if (values.idAlgo == "gv") {
-        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, GeometricVotingStarIdAlgorithm>(gGeometricVotingAlgorithmPool, DegToRad(values.angularTolerance));
+        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, GeometricVotingStarIdAlgorithm>(DegToRad(values.angularTolerance));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, PyramidStarIdAlgorithm>(gPyramidAlgorithmPool, DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000);
+        result.starIdAlgorithm = MakeOwnedBase<StarIdAlgorithm, PyramidStarIdAlgorithm>(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000);
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
     }
 
     if (values.attitudeAlgo == "dqm") {
-        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, DavenportQAlgorithm>(gDavenportAlgorithmPool);
+        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, DavenportQAlgorithm>();
     } else if (values.attitudeAlgo == "triad") {
-        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, TriadAlgorithm>(gTriadAlgorithmPool);
+        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, TriadAlgorithm>();
     } else if (values.attitudeAlgo == "quest") {
-        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, QuestAlgorithm>(gQuestAlgorithmPool);
+        result.attitudeEstimationAlgorithm = MakeOwnedBase<AttitudeEstimationAlgorithm, QuestAlgorithm>();
     } else if (values.attitudeAlgo != "") {
         std::cout << "Illegal attitude algorithm." << std::endl;
         exit(1);
@@ -1006,7 +978,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
             minMagnitude = std::max(minMagnitude, magSortedStars[centroidMinStars - 1].magnitude);
         }
         // determine the minimum magnitude according to sorted stars
-        unique_ptr<Stars> filteredStars = MakeOwned<Stars>(gStarsPool);
+        std::unique_ptr<Stars> filteredStars = MakeOwned<Stars>();
         for (const Star &star : unfilteredStars) {
             assert(star.magnitude >= 0); // catalog stars can have negative magnitude, but by our
                                          // conventions, centroids shouldn't.
@@ -1021,7 +993,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         // any starid set up to this point needs to be discarded, because it's based on input
         // centroids instead of our new centroids.
         inputStarIds = NULL;
-        result.starIds = unique_ptr<StarIdentifiers>();
+        result.starIds = std::unique_ptr<StarIdentifiers>();
     } else if (centroidAlgorithm) {
         std::cerr << "ERROR: Centroid algorithm specified, but no input image to run it on." << std::endl;
         exit(1);
@@ -1032,7 +1004,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
 
         result.starIds = MakeOwned<StarIdentifiers>(
-            gStarIdsPool, starIdAlgorithm->Go(database.data(), *inputStars, result.catalog, *input.InputCamera()));
+            starIdAlgorithm->Go(database.data(), *inputStars, result.catalog, *input.InputCamera()));
         EtlRuntimeBoundCheck(result.starIds->size(), LOST_ETL_MAX_STARS, "identified star count");
 
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
@@ -1049,7 +1021,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
 
         result.attitude = MakeOwned<Attitude>(
-            gAttitudePool, attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds));
+            attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds));
 
         std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
         result.attitudeEstimationTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();

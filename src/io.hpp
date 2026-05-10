@@ -162,7 +162,7 @@ private:
     StarIdentifiers expectedStarIds;
 };
 
-using PipelineInputPtr = unique_ptr<PipelineInput>;
+using PipelineInputPtr = std::unique_ptr<PipelineInput>;
 using PipelineInputList = vector<PipelineInputPtr, LOST_ETL_MAX_PIPELINE_INPUTS>;
 
 PipelineInputList GetPipelineInput(const PipelineOptions &values);
@@ -192,9 +192,9 @@ private:
  * @details Also stores intermediate outputs, not just the final attitude.
  */
 struct PipelineOutput {
-    unique_ptr<Stars> stars;
-    unique_ptr<StarIdentifiers> starIds;
-    unique_ptr<Attitude> attitude;
+    std::unique_ptr<Stars> stars;
+    std::unique_ptr<StarIdentifiers> starIds;
+    std::unique_ptr<Attitude> attitude;
 
     /// How many nanoseconds the centroiding stage of the pipeline took. Similarly for the other
     /// fields. If negative, the centroiding stage was not run.
@@ -248,14 +248,14 @@ public:
     PipelineOutputList Go(const PipelineInputList &);
 
 private:
-    unique_ptr<CentroidAlgorithm> centroidAlgorithm;
+    std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
 
     // next two options are for magnitude filter:
     int centroidMinMagnitude = 0;
     int centroidMinStars = 0;
 
-    unique_ptr<StarIdAlgorithm> starIdAlgorithm;
-    unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
+    std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;
+    std::unique_ptr<AttitudeEstimationAlgorithm> attitudeEstimationAlgorithm;
     vector<unsigned char, LOST_ETL_MAX_SERIALIZE_BUFFER_BYTES> database;
 };
 
