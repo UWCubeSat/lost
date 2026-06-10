@@ -966,6 +966,15 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
                 filteredStars->push_back(star);
             }
         }
+        // sort filtered stars by brightness descending (with position tiebreak) for deterministic
+        // ordering, so that the same centroids always get the same indices regardless of scan order.
+        // This is critical for stable star identification when centroid_mag_filter changes.
+        std::sort(filteredStars->begin(), filteredStars->end(),
+            [](const Star &a, const Star &b) {
+                if (a.magnitude != b.magnitude) return a.magnitude > b.magnitude;
+                if (a.position.x != b.position.x) return a.position.x < b.position.x;
+                return a.position.y < b.position.y;
+            });
         result.stars = std::unique_ptr<Stars>(filteredStars);
         inputStars = filteredStars;
 
