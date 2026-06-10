@@ -428,26 +428,27 @@ std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
 
 IRUnidentifiedCentroid *SelectNextUnidentifiedCentroid(std::vector<IRUnidentifiedCentroid *> *aboveThresholdCentroids,
                                                       std::vector<IRUnidentifiedCentroid *> *belowThresholdCentroids) {
+    // always select the unidentified centroid with the lowest index (brightest star first).
+    // This ensures deterministic processing order regardless of which stars were identified first
+    // or how many extra dim stars are present.
+    auto findSmallestIndex = [](std::vector<IRUnidentifiedCentroid *> *centroids) -> IRUnidentifiedCentroid * {
+        if (centroids->empty()) return NULL;
+        auto best = std::min_element(centroids->begin(), centroids->end(),
+            [](const IRUnidentifiedCentroid *a, const IRUnidentifiedCentroid *b) {
+                return a->index < b->index;
+            });
+        if (best == centroids->end()) return NULL;
+        auto result = *best;
+        centroids->erase(best);
+        return result;
+    };
+
+    IRUnidentifiedCentroid *result;
     if (!belowThresholdCentroids->empty()) {
-        auto result = belowThresholdCentroids->back();
-        belowThresholdCentroids->pop_back();
-        return result;
+        result = findSmallestIndex(belowThresholdCentroids);
+        if (result != NULL) return result;
     }
-
-    // need to find the best in aboveThreshold, if any
-    auto bestAboveThreshold = std::min_element(aboveThresholdCentroids->begin(), aboveThresholdCentroids->end(),
-        [](const IRUnidentifiedCentroid *a, const IRUnidentifiedCentroid *b) {
-            return a->bestAngleFrom90 < b->bestAngleFrom90;
-        });
-
-    // 10 is arbitrary; but really it should be less than DECIMAL_M_PI_2 when set
-    if (bestAboveThreshold != aboveThresholdCentroids->end() && (*bestAboveThreshold)->bestAngleFrom90 < 10) {
-        auto result = *bestAboveThreshold;
-        aboveThresholdCentroids->erase(bestAboveThreshold);
-        return result;
-    }
-
-    return NULL;
+    return findSmallestIndex(aboveThresholdCentroids);
 }
 
 const decimal kAngleFrom90SoftThreshold = DECIMAL_M_PI_4; // TODO: tune this
@@ -590,6 +591,13 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     // k-th from the j-th. In addition, we here add some other numbers so that the pyramids are not
     // weird lines in wide FOV images. TODO: Select the starting points to ensure that the first pyramids are all within measurement tolerance.
     int numStars = (int)stars.size();
+    // Cap at PYRAMID_LIMIT to ensure deterministic iteration: the same centroids always produce the
+    // same (dj, dk, dr, i) pattern regardless of how many extra dim stars are present. Without this
+    // cap, adding more stars (e.g. via lower centroid_mag_filter) changes numStars, which changes
+    // jMax/kMax/rMax/iMax/accross/halfwayAcross, causing completely different 4-star combinations to
+    // be tried first and producing different catalog IDs for the same star centroids.
+    const int PYRAMID_LIMIT = 10;
+    if (numStars > PYRAMID_LIMIT) numStars = PYRAMID_LIMIT;
     // the idea is that the square root is about across the FOV horizontally
     int across = floor(sqrt(numStars))*2;
     int halfwayAcross = floor(sqrt(numStars)/2);

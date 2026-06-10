@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "lost-python"
+version = "0.1.0"
+description = "Python implementation of the LOST star tracker pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "numpy>=1.21",
+    "Pillow>=9.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pandas>=1.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
