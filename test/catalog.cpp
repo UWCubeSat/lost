@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 
-#include "io.hpp"
+#include "io-util.hpp"
 #include "star-utils.hpp"
 
 using namespace lost; // NOLINT

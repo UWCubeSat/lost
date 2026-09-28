@@ -1,0 +1,715 @@
+#include "pipeline-input.hpp"
+
+#include <cairo/cairo.h>
+#include <stdio.h>
+#include <inttypes.h>
+#include <math.h>
+#include <errno.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#include <vector>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <cstring>
+#include <random>
+#include <algorithm>
+#include <chrono>
+
+#include "attitude-estimators.hpp"
+#include "attitude-utils.hpp"
+#include "cairo-utils.hpp"
+#include "databases.hpp"
+#include "decimal.hpp"
+#include "io-util.hpp"
+#include "star-id.hpp"
+#include "star-utils.hpp"
+
+namespace lost {
+
+/**
+ * Calculate the focal length, in pixels, based on the given command line options.
+ * This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras.
+ */
+static decimal FocalLengthFromOptions(const PipelineOptions &values, int xResolution) {
+    if ((values.pixelSize != -1) ^ (values.focalLength != 0)) {
+        std::cerr << "ERROR: Exactly one of --pixel-size or --focal-length were set." << std::endl;
+        exit(1);
+    }
+
+    // no surefire way to see if the fov was set on command line, so we just check if it was changed from default.
+    if (values.pixelSize != -1 && values.fov != 20) {
+        std::cerr << "ERROR: Both focal length and FOV were provided. We only need one of the two methods (pixel size + focal length, or fov) to determine fov, please only provide one." << std::endl;
+        exit(1);
+    }
+
+    if (values.pixelSize == -1) {
+        return FovToFocalLength(DegToRad(values.fov), xResolution);
+    } else {
+        return values.focalLength * 1000 / values.pixelSize;
+    }
+}
+
+/// Convert the result of InputImage() into a cairo surface.
+/// Allocates a new surface, whih must be destroyed with cairo_surface_destroy
+cairo_surface_t *PipelineInput::InputImageSurface() const {
+    const Image *inputImage = InputImage();
+    return GrayscaleImageToSurface(inputImage->image, inputImage->width, inputImage->height);
+}
+
+/**
+ * A pipeline input coming from an image with no extra metadata. Only InputImage will be available.
+ * No references to the surface are kept in the class and it may be freed after construction.
+ * @param cairoSurface A cairo surface from the image file.
+ * @todo should rename, not specific to PNG.
+ */
+PngPipelineInput::PngPipelineInput(cairo_surface_t *cairoSurface, Camera camera, const Catalog &catalog)
+    : camera(camera), catalog(catalog) {
+
+    image.image = SurfaceToGrayscaleImage(cairoSurface);
+    image.width = cairo_image_surface_get_width(cairoSurface);
+    image.height = cairo_image_surface_get_height(cairoSurface);
+}
+
+PngPipelineInput::~PngPipelineInput() {
+    delete[] image.image;
+}
+
+/// Create a PngPipelineInput using command line options.
+static PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
+    // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
+    // with copying unique ptrs
+    PipelineInputList result;
+    cairo_surface_t *cairoSurface = NULL;
+    std::string pngPath = values.png;
+
+    cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
+    std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
+    if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
+        exit(1);
+    }
+
+    int xResolution = cairo_image_surface_get_width(cairoSurface);
+    int yResolution = cairo_image_surface_get_height(cairoSurface);
+    decimal focalLengthPixels = FocalLengthFromOptions(values, xResolution);
+    Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
+
+    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
+    cairo_surface_destroy(cairoSurface);
+    return result;
+}
+
+/// A star used in simulated image generation. Contains extra data about how to simulate the star.
+class GeneratedStar : public Star {
+public:
+    GeneratedStar(Star star, decimal peakBrightness, Vec2 motionBlurDelta)
+        : Star(star), peakBrightness(peakBrightness), delta(motionBlurDelta) { };
+
+    /// the brightness density per time unit at the center of the star. 0.0 is black, 1.0 is white.
+    decimal peakBrightness;
+
+    /// (only meaningful with motion blur) Where the star will appear one time unit in the future.
+    Vec2 delta;
+};
+
+// In the equations for pixel brightness both with motion blur enabled and disabled, we don't need
+// any constant scaling factor outside the integral because when d0=0, the brightness at the center
+// will be zero without any scaling. The scaling factor you usually see on a Normal distribution is
+// so that the Normal distribution integrates to one over the real line, making it a probability
+// distribution. But we want the /peak/ to be one, not the integral. motion blur enabled
+
+/**
+ * Calculates the indefinite integral of brightness density at a point due to a single star.
+ * When oversampling is disabled, this is called only at pixel centers. When oversampling is enabled, it's called at multiple points in each pixel and then averaged. If multiple stars are near each other, the brightnesses can just be added then clamped.
+ * See https://wiki.huskysat.org/wiki/index.php/Motion_Blur_and_Rolling_Shutter#Motion_Blur_Math to learn how these equations were derived.
+ * @param pixel The point to calculate brightness density at. If only calculating per-pixel, should be the center of the pixel. ie, Vec2(10.5,5.5) would be appropriate for the pixel (10,5)
+ * @param generatedStar the star to calculate brightness based on.
+ * @param t Since this function computes the indefinite integral, this is the value it's evaluated at. To calculate the definite integral, which is what you want, call this function twice with different values for the `t` parameter then find the difference.
+ * @param stddev The standard deviation of spread of the star. Higher values make stars more spread out. See command line documentation.
+ * @return Indefinite integral of brightness density.
+ */
+static decimal MotionBlurredPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+                                          decimal t, decimal stddev) {
+    const Vec2 &p0 = generatedStar.position;
+    const Vec2 &delta = generatedStar.delta;
+    const Vec2 d0 = p0 - pixel;
+    return generatedStar.peakBrightness
+        * stddev*DECIMAL_SQRT(DECIMAL_M_PI) / (DECIMAL_SQRT(2)*delta.Magnitude())
+        * DECIMAL_EXP(DECIMAL_POW(d0.x*delta.x + d0.y*delta.y, 2) / (2*stddev*stddev*delta.MagnitudeSq())
+              - d0.MagnitudeSq() / (2*stddev*stddev))
+        * DECIMAL_ERF((t*delta.MagnitudeSq() + d0.x*delta.x + d0.y*delta.y) / (stddev*DECIMAL_SQRT(2)*delta.Magnitude()));
+}
+
+/// Like motionBlurredPixelBrightness, but for when motion blur is disabled.
+static decimal StaticPixelBrightness(const Vec2 &pixel, const GeneratedStar &generatedStar,
+                                   decimal t, decimal stddev) {
+    const Vec2 d0 = generatedStar.position - pixel;
+    return generatedStar.peakBrightness * t * DECIMAL_EXP(-d0.MagnitudeSq() / (2 * stddev * stddev));
+}
+
+/**
+ * Compute how likely a star is to be imaged, given a "cutoff" magnitude that the camera can see half of.
+ *
+ * The theory is that there's a threshold of total light energy that must be received to image a
+ * star. The main random factors are shot noise and read noise, but to simplify things so we don't
+ * need to think about photons, we only focus on read noise, which we assume has a standard
+ * deviation 1/5th of the cutoff brightness. We compute the probability that, taking read noise into
+ * account, the observed energy would be less than the cutoff energy.
+ */
+static decimal CentroidImagingProbability(decimal mag, decimal cutoffMag) {
+    decimal brightness = MagToBrightness(mag);
+    decimal cutoffBrightness = MagToBrightness(cutoffMag);
+    decimal stddev = cutoffBrightness/DECIMAL(5.0);
+    // CDF of Normal distribution with given mean and stddev
+    return 1 - (DECIMAL(0.5) * (1 + DECIMAL_ERF((cutoffBrightness-brightness)/(stddev*DECIMAL_SQRT(2.0)))));
+}
+
+const int kMaxBrightness = 255;
+
+/**
+ * Create a generated pipeline input.
+ * The parameters correspond directly to command line options. See the command line documentation for more details. This constructor performs the actual image generation.
+ */
+GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
+                                               Attitude attitude,
+                                               Camera camera,
+                                               std::default_random_engine *rng,
+
+                                               bool centroidsOnly,
+                                               decimal zeroMagTotalPhotons,
+                                               decimal starSpreadStdDev,
+                                               decimal saturationPhotons,
+                                               decimal darkCurrent,
+                                               decimal readNoiseStdDev,
+                                               Attitude motionBlurDirection, // applied on top of the attitude
+                                               decimal exposureTime,
+                                               decimal readoutTime, // zero for no rolling shutter
+                                               bool shotNoise,
+                                               int oversampling,
+                                               int numFalseStars,
+                                               int falseStarMinMagnitude,
+                                               int falseStarMaxMagnitude,
+                                               int cutoffMag,
+                                               decimal perturbationStddev)
+    : camera(camera), attitude(attitude), catalog(catalog) {
+
+    assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
+    assert(perturbationStddev >= DECIMAL(0.0));
+
+    image.width = camera.XResolution();
+    image.height = camera.YResolution();
+    // number of true photons each pixel receives.
+
+    assert(oversampling >= 1);
+    int oversamplingPerAxis = DECIMAL_CEIL(DECIMAL_SQRT(oversampling));
+    if (oversamplingPerAxis*oversamplingPerAxis != oversampling) {
+        std::cerr << "WARNING: oversampling was not a perfect square. Rounding up to "
+                  << oversamplingPerAxis*oversamplingPerAxis << "." << std::endl;
+    }
+    assert(exposureTime > 0);
+    bool motionBlurEnabled = abs(motionBlurDirection.GetQuaternion().Angle()) > DECIMAL(0.001);
+    Quaternion motionBlurDirectionQ = motionBlurDirection.GetQuaternion();
+    // attitude at the middle of exposure time
+    Quaternion currentAttitude = attitude.GetQuaternion();
+    // attitude 1 time unit after middle of exposure
+    Quaternion futureAttitude = motionBlurDirectionQ*currentAttitude;
+    std::vector<GeneratedStar> generatedStars;
+
+    // a star with 1 photon has peak density 1/(2pi sigma^2), because 2d gaussian formula. Then just
+    // multiply up proportionally!
+    decimal zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*DECIMAL_M_PI * starSpreadStdDev*starSpreadStdDev);
+
+    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
+    std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
+
+    Catalog catalogWithFalse = catalog;
+
+    std::uniform_real_distribution<decimal> uniformDistribution(DECIMAL(0.0), DECIMAL(1.0));
+    std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
+    for (int i = 0; i < numFalseStars; i++) {
+        decimal ra = uniformDistribution(*rng) * 2*DECIMAL_M_PI;
+        // to be uniform around sphere. Borel-Kolmogorov paradox is calling
+        decimal de = DECIMAL_ASIN(uniformDistribution(*rng)*2 - 1);
+        decimal magnitude = magnitudeDistribution(*rng);
+
+        catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
+    }
+
+    for (int i = 0; i < (int)catalogWithFalse.size(); i++) {
+        bool isTrueStar = i < (int)catalog.size();
+
+        const CatalogStar &catalogStar = catalogWithFalse[i];
+        Vec3 rotated = attitude.Rotate(catalogWithFalse[i].spatial);
+        if (rotated.x <= 0) {
+            continue;
+        }
+        Vec2 camCoords = camera.SpatialToCamera(rotated);
+
+        if (camera.InSensor(camCoords)) {
+            Vec3 futureSpatial = futureAttitude.Rotate(catalogWithFalse[i].spatial);
+            Vec2 delta = camera.SpatialToCamera(futureSpatial) - camCoords;
+            if (!motionBlurEnabled) {
+                delta = {0, 0}; // avoid decimaling point funny business
+            }
+            // radiant intensity, in photons per time unit per pixel, at the center of the star.
+            decimal peakBrightnessPerTime = zeroMagPeakPhotonDensity * MagToBrightness(catalogStar.magnitude);
+            decimal interestingThreshold = DECIMAL(0.05); // we don't need to check pixels that are expected to
+                                               // receive this many photons or fewer.
+            // inverse of the function defining the Gaussian distribution: Find out how far from the
+            // mean we'll have to go until the number of photons is less than interestingThreshold
+            decimal radius = DECIMAL_CEIL(DECIMAL_SQRT(-DECIMAL_LOG(interestingThreshold/peakBrightnessPerTime/exposureTime)*2*DECIMAL_M_PI*starSpreadStdDev*starSpreadStdDev));
+            Star star = Star(camCoords.x, camCoords.y,
+                             radius, radius,
+                             // important to invert magnitude here, so that centroid magnitude becomes larger for brighter stars.
+                             // It's possible to make it so that the magnitude is always positive too, but allowing weirder magnitudes helps keep star-id algos honest about their assumptions on magnitude.
+                             // we don't use its magnitude anywhere else in generation; peakBrightness was already calculated.
+                             -catalogStar.magnitude);
+            generatedStars.push_back(GeneratedStar(star, peakBrightnessPerTime, delta));
+
+            // Now add the star to the input and expected lists.
+            // We do actually want to add false stars as well, because:
+            // a) A centroider isn't any worse because it picks up a false star that looks exactly like a normal star, so why should we exclude them from compare-centroids?
+            // b) We want to feed false stars into star-ids to evaluate their false-star resilience without running centroiding.
+
+            // Add all stars to expected, cause that's how we roll
+            expectedStars.push_back(star);
+            // and provide expected identifications for all of them
+            if (isTrueStar) {
+                expectedStarIds.push_back(StarIdentifier(expectedStars.size()-1, i));
+            }
+
+            // for input, though, add perturbation and stuff.
+            Star inputStar = star;
+            if (perturbationStddev > DECIMAL(0.0)) {
+                // clamp to within 2 standard deviations for some reason:
+                inputStar.position.x += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
+                inputStar.position.y += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
+            }
+            // If it got perturbed outside of the sensor, don't add it.
+            if (camera.InSensor(inputStar.position)
+                // and also don't add it if it's too dim.
+                && (cutoffMag >= 10000 // but always add the star if the cutoff is very high
+                    || !isTrueStar // and always add the false stars
+                    || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
+                inputStars.push_back(inputStar);
+                if (isTrueStar) {
+                    inputStarIds.push_back(StarIdentifier(inputStars.size()-1, i));
+                }
+            }
+        }
+    }
+
+    if (centroidsOnly) {
+        // we're outta here
+        return;
+    }
+
+    std::vector<decimal> photonsBuffer(image.width*image.height, 0);
+
+    for (const GeneratedStar &star : generatedStars) {
+        // delta will be exactly (0,0) when motion blur disabled
+        Vec2 earliestPosition = star.position - star.delta*(exposureTime/DECIMAL(2.0) + readoutTime/DECIMAL(2.0));
+        Vec2 latestPosition = star.position + star.delta*(exposureTime/DECIMAL(2.0) + readoutTime/DECIMAL(2.0));
+        int xMin = std::max(0, (int)std::min(earliestPosition.x - star.radiusX, latestPosition.x - star.radiusX));
+        int xMax = std::min(image.width-1, (int)std::max(earliestPosition.x + star.radiusX, latestPosition.x + star.radiusX));
+        int yMin = std::max(0, (int)std::min(earliestPosition.y - star.radiusX, latestPosition.y - star.radiusX));
+        int yMax = std::min(image.height-1, (int)std::max(earliestPosition.y + star.radiusX, latestPosition.y + star.radiusX));
+
+        // peak brightness is measured in photons per time unit per pixel, so if oversampling, we
+        // need to convert units to photons per time unit per sample
+        decimal oversamplingBrightnessFactor = oversamplingPerAxis*oversamplingPerAxis;
+
+        // the star.x and star.y refer to the pixel whose top left corner the star should appear at
+        // (and fractional amounts are relative to the corner). When we color a pixel, we ideally
+        // would integrate the intensity of the star over that pixel, but we can make do by sampling
+        // the intensity of the star at the /center/ of the pixel, ie, star.x+.5 and star.y+.5
+        for (int xPixel = xMin; xPixel <= xMax; xPixel++) {
+            for (int yPixel = yMin; yPixel <= yMax; yPixel++) {
+                // offset of beginning & end of readout compared to beginning & end of readout for
+                // center row
+                decimal readoutOffset = readoutTime * (yPixel - image.height/DECIMAL(2.0)) / image.height;
+                decimal tStart = -exposureTime/DECIMAL(2.0) + readoutOffset;
+                decimal tEnd = exposureTime/DECIMAL(2.0) + readoutOffset;
+
+                // loop through all samples in the current pixel
+                for (int xSample = 0; xSample < oversamplingPerAxis; xSample++) {
+                    for (int ySample = 0; ySample < oversamplingPerAxis; ySample++) {
+                        decimal x = xPixel + (xSample+DECIMAL(0.5))/oversamplingPerAxis;
+                        decimal y = yPixel + (ySample+DECIMAL(0.5))/oversamplingPerAxis;
+
+                        decimal curPhotons;
+                        if (motionBlurEnabled) {
+                            curPhotons =
+                                (MotionBlurredPixelBrightness({x, y}, star, tEnd, starSpreadStdDev)
+                                 - MotionBlurredPixelBrightness({x, y}, star, tStart, starSpreadStdDev))
+                                / oversamplingBrightnessFactor;
+                        } else {
+                            curPhotons = StaticPixelBrightness({x, y}, star, exposureTime, starSpreadStdDev)
+                                / oversamplingBrightnessFactor;
+                        }
+
+                        assert(DECIMAL(0.0) <= curPhotons);
+
+                        photonsBuffer[xPixel + yPixel*image.width] += curPhotons;
+                    }
+                }
+            }
+        }
+    }
+
+    std::normal_distribution<decimal> readNoiseDist(DECIMAL(0.0), readNoiseStdDev);
+
+    // convert from photon counts to observed pixel brightnesses, applying noise and such.
+    imageData = std::vector<unsigned char>(image.width*image.height);
+    image.image = imageData.data();
+    for (int i = 0; i < image.width * image.height; i++) {
+        decimal curBrightness = 0;
+
+        // dark current (Constant)
+        curBrightness += darkCurrent;
+
+        // read noise (Gaussian)
+        curBrightness += readNoiseDist(*rng);
+
+        // shot noise (Poisson), and quantize
+        long quantizedPhotons;
+        if (shotNoise) {
+            // with GNU libstdc++, it keeps sampling from the distribution until it's within the min-max
+            // range. This is problematic if the mean is far above the max long value, because then it
+            // might have to sample many many times (and furthermore, the results won't be useful
+            // anyway)
+            decimal photons = photonsBuffer[i];
+            if (photons > DECIMAL(LONG_MAX) - DECIMAL(3.0) * DECIMAL_SQRT(LONG_MAX)) {
+                std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
+                exit(1);
+            }
+            std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
+            quantizedPhotons = shotNoiseDist(*rng);
+        } else {
+            quantizedPhotons = round(photonsBuffer[i]);
+        }
+        curBrightness += quantizedPhotons / saturationPhotons;
+
+        // std::clamp not introduced until C++17, so we avoid it.
+        decimal clampedBrightness = std::max(std::min(curBrightness, DECIMAL(1.0)), DECIMAL(0.0));
+        imageData[i] = floor(clampedBrightness * kMaxBrightness); // TODO: off-by-one, 256?
+    }
+}
+
+/**
+ * Generates a random attitude for coverage testing.
+ * Takes a random engine as a parameter.
+ */
+static Attitude RandomAttitude(std::default_random_engine* pReng) {
+    std::uniform_real_distribution<decimal> randomAngleDistribution(0, 1);
+
+    // normally the ranges of the Ra and Dec are:
+    // Dec: [-90 deg, 90 deg] --> [-pi/2 rad, pi/2 rad], where negative means south
+    // of the celestial equator and positive means north
+    // Ra: [0 deg, 360 deg] --> [0 rad, 2pi rad ]
+    // Roll: [0 rad, 2 pi rad]
+
+    decimal randomRa = 2 *  DECIMAL_M_PI * randomAngleDistribution(*pReng);
+    decimal randomDec = (DECIMAL_M_PI / 2) - acos(1 - 2 * randomAngleDistribution(*pReng)); //acos returns a decimal in range [0, pi]
+    decimal randomRoll = 2 *  DECIMAL_M_PI * randomAngleDistribution(*pReng);
+
+    Attitude randAttitude = Attitude(SphericalToQuaternion(randomRa, randomDec, randomRoll));
+
+    return randAttitude;
+}
+
+/// Create a GeneratedPipelineInput based on the command line options in `values`
+static PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
+    // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
+
+    int seed;
+
+    // time based seed if option specified
+    if (values.timeSeed) {
+        seed = time(0);
+    } else {
+        seed = values.generateSeed;
+    }
+
+    std::default_random_engine attitudeRng(seed);
+    std::default_random_engine noiseRng(seed);
+
+    // TODO: allow random angle generation?
+    Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
+                                                       DegToRad(values.generateDe),
+                                                       DegToRad(values.generateRoll)));
+
+    Attitude motionBlurDirection = Attitude(SphericalToQuaternion(DegToRad(values.generateBlurRa),
+                                                                  DegToRad(values.generateBlurDe),
+                                                                  DegToRad(values.generateBlurRoll)));
+    PipelineInputList result;
+
+    decimal focalLength = FocalLengthFromOptions(values, values.generateXRes);
+
+
+    for (int i = 0; i < values.generate; i++) {
+
+
+        Attitude inputAttitude;
+        if (values.generateRandomAttitudes) {
+            inputAttitude = RandomAttitude(&attitudeRng);
+        } else {
+            inputAttitude = attitude;
+        }
+
+        GeneratedPipelineInput *curr = new GeneratedPipelineInput(
+                CatalogRead(),
+                inputAttitude,
+                Camera(focalLength, values.generateXRes, values.generateYRes),
+                &noiseRng,
+
+                values.generateCentroidsOnly,
+                values.generateZeroMagPhotons,
+                values.generateSpreadStdDev,
+                values.generateSaturationPhotons,
+                values.generateDarkCurrent,
+                values.generateReadNoiseStdDev,
+                motionBlurDirection,
+                values.generateExposure,
+                values.generateReadoutTime,
+                values.generateShotNoise,
+                values.generateOversampling,
+                values.generateNumFalseStars,
+                (values.generateFalseMinMag * 100),
+                (values.generateFalseMaxMag * 100),
+                (values.generateCutoffMag * 100),
+                values.generatePerturbationStddev);
+
+            result.push_back(std::unique_ptr<PipelineInput>(curr));
+
+
+    }
+
+
+
+    return result;
+}
+
+/// Come up with a list of pipeline inputs based on command line options.
+PipelineInputList GetPipelineInput(const PipelineOptions &values) {
+
+    if (values.png != "") {
+        return GetPngPipelineInput(values);
+    } else {
+        return GetGeneratedPipelineInput(values);
+    }
+}
+
+/**
+ * Construct a pipeline using the given algorithms, some of which may be null.
+ * @param database A pointer to the raw bytes of the database the star ID algorithm expects. If the database is NULL or not the type of database the star ID algorithm expects (almost always a multi-database), you'll get an error trying to identify stars later.
+ */
+Pipeline::Pipeline(CentroidAlgorithm *centroidAlgorithm,
+                   StarIdAlgorithm *starIdAlgorithm,
+                   AttitudeEstimationAlgorithm *attitudeEstimationAlgorithm,
+                   unsigned char *database)
+    : Pipeline() {
+    if (centroidAlgorithm) {
+        this->centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(centroidAlgorithm);
+    }
+    if (starIdAlgorithm) {
+        this->starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(starIdAlgorithm);
+    }
+    if (attitudeEstimationAlgorithm) {
+        this->attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(attitudeEstimationAlgorithm);
+    }
+    if (database) {
+        this->database = std::unique_ptr<unsigned char[]>(database);
+    }
+}
+
+
+/// Create a pipeline from command line options.
+Pipeline SetPipeline(const PipelineOptions &values) {
+    Pipeline result;
+
+    // TODO: more flexible or sth
+    // TODO: don't allow setting star-id until database is set, and perhaps limit the star-id
+    // choices to those compatible with the database?
+    //
+
+    // centroid algorithm stage
+    if (values.centroidAlgo == "dummy") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new DummyCentroidAlgorithm(values.centroidDummyNumStars));
+    } else if (values.centroidAlgo == "cog") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new CenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo == "iwcog") {
+        result.centroidAlgorithm = std::unique_ptr<CentroidAlgorithm>(new IterativeWeightedCenterOfGravityAlgorithm());
+    } else if (values.centroidAlgo != "") {
+        std::cout << "Illegal centroid algorithm." << std::endl;
+        exit(1);
+    }
+
+    // centroid magnitude filter stage
+    if (values.centroidMagFilter > 0) result.centroidMinMagnitude = values.centroidMagFilter;
+    if (values.centroidFilterBrightest > 0) result.centroidMinStars = values.centroidFilterBrightest;
+
+    // database stage
+    if (values.databasePath != "") {
+        std::fstream fs;
+        fs.open(values.databasePath, std::fstream::in | std::fstream::binary);
+        fs.seekg(0, fs.end);
+        long length = fs.tellg();
+        fs.seekg(0, fs.beg);
+        if (fs.fail()) {
+            std::cerr << "Error reading database! " << strerror(errno) << std::endl;
+            exit(1);
+        }
+        std::cerr << "Reading " << length << " bytes of database" << std::endl;
+        result.database = std::unique_ptr<unsigned char[]>(new unsigned char[length]);
+        fs.read((char *)result.database.get(), length);
+        std::cerr << "Done" << std::endl;
+    }
+
+    if (values.idAlgo == "dummy") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new DummyStarIdAlgorithm());
+    } else if (values.idAlgo == "gv") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
+    } else if (values.idAlgo == "py") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+    } else if (values.idAlgo != "") {
+        std::cout << "Illegal id algorithm." << std::endl;
+        exit(1);
+    }
+
+    if (values.attitudeAlgo == "dqm") {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new DavenportQAlgorithm());
+    } else if (values.attitudeAlgo == "triad") {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new TriadAlgorithm());
+    } else if (values.attitudeAlgo == "quest") {
+        result.attitudeEstimationAlgorithm = std::unique_ptr<AttitudeEstimationAlgorithm>(new QuestAlgorithm());
+    } else if (values.attitudeAlgo != "") {
+        std::cout << "Illegal attitude algorithm." << std::endl;
+        exit(1);
+    }
+
+    return result;
+}
+
+/**
+ * Run all stages of a pipeline. This is the "main" method for pipelines.
+ * In space (or when using an image file as input), the PipelineInput will contain only an InputImage. In this case, `Go` runs each star tracking algorithm in turn, passing the result of each step into the next one.
+ * When running on a generated image (or any pipeline input where methods other than InputImage are available), or using a Pipeline where some algorithms are not set, the behavior is more nuanced. Each algorithm will be run on the return value of the corresponding input method from the PipelineInput object, unless an earlier algorithm in the Pipeline returned a result, in which case that intermediate value is used instead of the value from the PipelineInput.
+ */
+PipelineOutput Pipeline::Go(const PipelineInput &input) {
+    // Start executing the pipeline at the first stage that has both input and an algorithm. From
+    // there, execute each successive stage of the pipeline using the output of the last stage
+    // (human centipede) until there are no more stages set.
+    PipelineOutput result;
+
+    const Image *inputImage = input.InputImage();
+    const Stars *inputStars = input.InputStars();
+    const StarIdentifiers *inputStarIds = input.InputStarIds();
+
+    // if database is provided, that's where we get catalog from.
+    if (database) {
+        MultiDatabase multiDatabase(database.get());
+        const unsigned char *catalogBuffer = multiDatabase.SubDatabasePointer(kCatalogMagicValue);
+        if (catalogBuffer != NULL) {
+            DeserializeContext des(catalogBuffer);
+            result.catalog = DeserializeCatalog(&des, NULL, NULL);
+        } else {
+            std::cerr << "WARNING: That database does not include a catalog. Proceeding with the full catalog." << std::endl;
+            result.catalog = input.GetCatalog();
+        }
+    } else {
+        result.catalog = input.GetCatalog();
+    }
+
+    if (centroidAlgorithm && inputImage) {
+
+        // run centroiding, keeping track of the time it takes
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+
+        // TODO: we should probably modify Go to just take an image argument
+        Stars unfilteredStars = centroidAlgorithm->Go(inputImage->image, inputImage->width, inputImage->height);
+
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+        result.centroidingTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+        // MAGNITUDE FILTERING
+        int minMagnitude = centroidMinMagnitude;
+        if (centroidMinStars > 0
+            // don't need to filter if we don't even have that many stars
+            && centroidMinStars < (int)unfilteredStars.size()) {
+
+            Stars magSortedStars = unfilteredStars;
+            // sort descending
+            std::sort(magSortedStars.begin(), magSortedStars.end(), [](const Star &a, const Star &b) { return a.magnitude > b.magnitude; });
+            minMagnitude = std::max(minMagnitude, magSortedStars[centroidMinStars - 1].magnitude);
+        }
+        // determine the minimum magnitude according to sorted stars
+        Stars *filteredStars = new std::vector<Star>();
+        for (const Star &star : unfilteredStars) {
+            assert(star.magnitude >= 0); // catalog stars can have negative magnitude, but by our
+                                         // conventions, centroids shouldn't.
+            if (star.magnitude >= minMagnitude) {
+                filteredStars->push_back(star);
+            }
+        }
+        result.stars = std::unique_ptr<Stars>(filteredStars);
+        inputStars = filteredStars;
+
+        // any starid set up to this point needs to be discarded, because it's based on input
+        // centroids instead of our new centroids.
+        inputStarIds = NULL;
+        result.starIds = NULL;
+    } else if (centroidAlgorithm) {
+        std::cerr << "ERROR: Centroid algorithm specified, but no input image to run it on." << std::endl;
+        exit(1);
+    }
+
+    if (starIdAlgorithm && database && inputStars && input.InputCamera()) {
+        // TODO: don't copy the vector!
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+
+        result.starIds = std::unique_ptr<StarIdentifiers>(new std::vector<StarIdentifier>(
+            starIdAlgorithm->Go(database.get(), *inputStars, result.catalog, *input.InputCamera())));
+
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+        result.starIdTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+        inputStarIds = result.starIds.get();
+    } else if (starIdAlgorithm) {
+        std::cerr << "ERROR: Star ID algorithm specified but cannot run because database, centroids, or camera are missing." << std::endl;
+        exit(1);
+    }
+
+    if (attitudeEstimationAlgorithm && inputStarIds && input.InputCamera()) {
+        assert(inputStars); // ensure that starIds doesn't exist without stars
+        std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
+
+        result.attitude = std::unique_ptr<Attitude>(
+            new Attitude(attitudeEstimationAlgorithm->Go(*input.InputCamera(), *inputStars, result.catalog, *inputStarIds)));
+
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+        result.attitudeEstimationTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    } else if (attitudeEstimationAlgorithm) {
+        std::cerr << "ERROR: Attitude estimation algorithm set, but either star IDs or camera are missing. One reason this can happen: Setting a centroid algorithm and attitude algorithm, but no star-id algorithm -- that can't work because the input star-ids won't properly correspond to the output centroids!" << std::endl;
+        exit(1);
+    }
+
+    return result;
+}
+
+/// Convenience function to run the main `Pipeline::Go` function on each input
+std::vector<PipelineOutput> Pipeline::Go(const PipelineInputList &inputs) {
+    std::vector<PipelineOutput> result;
+
+
+    for (const std::unique_ptr<PipelineInput> &input : inputs) {
+        result.push_back(Go(*input));
+    }
+
+    return result;
+}
+
+} // namespace lost
