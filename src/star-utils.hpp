@@ -19,7 +19,7 @@ public:
      * @param magnitude See ::magnitude
      * @param name See ::name
      */
-    CatalogStar(decimal raj2000, decimal dej2000, int magnitude, int name) :
+    CatalogStar(scalar raj2000, scalar dej2000, int magnitude, int name) :
         spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), name(name) {}
 
     CatalogStar(Vec3 spatial, int magnitude, int name) :
@@ -48,21 +48,21 @@ public:
  */
 class Star {
 public:
-    Star(decimal x, decimal y, decimal radiusX, decimal radiusY, int magnitude) :
+    Star(scalar x, scalar y, scalar radiusX, scalar radiusY, int magnitude) :
         position({x, y}), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) {};
 
     /// Convenience constructor that sets Star.radiusY = radiusX and Star.magnitude = 0
-    Star(decimal x, decimal y, decimal radiusX) : Star(x, y, radiusX, radiusX, 0) {};
+    Star(scalar x, scalar y, scalar radiusX) : Star(x, y, radiusX, radiusX, 0) {};
 
     /// Create a zeroed-out star. Fields should be set immediately after construction.
-    Star() : Star(DECIMAL(0.0), DECIMAL(0.0), DECIMAL(0.0)) {};
+    Star() : Star(SCALAR(0.0), SCALAR(0.0), SCALAR(0.0)) {};
 
     /// The (x,y) pixel coordinates in the image (top left is 0,0)
     Vec2 position;
     /// Approximate horizontal radius of the bright area in pixels.
-    decimal radiusX;
+    scalar radiusX;
     /// Approximate vertical radius of the bright area in pixels.
-    decimal radiusY;
+    scalar radiusY;
     /**
      * A relative measure of magnitude of the star. Larger is brighter.
      * It's impossible to tell the true magnitude of the star from the image, without really good camera calibration. Anyway, this field is not meant to correspond to the usual measurement of magnitude. Instead, it's just some measure of brightness which may be specific to the centroiding algorithm. For example, it might be the total number of bright pixels in the star.
@@ -81,7 +81,7 @@ public:
         : starIndex(starIndex), catalogIndex(catalogIndex), weight(weight) { };
     /// Sets StarIdentifier.weight = 1
     StarIdentifier(int starIndex, int catalogIndex)
-        : StarIdentifier(starIndex, catalogIndex, DECIMAL(1.0)) { };
+        : StarIdentifier(starIndex, catalogIndex, SCALAR(1.0)) { };
 
     // does not check weight
     bool operator==(const StarIdentifier& other) const {
@@ -94,7 +94,7 @@ public:
     /// An index into an array of CatalogStar objects.
     int catalogIndex;
     /// A weight indicating the confidence of this idenification. Often just 1.
-    decimal weight;
+    scalar weight;
 };
 
 typedef std::vector<CatalogStar> Catalog;
@@ -108,7 +108,7 @@ Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
 /// returns some relative brightness measure, which is proportional to the total number of photons received from a star.
 /// As always, the magnitude is actually 100* the usual magnitude
-decimal MagToBrightness(int magnitude);
+scalar MagToBrightness(int magnitude);
 
 /**
  * Remove unwanted stars from an unfiltered catalog.
@@ -129,7 +129,7 @@ decimal MagToBrightness(int magnitude);
  * mark, so that star-id algorithms can reason about them instead of thinking they are false stars,
  * but no such provision is made yet.
  */
-Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, decimal minSeparation);
+Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, scalar minSeparation);
 
 }
 

@@ -4,7 +4,7 @@
 #include <assert.h>
 
 #include "attitude-utils.hpp"
-#include "decimal.hpp"
+#include "scalar.hpp"
 
 namespace lost {
 
@@ -17,10 +17,10 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     assert(vector.x > 0);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
 
-    decimal focalFactor = focalLength/vector.x;
+    scalar focalFactor = focalLength/vector.x;
 
-    decimal yPixel = vector.y*focalFactor;
-    decimal zPixel = vector.z*focalFactor;
+    scalar yPixel = vector.y*focalFactor;
+    scalar zPixel = vector.z*focalFactor;
 
     return { -yPixel + xCenter, -zPixel + yCenter };
 }
@@ -37,8 +37,8 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
 
     // isn't it interesting: To convert from center-based to left-corner-based coordinates is the
     // same formula; f(x)=f^{-1}(x) !
-    decimal xPixel = -vector.x + xCenter;
-    decimal yPixel = -vector.y + yCenter;
+    scalar xPixel = -vector.x + xCenter;
+    scalar yPixel = -vector.y + yCenter;
 
     return {
         1,
@@ -55,15 +55,15 @@ bool Camera::InSensor(const Vec2 &vector) const {
         && vector.y >= 0 && vector.y <= yResolution;
 }
 
-decimal FovToFocalLength(decimal xFov, decimal xResolution) {
-    return xResolution / DECIMAL(2.0) / DECIMAL_TAN(xFov/2);
+scalar FovToFocalLength(scalar xFov, scalar xResolution) {
+    return xResolution / SCALAR(2.0) / SCALAR_TAN(xFov/2);
 }
 
-decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize) {
-    return DECIMAL_ATAN(xResolution/2 * pixelSize / focalLength) * 2;
+scalar FocalLengthToFov(scalar focalLength, scalar xResolution, scalar pixelSize) {
+    return SCALAR_ATAN(xResolution/2 * pixelSize / focalLength) * 2;
 }
 
-decimal Camera::Fov() const {
+scalar Camera::Fov() const {
     return FocalLengthToFov(focalLength, xResolution, 1.0);
 }
 

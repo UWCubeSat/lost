@@ -1,7 +1,7 @@
 /**
  * Helpers to serialize and deserialize arbitrary data types to disk
  *
- * The serialization and deserialization helpers here assume that (a) integers and decimal point
+ * The serialization and deserialization helpers here assume that (a) integers and floating point
  * numbers are stored in the same format on the source and target systems except for endianness, and
  * (b) the target system requires no greater than n-byte alignment for n-byte values (eg, an int32_t
  * only needs 4-byte alignment, not 8-byte), and (c) the database itself will be aligned at a
@@ -23,18 +23,18 @@
 #include <vector>
 #include <algorithm>
 
-#include "decimal.hpp"
+#include "scalar.hpp"
 
 namespace lost {
 
 class SerializeContext {
 public:
-    SerializeContext(bool swapIntegerEndianness, bool swapDecimalEndianness)
-        : swapIntegerEndianness(swapIntegerEndianness), swapDecimalEndianness(swapDecimalEndianness) { }
+    SerializeContext(bool swapIntegerEndianness, bool swapScalarEndianness)
+        : swapIntegerEndianness(swapIntegerEndianness), swapScalarEndianness(swapScalarEndianness) { }
     SerializeContext() : SerializeContext(false, false) { }
 
     bool swapIntegerEndianness;
-    bool swapDecimalEndianness;
+    bool swapScalarEndianness;
     std::vector<unsigned char> buffer;
 };
 
@@ -68,8 +68,8 @@ void SwapEndianness(unsigned char *buffer) {
 }
 
 /// Swap the endianness of a value if necessary. Uses
-/// LOST_DATABASE_{SOURCE,TARGET}_INTEGER_ENDIANNESS to determine to switch all values but decimal
-/// which uses LOST_DATABASE_{SOURCE,TARGET}_DECIMAL_ENDIANNESS.
+/// LOST_DATABASE_{SOURCE,TARGET}_INTEGER_ENDIANNESS to determine to switch all values but scalar
+/// which uses LOST_DATABASE_{SOURCE,TARGET}_SCALAR_ENDIANNESS.
 template <typename T>
 void SwapEndiannessIfNecessary(unsigned char *buffer, SerializeContext *ser) {
     if (ser->swapIntegerEndianness) {
@@ -80,9 +80,9 @@ void SwapEndiannessIfNecessary(unsigned char *buffer, SerializeContext *ser) {
 // template specializations
 
 template <>
-inline void SwapEndiannessIfNecessary<decimal>(unsigned char *buffer, SerializeContext *ser) {
-    if (ser->swapDecimalEndianness) {
-        SwapEndianness<decimal>(buffer);
+inline void SwapEndiannessIfNecessary<scalar>(unsigned char *buffer, SerializeContext *ser) {
+    if (ser->swapScalarEndianness) {
+        SwapEndianness<scalar>(buffer);
     }
 }
 

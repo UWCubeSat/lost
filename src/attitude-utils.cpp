@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "decimal.hpp"
+#include "scalar.hpp"
 #include "serialize-helpers.hpp"
 
 namespace lost {
@@ -43,12 +43,12 @@ Quaternion::Quaternion(const Vec3 &input) {
 }
 
 /// Create a quaternion which represents a rotation of theta around the axis input
-Quaternion::Quaternion(const Vec3 &input, decimal theta) {
-    real = DECIMAL_COS(theta/2);
+Quaternion::Quaternion(const Vec3 &input, scalar theta) {
+    real = SCALAR_COS(theta/2);
     // the compiler will optimize it. Right?
-    i = input.x * DECIMAL_SIN(theta/2);
-    j = input.y * DECIMAL_SIN(theta/2);
-    k = input.z * DECIMAL_SIN(theta/2);
+    i = input.x * SCALAR_SIN(theta/2);
+    j = input.y * SCALAR_SIN(theta/2);
+    k = input.z * SCALAR_SIN(theta/2);
 }
 
 /// Rotate a 3d vector according to the rotation represented by the quaternion.
@@ -58,24 +58,24 @@ Vec3 Quaternion::Rotate(const Vec3 &input) const {
 }
 
 /// How many radians the rotation represented by this quaternion has.
-decimal Quaternion::Angle() const {
+scalar Quaternion::Angle() const {
     if (real <= -1) {
         return 0; // 180*2=360=0
     }
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
-    return (real >= 1 ? 0 : DECIMAL_ACOS(real))*2;
+    return (real >= 1 ? 0 : SCALAR_ACOS(real))*2;
 }
 
-decimal Quaternion::SmallestAngle() const {
-    decimal rawAngle = Angle();
-    return rawAngle > DECIMAL_M_PI
-        ? 2*DECIMAL_M_PI - rawAngle
+scalar Quaternion::SmallestAngle() const {
+    scalar rawAngle = Angle();
+    return rawAngle > SCALAR_M_PI
+        ? 2*SCALAR_M_PI - rawAngle
         : rawAngle;
 }
 
-void Quaternion::SetAngle(decimal newAngle) {
-    real = DECIMAL_COS(newAngle/2);
-    SetVector(Vector().Normalize() * DECIMAL_SIN(newAngle/2));
+void Quaternion::SetAngle(scalar newAngle) {
+    real = SCALAR_COS(newAngle/2);
+    SetVector(Vector().Normalize() * SCALAR_SIN(newAngle/2));
 }
 
 EulerAngles Quaternion::ToSpherical() const {
@@ -86,21 +86,21 @@ EulerAngles Quaternion::ToSpherical() const {
     // and 2, we store the conjugate of the quaternion (double check why?), which means we need to
     // invert the final de and roll terms, as well as negate all the terms involving a mix between
     // the real and imaginary parts.
-    decimal ra = DECIMAL_ATAN2(2*(-real*k+i*j), 1-2*(j*j+k*k));
+    scalar ra = SCALAR_ATAN2(2*(-real*k+i*j), 1-2*(j*j+k*k));
     if (ra < 0)
-        ra += 2*DECIMAL_M_PI;
-    decimal de = -DECIMAL_ASIN(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
-    decimal roll = -DECIMAL_ATAN2(2*(-real*i+j*k), 1-2*(i*i+j*j));
+        ra += 2*SCALAR_M_PI;
+    scalar de = -SCALAR_ASIN(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
+    scalar roll = -SCALAR_ATAN2(2*(-real*i+j*k), 1-2*(i*i+j*j));
     if (roll < 0)
-        roll += 2*DECIMAL_M_PI;
+        roll += 2*SCALAR_M_PI;
 
     return EulerAngles(ra, de, roll);
 }
 
-Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
-    assert(roll >= DECIMAL(0.0) && roll <= 2*DECIMAL_M_PI);
-    assert(ra >= DECIMAL(0.0) && ra <= 2*DECIMAL_M_PI);
-    assert(dec >= -DECIMAL_M_PI && dec <= DECIMAL_M_PI);
+Quaternion SphericalToQuaternion(scalar ra, scalar dec, scalar roll) {
+    assert(roll >= SCALAR(0.0) && roll <= 2*SCALAR_M_PI);
+    assert(ra >= SCALAR(0.0) && ra <= 2*SCALAR_M_PI);
+    assert(dec >= -SCALAR_M_PI && dec <= SCALAR_M_PI);
 
     // when we are modifying the coordinate axes, the quaternion multiplication works so that the
     // rotations are applied from left to right. This is the opposite as for modifying vectors.
@@ -117,7 +117,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
 }
 
 /// Whether the quaternion is a unit quaternion. All quaternions representing rotations should be units.
-bool Quaternion::IsUnit(decimal tolerance) const {
+bool Quaternion::IsUnit(scalar tolerance) const {
     return abs(i*i+j*j+k*k+real*real - 1) < tolerance;
 }
 
@@ -133,82 +133,82 @@ Quaternion Quaternion::Canonicalize() const {
 }
 
 /// Convert from right ascension & declination to a 3d point on the unit sphere.
-Vec3 SphericalToSpatial(decimal ra, decimal de) {
+Vec3 SphericalToSpatial(scalar ra, scalar de) {
     return {
-        DECIMAL_COS(ra)*DECIMAL_COS(de),
-        DECIMAL_SIN(ra)*DECIMAL_COS(de),
-        DECIMAL_SIN(de),
+        SCALAR_COS(ra)*SCALAR_COS(de),
+        SCALAR_SIN(ra)*SCALAR_COS(de),
+        SCALAR_SIN(de),
     };
 }
 
 /// Convert from a 3d point on the unit sphere to right ascension & declination.
-void SpatialToSpherical(const Vec3 &vec, decimal *ra, decimal *de) {
-    *ra = DECIMAL_ATAN2(vec.y, vec.x);
+void SpatialToSpherical(const Vec3 &vec, scalar *ra, scalar *de) {
+    *ra = SCALAR_ATAN2(vec.y, vec.x);
     if (*ra < 0)
-        *ra += DECIMAL_M_PI*2;
-    *de = DECIMAL_ASIN(vec.z);
+        *ra += SCALAR_M_PI*2;
+    *de = SCALAR_ASIN(vec.z);
 }
 
-decimal RadToDeg(decimal rad) {
-    return rad*DECIMAL(180.0)/DECIMAL_M_PI;
+scalar RadToDeg(scalar rad) {
+    return rad*SCALAR(180.0)/SCALAR_M_PI;
 }
 
-decimal DegToRad(decimal deg) {
-    return deg/DECIMAL(180.0)*DECIMAL_M_PI;
+scalar DegToRad(scalar deg) {
+    return deg/SCALAR(180.0)*SCALAR_M_PI;
 }
 
-decimal RadToArcSec(decimal rad) {
-    return RadToDeg(rad) * DECIMAL(3600.0);
+scalar RadToArcSec(scalar rad) {
+    return RadToDeg(rad) * SCALAR(3600.0);
 }
 
-decimal ArcSecToRad(decimal arcSec) {
-    return DegToRad(arcSec / DECIMAL(3600.0));
+scalar ArcSecToRad(scalar arcSec) {
+    return DegToRad(arcSec / SCALAR(3600.0));
 }
 
-decimal DecimalModulo(decimal x, decimal mod) {
+scalar ScalarModulo(scalar x, scalar mod) {
     // first but not last chatgpt generated code in lost:
-    decimal result = x - mod * DECIMAL_FLOOR(x / mod);
+    scalar result = x - mod * SCALAR_FLOOR(x / mod);
     return result >= 0 ? result : result + mod;
 }
 
 /// The square of the magnitude
-decimal Vec3::MagnitudeSq() const {
-    return DECIMAL_FMA(x,x,DECIMAL_FMA(y,y, z*z));
+scalar Vec3::MagnitudeSq() const {
+    return SCALAR_FMA(x,x,SCALAR_FMA(y,y, z*z));
 }
 
 /// The square of the magnitude
-decimal Vec2::MagnitudeSq() const {
-    return DECIMAL_FMA(x,x, y*y);
+scalar Vec2::MagnitudeSq() const {
+    return SCALAR_FMA(x,x, y*y);
 }
 
-decimal Vec3::Magnitude() const {
-    return DECIMAL_HYPOT(DECIMAL_HYPOT(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
+scalar Vec3::Magnitude() const {
+    return SCALAR_HYPOT(SCALAR_HYPOT(x, y), z); // not sure if this is faster than a simple sqrt, but it does have less error?
 }
 
-decimal Vec2::Magnitude() const {
-    return DECIMAL_HYPOT(x, y);
+scalar Vec2::Magnitude() const {
+    return SCALAR_HYPOT(x, y);
 }
 
 /// Create a vector pointing in the same direction with magnitude 1
 Vec3 Vec3::Normalize() const {
-    decimal mag = Magnitude();
+    scalar mag = Magnitude();
     return {
         x/mag, y/mag, z/mag,
     };
 }
 
 /// Dot product
-decimal Vec3::operator*(const Vec3 &other) const {
-    return DECIMAL_FMA(x,other.x, DECIMAL_FMA(y,other.y, z*other.z));
+scalar Vec3::operator*(const Vec3 &other) const {
+    return SCALAR_FMA(x,other.x, SCALAR_FMA(y,other.y, z*other.z));
 }
 
 /// Vector-Scalar multiplication
-Vec2 Vec2::operator*(const decimal &other) const {
+Vec2 Vec2::operator*(const scalar &other) const {
     return { x*other, y*other };
 }
 
 /// Vector-Scalar multiplication
-Vec3 Vec3::operator*(const decimal &other) const {
+Vec3 Vec3::operator*(const scalar &other) const {
     return { x*other, y*other, z*other };
 }
 
@@ -255,7 +255,7 @@ Vec3 Vec3::operator*(const Mat3 &other) const {
 }
 
 /// Access the i,j-th element of the matrix
-decimal Mat3::At(int i, int j) const {
+scalar Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
 
@@ -299,7 +299,7 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
 }
 
 /// Matrix-Scalar multiplication
-Mat3 Mat3::operator*(const decimal &s) const {
+Mat3 Mat3::operator*(const scalar &s) const {
     return {
         s*At(0,0), s*At(0,1), s*At(0,2),
         s*At(1,0), s*At(1,1), s*At(1,2),
@@ -317,19 +317,19 @@ Mat3 Mat3::Transpose() const {
 }
 
 /// Trace of a matrix
-decimal Mat3::Trace() const {
+scalar Mat3::Trace() const {
     return At(0,0) + At(1,1) + At(2,2);
 }
 
 /// Determinant of a matrix
-decimal Mat3::Det() const {
+scalar Mat3::Det() const {
     return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
 }
 
 /// Inverse of a matrix
 Mat3 Mat3::Inverse() const {
     // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
-    decimal scalar = 1 / Det();
+    scalar scale = 1 / Det();
 
     Mat3 res = {
         At(1,1)*At(2,2) - At(1,2)*At(2,1), At(0,2)*At(2,1) - At(0,1)*At(2,2), At(0,1)*At(1,2) - At(0,2)*At(1,1),
@@ -337,7 +337,7 @@ Mat3 Mat3::Inverse() const {
         At(1,0)*At(2,1) - At(1,1)*At(2,0), At(0,1)*At(2,0) - At(0,0)*At(2,1), At(0,0)*At(1,1) - At(0,1)*At(1,0)
     };
 
-    return res * scalar;
+    return res * scale;
 }
 
 /// 3x3 identity matrix
@@ -369,9 +369,9 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // the DCM itself does
     Vec3 oldXAxis = Vec3({1, 0, 0});
     Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
-    assert(DECIMAL_ABS(newXAxis.Magnitude()-1) < DECIMAL(0.001));
+    assert(SCALAR_ABS(newXAxis.Magnitude()-1) < SCALAR(0.001));
     Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
-    decimal xAlignAngle = AngleUnit(oldXAxis, newXAxis);
+    scalar xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
 
     // Make a quaternion that will rotate the Y-axis into place
@@ -452,22 +452,22 @@ bool Attitude::IsKnown() const {
 
 /// Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3
 void SerializeVec3(SerializeContext *ser, const Vec3 &vec) {
-    SerializePrimitive<decimal>(ser, vec.x);
-    SerializePrimitive<decimal>(ser, vec.y);
-    SerializePrimitive<decimal>(ser, vec.z);
+    SerializePrimitive<scalar>(ser, vec.x);
+    SerializePrimitive<scalar>(ser, vec.y);
+    SerializePrimitive<scalar>(ser, vec.z);
 }
 
 Vec3 DeserializeVec3(DeserializeContext *des) {
     Vec3 result = {
-        DeserializePrimitive<decimal>(des),
-        DeserializePrimitive<decimal>(des),
-        DeserializePrimitive<decimal>(des),
+        DeserializePrimitive<scalar>(des),
+        DeserializePrimitive<scalar>(des),
+        DeserializePrimitive<scalar>(des),
     };
     return result;
 }
 
 /// Calculate the inner angle, in radians, between two vectors.
-decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
+scalar Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }
 
@@ -476,10 +476,10 @@ decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
  * Slightly faster than Angle()
  * @warn If the vectors are not already unit vectors, will return the wrong result!
  */
-decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
-    decimal dot = vec1*vec2;
+scalar AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
+    scalar dot = vec1*vec2;
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
-    return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : DECIMAL_ACOS(dot);
+    return dot >= 1 ? 0 : dot <= -1 ? SCALAR_M_PI-SCALAR(0.0000001) : SCALAR_ACOS(dot);
 }
 
 }

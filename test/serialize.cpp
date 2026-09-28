@@ -10,57 +10,57 @@ using namespace lost; // NOLINT
 
 TEST_CASE("Simple serialization, deserialization of primitives", "[fast] [serialize]") {
     int64_t val64 = 27837492938;
-    decimal valDecimal = 23.71728;
+    scalar valScalar = 23.71728;
     SerializeContext ser;
     SerializePrimitive<int64_t>(&ser, val64);
-    SerializePrimitive<decimal>(&ser, valDecimal);
+    SerializePrimitive<scalar>(&ser, valScalar);
     DeserializeContext des(ser.buffer.data());
     int64_t deserializedVal64 = DeserializePrimitive<int64_t>(&des);
-    decimal deserializedDecimal = DeserializePrimitive<decimal>(&des);
+    scalar deserializedScalar = DeserializePrimitive<scalar>(&des);
     CHECK(val64 == deserializedVal64);
-    CHECK(valDecimal == deserializedDecimal);
+    CHECK(valScalar == deserializedScalar);
 }
 
 TEST_CASE("Endian-swapped serialization, deserialization of primitives", "[fast] [serialize]") {
     int64_t val64 = 27837492938;
-    decimal valDecimal = 23.71728;
+    scalar valScalar = 23.71728;
     SerializeContext ser1(true, true);
     SerializePrimitive<int64_t>(&ser1, val64);
-    SerializePrimitive<decimal>(&ser1, valDecimal);
+    SerializePrimitive<scalar>(&ser1, valScalar);
     DeserializeContext des(ser1.buffer.data());
     int64_t deserializedVal64 = DeserializePrimitive<int64_t>(&des);
-    decimal deserializedValDecimal = DeserializePrimitive<decimal>(&des);
+    scalar deserializedValScalar = DeserializePrimitive<scalar>(&des);
     CHECK(val64 != deserializedVal64);
-    CHECK(valDecimal != deserializedValDecimal);
+    CHECK(valScalar != deserializedValScalar);
     // but if we serialize it again, it should be back to normal!
 
     SerializeContext ser2(true, true);
     SerializePrimitive<int64_t>(&ser2, deserializedVal64);
-    SerializePrimitive<decimal>(&ser2, deserializedValDecimal);
+    SerializePrimitive<scalar>(&ser2, deserializedValScalar);
     DeserializeContext des2(ser2.buffer.data());
     int64_t redeserializedVal64 = DeserializePrimitive<int64_t>(&des2);
-    decimal redeserializedValDecimal = DeserializePrimitive<decimal>(&des2);
+    scalar redeserializedValScalar = DeserializePrimitive<scalar>(&des2);
     CHECK(val64 == redeserializedVal64);
-    CHECK(valDecimal == redeserializedValDecimal);
+    CHECK(valScalar == redeserializedValScalar);
 }
 
-TEST_CASE("Endian-swapped decimals only", "[fast] [serialize]") {
+TEST_CASE("Endian-swapped scalars only", "[fast] [serialize]") {
     int64_t val64 = 27837492938;
-    decimal valDecimal = 23.71728;
+    scalar valScalar = 23.71728;
     SerializeContext ser1(false, true);
     SerializePrimitive<int64_t>(&ser1, val64);
-    SerializePrimitive<decimal>(&ser1, valDecimal);
+    SerializePrimitive<scalar>(&ser1, valScalar);
     DeserializeContext des(ser1.buffer.data());
     int64_t deserializedVal64 = DeserializePrimitive<int64_t>(&des);
-    decimal deserializedValDecimal = DeserializePrimitive<decimal>(&des);
+    scalar deserializedValScalar = DeserializePrimitive<scalar>(&des);
     CHECK(val64 == deserializedVal64);
-    CHECK(valDecimal != deserializedValDecimal);
+    CHECK(valScalar != deserializedValScalar);
 
     SerializeContext ser2(false, true);
-    SerializePrimitive<decimal>(&ser2, deserializedValDecimal);
+    SerializePrimitive<scalar>(&ser2, deserializedValScalar);
     DeserializeContext des2(ser2.buffer.data());
-    decimal redeserializedValDecimal = DeserializePrimitive<decimal>(&des2);
-    CHECK(valDecimal == redeserializedValDecimal);
+    scalar redeserializedValScalar = DeserializePrimitive<scalar>(&des2);
+    CHECK(valScalar == redeserializedValScalar);
 }
 
 TEST_CASE("Padding", "[fast] [serialize]") {

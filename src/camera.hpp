@@ -13,16 +13,16 @@ public:
     /**
      * @param xCenter,yCenter The "principal point" of the camera. In an ideal camera, just half the resolution, but physical cameras often have a bit of offset.
      */
-    Camera(decimal focalLength,
-           decimal xCenter, decimal yCenter,
+    Camera(scalar focalLength,
+           scalar xCenter, scalar yCenter,
            int xResolution, int yResolution)
         : focalLength(focalLength),
           xCenter(xCenter), yCenter(yCenter),
           xResolution(xResolution), yResolution(yResolution) {};
 
-    Camera(decimal focalLength, int xResolution, int yResolution)
+    Camera(scalar focalLength, int xResolution, int yResolution)
         : Camera(focalLength,
-                 xResolution / DECIMAL(2.0), yResolution / DECIMAL(2.0),
+                 xResolution / SCALAR(2.0), yResolution / SCALAR(2.0),
                  xResolution, yResolution) {};
 
     Vec2 SpatialToCamera(const Vec3 &) const;
@@ -30,7 +30,7 @@ public:
 
     // converts from a 2d point in the camera sensor to right ascension and declination relative to
     // the center of the camera.
-    // void CoordinateAngles(const Vec2 &vector, decimal *ra, decimal *de) const;
+    // void CoordinateAngles(const Vec2 &vector, scalar *ra, scalar *de) const;
 
     bool InSensor(const Vec2 &vector) const;
 
@@ -39,20 +39,20 @@ public:
     /// Height of the sensor in pixels
     int YResolution() const { return yResolution; };
     /// Focal length in pixels
-    decimal FocalLength() const { return focalLength; };
+    scalar FocalLength() const { return focalLength; };
     /// Horizontal field of view in radians
-    decimal Fov() const;
+    scalar Fov() const;
 
-    void SetFocalLength(decimal focalLength) { this->focalLength = focalLength; }
+    void SetFocalLength(scalar focalLength) { this->focalLength = focalLength; }
 
 private:
     // TODO: distortion
-    decimal focalLength;
-    decimal xCenter; decimal yCenter;
+    scalar focalLength;
+    scalar xCenter; scalar yCenter;
     int xResolution; int yResolution;
 };
 
-decimal FovToFocalLength(decimal xFov, decimal xResolution);
+scalar FovToFocalLength(scalar xFov, scalar xResolution);
 
 }
 

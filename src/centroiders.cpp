@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "decimal.hpp"
+#include "scalar.hpp"
 
 namespace lost {
 
@@ -21,7 +21,7 @@ std::vector<Star> DummyCentroidAlgorithm::Go(unsigned char *, int imageWidth, in
 
     unsigned int randomSeed = 123456;
     for (int i = 0; i < numStars; i++) {
-        result.push_back(Star(rand_r(&randomSeed) % imageWidth, rand_r(&randomSeed) % imageHeight, DECIMAL(10.0)));
+        result.push_back(Star(rand_r(&randomSeed) % imageWidth, rand_r(&randomSeed) % imageHeight, SCALAR(10.0)));
     }
 
     return result;
@@ -41,11 +41,11 @@ int BadThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     // code here, duh
     long total = imageWidth * imageHeight;
-    //decimal top = 255;
-    decimal sumB = 0;
-    decimal sum1 = 0;
-    decimal wB = 0;
-    decimal maximum = 0;
+    //scalar top = 255;
+    scalar sumB = 0;
+    scalar sum1 = 0;
+    scalar wB = 0;
+    scalar maximum = 0;
     int level = 0;
     // make the histogram (array length 256)
     int histogram[256];
@@ -59,12 +59,12 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
         sum1 += i * histogram[i];
     }
     for (int i = 0; i < 256; i ++) {
-        decimal wF = total - wB;
+        scalar wF = total - wB;
         //std::cout << "wF\n" << wB << "\n";
         //std::cout << "wB\n" << wF << "\n";
         if (wB > 0 && wF > 0) {
-            decimal mF = (sum1 - sumB) / wF;
-            decimal val = wB * wF * ((sumB / wB) - mF) * ((sumB / wB) - mF);
+            scalar mF = (sum1 - sumB) / wF;
+            scalar val = wB * wF * ((sumB / wB) - mF) * ((sumB / wB) - mF);
             //std::cout << val << "\n";
             if (val >= maximum) {
                 level = i;
@@ -80,38 +80,38 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 // a simple, but well tested thresholding algorithm that works well with star images
 int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
-    decimal std = 0;
+    scalar std = 0;
     long totalPixels = imageHeight * imageWidth;
     for (long i = 0; i < totalPixels; i++) {
         totalMag += image[i];
     }
-    decimal mean = totalMag / totalPixels;
+    scalar mean = totalMag / totalPixels;
     for (long i = 0; i < totalPixels; i++) {
-        std += DECIMAL_POW(image[i] - mean, 2);
+        std += SCALAR_POW(image[i] - mean, 2);
     }
-    std = DECIMAL_SQRT(std / totalPixels);
+    std = SCALAR_SQRT(std / totalPixels);
     return mean + (std * 5);
 }
 
 // basic thresholding, but do it faster (trade off of some accuracy?)
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
     unsigned long totalMag = 0;
-    decimal std = 0;
-    decimal sq_totalMag = 0;
+    scalar std = 0;
+    scalar sq_totalMag = 0;
     long totalPixels = imageHeight * imageWidth;
     for (long i = 0; i < totalPixels; i++) {
         totalMag += image[i];
         sq_totalMag += image[i] * image[i];
     }
-    decimal mean = totalMag / totalPixels;
-    decimal variance = (sq_totalMag / totalPixels) - (mean * mean);
-    std = DECIMAL_SQRT(variance);
+    scalar mean = totalMag / totalPixels;
+    scalar variance = (sq_totalMag / totalPixels) - (mean * mean);
+    std = SCALAR_SQRT(variance);
     return mean + (std * 5);
 }
 
 struct CentroidParams {
-    decimal yCoordMagSum;
-    decimal xCoordMagSum;
+    scalar yCoordMagSum;
+    scalar xCoordMagSum;
     long magSum;
     int xMin;
     int xMax;
@@ -184,11 +184,11 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
             yDiameter = (p.yMax - p.yMin) + 1;
 
             //use the sums to finish CoG equation and add stars to the result
-            decimal xCoord = (p.xCoordMagSum / (p.magSum * DECIMAL(1.0)));
-            decimal yCoord = (p.yCoordMagSum / (p.magSum * DECIMAL(1.0)));
+            scalar xCoord = (p.xCoordMagSum / (p.magSum * SCALAR(1.0)));
+            scalar yCoord = (p.yCoordMagSum / (p.magSum * SCALAR(1.0)));
 
             if (p.isValid) {
-                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), p.checkedIndices.size() - sizeBefore));
+                result.push_back(Star(xCoord + SCALAR(0.5), yCoord + SCALAR(0.5), (xDiameter)/SCALAR(2.0), (yDiameter)/SCALAR(2.0), p.checkedIndices.size() - sizeBefore));
             }
         }
     }
@@ -197,7 +197,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWi
 
 //Determines how accurate and how much iteration is done by the IWCoG algorithm,
 //smaller means more accurate and more iterations.
-decimal iWCoGMinChange = DECIMAL(0.0002);
+scalar iWCoGMinChange = SCALAR(0.0002);
 
 struct IWCoGParams {
     int xMin;
@@ -256,12 +256,12 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             p.maxIntensity = 0;
             int xDiameter = 0;
             int yDiameter = 0;
-            decimal yWeightedCoordMagSum = 0;
-            decimal xWeightedCoordMagSum = 0;
-            decimal weightedMagSum = 0;
-            decimal fwhm; //fwhm variable
-            decimal standardDeviation;
-            decimal w; //weight value
+            scalar yWeightedCoordMagSum = 0;
+            scalar xWeightedCoordMagSum = 0;
+            scalar weightedMagSum = 0;
+            scalar fwhm; //fwhm variable
+            scalar standardDeviation;
+            scalar w; //weight value
 
             p.xMax = i % imageWidth;
             p.xMin = i % imageWidth;
@@ -276,20 +276,20 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             yDiameter = (p.yMax - p.yMin) + 1;
 
             //calculate fwhm
-            decimal count = 0;
+            scalar count = 0;
             for (int j = 0; j < (int) starIndices.size(); j++) {
                 if (image[starIndices.at(j)] > p.maxIntensity / 2) {
                     count++;
                 }
             }
-            fwhm = DECIMAL_SQRT(count);
-            standardDeviation = fwhm / (DECIMAL(2.0) * DECIMAL_SQRT(DECIMAL(2.0) * DECIMAL_LOG(2.0)));
-            decimal modifiedStdDev = DECIMAL(2.0) * DECIMAL_POW(standardDeviation, 2);
-            // TODO: Why are these decimals? --Mark
-            decimal guessXCoord = (p.guess % imageWidth);
-            decimal guessYCoord = (p.guess / imageWidth);
+            fwhm = SCALAR_SQRT(count);
+            standardDeviation = fwhm / (SCALAR(2.0) * SCALAR_SQRT(SCALAR(2.0) * SCALAR_LOG(2.0)));
+            scalar modifiedStdDev = SCALAR(2.0) * SCALAR_POW(standardDeviation, 2);
+            // TODO: Why are these floats? --Mark
+            scalar guessXCoord = (p.guess % imageWidth);
+            scalar guessYCoord = (p.guess / imageWidth);
             //how much our new centroid estimate changes w each iteration
-            decimal change = INFINITY;
+            scalar change = INFINITY;
             int stop = 0;
             //while we see some large enough change in estimated, maybe make it a global variable
             while (change > iWCoGMinChange && stop < 100000) {
@@ -300,16 +300,16 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 stop++;
                 for (long j = 0; j < (long)starIndices.size(); j++) {
                     //calculate w
-                    decimal currXCoord = starIndices.at(j) % imageWidth;
-                    decimal currYCoord = starIndices.at(j) / imageWidth;
-                    w = p.maxIntensity * DECIMAL_EXP(DECIMAL(-1.0) * ((DECIMAL_POW(currXCoord - guessXCoord, 2) / modifiedStdDev) + (DECIMAL_POW(currYCoord - guessYCoord, 2) / modifiedStdDev)));
+                    scalar currXCoord = starIndices.at(j) % imageWidth;
+                    scalar currYCoord = starIndices.at(j) / imageWidth;
+                    w = p.maxIntensity * SCALAR_EXP(SCALAR(-1.0) * ((SCALAR_POW(currXCoord - guessXCoord, 2) / modifiedStdDev) + (SCALAR_POW(currYCoord - guessYCoord, 2) / modifiedStdDev)));
 
-                    xWeightedCoordMagSum += w * currXCoord * DECIMAL(image[starIndices.at(j)]);
-                    yWeightedCoordMagSum += w * currYCoord * DECIMAL(image[starIndices.at(j)]);
-                    weightedMagSum += w * DECIMAL(image[starIndices.at(j)]);
+                    xWeightedCoordMagSum += w * currXCoord * SCALAR(image[starIndices.at(j)]);
+                    yWeightedCoordMagSum += w * currYCoord * SCALAR(image[starIndices.at(j)]);
+                    weightedMagSum += w * SCALAR(image[starIndices.at(j)]);
                 }
-                decimal xTemp = xWeightedCoordMagSum / weightedMagSum;
-                decimal yTemp = yWeightedCoordMagSum / weightedMagSum;
+                scalar xTemp = xWeightedCoordMagSum / weightedMagSum;
+                scalar yTemp = yWeightedCoordMagSum / weightedMagSum;
 
                 change = abs(guessXCoord - xTemp) + abs(guessYCoord - yTemp);
 
@@ -317,7 +317,7 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
                 guessYCoord = yTemp;
             }
             if (p.isValid) {
-                result.push_back(Star(guessXCoord + DECIMAL(0.5), guessYCoord + DECIMAL(0.5), xDiameter/DECIMAL(2.0), yDiameter/DECIMAL(2.0), starIndices.size()));
+                result.push_back(Star(guessXCoord + SCALAR(0.5), guessYCoord + SCALAR(0.5), xDiameter/SCALAR(2.0), yDiameter/SCALAR(2.0), starIndices.size()));
             }
         }
     }

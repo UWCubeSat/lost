@@ -19,7 +19,7 @@
 
 #include "databases.hpp"
 #include "centroiders.hpp"
-#include "decimal.hpp"
+#include "scalar.hpp"
 #include "io.hpp"
 #include "man-database.h"
 #include "man-pipeline.h"
@@ -36,7 +36,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 
     // Create & Set Flags.
     uint32_t dbFlags = 0;
-    dbFlags |= typeid(decimal) == typeid(float) ? MULTI_DB_FLOAT_FLAG : 0;
+    dbFlags |= typeid(scalar) == typeid(float) ? MULTI_DB_FLOAT_FLAG : 0;
 
     // Serialize Flags
     SerializeMultiDatabase(&ser, dbEntries, dbFlags);
@@ -153,6 +153,8 @@ static int LostMain(int argc, char **argv) {
              (int)DatabaseCliOption::prop},
 #include "database-options.hpp" // NOLINT
 #undef LOST_CLI_OPTION
+                // backwards compat alias for renamed flag
+                {"swap-decimal-endianness", optional_argument, 0, (int) DatabaseCliOption::swapScalarEndianness},
                 {"help", no_argument, 0, (int) DatabaseCliOption::help},
                 {0}
         };

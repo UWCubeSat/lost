@@ -24,27 +24,27 @@ class KVectorIndex {
 public:
     explicit KVectorIndex(DeserializeContext *des);
 
-    long QueryLiberal(decimal minQueryDistance, decimal maxQueryDistance, long *upperIndex) const;
+    long QueryLiberal(scalar minQueryDistance, scalar maxQueryDistance, long *upperIndex) const;
 
     /// The number of data points in the data referred to by the kvector
     long NumValues() const { return numValues; };
     long NumBins() const { return numBins; };
     /// Upper bound on elements
-    decimal Max() const { return max; };
+    scalar Max() const { return max; };
     // Lower bound on elements
-    decimal Min() const { return min; };
+    scalar Min() const { return min; };
 private:
-    long BinFor(decimal dist) const;
+    long BinFor(scalar dist) const;
 
     long numValues;
-    decimal min;
-    decimal max;
-    decimal binWidth;
+    scalar min;
+    scalar max;
+    scalar binWidth;
     long numBins;
     const int32_t *bins;
 };
 
-void SerializePairDistanceKVector(SerializeContext *, const Catalog &, decimal minDistance, decimal maxDistance, long numBins);
+void SerializePairDistanceKVector(SerializeContext *, const Catalog &, scalar minDistance, scalar maxDistance, long numBins);
 
 /**
  * A database storing distances between pairs of stars.
@@ -55,14 +55,14 @@ class PairDistanceKVectorDatabase {
 public:
     explicit PairDistanceKVectorDatabase(DeserializeContext *des);
 
-    const int16_t *FindPairsLiberal(decimal min, decimal max, const int16_t **end) const;
-    const int16_t *FindPairsExact(const Catalog &, decimal min, decimal max, const int16_t **end) const;
-    std::vector<decimal> StarDistances(int16_t star, const Catalog &) const;
+    const int16_t *FindPairsLiberal(scalar min, scalar max, const int16_t **end) const;
+    const int16_t *FindPairsExact(const Catalog &, scalar min, scalar max, const int16_t **end) const;
+    std::vector<scalar> StarDistances(int16_t star, const Catalog &) const;
 
     /// Upper bound on stored star pair distances
-    decimal MaxDistance() const { return index.Max(); };
+    scalar MaxDistance() const { return index.Max(); };
     /// Lower bound on stored star pair distances
-    decimal MinDistance() const { return index.Min(); };
+    scalar MinDistance() const { return index.Min(); };
     /// Exact number of stored pairs
     long NumPairs() const;
 
@@ -87,7 +87,7 @@ private:
 // public:
 //     explicit TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
 
-//     void FindTriplesLiberal(decimal min, decimal max, long **begin, long **end) const;
+//     void FindTriplesLiberal(scalar min, scalar max, long **begin, long **end) const;
 // private:
 //     KVectorIndex index;
 //     int16_t *triples;
