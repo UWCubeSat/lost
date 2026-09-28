@@ -145,6 +145,8 @@ Here's how to identify a real image:
 This will print the attitude (right ascension, declination, roll) to the file `attitude.txt`, and write an annotated
 image to `annotated-7660.png`.
 
+> Note: the expected results for `img_7660.png` are `RA=17.990°`, `Dec=63.422°`, according to [Astrometry.net](https://nova.astrometry.net/user_images/16398053).
+
 When identifying a different image, some parameters must be changed. Most important is the
 camera's pixel size and focal length, which quantify how "zoomed-in" the camera is. The pixel size
 (22.2μm in the example) is the side length, in micrometers, of each pixel. This is commonly given
