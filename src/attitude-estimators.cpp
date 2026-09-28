@@ -3,11 +3,11 @@
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Eigenvalues>
 
-#include "decimal.hpp"
+#include "scalar.hpp"
 
 namespace lost {
 
-#define EPSILON DECIMAL(0.0001)       // threshold for 0 for Newton-Raphson method
+#define EPSILON SCALAR(0.0001)       // threshold for 0 for Newton-Raphson method
 
 Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
@@ -56,7 +56,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     #endif
 
     //sigma = B[0][0] + B[1][1] + B[2][2]
-    decimal sigma = B.trace();
+    scalar sigma = B.trace();
 
     //Z = [[B[1][2] - B[2][1]], [B[2][0] - B[0][2]], [B[0][1] - B[1][0]]]
     #ifdef LOST_FLOAT_MODE
@@ -94,7 +94,7 @@ Attitude DavenportQAlgorithm::Go(const Camera &camera,
     #endif
 
     int maxIndex = 0;
-    decimal maxEigenvalue = values(0).real();
+    scalar maxEigenvalue = values(0).real();
     for (int i = 1; i < values.size(); i++) {
         if (values(i).real() > maxEigenvalue) {
             maxIndex = i;
@@ -160,19 +160,19 @@ Attitude TriadAlgorithm::Go(const Camera &camera,
  * Characteristic polynomial of the quest K-matrix
  * @see equation 19b of https://arc.aiaa.org/doi/pdf/10.2514/1.62549
  */
-decimal QuestCharPoly(decimal x, decimal a, decimal b, decimal c, decimal d, decimal s) {return (DECIMAL_POW(x,2)-a) * (DECIMAL_POW(x,2)-b) - (c*x) + (c*s) - d;}
+scalar QuestCharPoly(scalar x, scalar a, scalar b, scalar c, scalar d, scalar s) {return (SCALAR_POW(x,2)-a) * (SCALAR_POW(x,2)-b) - (c*x) + (c*s) - d;}
 
 /**
  * Derivitive of the characteristic polynomial of the quest K-matrix
  */
-decimal QuestCharPolyPrime(decimal x, decimal a, decimal b, decimal c) {return 4*DECIMAL_POW(x,3) - 2*(a+b)*x - c;}
+scalar QuestCharPolyPrime(scalar x, scalar a, scalar b, scalar c) {return 4*SCALAR_POW(x,3) - 2*(a+b)*x - c;}
 
 /**
- * Approximates roots of a real function using the Newton-Raphson algorithm 
+ * Approximates roots of a real function using the Newton-Raphson algorithm
  * @see https://www.geeksforgeeks.org/program-for-newton-raphson-method/
  */
-decimal QuestEigenvalueEstimator(decimal guess, decimal a, decimal b, decimal c, decimal d, decimal s) {
-    decimal height;
+scalar QuestEigenvalueEstimator(scalar guess, scalar a, scalar b, scalar c, scalar d, scalar s) {
+    scalar height;
     do {
         height = QuestCharPoly(guess, a, b, c, d, s) / QuestCharPolyPrime(guess, a, b, c);
         guess -= height;
@@ -192,7 +192,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     assert(stars.size() >= 2);
 
     // initial guess for eigenvalue (sum of the weights)
-    decimal guess = 0;
+    scalar guess = 0;
 
     // attitude profile matrix
     Mat3 B = {0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -214,7 +214,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     // S = B + Transpose(B)
     Mat3 S = B + B.Transpose();
     //sigma = B[0][0] + B[1][1] + B[2][2]
-    decimal sigma = B.Trace();
+    scalar sigma = B.Trace();
     //Z = [[B[1][2] - B[2][1]], [B[2][0] - B[0][2]], [B[0][1] - B[1][0]]]
     Vec3 Z = {
         B.At(1,2) - B.At(2,1),
@@ -223,25 +223,25 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     };
 
     // calculate coefficients for characteristic polynomial
-    decimal delta = S.Det();
-    decimal kappa = (S.Inverse() * delta).Trace();
-    decimal a = DECIMAL_POW(sigma,2) - kappa;
-    decimal b = DECIMAL_POW(sigma,2) + (Z * Z);
-    decimal c = delta + (Z * S * Z);
-    decimal d = Z * (S * S) * Z;
+    scalar delta = S.Det();
+    scalar kappa = (S.Inverse() * delta).Trace();
+    scalar a = SCALAR_POW(sigma,2) - kappa;
+    scalar b = SCALAR_POW(sigma,2) + (Z * Z);
+    scalar c = delta + (Z * S * Z);
+    scalar d = Z * (S * S) * Z;
 
     // Newton-Raphson method for estimating the largest eigenvalue
-    decimal eig = QuestEigenvalueEstimator(guess, a, b, c, d, sigma);
+    scalar eig = QuestEigenvalueEstimator(guess, a, b, c, d, sigma);
 
     // solve for the optimal quaternion: from https://ahrs.readthedocs.io/en/latest/filters/quest.html
-    decimal alpha = DECIMAL_POW(eig,2) - DECIMAL_POW(sigma, 2) + kappa;
-    decimal beta = eig - sigma;
-    decimal gamma = (eig + sigma) * alpha - delta;
+    scalar alpha = SCALAR_POW(eig,2) - SCALAR_POW(sigma, 2) + kappa;
+    scalar beta = eig - sigma;
+    scalar gamma = (eig + sigma) * alpha - delta;
 
     Vec3 X = ((kIdentityMat3 * alpha) + (S * beta) + (S * S)) * Z;
-    decimal scalar = 1 / DECIMAL_SQRT(DECIMAL_POW(gamma,2) + X.MagnitudeSq());
-    X = X * scalar;
-    gamma *= scalar;
+    scalar scale = 1 / SCALAR_SQRT(SCALAR_POW(gamma,2) + X.MagnitudeSq());
+    X = X * scale;
+    gamma *= scale;
 
     return Attitude(Quaternion(gamma, X.x, X.y, X.z));
 }

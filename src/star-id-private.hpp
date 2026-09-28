@@ -17,7 +17,7 @@ namespace lost {
 class IRUnidentifiedCentroid {
 public:
     IRUnidentifiedCentroid(const Star &star, int16_t index)
-        : bestAngleFrom90(std::numeric_limits<decimal>::max()), // should be infinity
+        : bestAngleFrom90(std::numeric_limits<scalar>::max()), // should be infinity
           bestStar1(0,0), bestStar2(0,0),
           index(index),
           star(&star) {
@@ -29,7 +29,7 @@ public:
         : bestStar1(0,0), bestStar2(0,0),
           index(-1) { }
 
-    decimal bestAngleFrom90; /// For the pair of other centroids forming the triangular angle closest to 90 degrees, how far from 90 degrees it is (in radians)
+    scalar bestAngleFrom90; /// For the pair of other centroids forming the triangular angle closest to 90 degrees, how far from 90 degrees it is (in radians)
     StarIdentifier bestStar1; /// One star corresponding to bestAngleFrom90
     StarIdentifier bestStar2; /// The other star corresponding to bestAngleFrom90
     int16_t index; /// Index into list of all centroids
@@ -37,10 +37,10 @@ public:
 
 private:
     // possible improvement: Use a tree map here to allow binary search
-    std::vector<std::pair<decimal, StarIdentifier>> identifiedStarsInRange;
+    std::vector<std::pair<scalar, StarIdentifier>> identifiedStarsInRange;
 
 private:
-    decimal VerticalAnglesToAngleFrom90(decimal v1, decimal v2);
+    scalar VerticalAnglesToAngleFrom90(scalar v1, scalar v2);
 
 public:
     void AddIdentifiedStar(const StarIdentifier &starId, const Stars &stars);
@@ -49,15 +49,15 @@ public:
 std::vector<int16_t> IdentifyThirdStar(const PairDistanceKVectorDatabase &db,
                                        const Catalog &catalog,
                                        int16_t catalogIndex1, int16_t catalogIndex2,
-                                       decimal distance1, decimal distance2,
-                                       decimal tolerance);
+                                       scalar distance1, scalar distance2,
+                                       scalar tolerance);
 
 int IdentifyRemainingStarsPairDistance(StarIdentifiers *,
                                        const Stars &,
                                        const PairDistanceKVectorDatabase &,
                                        const Catalog &,
                                        const Camera &,
-                                       decimal tolerance);
+                                       scalar tolerance);
 
 }
 

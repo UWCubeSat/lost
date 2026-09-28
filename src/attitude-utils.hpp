@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "serialize-helpers.hpp"
-#include "decimal.hpp"
+#include "scalar.hpp"
 
 namespace lost {
 
@@ -13,58 +13,58 @@ namespace lost {
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
 // make everything more annoying, because you need vectors of pointers...ugh!
 
-/// A two dimensional vector with decimaling point components
+/// A two dimensional vector with floating point components
 struct Vec2 {
-    decimal x;
-    decimal y;
+    scalar x;
+    scalar y;
 
-    decimal Magnitude() const;
-    decimal MagnitudeSq() const;
+    scalar Magnitude() const;
+    scalar MagnitudeSq() const;
 
     Vec2 Normalize() const;
 
-    decimal operator*(const Vec2 &) const;
-    Vec2 operator*(const decimal &) const;
+    scalar operator*(const Vec2 &) const;
+    Vec2 operator*(const scalar &) const;
     Vec2 operator-(const Vec2 &) const;
     Vec2 operator+(const Vec2 &) const;
 };
 
 class Mat3; // define above so we can use in Vec3 class
 
-/// Three dimensional vector with decimaling point components
+/// Three dimensional vector with floating point components
 class Vec3 {
 public:
-    decimal x;
-    decimal y;
-    decimal z;
+    scalar x;
+    scalar y;
+    scalar z;
 
-    decimal Magnitude() const;
-    decimal MagnitudeSq() const;
+    scalar Magnitude() const;
+    scalar MagnitudeSq() const;
     Vec3 Normalize() const;
 
-    decimal operator*(const Vec3 &) const;
-    Vec3 operator*(const decimal &) const;
+    scalar operator*(const Vec3 &) const;
+    Vec3 operator*(const scalar &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
 };
 
-/// 3x3 vector with decimaling point components
+/// 3x3 matrix with floating point components
 class Mat3 {
 public:
-    decimal x[9];
+    scalar x[9];
 
-    decimal At(int i, int j) const;
+    scalar At(int i, int j) const;
     Mat3 operator+(const Mat3 &) const;
     Mat3 operator*(const Mat3 &) const;
     Vec3 operator*(const Vec3 &) const;
-    Mat3 operator*(const decimal &) const;
+    Mat3 operator*(const scalar &) const;
     Mat3 Transpose() const;
     Vec3 Column(int) const;
     Vec3 Row(int) const;
-    decimal Trace() const;
-    decimal Det() const;
+    scalar Trace() const;
+    scalar Det() const;
     Mat3 Inverse() const;
 };
 
@@ -73,8 +73,8 @@ extern const Mat3 kIdentityMat3;
 void SerializeVec3(SerializeContext *, const Vec3 &);
 Vec3 DeserializeVec3(DeserializeContext *des);
 
-decimal Distance(const Vec2 &, const Vec2 &);
-decimal Distance(const Vec3 &, const Vec3 &);
+scalar Distance(const Vec2 &, const Vec2 &);
+scalar Distance(const Vec3 &, const Vec3 &);
 
 /**
  * A "human-readable" way to represent a 3d rotation or orientation.
@@ -83,15 +83,15 @@ decimal Distance(const Vec3 &, const Vec3 &);
  */
 class EulerAngles {
 public:
-    EulerAngles(decimal ra, decimal de, decimal roll)
+    EulerAngles(scalar ra, scalar de, scalar roll)
         : ra(ra), de(de), roll(roll) { };
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
-    decimal ra;
+    scalar ra;
     /// Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw.
-    decimal de;
+    scalar de;
     /// How far we roll counterclockwise. Roll is performed last (after yaw and pitch).
-    decimal roll;
+    scalar roll;
 };
 
 /// A quaternion is a common way to represent a 3d rotation.
@@ -99,9 +99,9 @@ class Quaternion {
 public:
     Quaternion() = default;
     explicit Quaternion(const Vec3 &);
-    Quaternion(const Vec3 &, decimal);
+    Quaternion(const Vec3 &, scalar);
 
-    Quaternion(decimal real, decimal i, decimal j, decimal k)
+    Quaternion(scalar real, scalar i, scalar j, scalar k)
         : real(real), i(i), j(j), k(k) { };
 
     Quaternion operator*(const Quaternion &other) const;
@@ -109,19 +109,19 @@ public:
     Vec3 Vector() const;
     void SetVector(const Vec3 &);
     Vec3 Rotate(const Vec3 &) const;
-    decimal Angle() const;
+    scalar Angle() const;
     /// Returns the smallest angle that can be used to represent the rotation represented by the
     /// quaternion. I.e, min(Angle, 2pi-Angle).
-    decimal SmallestAngle() const;
-    void SetAngle(decimal);
+    scalar SmallestAngle() const;
+    void SetAngle(scalar);
     EulerAngles ToSpherical() const;
-    bool IsUnit(decimal tolerance) const;
+    bool IsUnit(scalar tolerance) const;
     Quaternion Canonicalize() const;
 
-    decimal real;
-    decimal i;
-    decimal j;
-    decimal k;
+    scalar real;
+    scalar i;
+    scalar j;
+    scalar k;
 };
 
 //
@@ -166,23 +166,23 @@ Quaternion DCMToQuaternion(const Mat3 &);
 /// Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given
 /// right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
 /// will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
-Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
+Quaternion SphericalToQuaternion(scalar ra, scalar dec, scalar roll);
 
 /// returns unit vector
-Vec3 SphericalToSpatial(decimal ra, decimal de);
-void SpatialToSpherical(const Vec3 &, decimal *ra, decimal *de);
+Vec3 SphericalToSpatial(scalar ra, scalar de);
+void SpatialToSpherical(const Vec3 &, scalar *ra, scalar *de);
 /// angle between two vectors, using dot product and magnitude division
-decimal Angle(const Vec3 &, const Vec3 &);
+scalar Angle(const Vec3 &, const Vec3 &);
 /// angle between two vectors, /assuming/ that they are already unit length
-decimal AngleUnit(const Vec3 &, const Vec3 &);
+scalar AngleUnit(const Vec3 &, const Vec3 &);
 
-decimal RadToDeg(decimal);
-decimal DegToRad(decimal);
-decimal RadToArcSec(decimal);
-decimal ArcSecToRad(decimal);
-/// Given a decimal, find it "modulo" another decimal, in the true mathematical sense (not remainder).
+scalar RadToDeg(scalar);
+scalar DegToRad(scalar);
+scalar RadToArcSec(scalar);
+scalar ArcSecToRad(scalar);
+/// Given a scalar, find it "modulo" another scalar, in the true mathematical sense (not remainder).
 /// Always returns something in [0,mod) Eg -0.8 mod 0.6 = 0.4
-decimal DecimalModulo(decimal x, decimal mod);
+scalar ScalarModulo(scalar x, scalar mod);
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 

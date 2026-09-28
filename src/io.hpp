@@ -127,13 +127,13 @@ public:
     GeneratedPipelineInput(const Catalog &, Attitude, Camera, std::default_random_engine *,
 
                            bool centroidsOnly,
-                           decimal observedReferenceBrightness, decimal starSpreadStdDev,
-                           decimal sensitivity, decimal darkCurrent, decimal readNoiseStdDev,
-                           Attitude motionBlurDirection, decimal exposureTime, decimal readoutTime,
+                           scalar observedReferenceBrightness, scalar starSpreadStdDev,
+                           scalar sensitivity, scalar darkCurrent, scalar readNoiseStdDev,
+                           Attitude motionBlurDirection, scalar exposureTime, scalar readoutTime,
                            bool shotNoise, int oversampling,
                            int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
                            int cutoffMag,
-                           decimal perturbationStddev);
+                           scalar perturbationStddev);
 
 
     const Image *InputImage() const override { return &image; };
@@ -275,7 +275,7 @@ void PipelineComparison(const PipelineInputList &expected,
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
                                 // use these to map indices to names for the respective lists of StarIdentifiers
                                 const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                decimal centroidThreshold,
+                                scalar centroidThreshold,
                                 const Stars &expectedStars, const Stars &inputStars);
 
 ////////////////

@@ -11,8 +11,8 @@ using namespace lost; // NOLINT
 TEST_CASE("Convert coordinates: pixel -> spatial -> pixel", "[geometry]") {
     Camera camera(100, 512, 1024);
 
-    decimal expectedX = GENERATE(142, 90, 512, 255);
-    decimal expectedY = GENERATE(18, 512, 0, 800);
+    scalar expectedX = GENERATE(142, 90, 512, 255);
+    scalar expectedY = GENERATE(18, 512, 0, 800);
 
     Vec3 spatial = camera.CameraToSpatial({expectedX, expectedY});
     Vec2 actualPixels = camera.SpatialToCamera(spatial);
@@ -68,9 +68,9 @@ TEST_CASE("Angle from camera", "[geometry]") {
 TEST_CASE("spherical -> quaternion -> spherical", "[geometry]") {
     // 0.1 instead of 0, because at 0 it might sometimes return 2PI, which is fine for most
     // circumstances. Also, at 0, the epsilon=0, so there's no tolerance in Approx by default!
-    decimal ra = DegToRad(GENERATE(28.9, 83.2, 14.0, 0.1, 329.8));
-    decimal de = DegToRad(GENERATE(7.82, 9.88, 88.8, 0.1, -72.0, -9.9));
-    decimal roll = DegToRad(GENERATE(9.38, 300.9, 37.8, 199.9));
+    scalar ra = DegToRad(GENERATE(28.9, 83.2, 14.0, 0.1, 329.8));
+    scalar de = DegToRad(GENERATE(7.82, 9.88, 88.8, 0.1, -72.0, -9.9));
+    scalar roll = DegToRad(GENERATE(9.38, 300.9, 37.8, 199.9));
 
     Quaternion quat = SphericalToQuaternion(ra, de, roll);
 
@@ -82,10 +82,10 @@ TEST_CASE("spherical -> quaternion -> spherical", "[geometry]") {
 }
 
 TEST_CASE("spherical -> spatial -> spherical", "[geometry]") {
-    decimal ra = DegToRad(GENERATE(28.9, 83.2, 14.0, 0.1, 329.8));
-    decimal de = DegToRad(GENERATE(7.82, 9.88, 88.8, 0.1, -72.0, -9.9));
+    scalar ra = DegToRad(GENERATE(28.9, 83.2, 14.0, 0.1, 329.8));
+    scalar de = DegToRad(GENERATE(7.82, 9.88, 88.8, 0.1, -72.0, -9.9));
 
-    decimal raOut, deOut;
+    scalar raOut, deOut;
     SpatialToSpherical(SphericalToSpatial(ra, de), &raOut, &deOut);
 
     CHECK(ra == Approx(raOut));
@@ -93,9 +93,9 @@ TEST_CASE("spherical -> spatial -> spherical", "[geometry]") {
 }
 
 TEST_CASE("quat -> dcm -> quat", "[geometry]") {
-    decimal ra = GENERATE(take(5, random(0.1, 3.14*2)));
-    decimal de = GENERATE(take(5, random(-3.14, 3.14)));
-    decimal roll = GENERATE(take(5, random(0.1, 3.14*2)));
+    scalar ra = GENERATE(take(5, random(0.1, 3.14*2)));
+    scalar de = GENERATE(take(5, random(-3.14, 3.14)));
+    scalar roll = GENERATE(take(5, random(0.1, 3.14*2)));
 
     Quaternion quat1 = SphericalToQuaternion(ra, de, roll).Canonicalize();
     Mat3 dcm = QuaternionToDCM(quat1);
