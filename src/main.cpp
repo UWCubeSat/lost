@@ -44,7 +44,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
     std::cerr << "Generated database with " << ser.buffer.size() << " bytes" << std::endl;
     std::cerr << "Database flagged with " << std::bitset<8*sizeof(dbFlags)>(dbFlags) << std::endl;
 
-    UserSpecifiedOutputStream pos = UserSpecifiedOutputStream(values.outputPath, true);
+    UserSpecifiedOutputStream pos(values.outputPath, true);
     pos.Stream().write((char *) ser.buffer.data(), ser.buffer.size());
 
 }
@@ -53,7 +53,7 @@ static void DatabaseBuild(const DatabaseOptions &values) {
 static void PipelineRun(const PipelineOptions &values) {
     PipelineInputList input = GetPipelineInput(values);
     Pipeline pipeline = SetPipeline(values);
-    std::vector<PipelineOutput> outputs = pipeline.Go(input);
+    PipelineOutputList outputs = pipeline.Go(input);
     PipelineComparison(input, outputs, values);
 }
 

@@ -1,4 +1,5 @@
 #include <random>
+#include <vector>
 
 #include <catch.hpp>
 
@@ -50,8 +51,12 @@ TEST_CASE("IRUnidentifiedCentroid obtuse angle", "[identify-remaining] [fast]") 
 
 // TODO: Tests for FindAllInRange if we ever make the logic more complicated
 
-std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catalogName1, int16_t catalogName2,
-                                           decimal dist1, decimal dist2, decimal tolerance) {
+vector<int16_t, LOST_ETL_MAX_CATALOG_STARS> IdentifyThirdStarTest(const Catalog &catalog,
+                                                                           int16_t catalogName1,
+                                                                           int16_t catalogName2,
+                                                                           decimal dist1,
+                                                                           decimal dist2,
+                                                                           decimal tolerance) {
     SerializeContext ser;
     SerializePairDistanceKVector(&ser, integralCatalog, 0, DECIMAL_M_PI, 1000);
     DeserializeContext des(ser.buffer.data());
@@ -68,10 +73,10 @@ std::vector<int16_t> IdentifyThirdStarTest(const Catalog &catalog, int16_t catal
 
 TEST_CASE("IdentifyThirdStar", "[identify-remaining] [fast]") { // TODO: does it /really/ logically belong with identify-remaining? Maybe we should coin a new term for star pattern identification related functions
 
-    std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
-                                                       42, 44, // (1,0,0), (0,1,0)
-                                                       DECIMAL_M_PI_2, DECIMAL_M_PI_2,
-                                                       DECIMAL(1e-6));
+    auto stars = IdentifyThirdStarTest(integralCatalog,
+                                       42, 44, // (1,0,0), (0,1,0)
+                                       DECIMAL_M_PI_2, DECIMAL_M_PI_2,
+                                       DECIMAL(1e-6));
     REQUIRE(stars.size() == 1);
     REQUIRE(integralCatalog[stars[0]].name == 50);
 
@@ -80,36 +85,36 @@ TEST_CASE("IdentifyThirdStar", "[identify-remaining] [fast]") { // TODO: does it
 TEST_CASE("IdentifyThirdStar with tolerance", "[identify-remaining] [fast]") {
 
     // try it again where we actually need the tolerance
-    std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
-                                                       42, 44, // (1,0,0), (0,1,0)
-                                                       DECIMAL_M_PI_2 - DegToRad(1.0), DECIMAL_M_PI_2 + DegToRad(1.0),
-                                                       DECIMAL(0.1));
+    auto stars = IdentifyThirdStarTest(integralCatalog,
+                                       42, 44, // (1,0,0), (0,1,0)
+                                       DECIMAL_M_PI_2 - DegToRad(1.0), DECIMAL_M_PI_2 + DegToRad(1.0),
+                                       DECIMAL(0.1));
     REQUIRE(stars.size() == 1);
     REQUIRE(integralCatalog[stars[0]].name == 50);
 }
 
 TEST_CASE("IdentifyThirdStar reversed spectrality", "[identify-remaining] [fast]") {
-    std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
-                                                       44, 42, // (0,1,0), (1,0,0)
-                                                       DECIMAL_M_PI_2, DECIMAL_M_PI_2,
-                                                       DECIMAL(1e-6));
+    auto stars = IdentifyThirdStarTest(integralCatalog,
+                                       44, 42, // (0,1,0), (1,0,0)
+                                       DECIMAL_M_PI_2, DECIMAL_M_PI_2,
+                                       DECIMAL(1e-6));
     REQUIRE(stars.size() == 1);
     REQUIRE(integralCatalog[stars[0]].name == 58);
 }
 
 TEST_CASE("IdentifyThirdStar no third star", "[identify-remaining] [fast]") {
-    std::vector<int16_t> stars = IdentifyThirdStarTest(integralCatalog,
-                                                       42, 44, // (1,0,0), (0,1,0)
-                                                       1, DECIMAL_M_PI_2,
-                                                       DECIMAL(1e-6));
+    auto stars = IdentifyThirdStarTest(integralCatalog,
+                                       42, 44, // (1,0,0), (0,1,0)
+                                       1, DECIMAL_M_PI_2,
+                                       DECIMAL(1e-6));
     REQUIRE(stars.size() == 0);
 }
 
 TEST_CASE("IdentifyThirdStar just out of tolerance", "[identify-remaining] [fast]") {
-    std::vector<int16_t> stars2 = IdentifyThirdStarTest(integralCatalog,
-                                                        42, 44, // (1,0,0), (0,1,0)
-                                                        DECIMAL_M_PI_2 - DECIMAL(2e-6), DECIMAL_M_PI_2,
-                                                        DECIMAL(1e-6));
+    auto stars2 = IdentifyThirdStarTest(integralCatalog,
+                                        42, 44, // (1,0,0), (0,1,0)
+                                        DECIMAL_M_PI_2 - DECIMAL(2e-6), DECIMAL_M_PI_2,
+                                        DECIMAL(1e-6));
     REQUIRE(stars2.size() == 0);
 }
 

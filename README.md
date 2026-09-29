@@ -52,6 +52,40 @@ Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd 
 If you're developing LOST, you need to re-run `make` every time you edit any of the source code
 before running `./lost`.
 
+### ETL / Embedded-Oriented Build
+
+By default, LOST uses STL containers and `std::unique_ptr` (desktop-friendly behavior).
+When compiled with ETL mode, LOST switches container types to ETL-backed fixed-capacity containers.
+
+- Build ETL binary: `make etl`
+- Run ETL-compiled tests: `make test-etl`
+
+This creates a `./lost-etl` binary and a `./lost-test-etl` test binary.
+
+ETL capacity limits are configured in `src/containers.hpp` and can be overridden at compile time,
+for example:
+
+```shell
+make etl CXXFLAGS='-DLOST_ETL_MAX_STARS=2048 -DLOST_ETL_MAX_CATALOG_STARS=6000'
+```
+
+In ETL mode, LOST performs runtime bound checks for these limits and exits with an explicit error
+if a configured maximum is exceeded.
+
+### Embedded integration
+
+For an actual embedded deployment, the best approach is to not use the CLI's runtime-configurable
+"pipeline builder" and hardcode the stages your platform needs:
+
+1. Construct the algorithm objects you plan to use (centroiding, star-id, attitude) directly in code.
+2. Load camera images into your own raw grayscale buffer (`unsigned char*`, row-major), and pass that
+   buffer into LOST centroiding APIs.
+3. Don't use the `--database` flag, instead load the database bytes from storage into a byte buffer and pass those
+   bytes to star identification.
+4. Run the stages in your chosen fixed order, passing outputs from one stage to the next.
+
+In more simple terms: on embedded, treat LOST as algorithm libraries and handle image/database I/O yourself.
+
 <!-- ## Using Docker -->
 
 <!-- This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies in a container. -->
