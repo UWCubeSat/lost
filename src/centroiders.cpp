@@ -6,8 +6,6 @@
 
 #include <cmath>
 #include <vector>
-#include <iostream>
-#include <unordered_map>
 #include <unordered_set>
 
 #include "decimal.hpp"
@@ -85,7 +83,7 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     for (long i = 0; i < totalPixels; i++) {
         totalMag += image[i];
     }
-    decimal mean = totalMag / totalPixels;
+    decimal mean = DECIMAL(totalMag) / totalPixels;
     for (long i = 0; i < totalPixels; i++) {
         std += DECIMAL_POW(image[i] - mean, 2);
     }
@@ -103,92 +101,77 @@ int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight)
         totalMag += image[i];
         sq_totalMag += image[i] * image[i];
     }
-    decimal mean = totalMag / totalPixels;
+    decimal mean = DECIMAL(totalMag) / totalPixels;
     decimal variance = (sq_totalMag / totalPixels) - (mean * mean);
     std = DECIMAL_SQRT(variance);
     return mean + (std * 5);
 }
 
 struct CentroidParams {
-    decimal yCoordMagSum;
-    decimal xCoordMagSum;
-    long magSum;
+    decimal yCoordMagSum = 0;
+    decimal xCoordMagSum = 0;
+    long magSum = 0;
     int xMin;
     int xMax;
     int yMin;
     int yMax;
-    int cutoff;
-    bool isValid;
-    std::unordered_set<int> checkedIndices;
+
+    CentroidParams(int x, int y) : xMin(x), xMax(x), yMin(y), yMax(y) {}
 };
 
-//recursive helper here
-void CogHelper(CentroidParams *p, long i, unsigned char *image, int imageWidth, int imageHeight) {
-
-    if (i >= 0 && i < imageWidth * imageHeight && image[i] >= p->cutoff && p->checkedIndices.count(i) == 0) {
-        //check if pixel is on the edge of the image, if it is, we dont want to centroid this star
-        if (i % imageWidth == 0 || i % imageWidth == imageWidth - 1 || i / imageWidth == 0 || i / imageWidth == imageHeight - 1) {
-            p->isValid = false;
-        }
-        p->checkedIndices.insert(i);
-        if (i % imageWidth > p->xMax) {
-            p->xMax = i % imageWidth;
-        } else if (i % imageWidth < p->xMin) {
-            p->xMin = i % imageWidth;
-        }
-        if (i / imageWidth > p->yMax) {
-            p->yMax = i / imageWidth;
-        } else if (i / imageWidth < p->yMin) {
-            p->yMin = i / imageWidth;
-        }
-        p->magSum += image[i];
-        p->xCoordMagSum += ((i % imageWidth)) * image[i];
-        p->yCoordMagSum += ((i / imageWidth)) * image[i];
-        if (i % imageWidth != imageWidth - 1) {
-            CogHelper(p, i + 1, image, imageWidth, imageHeight);
-        }
-        if (i % imageWidth != 0) {
-            CogHelper(p, i - 1, image, imageWidth, imageHeight);
-        }
-        CogHelper(p, i + imageWidth, image, imageWidth, imageHeight);
-        CogHelper(p, i - imageWidth, image, imageWidth, imageHeight);
-    }
-}
-
-std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char *image, int imageWidth, int imageHeight) const {
-    CentroidParams p;
-
+std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char* image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
-    p.cutoff = BasicThreshold(image, imageWidth, imageHeight);
-    for (long i = 0; i < imageHeight * imageWidth; i++) {
-        if (image[i] >= p.cutoff && p.checkedIndices.count(i) == 0) {
+    int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    const int offsets[] = {1, -1, imageWidth, -imageWidth};
+    const long n = imageWidth * imageHeight;
+    std::vector<bool> visited(n, false);
 
-            //iterate over pixels that are part of the star
-            int xDiameter = 0; //radius of current star
-            int yDiameter = 0;
-            p.yCoordMagSum = 0; //y coordinate of current star
-            p.xCoordMagSum = 0; //x coordinate of current star
-            p.magSum = 0; //sum of magnitudes of current star
+    for (long i = 0; i < n; i++) {
+        if (image[i] >= cutoff && !visited[i]) {
+            visited[i] = true;
 
-            p.xMax = i % imageWidth;
-            p.xMin = i % imageWidth;
-            p.yMax = i / imageWidth;
-            p.yMin = i / imageWidth;
-            p.isValid = true;
+            // If any pixels are on the edge of the image then we don't centroid
+            // this star, in case part of the star is missing
+            bool isValid = true;
+            int centroidSize = 0;
+            std::vector<long> queue = {i};
+            CentroidParams p(i % imageWidth, i / imageWidth);
 
-            int sizeBefore = p.checkedIndices.size();
+            while(!queue.empty()) {
+                long ind = queue.back();
+                queue.pop_back();
+                centroidSize++;
+                long x = ind % imageWidth, y = ind / imageWidth;
+                if (x == 0 || x == imageWidth - 1 || y == 0 || y == imageHeight - 1) {
+                    isValid = false;
+                }
 
-            CogHelper(&p, i, image, imageWidth, imageHeight);
-            xDiameter = (p.xMax - p.xMin) + 1;
-            yDiameter = (p.yMax - p.yMin) + 1;
+                p.magSum += image[ind];
+                p.xCoordMagSum += x * image[ind];
+                p.yCoordMagSum += y * image[ind];
 
-            //use the sums to finish CoG equation and add stars to the result
-            decimal xCoord = (p.xCoordMagSum / (p.magSum * DECIMAL(1.0)));
-            decimal yCoord = (p.yCoordMagSum / (p.magSum * DECIMAL(1.0)));
+                if (x > p.xMax) p.xMax = x;
+                if (x < p.xMin) p.xMin = x;
+                if (y > p.yMax) p.yMax = y;
+                if (y < p.yMin) p.yMin = y;
 
-            if (p.isValid) {
-                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), p.checkedIndices.size() - sizeBefore));
+                for(int offset : offsets) {
+                    long ni = ind + offset;
+                    if(ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
+                        queue.push_back(ni);
+                        visited[ni] = true;
+                    }
+                }
+            }
+
+            int xDiameter = (p.xMax - p.xMin) + 1;
+            int yDiameter = (p.yMax - p.yMin) + 1;
+
+            if (isValid && p.magSum > 0) {
+                decimal xCoord = p.xCoordMagSum / DECIMAL(p.magSum);
+                decimal yCoord = p.yCoordMagSum / DECIMAL(p.magSum);
+                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), centroidSize));
             }
         }
     }
