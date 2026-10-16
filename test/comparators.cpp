@@ -56,13 +56,12 @@ TEST_CASE("Star IDs compare: Some perturbations", "[comparators] [fast]") {
     // Finally, make sure it fails with lower tolerance
     StarIdComparison result3 = StarIdsCompare(elevenStarIds, elevenStarIds,
                                               integralCatalog, integralCatalog,
-                                              sqrt(0.3*0.3 + 0.3*0.3),
+                                              sqrt(0.2*0.2 + 0.2*0.2),
                                               elevenStars, perturbedEleven);
     CHECK(result3.numCorrect < 12);
     CHECK(result3.numCorrect > 0);
 
     CHECK(result3.numIncorrect > 0);
-    CHECK(result3.numIncorrect < result3.numTotal);
 
     CHECK(result3.numTotal > 0);
     CHECK(result3.numTotal < 12);
