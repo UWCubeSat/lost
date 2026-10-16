@@ -1,7 +1,7 @@
 var searchData=
 [
   ['magicvalue_0',['magicValue',['../classlost_1_1_multi_database_entry.html#aeede63708b59ea0086338286eef438c8',1,'lost::MultiDatabaseEntry']]],
-  ['magnitude_1',['magnitude',['../classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a',1,'lost::CatalogStar::magnitude'],['../classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf',1,'lost::Star::magnitude'],['../structlost_1_1_vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3',1,'lost::Vec2::Magnitude()'],['../classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32',1,'lost::Vec3::Magnitude() const']]],
+  ['magnitude_1',['magnitude',['../structlost_1_1_vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3',1,'lost::Vec2::Magnitude()'],['../classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32',1,'lost::Vec3::Magnitude()'],['../classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a',1,'lost::CatalogStar::magnitude'],['../classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf',1,'lost::Star::magnitude']]],
   ['magnitudesq_2',['magnitudesq',['../classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e',1,'lost::Vec3::MagnitudeSq()'],['../structlost_1_1_vec2.html#a3cb220d12e9a20f74f1afbad9d944e98',1,'lost::Vec2::MagnitudeSq()']]],
   ['magsum_3',['magSum',['../structlost_1_1_centroid_params.html#aedcfd69a00c255c1e9166508ee5e58ff',1,'lost::CentroidParams']]],
   ['magtobrightness_4',['MagToBrightness',['../namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7',1,'lost']]],

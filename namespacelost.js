@@ -70,7 +70,6 @@ var namespacelost =
     [ "CentroidComparisonsCombine", "namespacelost.html#a0fe01051c958fa8ced02e772aefdc991", null ],
     [ "CentroidsCompare", "namespacelost.html#ae28fabb74b772e447140deee8de524f0", null ],
     [ "Clamp", "namespacelost.html#ae06c1b87a560fb7d9de673b46ff60d9c", null ],
-    [ "CogHelper", "namespacelost.html#ab27cb6dc471b1c682f9dc67f41097529", null ],
     [ "CompareKVectorPairs", "namespacelost.html#a68f14b0d645721125203e669cde68358", null ],
     [ "ConsumeInvolvingIterator", "namespacelost.html#a7283a0756178459ca257b9f610138b12", null ],
     [ "DCMToQuaternion", "namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed", null ],

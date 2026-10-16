@@ -1,8 +1,6 @@
 var structlost_1_1_centroid_params =
 [
-    [ "checkedIndices", "structlost_1_1_centroid_params.html#ae13910601515db040c7f164b8b1730f2", null ],
-    [ "cutoff", "structlost_1_1_centroid_params.html#a6cfd4e00ebf2a42f650c0fb3dc3e9786", null ],
-    [ "isValid", "structlost_1_1_centroid_params.html#aa10ded620c3bbe4a1b60408e9cf90502", null ],
+    [ "CentroidParams", "structlost_1_1_centroid_params.html#a621a9344fbf7775c63d9ba0ad4ab738c", null ],
     [ "magSum", "structlost_1_1_centroid_params.html#aedcfd69a00c255c1e9166508ee5e58ff", null ],
     [ "xCoordMagSum", "structlost_1_1_centroid_params.html#afb3a3d1f3cabc2a77eac59b5abf3f273", null ],
     [ "xMax", "structlost_1_1_centroid_params.html#acb5e6b2f74543a8d99c79820a5a3fae5", null ],

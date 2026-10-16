@@ -22,7 +22,7 @@ var searchData=
   ['isflagset_19',['isFlagSet',['../namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24',1,'lost']]],
   ['isknown_20',['IsKnown',['../classlost_1_1_attitude.html#afb6f3d23d6884b94a43028f97cac92d5',1,'lost::Attitude']]],
   ['isunit_21',['IsUnit',['../classlost_1_1_quaternion.html#ac591d4b58b2890bd7f4bb0a331418001',1,'lost::Quaternion']]],
-  ['isvalid_22',['isvalid',['../structlost_1_1_centroid_params.html#aa10ded620c3bbe4a1b60408e9cf90502',1,'lost::CentroidParams::isValid'],['../structlost_1_1_i_w_co_g_params.html#add92d3af1d8df7729ece6bacb53891f3',1,'lost::IWCoGParams::isValid']]],
+  ['isvalid_22',['isValid',['../structlost_1_1_i_w_co_g_params.html#add92d3af1d8df7729ece6bacb53891f3',1,'lost::IWCoGParams']]],
   ['iterativeweightedcenterofgravityalgorithm_23',['iterativeweightedcenterofgravityalgorithm',['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c',1,'lost::IterativeWeightedCenterOfGravityAlgorithm::IterativeWeightedCenterOfGravityAlgorithm()'],['../classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html',1,'lost::IterativeWeightedCenterOfGravityAlgorithm']]],
   ['iwcoghelper_24',['IWCoGHelper',['../namespacelost.html#a789d628bbeab011d5552a6dc551b77a2',1,'lost']]],
   ['iwcogminchange_25',['iWCoGMinChange',['../namespacelost.html#aad95264f15efbc0e15b439142007354c',1,'lost']]],
