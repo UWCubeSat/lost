@@ -250,19 +250,36 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
 }
 
 /**
- * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
+ * Given the result of a pair-distance kvector query, build a table of stars to other stars
  * that appeared with it in the query.
+ *
+ * The table is constructed by counting sort in O(pairs + catalogSize) with zero hashing.
+ * Partners of a catalog star c are elements of the set [m->values[m->offsets[c]], m->values[m->offsets[c+1]]-1].
  * 
- * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
+ * The table is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
+ *
+ * *m is fully overwriten so that the same FlatPairMap can be reused across calls.
  */
-std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
-    std::unordered_multimap<int16_t, int16_t> result;
+struct flatPairMap {
+    std::vector<int32_t> offsets;
+    std::vector<int16_t> values;
+};
+static void PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end, size_t catalogSize, flatPairMap *m) {
+    m->offsets.assign(catalogSize + 1, 0);
     for (const int16_t *p = pairs; p != end; p += 2) {
-        result.emplace(p[0], p[1]);
-        result.emplace(p[1], p[0]);
+        m->offsets[p[0] + 1]++;
+        m->offsets[p[1] + 1]++;
     }
-    return result;
+
+    for (size_t i = 1; i <= catalogSize; i++) m->offsets[i] += m->offsets[i-1];
+    m->values.resize(end - pairs);
+    
+    std::vector<int32_t> cursor(m->offsets.begin(), m->offsets.end() - 1);
+    for (const int16_t *p = pairs; p != end; p += 2) {
+        m->values[cursor[p[0]]++] = p[1];
+        m->values[cursor[p[1]]++] = p[0];
+    }
 }
 
 decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal v2) {
@@ -595,6 +612,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     int halfwayAcross = floor(sqrt(numStars)/2);
     long totalIterations = 0;
 
+    FlatPairMap ikMap, irMap;
+
     int jMax = numStars - 3;
     for (int jIter = 0; jIter < jMax; jIter++) {
         int dj = 1+(jIter+halfwayAcross)%jMax;
@@ -677,8 +696,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
                     const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
-                    std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
-                    std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
+                    PairDistanceQueryToMap(ikQuery, ikEnd, catalog.size(), &ikMap);
+                    PairDistanceQueryToMap(irQuery, irEnd, catalog.size(), &irMap);
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
@@ -693,9 +712,9 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
                         Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
 
-                        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
+                        for (int32_t kIdx = ikMap.offsets[iCandidate]; kIdx < ikMap.offsets[iCandidate+1]; kIdx++) {
                             // kCandidate.first is iterator, then ->second is the value (other star)
-                            int kCandidate = kCandidateIt.first->second;
+                            int kCandidate = ikMap.values[kIdx];
                             Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
                             bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
                             // checking the spectral-ity early to fail fast
@@ -712,8 +731,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             // TODO: if there are no jr matches, there's no reason to
                             // continue iterating through all the other k-s. Possibly
                             // enumarete all r matches, according to ir, before this loop
-                            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
-                                int rCandidate = rCandidateIt.first->second;
+                            for (int32_t rIdx = irMap.offsets[iCandidate]; rIdx < irMap.offsets[iCandidate+1]; rIdx++) {
+                                int rCandidate = irMap.values[rIdx];
                                 const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
                                 decimal jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
                                 decimal krCandidateDist;
