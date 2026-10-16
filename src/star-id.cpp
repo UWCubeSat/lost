@@ -705,6 +705,12 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
                     const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
+                    // If any query is empty no catalog pyramid can match, so skip building the tables.
+                    if (ijQuery == ijEnd || ikQuery == ikEnd || irQuery == irEnd) {
+                        continue;
+                    }
+
+
                     if (!PairDistanceQueryToMap(ikQuery, ikEnd, catalog.size(), &ikMap)
                         || !PairDistanceQueryToMap(irQuery, irEnd, catalog.size(), &irMap)) {
                         std::cerr << "Database refers to stars missing from the catalog." << std::endl;
