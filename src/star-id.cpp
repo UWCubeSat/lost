@@ -259,7 +259,7 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
  * The table is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  *
- * *m is fully overwriten so that the same FlatPairMap can be reused across calls.
+ * *m is fully overwriten so that the same flatPairMap can be reused across calls.
  */
 struct flatPairMap {
     std::vector<int32_t> offsets;
@@ -612,7 +612,7 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     int halfwayAcross = floor(sqrt(numStars)/2);
     long totalIterations = 0;
 
-    FlatPairMap ikMap, irMap;
+    flatPairMap ikMap, irMap;
 
     int jMax = numStars - 3;
     for (int jIter = 0; jIter < jMax; jIter++) {
