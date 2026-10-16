@@ -249,20 +249,46 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
     return result;
 }
 
+static bool IsInCatalog(int catalogIndex, size_t catalogSize) {
+    return catalogIndex >= 0 && (size_t)catalogIndex < catalogSize;
+}
+
 /**
- * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
+ * Given the result of a pair-distance kvector query, build a table of stars to other stars
  * that appeared with it in the query.
+ *
+ * The table is constructed by counting sort in O(pairs + catalogSize) with zero hashing.
+ * The partners of catalog star c are m->values[i] for m->offsets[c] <= i < m->offsets[c+1].
  * 
- * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
+ * The table is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
+ *
+ * *m is fully overwritten so that the same FlatPairMap can be reused across calls.
+ * 
+ * @return false if any pair refers to a star outside the catalog, which means the database was not built from this catalog.
  */
-std::unordered_multimap<int16_t, int16_t> PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end) {
-    std::unordered_multimap<int16_t, int16_t> result;
+struct FlatPairMap {
+    std::vector<int32_t> offsets;
+    std::vector<int16_t> values;
+};
+
+static bool PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end, size_t catalogSize, FlatPairMap *m) {
+    m->offsets.assign(catalogSize + 1, 0);
     for (const int16_t *p = pairs; p != end; p += 2) {
-        result.emplace(p[0], p[1]);
-        result.emplace(p[1], p[0]);
+        if (!IsInCatalog(p[0], catalogSize) || !IsInCatalog(p[1], catalogSize))
+            return false;
+        m->offsets[p[0]]++;
+        m->offsets[p[1]]++;
     }
-    return result;
+
+    for (size_t i = 1; i <= catalogSize; i++) m->offsets[i] += m->offsets[i-1];
+    m->values.resize(end - pairs);
+
+    for (const int16_t *p = pairs; p != end; p += 2) {
+        m->values[--m->offsets[p[0]]] = p[1];
+        m->values[--m->offsets[p[1]]] = p[0];
+    }
+    return true;
 }
 
 decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal v2) {
@@ -595,6 +621,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     int halfwayAcross = floor(sqrt(numStars)/2);
     long totalIterations = 0;
 
+    FlatPairMap ikMap, irMap;
+
     int jMax = numStars - 3;
     for (int jIter = 0; jIter < jMax; jIter++) {
         int dj = 1+(jIter+halfwayAcross)%jMax;
@@ -677,8 +705,15 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     const int16_t *const ikQuery = vectorDatabase.FindPairsLiberal(ikDist - tolerance, ikDist + tolerance, &ikEnd);
                     const int16_t *const irQuery = vectorDatabase.FindPairsLiberal(irDist - tolerance, irDist + tolerance, &irEnd);
 
-                    std::unordered_multimap<int16_t, int16_t> ikMap = PairDistanceQueryToMap(ikQuery, ikEnd);
-                    std::unordered_multimap<int16_t, int16_t> irMap = PairDistanceQueryToMap(irQuery, irEnd);
+                    // If any query is empty no catalog pyramid can match, so skip building the tables.
+                    if (ijQuery == ijEnd || ikQuery == ikEnd || irQuery == irEnd)
+                        continue;
+
+                    if (!PairDistanceQueryToMap(ikQuery, ikEnd, catalog.size(), &ikMap)
+                        || !PairDistanceQueryToMap(irQuery, irEnd, catalog.size(), &irMap)) {
+                        std::cerr << "Database refers to stars missing from the catalog." << std::endl;
+                        return identified;
+                    }
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
@@ -688,14 +723,19 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             ? iCandidateQuery[1]
                             : iCandidateQuery[-1];
 
+                        if (iCandidate < 0 || jCandidate < 0
+                            || iCandidate >= (int)catalog.size() || jCandidate >= (int)catalog.size()) {
+                            std::cerr << "Database refers to stars missing from the catalog." << std::endl;
+                            return identified;
+                        }
+
                         const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
                         const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
 
                         Vec3 ijCandidateCross = iCandidateSpatial.CrossProduct(jCandidateSpatial);
 
-                        for (auto kCandidateIt = ikMap.equal_range(iCandidate); kCandidateIt.first != kCandidateIt.second; kCandidateIt.first++) {
-                            // kCandidate.first is iterator, then ->second is the value (other star)
-                            int kCandidate = kCandidateIt.first->second;
+                        for (int32_t kIdx = ikMap.offsets[iCandidate]; kIdx < ikMap.offsets[iCandidate+1]; kIdx++) {
+                            int kCandidate = ikMap.values[kIdx];
                             Vec3 kCandidateSpatial = catalog[kCandidate].spatial;
                             bool candidateSpectralTorch = ijCandidateCross*kCandidateSpatial > 0;
                             // checking the spectral-ity early to fail fast
@@ -712,8 +752,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             // TODO: if there are no jr matches, there's no reason to
                             // continue iterating through all the other k-s. Possibly
                             // enumarete all r matches, according to ir, before this loop
-                            for (auto rCandidateIt = irMap.equal_range(iCandidate); rCandidateIt.first != rCandidateIt.second; rCandidateIt.first++) {
-                                int rCandidate = rCandidateIt.first->second;
+                            for (int32_t rIdx = irMap.offsets[iCandidate]; rIdx < irMap.offsets[iCandidate+1]; rIdx++) {
+                                int rCandidate = irMap.values[rIdx];
                                 const Vec3 &rCandidateSpatial = catalog[rCandidate].spatial;
                                 decimal jrCandidateDist = AngleUnit(jCandidateSpatial, rCandidateSpatial);
                                 decimal krCandidateDist;
