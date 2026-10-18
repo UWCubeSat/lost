@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
 #include <cmath>
 #include <vector>
 #include <unordered_set>
@@ -91,20 +94,28 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
-// basic thresholding, but do it faster (trade off of some accuracy?)
+// mean + 5 std, testing shows it to be exactly the same as double basicthreshold in terms of output.
+// in float mode this appears to be more accurate.
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
-    unsigned long totalMag = 0;
-    decimal std = 0;
-    decimal sq_totalMag = 0;
-    long totalPixels = imageHeight * imageWidth;
-    for (long i = 0; i < totalPixels; i++) {
-        totalMag += image[i];
-        sq_totalMag += image[i] * image[i];
+    assert(imageWidth < 66051);
+    uint64_t totalMag = 0, sqTotalMag = 0;
+    for (int y = 0; y < imageHeight; y++) {
+        const unsigned char *row = image + (long)y * imageWidth;
+        uint32_t rowMag = 0, rowSq = 0;
+        for (int x = 0; x < imageWidth; x++) {
+            rowMag += row[x];
+            rowSq += (uint32_t)row[x] * row[x];
+        }
+        totalMag += rowMag;
+        sqTotalMag += rowSq;
     }
-    decimal mean = DECIMAL(totalMag) / totalPixels;
-    decimal variance = (sq_totalMag / totalPixels) - (mean * mean);
-    std = DECIMAL_SQRT(variance);
-    return mean + (std * 5);
+    uint64_t n = (uint64_t)imageHeight * imageWidth;
+    assert(n != 0);
+    uint64_t q = totalMag / n, r = totalMag % n;
+    uint64_t shiftedSq = sqTotalMag + q * q * n - 2 * q * totalMag;
+    double meanFrac = (double)r / n;
+    double variance = (double)shiftedSq / n - meanFrac * meanFrac;
+    return (int)(q + meanFrac + 5 * std::sqrt(std::max(variance, 0.0)));
 }
 
 struct CentroidParams {
