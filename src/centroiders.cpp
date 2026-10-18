@@ -103,7 +103,9 @@ static bool WithinThreshold(uint64_t k, uint64_t n, uint64_t r, uint64_t scaledS
     return 26 * r * r <= n * rest;
 }
 
-// floor(mean + 5 * standard deviation) of all pixels, computed exactly with 64-bit integers.
+// floor(mean + 5 * standard deviation) of all pixels.
+// exact for images up to 840,000,00-0 pixels
+// larger images use floating point.
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
     const uint64_t kMaxExactPixels = 840000000;
     const int kChunk = 65536;
