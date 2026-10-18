@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include <algorithm>
-#include <cassert>
 #include <cstdint>
 #include <cmath>
 #include <vector>
@@ -94,28 +93,52 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
-// mean + 5 std, testing shows it to be exactly the same as double basicthreshold in terms of output.
-// in float mode this appears to be more accurate.
+// Is q + k <= mean + 5 * std, where mean = q + r/n?
+static bool WithinThreshold(uint64_t k, uint64_t n, uint64_t r, uint64_t scaledSquares) {
+    uint64_t plus = scaledSquares + 2 * k * r;
+    uint64_t minus = k * k * n;
+    if (plus < minus) return false;
+    uint64_t rest = plus - minus;
+    if (rest >= 26 * n) return true;
+    return 26 * r * r <= n * rest;
+}
+
+// floor(mean + 5 * standard deviation) of all pixels, computed exactly with 64-bit integers.
 int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
-    assert(imageWidth < 66051);
-    uint64_t totalMag = 0, sqTotalMag = 0;
+    const uint64_t kMaxExactPixels = 840000000;
+    const int kChunk = 65536;
+
+    if (imageWidth <= 0 || imageHeight <= 0) return 0;
+    uint64_t n = (uint64_t)imageWidth * imageHeight;
+
+    uint64_t sum = 0, sumSquares = 0;
     for (int y = 0; y < imageHeight; y++) {
-        const unsigned char *row = image + (long)y * imageWidth;
-        uint32_t rowMag = 0, rowSq = 0;
-        for (int x = 0; x < imageWidth; x++) {
-            rowMag += row[x];
-            rowSq += (uint32_t)row[x] * row[x];
+        const unsigned char *row = image + (size_t)y * imageWidth;
+        for (int x0 = 0; x0 < imageWidth;) {
+            int x1 = x0 + std::min(kChunk, imageWidth - x0);
+            uint32_t chunkSum = 0, chunkSquares = 0;
+            for (int x = x0; x < x1; x++) {
+                uint32_t pixel = row[x];
+                chunkSum += pixel;
+                chunkSquares += pixel * pixel;
+            }
+            sum += chunkSum;
+            sumSquares += chunkSquares;
+            x0 = x1;
         }
-        totalMag += rowMag;
-        sqTotalMag += rowSq;
     }
-    uint64_t n = (uint64_t)imageHeight * imageWidth;
-    assert(n != 0);
-    uint64_t q = totalMag / n, r = totalMag % n;
-    uint64_t shiftedSq = sqTotalMag + q * q * n - 2 * q * totalMag;
-    double meanFrac = (double)r / n;
-    double variance = (double)shiftedSq / n - meanFrac * meanFrac;
-    return (int)(q + meanFrac + 5 * std::sqrt(std::max(variance, 0.0)));
+
+    if (n > kMaxExactPixels) {
+        double mean = (double)sum / n;
+        return (int)(mean + 5 * std::sqrt(std::max((double)sumSquares / n - mean * mean, 0.0)));
+    }
+
+    uint64_t q = sum / n, r = sum % n;
+    uint64_t scaledSquares = 25 * (sumSquares + q * q * n - 2 * q * sum);
+
+    uint64_t k = 0;
+    while (WithinThreshold(k + 1, n, r, scaledSquares)) k++;
+    return (int)(q + k);
 }
 
 struct CentroidParams {
