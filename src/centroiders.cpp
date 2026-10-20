@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <algorithm>
+#include <cstdint>
 #include <cmath>
 #include <vector>
 #include <unordered_set>
@@ -91,20 +93,60 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
     return mean + (std * 5);
 }
 
-// basic thresholding, but do it faster (trade off of some accuracy?)
-int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight) {
-    unsigned long totalMag = 0;
-    decimal std = 0;
-    decimal sq_totalMag = 0;
-    long totalPixels = imageHeight * imageWidth;
-    for (long i = 0; i < totalPixels; i++) {
-        totalMag += image[i];
-        sq_totalMag += image[i] * image[i];
+// Is q + k <= mean + 5 * std, where mean = q + r/n?
+static bool WithinThreshold(uint64_t k, uint64_t n, uint64_t r, uint64_t scaledSquares) {
+    uint64_t plus = scaledSquares + 2 * k * r;
+    uint64_t minus = k * k * n;
+    if (plus < minus) return false;
+    uint64_t rest = plus - minus;
+    if (rest >= 26 * n) return true;
+    return 26 * r * r <= n * rest;
+}
+
+// floor(mean + 5 * standard deviation) of all pixels.
+// exact for images up to 840,000,000 pixels
+// larger images use floating point.
+int BasicThresholdOnePass(unsigned char *image, int imageWidth, int imageHeight,
+                          std::vector<unsigned char> *rowMax = nullptr) {
+    const uint64_t kMaxExactPixels = 840000000;
+    const int kChunk = 65536;
+
+    if (rowMax != nullptr) rowMax->assign(std::max(imageHeight, 0), 0);
+    if (imageWidth <= 0 || imageHeight <= 0) return 0;
+    uint64_t n = (uint64_t)imageWidth * imageHeight;
+
+    uint64_t sum = 0, sumSquares = 0;
+    for (int y = 0; y < imageHeight; y++) {
+        const unsigned char *row = image + (size_t)y * imageWidth;
+        unsigned char brightest = 0;
+
+        for (int x0 = 0; x0 < imageWidth;) {
+            int x1 = x0 + std::min(kChunk, imageWidth - x0);
+            uint32_t chunkSum = 0, chunkSquares = 0;
+            for (int x = x0; x < x1; x++) {
+                uint32_t pixel = row[x];
+                chunkSum += pixel;
+                chunkSquares += pixel * pixel;
+                brightest = std::max(brightest, row[x]);
+            }
+            sum += chunkSum;
+            sumSquares += chunkSquares;
+            x0 = x1;
+        }
+        if (rowMax != nullptr) (*rowMax)[y] = brightest;
     }
-    decimal mean = DECIMAL(totalMag) / totalPixels;
-    decimal variance = (sq_totalMag / totalPixels) - (mean * mean);
-    std = DECIMAL_SQRT(variance);
-    return mean + (std * 5);
+
+    if (n > kMaxExactPixels) {
+        double mean = (double)sum / n;
+        return (int)(mean + 5 * std::sqrt(std::max((double)sumSquares / n - mean * mean, 0.0)));
+    }
+
+    uint64_t q = sum / n, r = sum % n;
+    uint64_t scaledSquares = 25 * (sumSquares + q * q * n - 2 * q * sum);
+
+    uint64_t k = 0;
+    while (WithinThreshold(k + 1, n, r, scaledSquares)) k++;
+    return (int)(q + k);
 }
 
 struct CentroidParams {
@@ -122,56 +164,62 @@ struct CentroidParams {
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char* image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
+    std::vector<unsigned char> rowMax;
+    //int cutoff = BasicThresholdOnePass(image, imageWidth, imageHeight, &rowMax);
     int cutoff = BasicThreshold(image, imageWidth, imageHeight);
     const int offsets[] = {1, -1, imageWidth, -imageWidth};
     const long n = imageWidth * imageHeight;
     std::vector<bool> visited(n, false);
 
-    for (long i = 0; i < n; i++) {
-        if (image[i] >= cutoff && !visited[i]) {
-            visited[i] = true;
+    for (int row = 0; row < imageHeight; row++) {
+        if (!rowMax.empty() && rowMax[row] < cutoff) continue;
+        const long rowEnd = (long)(row + 1) * imageWidth;
+        for (long i = (long)row * imageWidth; i < rowEnd; i++) {
+            if (image[i] >= cutoff && !visited[i]) {
+                visited[i] = true;
 
-            // If any pixels are on the edge of the image then we don't centroid
-            // this star, in case part of the star is missing
-            bool isValid = true;
-            int centroidSize = 0;
-            std::vector<long> queue = {i};
-            CentroidParams p(i % imageWidth, i / imageWidth);
+                // If any pixels are on the edge of the image then we don't centroid
+                // this star, in case part of the star is missing
+                bool isValid = true;
+                int centroidSize = 0;
+                std::vector<long> queue = {i};
+                CentroidParams p(i % imageWidth, i / imageWidth);
 
-            while(!queue.empty()) {
-                long ind = queue.back();
-                queue.pop_back();
-                centroidSize++;
-                long x = ind % imageWidth, y = ind / imageWidth;
-                if (x == 0 || x == imageWidth - 1 || y == 0 || y == imageHeight - 1) {
-                    isValid = false;
-                }
+                while(!queue.empty()) {
+                    long ind = queue.back();
+                    queue.pop_back();
+                    centroidSize++;
+                    long x = ind % imageWidth, y = ind / imageWidth;
+                    if (x == 0 || x == imageWidth - 1 || y == 0 || y == imageHeight - 1) {
+                        isValid = false;
+                    }
 
-                p.magSum += image[ind];
-                p.xCoordMagSum += x * image[ind];
-                p.yCoordMagSum += y * image[ind];
+                    p.magSum += image[ind];
+                    p.xCoordMagSum += x * image[ind];
+                    p.yCoordMagSum += y * image[ind];
 
-                if (x > p.xMax) p.xMax = x;
-                if (x < p.xMin) p.xMin = x;
-                if (y > p.yMax) p.yMax = y;
-                if (y < p.yMin) p.yMin = y;
+                    if (x > p.xMax) p.xMax = x;
+                    if (x < p.xMin) p.xMin = x;
+                    if (y > p.yMax) p.yMax = y;
+                    if (y < p.yMin) p.yMin = y;
 
-                for(int offset : offsets) {
-                    long ni = ind + offset;
-                    if(ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
-                        queue.push_back(ni);
-                        visited[ni] = true;
+                    for(int offset : offsets) {
+                        long ni = ind + offset;
+                        if(ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
+                            queue.push_back(ni);
+                            visited[ni] = true;
+                        }
                     }
                 }
-            }
 
-            int xDiameter = (p.xMax - p.xMin) + 1;
-            int yDiameter = (p.yMax - p.yMin) + 1;
+                int xDiameter = (p.xMax - p.xMin) + 1;
+                int yDiameter = (p.yMax - p.yMin) + 1;
 
-            if (isValid && p.magSum > 0) {
-                decimal xCoord = p.xCoordMagSum / DECIMAL(p.magSum);
-                decimal yCoord = p.yCoordMagSum / DECIMAL(p.magSum);
-                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), centroidSize));
+                if (isValid && p.magSum > 0) {
+                    decimal xCoord = p.xCoordMagSum / DECIMAL(p.magSum);
+                    decimal yCoord = p.yCoordMagSum / DECIMAL(p.magSum);
+                    result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), centroidSize));
+                }
             }
         }
     }
