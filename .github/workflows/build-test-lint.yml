@@ -20,6 +20,10 @@ jobs:
       run: CXXFLAGS=-Werror make clean all LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
     - name: Test Float
       run: CXXFLAGS=-Werror make test LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
+    - name: Build Without FMA
+      run: CXXFLAGS=-Werror make clean all LOST_DISABLE_FMA=1 -j$(($(nproc)+1))
+    - name: Test Without FMA
+      run: CXXFLAGS=-Werror make test LOST_DISABLE_FMA=1 -j$(($(nproc)+1))
   
   lint:
     runs-on: ubuntu-latest

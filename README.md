@@ -52,6 +52,11 @@ Clone this repository (`git clone https://github.com/uwcubesat/lost`), then `cd 
 If you're developing LOST, you need to re-run `make` every time you edit any of the source code
 before running `./lost`.
 
+If you're building for a processor without fused multiply-add hardware, such as the BeagleBone
+Black's Cortex-A8, build with `make LOST_DISABLE_FMA=1` (after a `make clean`). LOST uses `std::fma`
+in its dot products, and without the hardware instruction that's a slow software routine; this
+option uses a plain multiply-add instead.
+
 <!-- ## Using Docker -->
 
 <!-- This option is best for Mac, non-Debian Linux users, or anyone who wants to keep LOST and the development dependencies in a container. -->

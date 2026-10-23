@@ -58,7 +58,14 @@
 #define DECIMAL_ATAN2(x,y)      ((decimal) std::atan2(x,y))
 
 // Float methods wrapped with Decimal typecast)
+#ifdef LOST_DISABLE_FMA
+// A plain multiply-add instead of std::fma. On CPUs without fused multiply-add hardware, such as
+// the BeagleBone Black's Cortex-A8, std::fma is a slow software routine. See LOST_DISABLE_FMA in
+// the Makefile.
+#define DECIMAL_FMA(x,y,z)      ((decimal) ((x)*(y)+(z)))
+#else
 #define DECIMAL_FMA(x,y,z)      ((decimal) std::fma(x,y,z))
+#endif
 #define DECIMAL_HYPOT(x,y)      ((decimal) std::hypot(x,y))
 
 #endif // decimal.hpp
