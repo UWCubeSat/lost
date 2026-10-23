@@ -54,8 +54,7 @@ before running `./lost`.
 
 If you're building for a processor without fused multiply-add hardware, such as the BeagleBone
 Black's Cortex-A8, build with `make LOST_DISABLE_FMA=1` (after a `make clean`). LOST uses `std::fma`
-in its dot products, and without the hardware instruction that's a slow software routine; this
-option uses a plain multiply-add instead.
+in its dot products, and without the hardware instruction, that's a slow software routine.
 
 <!-- ## Using Docker -->
 
