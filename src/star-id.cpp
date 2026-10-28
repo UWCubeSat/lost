@@ -621,6 +621,14 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     int halfwayAcross = floor(sqrt(numStars)/2);
     long totalIterations = 0;
 
+    // Every pyramid is built from the same few stars, so convert each centroid to a unit vector
+    // once here instead of on every iteration.
+    std::vector<Vec3> starSpatials;
+    starSpatials.reserve(stars.size());
+    for (const Star &star : stars) {
+        starSpatials.push_back(camera.CameraToSpatial(star.position).Normalize());
+    }
+
     FlatPairMap ikMap, irMap;
 
     int jMax = numStars - 3;
@@ -651,35 +659,12 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
 
                     assert(i != j && j != k && k != r && i != k && i != r && j != r);
 
-                    // TODO: move this out of the loop?
-                    Vec3 iSpatial = camera.CameraToSpatial(stars[i].position).Normalize();
-                    Vec3 jSpatial = camera.CameraToSpatial(stars[j].position).Normalize();
-                    Vec3 kSpatial = camera.CameraToSpatial(stars[k].position).Normalize();
+                    const Vec3 &iSpatial = starSpatials[i];
+                    const Vec3 &jSpatial = starSpatials[j];
+                    const Vec3 &kSpatial = starSpatials[k];
+                    const Vec3 &rSpatial = starSpatials[r];
 
                     decimal ijDist = AngleUnit(iSpatial, jSpatial);
-
-                    decimal iSinInner = DECIMAL_SIN(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
-                    decimal jSinInner = DECIMAL_SIN(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
-                    decimal kSinInner = DECIMAL_SIN(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
-
-                    // if we made it this far, all 6 angles are confirmed! Now check
-                    // that this match would not often occur due to chance.
-                    // See Analytic_Star_Pattern_Probability on the HSL wiki for details
-                    decimal expectedMismatches = expectedMismatchesConstant
-                        * DECIMAL_SIN(ijDist)
-                        / kSinInner
-                        / std::max(std::max(iSinInner, jSinInner), kSinInner);
-
-                    if (expectedMismatches > maxMismatchProbability) {
-                        std::cout << "skip: mismatch prob." << std::endl;
-                        continue;
-                    }
-
-                    Vec3 rSpatial = camera.CameraToSpatial(stars[r].position).Normalize();
-
-                    // sign of determinant, to detect flipped patterns
-                    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
-
                     decimal ikDist = AngleUnit(iSpatial, kSpatial);
                     decimal irDist = AngleUnit(iSpatial, rSpatial);
                     decimal jkDist = AngleUnit(jSpatial, kSpatial);
@@ -699,6 +684,29 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     _CHECK_DISTANCE(jrDist);
                     _CHECK_DISTANCE(krDist);
 #undef _CHECK_DISTANCE
+
+                    // The distance checks above reject most pyramids and are much cheaper than the
+                    // trig below, so they go first. Both only skip the pyramid, so the order
+                    // doesn't change which pyramid is matched.
+                    decimal iSinInner = DECIMAL_SIN(Angle(jSpatial - iSpatial, kSpatial - iSpatial));
+                    decimal jSinInner = DECIMAL_SIN(Angle(iSpatial - jSpatial, kSpatial - jSpatial));
+                    decimal kSinInner = DECIMAL_SIN(Angle(iSpatial - kSpatial, jSpatial - kSpatial));
+
+                    // if we made it this far, all 6 angles are confirmed! Now check
+                    // that this match would not often occur due to chance.
+                    // See Analytic_Star_Pattern_Probability on the HSL wiki for details
+                    decimal expectedMismatches = expectedMismatchesConstant
+                        * DECIMAL_SIN(ijDist)
+                        / kSinInner
+                        / std::max(std::max(iSinInner, jSinInner), kSinInner);
+
+                    if (expectedMismatches > maxMismatchProbability) {
+                        std::cout << "skip: mismatch prob." << std::endl;
+                        continue;
+                    }
+
+                    // sign of determinant, to detect flipped patterns
+                    bool spectralTorch = iSpatial.CrossProduct(jSpatial)*kSpatial > 0;
 
                     const int16_t *ijEnd, *ikEnd, *irEnd;
                     const int16_t *const ijQuery = vectorDatabase.FindPairsLiberal(ijDist - tolerance, ijDist + tolerance, &ijEnd);
