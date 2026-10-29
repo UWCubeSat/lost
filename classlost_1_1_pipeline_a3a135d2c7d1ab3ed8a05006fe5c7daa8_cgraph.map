@@ -1,0 +1,5 @@
+<map id="lost::Pipeline::Pipeline" name="lost::Pipeline::Pipeline">
+<area shape="rect" id="Node000001" title="Construct a pipeline using the given algorithms, some of which may be null." alt="" coords="5,5,171,33"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_pipeline.html#ab99f650efd24207ed56ae9d52399cff2" title=" " alt="" coords="219,5,384,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="171,17,206,19,200,19,171,22"/>
+</map>

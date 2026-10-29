@@ -1,0 +1,5 @@
+<map id="lost::SphericalToSpatial" name="lost::SphericalToSpatial">
+<area shape="rect" id="Node000001" title="Convert from right ascension &amp; declination to a 3d point on the unit sphere." alt="" coords="191,14,363,42"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_catalog_star.html#a01e0c6d1367a68757a13091c5287075f" title="Create a CatalogStar using its celestial/spherical coordinates." alt="" coords="5,5,143,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,28,143,30,143,25,177,27"/>
+</map>

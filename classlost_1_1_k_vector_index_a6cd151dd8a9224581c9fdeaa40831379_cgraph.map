@@ -1,6 +1,19 @@
 <map id="lost::KVectorIndex::KVectorIndex" name="lost::KVectorIndex::KVectorIndex">
-<area shape="rect" id="Node000001" title="Construct from serialized buffer." alt="" coords="5,22,145,62"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="193,29,363,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,39,180,39,180,45,145,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="245,31,238,21,241,11,255,5,278,3,306,6,318,16,314,20,304,11,278,8,256,10,245,15,243,20,249,28"/>
+<area shape="rect" id="Node000001" title="Construct from serialized buffer." alt="" coords="5,71,145,115"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a6708c85ee599d39a129c12aff85de26d" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="205,104,366,132"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,99,192,106,187,107,145,104"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a808e750fa7f99bc945155638df303fb7" title=" " alt="" coords="193,51,378,79"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="144,81,180,78,175,80,146,86"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="426,48,603,76"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="344,101,437,81,443,80,346,107"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="651,75,829,119"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="328,130,375,144,426,154,515,164,554,163,603,154,645,142,683,127,688,126,647,147,604,160,554,168,515,170,426,160,374,149,327,135"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_deserialize_context.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="426,100,603,145"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="366,117,413,120,408,121,367,122"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_deserialize_context.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="651,5,829,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="603,46,638,43,633,44,604,51"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="603,73,638,81,633,81,603,79"/>
+<area shape="poly" id="edge8_Node000007_Node000003" title=" " alt="" coords="378,61,413,63,408,64,379,67"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="336,48,392,36,459,27,532,25,604,34,629,46,653,60,667,69,662,68,650,65,627,50,603,40,532,30,459,32,393,41,338,53"/>
+<area shape="poly" id="edge9_Node000007_Node000006" title=" " alt="" coords="344,77,414,96,409,97,344,82"/>
 </map>

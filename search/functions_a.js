@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['magnitude_0',['magnitude',['../structlost_1_1_vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3',1,'lost::Vec2::Magnitude()'],['../classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32',1,'lost::Vec3::Magnitude()']]],
-  ['magnitudesq_1',['magnitudesq',['../structlost_1_1_vec2.html#a3cb220d12e9a20f74f1afbad9d944e98',1,'lost::Vec2::MagnitudeSq()'],['../classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e',1,'lost::Vec3::MagnitudeSq()']]],
+  ['magnitude_0',['Magnitude',['../structlost_1_1_vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3',1,'lost::Vec2::Magnitude()'],['../classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32',1,'lost::Vec3::Magnitude()']]],
+  ['magnitudesq_1',['MagnitudeSq',['../structlost_1_1_vec2.html#a3cb220d12e9a20f74f1afbad9d944e98',1,'lost::Vec2::MagnitudeSq()'],['../classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e',1,'lost::Vec3::MagnitudeSq()']]],
   ['magtobrightness_2',['MagToBrightness',['../namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7',1,'lost']]],
   ['main_3',['main',['../main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main.cpp']]],
   ['max_4',['Max',['../classlost_1_1_k_vector_index.html#a98f4a93e0009038d0bb529412ac895d5',1,'lost::KVectorIndex']]],

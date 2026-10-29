@@ -1,5 +1,5 @@
 <map id="lost::Mat3::Transpose" name="lost::Mat3::Transpose">
-<area shape="rect" id="Node000001" title="Transpose of a matrix." alt="" coords="5,5,165,31"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="213,5,323,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="166,15,199,15,199,21,166,21"/>
+<area shape="rect" id="Node000001" title="Transpose of a matrix." alt="" coords="5,5,165,33"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="213,5,321,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,17,200,19,194,19,165,22"/>
 </map>

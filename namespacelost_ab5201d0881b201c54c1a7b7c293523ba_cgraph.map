@@ -1,6 +1,14 @@
 <map id="lost::DeserializeVec3" name="lost::DeserializeVec3">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,164,55"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="212,29,381,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,39,198,39,198,45,165,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="262,31,255,21,259,11,273,5,297,3,326,6,338,15,334,20,324,11,297,8,274,10,262,15,260,20,266,28"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,83,163,111"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a808e750fa7f99bc945155638df303fb7" title=" " alt="" coords="211,83,396,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,94,198,96,192,98,163,100"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="444,32,621,60"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="368,80,455,63,449,65,370,85"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="669,75,847,119"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="396,94,656,96,651,98,396,100"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_deserialize_context.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="444,135,621,179"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="359,109,433,130,427,130,359,114"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_deserialize_context.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="669,5,847,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="621,36,656,36,651,37,622,42"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="597,58,657,74,651,74,597,63"/>
 </map>

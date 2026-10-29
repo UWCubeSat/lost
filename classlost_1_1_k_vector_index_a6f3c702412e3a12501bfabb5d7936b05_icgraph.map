@@ -1,7 +1,0 @@
-<map id="lost::KVectorIndex::QueryLiberal" name="lost::KVectorIndex::QueryLiberal">
-<area shape="rect" id="Node000001" title="Finds all the entries in the given range, and possibly a few just outside the range on the ends." alt="" coords="248,37,388,77"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_pair_distance_k_vector_database.html#ad76a05c909ea68d6084f942f3623b8ed" title=" " alt="" coords="9,5,196,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="234,48,196,42,197,37,235,42"/>
-<area shape="rect" id="Node000003" href="$classlost_1_1_pair_distance_k_vector_database.html#ae88622306fc1b554a5c86476b0e815af" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="5,69,200,109"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="235,72,201,78,200,72,234,67"/>
-</map>

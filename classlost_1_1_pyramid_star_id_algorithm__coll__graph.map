@@ -1,5 +1,5 @@
 <map id="lost::PyramidStarIdAlgorithm" name="lost::PyramidStarIdAlgorithm">
-<area shape="rect" id="Node000001" title="The &quot;de facto&quot; star&#45;id algorithm used in many real&#45;world missions." alt="" coords="5,79,216,104"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="33,5,189,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,44,113,79,108,79,108,44"/>
+<area shape="rect" id="Node000001" title="The &quot;de facto&quot; star&#45;id algorithm used in many real&#45;world missions." alt="" coords="5,81,215,109"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_star_id_algorithm.html" title="A star idenification algorithm." alt="" coords="32,5,188,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,47,112,82,108,79,108,51"/>
 </map>

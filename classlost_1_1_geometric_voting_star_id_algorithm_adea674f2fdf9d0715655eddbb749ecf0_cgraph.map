@@ -1,23 +1,40 @@
 <map id="lost::GeometricVotingStarIdAlgorithm::Go" name="lost::GeometricVotingStarIdAlgorithm::Go">
-<area shape="rect" id="Node000001" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,99,195,139"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a6bdf1016fe03a8c46f98bc4633f644d3" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="309,56,399,81"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,98,295,78,296,83,195,103"/>
-<area shape="rect" id="Node000003" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="539,5,657,31"/>
-<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="129,97,180,67,242,41,316,24,392,15,525,12,525,17,392,21,317,30,243,46,182,71,131,101"/>
-<area shape="rect" id="Node000004" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="731,107,900,132"/>
-<area shape="poly" id="edge13_Node000001_Node000004" title=" " alt="" coords="195,117,717,117,717,122,195,122"/>
-<area shape="rect" id="Node000005" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="243,157,465,183"/>
-<area shape="poly" id="edge7_Node000001_Node000005" title=" " alt="" coords="195,136,277,152,276,157,194,141"/>
-<area shape="rect" id="Node000007" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="274,232,434,257"/>
-<area shape="poly" id="edge11_Node000001_Node000007" title=" " alt="" coords="138,137,244,193,311,224,309,229,241,198,136,142"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="399,57,525,30,526,36,400,62"/>
-<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="400,70,683,98,717,102,717,108,682,103,399,75"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="636,28,684,48,781,97,779,102,682,52,634,33"/>
-<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="780,108,772,98,776,88,791,82,815,80,845,84,857,93,854,97,843,89,815,85,792,87,780,92,778,98,784,105"/>
-<area shape="poly" id="edge10_Node000005_Node000004" title=" " alt="" coords="465,158,682,135,717,131,717,136,683,141,466,163"/>
-<area shape="rect" id="Node000006" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="513,208,683,233"/>
-<area shape="poly" id="edge8_Node000005_Node000006" title=" " alt="" coords="417,180,523,203,522,208,416,185"/>
-<area shape="poly" id="edge9_Node000006_Node000004" title=" " alt="" coords="634,205,682,186,779,136,781,141,684,191,636,210"/>
-<area shape="rect" id="Node000008" href="$classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="517,257,679,283"/>
-<area shape="poly" id="edge12_Node000007_Node000008" title=" " alt="" coords="435,250,503,257,502,263,434,256"/>
+<area shape="rect" id="Node000001" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,112,194,156"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a6bdf1016fe03a8c46f98bc4633f644d3" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="308,44,398,72"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,109,241,88,295,73,290,77,242,93,175,113"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="546,6,663,33"/>
+<area shape="poly" id="edge5_Node000001_Node000003" title=" " alt="" coords="121,110,173,67,206,46,241,30,316,12,394,4,467,3,533,9,528,11,467,9,394,9,317,17,243,35,208,51,176,71,125,113"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="525,70,684,97"/>
+<area shape="poly" id="edge9_Node000001_Node000004" title=" " alt="" coords="194,122,511,91,508,95,195,127"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="242,146,464,173"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="193,141,228,146,224,148,195,146"/>
+<area shape="rect" id="Node000008" href="$classlost_1_1_pair_distance_k_vector_database.html#ae88622306fc1b554a5c86476b0e815af" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="256,197,450,242"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="163,154,243,182,266,191,261,193,241,187,163,160"/>
+<area shape="rect" id="Node000009" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="272,266,434,311"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="122,154,175,204,208,229,243,252,260,262,255,262,240,256,205,234,172,208,121,159"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="397,49,533,29,529,32,399,54"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="398,60,512,73,507,75,399,65"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="753,70,915,97"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="684,81,740,83,735,84,685,86"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="520,146,689,173"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="464,157,507,159,502,160,465,162"/>
+<area shape="rect" id="Node000010" href="$namespacelost.html#a6708c85ee599d39a129c12aff85de26d" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="524,314,685,341"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="434,299,511,313,506,313,434,304"/>
+<area shape="rect" id="Node000011" href="$namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="745,364,923,392"/>
+<area shape="poly" id="edge17_Node000009_Node000011" title=" " alt="" coords="400,309,454,332,513,350,624,368,732,378,727,378,623,374,511,355,452,337,400,314"/>
+<area shape="rect" id="Node000015" href="$namespacelost.html#a808e750fa7f99bc945155638df303fb7" title=" " alt="" coords="512,262,697,289"/>
+<area shape="poly" id="edge18_Node000009_Node000015" title=" " alt="" coords="434,282,499,281,494,282,434,287"/>
+<area shape="rect" id="Node000016" href="$namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24" title=" " alt="" coords="548,210,661,237"/>
+<area shape="poly" id="edge22_Node000009_Node000016" title=" " alt="" coords="433,265,536,241,531,243,435,270"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="671,339,756,361,751,360,670,345"/>
+<area shape="rect" id="Node000013" href="$classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="971,296,1148,340"/>
+<area shape="poly" id="edge16_Node000010_Node000013" title=" " alt="" coords="686,323,958,320,953,321,686,328"/>
+<area shape="rect" id="Node000014" href="$classlost_1_1_deserialize_context.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="745,245,923,290"/>
+<area shape="poly" id="edge15_Node000010_Node000014" title=" " alt="" coords="660,310,729,295,734,294,661,316"/>
+<area shape="rect" id="Node000012" href="$classlost_1_1_deserialize_context.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="971,365,1148,410"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="923,379,958,383,952,383,923,384"/>
+<area shape="poly" id="edge14_Node000011_Node000013" title=" " alt="" coords="888,361,956,345,961,345,889,366"/>
+<area shape="poly" id="edge19_Node000015_Node000011" title=" " alt="" coords="663,287,698,300,752,326,801,356,795,355,750,331,696,305,662,293"/>
+<area shape="poly" id="edge21_Node000015_Node000013" title=" " alt="" coords="656,258,696,246,720,237,745,230,835,217,874,219,924,230,976,254,1023,286,1017,285,974,258,922,235,874,224,835,223,746,235,722,242,698,251,658,264"/>
+<area shape="poly" id="edge20_Node000015_Node000014" title=" " alt="" coords="697,270,732,271,727,271,698,275"/>
 </map>

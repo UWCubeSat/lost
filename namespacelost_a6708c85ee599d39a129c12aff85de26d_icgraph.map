@@ -1,0 +1,17 @@
+<map id="lost::DeserializeArray" name="lost::DeserializeArray">
+<area shape="rect" id="Node000001" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="800,83,962,111"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_k_vector_index.html#a6cd151dd8a9224581c9fdeaa40831379" title="Construct from serialized buffer." alt="" coords="540,5,680,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="811,79,752,65,680,47,680,42,753,60,816,79"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_pair_distance_k_vector_database.html#a63c9e16675f56b66cc3740fb96c55dfc" title="Create the database from a serialized buffer." alt="" coords="468,75,752,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="782,97,753,100,752,94,788,97"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="530,144,691,189"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="816,115,753,134,692,150,691,144,752,129,811,116"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="208,84,396,129"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="511,148,397,127,397,122,517,147"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="237,152,368,180"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="511,167,369,169,368,164,517,166"/>
+<area shape="rect" id="Node000008" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="185,204,420,232"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="517,182,389,207,388,201,511,183"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,152,137,180"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="218,168,137,169,137,164,223,165"/>
+</map>

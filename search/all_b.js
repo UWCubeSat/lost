@@ -7,6 +7,6 @@ var searchData=
   ['kmagicvalue_4',['kMagicValue',['../classlost_1_1_pair_distance_k_vector_database.html#a6d5d477e5e2d9557f0e284e917361a54',1,'lost::PairDistanceKVectorDatabase']]],
   ['kmaxbrightness_5',['kMaxBrightness',['../namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45',1,'lost']]],
   ['knodefaultargument_6',['kNoDefaultArgument',['../namespacelost.html#adbeb358ec7311bc89886a09aa017388c',1,'lost']]],
-  ['kvectorindex_7',['kvectorindex',['../classlost_1_1_k_vector_index.html',1,'lost::KVectorIndex'],['../classlost_1_1_k_vector_index.html#a6cd151dd8a9224581c9fdeaa40831379',1,'lost::KVectorIndex::KVectorIndex()']]],
+  ['kvectorindex_7',['KVectorIndex',['../classlost_1_1_k_vector_index.html',1,'lost::KVectorIndex'],['../classlost_1_1_k_vector_index.html#a6cd151dd8a9224581c9fdeaa40831379',1,'lost::KVectorIndex::KVectorIndex()']]],
   ['kvectorpair_8',['KVectorPair',['../structlost_1_1_k_vector_pair.html',1,'lost']]]
 ];

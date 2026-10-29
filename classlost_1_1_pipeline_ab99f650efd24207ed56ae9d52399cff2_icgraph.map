@@ -1,0 +1,7 @@
+<map id="lost::Pipeline::Pipeline" name="lost::Pipeline::Pipeline">
+<area shape="rect" id="Node000001" title=" " alt="" coords="240,32,405,60"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_pipeline.html#a3a135d2c7d1ab3ed8a05006fe5c7daa8" title="Construct a pipeline using the given algorithms, some of which may be null." alt="" coords="16,5,181,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,35,182,32,182,26,227,34"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_pipeline.html#a680908f5f23f826f938acd07074775cb" title="Create a pipeline from command line options." alt="" coords="5,57,192,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="222,57,192,63,192,58,227,57"/>
+</map>

@@ -1,11 +1,11 @@
 <map id="lost::Quaternion::ToSpherical" name="lost::Quaternion::ToSpherical">
-<area shape="rect" id="Node000001" title=" " alt="" coords="880,13,1088,38"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="644,13,832,38"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="866,28,832,28,832,23,866,23"/>
-<area shape="rect" id="Node000003" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="468,13,596,38"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="630,28,596,28,596,23,630,23"/>
-<area shape="rect" id="Node000004" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,420,45"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="454,28,420,28,420,23,454,23"/>
-<area shape="rect" id="Node000005" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,13,189,38"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="223,28,190,28,190,23,223,23"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="878,14,1085,42"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="642,14,830,42"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="859,28,830,30,830,25,865,28"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="467,14,594,42"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="624,28,595,30,595,25,630,28"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,419,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="449,28,420,30,420,25,454,28"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,14,189,42"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="219,28,189,30,189,25,224,27"/>
 </map>

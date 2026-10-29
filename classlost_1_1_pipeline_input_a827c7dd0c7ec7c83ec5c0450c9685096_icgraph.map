@@ -1,5 +1,9 @@
 <map id="lost::PipelineInput::InputStars" name="lost::PipelineInput::InputStars">
-<area shape="rect" id="Node000001" title=" " alt="" coords="192,5,331,45"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_pipeline_input.html#a848dc6f741056924dd60334d21c8ee61" title=" " alt="" coords="5,5,144,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,28,145,28,145,23,178,23"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="371,36,509,81"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_pipeline_input.html#a848dc6f741056924dd60334d21c8ee61" title=" " alt="" coords="185,5,323,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="353,45,324,42,324,36,358,44"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="188,74,320,102"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="358,71,320,80,320,75,353,72"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,74,137,102"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="170,88,137,90,137,85,176,87"/>
 </map>

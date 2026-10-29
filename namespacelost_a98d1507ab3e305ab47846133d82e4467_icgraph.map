@@ -1,5 +1,5 @@
 <map id="lost::SerializePairDistanceKVector" name="lost::SerializePairDistanceKVector">
-<area shape="rect" id="Node000001" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,427,45"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,13,188,38"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,28,188,28,188,23,223,23"/>
+<area shape="rect" id="Node000001" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="236,5,426,50"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,14,188,42"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="218,28,188,30,188,25,223,27"/>
 </map>

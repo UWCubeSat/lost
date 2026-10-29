@@ -1,6 +1,11 @@
 <map id="lost::SerializeKVectorIndex" name="lost::SerializeKVectorIndex">
-<area shape="rect" id="Node000001" title="K&#45;vector index layout." alt="" coords="5,29,201,55"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="249,29,419,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="201,39,236,39,236,45,201,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="297,31,289,21,293,11,308,5,334,3,366,7,379,16,375,20,364,11,334,8,309,10,296,15,294,20,301,27"/>
+<area shape="rect" id="Node000001" title="K&#45;vector index layout." alt="" coords="5,32,201,60"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="249,32,417,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="201,43,236,46,230,46,202,48"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa" title=" " alt="" coords="504,5,665,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="417,34,491,29,486,30,418,40"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9704a9fb2cf67873155e69407a976074" title="Swap the endianness of a value if necessary." alt="" coords="465,57,704,85"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="418,52,452,58,447,58,417,57"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba" title="Unconditionally swap the endianness of a value (uses sizeof T)." alt="" coords="752,57,915,85"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="705,69,739,71,734,71,705,74"/>
 </map>

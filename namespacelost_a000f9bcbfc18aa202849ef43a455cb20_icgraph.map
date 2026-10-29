@@ -1,12 +1,12 @@
 <map id="lost::FovToFocalLength" name="lost::FovToFocalLength">
-<area shape="rect" id="Node000001" title=" " alt="" coords="724,42,893,67"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="461,42,676,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="710,57,676,57,676,52,710,52"/>
-<area shape="rect" id="Node000003" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,45"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="447,43,413,39,414,34,448,38"/>
-<area shape="rect" id="Node000005" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,70,408,95"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="448,71,409,75,408,70,447,65"/>
-<area shape="rect" id="Node000004" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,42,168,67"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="203,42,168,47,168,42,202,37"/>
-<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="207,72,168,67,169,62,208,67"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="721,44,890,72"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="459,44,673,72"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="703,58,674,61,674,56,708,58"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values." alt="" coords="215,5,411,50"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="441,44,411,42,411,37,446,43"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="220,74,406,102"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="446,72,406,80,406,74,441,73"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,44,167,72"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="197,44,168,50,167,45,202,42"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="202,74,167,71,167,66,208,73"/>
 </map>

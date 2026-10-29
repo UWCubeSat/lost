@@ -1,5 +1,5 @@
 <map id="lost::Star" name="lost::Star">
-<area shape="rect" id="Node000001" title="A &quot;centroid&quot; detected in an image." alt="" coords="8,93,88,119"/>
-<area shape="rect" id="Node000002" href="$structlost_1_1_vec2.html" title="A two dimensional vector with decimaling point components." alt="" coords="5,5,91,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="51,45,51,93,45,93,45,45"/>
+<area shape="rect" id="Node000001" title="A &quot;centroid&quot; detected in an image." alt="" coords="8,106,87,134"/>
+<area shape="rect" id="Node000002" href="$structlost_1_1_vec2.html" title="A two dimensional vector with decimaling point components." alt="" coords="5,5,90,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="50,47,50,106,45,105,45,50"/>
 </map>

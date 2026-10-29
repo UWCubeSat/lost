@@ -1,6 +1,11 @@
 <map id="lost::SerializeVec3" name="lost::SerializeVec3">
-<area shape="rect" id="Node000001" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="5,29,147,55"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="195,29,364,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="147,39,181,39,181,45,147,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="246,31,239,21,243,11,256,5,279,3,308,6,319,16,315,20,305,11,279,8,258,10,246,15,244,20,250,28"/>
+<area shape="rect" id="Node000001" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="5,32,146,60"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="194,32,362,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="146,43,181,45,175,46,146,48"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa" title=" " alt="" coords="450,5,610,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="362,34,436,29,431,30,363,40"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9704a9fb2cf67873155e69407a976074" title="Swap the endianness of a value if necessary." alt="" coords="410,57,649,85"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="363,52,397,58,392,58,362,57"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba" title="Unconditionally swap the endianness of a value (uses sizeof T)." alt="" coords="697,57,860,85"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="650,69,684,71,679,71,650,74"/>
 </map>

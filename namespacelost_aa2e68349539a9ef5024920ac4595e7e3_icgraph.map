@@ -1,9 +1,9 @@
 <map id="lost::SerializeVec3" name="lost::SerializeVec3">
-<area shape="rect" id="Node000001" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="679,5,820,31"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="444,5,631,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="665,21,631,21,631,15,665,15"/>
-<area shape="rect" id="Node000003" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="236,5,396,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="430,21,396,21,396,15,430,15"/>
-<area shape="rect" id="Node000004" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="222,21,188,21,188,15,222,15"/>
+<area shape="rect" id="Node000001" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="676,5,817,33"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="443,5,628,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="658,19,629,22,629,17,663,19"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="236,5,395,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="425,19,396,22,395,17,430,19"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,5,188,33"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="217,19,188,22,188,17,223,19"/>
 </map>

@@ -44,6 +44,7 @@ var NAVTREE =
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
+        [ "Typedefs", "functions_type.html", null ],
         [ "Related Symbols", "functions_rela.html", null ]
       ] ]
     ] ],
@@ -62,10 +63,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classlost_1_1_k_vector_index.html",
-"classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e",
-"namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc"
+"classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544",
+"decimal_8hpp.html#a7759253b1830f717df4e9956191985f6",
+"pipeline-options_8hpp_source.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';
+var LISTOFALLMEMBERS = 'List of all members';

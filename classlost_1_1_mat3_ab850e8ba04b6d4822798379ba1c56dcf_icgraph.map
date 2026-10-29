@@ -1,7 +1,7 @@
 <map id="lost::Mat3::Transpose" name="lost::Mat3::Transpose">
-<area shape="rect" id="Node000001" title="Transpose of a matrix." alt="" coords="236,31,396,56"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="9,5,184,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="222,35,184,31,184,25,223,30"/>
-<area shape="rect" id="Node000003" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,55,188,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="223,56,188,60,188,55,222,51"/>
+<area shape="rect" id="Node000001" title="Transpose of a matrix." alt="" coords="235,32,394,60"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23" title="Actually run the star&#45;id algorithm." alt="" coords="5,5,187,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="217,35,187,33,187,28,222,34"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9" title="Actually run the star&#45;id algorithm." alt="" coords="9,57,183,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="217,57,184,64,183,58,222,56"/>
 </map>

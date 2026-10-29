@@ -11,6 +11,6 @@ var searchData=
   ['deserializeprimitive_8',['DeserializePrimitive',['../namespacelost.html#a808e750fa7f99bc945155638df303fb7',1,'lost']]],
   ['deserializevec3_9',['DeserializeVec3',['../namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba',1,'lost']]],
   ['det_10',['Det',['../classlost_1_1_mat3.html#a5a3c5d3bb1e90373f8ac1d2c16fca504',1,'lost::Mat3']]],
-  ['distance_11',['distance',['../namespacelost.html#a36351539266df1a549d5e98ee01fc339',1,'lost::Distance(const Vec2 &amp;, const Vec2 &amp;)'],['../namespacelost.html#ae254d39e7932059a7b1e3024272d48a2',1,'lost::Distance(const Vec3 &amp;, const Vec3 &amp;)']]],
+  ['distance_11',['Distance',['../namespacelost.html#a36351539266df1a549d5e98ee01fc339',1,'lost::Distance(const Vec2 &amp;, const Vec2 &amp;)'],['../namespacelost.html#ae254d39e7932059a7b1e3024272d48a2',1,'lost::Distance(const Vec3 &amp;, const Vec3 &amp;)']]],
   ['dummycentroidalgorithm_12',['DummyCentroidAlgorithm',['../classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d',1,'lost::DummyCentroidAlgorithm']]]
 ];

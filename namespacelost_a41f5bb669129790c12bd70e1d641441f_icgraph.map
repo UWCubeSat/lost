@@ -1,10 +1,10 @@
 <map id="lost::CatalogRead" name="lost::CatalogRead">
-<area shape="rect" id="Node000001" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="461,42,599,67"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values" alt="" coords="216,5,413,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="447,46,413,41,414,36,448,41"/>
-<area shape="rect" id="Node000004" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="221,70,408,95"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="448,68,408,73,408,68,447,63"/>
-<area shape="rect" id="Node000003" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,42,168,67"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="203,42,168,47,168,42,202,37"/>
-<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="207,72,168,67,169,62,208,67"/>
+<area shape="rect" id="Node000001" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="459,44,595,72"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#aec3a2012bf028c749ba53a46a50ad172" title="Create a GeneratedPipelineInput based on the command line options in values." alt="" coords="215,5,411,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="441,46,412,44,412,39,446,46"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a72e465adc8dcb532e46b956261bf93fe" title="Create a PngPipelineInput using command line options." alt="" coords="220,74,406,102"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="447,69,406,78,406,72,441,70"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5" title="Come up with a list of pipeline inputs based on command line options." alt="" coords="5,44,167,72"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="197,44,168,50,167,45,202,42"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="202,74,167,71,167,66,208,73"/>
 </map>

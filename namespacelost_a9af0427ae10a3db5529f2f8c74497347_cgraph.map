@@ -1,4 +1,9 @@
 <map id="lost::SerializePrimitive" name="lost::SerializePrimitive">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,175,55"/>
-<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="62,31,56,21,59,11,71,5,90,3,113,6,123,15,119,19,111,11,90,8,72,10,63,15,61,20,66,28"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,32,174,60"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa" title=" " alt="" coords="261,5,422,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,34,248,29,243,30,175,40"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9704a9fb2cf67873155e69407a976074" title="Swap the endianness of a value if necessary." alt="" coords="222,57,461,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="174,52,209,57,204,58,174,57"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba" title="Unconditionally swap the endianness of a value (uses sizeof T)." alt="" coords="509,57,671,85"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="461,69,496,71,491,71,461,74"/>
 </map>

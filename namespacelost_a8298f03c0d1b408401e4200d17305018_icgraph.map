@@ -1,7 +1,7 @@
 <map id="lost::SurfacePlot" name="lost::SurfacePlot">
-<area shape="rect" id="Node000001" title="Plot information about an image onto the image using Cairo." alt="" coords="468,13,596,38"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,420,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="454,28,420,28,420,23,454,23"/>
-<area shape="rect" id="Node000003" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,13,189,38"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="223,28,190,28,190,23,223,23"/>
+<area shape="rect" id="Node000001" title="Plot information about an image onto the image using Cairo." alt="" coords="467,14,594,42"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,419,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="449,28,420,30,420,25,454,28"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,14,189,42"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="219,28,189,30,189,25,224,27"/>
 </map>

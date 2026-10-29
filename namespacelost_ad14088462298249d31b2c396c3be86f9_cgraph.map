@@ -1,6 +1,12 @@
 <map id="lost::SerializeMultiDatabase" name="lost::SerializeMultiDatabase">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,211,55"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="259,29,428,55"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="211,39,245,39,245,45,211,45"/>
-<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="305,31,297,21,301,11,317,5,343,3,376,7,389,16,386,20,374,11,343,8,318,10,305,15,302,20,309,27"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,210,58"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa" title=" " alt="" coords="514,5,674,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,37,498,21,498,27,210,42"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="258,56,426,84"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="210,53,245,59,239,59,210,58"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="414,53,504,37,509,36,415,58"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a9704a9fb2cf67873155e69407a976074" title="Swap the endianness of a value if necessary." alt="" coords="474,57,713,85"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="426,68,461,70,456,70,427,73"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba" title="Unconditionally swap the endianness of a value (uses sizeof T)." alt="" coords="761,57,924,85"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="714,69,748,71,743,71,714,74"/>
 </map>

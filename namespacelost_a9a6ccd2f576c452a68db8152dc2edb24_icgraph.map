@@ -1,5 +1,13 @@
 <map id="lost::isFlagSet" name="lost::isFlagSet">
-<area shape="rect" id="Node000001" title=" " alt="" coords="216,13,331,38"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="5,5,168,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,28,168,28,168,23,202,23"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="677,74,791,102"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_multi_database.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="468,65,629,110"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="659,88,630,90,630,85,664,88"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1_geometric_voting_star_id_algorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="208,5,396,50"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="450,65,397,53,397,48,456,64"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="237,74,368,102"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="450,88,369,90,368,85,455,87"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_pyramid_star_id_algorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="185,126,420,154"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="455,108,372,128,371,123,450,108"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,74,137,102"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="218,89,137,90,137,85,223,86"/>
 </map>

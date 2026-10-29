@@ -1,5 +1,5 @@
 <map id="lost::GeneratedStar" name="lost::GeneratedStar">
-<area shape="rect" id="Node000001" title="A star used in simulated image generation. Contains extra data about how to simulate the star." alt="" coords="5,79,153,104"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="39,5,119,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="82,44,82,79,77,79,77,44"/>
+<area shape="rect" id="Node000001" title="A star used in simulated image generation. Contains extra data about how to simulate the star." alt="" coords="5,81,153,109"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image." alt="" coords="39,5,119,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,47,82,81,76,80,77,51"/>
 </map>
