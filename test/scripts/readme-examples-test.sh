@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 tmp_dir=$(mktemp -d)
 
@@ -32,7 +33,6 @@ curl https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
   --kvector-distance-bins 10000 \
   --output "$tmp_dir/my-database.dat"
 
-set -x
 lost_output=$(
   ./lost pipeline \
     --png "$tmp_dir/img_7660.png" \
@@ -49,11 +49,10 @@ lost_output=$(
     --plot-output "$tmp_dir/annotated-7660.png" \
     --print-attitude
 )
-set +x
 
-ra=$(grep -oP "(?<=attitude_ra )[0-9]+" <<<"$lost_output")
-de=$(grep -oP "(?<=attitude_de )[0-9]+" <<<"$lost_output")
-roll=$(grep -oP "(?<=attitude_roll )[0-9]+" <<<"$lost_output")
+ra=$(awk '/attitude_ra/ {print int($2)}' <<<"$lost_output")
+de=$(awk '/attitude_de/ {print int($2)}' <<<"$lost_output")
+roll=$(awk '/attitude_roll/ {print int($2)}' <<<"$lost_output")
 
 if ((ra == 17 && de == 63 && roll == 12)); then
   echo "TEST: [SUCCESS]: All clear!"
