@@ -1,10 +1,11 @@
 #include <algorithm>
-#include <catch.hpp>
 #include <cstring>
+
+#include <catch.hpp>
 
 #include "centroiders.hpp"
 
-using namespace lost;
+using namespace lost; // NOLINT
 
 TEST_CASE("CoG: single symmetric blob", "[centroid]") {
     // Single 3x3 blob of equal-brightness pixels about the center

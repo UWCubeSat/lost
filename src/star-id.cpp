@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <chrono>
 #include <unordered_map>
+#include <cstdio>
+#include <iostream>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -252,7 +254,7 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
 /**
  * Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars
  * that appeared with it in the query.
- * 
+ *
  * The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  */
@@ -664,7 +666,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     // there isn't some pyramid that's just outside the database's bounds, but
                     // within measurement tolerance of the observed pyramid, since that would
                     // possibly cause a non-unique pyramid to be identified as unique.
-#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
+#define _CHECK_DISTANCE(_dist)                                          \
+                if (_dist < vectorDatabase.MinDistance() + tolerance     \
+                    || _dist > vectorDatabase.MaxDistance() - tolerance) \
+                { continue; }
                     _CHECK_DISTANCE(ikDist);
                     _CHECK_DISTANCE(irDist);
                     _CHECK_DISTANCE(jkDist);

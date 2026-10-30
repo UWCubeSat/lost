@@ -1,5 +1,7 @@
-#include <random>
 #include <cmath>
+#include <random>
+#include <utility>
+#include <vector>
 
 #include <catch.hpp>
 
