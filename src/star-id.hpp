@@ -3,9 +3,10 @@
 
 #include <vector>
 
-#include "centroiders.hpp"
-#include "star-utils.hpp"
 #include "camera.hpp"
+#include "centroiders.hpp"
+#include "databases.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -16,10 +17,28 @@ namespace lost {
 class StarIdAlgorithm {
 public:
     /// Actualy perform the star idenification. This is the "main" function for StarIdAlgorithm
-    virtual StarIdentifiers Go(
-        const unsigned char *database, const Stars &, const Catalog &, const Camera &) const = 0;
+    virtual StarIdentifiers Go(const unsigned char *database, const Stars &, const Catalog &,
+                               const Camera &) const = 0;
 
-    virtual ~StarIdAlgorithm() { };
+    virtual ~StarIdAlgorithm(){};
+};
+
+/**
+ * Tetra star identification algorithm based on the one originally proposed by Brown & Stubis
+ * Utilizes hashing of 4-star patterns for quick lookup time, decently high accuracy
+ */
+class TetraStarIdAlgorithm : public StarIdAlgorithm {
+   public:
+    StarIdentifiers Go(const unsigned char *database, const Stars &centroids,
+                       const Catalog &catalog, const Camera &) const;
+
+   private:
+    // static const int numPattStars;
+    // // Do NOT modify the following parameters unless you know what you're doing
+    // static const int numPattBins;
+    // const float pattErrorRange = 0.001;
+    // const float pattMaxError = 0.001;
+
 };
 
 /// A star-id algorithm that returns random results. For debugging.

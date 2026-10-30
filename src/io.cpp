@@ -1,23 +1,23 @@
 #include "io.hpp"
 
-#include <cairo/cairo.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <math.h>
-#include <errno.h>
 #include <assert.h>
-#include <stdlib.h>
+#include <cairo/cairo.h>
+#include <errno.h>
+#include <inttypes.h>
 #include <limits.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include <vector>
-#include <string>
+#include <algorithm>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <cstring>
 #include <random>
-#include <algorithm>
+#include <string>
+#include <vector>
 #include <map>
 #include <chrono>
 #include <utility>
@@ -278,6 +278,28 @@ SerializeContext serFromDbValues(const DatabaseOptions &values) {
     return SerializeContext(values.swapIntegerEndianness, values.swapDecimalEndianness);
 }
 
+// void BuildTetraDatabase(MultiDatabaseBuilder *builder, const Catalog &catalog, float maxAngle,
+//                         const std::vector<uint16_t> &pattStars,
+//                         const std::vector<uint16_t> &catIndices) {
+//     // long length = SerializeTetraDatabase(catalog, maxAngle, nullptr, pattStars, catIndices, false);
+//     long length = SerializeLengthTetraDatabase(catalog, maxAngle, pattStars, catIndices);
+//     unsigned char *buffer = builder->AddSubDatabase(TetraDatabase::kMagicValue, length);
+//     if (buffer == nullptr) {
+//         std::cerr << "Error: No room for Tetra database" << std::endl;
+//     }
+//     // SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices, true);
+//     SerializeTetraDatabase(catalog, maxAngle, buffer, pattStars, catIndices);
+// }
+
+// void GenerateTetraDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog,
+//                             const DatabaseOptions &values, const std::vector<uint16_t> &pattStars,
+//                             const std::vector<uint16_t> &catIndices) {
+//     float maxAngle = values.tetraMaxAngle;
+//     BuildTetraDatabase(builder, catalog, maxAngle, pattStars, catIndices);
+// }
+// /// Generate and add databases to the given multidatabase builder according to the command line options in `values`
+// void GenerateDatabases(MultiDatabaseBuilder *builder, const Catalog &catalog, const DatabaseOptions &values) {
+
 MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const DatabaseOptions &values) {
     MultiDatabaseDescriptor dbEntries;
 
@@ -286,14 +308,36 @@ MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const Database
     SerializeCatalog(&catalogSer, catalog, false, true);
     dbEntries.emplace_back(kCatalogMagicValue, catalogSer.buffer);
 
+    bool dbProvided = false;
+
     if (values.kvector) {
+        dbProvided = true;
         decimal minDistance = DegToRad(values.kvectorMinDistance);
         decimal maxDistance = DegToRad(values.kvectorMaxDistance);
         long numBins = values.kvectorNumDistanceBins;
         SerializeContext ser = serFromDbValues(values);
         SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
         dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
-    } else {
+    }
+
+    if (values.tetra) {
+        dbProvided = true;
+        decimal maxAngleDeg = values.tetraMaxAngle;
+        std::cerr << "Tetra max angle: " << maxAngleDeg << std::endl;
+
+        auto tetraPrepRes = TetraPreparePattCat(catalog, maxAngleDeg);
+        std::vector<uint16_t> catIndices = tetraPrepRes.first;
+        std::vector<uint16_t> pattStarsInds = tetraPrepRes.second;
+
+        std::cerr << "Tetra processed catalog has " << catIndices.size() << " stars." << std::endl;
+        std::cerr << "Number of pattern stars: " << pattStarsInds.size() << std::endl;
+
+        SerializeContext ser = serFromDbValues(values);
+        SerializeTetraDatabase(&ser, catalog, maxAngleDeg, pattStarsInds, catIndices);
+        dbEntries.emplace_back(TetraDatabase::kMagicValue, ser.buffer);
+    }
+
+    if (!dbProvided) {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
@@ -548,6 +592,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         catalogWithFalse.push_back(CatalogStar(ra, de, magnitude, -1));
     }
 
+    std::cout << "catalog size: " << catalog.size() << ", with false stars: " << catalogWithFalse.size() << std::endl;
     for (int i = 0; i < (int)catalogWithFalse.size(); i++) {
         bool isTrueStar = i < (int)catalog.size();
 
@@ -735,17 +780,12 @@ static Attitude RandomAttitude(std::default_random_engine* pReng) {
 PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     // TODO: prompt for attitude, imagewidth, etc and then construct a GeneratedPipelineInput
 
-    int seed;
-
-    // time based seed if option specified
-    if (values.timeSeed) {
-        seed = time(0);
-    } else {
-        seed = values.generateSeed;
-    }
+    // Always use std::random_device for non-deterministic seed
+    std::random_device rd;
+    int seed = rd();
 
     std::default_random_engine attitudeRng(seed);
-    std::default_random_engine noiseRng(seed);
+    std::default_random_engine noiseRng(values.generateSeed);
 
     // TODO: allow random angle generation?
     Attitude attitude = Attitude(SphericalToQuaternion(DegToRad(values.generateRa),
@@ -761,13 +801,17 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
 
 
     for (int i = 0; i < values.generate; i++) {
-
-
         Attitude inputAttitude;
         if (values.generateRandomAttitudes) {
             inputAttitude = RandomAttitude(&attitudeRng);
+            std::cout << "Random attitude:" << std::endl;
+            EulerAngles attitudeAngles = inputAttitude.ToSpherical();
+            std::cout << RadToDeg(attitudeAngles.ra) << ", " << RadToDeg(attitudeAngles.de) << ", "
+                      << RadToDeg(attitudeAngles.roll) << std::endl;
         } else {
             inputAttitude = attitude;
+            std::cout << "Given attitude:" << std::endl;
+            std::cout << values.generateRa << ", " << values.generateDe << ", " << values.generateRoll << std::endl;
         }
 
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
@@ -886,7 +930,11 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.idAlgo == "gv") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(
+            DegToRad(values.angularTolerance), values.estimatedNumFalseStars,
+            values.maxMismatchProb, 1000));
+    } else if (values.idAlgo == "tetra") {
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new TetraStarIdAlgorithm());
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);
@@ -916,6 +964,8 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
     // there, execute each successive stage of the pipeline using the output of the last stage
     // (human centipede) until there are no more stages set.
     PipelineOutput result;
+
+    // std::cerr << *input.InputCamera() << std::endl;
 
     const Image *inputImage = input.InputImage();
     const Stars *inputStars = input.InputStars();

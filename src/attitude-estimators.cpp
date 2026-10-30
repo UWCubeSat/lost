@@ -168,7 +168,7 @@ decimal QuestCharPoly(decimal x, decimal a, decimal b, decimal c, decimal d, dec
 decimal QuestCharPolyPrime(decimal x, decimal a, decimal b, decimal c) {return 4*DECIMAL_POW(x,3) - 2*(a+b)*x - c;}
 
 /**
- * Approximates roots of a real function using the Newton-Raphson algorithm 
+ * Approximates roots of a real function using the Newton-Raphson algorithm
  * @see https://www.geeksforgeeks.org/program-for-newton-raphson-method/
  */
 decimal QuestEigenvalueEstimator(decimal guess, decimal a, decimal b, decimal c, decimal d, decimal s) {

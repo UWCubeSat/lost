@@ -171,6 +171,16 @@ decimal DecimalModulo(decimal x, decimal mod) {
     return result >= 0 ? result : result + mod;
 }
 
+std::ostream &operator<<(std::ostream &output, const Vec2 &vec) {
+    output << "Vec2(x: " << vec.x << ", y: " << vec.y << ")";
+    return output;
+}
+
+std::ostream &operator<<(std::ostream &output, const Vec3 &vec) {
+    output << "Vec3(x: " << vec.x << ", y: " << vec.y << ", z: " << vec.z << ")";
+    return output;
+}
+
 /// The square of the magnitude
 decimal Vec3::MagnitudeSq() const {
     return DECIMAL_FMA(x,x,DECIMAL_FMA(y,y, z*z));
@@ -225,6 +235,10 @@ Vec2 Vec2::operator-(const Vec2 &other) const {
 /// Usual vector subtraction
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
+}
+
+Vec3 Vec3::operator+(const Vec3 &other) const {
+    return {x + other.x, y + other.y, z + other.z};
 }
 
 /// Usual vector cross product

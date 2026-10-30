@@ -93,6 +93,7 @@ test: $(BIN) $(BSC) $(TEST_BIN)
 	# bash ./test/scripts/pyramid-incorrect.sh
 	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/readme-examples-test.sh
 	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/random-crap.sh
+	# LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/tetra.sh
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)

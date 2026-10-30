@@ -6,24 +6,25 @@
 
 #include <assert.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #include <bitset>
-#include <string>
-#include <iostream>
-#include <fstream>
 #include <chrono>
 #include <cstring>
+#include <fstream>
+#include <iostream>
 #include <map>
+#include <string>
 #include <vector>
 
-#include "databases.hpp"
 #include "centroiders.hpp"
+#include "databases.hpp"
 #include "decimal.hpp"
 #include "io.hpp"
 #include "man-database.h"
 #include "man-pipeline.h"
+#include "star-utils.hpp"
 
 namespace lost {
 

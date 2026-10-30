@@ -11,7 +11,7 @@
 *.out.*
 *.lisp
 *.org
-*.py
+# *.py
 *.json
 /.gdb_history
 
