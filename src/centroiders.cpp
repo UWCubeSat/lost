@@ -138,7 +138,7 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char* image, int imageWi
             std::vector<long> queue = {i};
             CentroidParams p(i % imageWidth, i / imageWidth);
 
-            while(!queue.empty()) {
+            while (!queue.empty()) {
                 long ind = queue.back();
                 queue.pop_back();
                 centroidSize++;
@@ -156,9 +156,9 @@ std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char* image, int imageWi
                 if (y > p.yMax) p.yMax = y;
                 if (y < p.yMin) p.yMin = y;
 
-                for(int offset : offsets) {
+                for (int offset : offsets) {
                     long ni = ind + offset;
-                    if(ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
+                    if (ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
                         queue.push_back(ni);
                         visited[ni] = true;
                     }

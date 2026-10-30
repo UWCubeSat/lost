@@ -11,10 +11,16 @@
 
 # Issue #73: Allow printing compare outputs to terminal
 # General test that it only allow non-binary outputs to be printed to terminal
-script -q /dev/null ./lost pipeline --generate 1 --centroid-algo cog --compare-centroids - | grep -q centroids_mean_error || exit 1
-script -q /dev/null ./lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout | grep -q centroids_mean_error || exit 1
+# macOS and Linux have different `script` syntax.
+if script -q /dev/null -c "true" > /dev/null 2>&1; then
+  run_script() { script -q /dev/null -c "$*"; }
+else
+  run_script() { script -q /dev/null "$@"; }
+fi
+run_script ./lost pipeline --generate 1 --centroid-algo cog --compare-centroids - | grep -q centroids_mean_error || exit 1
+run_script ./lost pipeline --generate 1 --centroid-algo cog --compare-centroids stdout | grep -q centroids_mean_error || exit 1
 # `script` captures stderr by default
-script -q /dev/null ./lost pipeline --generate 1 --plot-raw-input - | grep -q 'WARNING' || exit 1
+run_script ./lost pipeline --generate 1 --plot-raw-input - | grep -q 'WARNING' || exit 1
 
 # Issue #32: Unenlightening error message when neither --generate nor --png is passed to pipeline
 ./lost pipeline 2>&1 | grep -q ERROR || exit 1

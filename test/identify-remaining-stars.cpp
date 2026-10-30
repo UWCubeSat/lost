@@ -1,4 +1,5 @@
 #include <random>
+#include <vector>
 
 #include <catch.hpp>
 

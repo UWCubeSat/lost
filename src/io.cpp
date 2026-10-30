@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <map>
 #include <chrono>
+#include <utility>
 
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"

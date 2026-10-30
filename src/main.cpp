@@ -6,6 +6,7 @@
 
 #include <bitset>
 #include <iostream>
+#include <vector>
 
 #include "CLI11.hpp"
 #include "databases.hpp"

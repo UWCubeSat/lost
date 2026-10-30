@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <catch.hpp>
 
 #include "databases.hpp"
