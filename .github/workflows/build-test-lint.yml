@@ -31,4 +31,4 @@ jobs:
     - name: Lint
       run: make lint
     - name: Line Endings
-      uses: erclu/check-crlf@v1
+      uses: erclu/check-crlf@master
