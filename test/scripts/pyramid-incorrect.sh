@@ -39,7 +39,7 @@ for _ in $(seq "${1:-100}"); do
       --generate-x-resolution "$x_res" \
       --generate-y-resolution "$y_res" \
       --fov "$fov" \
-      --generate-reference-brightness 0 \
+      --generate-zero-mag-photons 0 \
       --generate-spread-stddev 0 \
       --generate-read-noise-stddev 0 \
       --generate-ra "$ra" \

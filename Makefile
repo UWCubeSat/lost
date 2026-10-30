@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Mark Polyakov, Karen Haining, Edward Zhang
+# Copyright (c) 2020 Mark Polyakov, Karen Haining, Muki Kiboigo, Edward Zhang
 # (If you edit the file, add your name here!)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,9 +36,9 @@ TEST_BIN := ./lost-test
 
 BSC  := bright-star-catalog.tsv
 
-LIBS     := -L/opt/homebrew/lib -lcairo
-CFLAGS = -I/opt/homebrew/include/cairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14
+LIBS     := -lcairo
+CXXFLAGS := $(CXXFLAGS) -Ivendor -I/opt/homebrew/include -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14
+LDFLAGS  := $(LDFLAGS) -L/opt/homebrew/lib
 RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
 # debug flags:
 CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
@@ -51,6 +51,12 @@ RELEASE_LDFLAGS := $(LDFLAGS)
 # debug link flags:
 ifndef LOST_DISABLE_ASAN
 	LDFLAGS := $(LDFLAGS) -fsanitize=address
+endif
+
+# Use Double Mode by default.
+# If compiled with LOST_FLOAT_MODE=1, we will use floats.
+ifdef LOST_FLOAT_MODE
+	CXXFLAGS := $(CXXFLAGS) -Wdouble-promotion -Werror=double-promotion -D LOST_FLOAT_MODE
 endif
 
 all: $(BIN) $(BSC)
@@ -83,11 +89,11 @@ lint:
 -include $(DEPS)
 
 test: $(BIN) $(BSC) $(TEST_BIN)
-	$(TEST_BIN)
+	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt $(TEST_BIN)
 	# bash ./test/scripts/pyramid-incorrect.sh
-	bash ./test/scripts/readme-examples-test.sh
-	bash ./test/scripts/random-crap.sh
-	# bash ./test/scripts/tetra.sh
+	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/readme-examples-test.sh
+	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/random-crap.sh
+	# LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/tetra.sh
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 tmp_dir=$(mktemp -d)
 
@@ -6,23 +7,23 @@ tmp_dir=$(mktemp -d)
 ./lost pipeline \
   --generate 1 \
   --plot-raw-input "$tmp_dir/raw-input.png" \
-  --plot-input "$tmp_dir/input.png"
+  --plot-input "$tmp_dir/input.png" > /dev/null 2>&1
 ./lost pipeline \
   --generate 1 \
   --generate-x-resolution 1024 \
   --generate-y-resolution 1024 \
   --fov 30 \
-  --generate-reference-brightness 100 \
+  --generate-zero-mag-photons 20000 \
   --generate-spread-stddev 1 \
   --generate-read-noise-stddev 0.05 \
   --generate-ra 88 \
   --generate-de 7 \
   --generate-roll 0 \
   --plot-raw-input "$tmp_dir/raw-input.png" \
-  --plot-input "$tmp_dir/annotated-input.png"
+  --plot-input "$tmp_dir/annotated-input.png" > /dev/null 2>&1
 
 # Real image test
-curl https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
+curl -sS https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
 
 ./lost database \
   --max-stars 5000 \
@@ -30,9 +31,8 @@ curl https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
   --kvector-min-distance 0.2 \
   --kvector-max-distance 15 \
   --kvector-distance-bins 10000 \
-  --output "$tmp_dir/my-database.dat"
+  --output "$tmp_dir/my-database.dat" > /dev/null 2>&1
 
-set -x
 lost_output=$(
   ./lost pipeline \
     --png "$tmp_dir/img_7660.png" \
@@ -47,13 +47,12 @@ lost_output=$(
     --max-mismatch-prob 0.0001 \
     --attitude-algo dqm \
     --plot-output "$tmp_dir/annotated-7660.png" \
-    --print-attitude
+    --print-attitude 2>/dev/null
 )
-set +x
 
-ra=$(grep -oP "(?<=attitude_ra )[0-9]+" <<<"$lost_output")
-de=$(grep -oP "(?<=attitude_de )[0-9]+" <<<"$lost_output")
-roll=$(grep -oP "(?<=attitude_roll )[0-9]+" <<<"$lost_output")
+ra=$(awk '/attitude_ra/ {print int($2)}' <<<"$lost_output")
+de=$(awk '/attitude_de/ {print int($2)}' <<<"$lost_output")
+roll=$(awk '/attitude_roll/ {print int($2)}' <<<"$lost_output")
 
 if ((ra == 17 && de == 63 && roll == 12)); then
   echo "TEST: [SUCCESS]: All clear!"

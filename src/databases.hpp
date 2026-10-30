@@ -14,6 +14,8 @@ namespace lost {
 
 const int32_t kCatalogMagicValue = 0xF9A283BC;
 
+inline bool isFlagSet(uint32_t dbFlags, uint32_t flag);
+
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
  *
@@ -24,27 +26,27 @@ class KVectorIndex {
 public:
     explicit KVectorIndex(DeserializeContext *des);
 
-    long QueryLiberal(float minQueryDistance, float maxQueryDistance, long *upperIndex) const;
+    long QueryLiberal(decimal minQueryDistance, decimal maxQueryDistance, long *upperIndex) const;
 
     /// The number of data points in the data referred to by the kvector
     long NumValues() const { return numValues; };
     long NumBins() const { return numBins; };
     /// Upper bound on elements
-    float Max() const { return max; };
+    decimal Max() const { return max; };
     // Lower bound on elements
-    float Min() const { return min; };
+    decimal Min() const { return min; };
 private:
-    long BinFor(float dist) const;
+    long BinFor(decimal dist) const;
 
     long numValues;
-    float min;
-    float max;
-    float binWidth;
+    decimal min;
+    decimal max;
+    decimal binWidth;
     long numBins;
     const int32_t *bins;
 };
 
-void SerializePairDistanceKVector(SerializeContext *, const Catalog &, float minDistance, float maxDistance, long numBins);
+void SerializePairDistanceKVector(SerializeContext *, const Catalog &, decimal minDistance, decimal maxDistance, long numBins);
 
 /**
  * A database storing distances between pairs of stars.
@@ -55,14 +57,14 @@ class PairDistanceKVectorDatabase {
 public:
     explicit PairDistanceKVectorDatabase(DeserializeContext *des);
 
-    const int16_t *FindPairsLiberal(float min, float max, const int16_t **end) const;
-    const int16_t *FindPairsExact(const Catalog &, float min, float max, const int16_t **end) const;
-    std::vector<float> StarDistances(int16_t star, const Catalog &) const;
+    const int16_t *FindPairsLiberal(decimal min, decimal max, const int16_t **end) const;
+    const int16_t *FindPairsExact(const Catalog &, decimal min, decimal max, const int16_t **end) const;
+    std::vector<decimal> StarDistances(int16_t star, const Catalog &) const;
 
     /// Upper bound on stored star pair distances
-    float MaxDistance() const { return index.Max(); };
+    decimal MaxDistance() const { return index.Max(); };
     /// Lower bound on stored star pair distances
-    float MinDistance() const { return index.Min(); };
+    decimal MinDistance() const { return index.Min(); };
     /// Exact number of stored pairs
     long NumPairs() const;
 
@@ -83,9 +85,9 @@ Return:
 (b) Subset of (a) that we use to generate Tetra star patterns
 */
 std::pair<std::vector<uint16_t>, std::vector<uint16_t>> TetraPreparePattCat(const Catalog &,
-                                                                            const float maxFovDeg);
+                                                                            const decimal maxFovDeg);
 
-void SerializeTetraDatabase(SerializeContext *, const Catalog &, float maxFovDeg,
+void SerializeTetraDatabase(SerializeContext *, const Catalog &, decimal maxFovDeg,
                             const std::vector<uint16_t> &pattStarIndices,
                             const std::vector<uint16_t> &catIndices);
 
@@ -113,7 +115,7 @@ class TetraDatabase {
     explicit TetraDatabase(DeserializeContext *des);
 
     /// Max angle (in degrees) allowed between stars in the same pattern
-    float MaxAngle() const {return maxAngle_;}
+    decimal MaxAngle() const {return maxAngle_;}
 
     /// Number of rows in pattern catalog
     // With load factor of just under 0.5, size = numPatterns*2 + 1
@@ -135,7 +137,7 @@ class TetraDatabase {
     // static const int headerSize = sizeof(float) + sizeof(uint64_t);
 
    private:
-    float maxAngle_;
+    decimal maxAngle_;
     uint64_t pattCatSize_;
     uint16_t tetraStarCatSize_;
     const uint16_t* pattCats_;
@@ -153,7 +155,7 @@ class TetraDatabase {
 // public:
 //     explicit TripleInnerKVectorDatabase(const unsigned char *databaseBytes);
 
-//     void FindTriplesLiberal(float min, float max, long **begin, long **end) const;
+//     void FindTriplesLiberal(decimal min, decimal max, long **begin, long **end) const;
 // private:
 //     KVectorIndex index;
 //     int16_t *triples;
@@ -164,6 +166,9 @@ class TetraDatabase {
  * This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database.
  * Multi-databases are essentially a map from "magic values" to database buffers.
  */
+
+#define MULTI_DB_FLOAT_FLAG 0x0001 // By default, our DB is in double mode.
+
 class MultiDatabase {
 public:
     /// Create a multidatabase from a serialized multidatabase.
@@ -179,12 +184,13 @@ public:
         : magicValue(magicValue), bytes(bytes) { }
 
     int32_t magicValue;
+    uint32_t flags;
     std::vector<unsigned char> bytes;
 };
 
 using MultiDatabaseDescriptor = std::vector<MultiDatabaseEntry>;
 
-void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs);
+void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint32_t flags);
 
 }
 

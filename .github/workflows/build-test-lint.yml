@@ -12,10 +12,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
+    - name: Build Double
       run: CXXFLAGS=-Werror make -j$(($(nproc)+1))
-    - name: Test
+    - name: Test Double
       run: CXXFLAGS=-Werror make test -j$(($(nproc)+1))
+    - name: Build Float
+      run: make clean && CXXFLAGS=-Werror make all LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
+    - name: Test Float
+      run: CXXFLAGS=-Werror make test LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
   
   lint:
     runs-on: ubuntu-latest
@@ -27,4 +31,4 @@ jobs:
     - name: Lint
       run: make lint
     - name: Line Endings
-      uses: erclu/check-crlf@v1
+      uses: erclu/check-crlf@master

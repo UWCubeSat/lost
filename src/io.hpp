@@ -75,6 +75,7 @@ public:
 // PIPELINE INPUT //
 ////////////////////
 
+
 /// The command line options passed when running a pipeline
 class PipelineOptions {
 public:
@@ -125,13 +126,13 @@ public:
     GeneratedPipelineInput(const Catalog &, Attitude, Camera, std::default_random_engine *,
 
                            bool centroidsOnly,
-                           float observedReferenceBrightness, float starSpreadStdDev,
-                           float sensitivity, float darkCurrent, float readNoiseStdDev,
-                           Attitude motionBlurDirection, float exposureTime, float readoutTime,
+                           decimal observedReferenceBrightness, decimal starSpreadStdDev,
+                           decimal sensitivity, decimal darkCurrent, decimal readNoiseStdDev,
+                           Attitude motionBlurDirection, decimal exposureTime, decimal readoutTime,
                            bool shotNoise, int oversampling,
                            int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
                            int cutoffMag,
-                           float perturbationStddev);
+                           decimal perturbationStddev);
 
 
     const Image *InputImage() const override { return &image; };
@@ -273,7 +274,7 @@ void PipelineComparison(const PipelineInputList &expected,
 StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdentifiers &actual,
                                 // use these to map indices to names for the respective lists of StarIdentifiers
                                 const Catalog &expectedCatalog, const Catalog &actualCatalog,
-                                float centroidThreshold,
+                                decimal centroidThreshold,
                                 const Stars &expectedStars, const Stars &inputStars);
 
 ////////////////
