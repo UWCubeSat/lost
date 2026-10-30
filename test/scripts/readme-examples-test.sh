@@ -7,7 +7,7 @@ tmp_dir=$(mktemp -d)
 ./lost pipeline \
   --generate 1 \
   --plot-raw-input "$tmp_dir/raw-input.png" \
-  --plot-input "$tmp_dir/input.png"
+  --plot-input "$tmp_dir/input.png" > /dev/null 2>&1
 ./lost pipeline \
   --generate 1 \
   --generate-x-resolution 1024 \
@@ -20,10 +20,10 @@ tmp_dir=$(mktemp -d)
   --generate-de 7 \
   --generate-roll 0 \
   --plot-raw-input "$tmp_dir/raw-input.png" \
-  --plot-input "$tmp_dir/annotated-input.png"
+  --plot-input "$tmp_dir/annotated-input.png" > /dev/null 2>&1
 
 # Real image test
-curl https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
+curl -sS https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
 
 ./lost database \
   --max-stars 5000 \
@@ -31,7 +31,7 @@ curl https://markasoftware.com/img_7660.png -o "$tmp_dir/img_7660.png"
   --kvector-min-distance 0.2 \
   --kvector-max-distance 15 \
   --kvector-distance-bins 10000 \
-  --output "$tmp_dir/my-database.dat"
+  --output "$tmp_dir/my-database.dat" > /dev/null 2>&1
 
 lost_output=$(
   ./lost pipeline \
@@ -47,7 +47,7 @@ lost_output=$(
     --max-mismatch-prob 0.0001 \
     --attitude-algo dqm \
     --plot-output "$tmp_dir/annotated-7660.png" \
-    --print-attitude
+    --print-attitude 2>/dev/null
 )
 
 ra=$(awk '/attitude_ra/ {print int($2)}' <<<"$lost_output")
