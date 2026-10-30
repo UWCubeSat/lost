@@ -39,6 +39,16 @@ BSC  := bright-star-catalog.tsv
 LIBS     := -lcairo
 CXXFLAGS := $(CXXFLAGS) -Ivendor -I/opt/homebrew/include -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14
 LDFLAGS  := $(LDFLAGS) -L/opt/homebrew/lib
+
+# Use std::fma by default.
+# If compiled with LOST_DISABLE_FMA=1, we will use a plain multiply-add instead, which is much faster
+# on CPUs without fused multiply-add hardware, like the BeagleBone Black's Cortex-A8.
+# -ffp-contract=off keeps the compiler from turning it back into an fma where the hardware has one,
+# so every platform computes the same result.
+ifdef LOST_DISABLE_FMA
+	CXXFLAGS := $(CXXFLAGS) -D LOST_DISABLE_FMA -ffp-contract=off
+endif
+
 RELEASE_CXXFLAGS := $(CXXFLAGS) -O3
 # debug flags:
 CXXFLAGS := $(CXXFLAGS) -ggdb -fno-omit-frame-pointer
