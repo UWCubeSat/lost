@@ -89,10 +89,10 @@ lint:
 -include $(DEPS)
 
 test: $(BIN) $(BSC) $(TEST_BIN)
-	$(TEST_BIN)
+	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt $(TEST_BIN)
 	# bash ./test/scripts/pyramid-incorrect.sh
-	bash ./test/scripts/readme-examples-test.sh
-	bash ./test/scripts/random-crap.sh
+	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/readme-examples-test.sh
+	LSAN_OPTIONS=suppressions=test/lsan_suppressions.txt bash ./test/scripts/random-crap.sh
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)

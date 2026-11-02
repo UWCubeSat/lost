@@ -16,6 +16,7 @@
 #include <chrono>
 #include <cstring>
 #include <map>
+#include <vector>
 
 #include "databases.hpp"
 #include "centroiders.hpp"

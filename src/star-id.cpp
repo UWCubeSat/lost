@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <chrono>
 #include <unordered_map>
+#include <cstdio>
+#include <iostream>
 
 #include "star-id.hpp"
 #include "star-id-private.hpp"
@@ -259,12 +261,12 @@ static bool IsInCatalog(int catalogIndex, size_t catalogSize) {
  *
  * The table is constructed by counting sort in O(pairs + catalogSize) with zero hashing.
  * The partners of catalog star c are m->values[i] for m->offsets[c] <= i < m->offsets[c+1].
- * 
+ *
  * The table is "symmetrical" in the sense that if a star B is in the map for star A, then
  * star A is also in the map for star B.
  *
  * *m is fully overwritten so that the same FlatPairMap can be reused across calls.
- * 
+ *
  * @return false if any pair refers to a star outside the catalog, which means the database was not built from this catalog.
  */
 struct FlatPairMap {
@@ -692,7 +694,10 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     // there isn't some pyramid that's just outside the database's bounds, but
                     // within measurement tolerance of the observed pyramid, since that would
                     // possibly cause a non-unique pyramid to be identified as unique.
-#define _CHECK_DISTANCE(_dist) if (_dist < vectorDatabase.MinDistance() + tolerance || _dist > vectorDatabase.MaxDistance() - tolerance) { continue; }
+#define _CHECK_DISTANCE(_dist)                                          \
+                if (_dist < vectorDatabase.MinDistance() + tolerance     \
+                    || _dist > vectorDatabase.MaxDistance() - tolerance) \
+                { continue; }
                     _CHECK_DISTANCE(ikDist);
                     _CHECK_DISTANCE(irDist);
                     _CHECK_DISTANCE(jkDist);

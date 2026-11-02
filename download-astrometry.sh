@@ -20,8 +20,8 @@ fi
 astrometry_host=http://nova.astrometry.net
 
 user_image_page=$(curl ""$astrometry_host/user_images/$1)
-axy_link=$astrometry_host$(echo "$user_image_page" | grep -oP "/axy_file/[0-9]+")
-jpeg_link=$astrometry_host$(echo "$user_image_page" | grep -oP '(?<="original": ")/image/[0-9]+')
+axy_link=$astrometry_host$(echo "$user_image_page" | grep -oE "/axy_file/[0-9]+")
+jpeg_link=$astrometry_host$(echo "$user_image_page" | grep -oE "/image/[0-9]+")
 
 mkdir "$1"
 curl -o "$1/axy.fits" "$axy_link"
