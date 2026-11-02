@@ -173,12 +173,12 @@ decimal DecimalModulo(decimal x, decimal mod) {
 
 /// The square of the magnitude
 decimal Vec3::MagnitudeSq() const {
-    return DECIMAL_FMA(x,x,DECIMAL_FMA(y,y, z*z));
+    return x*x + y*y + z*z;
 }
 
 /// The square of the magnitude
 decimal Vec2::MagnitudeSq() const {
-    return DECIMAL_FMA(x,x, y*y);
+    return x*x + y*y;
 }
 
 decimal Vec3::Magnitude() const {
@@ -199,7 +199,7 @@ Vec3 Vec3::Normalize() const {
 
 /// Dot product
 decimal Vec3::operator*(const Vec3 &other) const {
-    return DECIMAL_FMA(x,other.x, DECIMAL_FMA(y,other.y, z*other.z));
+    return x*other.x + y*other.y + z*other.z;
 }
 
 /// Vector-Scalar multiplication
