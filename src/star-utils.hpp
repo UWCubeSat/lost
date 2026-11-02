@@ -1,6 +1,7 @@
 #ifndef STAR_UTILS_H
 #define STAR_UTILS_H
 
+#include <algorithm>
 #include <vector>
 
 #include "attitude-utils.hpp"
@@ -131,6 +132,83 @@ decimal MagToBrightness(int magnitude);
  */
 Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, decimal minSeparation);
 
+// Hash binned edge ratios of a Tetra star pattern into an index in the pattern table.
+size_t TetraFindPatternIndex(const int* patternEdgeRatios,
+                             size_t numRatios,
+                             int numEdgeRatioBins,
+                             size_t tableSize);
+
+// Generates all ways to choose k items from n, prioritizing patterns whose
+// dimmest star is as bright as possible (intuitively we want to avoid a bad centroid ruining a
+// pattern) E.g. for k=4, n=8: 0123, 0124, 0134, 0234, 1234, 0125, ... Formally, all combinations
+// using only items 0..m are exhausted before item m+1 appears
+class CombinationIterator {
+   public:
+    CombinationIterator(int k, int n) : k_(k), n_(n), indices_(k), isFirst_(true) {
+        for (int i = 0; i < k; i++)
+            indices_[i] = i;
+    }
+
+    bool next() {
+        if (isFirst_) {
+            isFirst_ = false;
+            return n_ >= k_;
+        }
+        int i = 0;
+        // Find leftmost index that can be incremented
+        while (i < k_ && indices_[i] + 1 == (i + 1 < k_ ? indices_[i + 1] : n_)) {
+            i++;
+        }
+        if (i == k_) return false;
+        indices_[i]++;
+        // Reset everything before the index we just changed
+        for (int j = 0; j < i; j++)
+            indices_[j] = j;
+        return true;
+    }
+
+    const std::vector<int>& indices() const { return indices_; }
+
+   private:
+    int k_, n_;
+    std::vector<int> indices_;
+    bool isFirst_;
+};
+
+struct TetraConstants {
+    static constexpr int numPatternStars = 4;
+};
+
+// Check whether all pairs of stars have angular distance within maxFov.
+// SpatialAccessor(int i) must return const Vec3&.
+template <typename SpatialAccessor>
+bool AllPairsWithinFov(int numStars, SpatialAccessor spatial, decimal cosMaxFov) {
+    for (int i = 0; i < numStars; i++) {
+        for (int j = i + 1; j < numStars; j++) {
+            if (spatial(i) * spatial(j) <= cosMaxFov) return false;
+        }
+    }
+    return true;
 }
+
+// Compute sorted edge ratios for a star pattern. SpatialAccessor(int i) must return const Vec3&.
+template <typename SpatialAccessor>
+std::vector<decimal> TetraEdgeRatios(int numStars, SpatialAccessor spatial) {
+    std::vector<decimal> edgeLengths;
+    for (int i = 0; i < numStars; i++) {
+        for (int j = i + 1; j < numStars; j++) {
+            edgeLengths.push_back((spatial(j) - spatial(i)).Magnitude());
+        }
+    }
+    std::sort(edgeLengths.begin(), edgeLengths.end());
+    decimal longestEdgeLen = edgeLengths.back();
+    std::vector<decimal> edgeRatios;
+    for (size_t i = 0; i < edgeLengths.size() - 1; i++) {
+        edgeRatios.push_back(edgeLengths[i] / longestEdgeLen);
+    }
+    return edgeRatios;
+}
+
+}  // namespace lost
 
 #endif

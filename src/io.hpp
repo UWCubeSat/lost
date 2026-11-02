@@ -5,27 +5,23 @@
 
 #include <cairo/cairo.h>
 
-#include <random>
-#include <vector>
-#include <map>
-#include <utility>
-#include <string>
-#include <sstream>
 #include <iostream>
 #include <memory>
-
+#include <random>
+#include <string>
+#include <vector>
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
 #endif
 
-#include "centroiders.hpp"
-#include "star-utils.hpp"
-#include "star-id.hpp"
-#include "camera.hpp"
-#include "attitude-utils.hpp"
 #include "attitude-estimators.hpp"
+#include "attitude-utils.hpp"
+#include "camera.hpp"
+#include "centroiders.hpp"
 #include "databases.hpp"
+#include "star-id.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 

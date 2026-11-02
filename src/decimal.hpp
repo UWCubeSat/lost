@@ -1,9 +1,6 @@
 #ifndef DECIMAL_H
 #define DECIMAL_H
 
-#include <cmath>
-#include <string>
-
 #ifdef LOST_FLOAT_MODE
     typedef float decimal;
     #define STR_TO_DECIMAL(x) std::stof(x)

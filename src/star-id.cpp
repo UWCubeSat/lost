@@ -1,23 +1,286 @@
-#include <stdlib.h>
-#include <math.h>
+#include "star-id.hpp"
+
 #include <assert.h>
-#include <vector>
+#include <math.h>
+#include <stdlib.h>
+
 #include <algorithm>
-#include <chrono>
-#include <unordered_map>
 #include <cstdio>
 #include <iostream>
+#include <limits>
+#include <numeric>
+#include <set>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
-#include "star-id.hpp"
-#include "star-id-private.hpp"
-#include "databases.hpp"
+#include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
+#include "databases.hpp"
+#include "star-id-private.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
-StarIdentifiers DummyStarIdAlgorithm::Go(
-    const unsigned char *, const Stars &stars, const Catalog &catalog, const Camera &) const {
+// C(4,2) - 1 = 5 edge ratios per pattern
+static constexpr int kNumEdgeRatios =
+    TetraConstants::numPatternStars * (TetraConstants::numPatternStars - 1) / 2 - 1;
+using HashCode = std::array<int, kNumEdgeRatios>;
 
+// Generate all candidate hash codes for the given edge ratios.
+// For each ratio, compute a range of bins that fall within searchRange, then
+// enumerate every combination across all ratios (Cartesian product). Each
+// combination is sorted before insertion so that order-equivalent codes are deduped.
+static std::set<HashCode> GenerateCandidateHashCodes(const std::vector<decimal>& edgeRatios,
+                                                     decimal searchRange,
+                                                     int numBins) {
+    // For each edge ratio, compute the range of bins it could fall into
+    std::array<std::pair<int, int>, kNumEdgeRatios> binRanges;
+    size_t totalCombinations = 1;
+    for (int i = 0; i < kNumEdgeRatios; i++) {
+        int lo = std::max(0, int((edgeRatios[i] - searchRange) * numBins));
+        int hi = std::min(numBins, int((edgeRatios[i] + searchRange) * numBins) + 1);
+        binRanges[i] = {lo, hi};
+        totalCombinations *= (hi - lo);
+    }
+
+    // Enumerate all combinations
+    std::set<HashCode> hashCodes;
+    HashCode currentBins;
+    for (int i = 0; i < kNumEdgeRatios; i++)
+        currentBins[i] = binRanges[i].first;
+
+    for (size_t iter = 0; iter < totalCombinations; iter++) {
+        // Sort before inserting so order-equivalent codes are deduped
+        HashCode sortedBins = currentBins;
+        std::sort(sortedBins.begin(), sortedBins.end());
+        hashCodes.insert(sortedBins);
+
+        for (int binDim = kNumEdgeRatios - 1; binDim >= 0; binDim--) {
+            currentBins[binDim]++;
+            if (currentBins[binDim] < binRanges[binDim].second) break;
+            currentBins[binDim] = binRanges[binDim].first;
+        }
+    }
+    return hashCodes;
+}
+
+// Sort indices by distance of each vector from the centroid of all vectors.
+static std::vector<int> SortByCentroidRadius(const std::vector<int>& indices,
+                                             const std::vector<Vec3>& vecs) {
+    Vec3 centroid{0, 0, 0};
+    for (const Vec3& v : vecs)
+        centroid = centroid + v;
+    centroid = centroid * (DECIMAL(1.0) / vecs.size());
+
+    std::vector<int> order(indices.size());
+    std::iota(order.begin(), order.end(), 0);
+    std::sort(order.begin(), order.end(), [&](int a, int b) {
+        return (vecs[a] - centroid).MagnitudeSq() < (vecs[b] - centroid).MagnitudeSq();
+    });
+
+    std::vector<int> result;
+    for (int i : order) {
+        result.push_back(indices[i]);
+    }
+
+    return result;
+}
+
+// Pair observed centroids to catalog stars by sorting both sets by distance from centroid.
+static StarIdentifiers PairByCentroidRadius(const std::vector<int>& centroidIndices,
+                                            const std::vector<Vec3>& observedStarVecs,
+                                            const std::vector<int>& catalogInds,
+                                            const std::vector<Vec3>& catalogStarVecs) {
+    std::vector<int> sortedCentroids = SortByCentroidRadius(centroidIndices, observedStarVecs);
+    std::vector<int> sortedCatalog = SortByCentroidRadius(catalogInds, catalogStarVecs);
+
+    StarIdentifiers result;
+    for (int i = 0; i < (int)sortedCentroids.size(); i++) {
+        result.push_back(StarIdentifier(sortedCentroids[i], sortedCatalog[i]));
+    }
+    return result;
+}
+
+// Try all n! ways to pair observed stars with catalog stars. For each pairing, compute an
+// attitude via TRIAD, then measure how well that attitude maps each observed star onto its
+// paired catalog star. We let residual = sum of angular errors, then return the pairing with
+// the lowest residual
+static StarIdentifiers PairByTriadPermutation(const std::vector<int>& centroidIndices,
+                                              const std::vector<Vec3>& observedStarVecs,
+                                              const std::vector<int>& catalogInds,
+                                              const std::vector<Vec3>& catalogStarVecs,
+                                              const Stars& stars,
+                                              const Catalog& catalog,
+                                              const Camera& camera) {
+    const size_t n = observedStarVecs.size();
+    std::vector<int> perm(n);
+    for (size_t i = 0; i < n; i++)
+        perm[i] = i;
+
+    decimal bestResidual = std::numeric_limits<decimal>::max();
+    std::vector<int> bestPerm = perm;
+
+    TriadAlgorithm estimator;
+
+    do {
+        // Assume observed star i corresponds to catalog star perm[i]
+        StarIdentifiers ids;
+        for (size_t i = 0; i < n; i++) {
+            ids.push_back(StarIdentifier(centroidIndices[i], catalogInds[perm[i]]));
+        }
+
+        // Compute attitude from this pairing
+        Attitude att = estimator.Go(camera, stars, catalog, ids);
+        if (!att.IsKnown()) continue;
+
+        // Measure total angular error: rotate each observed star by the attitude
+        // and compare to where the catalog star actually is
+        Quaternion q = att.GetQuaternion().Conjugate();
+        decimal residual = 0;
+        for (size_t i = 0; i < n; i++) {
+            Vec3 rotated = q.Rotate(observedStarVecs[i]);
+            Vec3 expectedVec = catalogStarVecs[perm[i]].Normalize();
+            decimal dot = rotated * expectedVec;
+            dot = std::max(DECIMAL(-1.0), std::min(DECIMAL(1.0), dot));
+            residual += DECIMAL_ACOS(dot);
+        }
+
+        if (residual < bestResidual) {
+            bestResidual = residual;
+            bestPerm = perm;
+        }
+    } while (std::next_permutation(perm.begin(), perm.end()));
+
+    StarIdentifiers result;
+    for (size_t i = 0; i < n; i++) {
+        result.push_back(StarIdentifier(centroidIndices[i], catalogInds[bestPerm[i]]));
+    }
+    return result;
+}
+
+StarIdentifiers TetraStarIdAlgorithm::Go(const unsigned char* database,
+                                         const Stars& stars,
+                                         const Catalog& catalog,
+                                         const Camera& camera) const {
+    MultiDatabase multiDatabase(database);
+    const unsigned char* databaseBuffer =
+        multiDatabase.SubDatabasePointer(TetraDatabase::kMagicValue);
+    if (databaseBuffer == nullptr) {
+        std::cerr << "Could not get to Tetra database" << std::endl;
+        return {};
+    }
+    DeserializeContext des(databaseBuffer);
+    TetraDatabase tetraDatabase(&des);
+
+    const size_t patternTableSize = tetraDatabase.PatternTableSize();
+    const decimal maxFov = tetraDatabase.MaxFov();
+    const decimal cosMaxFov = DECIMAL_COS(DegToRad(maxFov));
+    const int numEdgeRatioBins = tetraDatabase.NumEdgeRatioBins();
+
+    std::vector<int> centroidIndices(stars.size());
+    std::iota(centroidIndices.begin(), centroidIndices.end(), 0);
+
+    // Sort centroided stars by brightness, high to low. Larger is brighter
+    std::sort(centroidIndices.begin(), centroidIndices.end(), [&stars](int a, int b) {
+        return stars[a].magnitude > stars[b].magnitude;
+    });
+
+    CombinationIterator combos(TetraConstants::numPatternStars, centroidIndices.size());
+
+    while (combos.next()) {
+        const std::vector<int>& comboIndices = combos.indices();
+
+        std::vector<int> selectedCentroidIndices(TetraConstants::numPatternStars);
+        std::vector<Vec3> observedStarVecs(TetraConstants::numPatternStars);
+        for (int i = 0; i < TetraConstants::numPatternStars; i++) {
+            int centroidInd = centroidIndices[comboIndices[i]];
+            selectedCentroidIndices[i] = centroidInd;
+            observedStarVecs[i] = camera.CameraToSpatial(stars[centroidInd].position).Normalize();
+        }
+
+        // Skip if any pair of chosen stars is farther apart than maxFov
+        bool angleAcceptable = AllPairsWithinFov(
+            TetraConstants::numPatternStars,
+            [&](int i) -> const Vec3& { return observedStarVecs[i]; },
+            cosMaxFov);
+
+        if (!angleAcceptable) {
+            continue;
+        }
+
+        std::vector<decimal> observedEdgeRatios = TetraEdgeRatios(
+            observedStarVecs.size(), [&](int i) -> const Vec3& { return observedStarVecs[i]; });
+
+        std::set<HashCode> hashCodes =
+            GenerateCandidateHashCodes(observedEdgeRatios, patternSearchRange_, numEdgeRatioBins);
+
+        for (const HashCode& code : hashCodes) {
+            size_t hashIndex =
+                TetraFindPatternIndex(code.data(), code.size(), numEdgeRatioBins, patternTableSize);
+            std::vector<TetraPattern> matches = tetraDatabase.GetPatternMatches(hashIndex);
+
+            if (matches.empty()) continue;
+
+            // Find verified matches — patterns whose edge ratios are within match tolerance
+            int numVerified = 0;
+            std::vector<int> catalogInds;
+            std::vector<Vec3> catalogStarVecs;
+            for (const TetraPattern& matchRow : matches) {
+                std::vector<int> candidateInds;
+                std::vector<Vec3> candidateVecs;
+                for (int star : matchRow) {
+                    int catalogInd = tetraDatabase.CatalogIndex(star);
+                    candidateInds.push_back(catalogInd);
+                    candidateVecs.push_back(catalog[catalogInd].spatial);
+                }
+
+                std::vector<decimal> catalogEdgeRatios = TetraEdgeRatios(
+                    candidateVecs.size(), [&](int i) -> const Vec3& { return candidateVecs[i]; });
+
+                bool ratiosMatch = true;
+                for (size_t i = 0; i < catalogEdgeRatios.size(); i++) {
+                    if (std::abs(catalogEdgeRatios[i] - observedEdgeRatios[i]) >
+                        patternMatchTolerance_) {
+                        ratiosMatch = false;
+                        break;
+                    }
+                }
+
+                if (ratiosMatch) {
+                    if (numVerified == 0) {
+                        catalogInds = std::move(candidateInds);
+                        catalogStarVecs = std::move(candidateVecs);
+                    }
+                    numVerified++;
+                    if (numVerified > 1) break;
+                }
+            }
+
+            // Only use the match if it's unique
+            if (numVerified == 1) {
+                if (pairingMode_ == TRIAD_PERMUTATION) {
+                    return PairByTriadPermutation(selectedCentroidIndices,
+                                                  observedStarVecs,
+                                                  catalogInds,
+                                                  catalogStarVecs,
+                                                  stars,
+                                                  catalog,
+                                                  camera);
+                } else {
+                    return PairByCentroidRadius(
+                        selectedCentroidIndices, observedStarVecs, catalogInds, catalogStarVecs);
+                }
+            }
+        }
+    }
+
+    std::cerr << "TETRA FAIL: nothing could be matched" << std::endl;
+    return {};
+}
+
+StarIdentifiers DummyStarIdAlgorithm::Go(const unsigned char *, const Stars &stars,
+                                         const Catalog &catalog, const Camera &) const {
     StarIdentifiers result;
 
     unsigned int randomSeed = 123456;
@@ -774,4 +1037,4 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
     return identified;
 }
 
-}
+}  // namespace lost
