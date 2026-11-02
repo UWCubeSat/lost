@@ -251,10 +251,6 @@ std::vector<int16_t> ConsumeInvolvingIterator(PairDistanceInvolvingIterator it) 
     return result;
 }
 
-static bool IsInCatalog(int catalogIndex, size_t catalogSize) {
-    return catalogIndex >= 0 && (size_t)catalogIndex < catalogSize;
-}
-
 /**
  * Given the result of a pair-distance kvector query, build a table of stars to other stars
  * that appeared with it in the query.
@@ -266,31 +262,30 @@ static bool IsInCatalog(int catalogIndex, size_t catalogSize) {
  * star A is also in the map for star B.
  *
  * *m is fully overwritten so that the same FlatPairMap can be reused across calls.
- *
- * @return false if any pair refers to a star outside the catalog, which means the database was not built from this catalog.
  */
 struct FlatPairMap {
     std::vector<int32_t> offsets;
     std::vector<int16_t> values;
 };
 
-static bool PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end, size_t catalogSize, FlatPairMap *m) {
+static void PairDistanceQueryToMap(const int16_t *pairs, const int16_t *end, size_t catalogSize, FlatPairMap *m) {
     m->offsets.assign(catalogSize + 1, 0);
     for (const int16_t *p = pairs; p != end; p += 2) {
-        if (!IsInCatalog(p[0], catalogSize) || !IsInCatalog(p[1], catalogSize))
-            return false;
+        assert(p[0] >= 0 && (size_t)p[0] < catalogSize);
+        assert(p[1] >= 0 && (size_t)p[1] < catalogSize);
         m->offsets[p[0]]++;
         m->offsets[p[1]]++;
     }
 
-    for (size_t i = 1; i <= catalogSize; i++) m->offsets[i] += m->offsets[i-1];
+    for (auto last = m->offsets.begin(), next = last+1; next != m->offsets.end(); last++, next++) {
+        *next += *last;
+    }
     m->values.resize(end - pairs);
 
     for (const int16_t *p = pairs; p != end; p += 2) {
         m->values[--m->offsets[p[0]]] = p[1];
         m->values[--m->offsets[p[1]]] = p[0];
     }
-    return true;
 }
 
 decimal IRUnidentifiedCentroid::VerticalAnglesToAngleFrom90(decimal v1, decimal v2) {
@@ -714,11 +709,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                     if (ijQuery == ijEnd || ikQuery == ikEnd || irQuery == irEnd)
                         continue;
 
-                    if (!PairDistanceQueryToMap(ikQuery, ikEnd, catalog.size(), &ikMap)
-                        || !PairDistanceQueryToMap(irQuery, irEnd, catalog.size(), &irMap)) {
-                        std::cerr << "Database refers to stars missing from the catalog." << std::endl;
-                        return identified;
-                    }
+                    PairDistanceQueryToMap(ikQuery, ikEnd, catalog.size(), &ikMap);
+                    PairDistanceQueryToMap(irQuery, irEnd, catalog.size(), &irMap);
 
                     int iMatch = -1, jMatch = -1, kMatch = -1, rMatch = -1;
                     for (const int16_t *iCandidateQuery = ijQuery; iCandidateQuery != ijEnd; iCandidateQuery++) {
@@ -728,11 +720,8 @@ StarIdentifiers PyramidStarIdAlgorithm::Go(
                             ? iCandidateQuery[1]
                             : iCandidateQuery[-1];
 
-                        if (iCandidate < 0 || jCandidate < 0
-                            || iCandidate >= (int)catalog.size() || jCandidate >= (int)catalog.size()) {
-                            std::cerr << "Database refers to stars missing from the catalog." << std::endl;
-                            return identified;
-                        }
+                        assert(iCandidate >= 0 && iCandidate < (int)catalog.size());
+                        assert(jCandidate >= 0 && jCandidate < (int)catalog.size());
 
                         const Vec3 &iCandidateSpatial = catalog[iCandidate].spatial;
                         const Vec3 &jCandidateSpatial = catalog[jCandidate].spatial;
