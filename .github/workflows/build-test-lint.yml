@@ -8,10 +8,12 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    container: huskysat/lost:latest
+    container: gcc:15
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: apt-get update && apt-get install -y groff xxd libcairo2-dev libeigen3-dev
     - name: Build Double
       run: CXXFLAGS=-Werror make -j$(($(nproc)+1))
     - name: Test Double
