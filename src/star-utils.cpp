@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <math.h>
 
+#include <cstdint>
 #include <algorithm>
 #include <set>
 #include <vector>

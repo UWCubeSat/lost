@@ -546,9 +546,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     // multiply up proportionally!
     decimal zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*DECIMAL_M_PI * starSpreadStdDev*starSpreadStdDev);
 
-    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
-    std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
-
     Catalog catalogWithFalse = catalog;
 
     std::uniform_real_distribution<decimal> uniformDistribution(DECIMAL(0.0), DECIMAL(1.0));
@@ -608,6 +605,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // for input, though, add perturbation and stuff.
             Star inputStar = star;
             if (perturbationStddev > DECIMAL(0.0)) {
+                std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
                 // clamp to within 2 standard deviations for some reason:
                 inputStar.position.x += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
                 inputStar.position.y += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
@@ -684,7 +682,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
     }
 
-    std::normal_distribution<decimal> readNoiseDist(DECIMAL(0.0), readNoiseStdDev);
+    std::normal_distribution<decimal> standardNormalDist(DECIMAL(0.0), DECIMAL(1.0));
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
     imageData = std::vector<unsigned char>(image.width*image.height);
@@ -696,7 +694,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += darkCurrent;
 
         // read noise (Gaussian)
-        curBrightness += readNoiseDist(*rng);
+        curBrightness += readNoiseStdDev * standardNormalDist(*rng);
 
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
@@ -710,8 +708,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
-            std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
-            quantizedPhotons = shotNoiseDist(*rng);
+            // std::poisson_distribution requires mean > 0
+            if (photons > DECIMAL(0.0)) {
+                std::poisson_distribution<long> shotNoiseDist(photons);
+                quantizedPhotons = shotNoiseDist(*rng);
+            } else {
+                quantizedPhotons = 0;
+            }
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }

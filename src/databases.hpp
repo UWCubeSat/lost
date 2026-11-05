@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include <array>
+#include <cstdint>
 #include <vector>
 
 #include "serialize-helpers.hpp"
