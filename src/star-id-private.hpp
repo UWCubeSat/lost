@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include "star-id.hpp"
+#include "camera.hpp"
 #include "databases.hpp"
 
 namespace lost {

@@ -33,6 +33,9 @@ LOST_CLI_OPTION("angular-tolerance"        , decimal    , angularTolerance      
 LOST_CLI_OPTION("false-stars-estimate"     , int        , estimatedNumFalseStars        , 500 , atoi(optarg)            , kNoDefaultArgument)
 LOST_CLI_OPTION("max-mismatch-probability" , decimal    , maxMismatchProb               , .001, STR_TO_DECIMAL(optarg)  , kNoDefaultArgument)
 LOST_CLI_OPTION("attitude-algo"            , std::string, attitudeAlgo                  , ""  , optarg                  , "dqm")
+LOST_CLI_OPTION("tetra-pairing"            , std::string, tetraPairingMode              , "triad", optarg                 , kNoDefaultArgument)
+LOST_CLI_OPTION("tetra-pattern-search-range", decimal   , tetraPatternSearchRange       , 0.001, STR_TO_DECIMAL(optarg) , kNoDefaultArgument)
+LOST_CLI_OPTION("tetra-pattern-match-tolerance", decimal, tetraPatternMatchTolerance   , 0.001, STR_TO_DECIMAL(optarg) , kNoDefaultArgument)
 
 // OUTPUT COMPARISON
 LOST_CLI_OPTION("centroid-compare-threshold", decimal    , centroidCompareThreshold, 2 , STR_TO_DECIMAL(optarg) , kNoDefaultArgument)

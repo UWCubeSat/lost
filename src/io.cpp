@@ -1,26 +1,25 @@
 #include "io.hpp"
 
-#include <cairo/cairo.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <math.h>
-#include <errno.h>
 #include <assert.h>
-#include <stdlib.h>
+#include <cairo/cairo.h>
+#include <errno.h>
 #include <limits.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include <vector>
-#include <string>
+#include <algorithm>
+#include <chrono>
+#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <memory>
-#include <cstring>
-#include <random>
-#include <algorithm>
 #include <map>
-#include <chrono>
+#include <memory>
+#include <random>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
@@ -293,7 +292,22 @@ MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const Database
         SerializeContext ser = serFromDbValues(values);
         SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
         dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
-    } else {
+    }
+
+    if (values.tetra) {
+        decimal maxFovDeg = values.tetraMaxFov;
+
+        std::vector<uint16_t> catalogPatternStarInds =
+            TetraPreprocessCatalog(catalog, maxFovDeg, values.tetraPatternStarsPerFov);
+        std::cerr << "Number of pattern stars: " << catalogPatternStarInds.size() << std::endl;
+
+        SerializeContext ser = serFromDbValues(values);
+        SerializeTetraDatabase(
+            &ser, catalog, maxFovDeg, catalogPatternStarInds, values.tetraEdgeRatioBins);
+        dbEntries.emplace_back(TetraDatabase::kMagicValue, ser.buffer);
+    }
+
+    if (dbEntries.size() <= 1) {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
@@ -886,7 +900,21 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.idAlgo == "gv") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(
+            DegToRad(values.angularTolerance), values.estimatedNumFalseStars,
+            values.maxMismatchProb, 1000));
+    } else if (values.idAlgo == "tetra") {
+        TetraStarIdAlgorithm::PairingMode pairingMode;
+        if (values.tetraPairingMode == "triad") {
+            pairingMode = TetraStarIdAlgorithm::TRIAD_PERMUTATION;
+        } else if (values.tetraPairingMode == "centroid-radius") {
+            pairingMode = TetraStarIdAlgorithm::CENTROID_RADIUS;
+        } else {
+            std::cerr << "Illegal tetra pairing mode: " << values.tetraPairingMode << std::endl;
+            exit(1);
+        }
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
+            new TetraStarIdAlgorithm(pairingMode, values.tetraPatternSearchRange, values.tetraPatternMatchTolerance));
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);

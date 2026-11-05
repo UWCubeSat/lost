@@ -1,13 +1,16 @@
 #include "star-utils.hpp"
 
-#include <math.h>
 #include <assert.h>
+#include <math.h>
+
 #include <algorithm>
 #include <set>
+#include <vector>
 
 #include "serialize-helpers.hpp"
 
 namespace lost {
+
 
 // brightest star first
 bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
@@ -17,10 +20,13 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
 Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, decimal minSeparation) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
+        // Higher magnitude implies the star is dimmer
         if (catalog[i].magnitude <= maxMagnitude) {
             result.push_back(catalog[i]);
         }
     }
+
+    std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
 
     // remove stars that are too close to each other
     std::set<int> tooCloseIndices;
@@ -43,11 +49,25 @@ Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, de
 
     // and finally limit to n brightest stars
     if (maxStars < (int)result.size()) {
-        std::sort(result.begin(), result.end(), CatalogStarMagnitudeCompare);
         result.resize(maxStars);
     }
 
     return result;
+}
+
+size_t TetraFindPatternIndex(const int* patternEdgeRatios,
+                             size_t numRatios,
+                             int numEdgeRatioBins,
+                             size_t tableSize) {
+    const size_t kGoldenRatioHash = 2654435761;
+    size_t index = 0;
+    size_t factor = 1;
+    for (size_t i = 0; i < numRatios; i++) {
+        index += patternEdgeRatios[i] * factor;
+        factor *= numEdgeRatioBins;
+    }
+
+    return ((index % tableSize) * (kGoldenRatioHash % tableSize)) % tableSize;
 }
 
 /// Return a pointer to the star with the given name, or NULL if not found.
@@ -148,4 +168,4 @@ decimal MagToBrightness(int mag) {
     return DECIMAL_POW(DECIMAL(10.0), -mag/DECIMAL(250.0));
 }
 
-}
+}  // namespace lost
