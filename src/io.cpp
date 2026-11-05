@@ -211,15 +211,15 @@ void SurfacePlot(std::string description,
             // Rectangles should be entirely /outside/ the radius of the star, so the star is
             // fully visible.
             cairo_rectangle(cairoCtx,
-                            centroid.position.x - radiusX,
-                            centroid.position.y - radiusY,
-                            radiusX * 2,
-                            radiusY * 2);
+                            (double) (centroid.position.x - radiusX),
+                            (double) (centroid.position.y - radiusY),
+                            (double) (radiusX * 2),
+                            (double) (radiusY * 2));
             cairo_stroke(cairoCtx);
         } else {
             cairo_rectangle(cairoCtx,
-                            DECIMAL_FLOOR(centroid.position.x),
-                            DECIMAL_FLOOR(centroid.position.y),
+                            (double) DECIMAL_FLOOR(centroid.position.x),
+                            (double) DECIMAL_FLOOR(centroid.position.y),
                             1, 1);
             cairo_fill(cairoCtx);
         }
@@ -234,13 +234,13 @@ void SurfacePlot(std::string description,
             const Star &centroid = stars[starId.starIndex];
             cairo_move_to(cairoCtx,
 
-                          centroid.radiusX > DECIMAL(0.0)
-                          ? centroid.position.x + centroid.radiusX + 3
-                          : centroid.position.x + 8,
+                          (double) (centroid.radiusX > DECIMAL(0.0)
+                                    ? centroid.position.x + centroid.radiusX + 3
+                                    : centroid.position.x + 8),
 
-                          centroid.radiusY > DECIMAL(0.0)
-                          ? centroid.position.y - centroid.radiusY + textHeight
-                          : centroid.position.y + 10);
+                          (double) (centroid.radiusY > DECIMAL(0.0)
+                                    ? centroid.position.y - centroid.radiusY + textHeight
+                                    : centroid.position.y + 10));
 
             int plotName = rawStarIndexes ? starId.catalogIndex : (*catalog)[starId.catalogIndex].name;
             cairo_show_text(cairoCtx, std::to_string(plotName).c_str());
@@ -257,7 +257,7 @@ void SurfacePlot(std::string description,
     }
 
     // plot metadata
-    cairo_move_to(cairoCtx, 3, 3 + textHeight);
+    cairo_move_to(cairoCtx, 3, (double) (3 + textHeight));
     cairo_show_text(cairoCtx, metadata.c_str());
 
     cairo_font_options_destroy(cairoFontOptions);
@@ -615,7 +615,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 // and also don't add it if it's too dim.
                 && (cutoffMag >= 10000 // but always add the star if the cutoff is very high
                     || !isTrueStar // and always add the false stars
-                    || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
+                    || std::bernoulli_distribution((double) CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
                 inputStars.push_back(inputStar);
                 if (isTrueStar) {
                     inputStarIds.push_back(StarIdentifier(inputStars.size()-1, i));
@@ -710,7 +710,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             }
             // std::poisson_distribution requires mean > 0
             if (photons > DECIMAL(0.0)) {
-                std::poisson_distribution<long> shotNoiseDist(photons);
+                std::poisson_distribution<long> shotNoiseDist((double) photons);
                 quantizedPhotons = shotNoiseDist(*rng);
             } else {
                 quantizedPhotons = 0;
