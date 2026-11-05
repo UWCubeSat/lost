@@ -1,0 +1,7 @@
+<map id="lost::Vec3::operator*" name="lost::Vec3::operator*">
+<area shape="rect" id="Node000001" title="Vector&#45;matrix multiplication, where the vector is transposed." alt="" coords="5,32,160,60"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1Mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="215,5,324,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="159,32,202,28,197,30,160,37"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1Vec3.html#afe5105ec5bf24fab1e33c4ae3c934de6" title=" " alt="" coords="208,57,331,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="160,54,195,61,190,61,160,59"/>
+</map>

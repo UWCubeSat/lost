@@ -1,0 +1,14 @@
+<map id="lost::Angle" name="lost::Angle">
+<area shape="rect" id="Node000001" title="Calculate the inner angle, in radians, between two vectors." alt="" coords="543,104,633,132"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1GeometricVotingStarIdAlgorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="298,5,486,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="546,96,494,71,453,53,453,48,496,67,551,97"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,104,241,132"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="525,115,495,116,364,115,242,117,241,111,364,109,495,110,530,114"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,125,494,170"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="525,128,495,135,495,130,530,127"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#aac727d07c751e3f9878b8046547fb727" title=" " alt="" coords="289,194,495,222"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="561,141,530,166,496,185,466,196,464,191,494,180,528,161,556,143"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="271,135,241,134,241,129,276,134"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="32,194,214,222"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="271,208,215,210,214,205,276,208"/>
+</map>

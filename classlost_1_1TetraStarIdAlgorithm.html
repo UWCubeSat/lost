@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::TetraStarIdAlgorithm Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1TetraStarIdAlgorithm.html','','classlost_1_1TetraStarIdAlgorithm-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -134,6 +148,8 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Tetra star identification algorithm based on the one originally proposed by Brown &amp; Stubis Creates patterns/mini-constellations of 4 stars and hashes them for quick lookup. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00029">29</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 </div><a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Member Enumeration Documentation</h2>
 <a id="a3a0e0d68c97d5dc88f649a5bc1a28eb2" name="a3a0e0d68c97d5dc88f649a5bc1a28eb2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3a0e0d68c97d5dc88f649a5bc1a28eb2">&#9670;&#160;</a></span>PairingMode</h2>
@@ -150,6 +166,8 @@ Public Member Functions</h2></td></tr>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3a0e0d68c97d5dc88f649a5bc1a28eb2af25537542f608bb3f0f70573df51d827" name="a3a0e0d68c97d5dc88f649a5bc1a28eb2af25537542f608bb3f0f70573df51d827"></a>TRIAD_PERMUTATION&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a3a0e0d68c97d5dc88f649a5bc1a28eb2a27517d6c42bfa9beae2ce669f639b896" name="a3a0e0d68c97d5dc88f649a5bc1a28eb2a27517d6c42bfa9beae2ce669f639b896"></a>CENTROID_RADIUS&#160;</td><td class="fielddoc"></td></tr>
 </table>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00032">32</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 
 </div>
 </div>
@@ -185,6 +203,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00038">38</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 
 </div>
 </div>
@@ -230,11 +250,77 @@ Public Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classlost_1_1StarIdAlgorithm.html#a303db15af0aecc9c4053a81429f8667c">lost::StarIdAlgorithm</a>.</p>
 
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00162">162</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1TetraStarIdAlgorithm_a6e13a6369e0c9188ae1d6edb1364cc84_cgraph.png" border="0" usemap="#aclasslost_1_1TetraStarIdAlgorithm_a6e13a6369e0c9188ae1d6edb1364cc84_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1TetraStarIdAlgorithm_a6e13a6369e0c9188ae1d6edb1364cc84_cgraph" id="aclasslost_1_1TetraStarIdAlgorithm_a6e13a6369e0c9188ae1d6edb1364cc84_cgraph">
+<area shape="rect" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,392,219,420"/>
+<area shape="rect" href="namespacelost.html#a037f862f943aa7d04406349a543e3ef2" title=" " alt="" coords="295,5,461,33"/>
+<area shape="poly" title=" " alt="" coords="112,391,123,327,148,234,168,182,194,131,226,84,265,44,282,34,279,38,268,48,230,88,198,134,173,184,153,235,128,329,118,392"/>
+<area shape="rect" href="classlost_1_1Camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="267,57,489,85"/>
+<area shape="poly" title=" " alt="" coords="113,391,127,335,154,254,175,211,199,168,229,128,265,94,273,91,270,95,268,99,233,132,204,171,179,213,159,256,132,336,119,392"/>
+<area shape="rect" href="classlost_1_1TetraDatabase.html#a185593510381b61bacbfbf40ea1e3221" title=" " alt="" coords="304,109,452,154"/>
+<area shape="poly" title=" " alt="" coords="116,391,134,347,165,285,209,220,235,190,265,164,291,150,288,154,268,168,239,194,213,224,170,288,139,349,121,392"/>
+<area shape="rect" href="namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="319,177,437,205"/>
+<area shape="poly" title=" " alt="" coords="118,391,139,354,171,306,213,256,238,234,265,214,306,199,302,203,268,219,242,238,217,260,175,310,143,357,123,393"/>
+<area shape="rect" href="classlost_1_1TetraDatabase.html#a4099ff2e4e2d8620bb7c03837f5d635d" title=" " alt="" coords="301,229,454,274"/>
+<area shape="poly" title=" " alt="" coords="127,390,186,342,265,290,294,278,291,282,268,295,189,347,131,393"/>
+<area shape="rect" href="classlost_1_1TetraDatabase.html#aa20c328c561c472302073c778f924272" title=" " alt="" coords="556,289,703,334"/>
+<area shape="poly" title=" " alt="" coords="136,390,194,360,266,334,337,320,410,311,542,307,538,310,410,317,338,325,267,339,196,365,140,393"/>
+<area shape="rect" href="classlost_1_1CombinationIterator.html#abac839bc5b0d4fae7aad7dfdbf16351f" title=" " alt="" coords="286,349,470,394"/>
+<area shape="poly" title=" " alt="" coords="218,390,272,384,268,387,221,394"/>
+<area shape="rect" href="classlost_1_1TetraDatabase.html#a55fb6ae961953768d554c3f1c6d42404" title=" " alt="" coords="304,418,452,463"/>
+<area shape="poly" title=" " alt="" coords="218,417,291,428,286,430,220,422"/>
+<area shape="rect" href="classlost_1_1CombinationIterator.html#a835fa704fad7432b2fedbfcca2e34a96" title=" " alt="" coords="286,488,470,532"/>
+<area shape="poly" title=" " alt="" coords="142,418,268,473,288,481,283,483,266,478,143,423"/>
+<area shape="rect" href="classlost_1_1Vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="298,556,458,584"/>
+<area shape="poly" title=" " alt="" coords="125,418,183,479,223,513,268,542,286,552,281,553,265,547,220,518,179,483,125,423"/>
+<area shape="rect" href="classlost_1_1TetraDatabase.html#aafb18451e996dc2f21c0d5fbb3409a6d" title=" " alt="" coords="301,608,455,652"/>
+<area shape="poly" title=" " alt="" coords="121,417,144,454,176,501,218,550,268,593,289,606,284,607,265,597,215,554,172,504,140,457,121,423"/>
+<area shape="rect" href="classlost_1_1MultiDatabase.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="297,677,458,722"/>
+<area shape="poly" title=" " alt="" coords="118,417,137,466,167,531,211,602,238,634,268,662,286,675,280,675,265,667,234,638,207,605,163,534,132,468,118,423"/>
+<area shape="rect" href="namespacelost.html#a7154dcfc9b2bd4d0051304ebeb68db2b" title=" " alt="" coords="299,745,457,773"/>
+<area shape="poly" title=" " alt="" coords="116,417,130,478,157,563,177,609,202,654,232,696,268,732,287,745,282,745,265,736,228,700,197,657,172,611,152,565,125,479,115,423"/>
+<area shape="rect" href="namespacelost.html#a3a350cbfc2335a5d73b82c97ae7d9042" title=" " alt="" coords="281,797,475,825"/>
+<area shape="poly" title=" " alt="" coords="115,418,127,486,151,584,171,638,196,691,229,740,268,783,275,790,270,789,265,786,224,744,192,694,166,640,146,586,121,487,114,423"/>
+<area shape="rect" href="classlost_1_1Camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="546,57,714,85"/>
+<area shape="poly" title=" " alt="" coords="488,69,532,70,527,72,491,74"/>
+<area shape="rect" href="classlost_1_1TetraDatabase.html#a27e7d03383e0b00ed544cf9184cb7317" title=" " alt="" coords="556,220,703,264"/>
+<area shape="poly" title=" " alt="" coords="454,246,543,244,538,246,456,251"/>
+<area shape="poly" title=" " alt="" coords="454,267,543,289,538,291,456,272"/>
+<area shape="rect" href="classlost_1_1Vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="549,569,710,597"/>
+<area shape="poly" title=" " alt="" coords="458,571,536,577,531,579,458,577"/>
+<area shape="rect" href="classlost_1_1Vec3.html#afe5105ec5bf24fab1e33c4ae3c934de6" title=" " alt="" coords="568,517,691,545"/>
+<area shape="poly" title=" " alt="" coords="457,555,555,542,550,544,459,560"/>
+<area shape="rect" href="namespacelost.html#a6708c85ee599d39a129c12aff85de26d" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="549,679,710,706"/>
+<area shape="poly" title=" " alt="" coords="459,694,536,695,531,695,459,700"/>
+<area shape="rect" href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="770,628,948,656"/>
+<area shape="poly" title=" " alt="" coords="459,678,537,665,649,652,757,646,752,647,650,657,537,670,460,684"/>
+<area shape="rect" href="namespacelost.html#a808e750fa7f99bc945155638df303fb7" title=" " alt="" coords="537,783,722,810"/>
+<area shape="poly" title=" " alt="" coords="459,718,490,732,515,750,538,768,556,777,551,777,536,772,511,754,488,736,459,723"/>
+<area shape="rect" href="namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24" title=" " alt="" coords="573,731,686,758"/>
+<area shape="poly" title=" " alt="" coords="459,711,560,731,555,732,459,716"/>
+<area shape="poly" title=" " alt="" coords="695,676,776,660,781,659,696,681"/>
+<area shape="rect" href="classlost_1_1DeserializeContext.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="996,680,1173,724"/>
+<area shape="poly" title=" " alt="" coords="711,691,983,699,978,700,711,697"/>
+<area shape="rect" href="classlost_1_1DeserializeContext.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="770,730,948,775"/>
+<area shape="poly" title=" " alt="" coords="686,704,759,726,754,726,685,710"/>
+<area shape="rect" href="classlost_1_1DeserializeContext.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="996,610,1173,655"/>
+<area shape="poly" title=" " alt="" coords="947,636,983,636,977,637,948,641"/>
+<area shape="poly" title=" " alt="" coords="914,654,986,675,980,675,913,659"/>
+<area shape="poly" title=" " alt="" coords="696,779,721,768,736,756,746,744,768,716,826,667,831,665,772,720,750,748,740,760,724,772,697,785"/>
+<area shape="poly" title=" " alt="" coords="723,804,832,804,890,798,947,785,999,761,1042,735,1047,733,1001,766,949,790,891,803,832,809,723,809"/>
+<area shape="poly" title=" " alt="" coords="705,779,753,773,758,772,706,785"/>
+</map>
+</div>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="star-id_8hpp_source.html">star-id.hpp</a></li>
-<li>src/<a class="el" href="star-id_8cpp.html">star-id.cpp</a></li>
+<li>src/<a class="el" href="star-id_8cpp_source.html">star-id.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

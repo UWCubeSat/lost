@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::StarIdAlgorithm Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1StarIdAlgorithm.html','','classlost_1_1StarIdAlgorithm-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -123,6 +137,8 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A star idenification algorithm. </p>
 <p>An algorithm which takes a list of centroids plus some (possibly algorithm-specific) database, and then determines which centroids corresponds to which catalog stars. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00014">14</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1c440e5ca7c623e3dd1fc8958eac99de" name="a1c440e5ca7c623e3dd1fc8958eac99de"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c440e5ca7c623e3dd1fc8958eac99de">&#9670;&#160;</a></span>~StarIdAlgorithm()</h2>
@@ -146,6 +162,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="star-id_8hpp_source.html#l00022">22</a> of file <a class="el" href="star-id_8hpp_source.html">star-id.hpp</a>.</p>
 
 </div>
 </div>

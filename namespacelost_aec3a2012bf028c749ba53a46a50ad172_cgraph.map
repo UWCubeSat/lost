@@ -1,0 +1,17 @@
+<map id="lost::GetGeneratedPipelineInput" name="lost::GetGeneratedPipelineInput">
+<area shape="rect" id="Node000001" title="Create a GeneratedPipelineInput based on the command line options in values." alt="" coords="5,73,202,118"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a41f5bb669129790c12bd70e1d641441f" title="Read and parse the full catalog from disk. If called multiple times, will re&#45;use the first result." alt="" coords="289,5,425,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="179,70,249,49,296,37,291,39,250,54,181,75"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="728,56,847,84"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="202,89,713,70,712,75,202,94"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#a2788319f0c0f74fbd29f5249501482be" title="Calculate the focal length, in pixels, based on the given command line options." alt="" coords="250,107,464,134"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="202,102,237,108,231,109,202,108"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a562a86693dfa8ef7024526934fbfa8bb" title="Return a quaternion that will reorient the coordinate axes so that the x&#45;axis points at the given rig..." alt="" coords="257,159,456,186"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="167,115,250,143,282,154,277,154,249,148,166,121"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="540,5,652,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="425,17,527,19,522,20,426,22"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="651,31,720,51,715,51,651,36"/>
+<area shape="poly" id="edge6_Node000005_Node000004" title=" " alt="" coords="464,109,680,86,711,84,716,83,681,91,465,115"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20" title=" " alt="" coords="512,157,680,185"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="426,132,515,154,510,154,425,138"/>
+</map>

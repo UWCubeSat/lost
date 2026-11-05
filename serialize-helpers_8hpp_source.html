@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/serialize-helpers.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('serialize-helpers_8hpp_source.html','',''); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -231,27 +245,27 @@ $(function(){initNavTree('serialize-helpers_8hpp_source.html','',''); });
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>}</div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclasslost_1_1DeserializeContext_html"><div class="ttname"><a href="classlost_1_1DeserializeContext.html">lost::DeserializeContext</a></div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:41</div></div>
-<div class="ttc" id="aclasslost_1_1DeserializeContext_html_a02edcd036deb10b5928ae6b94a57ae38"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#a02edcd036deb10b5928ae6b94a57ae38">lost::DeserializeContext::GetOffset</a></div><div class="ttdeci">size_t GetOffset() const</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:45</div></div>
-<div class="ttc" id="aclasslost_1_1DeserializeContext_html_a0f626918d64ce584ea04407f544c79bc"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#a0f626918d64ce584ea04407f544c79bc">lost::DeserializeContext::DeserializeContext</a></div><div class="ttdeci">DeserializeContext(const unsigned char *buffer)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:43</div></div>
-<div class="ttc" id="aclasslost_1_1DeserializeContext_html_ade822992604c47e19968ade0ba4908cf"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#ade822992604c47e19968ade0ba4908cf">lost::DeserializeContext::GetCursor</a></div><div class="ttdeci">const unsigned char * GetCursor()</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:53</div></div>
-<div class="ttc" id="aclasslost_1_1DeserializeContext_html_af6d1403910d8f856f408971103dc7d0b"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#af6d1403910d8f856f408971103dc7d0b">lost::DeserializeContext::MoveForward</a></div><div class="ttdeci">void MoveForward(size_t howMuch)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:49</div></div>
-<div class="ttc" id="aclasslost_1_1SerializeContext_html"><div class="ttname"><a href="classlost_1_1SerializeContext.html">lost::SerializeContext</a></div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:30</div></div>
-<div class="ttc" id="aclasslost_1_1SerializeContext_html_a336ba4abc0106fd590f9eae9dbb16f04"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a336ba4abc0106fd590f9eae9dbb16f04">lost::SerializeContext::swapDecimalEndianness</a></div><div class="ttdeci">bool swapDecimalEndianness</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:37</div></div>
-<div class="ttc" id="aclasslost_1_1SerializeContext_html_a35da132ef4f4dee819d816b8c3b33536"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a35da132ef4f4dee819d816b8c3b33536">lost::SerializeContext::SerializeContext</a></div><div class="ttdeci">SerializeContext()</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:34</div></div>
-<div class="ttc" id="aclasslost_1_1SerializeContext_html_a927e0e4500eb707c30bf17a67f9128c7"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a927e0e4500eb707c30bf17a67f9128c7">lost::SerializeContext::buffer</a></div><div class="ttdeci">std::vector&lt; unsigned char &gt; buffer</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:38</div></div>
-<div class="ttc" id="aclasslost_1_1SerializeContext_html_a93856379ded65d82189d464c8a384596"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a93856379ded65d82189d464c8a384596">lost::SerializeContext::swapIntegerEndianness</a></div><div class="ttdeci">bool swapIntegerEndianness</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:36</div></div>
-<div class="ttc" id="aclasslost_1_1SerializeContext_html_aa64d705cf36948edd399ae0081723885"><div class="ttname"><a href="classlost_1_1SerializeContext.html#aa64d705cf36948edd399ae0081723885">lost::SerializeContext::SerializeContext</a></div><div class="ttdeci">SerializeContext(bool swapIntegerEndianness, bool swapDecimalEndianness)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:32</div></div>
+<div class="ttc" id="aclasslost_1_1DeserializeContext_html"><div class="ttname"><a href="classlost_1_1DeserializeContext.html">lost::DeserializeContext</a></div><div class="ttdef"><b>Definition</b> <a href="#l00041">serialize-helpers.hpp:41</a></div></div>
+<div class="ttc" id="aclasslost_1_1DeserializeContext_html_a02edcd036deb10b5928ae6b94a57ae38"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#a02edcd036deb10b5928ae6b94a57ae38">lost::DeserializeContext::GetOffset</a></div><div class="ttdeci">size_t GetOffset() const</div><div class="ttdef"><b>Definition</b> <a href="#l00045">serialize-helpers.hpp:45</a></div></div>
+<div class="ttc" id="aclasslost_1_1DeserializeContext_html_a0f626918d64ce584ea04407f544c79bc"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#a0f626918d64ce584ea04407f544c79bc">lost::DeserializeContext::DeserializeContext</a></div><div class="ttdeci">DeserializeContext(const unsigned char *buffer)</div><div class="ttdef"><b>Definition</b> <a href="#l00043">serialize-helpers.hpp:43</a></div></div>
+<div class="ttc" id="aclasslost_1_1DeserializeContext_html_ade822992604c47e19968ade0ba4908cf"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#ade822992604c47e19968ade0ba4908cf">lost::DeserializeContext::GetCursor</a></div><div class="ttdeci">const unsigned char * GetCursor()</div><div class="ttdef"><b>Definition</b> <a href="#l00053">serialize-helpers.hpp:53</a></div></div>
+<div class="ttc" id="aclasslost_1_1DeserializeContext_html_af6d1403910d8f856f408971103dc7d0b"><div class="ttname"><a href="classlost_1_1DeserializeContext.html#af6d1403910d8f856f408971103dc7d0b">lost::DeserializeContext::MoveForward</a></div><div class="ttdeci">void MoveForward(size_t howMuch)</div><div class="ttdef"><b>Definition</b> <a href="#l00049">serialize-helpers.hpp:49</a></div></div>
+<div class="ttc" id="aclasslost_1_1SerializeContext_html"><div class="ttname"><a href="classlost_1_1SerializeContext.html">lost::SerializeContext</a></div><div class="ttdef"><b>Definition</b> <a href="#l00030">serialize-helpers.hpp:30</a></div></div>
+<div class="ttc" id="aclasslost_1_1SerializeContext_html_a336ba4abc0106fd590f9eae9dbb16f04"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a336ba4abc0106fd590f9eae9dbb16f04">lost::SerializeContext::swapDecimalEndianness</a></div><div class="ttdeci">bool swapDecimalEndianness</div><div class="ttdef"><b>Definition</b> <a href="#l00037">serialize-helpers.hpp:37</a></div></div>
+<div class="ttc" id="aclasslost_1_1SerializeContext_html_a35da132ef4f4dee819d816b8c3b33536"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a35da132ef4f4dee819d816b8c3b33536">lost::SerializeContext::SerializeContext</a></div><div class="ttdeci">SerializeContext()</div><div class="ttdef"><b>Definition</b> <a href="#l00034">serialize-helpers.hpp:34</a></div></div>
+<div class="ttc" id="aclasslost_1_1SerializeContext_html_a927e0e4500eb707c30bf17a67f9128c7"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a927e0e4500eb707c30bf17a67f9128c7">lost::SerializeContext::buffer</a></div><div class="ttdeci">std::vector&lt; unsigned char &gt; buffer</div><div class="ttdef"><b>Definition</b> <a href="#l00038">serialize-helpers.hpp:38</a></div></div>
+<div class="ttc" id="aclasslost_1_1SerializeContext_html_a93856379ded65d82189d464c8a384596"><div class="ttname"><a href="classlost_1_1SerializeContext.html#a93856379ded65d82189d464c8a384596">lost::SerializeContext::swapIntegerEndianness</a></div><div class="ttdeci">bool swapIntegerEndianness</div><div class="ttdef"><b>Definition</b> <a href="#l00036">serialize-helpers.hpp:36</a></div></div>
+<div class="ttc" id="aclasslost_1_1SerializeContext_html_aa64d705cf36948edd399ae0081723885"><div class="ttname"><a href="classlost_1_1SerializeContext.html#aa64d705cf36948edd399ae0081723885">lost::SerializeContext::SerializeContext</a></div><div class="ttdeci">SerializeContext(bool swapIntegerEndianness, bool swapDecimalEndianness)</div><div class="ttdef"><b>Definition</b> <a href="#l00032">serialize-helpers.hpp:32</a></div></div>
 <div class="ttc" id="adecimal_8hpp_html"><div class="ttname"><a href="decimal_8hpp.html">decimal.hpp</a></div></div>
-<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:8</div></div>
-<div class="ttc" id="anamespacelost_html_a164fee04c6e5fd2fc2e2ca9274b745fa"><div class="ttname"><a href="namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa">lost::SerializePadding</a></div><div class="ttdeci">void SerializePadding(SerializeContext *ser)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:114</div></div>
-<div class="ttc" id="anamespacelost_html_a3493422e7893b68e566182e4e2372a6e"><div class="ttname"><a href="namespacelost.html#a3493422e7893b68e566182e4e2372a6e">lost::SwapEndiannessIfNecessary&lt; decimal &gt;</a></div><div class="ttdeci">void SwapEndiannessIfNecessary&lt; decimal &gt;(unsigned char *buffer, SerializeContext *ser)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:83</div></div>
-<div class="ttc" id="anamespacelost_html_a6708c85ee599d39a129c12aff85de26d"><div class="ttname"><a href="namespacelost.html#a6708c85ee599d39a129c12aff85de26d">lost::DeserializeArray</a></div><div class="ttdeci">const T * DeserializeArray(DeserializeContext *des, long arrLength)</div><div class="ttdoc">return an array of items as a pointer. Will point into the buffer (mmap style).</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:105</div></div>
-<div class="ttc" id="anamespacelost_html_a808e750fa7f99bc945155638df303fb7"><div class="ttname"><a href="namespacelost.html#a808e750fa7f99bc945155638df303fb7">lost::DeserializePrimitive</a></div><div class="ttdeci">T DeserializePrimitive(DeserializeContext *des)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:96</div></div>
-<div class="ttc" id="anamespacelost_html_a9704a9fb2cf67873155e69407a976074"><div class="ttname"><a href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">lost::SwapEndiannessIfNecessary</a></div><div class="ttdeci">void SwapEndiannessIfNecessary(unsigned char *buffer, SerializeContext *ser)</div><div class="ttdoc">Swap the endianness of a value if necessary.</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:74</div></div>
-<div class="ttc" id="anamespacelost_html_a9af0427ae10a3db5529f2f8c74497347"><div class="ttname"><a href="namespacelost.html#a9af0427ae10a3db5529f2f8c74497347">lost::SerializePrimitive</a></div><div class="ttdeci">void SerializePrimitive(SerializeContext *ser, const T &amp;val)</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:121</div></div>
-<div class="ttc" id="anamespacelost_html_aaa3aa9350f84fa1b7725b5e3de8483ba"><div class="ttname"><a href="namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba">lost::SwapEndianness</a></div><div class="ttdeci">void SwapEndianness(unsigned char *buffer)</div><div class="ttdoc">Unconditionally swap the endianness of a value (uses sizeof T).</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:64</div></div>
-<div class="ttc" id="anamespacelost_html_ac6dcbacca390790e2623b918f25a0ed2"><div class="ttname"><a href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2">lost::DeserializePadding</a></div><div class="ttdeci">void DeserializePadding(DeserializeContext *des)</div><div class="ttdoc">Move the cursor forward past any padding that would appear before a value of type T.</div><div class="ttdef"><b>Definition</b> serialize-helpers.hpp:91</div></div>
+<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00008">attitude-estimators.cpp:8</a></div></div>
+<div class="ttc" id="anamespacelost_html_a164fee04c6e5fd2fc2e2ca9274b745fa"><div class="ttname"><a href="namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa">lost::SerializePadding</a></div><div class="ttdeci">void SerializePadding(SerializeContext *ser)</div><div class="ttdef"><b>Definition</b> <a href="#l00114">serialize-helpers.hpp:114</a></div></div>
+<div class="ttc" id="anamespacelost_html_a3493422e7893b68e566182e4e2372a6e"><div class="ttname"><a href="namespacelost.html#a3493422e7893b68e566182e4e2372a6e">lost::SwapEndiannessIfNecessary&lt; decimal &gt;</a></div><div class="ttdeci">void SwapEndiannessIfNecessary&lt; decimal &gt;(unsigned char *buffer, SerializeContext *ser)</div><div class="ttdef"><b>Definition</b> <a href="#l00083">serialize-helpers.hpp:83</a></div></div>
+<div class="ttc" id="anamespacelost_html_a6708c85ee599d39a129c12aff85de26d"><div class="ttname"><a href="namespacelost.html#a6708c85ee599d39a129c12aff85de26d">lost::DeserializeArray</a></div><div class="ttdeci">const T * DeserializeArray(DeserializeContext *des, long arrLength)</div><div class="ttdoc">return an array of items as a pointer. Will point into the buffer (mmap style).</div><div class="ttdef"><b>Definition</b> <a href="#l00105">serialize-helpers.hpp:105</a></div></div>
+<div class="ttc" id="anamespacelost_html_a808e750fa7f99bc945155638df303fb7"><div class="ttname"><a href="namespacelost.html#a808e750fa7f99bc945155638df303fb7">lost::DeserializePrimitive</a></div><div class="ttdeci">T DeserializePrimitive(DeserializeContext *des)</div><div class="ttdef"><b>Definition</b> <a href="#l00096">serialize-helpers.hpp:96</a></div></div>
+<div class="ttc" id="anamespacelost_html_a9704a9fb2cf67873155e69407a976074"><div class="ttname"><a href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">lost::SwapEndiannessIfNecessary</a></div><div class="ttdeci">void SwapEndiannessIfNecessary(unsigned char *buffer, SerializeContext *ser)</div><div class="ttdoc">Swap the endianness of a value if necessary.</div><div class="ttdef"><b>Definition</b> <a href="#l00074">serialize-helpers.hpp:74</a></div></div>
+<div class="ttc" id="anamespacelost_html_a9af0427ae10a3db5529f2f8c74497347"><div class="ttname"><a href="namespacelost.html#a9af0427ae10a3db5529f2f8c74497347">lost::SerializePrimitive</a></div><div class="ttdeci">void SerializePrimitive(SerializeContext *ser, const T &amp;val)</div><div class="ttdef"><b>Definition</b> <a href="#l00121">serialize-helpers.hpp:121</a></div></div>
+<div class="ttc" id="anamespacelost_html_aaa3aa9350f84fa1b7725b5e3de8483ba"><div class="ttname"><a href="namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba">lost::SwapEndianness</a></div><div class="ttdeci">void SwapEndianness(unsigned char *buffer)</div><div class="ttdoc">Unconditionally swap the endianness of a value (uses sizeof T).</div><div class="ttdef"><b>Definition</b> <a href="#l00064">serialize-helpers.hpp:64</a></div></div>
+<div class="ttc" id="anamespacelost_html_ac6dcbacca390790e2623b918f25a0ed2"><div class="ttname"><a href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2">lost::DeserializePadding</a></div><div class="ttdeci">void DeserializePadding(DeserializeContext *des)</div><div class="ttdoc">Move the cursor forward past any padding that would appear before a value of type T.</div><div class="ttdef"><b>Definition</b> <a href="#l00091">serialize-helpers.hpp:91</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 </div><!-- container -->

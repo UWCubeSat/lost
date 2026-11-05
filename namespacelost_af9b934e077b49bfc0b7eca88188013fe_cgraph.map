@@ -1,0 +1,15 @@
+<map id="lost::AddToAllUnidentifiedCentroids" name="lost::AddToAllUnidentifiedCentroids">
+<area shape="rect" id="Node000001" title="Given a list of unidentified centroids not yet at the soft threshold, and a list of unidentified cent..." alt="" coords="5,24,194,68"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a0ba9ed8fa3910607aeff533f4779dafc" title="Return all the unidentified centroids within the requested distance bounds from star." alt="" coords="242,24,463,68"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,43,229,45,223,47,194,48"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1Camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="511,5,733,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="463,32,498,31,493,32,464,38"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1Vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="542,57,702,85"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="463,54,530,62,525,62,464,59"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1Camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="781,5,950,33"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="734,17,768,19,763,19,734,22"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1Vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="785,57,946,85"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="702,69,772,71,767,71,702,74"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1Vec3.html#afe5105ec5bf24fab1e33c4ae3c934de6" title=" " alt="" coords="804,109,927,137"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="691,83,791,107,786,107,690,88"/>
+</map>

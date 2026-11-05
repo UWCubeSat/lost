@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/star-id.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('star-id_8hpp_source.html','',''); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -185,26 +199,26 @@ $(function(){initNavTree('star-id_8hpp_source.html','',''); });
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="acamera_8hpp_html"><div class="ttname"><a href="camera_8hpp.html">camera.hpp</a></div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html"><div class="ttname"><a href="classlost_1_1Camera.html">lost::Camera</a></div><div class="ttdoc">A full description of a camera. Enough information to reconstruct the camera matrix and then some.</div><div class="ttdef"><b>Definition</b> camera.hpp:9</div></div>
-<div class="ttc" id="aclasslost_1_1DummyStarIdAlgorithm_html"><div class="ttname"><a href="classlost_1_1DummyStarIdAlgorithm.html">lost::DummyStarIdAlgorithm</a></div><div class="ttdoc">A star-id algorithm that returns random results. For debugging.</div><div class="ttdef"><b>Definition</b> star-id.hpp:57</div></div>
-<div class="ttc" id="aclasslost_1_1DummyStarIdAlgorithm_html_a015bd32c8cfbd5a8709f1714aa023946"><div class="ttname"><a href="classlost_1_1DummyStarIdAlgorithm.html#a015bd32c8cfbd5a8709f1714aa023946">lost::DummyStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> star-id.cpp:282</div></div>
-<div class="ttc" id="aclasslost_1_1GeometricVotingStarIdAlgorithm_html_aa846baf66d54b2dfc9212722d9be7518"><div class="ttname"><a href="classlost_1_1GeometricVotingStarIdAlgorithm.html#aa846baf66d54b2dfc9212722d9be7518">lost::GeometricVotingStarIdAlgorithm::GeometricVotingStarIdAlgorithm</a></div><div class="ttdeci">GeometricVotingStarIdAlgorithm(decimal tolerance)</div><div class="ttdef"><b>Definition</b> star-id.hpp:73</div></div>
-<div class="ttc" id="aclasslost_1_1GeometricVotingStarIdAlgorithm_html_adea674f2fdf9d0715655eddbb749ecf0"><div class="ttname"><a href="classlost_1_1GeometricVotingStarIdAlgorithm.html#adea674f2fdf9d0715655eddbb749ecf0">lost::GeometricVotingStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> star-id.cpp:294</div></div>
-<div class="ttc" id="aclasslost_1_1PyramidStarIdAlgorithm_html_a558b3037bf30cd916ce7c2236999912c"><div class="ttname"><a href="classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c">lost::PyramidStarIdAlgorithm::PyramidStarIdAlgorithm</a></div><div class="ttdeci">PyramidStarIdAlgorithm(decimal tolerance, int numFalseStars, decimal maxMismatchProbability, long cutoff)</div><div class="ttdef"><b>Definition</b> star-id.hpp:94</div></div>
-<div class="ttc" id="aclasslost_1_1PyramidStarIdAlgorithm_html_ac4d954f0b508e6b1818f416cbed5c67a"><div class="ttname"><a href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a">lost::PyramidStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> star-id.cpp:836</div></div>
-<div class="ttc" id="aclasslost_1_1StarIdAlgorithm_html"><div class="ttname"><a href="classlost_1_1StarIdAlgorithm.html">lost::StarIdAlgorithm</a></div><div class="ttdoc">A star idenification algorithm.</div><div class="ttdef"><b>Definition</b> star-id.hpp:14</div></div>
-<div class="ttc" id="aclasslost_1_1StarIdAlgorithm_html_a1c440e5ca7c623e3dd1fc8958eac99de"><div class="ttname"><a href="classlost_1_1StarIdAlgorithm.html#a1c440e5ca7c623e3dd1fc8958eac99de">lost::StarIdAlgorithm::~StarIdAlgorithm</a></div><div class="ttdeci">virtual ~StarIdAlgorithm()</div><div class="ttdef"><b>Definition</b> star-id.hpp:22</div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html"><div class="ttname"><a href="classlost_1_1Camera.html">lost::Camera</a></div><div class="ttdoc">A full description of a camera. Enough information to reconstruct the camera matrix and then some.</div><div class="ttdef"><b>Definition</b> <a href="camera_8hpp_source.html#l00009">camera.hpp:9</a></div></div>
+<div class="ttc" id="aclasslost_1_1DummyStarIdAlgorithm_html"><div class="ttname"><a href="classlost_1_1DummyStarIdAlgorithm.html">lost::DummyStarIdAlgorithm</a></div><div class="ttdoc">A star-id algorithm that returns random results. For debugging.</div><div class="ttdef"><b>Definition</b> <a href="#l00057">star-id.hpp:57</a></div></div>
+<div class="ttc" id="aclasslost_1_1DummyStarIdAlgorithm_html_a015bd32c8cfbd5a8709f1714aa023946"><div class="ttname"><a href="classlost_1_1DummyStarIdAlgorithm.html#a015bd32c8cfbd5a8709f1714aa023946">lost::DummyStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> <a href="star-id_8cpp_source.html#l00282">star-id.cpp:282</a></div></div>
+<div class="ttc" id="aclasslost_1_1GeometricVotingStarIdAlgorithm_html_aa846baf66d54b2dfc9212722d9be7518"><div class="ttname"><a href="classlost_1_1GeometricVotingStarIdAlgorithm.html#aa846baf66d54b2dfc9212722d9be7518">lost::GeometricVotingStarIdAlgorithm::GeometricVotingStarIdAlgorithm</a></div><div class="ttdeci">GeometricVotingStarIdAlgorithm(decimal tolerance)</div><div class="ttdef"><b>Definition</b> <a href="#l00073">star-id.hpp:73</a></div></div>
+<div class="ttc" id="aclasslost_1_1GeometricVotingStarIdAlgorithm_html_adea674f2fdf9d0715655eddbb749ecf0"><div class="ttname"><a href="classlost_1_1GeometricVotingStarIdAlgorithm.html#adea674f2fdf9d0715655eddbb749ecf0">lost::GeometricVotingStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> <a href="star-id_8cpp_source.html#l00294">star-id.cpp:294</a></div></div>
+<div class="ttc" id="aclasslost_1_1PyramidStarIdAlgorithm_html_a558b3037bf30cd916ce7c2236999912c"><div class="ttname"><a href="classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c">lost::PyramidStarIdAlgorithm::PyramidStarIdAlgorithm</a></div><div class="ttdeci">PyramidStarIdAlgorithm(decimal tolerance, int numFalseStars, decimal maxMismatchProbability, long cutoff)</div><div class="ttdef"><b>Definition</b> <a href="#l00094">star-id.hpp:94</a></div></div>
+<div class="ttc" id="aclasslost_1_1PyramidStarIdAlgorithm_html_ac4d954f0b508e6b1818f416cbed5c67a"><div class="ttname"><a href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a">lost::PyramidStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> <a href="star-id_8cpp_source.html#l00836">star-id.cpp:836</a></div></div>
+<div class="ttc" id="aclasslost_1_1StarIdAlgorithm_html"><div class="ttname"><a href="classlost_1_1StarIdAlgorithm.html">lost::StarIdAlgorithm</a></div><div class="ttdoc">A star idenification algorithm.</div><div class="ttdef"><b>Definition</b> <a href="#l00014">star-id.hpp:14</a></div></div>
+<div class="ttc" id="aclasslost_1_1StarIdAlgorithm_html_a1c440e5ca7c623e3dd1fc8958eac99de"><div class="ttname"><a href="classlost_1_1StarIdAlgorithm.html#a1c440e5ca7c623e3dd1fc8958eac99de">lost::StarIdAlgorithm::~StarIdAlgorithm</a></div><div class="ttdeci">virtual ~StarIdAlgorithm()</div><div class="ttdef"><b>Definition</b> <a href="#l00022">star-id.hpp:22</a></div></div>
 <div class="ttc" id="aclasslost_1_1StarIdAlgorithm_html_a303db15af0aecc9c4053a81429f8667c"><div class="ttname"><a href="classlost_1_1StarIdAlgorithm.html#a303db15af0aecc9c4053a81429f8667c">lost::StarIdAlgorithm::Go</a></div><div class="ttdeci">virtual StarIdentifiers Go(const unsigned char *database, const Stars &amp;, const Catalog &amp;, const Camera &amp;) const =0</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div></div>
-<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a3a0e0d68c97d5dc88f649a5bc1a28eb2"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a3a0e0d68c97d5dc88f649a5bc1a28eb2">lost::TetraStarIdAlgorithm::PairingMode</a></div><div class="ttdeci">PairingMode</div><div class="ttdef"><b>Definition</b> star-id.hpp:32</div></div>
-<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a3a0e0d68c97d5dc88f649a5bc1a28eb2a27517d6c42bfa9beae2ce669f639b896"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a3a0e0d68c97d5dc88f649a5bc1a28eb2a27517d6c42bfa9beae2ce669f639b896">lost::TetraStarIdAlgorithm::CENTROID_RADIUS</a></div><div class="ttdeci">@ CENTROID_RADIUS</div><div class="ttdef"><b>Definition</b> star-id.hpp:34</div></div>
-<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a3a0e0d68c97d5dc88f649a5bc1a28eb2af25537542f608bb3f0f70573df51d827"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a3a0e0d68c97d5dc88f649a5bc1a28eb2af25537542f608bb3f0f70573df51d827">lost::TetraStarIdAlgorithm::TRIAD_PERMUTATION</a></div><div class="ttdeci">@ TRIAD_PERMUTATION</div><div class="ttdef"><b>Definition</b> star-id.hpp:33</div></div>
-<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a6e13a6369e0c9188ae1d6edb1364cc84"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a6e13a6369e0c9188ae1d6edb1364cc84">lost::TetraStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;centroids, const Catalog &amp;catalog, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> star-id.cpp:162</div></div>
-<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_ad40ec56af19c36b60974aa784d665473"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#ad40ec56af19c36b60974aa784d665473">lost::TetraStarIdAlgorithm::TetraStarIdAlgorithm</a></div><div class="ttdeci">TetraStarIdAlgorithm(PairingMode pairingMode, decimal patternSearchRange, decimal patternMatchTolerance)</div><div class="ttdef"><b>Definition</b> star-id.hpp:38</div></div>
-<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> decimal.hpp:8</div></div>
-<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:8</div></div>
-<div class="ttc" id="anamespacelost_html_a288b872531de219e9cfc87beb8d8bada"><div class="ttname"><a href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></div><div class="ttdeci">std::vector&lt; StarIdentifier &gt; StarIdentifiers</div><div class="ttdef"><b>Definition</b> star-utils.hpp:103</div></div>
-<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> star-utils.hpp:102</div></div>
-<div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition</b> star-utils.hpp:101</div></div>
+<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a3a0e0d68c97d5dc88f649a5bc1a28eb2"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a3a0e0d68c97d5dc88f649a5bc1a28eb2">lost::TetraStarIdAlgorithm::PairingMode</a></div><div class="ttdeci">PairingMode</div><div class="ttdef"><b>Definition</b> <a href="#l00032">star-id.hpp:32</a></div></div>
+<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a3a0e0d68c97d5dc88f649a5bc1a28eb2a27517d6c42bfa9beae2ce669f639b896"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a3a0e0d68c97d5dc88f649a5bc1a28eb2a27517d6c42bfa9beae2ce669f639b896">lost::TetraStarIdAlgorithm::CENTROID_RADIUS</a></div><div class="ttdeci">@ CENTROID_RADIUS</div><div class="ttdef"><b>Definition</b> <a href="#l00034">star-id.hpp:34</a></div></div>
+<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a3a0e0d68c97d5dc88f649a5bc1a28eb2af25537542f608bb3f0f70573df51d827"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a3a0e0d68c97d5dc88f649a5bc1a28eb2af25537542f608bb3f0f70573df51d827">lost::TetraStarIdAlgorithm::TRIAD_PERMUTATION</a></div><div class="ttdeci">@ TRIAD_PERMUTATION</div><div class="ttdef"><b>Definition</b> <a href="#l00033">star-id.hpp:33</a></div></div>
+<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_a6e13a6369e0c9188ae1d6edb1364cc84"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#a6e13a6369e0c9188ae1d6edb1364cc84">lost::TetraStarIdAlgorithm::Go</a></div><div class="ttdeci">StarIdentifiers Go(const unsigned char *database, const Stars &amp;centroids, const Catalog &amp;catalog, const Camera &amp;) const</div><div class="ttdoc">Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm.</div><div class="ttdef"><b>Definition</b> <a href="star-id_8cpp_source.html#l00162">star-id.cpp:162</a></div></div>
+<div class="ttc" id="aclasslost_1_1TetraStarIdAlgorithm_html_ad40ec56af19c36b60974aa784d665473"><div class="ttname"><a href="classlost_1_1TetraStarIdAlgorithm.html#ad40ec56af19c36b60974aa784d665473">lost::TetraStarIdAlgorithm::TetraStarIdAlgorithm</a></div><div class="ttdeci">TetraStarIdAlgorithm(PairingMode pairingMode, decimal patternSearchRange, decimal patternMatchTolerance)</div><div class="ttdef"><b>Definition</b> <a href="#l00038">star-id.hpp:38</a></div></div>
+<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> <a href="decimal_8hpp_source.html#l00008">decimal.hpp:8</a></div></div>
+<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00008">attitude-estimators.cpp:8</a></div></div>
+<div class="ttc" id="anamespacelost_html_a288b872531de219e9cfc87beb8d8bada"><div class="ttname"><a href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></div><div class="ttdeci">std::vector&lt; StarIdentifier &gt; StarIdentifiers</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00103">star-utils.hpp:103</a></div></div>
+<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00102">star-utils.hpp:102</a></div></div>
+<div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00101">star-utils.hpp:101</a></div></div>
 <div class="ttc" id="astar-utils_8hpp_html"><div class="ttname"><a href="star-utils_8hpp.html">star-utils.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

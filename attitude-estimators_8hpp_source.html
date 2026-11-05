@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/attitude-estimators.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('attitude-estimators_8hpp_source.html','',''); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -137,21 +151,21 @@ $(function(){initNavTree('attitude-estimators_8hpp_source.html','',''); });
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
 <div class="ttc" id="acamera_8hpp_html"><div class="ttname"><a href="camera_8hpp.html">camera.hpp</a></div></div>
-<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html">lost::AttitudeEstimationAlgorithm</a></div><div class="ttdoc">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:15</div></div>
+<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html">lost::AttitudeEstimationAlgorithm</a></div><div class="ttdoc">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.</div><div class="ttdef"><b>Definition</b> <a href="#l00015">attitude-estimators.hpp:15</a></div></div>
 <div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html_a4ec6765403adace17271b469851dadf7"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html#a4ec6765403adace17271b469851dadf7">lost::AttitudeEstimationAlgorithm::Go</a></div><div class="ttdeci">virtual Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)=0</div><div class="ttdoc">Actually run the star-id algorithm.</div></div>
-<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html_a6e7a086e474f98124cc4dd5fb01682e9"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">lost::AttitudeEstimationAlgorithm::~AttitudeEstimationAlgorithm</a></div><div class="ttdeci">virtual ~AttitudeEstimationAlgorithm()</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:24</div></div>
-<div class="ttc" id="aclasslost_1_1Attitude_html"><div class="ttname"><a href="classlost_1_1Attitude.html">lost::Attitude</a></div><div class="ttdoc">The attitude (orientation) of a spacecraft.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:145</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html"><div class="ttname"><a href="classlost_1_1Camera.html">lost::Camera</a></div><div class="ttdoc">A full description of a camera. Enough information to reconstruct the camera matrix and then some.</div><div class="ttdef"><b>Definition</b> camera.hpp:9</div></div>
-<div class="ttc" id="aclasslost_1_1DavenportQAlgorithm_html"><div class="ttname"><a href="classlost_1_1DavenportQAlgorithm.html">lost::DavenportQAlgorithm</a></div><div class="ttdoc">A slow but reliable attitude estimation algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:31</div></div>
-<div class="ttc" id="aclasslost_1_1DavenportQAlgorithm_html_abdceeef38f84143dd87eb19f8318fadf"><div class="ttname"><a href="classlost_1_1DavenportQAlgorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:12</div></div>
-<div class="ttc" id="aclasslost_1_1QuestAlgorithm_html"><div class="ttname"><a href="classlost_1_1QuestAlgorithm.html">lost::QuestAlgorithm</a></div><div class="ttdoc">A faster and just as accurate attitude estimator as the Davenport Q algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:49</div></div>
-<div class="ttc" id="aclasslost_1_1QuestAlgorithm_html_acd9f32ebd3a0873346f752e04e477b23"><div class="ttname"><a href="classlost_1_1QuestAlgorithm.html#acd9f32ebd3a0873346f752e04e477b23">lost::QuestAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:184</div></div>
-<div class="ttc" id="aclasslost_1_1TriadAlgorithm_html"><div class="ttname"><a href="classlost_1_1TriadAlgorithm.html">lost::TriadAlgorithm</a></div><div class="ttdoc">A fast attitude estimator which only takes into account information from two stars.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:40</div></div>
-<div class="ttc" id="aclasslost_1_1TriadAlgorithm_html_a7c47290a94c74458995f5307e2486fc9"><div class="ttname"><a href="classlost_1_1TriadAlgorithm.html#a7c47290a94c74458995f5307e2486fc9">lost::TriadAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:134</div></div>
-<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:8</div></div>
-<div class="ttc" id="anamespacelost_html_a288b872531de219e9cfc87beb8d8bada"><div class="ttname"><a href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></div><div class="ttdeci">std::vector&lt; StarIdentifier &gt; StarIdentifiers</div><div class="ttdef"><b>Definition</b> star-utils.hpp:103</div></div>
-<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> star-utils.hpp:102</div></div>
-<div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition</b> star-utils.hpp:101</div></div>
+<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html_a6e7a086e474f98124cc4dd5fb01682e9"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">lost::AttitudeEstimationAlgorithm::~AttitudeEstimationAlgorithm</a></div><div class="ttdeci">virtual ~AttitudeEstimationAlgorithm()</div><div class="ttdef"><b>Definition</b> <a href="#l00024">attitude-estimators.hpp:24</a></div></div>
+<div class="ttc" id="aclasslost_1_1Attitude_html"><div class="ttname"><a href="classlost_1_1Attitude.html">lost::Attitude</a></div><div class="ttdoc">The attitude (orientation) of a spacecraft.</div><div class="ttdef"><b>Definition</b> <a href="attitude-utils_8hpp_source.html#l00145">attitude-utils.hpp:145</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html"><div class="ttname"><a href="classlost_1_1Camera.html">lost::Camera</a></div><div class="ttdoc">A full description of a camera. Enough information to reconstruct the camera matrix and then some.</div><div class="ttdef"><b>Definition</b> <a href="camera_8hpp_source.html#l00009">camera.hpp:9</a></div></div>
+<div class="ttc" id="aclasslost_1_1DavenportQAlgorithm_html"><div class="ttname"><a href="classlost_1_1DavenportQAlgorithm.html">lost::DavenportQAlgorithm</a></div><div class="ttdoc">A slow but reliable attitude estimation algorithm.</div><div class="ttdef"><b>Definition</b> <a href="#l00031">attitude-estimators.hpp:31</a></div></div>
+<div class="ttc" id="aclasslost_1_1DavenportQAlgorithm_html_abdceeef38f84143dd87eb19f8318fadf"><div class="ttname"><a href="classlost_1_1DavenportQAlgorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00012">attitude-estimators.cpp:12</a></div></div>
+<div class="ttc" id="aclasslost_1_1QuestAlgorithm_html"><div class="ttname"><a href="classlost_1_1QuestAlgorithm.html">lost::QuestAlgorithm</a></div><div class="ttdoc">A faster and just as accurate attitude estimator as the Davenport Q algorithm.</div><div class="ttdef"><b>Definition</b> <a href="#l00049">attitude-estimators.hpp:49</a></div></div>
+<div class="ttc" id="aclasslost_1_1QuestAlgorithm_html_acd9f32ebd3a0873346f752e04e477b23"><div class="ttname"><a href="classlost_1_1QuestAlgorithm.html#acd9f32ebd3a0873346f752e04e477b23">lost::QuestAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00184">attitude-estimators.cpp:184</a></div></div>
+<div class="ttc" id="aclasslost_1_1TriadAlgorithm_html"><div class="ttname"><a href="classlost_1_1TriadAlgorithm.html">lost::TriadAlgorithm</a></div><div class="ttdoc">A fast attitude estimator which only takes into account information from two stars.</div><div class="ttdef"><b>Definition</b> <a href="#l00040">attitude-estimators.hpp:40</a></div></div>
+<div class="ttc" id="aclasslost_1_1TriadAlgorithm_html_a7c47290a94c74458995f5307e2486fc9"><div class="ttname"><a href="classlost_1_1TriadAlgorithm.html#a7c47290a94c74458995f5307e2486fc9">lost::TriadAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00134">attitude-estimators.cpp:134</a></div></div>
+<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00008">attitude-estimators.cpp:8</a></div></div>
+<div class="ttc" id="anamespacelost_html_a288b872531de219e9cfc87beb8d8bada"><div class="ttname"><a href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></div><div class="ttdeci">std::vector&lt; StarIdentifier &gt; StarIdentifiers</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00103">star-utils.hpp:103</a></div></div>
+<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00102">star-utils.hpp:102</a></div></div>
+<div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00101">star-utils.hpp:101</a></div></div>
 <div class="ttc" id="astar-id_8hpp_html"><div class="ttname"><a href="star-id_8hpp.html">star-id.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

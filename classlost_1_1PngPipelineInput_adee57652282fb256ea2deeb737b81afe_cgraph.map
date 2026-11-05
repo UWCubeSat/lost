@@ -1,0 +1,5 @@
+<map id="lost::PngPipelineInput::PngPipelineInput" name="lost::PngPipelineInput::PngPipelineInput">
+<area shape="rect" id="Node000001" title="Pipeline input for an image that&#39;s already been identified using Astrometry.net." alt="" coords="5,5,168,50"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e" title="Convert a colored Cairo image surface into a row&#45;major array of grayscale pixels." alt="" coords="216,5,397,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,25,203,27,197,28,168,30"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="lost::TetraDatabase::GetPattern" name="lost::TetraDatabase::GetPattern">
+<area shape="rect" id="Node000001" title=" " alt="" coords="468,5,615,50"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1TetraDatabase.html#a4099ff2e4e2d8620bb7c03837f5d635d" title=" " alt="" coords="267,5,420,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="450,28,420,30,420,25,455,28"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1TetraStarIdAlgorithm.html#a6e13a6369e0c9188ae1d6edb1364cc84" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,14,219,42"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="249,28,219,30,219,25,254,28"/>
+</map>

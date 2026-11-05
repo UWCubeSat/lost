@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::CatalogStar Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1CatalogStar.html','','classlost_1_1CatalogStar-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -126,6 +140,8 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A star from the Bright <a class="el" href="classlost_1_1Star.html" title="A &quot;centroid&quot; detected in an image.">Star</a> <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00013">13</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af2f1fc27b7b16f497e652a1fd1caa00e" name="af2f1fc27b7b16f497e652a1fd1caa00e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2f1fc27b7b16f497e652a1fd1caa00e">&#9670;&#160;</a></span>CatalogStar() <span class="overload">[1/3]</span></h2>
@@ -199,6 +215,18 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00023">23</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1CatalogStar_a01e0c6d1367a68757a13091c5287075f_cgraph.png" border="0" usemap="#aclasslost_1_1CatalogStar_a01e0c6d1367a68757a13091c5287075f_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1CatalogStar_a01e0c6d1367a68757a13091c5287075f_cgraph" id="aclasslost_1_1CatalogStar_a01e0c6d1367a68757a13091c5287075f_cgraph">
+<area shape="rect" title="Create a CatalogStar using its celestial/spherical coordinates." alt="" coords="5,5,143,50"/>
+<area shape="rect" href="namespacelost.html#a5bcac28daa68fac6e7141aea7d789e10" title="Convert from right ascension &amp; declination to a 3d point on the unit sphere." alt="" coords="191,14,363,42"/>
+<area shape="poly" title=" " alt="" coords="143,25,178,27,172,28,143,30"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a8d74d0477614cda6ab24a4732b33227e" name="a8d74d0477614cda6ab24a4732b33227e"></a>
@@ -233,6 +261,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00026">26</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
@@ -251,6 +281,8 @@ Public Attributes</h2></td></tr>
 <p>The magnitude of the star, with the decimal point shifted two places right. </p>
 <p>I.e., multiply this by 10<sup>-2</sup> to get the magnitude. </p>
 
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00038">38</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a72d3cdf9c85caa2fc2819644862e26ee" name="a72d3cdf9c85caa2fc2819644862e26ee"></a>
@@ -268,6 +300,8 @@ Public Attributes</h2></td></tr>
 <p>A unique number which unambiguously identifies the catalog star. </p>
 <p>The catalog is an array, so in algorithms we usually refer to catalog stars by their index in the catalog. However, if the catalog is filtered (say, to remove stars that are too dim or too close to each other), the indexes change, which makes everything really hard to debug because indexes change based on how the catalog was filtered. That's what names are for: They're fixed and don't change. </p>
 
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00043">43</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a id="abd0b2df829476183297af1ac072c0802" name="abd0b2df829476183297af1ac072c0802"></a>
@@ -284,6 +318,8 @@ Public Attributes</h2></td></tr>
 
 <p>The point on the unit sphere where the star lies. </p>
 <p>The earth is at the center of the sphere. A star with right ascension and declination both equal to zero will lie at (1,0,0). </p>
+
+<p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00033">33</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
 
 </div>
 </div>

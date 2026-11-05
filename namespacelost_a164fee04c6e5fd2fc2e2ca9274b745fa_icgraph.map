@@ -1,0 +1,27 @@
+<map id="lost::SerializePadding" name="lost::SerializePadding">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1194,107,1354,134"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#ad14088462298249d31b2c396c3be86f9" title=" " alt="" coords="725,5,930,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1192,103,892,36,892,31,1197,102"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="978,132,1146,160"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1176,132,1147,138,1146,133,1181,132"/>
+<area shape="poly" id="edge10_Node000003_Node000002" title=" " alt="" coords="1030,121,985,88,928,54,885,36,885,31,931,49,988,84,1035,122"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3" title="Serialize the catalog to buffer." alt="" coords="258,132,417,160"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="960,131,929,130,805,119,708,114,611,115,487,123,410,134,408,129,487,118,611,110,708,109,806,114,930,125,965,130"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a12fa960d591f9842a51451394cc86412" title="Serialize a CatalogStar into a byte buffer." alt="" coords="490,132,675,160"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="960,146,676,148,675,143,965,145"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a0227319e45ff29d6f61b7e083d01e31f" title="K&#45;vector index layout." alt="" coords="730,209,925,237"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="1015,165,931,199,888,211,887,206,929,194,1010,167"/>
+<area shape="rect" id="Node000008" href="$namespacelost.html#a98d1507ab3e305ab47846133d82e4467" title="Serialize a pair&#45;distance KVector into buffer." alt="" coords="487,226,677,271"/>
+<area shape="poly" id="edge11_Node000003_Node000008" title=" " alt="" coords="1041,170,993,216,963,236,931,251,866,267,800,273,736,272,678,267,678,262,736,267,800,268,865,262,929,246,961,231,990,211,1036,172"/>
+<area shape="rect" id="Node000009" href="$namespacelost.html#a6c5d736306f3dd8564e36e0a95da8f7f" title=" " alt="" coords="236,289,439,317"/>
+<area shape="poly" id="edge12_Node000003_Node000009" title=" " alt="" coords="1045,172,999,230,967,258,931,279,865,303,797,319,727,329,658,334,528,331,422,320,422,315,528,326,657,328,726,324,796,314,864,298,929,274,964,253,995,226,1041,174"/>
+<area shape="rect" id="Node000010" href="$namespacelost.html#aa2e68349539a9ef5024920ac4595e7e3" title="Serialize a Vec3 to buffer. Takes up space according to SerializeLengthVec3." alt="" coords="757,157,898,185"/>
+<area shape="poly" id="edge14_Node000003_Node000010" title=" " alt="" coords="960,157,899,166,898,161,965,156"/>
+<area shape="rect" id="Node000005" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,235,188,262"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="288,169,132,236,130,232,289,164"/>
+<area shape="poly" id="edge6_Node000006_Node000004" title=" " alt="" coords="471,146,418,148,417,143,476,145"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="711,235,678,241,678,236,717,235"/>
+<area shape="poly" id="edge9_Node000008_Node000005" title=" " alt="" coords="471,251,188,251,188,246,472,246"/>
+<area shape="poly" id="edge13_Node000009_Node000005" title=" " alt="" coords="256,286,161,266,161,260,261,284"/>
+<area shape="poly" id="edge15_Node000010_Node000006" title=" " alt="" coords="740,163,675,158,675,153,745,162"/>
+</map>

@@ -1,0 +1,15 @@
+<map id="lost::isFlagSet" name="lost::isFlagSet">
+<area shape="rect" id="Node000001" title=" " alt="" coords="677,100,791,128"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1MultiDatabase.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="468,92,629,137"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="659,115,630,117,630,112,664,114"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1GeometricVotingStarIdAlgorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="208,5,396,50"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="478,86,419,65,384,53,384,48,421,60,483,86"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1Pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="237,74,368,102"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="450,104,369,97,369,92,455,104"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="185,126,420,154"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="450,125,421,130,420,125,455,124"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1TetraStarIdAlgorithm.html#a6e13a6369e0c9188ae1d6edb1364cc84" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="196,178,409,206"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="484,142,421,168,375,180,374,175,419,162,479,143"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1Pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,74,137,102"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="219,89,138,90,137,85,223,86"/>
+</map>

@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::EulerAngles Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1EulerAngles.html','','classlost_1_1EulerAngles-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -114,6 +128,8 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A "human-readable" way to represent a 3d rotation or orientation. </p>
 <p>Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans to understand. There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00091">91</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a306c3cde2b3a84f2b546cbcef318ebdf" name="a306c3cde2b3a84f2b546cbcef318ebdf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a306c3cde2b3a84f2b546cbcef318ebdf">&#9670;&#160;</a></span>EulerAngles()</h2>
@@ -147,6 +163,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00093">93</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
@@ -164,6 +182,8 @@ Public Attributes</h2></td></tr>
 
 <p>Declination. How far we pitch up (or down if negative). Pitch is performed second, after yaw. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00099">99</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a id="ae52017b1b9cc1063704bcc2b25500783" name="ae52017b1b9cc1063704bcc2b25500783"></a>
@@ -180,6 +200,8 @@ Public Attributes</h2></td></tr>
 
 <p>Right ascension. How far we yaw left. Yaw is performed first. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00097">97</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a7965e0a2c260109c23c85f120b9db75f" name="a7965e0a2c260109c23c85f120b9db75f"></a>
@@ -195,6 +217,8 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>How far we roll counterclockwise. Roll is performed last (after yaw and pitch). </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00101">101</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>

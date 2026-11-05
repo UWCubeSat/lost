@@ -1,0 +1,13 @@
+<map id="lost::FindUnidentifiedCentroidsInRange" name="lost::FindUnidentifiedCentroidsInRange">
+<area shape="rect" id="Node000001" title="Return all the unidentified centroids within the requested distance bounds from star." alt="" coords="5,24,227,68"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1Camera.html#aeb37d99dfc08205f5938303dbb16ff9e" title="Gives a point in 3d space that could correspond to the given vector, using the same coordinate system..." alt="" coords="275,5,497,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="227,32,262,31,257,32,228,37"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1Vec3.html#a13c75aca8d96b36a1c004f770d3bf55e" title="Create a vector pointing in the same direction with magnitude 1." alt="" coords="306,57,466,85"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="227,54,294,62,288,63,227,59"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1Camera.html#a4d940919d1247edd431de7643473f538" title="Returns whether a given pixel is actually in the camera&#39;s field of view." alt="" coords="545,5,713,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="497,17,532,19,527,19,498,22"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1Vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="548,57,710,85"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="466,69,536,71,530,71,466,74"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1Vec3.html#afe5105ec5bf24fab1e33c4ae3c934de6" title=" " alt="" coords="568,109,691,137"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="454,83,555,107,549,107,454,88"/>
+</map>

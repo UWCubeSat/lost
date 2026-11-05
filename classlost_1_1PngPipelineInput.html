@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::PngPipelineInput Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1PngPipelineInput.html','','classlost_1_1PngPipelineInput-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -143,6 +157,8 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A pipeline input created by reading a PNG from a file on disk. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00163">163</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="adee57652282fb256ea2deeb737b81afe" name="adee57652282fb256ea2deeb737b81afe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adee57652282fb256ea2deeb737b81afe">&#9670;&#160;</a></span>PngPipelineInput()</h2>
@@ -178,6 +194,18 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo</a></b></dt><dd>should rename, not specific to PNG. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00381">381</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PngPipelineInput_adee57652282fb256ea2deeb737b81afe_cgraph.png" border="0" usemap="#aclasslost_1_1PngPipelineInput_adee57652282fb256ea2deeb737b81afe_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PngPipelineInput_adee57652282fb256ea2deeb737b81afe_cgraph" id="aclasslost_1_1PngPipelineInput_adee57652282fb256ea2deeb737b81afe_cgraph">
+<area shape="rect" title="Pipeline input for an image that&#39;s already been identified using Astrometry.net." alt="" coords="5,5,168,50"/>
+<area shape="rect" href="namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e" title="Convert a colored Cairo image surface into a row&#45;major array of grayscale pixels." alt="" coords="216,5,397,50"/>
+<area shape="poly" title=" " alt="" coords="168,25,203,27,197,28,168,30"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a01b8ddf0471b41c2a3d306f49156a0ab" name="a01b8ddf0471b41c2a3d306f49156a0ab"></a>
@@ -194,6 +222,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00389">389</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -225,6 +255,8 @@ Public Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classlost_1_1PipelineInput.html#a5f54da9be7e6398d3f042b825d4d5908">lost::PipelineInput</a>.</p>
 
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00170">170</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a89b02906c412703df66b030f8166dd39" name="a89b02906c412703df66b030f8166dd39"></a>
@@ -251,6 +283,8 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classlost_1_1PipelineInput.html#aeacea3e662299cec769ae560f68e58da">lost::PipelineInput</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00169">169</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>
@@ -279,11 +313,13 @@ Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classlost_1_1PipelineInput.html#a51e8d18aa7377d0822574b2b94f97a88">lost::PipelineInput</a>.</p>
 
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00168">168</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="io_8hpp_source.html">io.hpp</a></li>
-<li>src/<a class="el" href="io_8cpp.html">io.cpp</a></li>
+<li>src/<a class="el" href="io_8cpp_source.html">io.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

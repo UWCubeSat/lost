@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/camera.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('camera_8hpp_source.html','',''); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -150,23 +164,23 @@ $(function(){initNavTree('camera_8hpp_source.html','',''); });
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a2282f819be792d84f3168032a9cf457b"><div class="ttname"><a href="classlost_1_1Camera.html#a2282f819be792d84f3168032a9cf457b">lost::Camera::SpatialToCamera</a></div><div class="ttdeci">Vec2 SpatialToCamera(const Vec3 &amp;) const</div><div class="ttdoc">Converts from a 3D point in space to a 2D point on the camera sensor.</div><div class="ttdef"><b>Definition</b> camera.cpp:15</div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a2282f819be792d84f3168032a9cf457b"><div class="ttname"><a href="classlost_1_1Camera.html#a2282f819be792d84f3168032a9cf457b">lost::Camera::SpatialToCamera</a></div><div class="ttdeci">Vec2 SpatialToCamera(const Vec3 &amp;) const</div><div class="ttdoc">Converts from a 3D point in space to a 2D point on the camera sensor.</div><div class="ttdef"><b>Definition</b> <a href="camera_8cpp_source.html#l00015">camera.cpp:15</a></div></div>
 <div class="ttc" id="aclasslost_1_1Camera_html_a2fc15d984da36a7b015420dbe9fddca5"><div class="ttname"><a href="classlost_1_1Camera.html#a2fc15d984da36a7b015420dbe9fddca5">lost::Camera::Camera</a></div><div class="ttdeci">Camera(const Camera &amp;)=default</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a30e7b1026d347f35ceb8306ba9815a3a"><div class="ttname"><a href="classlost_1_1Camera.html#a30e7b1026d347f35ceb8306ba9815a3a">lost::Camera::SetFocalLength</a></div><div class="ttdeci">void SetFocalLength(decimal focalLength)</div><div class="ttdef"><b>Definition</b> camera.hpp:46</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a4d940919d1247edd431de7643473f538"><div class="ttname"><a href="classlost_1_1Camera.html#a4d940919d1247edd431de7643473f538">lost::Camera::InSensor</a></div><div class="ttdeci">bool InSensor(const Vec2 &amp;vector) const</div><div class="ttdoc">Returns whether a given pixel is actually in the camera&#39;s field of view.</div><div class="ttdef"><b>Definition</b> camera.cpp:51</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a509454953121bd47018c350d82b838ea"><div class="ttname"><a href="classlost_1_1Camera.html#a509454953121bd47018c350d82b838ea">lost::Camera::Camera</a></div><div class="ttdeci">Camera(decimal focalLength, decimal xCenter, decimal yCenter, int xResolution, int yResolution)</div><div class="ttdef"><b>Definition</b> camera.hpp:16</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a6a6a4bd2d5daf114108e73126568369d"><div class="ttname"><a href="classlost_1_1Camera.html#a6a6a4bd2d5daf114108e73126568369d">lost::Camera::XResolution</a></div><div class="ttdeci">int XResolution() const</div><div class="ttdoc">Width of the sensor in pixels.</div><div class="ttdef"><b>Definition</b> camera.hpp:38</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a75f02f56900338580a9cacc2f9131d70"><div class="ttname"><a href="classlost_1_1Camera.html#a75f02f56900338580a9cacc2f9131d70">lost::Camera::YResolution</a></div><div class="ttdeci">int YResolution() const</div><div class="ttdoc">Height of the sensor in pixels.</div><div class="ttdef"><b>Definition</b> camera.hpp:40</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_a8452608ad72efc8e93378f33eb981c0a"><div class="ttname"><a href="classlost_1_1Camera.html#a8452608ad72efc8e93378f33eb981c0a">lost::Camera::Fov</a></div><div class="ttdeci">decimal Fov() const</div><div class="ttdoc">Horizontal field of view in radians.</div><div class="ttdef"><b>Definition</b> camera.cpp:66</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_aeb37d99dfc08205f5938303dbb16ff9e"><div class="ttname"><a href="classlost_1_1Camera.html#aeb37d99dfc08205f5938303dbb16ff9e">lost::Camera::CameraToSpatial</a></div><div class="ttdeci">Vec3 CameraToSpatial(const Vec2 &amp;) const</div><div class="ttdoc">Gives a point in 3d space that could correspond to the given vector, using the same coordinate system...</div><div class="ttdef"><b>Definition</b> camera.cpp:35</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_af17d2e81670a302f46bb0ccdb1b346bd"><div class="ttname"><a href="classlost_1_1Camera.html#af17d2e81670a302f46bb0ccdb1b346bd">lost::Camera::Camera</a></div><div class="ttdeci">Camera(decimal focalLength, int xResolution, int yResolution)</div><div class="ttdef"><b>Definition</b> camera.hpp:23</div></div>
-<div class="ttc" id="aclasslost_1_1Camera_html_af484e8b4890c20ca02d05f907ba958b8"><div class="ttname"><a href="classlost_1_1Camera.html#af484e8b4890c20ca02d05f907ba958b8">lost::Camera::FocalLength</a></div><div class="ttdeci">decimal FocalLength() const</div><div class="ttdoc">Focal length in pixels.</div><div class="ttdef"><b>Definition</b> camera.hpp:42</div></div>
-<div class="ttc" id="aclasslost_1_1Vec3_html"><div class="ttname"><a href="classlost_1_1Vec3.html">lost::Vec3</a></div><div class="ttdoc">Three dimensional vector with decimaling point components.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:36</div></div>
-<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> decimal.hpp:8</div></div>
-<div class="ttc" id="adecimal_8hpp_html_a261bd8f8874ffe8d498f9c3cb9af7f5c"><div class="ttname"><a href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a></div><div class="ttdeci">#define DECIMAL(x)</div><div class="ttdef"><b>Definition</b> decimal.hpp:18</div></div>
-<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:8</div></div>
-<div class="ttc" id="anamespacelost_html_a000f9bcbfc18aa202849ef43a455cb20"><div class="ttname"><a href="namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20">lost::FovToFocalLength</a></div><div class="ttdeci">decimal FovToFocalLength(decimal xFov, decimal xResolution)</div><div class="ttdef"><b>Definition</b> camera.cpp:58</div></div>
-<div class="ttc" id="astructlost_1_1Vec2_html"><div class="ttname"><a href="structlost_1_1Vec2.html">lost::Vec2</a></div><div class="ttdoc">A two dimensional vector with decimaling point components.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:16</div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a30e7b1026d347f35ceb8306ba9815a3a"><div class="ttname"><a href="classlost_1_1Camera.html#a30e7b1026d347f35ceb8306ba9815a3a">lost::Camera::SetFocalLength</a></div><div class="ttdeci">void SetFocalLength(decimal focalLength)</div><div class="ttdef"><b>Definition</b> <a href="#l00046">camera.hpp:46</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a4d940919d1247edd431de7643473f538"><div class="ttname"><a href="classlost_1_1Camera.html#a4d940919d1247edd431de7643473f538">lost::Camera::InSensor</a></div><div class="ttdeci">bool InSensor(const Vec2 &amp;vector) const</div><div class="ttdoc">Returns whether a given pixel is actually in the camera&#39;s field of view.</div><div class="ttdef"><b>Definition</b> <a href="camera_8cpp_source.html#l00051">camera.cpp:51</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a509454953121bd47018c350d82b838ea"><div class="ttname"><a href="classlost_1_1Camera.html#a509454953121bd47018c350d82b838ea">lost::Camera::Camera</a></div><div class="ttdeci">Camera(decimal focalLength, decimal xCenter, decimal yCenter, int xResolution, int yResolution)</div><div class="ttdef"><b>Definition</b> <a href="#l00016">camera.hpp:16</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a6a6a4bd2d5daf114108e73126568369d"><div class="ttname"><a href="classlost_1_1Camera.html#a6a6a4bd2d5daf114108e73126568369d">lost::Camera::XResolution</a></div><div class="ttdeci">int XResolution() const</div><div class="ttdoc">Width of the sensor in pixels.</div><div class="ttdef"><b>Definition</b> <a href="#l00038">camera.hpp:38</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a75f02f56900338580a9cacc2f9131d70"><div class="ttname"><a href="classlost_1_1Camera.html#a75f02f56900338580a9cacc2f9131d70">lost::Camera::YResolution</a></div><div class="ttdeci">int YResolution() const</div><div class="ttdoc">Height of the sensor in pixels.</div><div class="ttdef"><b>Definition</b> <a href="#l00040">camera.hpp:40</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_a8452608ad72efc8e93378f33eb981c0a"><div class="ttname"><a href="classlost_1_1Camera.html#a8452608ad72efc8e93378f33eb981c0a">lost::Camera::Fov</a></div><div class="ttdeci">decimal Fov() const</div><div class="ttdoc">Horizontal field of view in radians.</div><div class="ttdef"><b>Definition</b> <a href="camera_8cpp_source.html#l00066">camera.cpp:66</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_aeb37d99dfc08205f5938303dbb16ff9e"><div class="ttname"><a href="classlost_1_1Camera.html#aeb37d99dfc08205f5938303dbb16ff9e">lost::Camera::CameraToSpatial</a></div><div class="ttdeci">Vec3 CameraToSpatial(const Vec2 &amp;) const</div><div class="ttdoc">Gives a point in 3d space that could correspond to the given vector, using the same coordinate system...</div><div class="ttdef"><b>Definition</b> <a href="camera_8cpp_source.html#l00035">camera.cpp:35</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_af17d2e81670a302f46bb0ccdb1b346bd"><div class="ttname"><a href="classlost_1_1Camera.html#af17d2e81670a302f46bb0ccdb1b346bd">lost::Camera::Camera</a></div><div class="ttdeci">Camera(decimal focalLength, int xResolution, int yResolution)</div><div class="ttdef"><b>Definition</b> <a href="#l00023">camera.hpp:23</a></div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html_af484e8b4890c20ca02d05f907ba958b8"><div class="ttname"><a href="classlost_1_1Camera.html#af484e8b4890c20ca02d05f907ba958b8">lost::Camera::FocalLength</a></div><div class="ttdeci">decimal FocalLength() const</div><div class="ttdoc">Focal length in pixels.</div><div class="ttdef"><b>Definition</b> <a href="#l00042">camera.hpp:42</a></div></div>
+<div class="ttc" id="aclasslost_1_1Vec3_html"><div class="ttname"><a href="classlost_1_1Vec3.html">lost::Vec3</a></div><div class="ttdoc">Three dimensional vector with decimaling point components.</div><div class="ttdef"><b>Definition</b> <a href="attitude-utils_8hpp_source.html#l00036">attitude-utils.hpp:36</a></div></div>
+<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> <a href="decimal_8hpp_source.html#l00008">decimal.hpp:8</a></div></div>
+<div class="ttc" id="adecimal_8hpp_html_a261bd8f8874ffe8d498f9c3cb9af7f5c"><div class="ttname"><a href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a></div><div class="ttdeci">#define DECIMAL(x)</div><div class="ttdef"><b>Definition</b> <a href="decimal_8hpp_source.html#l00018">decimal.hpp:18</a></div></div>
+<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00008">attitude-estimators.cpp:8</a></div></div>
+<div class="ttc" id="anamespacelost_html_a000f9bcbfc18aa202849ef43a455cb20"><div class="ttname"><a href="namespacelost.html#a000f9bcbfc18aa202849ef43a455cb20">lost::FovToFocalLength</a></div><div class="ttdeci">decimal FovToFocalLength(decimal xFov, decimal xResolution)</div><div class="ttdef"><b>Definition</b> <a href="camera_8cpp_source.html#l00058">camera.cpp:58</a></div></div>
+<div class="ttc" id="astructlost_1_1Vec2_html"><div class="ttname"><a href="structlost_1_1Vec2.html">lost::Vec2</a></div><div class="ttdoc">A two dimensional vector with decimaling point components.</div><div class="ttdef"><b>Definition</b> <a href="attitude-utils_8hpp_source.html#l00016">attitude-utils.hpp:16</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 </div><!-- container -->

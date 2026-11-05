@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::PairDistanceKVectorDatabase Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1PairDistanceKVectorDatabase.html','','classlost_1_1PairDistanceKVectorDatabase-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -122,6 +136,8 @@ Static Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A database storing distances between pairs of stars. </p>
 <p>Supports fast range queries to find all pairs of stars separated by approximately a certain distance. </p><dl class="section warning"><dt>Warning</dt><dd>Sensitive to uncalibrated camera parameters </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00056">56</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a63c9e16675f56b66cc3740fb96c55dfc" name="a63c9e16675f56b66cc3740fb96c55dfc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a63c9e16675f56b66cc3740fb96c55dfc">&#9670;&#160;</a></span>PairDistanceKVectorDatabase()</h2>
@@ -147,6 +163,27 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Create the database from a serialized buffer. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00298">298</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_a63c9e16675f56b66cc3740fb96c55dfc_cgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_a63c9e16675f56b66cc3740fb96c55dfc_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_a63c9e16675f56b66cc3740fb96c55dfc_cgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_a63c9e16675f56b66cc3740fb96c55dfc_cgraph">
+<area shape="rect" title="Create the database from a serialized buffer." alt="" coords="5,75,290,119"/>
+<area shape="rect" href="namespacelost.html#a6708c85ee599d39a129c12aff85de26d" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="338,83,499,111"/>
+<area shape="poly" title=" " alt="" coords="290,94,325,97,319,97,290,100"/>
+<area shape="rect" href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="547,32,724,60"/>
+<area shape="poly" title=" " alt="" coords="480,80,556,65,561,64,481,85"/>
+<area shape="rect" href="classlost_1_1DeserializeContext.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="772,75,950,119"/>
+<area shape="poly" title=" " alt="" coords="499,94,759,97,754,97,499,100"/>
+<area shape="rect" href="classlost_1_1DeserializeContext.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="547,135,724,179"/>
+<area shape="poly" title=" " alt="" coords="471,109,541,130,535,130,471,114"/>
+<area shape="rect" href="classlost_1_1DeserializeContext.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="772,5,950,50"/>
+<area shape="poly" title=" " alt="" coords="724,36,759,36,754,37,725,42"/>
+<area shape="poly" title=" " alt="" coords="700,58,760,74,754,74,700,63"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -179,6 +216,22 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00325">325</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_ad76a05c909ea68d6084f942f3623b8ed_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_ad76a05c909ea68d6084f942f3623b8ed_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_ad76a05c909ea68d6084f942f3623b8ed_icgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_ad76a05c909ea68d6084f942f3623b8ed_icgraph">
+<area shape="rect" title=" " alt="" coords="751,5,937,50"/>
+<area shape="rect" href="namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="542,14,703,42"/>
+<area shape="poly" title=" " alt="" coords="733,28,704,30,704,25,739,28"/>
+<area shape="rect" href="namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,494,50"/>
+<area shape="poly" title=" " alt="" coords="523,28,494,30,494,25,529,28"/>
+<area shape="rect" href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,14,241,42"/>
+<area shape="poly" title=" " alt="" coords="270,28,241,30,241,25,275,28"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -215,6 +268,20 @@ Static Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the start of the matched pairs. Each pair is stored as simply two 16-bit integers, each of which is a catalog index. (you must increment the pointer twice to get to the next pair). </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00314">314</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_ae88622306fc1b554a5c86476b0e815af_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_ae88622306fc1b554a5c86476b0e815af_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_ae88622306fc1b554a5c86476b0e815af_icgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_ae88622306fc1b554a5c86476b0e815af_icgraph">
+<area shape="rect" title="Return at least all the star pairs whose inter&#45;star distance is between min and max." alt="" coords="289,36,482,81"/>
+<area shape="rect" href="classlost_1_1GeometricVotingStarIdAlgorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="29,5,217,50"/>
+<area shape="poly" title=" " alt="" coords="271,46,218,41,218,36,276,45"/>
+<area shape="rect" href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,74,241,102"/>
+<area shape="poly" title=" " alt="" coords="271,71,241,77,241,72,276,71"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="aec5c08310e5f796a9025300f9d8754e3" name="aec5c08310e5f796a9025300f9d8754e3"></a>
@@ -241,6 +308,20 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Upper bound on stored star pair distances. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00065">65</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_aec5c08310e5f796a9025300f9d8754e3_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_aec5c08310e5f796a9025300f9d8754e3_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_aec5c08310e5f796a9025300f9d8754e3_icgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_aec5c08310e5f796a9025300f9d8754e3_icgraph">
+<area shape="rect" title="Upper bound on stored star pair distances." alt="" coords="542,5,726,50"/>
+<area shape="rect" href="namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,494,50"/>
+<area shape="poly" title=" " alt="" coords="523,28,494,30,494,25,529,28"/>
+<area shape="rect" href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,14,241,42"/>
+<area shape="poly" title=" " alt="" coords="270,28,241,30,241,25,275,28"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -269,6 +350,20 @@ Static Public Attributes</h2></td></tr>
 
 <p>Lower bound on stored star pair distances. </p>
 
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00067">67</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_a4db3849497b621317addfb332fd743cc_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_a4db3849497b621317addfb332fd743cc_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_a4db3849497b621317addfb332fd743cc_icgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_a4db3849497b621317addfb332fd743cc_icgraph">
+<area shape="rect" title="Lower bound on stored star pair distances." alt="" coords="542,5,726,50"/>
+<area shape="rect" href="namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,5,494,50"/>
+<area shape="poly" title=" " alt="" coords="523,28,494,30,494,25,529,28"/>
+<area shape="rect" href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,14,241,42"/>
+<area shape="poly" title=" " alt="" coords="270,28,241,30,241,25,275,28"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a0b1b8bf73fa17c88abaf479fa79be96b" name="a0b1b8bf73fa17c88abaf479fa79be96b"></a>
@@ -288,6 +383,18 @@ Static Public Attributes</h2></td></tr>
 
 <p>Exact number of stored pairs. </p>
 <p>Number of star pairs stored in the database. </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00359">359</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_a0b1b8bf73fa17c88abaf479fa79be96b_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_a0b1b8bf73fa17c88abaf479fa79be96b_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_a0b1b8bf73fa17c88abaf479fa79be96b_icgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_a0b1b8bf73fa17c88abaf479fa79be96b_icgraph">
+<area shape="rect" title="Exact number of stored pairs." alt="" coords="238,5,422,50"/>
+<area shape="rect" href="classlost_1_1PairDistanceKVectorDatabase.html#a2df6cf629cb564bc9ad47f724cbf10b0" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,5,190,50"/>
+<area shape="poly" title=" " alt="" coords="219,28,190,30,190,25,224,27"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -311,6 +418,20 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Return the distances from the given star to each star it's paired with in the database (for debugging). </p>
+
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00364">364</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceKVectorDatabase_a2df6cf629cb564bc9ad47f724cbf10b0_cgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceKVectorDatabase_a2df6cf629cb564bc9ad47f724cbf10b0_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceKVectorDatabase_a2df6cf629cb564bc9ad47f724cbf10b0_cgraph" id="aclasslost_1_1PairDistanceKVectorDatabase_a2df6cf629cb564bc9ad47f724cbf10b0_cgraph">
+<area shape="rect" title="Return the distances from the given star to each star it&#39;s paired with in the database (for debugging..." alt="" coords="5,28,190,72"/>
+<area shape="rect" href="namespacelost.html#a4d066d222770cdbde925ab67813193dc" title="Calculate the inner angle, in radians, between two /unit/ vectors." alt="" coords="271,5,388,33"/>
+<area shape="poly" title=" " alt="" coords="190,35,259,28,253,30,191,40"/>
+<area shape="rect" href="classlost_1_1PairDistanceKVectorDatabase.html#a0b1b8bf73fa17c88abaf479fa79be96b" title="Exact number of stored pairs." alt="" coords="238,57,422,102"/>
+<area shape="poly" title=" " alt="" coords="190,59,225,65,219,66,190,64"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -337,11 +458,13 @@ Static Public Attributes</h2></td></tr>
 
 <p>Magic value to use when storing inside a <a class="el" href="classlost_1_1MultiDatabase.html">MultiDatabase</a>. </p>
 
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00072">72</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="databases_8hpp_source.html">databases.hpp</a></li>
-<li>src/<a class="el" href="databases_8cpp.html">databases.cpp</a></li>
+<li>src/<a class="el" href="databases_8cpp_source.html">databases.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

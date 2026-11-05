@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::CentroidComparison Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1CentroidComparison.html','','classlost_1_1CentroidComparison-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -111,6 +125,8 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The result of comparing actual and expected centroids Used for debugging and benchmarking. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01066">1066</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad46cc5ba0521e788511aac2bbdc2569d" name="ad46cc5ba0521e788511aac2bbdc2569d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad46cc5ba0521e788511aac2bbdc2569d">&#9670;&#160;</a></span>CentroidComparison()</h2>
@@ -135,6 +151,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01068">1068</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
@@ -152,6 +170,8 @@ Public Attributes</h2></td></tr>
 
 <p>Average distance from actual to expected centroids (in pixels) Only correct centroids are considered in this average. </p>
 
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01073">1073</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+
 </div>
 </div>
 <a id="ab42870c8914b81b5ff27f8c8b6b5ec2b" name="ab42870c8914b81b5ff27f8c8b6b5ec2b"></a>
@@ -167,6 +187,8 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Number of actual stars within the centroiding threshold of an expected star. </p>
+
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01078">1078</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -185,10 +207,12 @@ Public Attributes</h2></td></tr>
 <p><a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> in actual but not expected. </p>
 <p>Ideally 0 This is a decimal because we may average multiple centroid comparisons together. </p>
 
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01084">1084</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/<a class="el" href="io_8cpp.html">io.cpp</a></li>
+<li>src/<a class="el" href="io_8cpp_source.html">io.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,0 +1,5 @@
+<map id="lost::BscParse" name="lost::BscParse">
+<area shape="rect" id="Node000001" title="Parse the bright star catalog from the TSV file on disk." alt="" coords="5,5,117,33"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="165,5,283,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,17,152,19,146,19,117,22"/>
+</map>

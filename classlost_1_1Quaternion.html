@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::Quaternion Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1Quaternion.html','','classlost_1_1Quaternion-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -136,6 +150,8 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A quaternion is a common way to represent a 3d rotation. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00105">105</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6ff95b8ae5599c94d585bd9842dfa873" name="a6ff95b8ae5599c94d585bd9842dfa873"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6ff95b8ae5599c94d585bd9842dfa873">&#9670;&#160;</a></span>Quaternion() <span class="overload">[1/4]</span></h2>
@@ -159,6 +175,42 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a6ff95b8ae5599c94d585bd9842dfa873_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a6ff95b8ae5599c94d585bd9842dfa873_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a6ff95b8ae5599c94d585bd9842dfa873_icgraph" id="aclasslost_1_1Quaternion_a6ff95b8ae5599c94d585bd9842dfa873_icgraph">
+<area shape="rect" title=" " alt="" coords="1860,83,2065,110"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a0df3e917ca129d6a8d608d49ab9e5bbd" title="Ensure that the quaternion&#39;s real part is nonnegative." alt="" coords="1596,5,1812,33"/>
+<area shape="poly" title=" " alt="" coords="1905,77,1811,48,1766,36,1767,31,1813,43,1910,77"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="1604,57,1804,85"/>
+<area shape="poly" title=" " alt="" coords="1842,85,1804,84,1804,78,1847,85"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1371,83,1548,110"/>
+<area shape="poly" title=" " alt="" coords="1842,97,1548,99,1548,94,1847,96"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a8ebde5fe7f4422ba54775aa7e5d12756" title="Multiply two quaternions using the usual definition of quaternion multiplication (effectively compose..." alt="" coords="1606,159,1802,186"/>
+<area shape="poly" title=" " alt="" coords="1901,115,1754,161,1753,155,1895,116"/>
+<area shape="poly" title=" " alt="" coords="1591,83,1548,90,1548,85,1586,83"/>
+<area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1153,32,1323,60"/>
+<area shape="poly" title=" " alt="" coords="1378,79,1302,63,1302,58,1384,79"/>
+<area shape="rect" href="classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="642,74,849,119"/>
+<area shape="poly" title=" " alt="" coords="1353,97,849,99,849,94,1358,96"/>
+<area shape="rect" href="namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)." alt="" coords="1153,133,1323,161"/>
+<area shape="poly" title=" " alt="" coords="1384,114,1302,135,1301,130,1378,115"/>
+<area shape="rect" href="classlost_1_1Attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="897,32,1105,60"/>
+<area shape="poly" title=" " alt="" coords="1135,46,1105,48,1105,43,1140,46"/>
+<area shape="poly" title=" " alt="" coords="915,63,850,79,849,73,910,64"/>
+<area shape="rect" href="classlost_1_1Attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="652,23,839,50"/>
+<area shape="poly" title=" " alt="" coords="878,42,840,43,839,37,884,41"/>
+<area shape="rect" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="467,23,594,50"/>
+<area shape="poly" title=" " alt="" coords="634,37,595,39,595,34,639,36"/>
+<area shape="rect" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,14,419,59"/>
+<area shape="poly" title=" " alt="" coords="449,37,420,39,419,34,454,36"/>
+<area shape="rect" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,23,189,50"/>
+<area shape="poly" title=" " alt="" coords="219,38,190,39,188,34,224,35"/>
+<area shape="rect" href="classlost_1_1Attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="917,133,1084,161"/>
+<area shape="poly" title=" " alt="" coords="1135,147,1085,150,1085,145,1140,147"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -187,6 +239,18 @@ Public Attributes</h2></td></tr>
 
 <p>Creates a "pure quaternion" with the given vector for imaginary parts and zero for real part. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00040">40</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_aaf73dff6f30d740ded0ea2be0449b3b2_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_aaf73dff6f30d740ded0ea2be0449b3b2_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_aaf73dff6f30d740ded0ea2be0449b3b2_cgraph" id="aclasslost_1_1Quaternion_aaf73dff6f30d740ded0ea2be0449b3b2_cgraph">
+<area shape="rect" title="Creates a &quot;pure quaternion&quot; with the given vector for imaginary parts and zero for real part." alt="" coords="5,5,211,33"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6d8e723c0c49869742c938a0dcb38d2f" title="Set imaginary components." alt="" coords="259,5,454,33"/>
+<area shape="poly" title=" " alt="" coords="211,17,246,19,240,19,211,22"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a017e02bf5ca5630d4469755e3fed0b54" name="a017e02bf5ca5630d4469755e3fed0b54"></a>
@@ -209,6 +273,8 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Create a quaternion which represents a rotation of theta around the axis input. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00046">46</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -249,6 +315,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00111">111</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -268,6 +336,20 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>How many radians the rotation represented by this quaternion has. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00061">61</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a4122fd09cf9e8d1ecf408873881da55e_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a4122fd09cf9e8d1ecf408873881da55e_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a4122fd09cf9e8d1ecf408873881da55e_icgraph" id="aclasslost_1_1Quaternion_a4122fd09cf9e8d1ecf408873881da55e_icgraph">
+<area shape="rect" title="How many radians the rotation represented by this quaternion has." alt="" coords="260,48,430,76"/>
+<area shape="rect" href="classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="5,5,212,50"/>
+<area shape="poly" title=" " alt="" coords="242,48,212,45,212,40,247,47"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#aec6d6d268e364a2f8cca0346819e4230" title="Returns the smallest angle that can be used to represent the rotation represented by the quaternion." alt="" coords="13,75,204,119"/>
+<area shape="poly" title=" " alt="" coords="242,78,204,86,204,80,247,77"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -289,6 +371,18 @@ Public Attributes</h2></td></tr>
 <p>Ensure that the quaternion's real part is nonnegative. </p>
 <p>Does not change the rotation represented by the quaternion. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00127">127</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a0df3e917ca129d6a8d608d49ab9e5bbd_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a0df3e917ca129d6a8d608d49ab9e5bbd_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a0df3e917ca129d6a8d608d49ab9e5bbd_cgraph" id="aclasslost_1_1Quaternion_a0df3e917ca129d6a8d608d49ab9e5bbd_cgraph">
+<area shape="rect" title="Ensure that the quaternion&#39;s real part is nonnegative." alt="" coords="5,5,222,33"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="270,5,475,33"/>
+<area shape="poly" title=" " alt="" coords="222,17,257,19,251,19,222,22"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a6436279d8b3bc9a764c10877f810add9" name="a6436279d8b3bc9a764c10877f810add9"></a>
@@ -307,6 +401,47 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Effectively computes a quaternion representing the inverse rotation of the original. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00023">23</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_cgraph" id="aclasslost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_cgraph">
+<area shape="rect" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="5,5,205,33"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="253,5,458,33"/>
+<area shape="poly" title=" " alt="" coords="205,17,240,19,235,19,205,22"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_icgraph" id="aclasslost_1_1Quaternion_a6436279d8b3bc9a764c10877f810add9_icgraph">
+<area shape="rect" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="1596,74,1795,102"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a570198dc9f0669cb34d715fbf9e62578" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1371,74,1548,102"/>
+<area shape="poly" title=" " alt="" coords="1577,88,1548,90,1548,85,1583,88"/>
+<area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1153,23,1323,51"/>
+<area shape="poly" title=" " alt="" coords="1378,70,1301,54,1302,49,1384,70"/>
+<area shape="rect" href="classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="642,65,849,110"/>
+<area shape="poly" title=" " alt="" coords="1353,88,849,90,849,85,1358,87"/>
+<area shape="rect" href="namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)." alt="" coords="1153,124,1323,152"/>
+<area shape="poly" title=" " alt="" coords="1384,105,1302,127,1301,121,1378,106"/>
+<area shape="rect" href="classlost_1_1Attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="897,23,1105,51"/>
+<area shape="poly" title=" " alt="" coords="1135,37,1105,40,1105,34,1140,37"/>
+<area shape="poly" title=" " alt="" coords="915,54,850,70,849,65,910,55"/>
+<area shape="rect" href="classlost_1_1Attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="652,14,839,42"/>
+<area shape="poly" title=" " alt="" coords="878,33,840,34,840,28,884,32"/>
+<area shape="rect" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="467,14,594,42"/>
+<area shape="poly" title=" " alt="" coords="634,28,595,30,595,25,639,27"/>
+<area shape="rect" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,419,50"/>
+<area shape="poly" title=" " alt="" coords="449,28,420,30,419,25,454,27"/>
+<area shape="rect" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,14,189,42"/>
+<area shape="poly" title=" " alt="" coords="219,29,190,30,188,25,224,27"/>
+<area shape="rect" href="classlost_1_1Attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="917,124,1084,152"/>
+<area shape="poly" title=" " alt="" coords="1135,138,1085,141,1085,136,1140,138"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -327,6 +462,8 @@ Public Attributes</h2></td></tr>
 
 <p>Whether the quaternion is a unit quaternion. All quaternions representing rotations should be units. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00120">120</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+
 </div>
 </div>
 <a id="a8ebde5fe7f4422ba54775aa7e5d12756" name="a8ebde5fe7f4422ba54775aa7e5d12756"></a>
@@ -345,6 +482,18 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Multiply two quaternions using the usual definition of quaternion multiplication (effectively composes rotations). </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00014">14</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a8ebde5fe7f4422ba54775aa7e5d12756_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a8ebde5fe7f4422ba54775aa7e5d12756_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a8ebde5fe7f4422ba54775aa7e5d12756_cgraph" id="aclasslost_1_1Quaternion_a8ebde5fe7f4422ba54775aa7e5d12756_cgraph">
+<area shape="rect" title="Multiply two quaternions using the usual definition of quaternion multiplication (effectively compose..." alt="" coords="5,5,201,33"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="249,5,454,33"/>
+<area shape="poly" title=" " alt="" coords="201,17,236,19,230,19,201,22"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -365,6 +514,48 @@ Public Attributes</h2></td></tr>
 
 <p>Rotate a 3d vector according to the rotation represented by the quaternion. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00055">55</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_cgraph" id="aclasslost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_cgraph">
+<area shape="rect" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="5,31,182,58"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="230,5,429,33"/>
+<area shape="poly" title=" " alt="" coords="182,32,217,31,211,32,183,38"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6ff95b8ae5599c94d585bd9842dfa873" title=" " alt="" coords="477,31,682,58"/>
+<area shape="poly" title=" " alt="" coords="182,42,462,42,461,47,182,47"/>
+<area shape="poly" title=" " alt="" coords="430,27,464,33,459,33,430,32"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_icgraph" id="aclasslost_1_1Quaternion_a570198dc9f0669cb34d715fbf9e62578_icgraph">
+<area shape="rect" title="Rotate a 3d vector according to the rotation represented by the quaternion." alt="" coords="1371,74,1548,102"/>
+<area shape="rect" href="namespacelost.html#a6bb9983e45dfa4b82b531ca96c397eed" title="Convert a rotation matrix (Direction Cosine Matrix) to a quaternion representing the same rotation." alt="" coords="1153,23,1323,51"/>
+<area shape="poly" title=" " alt="" coords="1378,70,1301,54,1302,49,1384,70"/>
+<area shape="rect" href="classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="642,65,849,110"/>
+<area shape="poly" title=" " alt="" coords="1353,88,849,90,849,85,1358,87"/>
+<area shape="rect" href="namespacelost.html#a08209cdf2c6b9415866d576343c35bf2" title="Convert a quaternion to a rotation matrix (Direction Cosine Matrix)." alt="" coords="1153,124,1323,152"/>
+<area shape="poly" title=" " alt="" coords="1384,105,1302,127,1301,121,1378,106"/>
+<area shape="rect" href="classlost_1_1Attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="897,23,1105,51"/>
+<area shape="poly" title=" " alt="" coords="1135,37,1105,40,1105,34,1140,37"/>
+<area shape="poly" title=" " alt="" coords="915,54,850,70,849,65,910,55"/>
+<area shape="rect" href="classlost_1_1Attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="652,14,839,42"/>
+<area shape="poly" title=" " alt="" coords="878,33,840,34,840,28,884,32"/>
+<area shape="rect" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="467,14,594,42"/>
+<area shape="poly" title=" " alt="" coords="634,28,595,30,595,25,639,27"/>
+<area shape="rect" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,419,50"/>
+<area shape="poly" title=" " alt="" coords="449,28,420,30,419,25,454,27"/>
+<area shape="rect" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,14,189,42"/>
+<area shape="poly" title=" " alt="" coords="219,29,190,30,188,25,224,27"/>
+<area shape="rect" href="classlost_1_1Attitude.html#aa5d6bb136591695fb81279ee2d4b8394" title="Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever..." alt="" coords="917,124,1084,152"/>
+<area shape="poly" title=" " alt="" coords="1135,138,1085,141,1085,136,1140,138"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="ab302f2d15fb324c68efce001a5757726" name="ab302f2d15fb324c68efce001a5757726"></a>
@@ -381,6 +572,20 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00076">76</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_ab302f2d15fb324c68efce001a5757726_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_ab302f2d15fb324c68efce001a5757726_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_ab302f2d15fb324c68efce001a5757726_cgraph" id="aclasslost_1_1Quaternion_ab302f2d15fb324c68efce001a5757726_cgraph">
+<area shape="rect" title=" " alt="" coords="5,32,197,60"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a6d8e723c0c49869742c938a0dcb38d2f" title="Set imaginary components." alt="" coords="245,5,440,33"/>
+<area shape="poly" title=" " alt="" coords="197,33,232,31,226,32,197,38"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a2eace9c3a35569109c949b7d8f1bc96e" title="The vector formed by imaginary components of the quaternion. The axis of the represented rotation." alt="" coords="255,57,430,85"/>
+<area shape="poly" title=" " alt="" coords="197,53,242,60,237,61,197,59"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -400,6 +605,20 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set imaginary components. </p>
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00033">33</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a6d8e723c0c49869742c938a0dcb38d2f_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a6d8e723c0c49869742c938a0dcb38d2f_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a6d8e723c0c49869742c938a0dcb38d2f_icgraph" id="aclasslost_1_1Quaternion_a6d8e723c0c49869742c938a0dcb38d2f_icgraph">
+<area shape="rect" title="Set imaginary components." alt="" coords="259,32,454,60"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#aaf73dff6f30d740ded0ea2be0449b3b2" title="Creates a &quot;pure quaternion&quot; with the given vector for imaginary parts and zero for real part." alt="" coords="5,5,211,33"/>
+<area shape="poly" title=" " alt="" coords="241,34,211,33,211,28,246,33"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#ab302f2d15fb324c68efce001a5757726" title=" " alt="" coords="12,57,204,85"/>
+<area shape="poly" title=" " alt="" coords="240,58,204,64,204,59,246,57"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -421,6 +640,18 @@ Public Attributes</h2></td></tr>
 <p>Returns the smallest angle that can be used to represent the rotation represented by the quaternion. </p>
 <p>I.e, min(Angle, 2pi-Angle). </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00069">69</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_aec6d6d268e364a2f8cca0346819e4230_cgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_aec6d6d268e364a2f8cca0346819e4230_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_aec6d6d268e364a2f8cca0346819e4230_cgraph" id="aclasslost_1_1Quaternion_aec6d6d268e364a2f8cca0346819e4230_cgraph">
+<area shape="rect" title="Returns the smallest angle that can be used to represent the rotation represented by the quaternion." alt="" coords="5,5,196,50"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#a4122fd09cf9e8d1ecf408873881da55e" title="How many radians the rotation represented by this quaternion has." alt="" coords="244,14,414,42"/>
+<area shape="poly" title=" " alt="" coords="196,25,231,27,225,28,196,30"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a565b9cb827d1938fe0b88aaa19093686" name="a565b9cb827d1938fe0b88aaa19093686"></a>
@@ -437,6 +668,24 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00081">81</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a565b9cb827d1938fe0b88aaa19093686_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a565b9cb827d1938fe0b88aaa19093686_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a565b9cb827d1938fe0b88aaa19093686_icgraph" id="aclasslost_1_1Quaternion_a565b9cb827d1938fe0b88aaa19093686_icgraph">
+<area shape="rect" title=" " alt="" coords="878,14,1085,42"/>
+<area shape="rect" href="classlost_1_1Attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="642,14,830,42"/>
+<area shape="poly" title=" " alt="" coords="859,28,830,30,830,25,865,28"/>
+<area shape="rect" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018" title="Plot information about an image onto the image using Cairo." alt="" coords="467,14,594,42"/>
+<area shape="poly" title=" " alt="" coords="624,28,595,30,595,25,630,28"/>
+<area shape="rect" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311" title="Plot an annotated image where centroids are annotated with their centroid index." alt="" coords="237,5,419,50"/>
+<area shape="poly" title=" " alt="" coords="449,28,420,30,420,25,454,28"/>
+<area shape="rect" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc" title="Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline." alt="" coords="5,14,189,42"/>
+<area shape="poly" title=" " alt="" coords="219,28,189,30,189,25,224,27"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -457,6 +706,18 @@ Public Attributes</h2></td></tr>
 
 <p>The vector formed by imaginary components of the quaternion. The axis of the represented rotation. </p>
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00028">28</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1Quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph.png" border="0" usemap="#aclasslost_1_1Quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1Quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph" id="aclasslost_1_1Quaternion_a2eace9c3a35569109c949b7d8f1bc96e_icgraph">
+<area shape="rect" title="The vector formed by imaginary components of the quaternion. The axis of the represented rotation." alt="" coords="245,5,419,33"/>
+<area shape="rect" href="classlost_1_1Quaternion.html#ab302f2d15fb324c68efce001a5757726" title=" " alt="" coords="5,5,197,33"/>
+<area shape="poly" title=" " alt="" coords="226,19,197,22,197,17,232,19"/>
+</map>
+</div>
+
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
@@ -472,6 +733,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00129">129</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a8955013a6ea860afd03c4f7b6c1f7e90" name="a8955013a6ea860afd03c4f7b6c1f7e90"></a>
@@ -485,6 +748,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00130">130</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -500,6 +765,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00131">131</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <a id="aba059c6fa2c2f4df17eecf36d12050d7" name="aba059c6fa2c2f4df17eecf36d12050d7"></a>
@@ -514,11 +781,13 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00128">128</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a></li>
-<li>src/<a class="el" href="attitude-utils_8cpp.html">attitude-utils.cpp</a></li>
+<li>src/<a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

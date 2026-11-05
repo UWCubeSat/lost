@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: lost::PairDistanceInvolvingIterator Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -17,9 +18,13 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(function() { init_search(); });
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -31,6 +36,18 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
+   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+</td></tr>
  </tbody>
 </table>
 </div>
@@ -42,17 +59,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',true,false,'search.php','Search',true);
-  $(function() { init_search(); });
-});
-</script>
-<div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -65,8 +72,15 @@ $(function() {
 <script type="text/javascript">
 $(function(){initNavTree('classlost_1_1PairDistanceInvolvingIterator.html','','classlost_1_1PairDistanceInvolvingIterator-members'); });
 </script>
-<div id="container">
-<div id="doc-content">
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',false,false,'search.php','Search',true);
+});
+</script>
+<div id="main-nav"></div>
+<div id="container"><div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -112,6 +126,8 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Given a list of star pairs, finds all those pairs which involve a certain star. </p>
 <p>Here "involve" means that one of the two stars in the pair is the given star. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00434">434</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aab0b583ba5779f592913fe7d7cb90e4a" name="aab0b583ba5779f592913fe7d7cb90e4a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab0b583ba5779f592913fe7d7cb90e4a">&#9670;&#160;</a></span>PairDistanceInvolvingIterator() <span class="overload">[1/2]</span></h2>
@@ -138,6 +154,18 @@ Public Member Functions</h2></td></tr>
 
 <p>Create a "past-the-end" iterator. </p>
 <p>If another <a class="el" href="classlost_1_1PairDistanceInvolvingIterator.html" title="Given a list of star pairs, finds all those pairs which involve a certain star.">PairDistanceInvolvingIterator</a> is equal to this, then it is done iterating. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00440">440</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceInvolvingIterator_aab0b583ba5779f592913fe7d7cb90e4a_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceInvolvingIterator_aab0b583ba5779f592913fe7d7cb90e4a_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceInvolvingIterator_aab0b583ba5779f592913fe7d7cb90e4a_icgraph" id="aclasslost_1_1PairDistanceInvolvingIterator_aab0b583ba5779f592913fe7d7cb90e4a_icgraph">
+<area shape="rect" title="Create a &quot;past&#45;the&#45;end&quot; iterator." alt="" coords="248,5,466,67"/>
+<area shape="rect" href="classlost_1_1PairDistanceInvolvingIterator.html#a1d3004a1b86a697f517900013c86a795" title="Move to the next matching pair." alt="" coords="5,14,200,58"/>
+<area shape="poly" title=" " alt="" coords="229,36,200,39,200,34,235,36"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -183,6 +211,8 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00449">449</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -211,6 +241,26 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the iterator is currently on a value. (false if iteration is complete). </p>
 
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00476">476</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceInvolvingIterator_a955185950868d30fe8526d84ad4f7062_icgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceInvolvingIterator_a955185950868d30fe8526d84ad4f7062_icgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceInvolvingIterator_a955185950868d30fe8526d84ad4f7062_icgraph" id="aclasslost_1_1PairDistanceInvolvingIterator_a955185950868d30fe8526d84ad4f7062_icgraph">
+<area shape="rect" title="Whether the iterator is currently on a value. (false if iteration is complete)." alt="" coords="812,49,1007,94"/>
+<area shape="rect" href="namespacelost.html#a7283a0756178459ca257b9f610138b12" title=" " alt="" coords="542,5,764,33"/>
+<area shape="poly" title=" " alt="" coords="795,48,725,36,725,31,800,48"/>
+<area shape="rect" href="namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4" title="Given two already&#45;identified centroids, and the distance from each to an as&#45;yet unidentified third ce..." alt="" coords="572,57,734,85"/>
+<area shape="poly" title=" " alt="" coords="794,71,734,74,734,69,799,71"/>
+<area shape="rect" href="classlost_1_1PairDistanceInvolvingIterator.html#a1d3004a1b86a697f517900013c86a795" title="Move to the next matching pair." alt="" coords="556,109,750,154"/>
+<area shape="poly" title=" " alt="" coords="800,97,751,111,750,106,795,98"/>
+<area shape="rect" href="namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e" title="Given some identified stars, attempt to identify the rest." alt="" coords="289,49,494,94"/>
+<area shape="poly" title=" " alt="" coords="554,71,494,74,494,69,559,71"/>
+<area shape="rect" href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,57,241,85"/>
+<area shape="poly" title=" " alt="" coords="270,72,241,74,241,69,275,71"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a662dd99588f341c15303363746c5a544" name="a662dd99588f341c15303363746c5a544"></a>
@@ -237,6 +287,8 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Access the curent pair. </p>
+
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00471">471</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 
 </div>
 </div>
@@ -265,10 +317,24 @@ Public Member Functions</h2></td></tr>
 
 <p>Move to the next matching pair. </p>
 
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00463">463</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classlost_1_1PairDistanceInvolvingIterator_a1d3004a1b86a697f517900013c86a795_cgraph.png" border="0" usemap="#aclasslost_1_1PairDistanceInvolvingIterator_a1d3004a1b86a697f517900013c86a795_cgraph" loading="lazy" alt=""/></div>
+<map name="aclasslost_1_1PairDistanceInvolvingIterator_a1d3004a1b86a697f517900013c86a795_cgraph" id="aclasslost_1_1PairDistanceInvolvingIterator_a1d3004a1b86a697f517900013c86a795_cgraph">
+<area shape="rect" title="Move to the next matching pair." alt="" coords="5,44,200,89"/>
+<area shape="rect" href="classlost_1_1PairDistanceInvolvingIterator.html#a955185950868d30fe8526d84ad4f7062" title="Whether the iterator is currently on a value. (false if iteration is complete)." alt="" coords="260,5,454,50"/>
+<area shape="poly" title=" " alt="" coords="199,49,247,44,242,46,201,54"/>
+<area shape="rect" href="classlost_1_1PairDistanceInvolvingIterator.html#aab0b583ba5779f592913fe7d7cb90e4a" title="Create a &quot;past&#45;the&#45;end&quot; iterator." alt="" coords="248,74,466,136"/>
+<area shape="poly" title=" " alt="" coords="200,78,235,86,229,86,200,84"/>
+</map>
+</div>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/<a class="el" href="star-id_8cpp.html">star-id.cpp</a></li>
+<li>src/<a class="el" href="star-id_8cpp_source.html">star-id.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

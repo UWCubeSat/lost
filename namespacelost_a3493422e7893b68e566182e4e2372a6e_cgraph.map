@@ -1,0 +1,5 @@
+<map id="lost::SwapEndiannessIfNecessary&lt; decimal &gt;" name="lost::SwapEndiannessIfNecessary&lt; decimal &gt;">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,245,50"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba" title="Unconditionally swap the endianness of a value (uses sizeof T)." alt="" coords="293,14,455,42"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="245,25,280,28,274,28,245,30"/>
+</map>

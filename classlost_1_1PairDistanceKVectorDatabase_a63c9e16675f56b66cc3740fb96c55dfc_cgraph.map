@@ -1,0 +1,14 @@
+<map id="lost::PairDistanceKVectorDatabase::PairDistanceKVectorDatabase" name="lost::PairDistanceKVectorDatabase::PairDistanceKVectorDatabase">
+<area shape="rect" id="Node000001" title="Create the database from a serialized buffer." alt="" coords="5,75,290,119"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a6708c85ee599d39a129c12aff85de26d" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="338,83,499,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="290,94,325,97,319,97,290,100"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="547,32,724,60"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="480,80,556,65,561,64,481,85"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1DeserializeContext.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="772,75,950,119"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="499,94,759,97,754,97,499,100"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1DeserializeContext.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="547,135,724,179"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="471,109,541,130,535,130,471,114"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1DeserializeContext.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="772,5,950,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="724,36,759,36,754,37,725,42"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="700,58,760,74,754,74,700,63"/>
+</map>

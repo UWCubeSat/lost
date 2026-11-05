@@ -1,0 +1,21 @@
+<map id="lost::DeserializeArray" name="lost::DeserializeArray">
+<area shape="rect" id="Node000001" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="800,118,962,146"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1KVectorIndex.html#a6cd151dd8a9224581c9fdeaa40831379" title="Construct from serialized buffer." alt="" coords="540,5,680,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="842,109,800,87,751,65,680,44,680,38,753,60,803,83,847,110"/>
+<area shape="rect" id="Node000003" href="$classlost_1_1PairDistanceKVectorDatabase.html#a63c9e16675f56b66cc3740fb96c55dfc" title="Create the database from a serialized buffer." alt="" coords="468,75,752,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="782,120,753,118,753,113,788,119"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1MultiDatabase.html#ad013d7640b19cb78268c9be5f6c64544" title="MultiDatabase memory layout:" alt="" coords="530,144,691,189"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="782,144,692,159,691,153,787,144"/>
+<area shape="rect" id="Node000010" href="$classlost_1_1TetraDatabase.html#a4743e25ff1fe30ca7da61bc4d0e7b068" title=" " alt="" coords="536,213,684,258"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="847,153,803,181,753,203,685,224,684,219,751,199,800,176,842,155"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1GeometricVotingStarIdAlgorithm.html#adea674f2fdf9d0715655eddbb749ecf0" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="208,57,396,102"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="512,145,467,134,419,117,383,105,383,100,421,112,469,129,517,144"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1Pipeline.html#aea0fe125836ac0c6906886ad320f5210" title="Run all stages of a pipeline." alt="" coords="237,126,368,154"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="511,159,369,148,369,143,517,157"/>
+<area shape="rect" id="Node000008" href="$classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="185,178,420,206"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="511,175,421,185,420,179,517,174"/>
+<area shape="rect" id="Node000009" href="$classlost_1_1TetraStarIdAlgorithm.html#a6e13a6369e0c9188ae1d6edb1364cc84" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="196,230,409,258"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="517,188,469,204,421,220,372,232,371,227,419,214,467,198,512,189"/>
+<area shape="rect" id="Node000007" href="$classlost_1_1Pipeline.html#a880d560ff40f68a2bbdc2cacc943e09d" title="Convenience function to run the main Pipeline::Go function on each input." alt="" coords="5,126,137,154"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="219,141,138,142,137,137,223,138"/>
+</map>

@@ -1,0 +1,23 @@
+<map id="lost::SerializeTetraDatabase" name="lost::SerializeTetraDatabase">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,187,209,214"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a037f862f943aa7d04406349a543e3ef2" title=" " alt="" coords="271,5,437,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,185,170,117,210,77,255,44,271,38,267,41,258,48,213,81,174,120,120,188"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a543c802e0faa7d19b8bfb148573309fe" title=" " alt="" coords="295,57,413,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,184,179,140,216,115,256,94,282,86,278,89,258,99,219,120,182,144,126,188"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1CombinationIterator.html#abac839bc5b0d4fae7aad7dfdbf16351f" title=" " alt="" coords="262,109,446,154"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="158,184,259,156,255,160,160,189"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1CombinationIterator.html#a835fa704fad7432b2fedbfcca2e34a96" title=" " alt="" coords="262,178,446,223"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="208,198,248,199,243,202,210,203"/>
+<area shape="rect" id="Node000006" href="$namespacelost.html#a9af0427ae10a3db5529f2f8c74497347" title=" " alt="" coords="270,247,438,274"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="167,212,282,241,277,244,167,218"/>
+<area shape="rect" id="Node000010" href="$namespacelost.html#a7154dcfc9b2bd4d0051304ebeb68db2b" title=" " alt="" coords="275,299,433,326"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="129,212,187,247,258,283,280,293,275,294,256,288,184,252,129,217"/>
+<area shape="rect" id="Node000011" href="$namespacelost.html#a3a350cbfc2335a5d73b82c97ae7d9042" title=" " alt="" coords="257,351,451,378"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="121,212,176,273,215,306,258,336,273,345,268,344,255,340,212,311,173,276,119,217"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa" title=" " alt="" coords="538,221,699,249"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="438,250,526,244,521,245,439,255"/>
+<area shape="rect" id="Node000008" href="$namespacelost.html#a9704a9fb2cf67873155e69407a976074" title="Swap the endianness of a value if necessary." alt="" coords="499,273,738,301"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="438,266,487,273,481,274,439,272"/>
+<area shape="rect" id="Node000009" href="$namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba" title="Unconditionally swap the endianness of a value (uses sizeof T)." alt="" coords="786,273,949,301"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="739,285,773,287,768,287,739,290"/>
+</map>
