@@ -320,15 +320,15 @@ $(function() {
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="comment">// Rectangles should be entirely /outside/ the radius of the star, so the star is</span></div>
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <span class="comment">// fully visible.</span></div>
 <div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            cairo_rectangle(cairoCtx,</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                            centroid.position.x - radiusX,</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                            centroid.position.y - radiusY,</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                            radiusX * 2,</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                            radiusY * 2);</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                            (<span class="keywordtype">double</span>) (centroid.position.x - radiusX),</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                            (<span class="keywordtype">double</span>) (centroid.position.y - radiusY),</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                            (<span class="keywordtype">double</span>) (radiusX * 2),</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                            (<span class="keywordtype">double</span>) (radiusY * 2));</div>
 <div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            cairo_stroke(cairoCtx);</div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        } <span class="keywordflow">else</span> {</div>
 <div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            cairo_rectangle(cairoCtx,</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                            <a class="code hl_define" href="decimal_8hpp.html#af8bb135de5573bfe8c0d7d43cacacee9">DECIMAL_FLOOR</a>(centroid.position.x),</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                            <a class="code hl_define" href="decimal_8hpp.html#af8bb135de5573bfe8c0d7d43cacacee9">DECIMAL_FLOOR</a>(centroid.position.y),</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                            (<span class="keywordtype">double</span>) <a class="code hl_define" href="decimal_8hpp.html#af8bb135de5573bfe8c0d7d43cacacee9">DECIMAL_FLOOR</a>(centroid.position.x),</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                            (<span class="keywordtype">double</span>) <a class="code hl_define" href="decimal_8hpp.html#af8bb135de5573bfe8c0d7d43cacacee9">DECIMAL_FLOOR</a>(centroid.position.y),</div>
 <div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                            1, 1);</div>
 <div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>            cairo_fill(cairoCtx);</div>
 <div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        }</div>
@@ -343,13 +343,13 @@ $(function() {
 <div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            <span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1_star.html">Star</a> &amp;centroid = stars[starId.starIndex];</div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            cairo_move_to(cairoCtx,</div>
 <div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                          centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a9cb9dd9f12c0e538eb55c0775505158a">radiusX</a> &gt; <a class="code hl_define" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0)</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                          ? centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#a46a5e51d9689b023106896d4968ace02">x</a> + centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a9cb9dd9f12c0e538eb55c0775505158a">radiusX</a> + 3</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                          : centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#a46a5e51d9689b023106896d4968ace02">x</a> + 8,</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                          (<span class="keywordtype">double</span>) (centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a9cb9dd9f12c0e538eb55c0775505158a">radiusX</a> &gt; <a class="code hl_define" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0)</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                                    ? centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#a46a5e51d9689b023106896d4968ace02">x</a> + centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a9cb9dd9f12c0e538eb55c0775505158a">radiusX</a> + 3</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                                    : centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#a46a5e51d9689b023106896d4968ace02">x</a> + 8),</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                          centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a1773623d5ae06132be712c11eaff2844">radiusY</a> &gt; <a class="code hl_define" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0)</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                          ? centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#ab0daa57fd5f54435248f36e736411750">y</a> - centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a1773623d5ae06132be712c11eaff2844">radiusY</a> + textHeight</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>                          : centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#ab0daa57fd5f54435248f36e736411750">y</a> + 10);</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                          (<span class="keywordtype">double</span>) (centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a1773623d5ae06132be712c11eaff2844">radiusY</a> &gt; <a class="code hl_define" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0)</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                                    ? centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#ab0daa57fd5f54435248f36e736411750">y</a> - centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a1773623d5ae06132be712c11eaff2844">radiusY</a> + textHeight</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>                                    : centroid.<a class="code hl_variable" href="classlost_1_1_star.html#a8e9b2320d742fb5324397ac406c859ea">position</a>.<a class="code hl_variable" href="structlost_1_1_vec2.html#ab0daa57fd5f54435248f36e736411750">y</a> + 10));</div>
 <div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
 <div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            <span class="keywordtype">int</span> plotName = rawStarIndexes ? starId.catalogIndex : (*catalog)[starId.catalogIndex].name;</div>
 <div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>            cairo_show_text(cairoCtx, std::to_string(plotName).c_str());</div>
@@ -366,7 +366,7 @@ $(function() {
 <div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    }</div>
 <div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    <span class="comment">// plot metadata</span></div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    cairo_move_to(cairoCtx, 3, 3 + textHeight);</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    cairo_move_to(cairoCtx, 3, (<span class="keywordtype">double</span>) (3 + textHeight));</div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    cairo_show_text(cairoCtx, metadata.c_str());</div>
 <div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    cairo_font_options_destroy(cairoFontOptions);</div>
@@ -705,7 +705,7 @@ $(function() {
 <div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>                <span class="comment">// and also don&#39;t add it if it&#39;s too dim.</span></div>
 <div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>                &amp;&amp; (cutoffMag &gt;= 10000 <span class="comment">// but always add the star if the cutoff is very high</span></div>
 <div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>                    || !isTrueStar <span class="comment">// and always add the false stars</span></div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                    || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.<a class="code hl_variable" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a>, cutoffMag))(*rng))) {</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                    || std::bernoulli_distribution((<span class="keywordtype">double</span>) CentroidImagingProbability(catalogStar.<a class="code hl_variable" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">magnitude</a>, cutoffMag))(*rng))) {</div>
 <div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                inputStars.push_back(inputStar);</div>
 <div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>                <span class="keywordflow">if</span> (isTrueStar) {</div>
 <div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                    inputStarIds.push_back(<a class="code hl_class" href="classlost_1_1_star_identifier.html">StarIdentifier</a>(inputStars.size()-1, i));</div>
@@ -800,7 +800,7 @@ $(function() {
 <div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>            }</div>
 <div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>            <span class="comment">// std::poisson_distribution requires mean &gt; 0</span></div>
 <div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>            <span class="keywordflow">if</span> (photons &gt; <a class="code hl_define" href="decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(0.0)) {</div>
-<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>                std::poisson_distribution&lt;long&gt; shotNoiseDist(photons);</div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>                std::poisson_distribution&lt;long&gt; shotNoiseDist((<span class="keywordtype">double</span>) photons);</div>
 <div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>                quantizedPhotons = shotNoiseDist(*rng);</div>
 <div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>            } <span class="keywordflow">else</span> {</div>
 <div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>                quantizedPhotons = 0;</div>
