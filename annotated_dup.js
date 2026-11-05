@@ -21,6 +21,7 @@ var annotated_dup =
       [ "KVectorPair", "structlost_1_1_k_vector_pair.html", "structlost_1_1_k_vector_pair" ],
       [ "KVectorIndex", "classlost_1_1_k_vector_index.html", "classlost_1_1_k_vector_index" ],
       [ "PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html", "classlost_1_1_pair_distance_k_vector_database" ],
+      [ "TetraDatabase", "classlost_1_1_tetra_database.html", "classlost_1_1_tetra_database" ],
       [ "MultiDatabase", "classlost_1_1_multi_database.html", "classlost_1_1_multi_database" ],
       [ "MultiDatabaseEntry", "classlost_1_1_multi_database_entry.html", "classlost_1_1_multi_database_entry" ],
       [ "GeneratedStar", "classlost_1_1_generated_star.html", "classlost_1_1_generated_star" ],
@@ -40,11 +41,14 @@ var annotated_dup =
       [ "IRUnidentifiedCentroid", "classlost_1_1_i_r_unidentified_centroid.html", "classlost_1_1_i_r_unidentified_centroid" ],
       [ "PairDistanceInvolvingIterator", "classlost_1_1_pair_distance_involving_iterator.html", "classlost_1_1_pair_distance_involving_iterator" ],
       [ "StarIdAlgorithm", "classlost_1_1_star_id_algorithm.html", "classlost_1_1_star_id_algorithm" ],
+      [ "TetraStarIdAlgorithm", "classlost_1_1_tetra_star_id_algorithm.html", "classlost_1_1_tetra_star_id_algorithm" ],
       [ "DummyStarIdAlgorithm", "classlost_1_1_dummy_star_id_algorithm.html", "classlost_1_1_dummy_star_id_algorithm" ],
       [ "GeometricVotingStarIdAlgorithm", "classlost_1_1_geometric_voting_star_id_algorithm.html", "classlost_1_1_geometric_voting_star_id_algorithm" ],
       [ "PyramidStarIdAlgorithm", "classlost_1_1_pyramid_star_id_algorithm.html", "classlost_1_1_pyramid_star_id_algorithm" ],
       [ "CatalogStar", "classlost_1_1_catalog_star.html", "classlost_1_1_catalog_star" ],
       [ "Star", "classlost_1_1_star.html", "classlost_1_1_star" ],
-      [ "StarIdentifier", "classlost_1_1_star_identifier.html", "classlost_1_1_star_identifier" ]
+      [ "StarIdentifier", "classlost_1_1_star_identifier.html", "classlost_1_1_star_identifier" ],
+      [ "CombinationIterator", "classlost_1_1_combination_iterator.html", "classlost_1_1_combination_iterator" ],
+      [ "TetraConstants", "structlost_1_1_tetra_constants.html", null ]
     ] ]
 ];

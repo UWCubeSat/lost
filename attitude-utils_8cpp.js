@@ -8,6 +8,8 @@ var attitude_utils_8cpp =
     [ "lost::DecimalModulo", "namespacelost.html#a8a1cf9ee7fb4af17e417110197dd813e", null ],
     [ "lost::DegToRad", "namespacelost.html#a543c802e0faa7d19b8bfb148573309fe", null ],
     [ "lost::DeserializeVec3", "namespacelost.html#ab5201d0881b201c54c1a7b7c293523ba", null ],
+    [ "lost::operator<<", "namespacelost.html#ae5596b47947f3a6f449a8930590fc590", null ],
+    [ "lost::operator<<", "namespacelost.html#af65d33aa3bc33d9d06ce273a3c676e8e", null ],
     [ "lost::QuaternionToDCM", "namespacelost.html#a08209cdf2c6b9415866d576343c35bf2", null ],
     [ "lost::RadToArcSec", "namespacelost.html#a0b4575c6e2f6eb0bc7faebf429fb9b7d", null ],
     [ "lost::RadToDeg", "namespacelost.html#a65410f365157111a72350076d9c434c0", null ],

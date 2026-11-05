@@ -1,0 +1,19 @@
+<map id="lost::TetraDatabase::TetraDatabase" name="lost::TetraDatabase::TetraDatabase">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,71,153,115"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#a6708c85ee599d39a129c12aff85de26d" title="return an array of items as a pointer. Will point into the buffer (mmap style)." alt="" coords="213,104,374,132"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,99,200,106,194,108,153,104"/>
+<area shape="rect" id="Node000007" href="$namespacelost.html#a808e750fa7f99bc945155638df303fb7" title=" " alt="" coords="201,51,386,79"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="152,81,188,78,183,80,154,86"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="434,48,611,76"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="352,101,445,81,451,80,354,107"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="659,75,837,119"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="336,130,383,144,434,154,523,164,562,163,611,154,653,142,691,127,696,126,655,147,612,160,562,168,523,170,434,160,382,149,335,135"/>
+<area shape="rect" id="Node000006" href="$classlost_1_1_deserialize_context.html#ade822992604c47e19968ade0ba4908cf" title=" " alt="" coords="434,100,611,145"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="374,117,421,120,416,121,375,122"/>
+<area shape="rect" id="Node000004" href="$classlost_1_1_deserialize_context.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="659,5,837,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="611,46,646,43,641,44,612,51"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="611,73,646,81,641,81,611,79"/>
+<area shape="poly" id="edge8_Node000007_Node000003" title=" " alt="" coords="386,61,421,63,416,64,387,67"/>
+<area shape="poly" id="edge10_Node000007_Node000005" title=" " alt="" coords="344,48,400,36,467,27,540,25,612,34,637,46,661,60,675,69,670,68,658,65,635,50,611,40,540,30,467,32,401,41,345,53"/>
+<area shape="poly" id="edge9_Node000007_Node000006" title=" " alt="" coords="352,77,422,96,417,97,352,82"/>
+</map>

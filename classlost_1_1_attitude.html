@@ -132,7 +132,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>The attitude (orientation) of a spacecraft. </p>
 <p>The <a class="el" href="classlost_1_1_attitude.html" title="The attitude (orientation) of a spacecraft.">Attitude</a> object stores either a rotation matrix (direction cosine matrix) or a quaternion, and converts automatically to the other format when needed. Importantly, an attitude may also be "unknown", representing for example if there weren't enough stars to determine an attitude. When set to unknown, it is illegal to try and convert it to anything, so check IsKnown first! </p><dl class="section note"><dt>Note</dt><dd>When porting to an embedded device, you may want to get rid of this class and adapt to either quaternions or DCMs exclusively, depending on the natural output format of whatever attitude estimation algorithm you're using. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00138">138</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8hpp_source.html#l00145">145</a> of file <a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad220252090ed6e0c43170de49fbe3a48" name="ad220252090ed6e0c43170de49fbe3a48"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad220252090ed6e0c43170de49fbe3a48">&#9670;&#160;</a></span>Attitude() <span class="overload">[1/3]</span></h2>
@@ -184,7 +184,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00348">348</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00362">362</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -211,7 +211,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00351">351</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00365">365</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -233,7 +233,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Get the rotation matrix (direction cosine matrix) representing the attitude, converting from whatever format is stored. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00408">408</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00422">422</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -271,7 +271,7 @@ Here is the call graph for this function:</div>
 
 <p>Get the quaternion representing the attitude, converting from whatever format is stored. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00396">396</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00410">410</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -292,6 +292,9 @@ Here is the call graph for this function:</div>
 <area shape="poly" title=" " alt="" coords="370,135,420,166,481,198,502,208,496,208,479,203,417,171,369,140"/>
 <area shape="rect" href="classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="751,57,859,85"/>
 <area shape="poly" title=" " alt="" coords="641,69,738,71,733,72,642,74"/>
+<area shape="rect" href="classlost_1_1_vec3.html#afe5105ec5bf24fab1e33c4ae3c934de6" title=" " alt="" coords="743,109,867,137"/>
+<area shape="poly" title=" " alt="" coords="657,121,730,123,725,123,658,126"/>
+<area shape="poly" title=" " alt="" coords="635,158,726,140,731,139,636,163"/>
 <area shape="rect" href="classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="724,161,886,189"/>
 <area shape="poly" title=" " alt="" coords="648,173,711,175,706,175,649,178"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="705,213,905,241"/>
@@ -337,7 +340,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00443">443</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00457">457</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -358,7 +361,7 @@ Here is the caller graph for this function:</div>
 
 <p>Convert a vector from the reference frame to the body frame. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00420">420</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00434">434</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -379,7 +382,7 @@ Here is the caller graph for this function:</div>
 
 <p>Get the euler angles from the attitude, converting from whatever format is stored. </p>
 
-<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00432">432</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="attitude-utils_8cpp_source.html#l00446">446</a> of file <a class="el" href="attitude-utils_8cpp_source.html">attitude-utils.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -404,6 +407,9 @@ Here is the call graph for this function:</div>
 <area shape="poly" title=" " alt="" coords="605,135,655,166,716,198,737,208,732,208,714,203,653,171,604,140"/>
 <area shape="rect" href="classlost_1_1_mat3.html#ac76b6f96d5642a1eb952162f194a6e7e" title="Access the i,j&#45;th element of the matrix." alt="" coords="986,57,1094,85"/>
 <area shape="poly" title=" " alt="" coords="876,69,974,71,968,71,877,74"/>
+<area shape="rect" href="classlost_1_1_vec3.html#afe5105ec5bf24fab1e33c4ae3c934de6" title=" " alt="" coords="979,109,1102,137"/>
+<area shape="poly" title=" " alt="" coords="893,121,966,123,960,123,893,126"/>
+<area shape="poly" title=" " alt="" coords="870,158,961,140,966,140,871,163"/>
 <area shape="rect" href="classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32" title=" " alt="" coords="960,161,1121,189"/>
 <area shape="poly" title=" " alt="" coords="884,173,947,175,941,175,884,178"/>
 <area shape="rect" href="classlost_1_1_quaternion.html#a6436279d8b3bc9a764c10877f810add9" title="Effectively computes a quaternion representing the inverse rotation of the original." alt="" coords="941,213,1140,241"/>

@@ -137,7 +137,7 @@ Static Public Attributes</h2></td></tr>
 <div class="textblock"><p>A database storing distances between pairs of stars. </p>
 <p>Supports fast range queries to find all pairs of stars separated by approximately a certain distance. </p><dl class="section warning"><dt>Warning</dt><dd>Sensitive to uncalibrated camera parameters </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00054">54</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00055">55</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a63c9e16675f56b66cc3740fb96c55dfc" name="a63c9e16675f56b66cc3740fb96c55dfc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a63c9e16675f56b66cc3740fb96c55dfc">&#9670;&#160;</a></span>PairDistanceKVectorDatabase()</h2>
@@ -164,7 +164,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Create the database from a serialized buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00221">221</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00298">298</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -217,7 +217,7 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00248">248</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00325">325</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -268,7 +268,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the start of the matched pairs. Each pair is stored as simply two 16-bit integers, each of which is a catalog index. (you must increment the pointer twice to get to the next pair). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00237">237</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00314">314</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -309,7 +309,7 @@ Here is the caller graph for this function:</div>
 
 <p>Upper bound on stored star pair distances. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00063">63</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00064">64</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -350,7 +350,7 @@ Here is the caller graph for this function:</div>
 
 <p>Lower bound on stored star pair distances. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00065">65</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00066">66</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -384,7 +384,7 @@ Here is the caller graph for this function:</div>
 <p>Exact number of stored pairs. </p>
 <p>Number of star pairs stored in the database. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00282">282</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00359">359</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -419,7 +419,7 @@ Here is the caller graph for this function:</div>
 
 <p>Return the distances from the given star to each star it's paired with in the database (for debugging). </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00287">287</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8cpp_source.html#l00364">364</a> of file <a class="el" href="databases_8cpp_source.html">databases.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -458,7 +458,7 @@ Here is the call graph for this function:</div>
 
 <p>Magic value to use when storing inside a <a class="el" href="classlost_1_1_multi_database.html">MultiDatabase</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00070">70</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00071">71</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>

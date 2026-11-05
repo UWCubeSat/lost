@@ -1,0 +1,9 @@
+<map id="lost::CombinationIterator::next" name="lost::CombinationIterator::next">
+<area shape="rect" id="Node000001" title=" " alt="" coords="497,24,681,68"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1_tetra_star_id_algorithm.html#a6e13a6369e0c9188ae1d6edb1364cc84" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="236,5,449,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="479,34,450,33,450,28,484,34"/>
+<area shape="rect" id="Node000003" href="$namespacelost.html#a6c5d736306f3dd8564e36e0a95da8f7f" title=" " alt="" coords="241,57,444,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="484,57,445,63,444,58,479,57"/>
+<area shape="rect" id="Node000004" href="$namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949" title="Appropriately create descriptors for all requested databases according to command&#45;line options." alt="" coords="5,57,188,85"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="223,71,188,74,188,69,228,71"/>
+</map>

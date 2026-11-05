@@ -1,27 +1,11 @@
 <map id="src/centroiders.hpp" name="src/centroiders.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="140,5,285,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="74,5,220,33"/>
 <area shape="rect" id="Node000002" href="$centroiders_8cpp.html" title=" " alt="" coords="5,81,150,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,43,103,83,100,79,177,38"/>
-<area shape="rect" id="Node000003" href="$io_8hpp.html" title=" " alt="" coords="225,232,309,260"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="221,46,266,232,261,232,217,49"/>
-<area shape="rect" id="Node000005" href="$main_8cpp.html" title=" " alt="" coords="175,308,279,336"/>
-<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="211,46,209,142,210,201,215,260,225,309,220,307,210,260,205,201,204,142,209,51"/>
-<area shape="rect" id="Node000006" href="$star-id_8hpp.html" title=" " alt="" coords="435,81,549,109"/>
-<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="276,35,444,79,440,82,277,40"/>
-<area shape="rect" id="Node000004" href="$io_8cpp.html" title=" " alt="" coords="526,308,610,336"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="324,259,528,309,523,311,324,264"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="255,273,236,310,232,306,250,275"/>
-<area shape="poly" id="edge12_Node000006_Node000003" title=" " alt="" coords="417,109,366,128,339,142,315,159,300,176,287,196,272,234,268,230,283,194,295,173,312,155,336,137,364,123,422,107"/>
-<area shape="poly" id="edge11_Node000006_Node000004" title=" " alt="" coords="564,99,626,106,689,117,743,133,763,143,777,155,784,168,785,183,778,213,761,241,743,262,712,284,677,300,611,318,610,313,676,295,710,280,740,258,757,238,773,211,780,182,779,170,773,158,760,148,741,138,687,122,625,111,565,104"/>
-<area shape="rect" id="Node000007" href="$attitude-estimators_8hpp.html" title=" " alt="" coords="325,157,523,184"/>
-<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="472,119,438,158,435,154,467,122"/>
-<area shape="rect" id="Node000009" href="$star-id-private_8hpp.html" title=" " alt="" coords="598,157,763,184"/>
-<area shape="poly" id="edge13_Node000006_Node000009" title=" " alt="" coords="540,112,650,156,644,156,540,117"/>
-<area shape="rect" id="Node000010" href="$star-id_8cpp.html" title=" " alt="" coords="616,232,729,260"/>
-<area shape="poly" id="edge15_Node000006_Node000010" title=" " alt="" coords="516,117,587,182,654,232,649,231,584,186,514,122"/>
-<area shape="poly" id="edge10_Node000007_Node000003" title=" " alt="" coords="385,190,296,234,294,229,380,192"/>
-<area shape="poly" id="edge9_Node000007_Node000004" title=" " alt="" coords="484,188,517,206,545,231,557,250,564,271,570,309,565,306,559,272,552,252,541,234,514,210,483,193"/>
-<area shape="rect" id="Node000008" href="$attitude-estimators_8cpp.html" title=" " alt="" coords="334,232,531,260"/>
-<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="429,198,433,233,428,231,426,202"/>
-<area shape="poly" id="edge14_Node000009_Node000010" title=" " alt="" coords="679,198,676,234,672,230,675,202"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="122,47,92,82,88,79,126,43"/>
+<area shape="rect" id="Node000003" href="$io_8hpp.html" title=" " alt="" coords="174,81,258,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="170,42,207,80,201,81,169,47"/>
+<area shape="rect" id="Node000004" href="$io_8cpp.html" title=" " alt="" coords="116,157,199,184"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="199,120,170,158,166,154,194,122"/>
+<area shape="rect" id="Node000005" href="$main_8cpp.html" title=" " alt="" coords="223,157,327,184"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="237,119,267,157,262,156,235,123"/>
 </map>

@@ -6,9 +6,10 @@ var searchData=
   ['main_3',['main',['../main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main.cpp']]],
   ['max_4',['Max',['../classlost_1_1_k_vector_index.html#a98f4a93e0009038d0bb529412ac895d5',1,'lost::KVectorIndex']]],
   ['maxdistance_5',['MaxDistance',['../classlost_1_1_pair_distance_k_vector_database.html#aec5c08310e5f796a9025300f9d8754e3',1,'lost::PairDistanceKVectorDatabase']]],
-  ['min_6',['Min',['../classlost_1_1_k_vector_index.html#a45a9b59e42bd033e9a12fda60da06b92',1,'lost::KVectorIndex']]],
-  ['mindistance_7',['MinDistance',['../classlost_1_1_pair_distance_k_vector_database.html#a4db3849497b621317addfb332fd743cc',1,'lost::PairDistanceKVectorDatabase']]],
-  ['moveforward_8',['MoveForward',['../classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b',1,'lost::DeserializeContext']]],
-  ['multidatabase_9',['MultiDatabase',['../classlost_1_1_multi_database.html#a51b6553e5466c57c9ff0ae9655e35639',1,'lost::MultiDatabase']]],
-  ['multidatabaseentry_10',['MultiDatabaseEntry',['../classlost_1_1_multi_database_entry.html#aaf297d5d21c88124667216df017679f4',1,'lost::MultiDatabaseEntry']]]
+  ['maxfov_6',['MaxFov',['../classlost_1_1_tetra_database.html#a55fb6ae961953768d554c3f1c6d42404',1,'lost::TetraDatabase']]],
+  ['min_7',['Min',['../classlost_1_1_k_vector_index.html#a45a9b59e42bd033e9a12fda60da06b92',1,'lost::KVectorIndex']]],
+  ['mindistance_8',['MinDistance',['../classlost_1_1_pair_distance_k_vector_database.html#a4db3849497b621317addfb332fd743cc',1,'lost::PairDistanceKVectorDatabase']]],
+  ['moveforward_9',['MoveForward',['../classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b',1,'lost::DeserializeContext']]],
+  ['multidatabase_10',['MultiDatabase',['../classlost_1_1_multi_database.html#a51b6553e5466c57c9ff0ae9655e35639',1,'lost::MultiDatabase']]],
+  ['multidatabaseentry_11',['MultiDatabaseEntry',['../classlost_1_1_multi_database_entry.html#aaf297d5d21c88124667216df017679f4',1,'lost::MultiDatabaseEntry']]]
 ];

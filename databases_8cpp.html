@@ -107,13 +107,13 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="databases_8hpp_source.html">databases.hpp</a>&quot;</code><br />
-<code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;assert.h&gt;</code><br />
 <code>#include &lt;math.h&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="attitude-utils_8hpp_source.html">attitude-utils.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>&quot;</code><br />
@@ -122,55 +122,51 @@ Include dependency graph for databases.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="databases_8cpp__incl.png" border="0" usemap="#asrc_2databases_8cpp" loading="lazy" alt=""/></div>
 <map name="asrc_2databases_8cpp" id="asrc_2databases_8cpp">
-<area shape="rect" title=" " alt="" coords="479,5,617,33"/>
-<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="232,81,349,109"/>
-<area shape="poly" title=" " alt="" coords="500,35,352,79,350,74,504,32"/>
-<area shape="rect" title=" " alt="" coords="43,157,112,184"/>
-<area shape="poly" title=" " alt="" coords="477,27,357,46,288,62,221,83,159,115,108,149,104,145,156,110,219,79,286,57,356,41,481,24"/>
-<area shape="rect" title=" " alt="" coords="206,384,268,411"/>
-<area shape="poly" title=" " alt="" coords="476,27,343,41,265,53,187,68,117,86,60,110,38,123,22,137,11,153,8,169,8,247,13,277,27,303,48,324,74,343,134,370,193,387,188,389,132,375,71,347,44,328,23,306,8,279,3,248,3,169,7,151,18,134,35,119,57,105,115,81,186,62,264,47,342,36,480,23"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="346,157,454,184"/>
-<area shape="poly" title=" " alt="" coords="528,35,474,83,420,146,416,143,470,79,532,32"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="493,232,627,260"/>
-<area shape="poly" title=" " alt="" coords="550,31,561,217,556,216,547,35"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="327,308,484,336"/>
-<area shape="poly" title=" " alt="" coords="544,32,420,295,416,292,539,35"/>
-<area shape="rect" title=" " alt="" coords="614,384,698,411"/>
-<area shape="poly" title=" " alt="" coords="556,31,598,114,622,172,641,232,648,269,651,308,656,369,651,366,645,308,643,270,636,233,617,173,593,117,554,36"/>
-<area shape="rect" title=" " alt="" coords="637,81,710,109"/>
-<area shape="poly" title=" " alt="" coords="570,31,641,73,636,74,570,36"/>
-<area shape="rect" title=" " alt="" coords="734,81,802,109"/>
-<area shape="poly" title=" " alt="" coords="587,31,722,77,717,78,587,36"/>
-<area shape="rect" title=" " alt="" coords="826,81,891,109"/>
-<area shape="poly" title=" " alt="" coords="609,31,813,80,808,81,609,36"/>
-<area shape="rect" title=" " alt="" coords="915,81,994,109"/>
-<area shape="poly" title=" " alt="" coords="617,28,745,49,902,80,897,81,745,54,618,33"/>
-<area shape="poly" title=" " alt="" coords="251,111,129,154,126,150,254,107"/>
-<area shape="rect" title=" " alt="" coords="186,157,272,184"/>
-<area shape="poly" title=" " alt="" coords="278,111,252,146,248,143,281,107"/>
-<area shape="poly" title=" " alt="" coords="238,111,205,130,189,143,177,158,166,185,162,213,164,243,172,272,195,327,221,371,216,371,190,329,167,274,159,243,157,213,161,183,172,155,186,139,202,125,242,107"/>
-<area shape="poly" title=" " alt="" coords="310,107,371,147,365,148,310,112"/>
-<area shape="poly" title=" " alt="" coords="298,106,337,183,394,294,389,294,332,186,296,111"/>
-<area shape="poly" title=" " alt="" coords="388,183,336,238,307,273,280,309,262,340,249,371,245,368,258,338,275,307,303,269,333,235,384,187"/>
-<area shape="poly" title=" " alt="" coords="429,182,520,225,515,226,429,188"/>
-<area shape="poly" title=" " alt="" coords="402,182,407,293,402,291,399,187"/>
-<area shape="poly" title=" " alt="" coords="490,254,405,273,359,289,316,310,281,340,255,373,252,369,278,336,313,306,357,284,404,268,495,252"/>
-<area shape="rect" title=" " alt="" coords="559,308,636,336"/>
-<area shape="poly" title=" " alt="" coords="568,258,586,295,581,293,566,263"/>
-<area shape="poly" title=" " alt="" coords="535,259,448,303,445,299,530,262"/>
-<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="471,384,572,411"/>
-<area shape="poly" title=" " alt="" coords="559,259,531,370,526,367,555,262"/>
-<area shape="poly" title=" " alt="" coords="378,335,282,380,280,375,373,337"/>
-<area shape="rect" title=" " alt="" coords="377,384,447,411"/>
-<area shape="poly" title=" " alt="" coords="408,334,412,369,407,367,405,338"/>
-<area shape="rect" title=" " alt="" coords="293,384,352,411"/>
-<area shape="poly" title=" " alt="" coords="393,335,350,376,347,371,388,337"/>
-<area shape="poly" title=" " alt="" coords="450,334,601,379,596,380,450,339"/>
-<area shape="poly" title=" " alt="" coords="427,334,491,375,485,375,426,339"/>
-<area shape="rect" title=" " alt="" coords="448,459,510,487"/>
-<area shape="poly" title=" " alt="" coords="516,411,495,448,492,444,511,413"/>
-<area shape="rect" title=" " alt="" coords="534,459,592,487"/>
-<area shape="poly" title=" " alt="" coords="530,410,550,447,545,444,527,414"/>
+<area shape="rect" title=" " alt="" coords="443,5,581,33"/>
+<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="246,81,362,109"/>
+<area shape="poly" title=" " alt="" coords="473,35,356,78,354,73,477,32"/>
+<area shape="rect" title=" " alt="" coords="93,157,163,184"/>
+<area shape="poly" title=" " alt="" coords="440,28,342,47,287,62,235,83,188,114,152,147,148,144,185,109,232,79,285,57,340,41,445,25"/>
+<area shape="rect" title=" " alt="" coords="224,384,286,411"/>
+<area shape="poly" title=" " alt="" coords="440,22,373,27,290,37,203,55,118,84,76,99,41,113,27,122,17,134,10,149,8,169,8,247,14,279,29,306,52,328,81,347,147,373,211,389,206,390,145,378,79,351,49,332,25,309,9,281,3,248,3,169,5,148,12,131,24,118,38,108,74,94,116,78,201,50,289,32,372,22,445,19"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="444,308,601,336"/>
+<area shape="poly" title=" " alt="" coords="515,32,524,293,519,292,510,35"/>
+<area shape="rect" title=" " alt="" coords="364,384,449,411"/>
+<area shape="poly" title=" " alt="" coords="440,26,321,44,253,61,188,83,125,110,103,128,84,158,75,180,73,200,76,220,84,238,112,272,153,302,201,328,254,350,352,382,347,383,252,355,199,333,150,307,108,276,79,241,71,221,68,200,70,178,79,155,99,125,123,106,186,79,252,55,320,39,444,23"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="368,157,475,184"/>
+<area shape="poly" title=" " alt="" coords="506,31,439,145,435,142,502,35"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="549,232,683,260"/>
+<area shape="poly" title=" " alt="" coords="519,31,606,218,601,218,516,35"/>
+<area shape="rect" title=" " alt="" coords="601,81,674,109"/>
+<area shape="poly" title=" " alt="" coords="535,31,605,73,600,73,534,36"/>
+<area shape="rect" title=" " alt="" coords="698,81,766,109"/>
+<area shape="poly" title=" " alt="" coords="551,31,686,77,681,78,551,36"/>
+<area shape="rect" title=" " alt="" coords="790,81,855,109"/>
+<area shape="poly" title=" " alt="" coords="573,31,777,80,772,81,573,36"/>
+<area shape="rect" title=" " alt="" coords="879,81,958,109"/>
+<area shape="poly" title=" " alt="" coords="581,28,709,49,866,80,861,81,709,54,582,33"/>
+<area shape="poly" title=" " alt="" coords="271,111,175,153,172,148,274,107"/>
+<area shape="rect" title=" " alt="" coords="238,157,293,184"/>
+<area shape="poly" title=" " alt="" coords="299,107,281,144,277,141,295,111"/>
+<area shape="poly" title=" " alt="" coords="274,111,250,131,228,158,218,185,213,214,216,272,229,326,245,371,240,369,224,328,211,273,208,213,213,184,223,155,246,127,278,107"/>
+<area shape="poly" title=" " alt="" coords="310,106,331,143,358,183,391,217,426,248,492,299,487,299,423,252,387,220,354,186,326,146,309,112"/>
+<area shape="poly" title=" " alt="" coords="325,107,391,148,385,149,325,112"/>
+<area shape="poly" title=" " alt="" coords="477,336,302,386,300,381,472,336"/>
+<area shape="rect" title=" " alt="" coords="566,384,636,411"/>
+<area shape="poly" title=" " alt="" coords="538,334,579,374,574,372,536,339"/>
+<area shape="rect" title=" " alt="" coords="482,384,542,411"/>
+<area shape="poly" title=" " alt="" coords="523,334,518,370,514,367,519,338"/>
+<area shape="poly" title=" " alt="" coords="504,335,441,378,439,373,499,337"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="673,384,775,411"/>
+<area shape="poly" title=" " alt="" coords="559,334,677,378,671,378,558,339"/>
+<area shape="poly" title=" " alt="" coords="415,184,275,373,271,369,409,185"/>
+<area shape="poly" title=" " alt="" coords="431,182,508,295,503,295,429,187"/>
+<area shape="poly" title=" " alt="" coords="423,183,411,369,406,367,418,186"/>
+<area shape="poly" title=" " alt="" coords="456,182,570,226,565,227,456,188"/>
+<area shape="poly" title=" " alt="" coords="602,259,552,301,550,296,597,262"/>
+<area shape="poly" title=" " alt="" coords="651,258,686,277,701,291,714,307,726,337,728,370,724,366,721,338,710,309,698,294,683,282,650,263"/>
+<area shape="rect" title=" " alt="" coords="625,308,700,336"/>
+<area shape="poly" title=" " alt="" coords="625,258,649,296,644,294,623,263"/>
 </map>
 </div>
 </div>
@@ -195,9 +191,11 @@ Functions</h2></td></tr>
 <tr class="memdesc:a787971c8764f348166cc197813d98307"><td class="mdescLeft">&#160;</td><td class="mdescRight">pair K-vector database layout.  <br /></td></tr>
 <tr class="memitem:a98d1507ab3e305ab47846133d82e4467" id="r_a98d1507ab3e305ab47846133d82e4467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">lost::SerializePairDistanceKVector</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance, long numBins)</td></tr>
 <tr class="memdesc:a98d1507ab3e305ab47846133d82e4467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <br /></td></tr>
+<tr class="memitem:aac727d07c751e3f9878b8046547fb727" id="r_aac727d07c751e3f9878b8046547fb727"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aac727d07c751e3f9878b8046547fb727">lost::TetraPreprocessCatalog</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxFovDeg, int numPatternStarsPerFov)</td></tr>
 <tr class="memitem:ae06c1b87a560fb7d9de673b46ff60d9c" id="r_ae06c1b87a560fb7d9de673b46ff60d9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae06c1b87a560fb7d9de673b46ff60d9c">lost::Clamp</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> num, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> low, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> high)</td></tr>
 <tr class="memdesc:ae06c1b87a560fb7d9de673b46ff60d9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value in the range [low,high] which is closest to num.  <br /></td></tr>
-<tr class="memitem:ad14088462298249d31b2c396c3be86f9" id="r_ad14088462298249d31b2c396c3be86f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad14088462298249d31b2c396c3be86f9">lost::SerializeMultiDatabase</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aaa2e81369410c8a787ec643333d1a7a8">MultiDatabaseDescriptor</a> &amp;dbs, uint32_t flags)</td></tr>
+<tr class="memitem:a6c5d736306f3dd8564e36e0a95da8f7f" id="r_a6c5d736306f3dd8564e36e0a95da8f7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6c5d736306f3dd8564e36e0a95da8f7f">lost::SerializeTetraDatabase</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxFovDeg, const std::vector&lt; uint16_t &gt; &amp;catalogPatternStarInds, int numEdgeRatioBins)</td></tr>
+<tr class="memitem:ad14088462298249d31b2c396c3be86f9" id="r_ad14088462298249d31b2c396c3be86f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad14088462298249d31b2c396c3be86f9">lost::SerializeMultiDatabase</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">MultiDatabaseDescriptor</a> &amp;dbs, uint32_t flags)</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

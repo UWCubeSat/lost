@@ -15,6 +15,7 @@ var hierarchy =
     ] ],
     [ "lost::CentroidComparison", "classlost_1_1_centroid_comparison.html", null ],
     [ "lost::CentroidParams", "structlost_1_1_centroid_params.html", null ],
+    [ "lost::CombinationIterator", "classlost_1_1_combination_iterator.html", null ],
     [ "lost::DatabaseOptions", "classlost_1_1_database_options.html", null ],
     [ "lost::DeserializeContext", "classlost_1_1_deserialize_context.html", null ],
     [ "lost::EulerAngles", "classlost_1_1_euler_angles.html", null ],
@@ -43,10 +44,13 @@ var hierarchy =
     [ "lost::StarIdAlgorithm", "classlost_1_1_star_id_algorithm.html", [
       [ "lost::DummyStarIdAlgorithm", "classlost_1_1_dummy_star_id_algorithm.html", null ],
       [ "lost::GeometricVotingStarIdAlgorithm", "classlost_1_1_geometric_voting_star_id_algorithm.html", null ],
-      [ "lost::PyramidStarIdAlgorithm", "classlost_1_1_pyramid_star_id_algorithm.html", null ]
+      [ "lost::PyramidStarIdAlgorithm", "classlost_1_1_pyramid_star_id_algorithm.html", null ],
+      [ "lost::TetraStarIdAlgorithm", "classlost_1_1_tetra_star_id_algorithm.html", null ]
     ] ],
     [ "lost::StarIdComparison", "structlost_1_1_star_id_comparison.html", null ],
     [ "lost::StarIdentifier", "classlost_1_1_star_identifier.html", null ],
+    [ "lost::TetraConstants", "structlost_1_1_tetra_constants.html", null ],
+    [ "lost::TetraDatabase", "classlost_1_1_tetra_database.html", null ],
     [ "lost::UserSpecifiedOutputStream", "classlost_1_1_user_specified_output_stream.html", null ],
     [ "lost::Vec2", "structlost_1_1_vec2.html", null ],
     [ "lost::Vec3", "classlost_1_1_vec3.html", null ]

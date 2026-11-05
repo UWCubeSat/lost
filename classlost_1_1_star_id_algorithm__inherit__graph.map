@@ -1,9 +1,11 @@
 <map id="lost::StarIdAlgorithm" name="lost::StarIdAlgorithm">
-<area shape="rect" id="Node000001" title="A star idenification algorithm." alt="" coords="5,65,161,93"/>
+<area shape="rect" id="Node000001" title="A star idenification algorithm." alt="" coords="5,96,161,124"/>
 <area shape="rect" id="Node000002" href="$classlost_1_1_dummy_star_id_algorithm.html" title="A star&#45;id algorithm that returns random results. For debugging." alt="" coords="210,5,417,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,58,208,42,254,33,249,35,209,47,150,63"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,86,161,63,208,42,245,32,241,35,210,47,163,68,122,90"/>
 <area shape="rect" id="Node000003" href="$classlost_1_1_geometric_voting_star_id_algorithm.html" title="A star&#45;id algorithm based on assigning votes for each centroid&#45;catalog pair then choosing the highest..." alt="" coords="219,57,408,102"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="176,77,221,78,216,80,176,82"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="175,95,221,91,216,93,177,100"/>
 <area shape="rect" id="Node000004" href="$classlost_1_1_pyramid_star_id_algorithm.html" title="The &quot;de facto&quot; star&#45;id algorithm used in many real&#45;world missions." alt="" coords="209,125,418,153"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="149,95,209,111,254,125,249,125,208,116,148,100"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="175,119,211,125,206,126,176,124"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1_tetra_star_id_algorithm.html" title="Tetra star identification algorithm based on the one originally proposed by Brown &amp; Stubis Creates pa..." alt="" coords="220,177,407,205"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="128,128,210,162,252,177,247,177,208,167,127,133"/>
 </map>

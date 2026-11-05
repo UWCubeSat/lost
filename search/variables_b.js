@@ -5,5 +5,6 @@ var searchData=
   ['numcorrectcentroids_2',['numCorrectCentroids',['../classlost_1_1_centroid_comparison.html#ab42870c8914b81b5ff27f8c8b6b5ec2b',1,'lost::CentroidComparison']]],
   ['numextracentroids_3',['numExtraCentroids',['../classlost_1_1_centroid_comparison.html#a4083504bf6d2b92b060a614ecf203f1a',1,'lost::CentroidComparison']]],
   ['numincorrect_4',['numIncorrect',['../structlost_1_1_star_id_comparison.html#aba82ab6b00ac56a4536f9ac204639567',1,'lost::StarIdComparison']]],
-  ['numtotal_5',['numTotal',['../structlost_1_1_star_id_comparison.html#a8534ab9d04bf422ea323c1e65008dc10',1,'lost::StarIdComparison']]]
+  ['numpatternstars_5',['numPatternStars',['../structlost_1_1_tetra_constants.html#a6411695edcaddf40244e28d4145829d8',1,'lost::TetraConstants']]],
+  ['numtotal_6',['numTotal',['../structlost_1_1_star_id_comparison.html#a8534ab9d04bf422ea323c1e65008dc10',1,'lost::StarIdComparison']]]
 ];

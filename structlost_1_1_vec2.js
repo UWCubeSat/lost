@@ -7,6 +7,7 @@ var structlost_1_1_vec2 =
     [ "operator*", "structlost_1_1_vec2.html#a736e460c2fa8d4a4cb013b376b6e2c8e", null ],
     [ "operator+", "structlost_1_1_vec2.html#a764696131be64a986d12dd4492d5d6d5", null ],
     [ "operator-", "structlost_1_1_vec2.html#a5e324a16898723879d58f2fd2160fe28", null ],
+    [ "operator<<", "structlost_1_1_vec2.html#af81c6d9a1982b08e7bd82571a5760f5b", null ],
     [ "x", "structlost_1_1_vec2.html#a46a5e51d9689b023106896d4968ace02", null ],
     [ "y", "structlost_1_1_vec2.html#ab0daa57fd5f54435248f36e736411750", null ]
 ];
