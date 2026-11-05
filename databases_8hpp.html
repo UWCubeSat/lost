@@ -108,6 +108,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="serialize-helpers_8hpp_source.html">serialize-helpers.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>&quot;</code><br />
@@ -116,17 +117,19 @@ Include dependency graph for databases.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="databases_8hpp__incl.png" border="0" usemap="#asrc_2databases_8hpp" loading="lazy" alt=""/></div>
 <map name="asrc_2databases_8hpp" id="asrc_2databases_8hpp">
-<area shape="rect" title=" " alt="" coords="262,5,401,33"/>
-<area shape="rect" title=" " alt="" coords="105,81,174,109"/>
-<area shape="poly" title=" " alt="" coords="295,35,189,77,187,73,299,32"/>
-<area shape="rect" title=" " alt="" coords="198,81,254,109"/>
-<area shape="poly" title=" " alt="" coords="311,35,259,74,255,70,315,32"/>
+<area shape="rect" title=" " alt="" coords="200,5,340,33"/>
+<area shape="rect" title=" " alt="" coords="10,81,80,109"/>
+<area shape="poly" title=" " alt="" coords="229,36,96,80,93,75,231,31"/>
+<area shape="rect" title=" " alt="" coords="104,81,159,109"/>
+<area shape="poly" title=" " alt="" coords="244,36,171,76,168,71,247,32"/>
+<area shape="rect" title=" " alt="" coords="183,81,248,109"/>
+<area shape="poly" title=" " alt="" coords="262,31,236,70,232,67,259,36"/>
 <area shape="rect" title=" " alt="" coords="418,308,480,336"/>
-<area shape="poly" title=" " alt="" coords="361,31,393,51,419,79,433,106,443,135,454,194,456,249,454,294,450,291,451,249,448,194,437,136,428,108,415,83,389,55,361,36"/>
+<area shape="poly" title=" " alt="" coords="338,31,381,49,400,63,416,79,432,105,444,133,456,192,459,248,455,294,451,291,453,248,451,192,439,135,428,107,412,83,397,67,378,54,338,36"/>
 <area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="234,232,392,260"/>
-<area shape="poly" title=" " alt="" coords="353,31,379,52,399,80,403,95,399,109,387,142,371,172,336,222,332,218,366,169,382,139,394,108,397,95,394,82,375,55,353,36"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="278,81,385,109"/>
-<area shape="poly" title=" " alt="" coords="333,31,334,66,329,64,330,36"/>
+<area shape="poly" title=" " alt="" coords="324,31,363,49,380,63,394,80,402,99,403,119,399,139,391,158,367,194,340,224,337,220,363,191,386,156,394,137,398,118,396,100,389,82,376,67,360,54,325,36"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="272,81,380,109"/>
+<area shape="poly" title=" " alt="" coords="281,31,310,69,305,69,280,36"/>
 <area shape="poly" title=" " alt="" coords="338,258,414,300,409,300,336,263"/>
 <area shape="rect" title=" " alt="" coords="239,308,309,336"/>
 <area shape="poly" title=" " alt="" coords="308,259,290,296,286,292,304,262"/>
@@ -136,11 +139,11 @@ Include dependency graph for databases.hpp:</div>
 <area shape="poly" title=" " alt="" coords="266,263,105,307,104,302,265,258"/>
 <area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="114,308,216,336"/>
 <area shape="poly" title=" " alt="" coords="289,260,206,303,204,298,284,261"/>
-<area shape="poly" title=" " alt="" coords="340,107,406,231,438,295,433,293,401,234,337,112"/>
-<area shape="poly" title=" " alt="" coords="332,107,319,218,314,216,328,111"/>
-<area shape="poly" title=" " alt="" coords="275,110,177,136,135,149,113,159,88,189,71,225,60,262,53,293,48,292,54,260,66,223,84,186,110,155,133,144,176,131,279,107"/>
+<area shape="poly" title=" " alt="" coords="335,107,406,231,438,295,433,293,401,234,332,111"/>
+<area shape="poly" title=" " alt="" coords="327,107,318,218,313,216,323,111"/>
+<area shape="poly" title=" " alt="" coords="270,110,175,136,134,149,113,159,88,189,71,225,60,262,53,294,48,292,55,260,66,223,84,187,110,155,132,144,173,131,274,107"/>
 <area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="124,157,257,184"/>
-<area shape="poly" title=" " alt="" coords="304,111,230,151,227,147,308,108"/>
+<area shape="poly" title=" " alt="" coords="300,111,229,151,226,147,304,108"/>
 <area shape="poly" title=" " alt="" coords="213,182,281,224,275,225,212,188"/>
 <area shape="poly" title=" " alt="" coords="166,186,145,207,126,233,123,249,126,265,144,296,139,296,121,267,118,249,121,231,141,203,170,183"/>
 <area shape="rect" title=" " alt="" coords="135,232,210,260"/>
@@ -228,7 +231,7 @@ Variables</h2></td></tr>
 <p>Stores "inner angles" between star triples. </p>
 <p>Unsensitive to first-order error in basic camera parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg, camera distortion, which may cause the effective FOV or principal point to be different in different parts of the image). Used for Mortari's Non-Dimensional Star-ID A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database. Multi-databases are essentially a map from "magic values" to database buffers. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00165">165</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00166">166</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
 
 </div>
 </div>

@@ -106,7 +106,8 @@ $(function() {
   <div class="headertitle"><div class="title">star-id-private.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;limits&gt;</code><br />
+<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="camera_8hpp_source.html">camera.hpp</a>&quot;</code><br />
@@ -116,44 +117,47 @@ Include dependency graph for star-id-private.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="star-id-private_8hpp__incl.png" border="0" usemap="#asrc_2star-id-private_8hpp" loading="lazy" alt=""/></div>
 <map name="asrc_2star-id-private_8hpp" id="asrc_2star-id-private_8hpp">
-<area shape="rect" title=" " alt="" coords="105,5,270,33"/>
-<area shape="rect" title=" " alt="" coords="5,81,64,109"/>
-<area shape="poly" title=" " alt="" coords="159,36,77,76,74,72,162,31"/>
-<area shape="rect" title=" " alt="" coords="85,384,144,411"/>
-<area shape="poly" title=" " alt="" coords="169,36,149,56,129,82,109,124,104,169,104,247,107,312,113,369,108,368,102,313,99,248,99,169,103,122,124,80,146,53,172,31"/>
-<area shape="rect" title=" " alt="" coords="550,384,612,411"/>
-<area shape="poly" title=" " alt="" coords="270,28,384,46,505,75,558,94,602,115,631,140,640,154,642,169,642,248,638,283,628,316,600,373,596,368,623,314,633,281,637,247,637,169,635,156,627,144,599,120,556,99,503,80,383,52,271,33"/>
-<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="139,81,237,109"/>
-<area shape="poly" title=" " alt="" coords="189,31,190,66,185,65,187,36"/>
-<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="299,81,415,109"/>
-<area shape="poly" title=" " alt="" coords="218,31,316,73,311,76,218,36"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="138,232,272,260"/>
-<area shape="poly" title=" " alt="" coords="191,107,205,217,199,217,188,111"/>
-<area shape="rect" title=" " alt="" coords="190,308,266,336"/>
-<area shape="poly" title=" " alt="" coords="210,258,222,294,217,292,208,263"/>
-<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="194,384,296,411"/>
-<area shape="poly" title=" " alt="" coords="198,259,181,296,177,316,181,335,195,355,214,375,208,374,190,359,176,337,172,316,176,294,194,262"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="289,308,446,336"/>
-<area shape="poly" title=" " alt="" coords="235,258,328,301,323,302,234,263"/>
-<area shape="poly" title=" " alt="" coords="324,338,160,386,159,381,321,334"/>
-<area shape="poly" title=" " alt="" coords="406,334,538,380,532,381,406,339"/>
-<area shape="poly" title=" " alt="" coords="348,336,281,378,279,373,343,337"/>
-<area shape="rect" title=" " alt="" coords="333,384,403,411"/>
-<area shape="poly" title=" " alt="" coords="370,334,370,370,366,366,366,338"/>
-<area shape="rect" title=" " alt="" coords="434,384,518,411"/>
-<area shape="poly" title=" " alt="" coords="388,334,447,375,441,374,386,339"/>
-<area shape="poly" title=" " alt="" coords="415,94,454,98,495,109,534,127,566,155,582,180,593,208,601,267,599,324,590,370,586,367,593,323,596,268,588,210,577,183,562,158,531,131,493,114,453,104,416,99"/>
-<area shape="poly" title=" " alt="" coords="317,111,288,130,273,143,262,158,259,170,262,183,278,217,299,247,344,297,338,297,294,250,273,219,257,185,253,170,257,155,269,139,284,126,321,108"/>
-<area shape="rect" title=" " alt="" coords="272,157,341,184"/>
-<area shape="poly" title=" " alt="" coords="350,107,326,145,322,142,346,111"/>
-<area shape="rect" title=" " alt="" coords="366,157,421,184"/>
-<area shape="poly" title=" " alt="" coords="364,107,383,143,377,142,363,112"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="445,157,552,184"/>
-<area shape="poly" title=" " alt="" coords="383,107,462,149,457,150,382,112"/>
-<area shape="poly" title=" " alt="" coords="505,183,574,370,569,369,501,187"/>
-<area shape="poly" title=" " alt="" coords="444,186,274,231,272,226,448,183"/>
-<area shape="poly" title=" " alt="" coords="490,183,391,298,388,294,485,186"/>
-<area shape="poly" title=" " alt="" coords="499,183,481,369,476,367,495,186"/>
+<area shape="rect" title=" " alt="" coords="135,5,301,33"/>
+<area shape="rect" title=" " alt="" coords="156,157,221,184"/>
+<area shape="poly" title=" " alt="" coords="225,31,240,67,243,88,239,109,229,130,216,147,211,144,225,127,234,108,237,88,235,68,225,36"/>
+<area shape="rect" title=" " alt="" coords="44,81,102,109"/>
+<area shape="poly" title=" " alt="" coords="191,36,114,76,110,72,194,31"/>
+<area shape="rect" title=" " alt="" coords="18,384,77,411"/>
+<area shape="poly" title=" " alt="" coords="133,32,81,50,55,65,33,83,18,103,11,121,9,169,9,247,12,281,19,313,38,369,33,370,14,315,6,281,3,248,3,169,6,120,13,100,30,79,52,60,79,45,137,28"/>
+<area shape="rect" title=" " alt="" coords="486,384,548,411"/>
+<area shape="poly" title=" " alt="" coords="301,28,413,47,532,76,585,95,628,116,656,141,665,154,667,169,667,248,665,270,657,291,630,327,596,356,560,379,559,373,593,352,627,324,652,288,659,269,662,247,662,169,660,156,652,144,625,120,583,99,531,81,412,52,302,33"/>
+<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="126,81,225,109"/>
+<area shape="poly" title=" " alt="" coords="209,36,193,69,188,66,212,31"/>
+<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="300,81,416,109"/>
+<area shape="poly" title=" " alt="" coords="243,31,322,73,317,74,243,36"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="89,232,222,260"/>
+<area shape="poly" title=" " alt="" coords="165,111,157,132,147,157,145,188,150,218,145,217,140,188,142,156,152,129,168,107"/>
+<area shape="rect" title=" " alt="" coords="122,308,197,336"/>
+<area shape="poly" title=" " alt="" coords="157,258,160,293,155,291,155,263"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="126,384,227,411"/>
+<area shape="poly" title=" " alt="" coords="139,262,129,277,117,295,110,315,113,335,126,355,145,375,140,374,122,359,108,337,105,314,112,293,125,274,143,258"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="221,308,378,336"/>
+<area shape="poly" title=" " alt="" coords="182,258,263,300,258,302,181,263"/>
+<area shape="poly" title=" " alt="" coords="255,339,93,386,91,381,254,334"/>
+<area shape="poly" title=" " alt="" coords="339,334,473,380,468,381,338,339"/>
+<area shape="poly" title=" " alt="" coords="280,336,213,378,210,373,275,337"/>
+<area shape="rect" title=" " alt="" coords="264,384,335,411"/>
+<area shape="poly" title=" " alt="" coords="301,334,302,370,297,366,298,338"/>
+<area shape="rect" title=" " alt="" coords="369,384,454,411"/>
+<area shape="poly" title=" " alt="" coords="320,334,382,375,376,375,319,339"/>
+<area shape="poly" title=" " alt="" coords="326,111,234,153,231,148,330,107"/>
+<area shape="poly" title=" " alt="" coords="417,105,461,123,481,137,498,155,513,181,523,209,532,268,531,324,525,370,521,367,526,324,527,269,518,211,508,183,493,158,478,141,458,128,417,110"/>
+<area shape="poly" title=" " alt="" coords="331,111,308,131,287,158,278,192,277,229,283,263,291,294,286,292,278,265,272,229,272,192,282,155,304,127,335,108"/>
+<area shape="rect" title=" " alt="" coords="558,157,627,184"/>
+<area shape="poly" title=" " alt="" coords="400,107,546,153,541,155,400,112"/>
+<area shape="rect" title=" " alt="" coords="297,157,352,184"/>
+<area shape="poly" title=" " alt="" coords="354,107,339,144,335,141,350,111"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="376,157,484,184"/>
+<area shape="poly" title=" " alt="" coords="371,107,409,146,404,146,371,112"/>
+<area shape="poly" title=" " alt="" coords="437,183,509,370,504,369,433,187"/>
+<area shape="poly" title=" " alt="" coords="379,187,220,230,218,225,383,183"/>
+<area shape="poly" title=" " alt="" coords="421,183,323,298,319,294,417,186"/>
+<area shape="poly" title=" " alt="" coords="431,183,416,369,411,367,427,186"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
