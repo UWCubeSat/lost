@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('functions_i.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -106,25 +92,25 @@ $(function() {
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3 class="doxsection"><a id="index_i" name="index_i"></a>- i -</h3><ul>
-<li>i&#160;:&#160;<a class="el" href="classlost_1_1_quaternion.html#a29cfd61187f0b99d589d8b7cc46747e1">lost::Quaternion</a></li>
-<li>image&#160;:&#160;<a class="el" href="classlost_1_1_image.html#a1cf1464da2a2b11d9983ed1f022da26b">lost::Image</a></li>
-<li>index&#160;:&#160;<a class="el" href="classlost_1_1_i_r_unidentified_centroid.html#ae2439bce89692ce79d65232aa76fd539">lost::IRUnidentifiedCentroid</a></li>
-<li>index1&#160;:&#160;<a class="el" href="structlost_1_1_k_vector_pair.html#a9ebe0e523a60fa47f885becad718ffea">lost::KVectorPair</a></li>
-<li>index2&#160;:&#160;<a class="el" href="structlost_1_1_k_vector_pair.html#ae2cfc4c6e1a7f49c465a4ae548838fb4">lost::KVectorPair</a></li>
-<li>indices()&#160;:&#160;<a class="el" href="classlost_1_1_combination_iterator.html#abac839bc5b0d4fae7aad7dfdbf16351f">lost::CombinationIterator</a></li>
-<li>InputAttitude()&#160;:&#160;<a class="el" href="classlost_1_1_generated_pipeline_input.html#a561b23341b1663126ce2d82a4c62d293">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1_pipeline_input.html#a174a6472145ed0d1835e18d41dc6f919">lost::PipelineInput</a></li>
-<li>InputCamera()&#160;:&#160;<a class="el" href="classlost_1_1_generated_pipeline_input.html#afa946ae6ec03058c6976229990d518c9">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1_pipeline_input.html#aeacea3e662299cec769ae560f68e58da">lost::PipelineInput</a>, <a class="el" href="classlost_1_1_png_pipeline_input.html#a89b02906c412703df66b030f8166dd39">lost::PngPipelineInput</a></li>
-<li>InputImage()&#160;:&#160;<a class="el" href="classlost_1_1_generated_pipeline_input.html#ac10bcc2a8897c44742dc1a18ca1b173e">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1_pipeline_input.html#a51e8d18aa7377d0822574b2b94f97a88">lost::PipelineInput</a>, <a class="el" href="classlost_1_1_png_pipeline_input.html#a6df1dc15e5b9a27dd7fc54ac555b3cd5">lost::PngPipelineInput</a></li>
-<li>InputImageSurface()&#160;:&#160;<a class="el" href="classlost_1_1_pipeline_input.html#a8707ebe081ca65531341eeb2b9d4ff7b">lost::PipelineInput</a></li>
-<li>InputStarIds()&#160;:&#160;<a class="el" href="classlost_1_1_generated_pipeline_input.html#a7a2c67c30b462916a91effe3a29081b4">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1_pipeline_input.html#a651db34b783023d0e84444ab20491337">lost::PipelineInput</a></li>
-<li>InputStars()&#160;:&#160;<a class="el" href="classlost_1_1_generated_pipeline_input.html#a71f57649c476af181dd4b3ccd64ad0a6">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1_pipeline_input.html#a827c7dd0c7ec7c83ec5c0450c9685096">lost::PipelineInput</a></li>
-<li>InSensor()&#160;:&#160;<a class="el" href="classlost_1_1_camera.html#a4d940919d1247edd431de7643473f538">lost::Camera</a></li>
-<li>Inverse()&#160;:&#160;<a class="el" href="classlost_1_1_mat3.html#a155df2c02f28acae5a3b59757eca0945">lost::Mat3</a></li>
-<li>IRUnidentifiedCentroid()&#160;:&#160;<a class="el" href="classlost_1_1_i_r_unidentified_centroid.html#a88fc36b5c47e3f02662b9b3da4e236e0">lost::IRUnidentifiedCentroid</a></li>
-<li>IsKnown()&#160;:&#160;<a class="el" href="classlost_1_1_attitude.html#afb6f3d23d6884b94a43028f97cac92d5">lost::Attitude</a></li>
-<li>IsUnit()&#160;:&#160;<a class="el" href="classlost_1_1_quaternion.html#ac591d4b58b2890bd7f4bb0a331418001">lost::Quaternion</a></li>
-<li>isValid&#160;:&#160;<a class="el" href="structlost_1_1_i_w_co_g_params.html#add92d3af1d8df7729ece6bacb53891f3">lost::IWCoGParams</a></li>
-<li>IterativeWeightedCenterOfGravityAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">lost::IterativeWeightedCenterOfGravityAlgorithm</a></li>
+<li>i&#160;:&#160;<a class="el" href="classlost_1_1Quaternion.html#a29cfd61187f0b99d589d8b7cc46747e1">lost::Quaternion</a></li>
+<li>image&#160;:&#160;<a class="el" href="classlost_1_1Image.html#a1cf1464da2a2b11d9983ed1f022da26b">lost::Image</a></li>
+<li>index&#160;:&#160;<a class="el" href="classlost_1_1IRUnidentifiedCentroid.html#ae2439bce89692ce79d65232aa76fd539">lost::IRUnidentifiedCentroid</a></li>
+<li>index1&#160;:&#160;<a class="el" href="structlost_1_1KVectorPair.html#a9ebe0e523a60fa47f885becad718ffea">lost::KVectorPair</a></li>
+<li>index2&#160;:&#160;<a class="el" href="structlost_1_1KVectorPair.html#ae2cfc4c6e1a7f49c465a4ae548838fb4">lost::KVectorPair</a></li>
+<li>indices()&#160;:&#160;<a class="el" href="classlost_1_1CombinationIterator.html#abac839bc5b0d4fae7aad7dfdbf16351f">lost::CombinationIterator</a></li>
+<li>InputAttitude()&#160;:&#160;<a class="el" href="classlost_1_1GeneratedPipelineInput.html#a561b23341b1663126ce2d82a4c62d293">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1PipelineInput.html#a174a6472145ed0d1835e18d41dc6f919">lost::PipelineInput</a></li>
+<li>InputCamera()&#160;:&#160;<a class="el" href="classlost_1_1GeneratedPipelineInput.html#afa946ae6ec03058c6976229990d518c9">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1PipelineInput.html#aeacea3e662299cec769ae560f68e58da">lost::PipelineInput</a>, <a class="el" href="classlost_1_1PngPipelineInput.html#a89b02906c412703df66b030f8166dd39">lost::PngPipelineInput</a></li>
+<li>InputImage()&#160;:&#160;<a class="el" href="classlost_1_1GeneratedPipelineInput.html#ac10bcc2a8897c44742dc1a18ca1b173e">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1PipelineInput.html#a51e8d18aa7377d0822574b2b94f97a88">lost::PipelineInput</a>, <a class="el" href="classlost_1_1PngPipelineInput.html#a6df1dc15e5b9a27dd7fc54ac555b3cd5">lost::PngPipelineInput</a></li>
+<li>InputImageSurface()&#160;:&#160;<a class="el" href="classlost_1_1PipelineInput.html#a8707ebe081ca65531341eeb2b9d4ff7b">lost::PipelineInput</a></li>
+<li>InputStarIds()&#160;:&#160;<a class="el" href="classlost_1_1GeneratedPipelineInput.html#a7a2c67c30b462916a91effe3a29081b4">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1PipelineInput.html#a651db34b783023d0e84444ab20491337">lost::PipelineInput</a></li>
+<li>InputStars()&#160;:&#160;<a class="el" href="classlost_1_1GeneratedPipelineInput.html#a71f57649c476af181dd4b3ccd64ad0a6">lost::GeneratedPipelineInput</a>, <a class="el" href="classlost_1_1PipelineInput.html#a827c7dd0c7ec7c83ec5c0450c9685096">lost::PipelineInput</a></li>
+<li>InSensor()&#160;:&#160;<a class="el" href="classlost_1_1Camera.html#a4d940919d1247edd431de7643473f538">lost::Camera</a></li>
+<li>Inverse()&#160;:&#160;<a class="el" href="classlost_1_1Mat3.html#a155df2c02f28acae5a3b59757eca0945">lost::Mat3</a></li>
+<li>IRUnidentifiedCentroid()&#160;:&#160;<a class="el" href="classlost_1_1IRUnidentifiedCentroid.html#a88fc36b5c47e3f02662b9b3da4e236e0">lost::IRUnidentifiedCentroid</a></li>
+<li>IsKnown()&#160;:&#160;<a class="el" href="classlost_1_1Attitude.html#afb6f3d23d6884b94a43028f97cac92d5">lost::Attitude</a></li>
+<li>IsUnit()&#160;:&#160;<a class="el" href="classlost_1_1Quaternion.html#ac591d4b58b2890bd7f4bb0a331418001">lost::Quaternion</a></li>
+<li>isValid&#160;:&#160;<a class="el" href="structlost_1_1IWCoGParams.html#add92d3af1d8df7729ece6bacb53891f3">lost::IWCoGParams</a></li>
+<li>IterativeWeightedCenterOfGravityAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">lost::IterativeWeightedCenterOfGravityAlgorithm</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -132,7 +118,7 @@ $(function() {
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

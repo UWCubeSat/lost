@@ -1,8 +1,8 @@
 var star_id_8hpp =
 [
-    [ "lost::StarIdAlgorithm", "classlost_1_1_star_id_algorithm.html", "classlost_1_1_star_id_algorithm" ],
-    [ "lost::TetraStarIdAlgorithm", "classlost_1_1_tetra_star_id_algorithm.html", "classlost_1_1_tetra_star_id_algorithm" ],
-    [ "lost::DummyStarIdAlgorithm", "classlost_1_1_dummy_star_id_algorithm.html", "classlost_1_1_dummy_star_id_algorithm" ],
-    [ "lost::GeometricVotingStarIdAlgorithm", "classlost_1_1_geometric_voting_star_id_algorithm.html", "classlost_1_1_geometric_voting_star_id_algorithm" ],
-    [ "lost::PyramidStarIdAlgorithm", "classlost_1_1_pyramid_star_id_algorithm.html", "classlost_1_1_pyramid_star_id_algorithm" ]
+    [ "lost::StarIdAlgorithm", "classlost_1_1StarIdAlgorithm.html", "classlost_1_1StarIdAlgorithm" ],
+    [ "lost::TetraStarIdAlgorithm", "classlost_1_1TetraStarIdAlgorithm.html", "classlost_1_1TetraStarIdAlgorithm" ],
+    [ "lost::DummyStarIdAlgorithm", "classlost_1_1DummyStarIdAlgorithm.html", "classlost_1_1DummyStarIdAlgorithm" ],
+    [ "lost::GeometricVotingStarIdAlgorithm", "classlost_1_1GeometricVotingStarIdAlgorithm.html", "classlost_1_1GeometricVotingStarIdAlgorithm" ],
+    [ "lost::PyramidStarIdAlgorithm", "classlost_1_1PyramidStarIdAlgorithm.html", "classlost_1_1PyramidStarIdAlgorithm" ]
 ];

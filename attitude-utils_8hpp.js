@@ -1,11 +1,11 @@
 var attitude_utils_8hpp =
 [
-    [ "lost::Vec2", "structlost_1_1_vec2.html", "structlost_1_1_vec2" ],
-    [ "lost::Vec3", "classlost_1_1_vec3.html", "classlost_1_1_vec3" ],
-    [ "lost::Mat3", "classlost_1_1_mat3.html", "classlost_1_1_mat3" ],
-    [ "lost::EulerAngles", "classlost_1_1_euler_angles.html", "classlost_1_1_euler_angles" ],
-    [ "lost::Quaternion", "classlost_1_1_quaternion.html", "classlost_1_1_quaternion" ],
-    [ "lost::Attitude", "classlost_1_1_attitude.html", "classlost_1_1_attitude" ],
+    [ "lost::Vec2", "structlost_1_1Vec2.html", "structlost_1_1Vec2" ],
+    [ "lost::Vec3", "classlost_1_1Vec3.html", "classlost_1_1Vec3" ],
+    [ "lost::Mat3", "classlost_1_1Mat3.html", "classlost_1_1Mat3" ],
+    [ "lost::EulerAngles", "classlost_1_1EulerAngles.html", "classlost_1_1EulerAngles" ],
+    [ "lost::Quaternion", "classlost_1_1Quaternion.html", "classlost_1_1Quaternion" ],
+    [ "lost::Attitude", "classlost_1_1Attitude.html", "classlost_1_1Attitude" ],
     [ "lost::Angle", "namespacelost.html#a6bdf1016fe03a8c46f98bc4633f644d3", null ],
     [ "lost::AngleUnit", "namespacelost.html#a4d066d222770cdbde925ab67813193dc", null ],
     [ "lost::ArcSecToRad", "namespacelost.html#a0bf2bbf8b3bc82f9647c9f327d1369de", null ],

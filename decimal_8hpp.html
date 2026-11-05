@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/decimal.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('decimal_8hpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -256,10 +242,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) x)</div>
-<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> <a href="decimal_8hpp_source.html#l00008">decimal.hpp:8</a></div></div>
+<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> decimal.hpp:8</div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00018">18</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a9c74c7f21e27343c8a46da2ea345054d" name="a9c74c7f21e27343c8a46da2ea345054d"></a>
@@ -278,8 +262,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::abs(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00046">46</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="aee57d54bc1c144bea46cd7e049f50aac" name="aee57d54bc1c144bea46cd7e049f50aac"></a>
@@ -298,8 +280,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::acos(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00053">53</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a09f424203ece4d54fdf0803dae4ef650" name="a09f424203ece4d54fdf0803dae4ef650"></a>
@@ -318,8 +298,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::asin(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00052">52</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="ab83c62825423d139a8fc951417f38f75" name="ab83c62825423d139a8fc951417f38f75"></a>
@@ -338,8 +316,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::atan(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00054">54</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="ab47e1ed4f2b4c9e27bc3eac8692dc0f8" name="ab47e1ed4f2b4c9e27bc3eac8692dc0f8"></a>
@@ -362,8 +338,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::atan2(x,y))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00055">55</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a9f4f1ed42bca607dbe2a3326f9612ad6" name="a9f4f1ed42bca607dbe2a3326f9612ad6"></a>
@@ -382,8 +356,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::ceil(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00044">44</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="aec47c5335165b89764e2d598af713495" name="aec47c5335165b89764e2d598af713495"></a>
@@ -402,8 +374,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::cos(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00050">50</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="ad9ba1d630c8789578b5f7a31b1d22c51" name="ad9ba1d630c8789578b5f7a31b1d22c51"></a>
@@ -422,8 +392,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::erf(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00040">40</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="aecfbc39709657fd5eecb522d45a9ab54" name="aecfbc39709657fd5eecb522d45a9ab54"></a>
@@ -442,8 +410,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::exp(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00039">39</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="af8bb135de5573bfe8c0d7d43cacacee9" name="af8bb135de5573bfe8c0d7d43cacacee9"></a>
@@ -462,8 +428,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::floor(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00045">45</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a36c4a4a57b570617190116b1d05c7229" name="a36c4a4a57b570617190116b1d05c7229"></a>
@@ -491,8 +455,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::fma(x,y,z))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00058">58</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a48c6d79be3f117fa2e9858e923a67d87" name="a48c6d79be3f117fa2e9858e923a67d87"></a>
@@ -515,8 +477,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::hypot(x,y))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00059">59</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a0f5f80288df1dfd2b557bfdb3790dbc6" name="a0f5f80288df1dfd2b557bfdb3790dbc6"></a>
@@ -535,8 +495,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::log(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00038">38</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a89d8e637d15ccbfddbcfbbe06fd0dd70" name="a89d8e637d15ccbfddbcfbbe06fd0dd70"></a>
@@ -550,8 +508,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00029">29</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -567,8 +523,6 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00030">30</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a850856ae2421d80dec62fc6c36d26982" name="a850856ae2421d80dec62fc6c36d26982"></a>
@@ -582,8 +536,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00031">31</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -599,8 +551,6 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00021">21</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a057efc464c7458a952d79d44bb1a0eec" name="a057efc464c7458a952d79d44bb1a0eec"></a>
@@ -614,8 +564,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00025">25</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -631,8 +579,6 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00024">24</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="ab0e9ec896c607297069fb48a163a5155" name="ab0e9ec896c607297069fb48a163a5155"></a>
@@ -646,8 +592,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00023">23</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -663,8 +607,6 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00022">22</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a4239f65c1338d3621c3f5ce50d8ae928" name="a4239f65c1338d3621c3f5ce50d8ae928"></a>
@@ -678,8 +620,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00026">26</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -695,8 +635,6 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00027">27</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a5365adec6c470e04e3c3677276bdc280" name="a5365adec6c470e04e3c3677276bdc280"></a>
@@ -710,8 +648,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00028">28</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -727,8 +663,6 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00033">33</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a386a0c2d14d7ddeae07a7cc94f323dfb" name="a386a0c2d14d7ddeae07a7cc94f323dfb"></a>
@@ -742,8 +676,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00032">32</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -767,8 +699,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::pow(base, power))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00036">36</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a2562bda367ecef5f1c60df62450e23ad" name="a2562bda367ecef5f1c60df62450e23ad"></a>
@@ -787,8 +717,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::round(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00043">43</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a904c27af59c769840fd8e7fe742affd2" name="a904c27af59c769840fd8e7fe742affd2"></a>
@@ -807,8 +735,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::sin(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00049">49</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="aadce8b7d5c59d658cb596671b3330d02" name="aadce8b7d5c59d658cb596671b3330d02"></a>
@@ -827,8 +753,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::sqrt(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00037">37</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a0722894990fe7d0ab7824f52dbbc9b1a" name="a0722894990fe7d0ab7824f52dbbc9b1a"></a>
@@ -847,8 +771,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::tan(x))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00051">51</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a7a155f9188b9b83cd40dafccc0b59b61" name="a7a155f9188b9b83cd40dafccc0b59b61"></a>
@@ -867,8 +789,6 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">std::stod(x)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00009">9</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
-
 </div>
 </div>
 <a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
@@ -883,8 +803,6 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="decimal_8hpp_source.html#l00008">8</a> of file <a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>.</p>
 
 </div>
 </div>
@@ -902,7 +820,7 @@ Typedefs</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="decimal_8hpp.html">decimal.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/databases.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('databases_8hpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -178,14 +164,14 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:lost_3A_3AKVectorIndex" id="r_lost_3A_3AKVectorIndex"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_k_vector_index.html">lost::KVectorIndex</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A data structure enabling constant-time range queries into fixed numerical data.  <a href="classlost_1_1_k_vector_index.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3APairDistanceKVectorDatabase" id="r_lost_3A_3APairDistanceKVectorDatabase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">lost::PairDistanceKVectorDatabase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database storing distances between pairs of stars.  <a href="classlost_1_1_pair_distance_k_vector_database.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3ATetraDatabase" id="r_lost_3A_3ATetraDatabase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_tetra_database.html">lost::TetraDatabase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database storing Tetra star patterns.  <a href="classlost_1_1_tetra_database.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3AMultiDatabase" id="r_lost_3A_3AMultiDatabase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database.html">lost::MultiDatabase</a></td></tr>
-<tr class="memitem:lost_3A_3AMultiDatabaseEntry" id="r_lost_3A_3AMultiDatabaseEntry"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_multi_database_entry.html">lost::MultiDatabaseEntry</a></td></tr>
+<tr class="memitem:lost_3A_3AKVectorIndex" id="r_lost_3A_3AKVectorIndex"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1KVectorIndex.html">lost::KVectorIndex</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A data structure enabling constant-time range queries into fixed numerical data.  <a href="classlost_1_1KVectorIndex.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3APairDistanceKVectorDatabase" id="r_lost_3A_3APairDistanceKVectorDatabase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1PairDistanceKVectorDatabase.html">lost::PairDistanceKVectorDatabase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database storing distances between pairs of stars.  <a href="classlost_1_1PairDistanceKVectorDatabase.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3ATetraDatabase" id="r_lost_3A_3ATetraDatabase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1TetraDatabase.html">lost::TetraDatabase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A database storing Tetra star patterns.  <a href="classlost_1_1TetraDatabase.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3AMultiDatabase" id="r_lost_3A_3AMultiDatabase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1MultiDatabase.html">lost::MultiDatabase</a></td></tr>
+<tr class="memitem:lost_3A_3AMultiDatabaseEntry" id="r_lost_3A_3AMultiDatabaseEntry"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1MultiDatabaseEntry.html">lost::MultiDatabaseEntry</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -199,17 +185,17 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ac218a3b95ef2b4781db57d8bc78c2cfa" id="r_ac218a3b95ef2b4781db57d8bc78c2cfa"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac218a3b95ef2b4781db57d8bc78c2cfa">lost::TetraPattern</a> = std::array&lt;uint16_t, <a class="el" href="structlost_1_1_tetra_constants.html#a6411695edcaddf40244e28d4145829d8">TetraConstants::numPatternStars</a>&gt;</td></tr>
-<tr class="memitem:a5bf45e706aaa546ec4b7dd356d9cce3b" id="r_a5bf45e706aaa546ec4b7dd356d9cce3b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">lost::MultiDatabaseDescriptor</a> = std::vector&lt;<a class="el" href="classlost_1_1_multi_database_entry.html">MultiDatabaseEntry</a>&gt;</td></tr>
+<tr class="memitem:ac218a3b95ef2b4781db57d8bc78c2cfa" id="r_ac218a3b95ef2b4781db57d8bc78c2cfa"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac218a3b95ef2b4781db57d8bc78c2cfa">lost::TetraPattern</a> = std::array&lt;uint16_t, <a class="el" href="structlost_1_1TetraConstants.html#a6411695edcaddf40244e28d4145829d8">TetraConstants::numPatternStars</a>&gt;</td></tr>
+<tr class="memitem:a5bf45e706aaa546ec4b7dd356d9cce3b" id="r_a5bf45e706aaa546ec4b7dd356d9cce3b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">lost::MultiDatabaseDescriptor</a> = std::vector&lt;<a class="el" href="classlost_1_1MultiDatabaseEntry.html">MultiDatabaseEntry</a>&gt;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a9a6ccd2f576c452a68db8152dc2edb24" id="r_a9a6ccd2f576c452a68db8152dc2edb24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9a6ccd2f576c452a68db8152dc2edb24">lost::isFlagSet</a> (uint32_t dbFlags, uint32_t flag)</td></tr>
-<tr class="memitem:a98d1507ab3e305ab47846133d82e4467" id="r_a98d1507ab3e305ab47846133d82e4467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">lost::SerializePairDistanceKVector</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance, long numBins)</td></tr>
+<tr class="memitem:a98d1507ab3e305ab47846133d82e4467" id="r_a98d1507ab3e305ab47846133d82e4467"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a98d1507ab3e305ab47846133d82e4467">lost::SerializePairDistanceKVector</a> (<a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance, long numBins)</td></tr>
 <tr class="memdesc:a98d1507ab3e305ab47846133d82e4467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a pair-distance KVector into buffer.  <br /></td></tr>
 <tr class="memitem:aac727d07c751e3f9878b8046547fb727" id="r_aac727d07c751e3f9878b8046547fb727"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aac727d07c751e3f9878b8046547fb727">lost::TetraPreprocessCatalog</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxFovDeg, int numPatternStarsPerFov)</td></tr>
-<tr class="memitem:a6c5d736306f3dd8564e36e0a95da8f7f" id="r_a6c5d736306f3dd8564e36e0a95da8f7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6c5d736306f3dd8564e36e0a95da8f7f">lost::SerializeTetraDatabase</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxFovDeg, const std::vector&lt; uint16_t &gt; &amp;catalogPatternStarInds, int numEdgeRatioBins)</td></tr>
-<tr class="memitem:ad14088462298249d31b2c396c3be86f9" id="r_ad14088462298249d31b2c396c3be86f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad14088462298249d31b2c396c3be86f9">lost::SerializeMultiDatabase</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">MultiDatabaseDescriptor</a> &amp;dbs, uint32_t flags)</td></tr>
+<tr class="memitem:a6c5d736306f3dd8564e36e0a95da8f7f" id="r_a6c5d736306f3dd8564e36e0a95da8f7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6c5d736306f3dd8564e36e0a95da8f7f">lost::SerializeTetraDatabase</a> (<a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxFovDeg, const std::vector&lt; uint16_t &gt; &amp;catalogPatternStarInds, int numEdgeRatioBins)</td></tr>
+<tr class="memitem:ad14088462298249d31b2c396c3be86f9" id="r_ad14088462298249d31b2c396c3be86f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad14088462298249d31b2c396c3be86f9">lost::SerializeMultiDatabase</a> (<a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">MultiDatabaseDescriptor</a> &amp;dbs, uint32_t flags)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -231,8 +217,6 @@ Variables</h2></td></tr>
 <p>Stores "inner angles" between star triples. </p>
 <p>Unsensitive to first-order error in basic camera parameters (eg, wrong FOV or principal point), can be sensitive to second-order errors (eg, camera distortion, which may cause the effective FOV or principal point to be different in different parts of the image). Used for Mortari's Non-Dimensional Star-ID A database that contains multiple databases This is almost always the database that is actually passed to star-id algorithms in the real world, since you'll want to store at least the catalog plus one specific database. Multi-databases are essentially a map from "magic values" to database buffers. </p>
 
-<p class="definition">Definition at line <a class="el" href="databases_8hpp_source.html#l00166">166</a> of file <a class="el" href="databases_8hpp_source.html">databases.hpp</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
@@ -249,7 +233,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="databases_8hpp.html">databases.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

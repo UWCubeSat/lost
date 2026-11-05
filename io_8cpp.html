@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/io.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('io_8cpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -247,15 +233,13 @@ Include dependency graph for io.cpp:</div>
 <area shape="poly" title=" " alt="" coords="838,183,839,320,839,399,838,521,834,518,833,399,833,320,834,187"/>
 </map>
 </div>
-</div>
-<p><a href="io_8cpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:lost_3A_3AGeneratedStar" id="r_lost_3A_3AGeneratedStar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_generated_star.html">lost::GeneratedStar</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A star used in simulated image generation. Contains extra data about how to simulate the star.  <a href="classlost_1_1_generated_star.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3ACentroidComparison" id="r_lost_3A_3ACentroidComparison"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_centroid_comparison.html">lost::CentroidComparison</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The result of comparing actual and expected centroids Used for debugging and benchmarking.  <a href="classlost_1_1_centroid_comparison.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3AGeneratedStar" id="r_lost_3A_3AGeneratedStar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1GeneratedStar.html">lost::GeneratedStar</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A star used in simulated image generation. Contains extra data about how to simulate the star.  <a href="classlost_1_1GeneratedStar.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3ACentroidComparison" id="r_lost_3A_3ACentroidComparison"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1CentroidComparison.html">lost::CentroidComparison</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The result of comparing actual and expected centroids Used for debugging and benchmarking.  <a href="classlost_1_1CentroidComparison.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -269,46 +253,46 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:aa2fc7d9cb29ef05d4c780ea4d4f131a8" id="r_aa2fc7d9cb29ef05d4c780ea4d4f131a8"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1_centroid_algorithm.html">CentroidAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa2fc7d9cb29ef05d4c780ea4d4f131a8">lost::CentroidAlgorithmFactory</a>) ()</td></tr>
-<tr class="memitem:a106f3da2d75b2af268f5e9abfc7ea681" id="r_a106f3da2d75b2af268f5e9abfc7ea681"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1_star_id_algorithm.html">StarIdAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a106f3da2d75b2af268f5e9abfc7ea681">lost::StarIdAlgorithmFactory</a>) ()</td></tr>
-<tr class="memitem:a21ee58ad60e736a58c95394ae5f799f4" id="r_a21ee58ad60e736a58c95394ae5f799f4"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1_attitude_estimation_algorithm.html">AttitudeEstimationAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a21ee58ad60e736a58c95394ae5f799f4">lost::AttitudeEstimationAlgorithmFactory</a>) ()</td></tr>
+<tr class="memitem:aa2fc7d9cb29ef05d4c780ea4d4f131a8" id="r_aa2fc7d9cb29ef05d4c780ea4d4f131a8"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aa2fc7d9cb29ef05d4c780ea4d4f131a8">lost::CentroidAlgorithmFactory</a>) ()</td></tr>
+<tr class="memitem:a106f3da2d75b2af268f5e9abfc7ea681" id="r_a106f3da2d75b2af268f5e9abfc7ea681"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1StarIdAlgorithm.html">StarIdAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a106f3da2d75b2af268f5e9abfc7ea681">lost::StarIdAlgorithmFactory</a>) ()</td></tr>
+<tr class="memitem:a21ee58ad60e736a58c95394ae5f799f4" id="r_a21ee58ad60e736a58c95394ae5f799f4"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a21ee58ad60e736a58c95394ae5f799f4">lost::AttitudeEstimationAlgorithmFactory</a>) ()</td></tr>
 <tr class="memitem:a5552f98af725481dee70b9b39e12e064" id="r_a5552f98af725481dee70b9b39e12e064"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a5552f98af725481dee70b9b39e12e064">lost::PipelineInputFactory</a>) ()</td></tr>
-<tr class="memitem:ab001adf3b7887c7b7a72d308893c48b2" id="r_ab001adf3b7887c7b7a72d308893c48b2"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2">lost::PipelineComparator</a>) (std::ostream &amp;os, const <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;, const std::vector&lt; <a class="el" href="structlost_1_1_pipeline_output.html">PipelineOutput</a> &gt; &amp;, const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;)</td></tr>
+<tr class="memitem:ab001adf3b7887c7b7a72d308893c48b2" id="r_ab001adf3b7887c7b7a72d308893c48b2"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2">lost::PipelineComparator</a>) (std::ostream &amp;os, const <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;, const std::vector&lt; <a class="el" href="structlost_1_1PipelineOutput.html">PipelineOutput</a> &gt; &amp;, const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7e4f3f2c08ce4ce06e5d84993c3ac01f" id="r_a7e4f3f2c08ce4ce06e5d84993c3ac01f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f">lost::BscParse</a> (std::string tsvPath)</td></tr>
+<tr class="memitem:a7e4f3f2c08ce4ce06e5d84993c3ac01f" id="r_a7e4f3f2c08ce4ce06e5d84993c3ac01f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classlost_1_1CatalogStar.html">CatalogStar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f">lost::BscParse</a> (std::string tsvPath)</td></tr>
 <tr class="memdesc:a7e4f3f2c08ce4ce06e5d84993c3ac01f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the bright star catalog from the TSV file on disk.  <br /></td></tr>
 <tr class="memitem:a41f5bb669129790c12bd70e1d641441f" id="r_a41f5bb669129790c12bd70e1d641441f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a41f5bb669129790c12bd70e1d641441f">lost::CatalogRead</a> ()</td></tr>
 <tr class="memdesc:a41f5bb669129790c12bd70e1d641441f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read and parse the full catalog from disk. If called multiple times, will re-use the first result.  <br /></td></tr>
 <tr class="memitem:a1c3caf3f02508df448ec6c761a2d764e" id="r_a1c3caf3f02508df448ec6c761a2d764e"><td class="memItemLeft" align="right" valign="top">unsigned char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e">lost::SurfaceToGrayscaleImage</a> (cairo_surface_t *cairoSurface)</td></tr>
 <tr class="memdesc:a1c3caf3f02508df448ec6c761a2d764e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a colored Cairo image surface into a row-major array of grayscale pixels.  <br /></td></tr>
 <tr class="memitem:af0b05482238f0a180d5906f0e43ac3e2" id="r_af0b05482238f0a180d5906f0e43ac3e2"><td class="memItemLeft" align="right" valign="top">cairo_surface_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#af0b05482238f0a180d5906f0e43ac3e2">lost::GrayscaleImageToSurface</a> (const unsigned char *image, const int width, const int height)</td></tr>
-<tr class="memitem:a8298f03c0d1b408401e4200d17305018" id="r_a8298f03c0d1b408401e4200d17305018"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018">lost::SurfacePlot</a> (std::string description, cairo_surface_t *cairoSurface, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *starIds, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> *catalog, const <a class="el" href="classlost_1_1_attitude.html">Attitude</a> *attitude, double red, double green, double blue, double alpha, bool rawStarIndexes=false)</td></tr>
+<tr class="memitem:a8298f03c0d1b408401e4200d17305018" id="r_a8298f03c0d1b408401e4200d17305018"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a8298f03c0d1b408401e4200d17305018">lost::SurfacePlot</a> (std::string description, cairo_surface_t *cairoSurface, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *starIds, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> *catalog, const <a class="el" href="classlost_1_1Attitude.html">Attitude</a> *attitude, double red, double green, double blue, double alpha, bool rawStarIndexes=false)</td></tr>
 <tr class="memdesc:a8298f03c0d1b408401e4200d17305018"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plot information about an image onto the image using Cairo.  <br /></td></tr>
-<tr class="memitem:aca0350641c0c62bbf6ff900634e92b8e" id="r_aca0350641c0c62bbf6ff900634e92b8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e">lost::serFromDbValues</a> (const <a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a> &amp;values)</td></tr>
-<tr class="memitem:ac0ac19dd0e9f2f1ce471617d9c837949" id="r_ac0ac19dd0e9f2f1ce471617d9c837949"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">MultiDatabaseDescriptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949">lost::GenerateDatabases</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, const <a class="el" href="classlost_1_1_database_options.html">DatabaseOptions</a> &amp;values)</td></tr>
+<tr class="memitem:aca0350641c0c62bbf6ff900634e92b8e" id="r_aca0350641c0c62bbf6ff900634e92b8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aca0350641c0c62bbf6ff900634e92b8e">lost::serFromDbValues</a> (const <a class="el" href="classlost_1_1DatabaseOptions.html">DatabaseOptions</a> &amp;values)</td></tr>
+<tr class="memitem:ac0ac19dd0e9f2f1ce471617d9c837949" id="r_ac0ac19dd0e9f2f1ce471617d9c837949"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b">MultiDatabaseDescriptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949">lost::GenerateDatabases</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, const <a class="el" href="classlost_1_1DatabaseOptions.html">DatabaseOptions</a> &amp;values)</td></tr>
 <tr class="memdesc:ac0ac19dd0e9f2f1ce471617d9c837949"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appropriately create descriptors for all requested databases according to command-line options.  <br /></td></tr>
-<tr class="memitem:afd0ad3291fda13bb1bf50fb13906769c" id="r_afd0ad3291fda13bb1bf50fb13906769c"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c">lost::operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;camera)</td></tr>
+<tr class="memitem:afd0ad3291fda13bb1bf50fb13906769c" id="r_afd0ad3291fda13bb1bf50fb13906769c"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c">lost::operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classlost_1_1Camera.html">Camera</a> &amp;camera)</td></tr>
 <tr class="memdesc:afd0ad3291fda13bb1bf50fb13906769c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print information about the camera in machine and human-readable form.  <br /></td></tr>
-<tr class="memitem:a2788319f0c0f74fbd29f5249501482be" id="r_a2788319f0c0f74fbd29f5249501482be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2788319f0c0f74fbd29f5249501482be">lost::FocalLengthFromOptions</a> (const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values, int xResolution)</td></tr>
+<tr class="memitem:a2788319f0c0f74fbd29f5249501482be" id="r_a2788319f0c0f74fbd29f5249501482be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2788319f0c0f74fbd29f5249501482be">lost::FocalLengthFromOptions</a> (const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;values, int xResolution)</td></tr>
 <tr class="memdesc:a2788319f0c0f74fbd29f5249501482be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the focal length, in pixels, based on the given command line options.  <br /></td></tr>
-<tr class="memitem:a72e465adc8dcb532e46b956261bf93fe" id="r_a72e465adc8dcb532e46b956261bf93fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a72e465adc8dcb532e46b956261bf93fe">lost::GetPngPipelineInput</a> (const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values)</td></tr>
-<tr class="memdesc:a72e465adc8dcb532e46b956261bf93fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classlost_1_1_png_pipeline_input.html" title="A pipeline input created by reading a PNG from a file on disk.">PngPipelineInput</a> using command line options.  <br /></td></tr>
-<tr class="memitem:aec3a2012bf028c749ba53a46a50ad172" id="r_aec3a2012bf028c749ba53a46a50ad172"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aec3a2012bf028c749ba53a46a50ad172">lost::GetGeneratedPipelineInput</a> (const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values)</td></tr>
-<tr class="memdesc:aec3a2012bf028c749ba53a46a50ad172"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classlost_1_1_generated_pipeline_input.html" title="A pipeline input which is generated (fake image).">GeneratedPipelineInput</a> based on the command line options in <span class="tt">values</span>.  <br /></td></tr>
-<tr class="memitem:ad01d904e4a6bf5aed4a1b8f97f1416c5" id="r_ad01d904e4a6bf5aed4a1b8f97f1416c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5">lost::GetPipelineInput</a> (const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values)</td></tr>
+<tr class="memitem:a72e465adc8dcb532e46b956261bf93fe" id="r_a72e465adc8dcb532e46b956261bf93fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a72e465adc8dcb532e46b956261bf93fe">lost::GetPngPipelineInput</a> (const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;values)</td></tr>
+<tr class="memdesc:a72e465adc8dcb532e46b956261bf93fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classlost_1_1PngPipelineInput.html" title="A pipeline input created by reading a PNG from a file on disk.">PngPipelineInput</a> using command line options.  <br /></td></tr>
+<tr class="memitem:aec3a2012bf028c749ba53a46a50ad172" id="r_aec3a2012bf028c749ba53a46a50ad172"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aec3a2012bf028c749ba53a46a50ad172">lost::GetGeneratedPipelineInput</a> (const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;values)</td></tr>
+<tr class="memdesc:aec3a2012bf028c749ba53a46a50ad172"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classlost_1_1GeneratedPipelineInput.html" title="A pipeline input which is generated (fake image).">GeneratedPipelineInput</a> based on the command line options in <span class="tt">values</span>.  <br /></td></tr>
+<tr class="memitem:ad01d904e4a6bf5aed4a1b8f97f1416c5" id="r_ad01d904e4a6bf5aed4a1b8f97f1416c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad01d904e4a6bf5aed4a1b8f97f1416c5">lost::GetPipelineInput</a> (const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;values)</td></tr>
 <tr class="memdesc:ad01d904e4a6bf5aed4a1b8f97f1416c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Come up with a list of pipeline inputs based on command line options.  <br /></td></tr>
-<tr class="memitem:ad4bb00e632a9200a8e42f620e460dd60" id="r_ad4bb00e632a9200a8e42f620e460dd60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_pipeline.html">Pipeline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad4bb00e632a9200a8e42f620e460dd60">lost::SetPipeline</a> (const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values)</td></tr>
+<tr class="memitem:ad4bb00e632a9200a8e42f620e460dd60" id="r_ad4bb00e632a9200a8e42f620e460dd60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1Pipeline.html">Pipeline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad4bb00e632a9200a8e42f620e460dd60">lost::SetPipeline</a> (const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;values)</td></tr>
 <tr class="memdesc:ad4bb00e632a9200a8e42f620e460dd60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a pipeline from command line options.  <br /></td></tr>
-<tr class="memitem:ae28fabb74b772e447140deee8de524f0" id="r_ae28fabb74b772e447140deee8de524f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_centroid_comparison.html">CentroidComparison</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae28fabb74b772e447140deee8de524f0">lost::CentroidsCompare</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> threshold, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;expected, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;actual)</td></tr>
+<tr class="memitem:ae28fabb74b772e447140deee8de524f0" id="r_ae28fabb74b772e447140deee8de524f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1CentroidComparison.html">CentroidComparison</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae28fabb74b772e447140deee8de524f0">lost::CentroidsCompare</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> threshold, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;expected, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;actual)</td></tr>
 <tr class="memdesc:ae28fabb74b772e447140deee8de524f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare expected and actual centroids.  <br /></td></tr>
-<tr class="memitem:a0fe01051c958fa8ced02e772aefdc991" id="r_a0fe01051c958fa8ced02e772aefdc991"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1_centroid_comparison.html">CentroidComparison</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a0fe01051c958fa8ced02e772aefdc991">lost::CentroidComparisonsCombine</a> (std::vector&lt; <a class="el" href="classlost_1_1_centroid_comparison.html">CentroidComparison</a> &gt; comparisons)</td></tr>
-<tr class="memitem:a863cf60540007697be2b6572e6a2e614" id="r_a863cf60540007697be2b6572e6a2e614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structlost_1_1_star_id_comparison.html">StarIdComparison</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a863cf60540007697be2b6572e6a2e614">lost::StarIdsCompare</a> (const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;expected, const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;actual, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;expectedCatalog, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;actualCatalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> centroidThreshold, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;expectedStars, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;inputStars)</td></tr>
+<tr class="memitem:a0fe01051c958fa8ced02e772aefdc991" id="r_a0fe01051c958fa8ced02e772aefdc991"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlost_1_1CentroidComparison.html">CentroidComparison</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a0fe01051c958fa8ced02e772aefdc991">lost::CentroidComparisonsCombine</a> (std::vector&lt; <a class="el" href="classlost_1_1CentroidComparison.html">CentroidComparison</a> &gt; comparisons)</td></tr>
+<tr class="memitem:a863cf60540007697be2b6572e6a2e614" id="r_a863cf60540007697be2b6572e6a2e614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structlost_1_1StarIdComparison.html">StarIdComparison</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a863cf60540007697be2b6572e6a2e614">lost::StarIdsCompare</a> (const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;expected, const <a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;actual, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;expectedCatalog, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;actualCatalog, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> centroidThreshold, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;expectedStars, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;inputStars)</td></tr>
 <tr class="memdesc:a863cf60540007697be2b6572e6a2e614"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare expected and actual star identifications.  <br /></td></tr>
-<tr class="memitem:a69cfc1189a8f18fb6e6a6d400a8a1311" id="r_a69cfc1189a8f18fb6e6a6d400a8a1311"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">lost::PipelineComparatorPlotCentroidIndices</a> (std::ostream &amp;os, const <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected, const std::vector&lt; <a class="el" href="structlost_1_1_pipeline_output.html">PipelineOutput</a> &gt; &amp;actual, const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;)</td></tr>
+<tr class="memitem:a69cfc1189a8f18fb6e6a6d400a8a1311" id="r_a69cfc1189a8f18fb6e6a6d400a8a1311"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311">lost::PipelineComparatorPlotCentroidIndices</a> (std::ostream &amp;os, const <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected, const std::vector&lt; <a class="el" href="structlost_1_1PipelineOutput.html">PipelineOutput</a> &gt; &amp;actual, const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;)</td></tr>
 <tr class="memdesc:a69cfc1189a8f18fb6e6a6d400a8a1311"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plot an annotated image where centroids are annotated with their centroid index.  <br /></td></tr>
-<tr class="memitem:ad2caa7f022ed5c5dba03ab479414dafc" id="r_ad2caa7f022ed5c5dba03ab479414dafc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">lost::PipelineComparison</a> (const <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected, const std::vector&lt; <a class="el" href="structlost_1_1_pipeline_output.html">PipelineOutput</a> &gt; &amp;actual, const <a class="el" href="classlost_1_1_pipeline_options.html">PipelineOptions</a> &amp;values)</td></tr>
+<tr class="memitem:ad2caa7f022ed5c5dba03ab479414dafc" id="r_ad2caa7f022ed5c5dba03ab479414dafc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc">lost::PipelineComparison</a> (const <a class="el" href="namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;expected, const std::vector&lt; <a class="el" href="structlost_1_1PipelineOutput.html">PipelineOutput</a> &gt; &amp;actual, const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;values)</td></tr>
 <tr class="memdesc:ad2caa7f022ed5c5dba03ab479414dafc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
@@ -327,8 +311,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00095">95</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -391,7 +373,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="io_8cpp.html">io.cpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

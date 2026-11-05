@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('functions_r.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -106,13 +92,13 @@ $(function() {
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3 class="doxsection"><a id="index_r" name="index_r"></a>- r -</h3><ul>
-<li>ra&#160;:&#160;<a class="el" href="classlost_1_1_euler_angles.html#ae52017b1b9cc1063704bcc2b25500783">lost::EulerAngles</a></li>
-<li>radiusX&#160;:&#160;<a class="el" href="classlost_1_1_star.html#a9cb9dd9f12c0e538eb55c0775505158a">lost::Star</a></li>
-<li>radiusY&#160;:&#160;<a class="el" href="classlost_1_1_star.html#a1773623d5ae06132be712c11eaff2844">lost::Star</a></li>
-<li>real&#160;:&#160;<a class="el" href="classlost_1_1_quaternion.html#aba059c6fa2c2f4df17eecf36d12050d7">lost::Quaternion</a></li>
-<li>roll&#160;:&#160;<a class="el" href="classlost_1_1_euler_angles.html#a7965e0a2c260109c23c85f120b9db75f">lost::EulerAngles</a></li>
-<li>Rotate()&#160;:&#160;<a class="el" href="classlost_1_1_attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf">lost::Attitude</a>, <a class="el" href="classlost_1_1_quaternion.html#a570198dc9f0669cb34d715fbf9e62578">lost::Quaternion</a></li>
-<li>Row()&#160;:&#160;<a class="el" href="classlost_1_1_mat3.html#a4357c0052a4a3f4af9b4acfcc2de5622">lost::Mat3</a></li>
+<li>ra&#160;:&#160;<a class="el" href="classlost_1_1EulerAngles.html#ae52017b1b9cc1063704bcc2b25500783">lost::EulerAngles</a></li>
+<li>radiusX&#160;:&#160;<a class="el" href="classlost_1_1Star.html#a9cb9dd9f12c0e538eb55c0775505158a">lost::Star</a></li>
+<li>radiusY&#160;:&#160;<a class="el" href="classlost_1_1Star.html#a1773623d5ae06132be712c11eaff2844">lost::Star</a></li>
+<li>real&#160;:&#160;<a class="el" href="classlost_1_1Quaternion.html#aba059c6fa2c2f4df17eecf36d12050d7">lost::Quaternion</a></li>
+<li>roll&#160;:&#160;<a class="el" href="classlost_1_1EulerAngles.html#a7965e0a2c260109c23c85f120b9db75f">lost::EulerAngles</a></li>
+<li>Rotate()&#160;:&#160;<a class="el" href="classlost_1_1Attitude.html#a4c7ac3eb32e2e6dc8c576c9ad7134aaf">lost::Attitude</a>, <a class="el" href="classlost_1_1Quaternion.html#a570198dc9f0669cb34d715fbf9e62578">lost::Quaternion</a></li>
+<li>Row()&#160;:&#160;<a class="el" href="classlost_1_1Mat3.html#a4357c0052a4a3f4af9b4acfcc2de5622">lost::Mat3</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -120,7 +106,7 @@ $(function() {
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

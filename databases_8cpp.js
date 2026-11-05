@@ -1,6 +1,6 @@
 var databases_8cpp =
 [
-    [ "lost::KVectorPair", "structlost_1_1_k_vector_pair.html", "structlost_1_1_k_vector_pair" ],
+    [ "lost::KVectorPair", "structlost_1_1KVectorPair.html", "structlost_1_1KVectorPair" ],
     [ "lost::CatalogToPairDistances", "namespacelost.html#a787971c8764f348166cc197813d98307", null ],
     [ "lost::Clamp", "namespacelost.html#ae06c1b87a560fb7d9de673b46ff60d9c", null ],
     [ "lost::CompareKVectorPairs", "namespacelost.html#a68f14b0d645721125203e669cde68358", null ],

@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/centroiders.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('centroiders_8hpp_source.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -114,54 +100,54 @@ $(function() {
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelost.html">lost</a> {</div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span></div>
 <div class="foldopen" id="foldopen00009" data-start="{" data-end="};">
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="classlost_1_1_centroid_algorithm.html">    9</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1_centroid_algorithm.html">CentroidAlgorithm</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="classlost_1_1CentroidAlgorithm.html">    9</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> {</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classlost_1_1_centroid_algorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">   16</a></span>    <span class="keyword">virtual</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1_centroid_algorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classlost_1_1CentroidAlgorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">   16</a></span>    <span class="keyword">virtual</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1CentroidAlgorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const</span> = 0;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classlost_1_1_centroid_algorithm.html#a2b8d8657624550f78354a3d29a856653">   18</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classlost_1_1_centroid_algorithm.html#a2b8d8657624550f78354a3d29a856653">~CentroidAlgorithm</a>() { };</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classlost_1_1CentroidAlgorithm.html#a2b8d8657624550f78354a3d29a856653">   18</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classlost_1_1CentroidAlgorithm.html#a2b8d8657624550f78354a3d29a856653">~CentroidAlgorithm</a>() { };</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>};</div>
 </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span></div>
 <div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classlost_1_1_dummy_centroid_algorithm.html">   22</a></span><span class="keyword">class </span><a class="code hl_function" href="classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d">DummyCentroidAlgorithm</a>: <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1_centroid_algorithm.html">CentroidAlgorithm</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classlost_1_1DummyCentroidAlgorithm.html">   22</a></span><span class="keyword">class </span><a class="code hl_function" href="classlost_1_1DummyCentroidAlgorithm.html#a44a9170f01dd8fd411cd13156711787d">DummyCentroidAlgorithm</a>: <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> {</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d">   24</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d">DummyCentroidAlgorithm</a>(<span class="keywordtype">int</span> numStars) : numStars(numStars) { };</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1_dummy_centroid_algorithm.html#a13fdcd6246c81129765ab0fa803e3c0e">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classlost_1_1DummyCentroidAlgorithm.html#a44a9170f01dd8fd411cd13156711787d">   24</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classlost_1_1DummyCentroidAlgorithm.html#a44a9170f01dd8fd411cd13156711787d">DummyCentroidAlgorithm</a>(<span class="keywordtype">int</span> numStars) : numStars(numStars) { };</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1DummyCentroidAlgorithm.html#a13fdcd6246c81129765ab0fa803e3c0e">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keywordtype">int</span> numStars;</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
 </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
 <div class="foldopen" id="foldopen00034" data-start="{" data-end="};">
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classlost_1_1_center_of_gravity_algorithm.html">   34</a></span><span class="keyword">class </span><a class="code hl_function" href="classlost_1_1_center_of_gravity_algorithm.html#ad138e20f7ba0fe236847b1616219a49b">CenterOfGravityAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1_centroid_algorithm.html">CentroidAlgorithm</a> {</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classlost_1_1CenterOfGravityAlgorithm.html">   34</a></span><span class="keyword">class </span><a class="code hl_function" href="classlost_1_1CenterOfGravityAlgorithm.html#ad138e20f7ba0fe236847b1616219a49b">CenterOfGravityAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> {</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classlost_1_1_center_of_gravity_algorithm.html#ad138e20f7ba0fe236847b1616219a49b">   36</a></span>    <a class="code hl_function" href="classlost_1_1_center_of_gravity_algorithm.html#ad138e20f7ba0fe236847b1616219a49b">CenterOfGravityAlgorithm</a>() { };</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1_center_of_gravity_algorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classlost_1_1CenterOfGravityAlgorithm.html#ad138e20f7ba0fe236847b1616219a49b">   36</a></span>    <a class="code hl_function" href="classlost_1_1CenterOfGravityAlgorithm.html#ad138e20f7ba0fe236847b1616219a49b">CenterOfGravityAlgorithm</a>() { };</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1CenterOfGravityAlgorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
 </div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
 <div class="foldopen" id="foldopen00044" data-start="{" data-end="};">
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html">   44</a></span><span class="keyword">class </span><a class="code hl_function" href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">IterativeWeightedCenterOfGravityAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1_centroid_algorithm.html">CentroidAlgorithm</a> {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html">   44</a></span><span class="keyword">class </span><a class="code hl_function" href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">IterativeWeightedCenterOfGravityAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> {</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">   46</a></span>        <a class="code hl_function" href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">IterativeWeightedCenterOfGravityAlgorithm</a>() { };</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">   46</a></span>        <a class="code hl_function" href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">IterativeWeightedCenterOfGravityAlgorithm</a>() { };</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> <a class="code hl_function" href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6">Go</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *image, <span class="keywordtype">int</span> imageWidth, <span class="keywordtype">int</span> imageHeight) <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>};</div>
 </div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>}</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclasslost_1_1_center_of_gravity_algorithm_html_a47d588a30c71d8b61f1d7791f2d08ea3"><div class="ttname"><a href="classlost_1_1_center_of_gravity_algorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3">lost::CenterOfGravityAlgorithm::Go</a></div><div class="ttdeci">Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override</div><div class="ttdoc">Actually perform the centroid detection.</div><div class="ttdef"><b>Definition</b> <a href="centroiders_8cpp_source.html#l00122">centroiders.cpp:122</a></div></div>
-<div class="ttc" id="aclasslost_1_1_center_of_gravity_algorithm_html_ad138e20f7ba0fe236847b1616219a49b"><div class="ttname"><a href="classlost_1_1_center_of_gravity_algorithm.html#ad138e20f7ba0fe236847b1616219a49b">lost::CenterOfGravityAlgorithm::CenterOfGravityAlgorithm</a></div><div class="ttdeci">CenterOfGravityAlgorithm()</div><div class="ttdef"><b>Definition</b> <a href="#l00036">centroiders.hpp:36</a></div></div>
-<div class="ttc" id="aclasslost_1_1_centroid_algorithm_html"><div class="ttname"><a href="classlost_1_1_centroid_algorithm.html">lost::CentroidAlgorithm</a></div><div class="ttdoc">An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;.</div><div class="ttdef"><b>Definition</b> <a href="#l00009">centroiders.hpp:9</a></div></div>
-<div class="ttc" id="aclasslost_1_1_centroid_algorithm_html_a2b8d8657624550f78354a3d29a856653"><div class="ttname"><a href="classlost_1_1_centroid_algorithm.html#a2b8d8657624550f78354a3d29a856653">lost::CentroidAlgorithm::~CentroidAlgorithm</a></div><div class="ttdeci">virtual ~CentroidAlgorithm()</div><div class="ttdef"><b>Definition</b> <a href="#l00018">centroiders.hpp:18</a></div></div>
-<div class="ttc" id="aclasslost_1_1_centroid_algorithm_html_a4e7151f912b7d4df1ff05151cdd0856c"><div class="ttname"><a href="classlost_1_1_centroid_algorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">lost::CentroidAlgorithm::Go</a></div><div class="ttdeci">virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight) const =0</div><div class="ttdoc">Actually perform the centroid detection.</div></div>
-<div class="ttc" id="aclasslost_1_1_dummy_centroid_algorithm_html_a13fdcd6246c81129765ab0fa803e3c0e"><div class="ttname"><a href="classlost_1_1_dummy_centroid_algorithm.html#a13fdcd6246c81129765ab0fa803e3c0e">lost::DummyCentroidAlgorithm::Go</a></div><div class="ttdeci">Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override</div><div class="ttdoc">Actually perform the centroid detection.</div><div class="ttdef"><b>Definition</b> <a href="centroiders_8cpp_source.html#l00017">centroiders.cpp:17</a></div></div>
-<div class="ttc" id="aclasslost_1_1_dummy_centroid_algorithm_html_a44a9170f01dd8fd411cd13156711787d"><div class="ttname"><a href="classlost_1_1_dummy_centroid_algorithm.html#a44a9170f01dd8fd411cd13156711787d">lost::DummyCentroidAlgorithm::DummyCentroidAlgorithm</a></div><div class="ttdeci">DummyCentroidAlgorithm(int numStars)</div><div class="ttdef"><b>Definition</b> <a href="#l00024">centroiders.hpp:24</a></div></div>
-<div class="ttc" id="aclasslost_1_1_iterative_weighted_center_of_gravity_algorithm_html_a79ba0874a9ad042d8c1df1fb4a56cbe6"><div class="ttname"><a href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6">lost::IterativeWeightedCenterOfGravityAlgorithm::Go</a></div><div class="ttdeci">Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override</div><div class="ttdoc">Actually perform the centroid detection.</div><div class="ttdef"><b>Definition</b> <a href="centroiders_8cpp_source.html#l00230">centroiders.cpp:230</a></div></div>
-<div class="ttc" id="aclasslost_1_1_iterative_weighted_center_of_gravity_algorithm_html_acb0e63042d1bd77c6c2879315b3ee51c"><div class="ttname"><a href="classlost_1_1_iterative_weighted_center_of_gravity_algorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">lost::IterativeWeightedCenterOfGravityAlgorithm::IterativeWeightedCenterOfGravityAlgorithm</a></div><div class="ttdeci">IterativeWeightedCenterOfGravityAlgorithm()</div><div class="ttdef"><b>Definition</b> <a href="#l00046">centroiders.hpp:46</a></div></div>
-<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00008">attitude-estimators.cpp:8</a></div></div>
-<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00102">star-utils.hpp:102</a></div></div>
+<div class="ttc" id="aclasslost_1_1CenterOfGravityAlgorithm_html_a47d588a30c71d8b61f1d7791f2d08ea3"><div class="ttname"><a href="classlost_1_1CenterOfGravityAlgorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3">lost::CenterOfGravityAlgorithm::Go</a></div><div class="ttdeci">Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override</div><div class="ttdoc">Actually perform the centroid detection.</div><div class="ttdef"><b>Definition</b> centroiders.cpp:122</div></div>
+<div class="ttc" id="aclasslost_1_1CenterOfGravityAlgorithm_html_ad138e20f7ba0fe236847b1616219a49b"><div class="ttname"><a href="classlost_1_1CenterOfGravityAlgorithm.html#ad138e20f7ba0fe236847b1616219a49b">lost::CenterOfGravityAlgorithm::CenterOfGravityAlgorithm</a></div><div class="ttdeci">CenterOfGravityAlgorithm()</div><div class="ttdef"><b>Definition</b> centroiders.hpp:36</div></div>
+<div class="ttc" id="aclasslost_1_1CentroidAlgorithm_html"><div class="ttname"><a href="classlost_1_1CentroidAlgorithm.html">lost::CentroidAlgorithm</a></div><div class="ttdoc">An algorithm that detects the (x,y) coordinates of bright points in an image, called &quot;centroids&quot;.</div><div class="ttdef"><b>Definition</b> centroiders.hpp:9</div></div>
+<div class="ttc" id="aclasslost_1_1CentroidAlgorithm_html_a2b8d8657624550f78354a3d29a856653"><div class="ttname"><a href="classlost_1_1CentroidAlgorithm.html#a2b8d8657624550f78354a3d29a856653">lost::CentroidAlgorithm::~CentroidAlgorithm</a></div><div class="ttdeci">virtual ~CentroidAlgorithm()</div><div class="ttdef"><b>Definition</b> centroiders.hpp:18</div></div>
+<div class="ttc" id="aclasslost_1_1CentroidAlgorithm_html_a4e7151f912b7d4df1ff05151cdd0856c"><div class="ttname"><a href="classlost_1_1CentroidAlgorithm.html#a4e7151f912b7d4df1ff05151cdd0856c">lost::CentroidAlgorithm::Go</a></div><div class="ttdeci">virtual Stars Go(unsigned char *image, int imageWidth, int imageHeight) const =0</div><div class="ttdoc">Actually perform the centroid detection.</div></div>
+<div class="ttc" id="aclasslost_1_1DummyCentroidAlgorithm_html_a13fdcd6246c81129765ab0fa803e3c0e"><div class="ttname"><a href="classlost_1_1DummyCentroidAlgorithm.html#a13fdcd6246c81129765ab0fa803e3c0e">lost::DummyCentroidAlgorithm::Go</a></div><div class="ttdeci">Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override</div><div class="ttdoc">Actually perform the centroid detection.</div><div class="ttdef"><b>Definition</b> centroiders.cpp:17</div></div>
+<div class="ttc" id="aclasslost_1_1DummyCentroidAlgorithm_html_a44a9170f01dd8fd411cd13156711787d"><div class="ttname"><a href="classlost_1_1DummyCentroidAlgorithm.html#a44a9170f01dd8fd411cd13156711787d">lost::DummyCentroidAlgorithm::DummyCentroidAlgorithm</a></div><div class="ttdeci">DummyCentroidAlgorithm(int numStars)</div><div class="ttdef"><b>Definition</b> centroiders.hpp:24</div></div>
+<div class="ttc" id="aclasslost_1_1IterativeWeightedCenterOfGravityAlgorithm_html_a79ba0874a9ad042d8c1df1fb4a56cbe6"><div class="ttname"><a href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#a79ba0874a9ad042d8c1df1fb4a56cbe6">lost::IterativeWeightedCenterOfGravityAlgorithm::Go</a></div><div class="ttdeci">Stars Go(unsigned char *image, int imageWidth, int imageHeight) const override</div><div class="ttdoc">Actually perform the centroid detection.</div><div class="ttdef"><b>Definition</b> centroiders.cpp:230</div></div>
+<div class="ttc" id="aclasslost_1_1IterativeWeightedCenterOfGravityAlgorithm_html_acb0e63042d1bd77c6c2879315b3ee51c"><div class="ttname"><a href="classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html#acb0e63042d1bd77c6c2879315b3ee51c">lost::IterativeWeightedCenterOfGravityAlgorithm::IterativeWeightedCenterOfGravityAlgorithm</a></div><div class="ttdeci">IterativeWeightedCenterOfGravityAlgorithm()</div><div class="ttdef"><b>Definition</b> centroiders.hpp:46</div></div>
+<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:8</div></div>
+<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> star-utils.hpp:102</div></div>
 <div class="ttc" id="astar-utils_8hpp_html"><div class="ttname"><a href="star-utils_8hpp.html">star-utils.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
@@ -170,7 +156,7 @@ $(function() {
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="centroiders_8hpp.html">centroiders.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

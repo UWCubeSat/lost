@@ -2472,19 +2472,6 @@ details[open]>summary::before {
 	font-size: 80%;
 }
 
-
-#titlearea {
-  border-bottom: none;
-  background-color: var(--nav-background-color);
-  border-right: 1px solid var(--nav-border-color);
-}
-
-html {
---timestamp: 'Thu Nov 5 2026 07:56:02';
-}
-span.timestamp { content: ' '; }
-span.timestamp:before { content: var(--timestamp); }
-
 :root {
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-background-color);

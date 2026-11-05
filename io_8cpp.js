@@ -1,7 +1,7 @@
 var io_8cpp =
 [
-    [ "lost::GeneratedStar", "classlost_1_1_generated_star.html", "classlost_1_1_generated_star" ],
-    [ "lost::CentroidComparison", "classlost_1_1_centroid_comparison.html", "classlost_1_1_centroid_comparison" ],
+    [ "lost::GeneratedStar", "classlost_1_1GeneratedStar.html", "classlost_1_1GeneratedStar" ],
+    [ "lost::CentroidComparison", "classlost_1_1CentroidComparison.html", "classlost_1_1CentroidComparison" ],
     [ "DEFAULT_BSC_PATH", "io_8cpp.html#a1628471efc4a0d438d497c67d641c6c4", null ],
     [ "LOST_PIPELINE_COMPARE", "io_8cpp.html#aa20cea40f78380bdd173e9636fe1f442", null ],
     [ "lost::AttitudeEstimationAlgorithmFactory", "namespacelost.html#a21ee58ad60e736a58c95394ae5f799f4", null ],

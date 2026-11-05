@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['i_0',['i',['../classlost_1_1_quaternion.html#a29cfd61187f0b99d589d8b7cc46747e1',1,'lost::Quaternion']]],
-  ['image_1',['image',['../classlost_1_1_image.html#a1cf1464da2a2b11d9983ed1f022da26b',1,'lost::Image']]],
-  ['index_2',['index',['../classlost_1_1_i_r_unidentified_centroid.html#ae2439bce89692ce79d65232aa76fd539',1,'lost::IRUnidentifiedCentroid']]],
-  ['index1_3',['index1',['../structlost_1_1_k_vector_pair.html#a9ebe0e523a60fa47f885becad718ffea',1,'lost::KVectorPair']]],
-  ['index2_4',['index2',['../structlost_1_1_k_vector_pair.html#ae2cfc4c6e1a7f49c465a4ae548838fb4',1,'lost::KVectorPair']]],
-  ['isvalid_5',['isValid',['../structlost_1_1_i_w_co_g_params.html#add92d3af1d8df7729ece6bacb53891f3',1,'lost::IWCoGParams']]],
+  ['i_0',['i',['../classlost_1_1Quaternion.html#a29cfd61187f0b99d589d8b7cc46747e1',1,'lost::Quaternion']]],
+  ['image_1',['image',['../classlost_1_1Image.html#a1cf1464da2a2b11d9983ed1f022da26b',1,'lost::Image']]],
+  ['index_2',['index',['../classlost_1_1IRUnidentifiedCentroid.html#ae2439bce89692ce79d65232aa76fd539',1,'lost::IRUnidentifiedCentroid']]],
+  ['index1_3',['index1',['../structlost_1_1KVectorPair.html#a9ebe0e523a60fa47f885becad718ffea',1,'lost::KVectorPair']]],
+  ['index2_4',['index2',['../structlost_1_1KVectorPair.html#ae2cfc4c6e1a7f49c465a4ae548838fb4',1,'lost::KVectorPair']]],
+  ['isvalid_5',['isValid',['../structlost_1_1IWCoGParams.html#add92d3af1d8df7729ece6bacb53891f3',1,'lost::IWCoGParams']]],
   ['iwcogminchange_6',['iWCoGMinChange',['../namespacelost.html#aad95264f15efbc0e15b439142007354c',1,'lost']]]
 ];

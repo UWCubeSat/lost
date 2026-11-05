@@ -1,10 +1,10 @@
 var databases_8hpp =
 [
-    [ "lost::KVectorIndex", "classlost_1_1_k_vector_index.html", "classlost_1_1_k_vector_index" ],
-    [ "lost::PairDistanceKVectorDatabase", "classlost_1_1_pair_distance_k_vector_database.html", "classlost_1_1_pair_distance_k_vector_database" ],
-    [ "lost::TetraDatabase", "classlost_1_1_tetra_database.html", "classlost_1_1_tetra_database" ],
-    [ "lost::MultiDatabase", "classlost_1_1_multi_database.html", "classlost_1_1_multi_database" ],
-    [ "lost::MultiDatabaseEntry", "classlost_1_1_multi_database_entry.html", "classlost_1_1_multi_database_entry" ],
+    [ "lost::KVectorIndex", "classlost_1_1KVectorIndex.html", "classlost_1_1KVectorIndex" ],
+    [ "lost::PairDistanceKVectorDatabase", "classlost_1_1PairDistanceKVectorDatabase.html", "classlost_1_1PairDistanceKVectorDatabase" ],
+    [ "lost::TetraDatabase", "classlost_1_1TetraDatabase.html", "classlost_1_1TetraDatabase" ],
+    [ "lost::MultiDatabase", "classlost_1_1MultiDatabase.html", "classlost_1_1MultiDatabase" ],
+    [ "lost::MultiDatabaseEntry", "classlost_1_1MultiDatabaseEntry.html", "classlost_1_1MultiDatabaseEntry" ],
     [ "MULTI_DB_FLOAT_FLAG", "databases_8hpp.html#af8eb463b9b79255956d34ca51d58754f", null ],
     [ "lost::MultiDatabaseDescriptor", "namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b", null ],
     [ "lost::TetraPattern", "namespacelost.html#ac218a3b95ef2b4781db57d8bc78c2cfa", null ],

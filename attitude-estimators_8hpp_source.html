@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/attitude-estimators.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('attitude-estimators_8hpp_source.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -117,32 +103,32 @@ $(function() {
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacelost.html">lost</a> {</div>
 <div class="foldopen" id="foldopen00015" data-start="{" data-end="};">
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classlost_1_1_attitude_estimation_algorithm.html">   15</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1_attitude_estimation_algorithm.html">AttitudeEstimationAlgorithm</a> {</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classlost_1_1AttitudeEstimationAlgorithm.html">   15</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> {</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classlost_1_1_attitude_estimation_algorithm.html#a4ec6765403adace17271b469851dadf7">   22</a></span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classlost_1_1_attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1_attitude_estimation_algorithm.html#a4ec6765403adace17271b469851dadf7">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1_camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;) = 0;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classlost_1_1AttitudeEstimationAlgorithm.html#a4ec6765403adace17271b469851dadf7">   22</a></span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classlost_1_1Attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1AttitudeEstimationAlgorithm.html#a4ec6765403adace17271b469851dadf7">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1Camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;) = 0;</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classlost_1_1_attitude_estimation_algorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">   24</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classlost_1_1_attitude_estimation_algorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">~AttitudeEstimationAlgorithm</a>() {};</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classlost_1_1AttitudeEstimationAlgorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">   24</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classlost_1_1AttitudeEstimationAlgorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">~AttitudeEstimationAlgorithm</a>() {};</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>};</div>
 </div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span></div>
 <div class="foldopen" id="foldopen00031" data-start="{" data-end="};">
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classlost_1_1_davenport_q_algorithm.html">   31</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1_davenport_q_algorithm.html">DavenportQAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1_attitude_estimation_algorithm.html">AttitudeEstimationAlgorithm</a> {</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classlost_1_1DavenportQAlgorithm.html">   31</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1DavenportQAlgorithm.html">DavenportQAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <a class="code hl_class" href="classlost_1_1_attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1_camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <a class="code hl_class" href="classlost_1_1Attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1DavenportQAlgorithm.html#abdceeef38f84143dd87eb19f8318fadf">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1Camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;);</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>};</div>
 </div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span></div>
 <div class="foldopen" id="foldopen00040" data-start="{" data-end="};">
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classlost_1_1_triad_algorithm.html">   40</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1_triad_algorithm.html">TriadAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1_attitude_estimation_algorithm.html">AttitudeEstimationAlgorithm</a> {</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classlost_1_1TriadAlgorithm.html">   40</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1TriadAlgorithm.html">TriadAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> {</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_class" href="classlost_1_1_attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1_camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_class" href="classlost_1_1Attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1TriadAlgorithm.html#a7c47290a94c74458995f5307e2486fc9">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1Camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>};</div>
 </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span></div>
 <div class="foldopen" id="foldopen00049" data-start="{" data-end="};">
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classlost_1_1_quest_algorithm.html">   49</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1_quest_algorithm.html">QuestAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1_attitude_estimation_algorithm.html">AttitudeEstimationAlgorithm</a> {</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classlost_1_1QuestAlgorithm.html">   49</a></span><span class="keyword">class </span><a class="code hl_class" href="classlost_1_1QuestAlgorithm.html">QuestAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> {</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <a class="code hl_class" href="classlost_1_1_attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1_camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <a class="code hl_class" href="classlost_1_1Attitude.html">Attitude</a> <a class="code hl_function" href="classlost_1_1QuestAlgorithm.html#acd9f32ebd3a0873346f752e04e477b23">Go</a>(<span class="keyword">const</span> <a class="code hl_class" href="classlost_1_1Camera.html">Camera</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;, <span class="keyword">const</span> <a class="code hl_typedef" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> &amp;);</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>};</div>
 </div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
@@ -151,21 +137,21 @@ $(function() {
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
 <div class="ttc" id="acamera_8hpp_html"><div class="ttname"><a href="camera_8hpp.html">camera.hpp</a></div></div>
-<div class="ttc" id="aclasslost_1_1_attitude_estimation_algorithm_html"><div class="ttname"><a href="classlost_1_1_attitude_estimation_algorithm.html">lost::AttitudeEstimationAlgorithm</a></div><div class="ttdoc">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.</div><div class="ttdef"><b>Definition</b> <a href="#l00015">attitude-estimators.hpp:15</a></div></div>
-<div class="ttc" id="aclasslost_1_1_attitude_estimation_algorithm_html_a4ec6765403adace17271b469851dadf7"><div class="ttname"><a href="classlost_1_1_attitude_estimation_algorithm.html#a4ec6765403adace17271b469851dadf7">lost::AttitudeEstimationAlgorithm::Go</a></div><div class="ttdeci">virtual Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)=0</div><div class="ttdoc">Actually run the star-id algorithm.</div></div>
-<div class="ttc" id="aclasslost_1_1_attitude_estimation_algorithm_html_a6e7a086e474f98124cc4dd5fb01682e9"><div class="ttname"><a href="classlost_1_1_attitude_estimation_algorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">lost::AttitudeEstimationAlgorithm::~AttitudeEstimationAlgorithm</a></div><div class="ttdeci">virtual ~AttitudeEstimationAlgorithm()</div><div class="ttdef"><b>Definition</b> <a href="#l00024">attitude-estimators.hpp:24</a></div></div>
-<div class="ttc" id="aclasslost_1_1_attitude_html"><div class="ttname"><a href="classlost_1_1_attitude.html">lost::Attitude</a></div><div class="ttdoc">The attitude (orientation) of a spacecraft.</div><div class="ttdef"><b>Definition</b> <a href="attitude-utils_8hpp_source.html#l00145">attitude-utils.hpp:145</a></div></div>
-<div class="ttc" id="aclasslost_1_1_camera_html"><div class="ttname"><a href="classlost_1_1_camera.html">lost::Camera</a></div><div class="ttdoc">A full description of a camera. Enough information to reconstruct the camera matrix and then some.</div><div class="ttdef"><b>Definition</b> <a href="camera_8hpp_source.html#l00009">camera.hpp:9</a></div></div>
-<div class="ttc" id="aclasslost_1_1_davenport_q_algorithm_html"><div class="ttname"><a href="classlost_1_1_davenport_q_algorithm.html">lost::DavenportQAlgorithm</a></div><div class="ttdoc">A slow but reliable attitude estimation algorithm.</div><div class="ttdef"><b>Definition</b> <a href="#l00031">attitude-estimators.hpp:31</a></div></div>
-<div class="ttc" id="aclasslost_1_1_davenport_q_algorithm_html_abdceeef38f84143dd87eb19f8318fadf"><div class="ttname"><a href="classlost_1_1_davenport_q_algorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00012">attitude-estimators.cpp:12</a></div></div>
-<div class="ttc" id="aclasslost_1_1_quest_algorithm_html"><div class="ttname"><a href="classlost_1_1_quest_algorithm.html">lost::QuestAlgorithm</a></div><div class="ttdoc">A faster and just as accurate attitude estimator as the Davenport Q algorithm.</div><div class="ttdef"><b>Definition</b> <a href="#l00049">attitude-estimators.hpp:49</a></div></div>
-<div class="ttc" id="aclasslost_1_1_quest_algorithm_html_acd9f32ebd3a0873346f752e04e477b23"><div class="ttname"><a href="classlost_1_1_quest_algorithm.html#acd9f32ebd3a0873346f752e04e477b23">lost::QuestAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00184">attitude-estimators.cpp:184</a></div></div>
-<div class="ttc" id="aclasslost_1_1_triad_algorithm_html"><div class="ttname"><a href="classlost_1_1_triad_algorithm.html">lost::TriadAlgorithm</a></div><div class="ttdoc">A fast attitude estimator which only takes into account information from two stars.</div><div class="ttdef"><b>Definition</b> <a href="#l00040">attitude-estimators.hpp:40</a></div></div>
-<div class="ttc" id="aclasslost_1_1_triad_algorithm_html_a7c47290a94c74458995f5307e2486fc9"><div class="ttname"><a href="classlost_1_1_triad_algorithm.html#a7c47290a94c74458995f5307e2486fc9">lost::TriadAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00134">attitude-estimators.cpp:134</a></div></div>
-<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> <a href="attitude-estimators_8cpp_source.html#l00008">attitude-estimators.cpp:8</a></div></div>
-<div class="ttc" id="anamespacelost_html_a288b872531de219e9cfc87beb8d8bada"><div class="ttname"><a href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></div><div class="ttdeci">std::vector&lt; StarIdentifier &gt; StarIdentifiers</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00103">star-utils.hpp:103</a></div></div>
-<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00102">star-utils.hpp:102</a></div></div>
-<div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition</b> <a href="star-utils_8hpp_source.html#l00101">star-utils.hpp:101</a></div></div>
+<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html">lost::AttitudeEstimationAlgorithm</a></div><div class="ttdoc">An attitude estimation algorithm estimates the orientation of the camera based on identified stars.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:15</div></div>
+<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html_a4ec6765403adace17271b469851dadf7"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html#a4ec6765403adace17271b469851dadf7">lost::AttitudeEstimationAlgorithm::Go</a></div><div class="ttdeci">virtual Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)=0</div><div class="ttdoc">Actually run the star-id algorithm.</div></div>
+<div class="ttc" id="aclasslost_1_1AttitudeEstimationAlgorithm_html_a6e7a086e474f98124cc4dd5fb01682e9"><div class="ttname"><a href="classlost_1_1AttitudeEstimationAlgorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">lost::AttitudeEstimationAlgorithm::~AttitudeEstimationAlgorithm</a></div><div class="ttdeci">virtual ~AttitudeEstimationAlgorithm()</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:24</div></div>
+<div class="ttc" id="aclasslost_1_1Attitude_html"><div class="ttname"><a href="classlost_1_1Attitude.html">lost::Attitude</a></div><div class="ttdoc">The attitude (orientation) of a spacecraft.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:145</div></div>
+<div class="ttc" id="aclasslost_1_1Camera_html"><div class="ttname"><a href="classlost_1_1Camera.html">lost::Camera</a></div><div class="ttdoc">A full description of a camera. Enough information to reconstruct the camera matrix and then some.</div><div class="ttdef"><b>Definition</b> camera.hpp:9</div></div>
+<div class="ttc" id="aclasslost_1_1DavenportQAlgorithm_html"><div class="ttname"><a href="classlost_1_1DavenportQAlgorithm.html">lost::DavenportQAlgorithm</a></div><div class="ttdoc">A slow but reliable attitude estimation algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:31</div></div>
+<div class="ttc" id="aclasslost_1_1DavenportQAlgorithm_html_abdceeef38f84143dd87eb19f8318fadf"><div class="ttname"><a href="classlost_1_1DavenportQAlgorithm.html#abdceeef38f84143dd87eb19f8318fadf">lost::DavenportQAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:12</div></div>
+<div class="ttc" id="aclasslost_1_1QuestAlgorithm_html"><div class="ttname"><a href="classlost_1_1QuestAlgorithm.html">lost::QuestAlgorithm</a></div><div class="ttdoc">A faster and just as accurate attitude estimator as the Davenport Q algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:49</div></div>
+<div class="ttc" id="aclasslost_1_1QuestAlgorithm_html_acd9f32ebd3a0873346f752e04e477b23"><div class="ttname"><a href="classlost_1_1QuestAlgorithm.html#acd9f32ebd3a0873346f752e04e477b23">lost::QuestAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:184</div></div>
+<div class="ttc" id="aclasslost_1_1TriadAlgorithm_html"><div class="ttname"><a href="classlost_1_1TriadAlgorithm.html">lost::TriadAlgorithm</a></div><div class="ttdoc">A fast attitude estimator which only takes into account information from two stars.</div><div class="ttdef"><b>Definition</b> attitude-estimators.hpp:40</div></div>
+<div class="ttc" id="aclasslost_1_1TriadAlgorithm_html_a7c47290a94c74458995f5307e2486fc9"><div class="ttname"><a href="classlost_1_1TriadAlgorithm.html#a7c47290a94c74458995f5307e2486fc9">lost::TriadAlgorithm::Go</a></div><div class="ttdeci">Attitude Go(const Camera &amp;, const Stars &amp;, const Catalog &amp;, const StarIdentifiers &amp;)</div><div class="ttdoc">Actually run the star-id algorithm.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:134</div></div>
+<div class="ttc" id="anamespacelost_html"><div class="ttname"><a href="namespacelost.html">lost</a></div><div class="ttdoc">LOST starting point.</div><div class="ttdef"><b>Definition</b> attitude-estimators.cpp:8</div></div>
+<div class="ttc" id="anamespacelost_html_a288b872531de219e9cfc87beb8d8bada"><div class="ttname"><a href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></div><div class="ttdeci">std::vector&lt; StarIdentifier &gt; StarIdentifiers</div><div class="ttdef"><b>Definition</b> star-utils.hpp:103</div></div>
+<div class="ttc" id="anamespacelost_html_a4bd359d9c09dbecb81c3a3e536f0b5c5"><div class="ttname"><a href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></div><div class="ttdeci">std::vector&lt; Star &gt; Stars</div><div class="ttdef"><b>Definition</b> star-utils.hpp:102</div></div>
+<div class="ttc" id="anamespacelost_html_aef1a1d4dd4620ebdc2197877569a44f6"><div class="ttname"><a href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></div><div class="ttdeci">std::vector&lt; CatalogStar &gt; Catalog</div><div class="ttdef"><b>Definition</b> star-utils.hpp:101</div></div>
 <div class="ttc" id="astar-id_8hpp_html"><div class="ttname"><a href="star-id_8hpp.html">star-id.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
@@ -174,7 +160,7 @@ $(function() {
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="attitude-estimators_8hpp.html">attitude-estimators.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

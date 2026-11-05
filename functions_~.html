@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('functions_~.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -106,12 +92,12 @@ $(function() {
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3 class="doxsection"><a id="index__7E" name="index__7E"></a>- ~ -</h3><ul>
-<li>~AttitudeEstimationAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1_attitude_estimation_algorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">lost::AttitudeEstimationAlgorithm</a></li>
-<li>~CentroidAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1_centroid_algorithm.html#a2b8d8657624550f78354a3d29a856653">lost::CentroidAlgorithm</a></li>
-<li>~PipelineInput()&#160;:&#160;<a class="el" href="classlost_1_1_pipeline_input.html#ab766f2ef88e9d036c7bb7780d35306f3">lost::PipelineInput</a></li>
-<li>~PngPipelineInput()&#160;:&#160;<a class="el" href="classlost_1_1_png_pipeline_input.html#a01b8ddf0471b41c2a3d306f49156a0ab">lost::PngPipelineInput</a></li>
-<li>~StarIdAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1_star_id_algorithm.html#a1c440e5ca7c623e3dd1fc8958eac99de">lost::StarIdAlgorithm</a></li>
-<li>~UserSpecifiedOutputStream()&#160;:&#160;<a class="el" href="classlost_1_1_user_specified_output_stream.html#a2d2eae68275a53f1b83be250d09b6730">lost::UserSpecifiedOutputStream</a></li>
+<li>~AttitudeEstimationAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1AttitudeEstimationAlgorithm.html#a6e7a086e474f98124cc4dd5fb01682e9">lost::AttitudeEstimationAlgorithm</a></li>
+<li>~CentroidAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1CentroidAlgorithm.html#a2b8d8657624550f78354a3d29a856653">lost::CentroidAlgorithm</a></li>
+<li>~PipelineInput()&#160;:&#160;<a class="el" href="classlost_1_1PipelineInput.html#ab766f2ef88e9d036c7bb7780d35306f3">lost::PipelineInput</a></li>
+<li>~PngPipelineInput()&#160;:&#160;<a class="el" href="classlost_1_1PngPipelineInput.html#a01b8ddf0471b41c2a3d306f49156a0ab">lost::PngPipelineInput</a></li>
+<li>~StarIdAlgorithm()&#160;:&#160;<a class="el" href="classlost_1_1StarIdAlgorithm.html#a1c440e5ca7c623e3dd1fc8958eac99de">lost::StarIdAlgorithm</a></li>
+<li>~UserSpecifiedOutputStream()&#160;:&#160;<a class="el" href="classlost_1_1UserSpecifiedOutputStream.html#a2d2eae68275a53f1b83be250d09b6730">lost::UserSpecifiedOutputStream</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -119,7 +105,7 @@ $(function() {
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

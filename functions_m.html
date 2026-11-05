@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('functions_m.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -106,21 +92,21 @@ $(function() {
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3 class="doxsection"><a id="index_m" name="index_m"></a>- m -</h3><ul>
-<li>magicValue&#160;:&#160;<a class="el" href="classlost_1_1_multi_database_entry.html#aeede63708b59ea0086338286eef438c8">lost::MultiDatabaseEntry</a></li>
-<li>Magnitude()&#160;:&#160;<a class="el" href="structlost_1_1_vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3">lost::Vec2</a>, <a class="el" href="classlost_1_1_vec3.html#ad42993980fb53047751b5bb3d26a9f32">lost::Vec3</a></li>
-<li>magnitude&#160;:&#160;<a class="el" href="classlost_1_1_catalog_star.html#aac362b166dd1a5cfe95e33a7e2d18e3a">lost::CatalogStar</a>, <a class="el" href="classlost_1_1_star.html#aa39328327649f570b9008f08951af7bf">lost::Star</a></li>
-<li>MagnitudeSq()&#160;:&#160;<a class="el" href="structlost_1_1_vec2.html#a3cb220d12e9a20f74f1afbad9d944e98">lost::Vec2</a>, <a class="el" href="classlost_1_1_vec3.html#a4e5f7e17cafd3a1184962363f0ee123e">lost::Vec3</a></li>
-<li>magSum&#160;:&#160;<a class="el" href="structlost_1_1_centroid_params.html#aedcfd69a00c255c1e9166508ee5e58ff">lost::CentroidParams</a></li>
-<li>Max()&#160;:&#160;<a class="el" href="classlost_1_1_k_vector_index.html#a98f4a93e0009038d0bb529412ac895d5">lost::KVectorIndex</a></li>
-<li>MaxDistance()&#160;:&#160;<a class="el" href="classlost_1_1_pair_distance_k_vector_database.html#aec5c08310e5f796a9025300f9d8754e3">lost::PairDistanceKVectorDatabase</a></li>
-<li>MaxFov()&#160;:&#160;<a class="el" href="classlost_1_1_tetra_database.html#a55fb6ae961953768d554c3f1c6d42404">lost::TetraDatabase</a></li>
-<li>maxIntensity&#160;:&#160;<a class="el" href="structlost_1_1_i_w_co_g_params.html#a0b8ea8754acc0d8d48f6ef9cb1cc326c">lost::IWCoGParams</a></li>
-<li>meanError&#160;:&#160;<a class="el" href="classlost_1_1_centroid_comparison.html#abf8602cb33542eb054672deafccfdde8">lost::CentroidComparison</a></li>
-<li>Min()&#160;:&#160;<a class="el" href="classlost_1_1_k_vector_index.html#a45a9b59e42bd033e9a12fda60da06b92">lost::KVectorIndex</a></li>
-<li>MinDistance()&#160;:&#160;<a class="el" href="classlost_1_1_pair_distance_k_vector_database.html#a4db3849497b621317addfb332fd743cc">lost::PairDistanceKVectorDatabase</a></li>
-<li>MoveForward()&#160;:&#160;<a class="el" href="classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b">lost::DeserializeContext</a></li>
-<li>MultiDatabase()&#160;:&#160;<a class="el" href="classlost_1_1_multi_database.html#a51b6553e5466c57c9ff0ae9655e35639">lost::MultiDatabase</a></li>
-<li>MultiDatabaseEntry()&#160;:&#160;<a class="el" href="classlost_1_1_multi_database_entry.html#aaf297d5d21c88124667216df017679f4">lost::MultiDatabaseEntry</a></li>
+<li>magicValue&#160;:&#160;<a class="el" href="classlost_1_1MultiDatabaseEntry.html#aeede63708b59ea0086338286eef438c8">lost::MultiDatabaseEntry</a></li>
+<li>Magnitude()&#160;:&#160;<a class="el" href="structlost_1_1Vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3">lost::Vec2</a>, <a class="el" href="classlost_1_1Vec3.html#ad42993980fb53047751b5bb3d26a9f32">lost::Vec3</a></li>
+<li>magnitude&#160;:&#160;<a class="el" href="classlost_1_1CatalogStar.html#aac362b166dd1a5cfe95e33a7e2d18e3a">lost::CatalogStar</a>, <a class="el" href="classlost_1_1Star.html#aa39328327649f570b9008f08951af7bf">lost::Star</a></li>
+<li>MagnitudeSq()&#160;:&#160;<a class="el" href="structlost_1_1Vec2.html#a3cb220d12e9a20f74f1afbad9d944e98">lost::Vec2</a>, <a class="el" href="classlost_1_1Vec3.html#a4e5f7e17cafd3a1184962363f0ee123e">lost::Vec3</a></li>
+<li>magSum&#160;:&#160;<a class="el" href="structlost_1_1CentroidParams.html#aedcfd69a00c255c1e9166508ee5e58ff">lost::CentroidParams</a></li>
+<li>Max()&#160;:&#160;<a class="el" href="classlost_1_1KVectorIndex.html#a98f4a93e0009038d0bb529412ac895d5">lost::KVectorIndex</a></li>
+<li>MaxDistance()&#160;:&#160;<a class="el" href="classlost_1_1PairDistanceKVectorDatabase.html#aec5c08310e5f796a9025300f9d8754e3">lost::PairDistanceKVectorDatabase</a></li>
+<li>MaxFov()&#160;:&#160;<a class="el" href="classlost_1_1TetraDatabase.html#a55fb6ae961953768d554c3f1c6d42404">lost::TetraDatabase</a></li>
+<li>maxIntensity&#160;:&#160;<a class="el" href="structlost_1_1IWCoGParams.html#a0b8ea8754acc0d8d48f6ef9cb1cc326c">lost::IWCoGParams</a></li>
+<li>meanError&#160;:&#160;<a class="el" href="classlost_1_1CentroidComparison.html#abf8602cb33542eb054672deafccfdde8">lost::CentroidComparison</a></li>
+<li>Min()&#160;:&#160;<a class="el" href="classlost_1_1KVectorIndex.html#a45a9b59e42bd033e9a12fda60da06b92">lost::KVectorIndex</a></li>
+<li>MinDistance()&#160;:&#160;<a class="el" href="classlost_1_1PairDistanceKVectorDatabase.html#a4db3849497b621317addfb332fd743cc">lost::PairDistanceKVectorDatabase</a></li>
+<li>MoveForward()&#160;:&#160;<a class="el" href="classlost_1_1DeserializeContext.html#af6d1403910d8f856f408971103dc7d0b">lost::DeserializeContext</a></li>
+<li>MultiDatabase()&#160;:&#160;<a class="el" href="classlost_1_1MultiDatabase.html#a51b6553e5466c57c9ff0ae9655e35639">lost::MultiDatabase</a></li>
+<li>MultiDatabaseEntry()&#160;:&#160;<a class="el" href="classlost_1_1MultiDatabaseEntry.html#aaf297d5d21c88124667216df017679f4">lost::MultiDatabaseEntry</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -128,7 +114,7 @@ $(function() {
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

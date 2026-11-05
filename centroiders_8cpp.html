@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/centroiders.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('centroiders_8cpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -157,13 +143,11 @@ Include dependency graph for centroiders.cpp:</div>
 <area shape="poly" title=" " alt="" coords="369,335,354,371,351,367,364,338"/>
 </map>
 </div>
-</div>
-<p><a href="centroiders_8cpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:lost_3A_3ACentroidParams" id="r_lost_3A_3ACentroidParams"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1_centroid_params.html">lost::CentroidParams</a></td></tr>
-<tr class="memitem:lost_3A_3AIWCoGParams" id="r_lost_3A_3AIWCoGParams"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1_i_w_co_g_params.html">lost::IWCoGParams</a></td></tr>
+<tr class="memitem:lost_3A_3ACentroidParams" id="r_lost_3A_3ACentroidParams"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1CentroidParams.html">lost::CentroidParams</a></td></tr>
+<tr class="memitem:lost_3A_3AIWCoGParams" id="r_lost_3A_3AIWCoGParams"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1IWCoGParams.html">lost::IWCoGParams</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -176,7 +160,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a1c383b038ea9376eacf4858247d765be" id="r_a1c383b038ea9376eacf4858247d765be"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a1c383b038ea9376eacf4858247d765be">lost::OtsusThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
 <tr class="memitem:ae369ca6366d9b3c350a14a403107641a" id="r_ae369ca6366d9b3c350a14a403107641a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ae369ca6366d9b3c350a14a403107641a">lost::BasicThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
 <tr class="memitem:acd1a58a1120e97d8cf060e3e9b11576c" id="r_acd1a58a1120e97d8cf060e3e9b11576c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#acd1a58a1120e97d8cf060e3e9b11576c">lost::BasicThresholdOnePass</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
-<tr class="memitem:a789d628bbeab011d5552a6dc551b77a2" id="r_a789d628bbeab011d5552a6dc551b77a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a789d628bbeab011d5552a6dc551b77a2">lost::IWCoGHelper</a> (<a class="el" href="structlost_1_1_i_w_co_g_params.html">IWCoGParams</a> *p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; int &gt; *starIndices)</td></tr>
+<tr class="memitem:a789d628bbeab011d5552a6dc551b77a2" id="r_a789d628bbeab011d5552a6dc551b77a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a789d628bbeab011d5552a6dc551b77a2">lost::IWCoGHelper</a> (<a class="el" href="structlost_1_1IWCoGParams.html">IWCoGParams</a> *p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; int &gt; *starIndices)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -196,7 +180,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="centroiders_8cpp.html">centroiders.cpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

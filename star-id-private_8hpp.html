@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/star-id-private.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('star-id-private_8hpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -175,8 +161,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:lost_3A_3AIRUnidentifiedCentroid" id="r_lost_3A_3AIRUnidentifiedCentroid"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_i_r_unidentified_centroid.html">lost::IRUnidentifiedCentroid</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">unidentified centroid used in IdentifyRemainingStarsPairDistance The "angles" through here are "triangular angles".  <a href="classlost_1_1_i_r_unidentified_centroid.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3AIRUnidentifiedCentroid" id="r_lost_3A_3AIRUnidentifiedCentroid"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1IRUnidentifiedCentroid.html">lost::IRUnidentifiedCentroid</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">unidentified centroid used in IdentifyRemainingStarsPairDistance The "angles" through here are "triangular angles".  <a href="classlost_1_1IRUnidentifiedCentroid.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -185,9 +171,9 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a95cb98b7b4a9224b281e8ebf8f83acd4" id="r_a95cb98b7b4a9224b281e8ebf8f83acd4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4">lost::IdentifyThirdStar</a> (const <a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">PairDistanceKVectorDatabase</a> &amp;db, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, int16_t catalogIndex1, int16_t catalogIndex2, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> distance1, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> distance2, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> tolerance)</td></tr>
+<tr class="memitem:a95cb98b7b4a9224b281e8ebf8f83acd4" id="r_a95cb98b7b4a9224b281e8ebf8f83acd4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a95cb98b7b4a9224b281e8ebf8f83acd4">lost::IdentifyThirdStar</a> (const <a class="el" href="classlost_1_1PairDistanceKVectorDatabase.html">PairDistanceKVectorDatabase</a> &amp;db, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, int16_t catalogIndex1, int16_t catalogIndex2, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> distance1, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> distance2, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> tolerance)</td></tr>
 <tr class="memdesc:a95cb98b7b4a9224b281e8ebf8f83acd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given two already-identified centroids, and the distance from each to an as-yet unidentified third centroid, return a list of candidate catalog stars that could be the third centroid.  <br /></td></tr>
-<tr class="memitem:a788b77a0d64ad007d1f71778cfc91a4e" id="r_a788b77a0d64ad007d1f71778cfc91a4e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e">lost::IdentifyRemainingStarsPairDistance</a> (<a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *identifiers, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="classlost_1_1_pair_distance_k_vector_database.html">PairDistanceKVectorDatabase</a> &amp;db, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="classlost_1_1_camera.html">Camera</a> &amp;camera, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> tolerance)</td></tr>
+<tr class="memitem:a788b77a0d64ad007d1f71778cfc91a4e" id="r_a788b77a0d64ad007d1f71778cfc91a4e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e">lost::IdentifyRemainingStarsPairDistance</a> (<a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *identifiers, const <a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="classlost_1_1PairDistanceKVectorDatabase.html">PairDistanceKVectorDatabase</a> &amp;db, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="classlost_1_1Camera.html">Camera</a> &amp;camera, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> tolerance)</td></tr>
 <tr class="memdesc:a788b77a0d64ad007d1f71778cfc91a4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given some identified stars, attempt to identify the rest.  <br /></td></tr>
 </table>
 </div><!-- contents -->
@@ -204,7 +190,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="star-id-private_8hpp.html">star-id-private.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

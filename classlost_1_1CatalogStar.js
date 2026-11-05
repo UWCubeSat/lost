@@ -1,0 +1,9 @@
+var classlost_1_1CatalogStar =
+[
+    [ "CatalogStar", "classlost_1_1CatalogStar.html#af2f1fc27b7b16f497e652a1fd1caa00e", null ],
+    [ "CatalogStar", "classlost_1_1CatalogStar.html#a01e0c6d1367a68757a13091c5287075f", null ],
+    [ "CatalogStar", "classlost_1_1CatalogStar.html#a8d74d0477614cda6ab24a4732b33227e", null ],
+    [ "magnitude", "classlost_1_1CatalogStar.html#aac362b166dd1a5cfe95e33a7e2d18e3a", null ],
+    [ "name", "classlost_1_1CatalogStar.html#a72d3cdf9c85caa2fc2819644862e26ee", null ],
+    [ "spatial", "classlost_1_1CatalogStar.html#abd0b2df829476183297af1ac072c0802", null ]
+];

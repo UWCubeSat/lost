@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/serialize-helpers.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('serialize-helpers_8hpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -208,8 +194,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:lost_3A_3ASerializeContext" id="r_lost_3A_3ASerializeContext"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_serialize_context.html">lost::SerializeContext</a></td></tr>
-<tr class="memitem:lost_3A_3ADeserializeContext" id="r_lost_3A_3ADeserializeContext"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_deserialize_context.html">lost::DeserializeContext</a></td></tr>
+<tr class="memitem:lost_3A_3ASerializeContext" id="r_lost_3A_3ASerializeContext"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1SerializeContext.html">lost::SerializeContext</a></td></tr>
+<tr class="memitem:lost_3A_3ADeserializeContext" id="r_lost_3A_3ADeserializeContext"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1DeserializeContext.html">lost::DeserializeContext</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -222,22 +208,22 @@ Functions</h2></td></tr>
 <tr class="memitem:aaa3aa9350f84fa1b7725b5e3de8483ba template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba">lost::SwapEndianness</a> (unsigned char *buffer)</td></tr>
 <tr class="memdesc:aaa3aa9350f84fa1b7725b5e3de8483ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unconditionally swap the endianness of a value (uses sizeof T).  <br /></td></tr>
 <tr class="memitem:a9704a9fb2cf67873155e69407a976074" id="r_a9704a9fb2cf67873155e69407a976074"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a9704a9fb2cf67873155e69407a976074 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">lost::SwapEndiannessIfNecessary</a> (unsigned char *buffer, <a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="memitem:a9704a9fb2cf67873155e69407a976074 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9704a9fb2cf67873155e69407a976074">lost::SwapEndiannessIfNecessary</a> (unsigned char *buffer, <a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser)</td></tr>
 <tr class="memdesc:a9704a9fb2cf67873155e69407a976074"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap the endianness of a value if necessary.  <br /></td></tr>
 <tr class="memitem:a3493422e7893b68e566182e4e2372a6e" id="r_a3493422e7893b68e566182e4e2372a6e"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
-<tr class="memitem:a3493422e7893b68e566182e4e2372a6e template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3493422e7893b68e566182e4e2372a6e">lost::SwapEndiannessIfNecessary&lt; decimal &gt;</a> (unsigned char *buffer, <a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="memitem:a3493422e7893b68e566182e4e2372a6e template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3493422e7893b68e566182e4e2372a6e">lost::SwapEndiannessIfNecessary&lt; decimal &gt;</a> (unsigned char *buffer, <a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser)</td></tr>
 <tr class="memitem:ac6dcbacca390790e2623b918f25a0ed2" id="r_ac6dcbacca390790e2623b918f25a0ed2"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ac6dcbacca390790e2623b918f25a0ed2 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2">lost::DeserializePadding</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des)</td></tr>
+<tr class="memitem:ac6dcbacca390790e2623b918f25a0ed2 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac6dcbacca390790e2623b918f25a0ed2">lost::DeserializePadding</a> (<a class="el" href="classlost_1_1DeserializeContext.html">DeserializeContext</a> *des)</td></tr>
 <tr class="memdesc:ac6dcbacca390790e2623b918f25a0ed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move the cursor forward past any padding that would appear before a value of type T.  <br /></td></tr>
 <tr class="memitem:a808e750fa7f99bc945155638df303fb7" id="r_a808e750fa7f99bc945155638df303fb7"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a808e750fa7f99bc945155638df303fb7 template"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a808e750fa7f99bc945155638df303fb7">lost::DeserializePrimitive</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des)</td></tr>
+<tr class="memitem:a808e750fa7f99bc945155638df303fb7 template"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a808e750fa7f99bc945155638df303fb7">lost::DeserializePrimitive</a> (<a class="el" href="classlost_1_1DeserializeContext.html">DeserializeContext</a> *des)</td></tr>
 <tr class="memitem:a6708c85ee599d39a129c12aff85de26d" id="r_a6708c85ee599d39a129c12aff85de26d"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a6708c85ee599d39a129c12aff85de26d template"><td class="memItemLeft" align="right" valign="top">const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6708c85ee599d39a129c12aff85de26d">lost::DeserializeArray</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des, long arrLength)</td></tr>
+<tr class="memitem:a6708c85ee599d39a129c12aff85de26d template"><td class="memItemLeft" align="right" valign="top">const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a6708c85ee599d39a129c12aff85de26d">lost::DeserializeArray</a> (<a class="el" href="classlost_1_1DeserializeContext.html">DeserializeContext</a> *des, long arrLength)</td></tr>
 <tr class="memdesc:a6708c85ee599d39a129c12aff85de26d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return an array of items as a pointer. Will point into the buffer (mmap style).  <br /></td></tr>
 <tr class="memitem:a164fee04c6e5fd2fc2e2ca9274b745fa" id="r_a164fee04c6e5fd2fc2e2ca9274b745fa"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a164fee04c6e5fd2fc2e2ca9274b745fa template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa">lost::SerializePadding</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser)</td></tr>
+<tr class="memitem:a164fee04c6e5fd2fc2e2ca9274b745fa template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a164fee04c6e5fd2fc2e2ca9274b745fa">lost::SerializePadding</a> (<a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser)</td></tr>
 <tr class="memitem:a9af0427ae10a3db5529f2f8c74497347" id="r_a9af0427ae10a3db5529f2f8c74497347"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a9af0427ae10a3db5529f2f8c74497347 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9af0427ae10a3db5529f2f8c74497347">lost::SerializePrimitive</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const T &amp;val)</td></tr>
+<tr class="memitem:a9af0427ae10a3db5529f2f8c74497347 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a9af0427ae10a3db5529f2f8c74497347">lost::SerializePrimitive</a> (<a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser, const T &amp;val)</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -253,7 +239,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="serialize-helpers_8hpp.html">serialize-helpers.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>

@@ -1,10 +1,10 @@
 var star_utils_8hpp =
 [
-    [ "lost::CatalogStar", "classlost_1_1_catalog_star.html", "classlost_1_1_catalog_star" ],
-    [ "lost::Star", "classlost_1_1_star.html", "classlost_1_1_star" ],
-    [ "lost::StarIdentifier", "classlost_1_1_star_identifier.html", "classlost_1_1_star_identifier" ],
-    [ "lost::CombinationIterator", "classlost_1_1_combination_iterator.html", "classlost_1_1_combination_iterator" ],
-    [ "lost::TetraConstants", "structlost_1_1_tetra_constants.html", null ],
+    [ "lost::CatalogStar", "classlost_1_1CatalogStar.html", "classlost_1_1CatalogStar" ],
+    [ "lost::Star", "classlost_1_1Star.html", "classlost_1_1Star" ],
+    [ "lost::StarIdentifier", "classlost_1_1StarIdentifier.html", "classlost_1_1StarIdentifier" ],
+    [ "lost::CombinationIterator", "classlost_1_1CombinationIterator.html", "classlost_1_1CombinationIterator" ],
+    [ "lost::TetraConstants", "structlost_1_1TetraConstants.html", null ],
     [ "lost::Catalog", "namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6", null ],
     [ "lost::StarIdentifiers", "namespacelost.html#a288b872531de219e9cfc87beb8d8bada", null ],
     [ "lost::Stars", "namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5", null ],

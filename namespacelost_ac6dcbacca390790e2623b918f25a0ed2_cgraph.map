@@ -1,7 +1,0 @@
-<map id="lost::DeserializePadding" name="lost::DeserializePadding">
-<area shape="rect" id="Node000001" title="Move the cursor forward past any padding that would appear before a value of type T." alt="" coords="5,48,183,76"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1_deserialize_context.html#a02edcd036deb10b5928ae6b94a57ae38" title=" " alt="" coords="231,5,408,50"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,46,218,43,212,44,183,51"/>
-<area shape="rect" id="Node000003" href="$classlost_1_1_deserialize_context.html#af6d1403910d8f856f408971103dc7d0b" title=" " alt="" coords="231,75,408,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,73,218,81,212,81,183,79"/>
-</map>

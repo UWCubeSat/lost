@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>LOST: src/star-utils.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript">var page_layout=1;</script>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
@@ -18,13 +17,9 @@
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
-<script type="text/javascript">
-  $(function() { init_search(); });
-</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 <div id="titlearea">
 <table cellspacing="0" cellpadding="0">
@@ -36,18 +31,6 @@
    <div id="projectbrief">LOST: Open-source Star Tracker</div>
   </td>
  </tr>
-   <tr><td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
-        <span class="left">
-          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
-          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
-               onfocus="searchBox.OnSearchFieldFocus(true)" 
-               onblur="searchBox.OnSearchFieldFocus(false)" 
-               onkeyup="searchBox.OnSearchFieldChange(event)"/>
-          </span><span class="right">
-            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
-          </span>
-        </div>
-</td></tr>
  </tbody>
 </table>
 </div>
@@ -59,7 +42,17 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 <script type="text/javascript">
 $(function() { codefold.init(); });
 </script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
   <div id="nav-tree">
     <div id="nav-tree-contents">
       <div id="nav-sync" class="sync"></div>
@@ -72,15 +65,8 @@ $(function() { codefold.init(); });
 <script type="text/javascript">
 $(function(){initNavTree('star-utils_8hpp.html','',''); });
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-$(function() {
-  initMenu('',false,false,'search.php','Search',true);
-});
-</script>
-<div id="main-nav"></div>
-<div id="container"><div id="doc-content">
+<div id="container">
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -192,14 +178,14 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:lost_3A_3ACatalogStar" id="r_lost_3A_3ACatalogStar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_catalog_star.html">lost::CatalogStar</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A star from the Bright <a class="el" href="classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image.">Star</a> <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>.  <a href="classlost_1_1_catalog_star.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3AStar" id="r_lost_3A_3AStar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_star.html">lost::Star</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A "centroid" detected in an image.  <a href="classlost_1_1_star.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3AStarIdentifier" id="r_lost_3A_3AStarIdentifier"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_star_identifier.html">lost::StarIdentifier</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records that a certain <a class="el" href="classlost_1_1_star.html" title="A &quot;centroid&quot; detected in an image.">Star</a> (detected in the image) corresponds to a certain <a class="el" href="classlost_1_1_catalog_star.html" title="A star from the Bright Star Catalog.">CatalogStar</a>.  <a href="classlost_1_1_star_identifier.html#details">More...</a><br /></td></tr>
-<tr class="memitem:lost_3A_3ACombinationIterator" id="r_lost_3A_3ACombinationIterator"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1_combination_iterator.html">lost::CombinationIterator</a></td></tr>
-<tr class="memitem:lost_3A_3ATetraConstants" id="r_lost_3A_3ATetraConstants"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1_tetra_constants.html">lost::TetraConstants</a></td></tr>
+<tr class="memitem:lost_3A_3ACatalogStar" id="r_lost_3A_3ACatalogStar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1CatalogStar.html">lost::CatalogStar</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A star from the Bright <a class="el" href="classlost_1_1Star.html" title="A &quot;centroid&quot; detected in an image.">Star</a> <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>.  <a href="classlost_1_1CatalogStar.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3AStar" id="r_lost_3A_3AStar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1Star.html">lost::Star</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A "centroid" detected in an image.  <a href="classlost_1_1Star.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3AStarIdentifier" id="r_lost_3A_3AStarIdentifier"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1StarIdentifier.html">lost::StarIdentifier</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records that a certain <a class="el" href="classlost_1_1Star.html" title="A &quot;centroid&quot; detected in an image.">Star</a> (detected in the image) corresponds to a certain <a class="el" href="classlost_1_1CatalogStar.html" title="A star from the Bright Star Catalog.">CatalogStar</a>.  <a href="classlost_1_1StarIdentifier.html#details">More...</a><br /></td></tr>
+<tr class="memitem:lost_3A_3ACombinationIterator" id="r_lost_3A_3ACombinationIterator"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1CombinationIterator.html">lost::CombinationIterator</a></td></tr>
+<tr class="memitem:lost_3A_3ATetraConstants" id="r_lost_3A_3ATetraConstants"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1TetraConstants.html">lost::TetraConstants</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -208,15 +194,15 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:aef1a1d4dd4620ebdc2197877569a44f6" id="r_aef1a1d4dd4620ebdc2197877569a44f6"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1_catalog_star.html">CatalogStar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></td></tr>
-<tr class="memitem:a4bd359d9c09dbecb81c3a3e536f0b5c5" id="r_a4bd359d9c09dbecb81c3a3e536f0b5c5"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1_star.html">Star</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></td></tr>
-<tr class="memitem:a288b872531de219e9cfc87beb8d8bada" id="r_a288b872531de219e9cfc87beb8d8bada"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1_star_identifier.html">StarIdentifier</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></td></tr>
+<tr class="memitem:aef1a1d4dd4620ebdc2197877569a44f6" id="r_aef1a1d4dd4620ebdc2197877569a44f6"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1CatalogStar.html">CatalogStar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">lost::Catalog</a></td></tr>
+<tr class="memitem:a4bd359d9c09dbecb81c3a3e536f0b5c5" id="r_a4bd359d9c09dbecb81c3a3e536f0b5c5"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1Star.html">Star</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5">lost::Stars</a></td></tr>
+<tr class="memitem:a288b872531de219e9cfc87beb8d8bada" id="r_a288b872531de219e9cfc87beb8d8bada"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classlost_1_1StarIdentifier.html">StarIdentifier</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a288b872531de219e9cfc87beb8d8bada">lost::StarIdentifiers</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2cc7e2e970e07d707f25c00fcd3071a3" id="r_a2cc7e2e970e07d707f25c00fcd3071a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3">lost::SerializeCatalog</a> (<a class="el" href="classlost_1_1_serialize_context.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
+<tr class="memitem:a2cc7e2e970e07d707f25c00fcd3071a3" id="r_a2cc7e2e970e07d707f25c00fcd3071a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3">lost::SerializeCatalog</a> (<a class="el" href="classlost_1_1SerializeContext.html">SerializeContext</a> *ser, const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, bool inclMagnitude, bool inclName)</td></tr>
 <tr class="memdesc:a2cc7e2e970e07d707f25c00fcd3071a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the catalog to <span class="tt">buffer</span>.  <br /></td></tr>
-<tr class="memitem:a3d0e0e4b5dd7521775ee2d00143ab022" id="r_a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">lost::DeserializeCatalog</a> (<a class="el" href="classlost_1_1_deserialize_context.html">DeserializeContext</a> *des, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
+<tr class="memitem:a3d0e0e4b5dd7521775ee2d00143ab022" id="r_a3d0e0e4b5dd7521775ee2d00143ab022"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022">lost::DeserializeCatalog</a> (<a class="el" href="classlost_1_1DeserializeContext.html">DeserializeContext</a> *des, bool *inclMagnitudeReturn, bool *inclNameReturn)</td></tr>
 <tr class="memdesc:a3d0e0e4b5dd7521775ee2d00143ab022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize a catalog.  <br /></td></tr>
 <tr class="memitem:ac722314f3b14385ade7e5f05699ef006" id="r_ac722314f3b14385ade7e5f05699ef006"><td class="memItemLeft" align="right" valign="top">Catalog::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ac722314f3b14385ade7e5f05699ef006">lost::FindNamedStar</a> (const <a class="el" href="namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, int name)</td></tr>
 <tr class="memdesc:ac722314f3b14385ade7e5f05699ef006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the star with the given name, or NULL if not found.  <br /></td></tr>
@@ -244,7 +230,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a href="star-utils_8hpp.html">star-utils.hpp</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for LOST by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
   </ul>
 </div>
 </body>
