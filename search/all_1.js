@@ -15,6 +15,5 @@ var searchData=
   ['attitude_2dutils_2ecpp_12',['attitude-utils.cpp',['../attitude-utils_8cpp.html',1,'']]],
   ['attitude_2dutils_2ehpp_13',['attitude-utils.hpp',['../attitude-utils_8hpp.html',1,'']]],
   ['attitudeestimationalgorithm_14',['AttitudeEstimationAlgorithm',['../classlost_1_1AttitudeEstimationAlgorithm.html',1,'lost']]],
-  ['attitudeestimationalgorithmfactory_15',['AttitudeEstimationAlgorithmFactory',['../namespacelost.html#a21ee58ad60e736a58c95394ae5f799f4',1,'lost']]],
-  ['attitudeestimationtimens_16',['attitudeEstimationTimeNs',['../structlost_1_1PipelineOutput.html#aa8e8e553d151f56f587d7906fd4a9229',1,'lost::PipelineOutput']]]
+  ['attitudeestimationtimens_15',['attitudeEstimationTimeNs',['../structlost_1_1PipelineOutput.html#aa8e8e553d151f56f587d7906fd4a9229',1,'lost::PipelineOutput']]]
 ];

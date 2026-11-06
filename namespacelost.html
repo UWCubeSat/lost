@@ -206,10 +206,6 @@ Classes</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ac218a3b95ef2b4781db57d8bc78c2cfa" id="r_ac218a3b95ef2b4781db57d8bc78c2cfa"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac218a3b95ef2b4781db57d8bc78c2cfa">TetraPattern</a> = std::array&lt;uint16_t, <a class="el" href="structlost_1_1TetraConstants.html#a6411695edcaddf40244e28d4145829d8">TetraConstants::numPatternStars</a>&gt;</td></tr>
 <tr class="memitem:a5bf45e706aaa546ec4b7dd356d9cce3b" id="r_a5bf45e706aaa546ec4b7dd356d9cce3b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bf45e706aaa546ec4b7dd356d9cce3b">MultiDatabaseDescriptor</a> = std::vector&lt;<a class="el" href="classlost_1_1MultiDatabaseEntry.html">MultiDatabaseEntry</a>&gt;</td></tr>
-<tr class="memitem:aa2fc7d9cb29ef05d4c780ea4d4f131a8" id="r_aa2fc7d9cb29ef05d4c780ea4d4f131a8"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa2fc7d9cb29ef05d4c780ea4d4f131a8">CentroidAlgorithmFactory</a>) ()</td></tr>
-<tr class="memitem:a106f3da2d75b2af268f5e9abfc7ea681" id="r_a106f3da2d75b2af268f5e9abfc7ea681"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1StarIdAlgorithm.html">StarIdAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a106f3da2d75b2af268f5e9abfc7ea681">StarIdAlgorithmFactory</a>) ()</td></tr>
-<tr class="memitem:a21ee58ad60e736a58c95394ae5f799f4" id="r_a21ee58ad60e736a58c95394ae5f799f4"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21ee58ad60e736a58c95394ae5f799f4">AttitudeEstimationAlgorithmFactory</a>) ()</td></tr>
-<tr class="memitem:a5552f98af725481dee70b9b39e12e064" id="r_a5552f98af725481dee70b9b39e12e064"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5552f98af725481dee70b9b39e12e064">PipelineInputFactory</a>) ()</td></tr>
 <tr class="memitem:ab001adf3b7887c7b7a72d308893c48b2" id="r_ab001adf3b7887c7b7a72d308893c48b2"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab001adf3b7887c7b7a72d308893c48b2">PipelineComparator</a>) (std::ostream &amp;os, const <a class="el" href="#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a> &amp;, const std::vector&lt; <a class="el" href="structlost_1_1PipelineOutput.html">PipelineOutput</a> &gt; &amp;, const <a class="el" href="classlost_1_1PipelineOptions.html">PipelineOptions</a> &amp;)</td></tr>
 <tr class="memitem:acbd12c57a0797b6b786ebfc87aae0c84" id="r_acbd12c57a0797b6b786ebfc87aae0c84"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::unique_ptr&lt; <a class="el" href="classlost_1_1PipelineInput.html">PipelineInput</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a></td></tr>
 <tr class="memitem:a41a5c6a8158775578cdc478dcd042e8d" id="r_a41a5c6a8158775578cdc478dcd042e8d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a41a5c6a8158775578cdc478dcd042e8d">HashCode</a> = std::array&lt;int, kNumEdgeRatios&gt;</td></tr>
@@ -378,22 +374,6 @@ Variables</h2></td></tr>
 <p>The serialization and deserialization helpers here assume that (a) integers and decimal point numbers are stored in the same format on the source and target systems except for endianness, and (b) the target system requires no greater than n-byte alignment for n-byte values (eg, an int32_t only needs 4-byte alignment, not 8-byte), and (c) the database itself will be aligned at a multiple of the largest size of any value stored within (because we only align values relative to the start of the database, so everything breaks if the database itself is misaligned).</p>
 <p>Generally, the "bulk" of any database will not be explicitly deserialized into a data structure in memory, but instead will just effectively memory-mapped, by just storing a pointer to a certain offset into the database. The serialization functions in this file can still be used to create such a "bulk" section, but deserialization must be handled manually. </p>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
-<a id="a21ee58ad60e736a58c95394ae5f799f4" name="a21ee58ad60e736a58c95394ae5f799f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21ee58ad60e736a58c95394ae5f799f4">&#9670;&#160;</a></span>AttitudeEstimationAlgorithmFactory</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef <a class="el" href="classlost_1_1AttitudeEstimationAlgorithm.html">AttitudeEstimationAlgorithm</a> *(* lost::AttitudeEstimationAlgorithmFactory)()</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00270">270</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
-
-</div>
-</div>
 <a id="aef1a1d4dd4620ebdc2197877569a44f6" name="aef1a1d4dd4620ebdc2197877569a44f6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aef1a1d4dd4620ebdc2197877569a44f6">&#9670;&#160;</a></span>Catalog</h2>
 
@@ -407,22 +387,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="star-utils_8hpp_source.html#l00101">101</a> of file <a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aa2fc7d9cb29ef05d4c780ea4d4f131a8" name="aa2fc7d9cb29ef05d4c780ea4d4f131a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2fc7d9cb29ef05d4c780ea4d4f131a8">&#9670;&#160;</a></span>CentroidAlgorithmFactory</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef <a class="el" href="classlost_1_1CentroidAlgorithm.html">CentroidAlgorithm</a> *(* lost::CentroidAlgorithmFactory) ()</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00268">268</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -470,23 +434,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01246">1246</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a5552f98af725481dee70b9b39e12e064" name="a5552f98af725481dee70b9b39e12e064"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5552f98af725481dee70b9b39e12e064">&#9670;&#160;</a></span>PipelineInputFactory</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef <a class="el" href="#acbd12c57a0797b6b786ebfc87aae0c84">PipelineInputList</a>(* lost::PipelineInputFactory) ()</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00823">823</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01237">1237</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -503,22 +451,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00158">158</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a106f3da2d75b2af268f5e9abfc7ea681" name="a106f3da2d75b2af268f5e9abfc7ea681"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a106f3da2d75b2af268f5e9abfc7ea681">&#9670;&#160;</a></span>StarIdAlgorithmFactory</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef <a class="el" href="classlost_1_1StarIdAlgorithm.html">StarIdAlgorithm</a> *(* lost::StarIdAlgorithmFactory)()</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00269">269</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -1191,7 +1123,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01146">1146</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01137">1137</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -1227,7 +1159,7 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01120">1120</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01111">1111</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -2054,7 +1986,7 @@ Here is the caller graph for this function:</div>
 <p>Calculate the focal length, in pixels, based on the given command line options. </p>
 <p>This function exists because there are two ways to specify how "zoomed-in" the camera is. One way is using just FOV, which is useful when generating false images. Another is a combination of pixel size and focal length, which is useful for physical cameras. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00334">334</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00327">327</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2187,7 +2119,7 @@ Here is the caller graph for this function:</div>
 <p>Appropriately create descriptors for all requested databases according to command-line options. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#ad14088462298249d31b2c396c3be86f9">SerializeMultiDatabase</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00280">280</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00273">273</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2274,7 +2206,7 @@ Here is the call graph for this function:</div>
 
 <p>Create a <a class="el" href="classlost_1_1GeneratedPipelineInput.html" title="A pipeline input which is generated (fake image).">GeneratedPipelineInput</a> based on the command line options in <span class="tt">values</span>. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00752">752</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00745">745</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2327,7 +2259,7 @@ Here is the caller graph for this function:</div>
 
 <p>Come up with a list of pipeline inputs based on command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00826">826</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00817">817</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2376,7 +2308,7 @@ Here is the call graph for this function:</div>
 
 <p>Create a <a class="el" href="classlost_1_1PngPipelineInput.html" title="A pipeline input created by reading a PNG from a file on disk.">PngPipelineInput</a> using command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00394">394</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00387">387</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2869,7 +2801,7 @@ Here is the call graph for this function:</div>
 
 <p>Print information about the camera in machine and human-readable form. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00319">319</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00312">312</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3033,7 +2965,7 @@ Here is the caller graph for this function:</div>
 <p>Plot an annotated image where centroids are annotated with their centroid index. </p>
 <p>For debugging. Use whatever stars were input into the star-id algo (so either actual centroids, or inputstars) </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01443">1443</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01434">1434</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3116,7 +3048,7 @@ Here is the caller graph for this function:</div>
 <p>Print or otherwise analyze the results of (perhaps multiple) runs of a star tracking pipeline. </p>
 <p>Uses the command line options in <span class="tt">values</span> to determine which analyses to run. Examples include plotting an annotated output image to a png file, comparing the actual and expected centroids, etc </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01735">1735</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01726">1726</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -3497,7 +3429,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00276">276</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00269">269</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -4139,7 +4071,7 @@ Here is the caller graph for this function:</div>
 
 <p>Create a pipeline from command line options. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00860">860</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00851">851</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -4301,7 +4233,7 @@ Here is the caller graph for this function:</div>
 <p>The following description is compatible with, but more actionable than, the definitions in the documentation for <a class="el" href="structlost_1_1StarIdComparison.html" title="The result of comparing an actual star identification with the true star idenification,...">StarIdComparison</a>. A star-id is <em>correct</em> if the centroid is the closest centroid to some expected centroid, and the referenced catalog star is the same one as in the expected star-ids for that centroid. Also permissible is if the centroid is not the closest to any expected centroid, but it has the same star-id as another star closer to the closest expected centroid. All other star-ids are <em>incorrect</em> (because they are either identifying false stars, or are incorrect identifications on true stars)</p>
 <p>The "total" in the result is just the number of input stars. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01165">1165</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l01156">1156</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>
@@ -4863,7 +4795,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00494">494</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8cpp_source.html#l00487">487</a> of file <a class="el" href="io_8cpp_source.html">io.cpp</a>.</p>
 
 </div>
 </div>

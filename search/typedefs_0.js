@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['attitudeestimationalgorithmfactory_0',['AttitudeEstimationAlgorithmFactory',['../namespacelost.html#a21ee58ad60e736a58c95394ae5f799f4',1,'lost']]]
+  ['catalog_0',['Catalog',['../namespacelost.html#aef1a1d4dd4620ebdc2197877569a44f6',1,'lost']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['decimal_0',['decimal',['../classlost_1_1PipelineOptions.html#ab75340602025dbbadfb8cf5dc483ef7a',1,'lost::PipelineOptions::decimal'],['../decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57',1,'decimal:&#160;decimal.hpp']]]
+  ['hashcode_0',['HashCode',['../namespacelost.html#a41a5c6a8158775578cdc478dcd042e8d',1,'lost']]]
 ];

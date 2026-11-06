@@ -12,11 +12,10 @@ var searchData=
   ['pipelinecomparatorplotcentroidindices_9',['PipelineComparatorPlotCentroidIndices',['../namespacelost.html#a69cfc1189a8f18fb6e6a6d400a8a1311',1,'lost']]],
   ['pipelinecomparison_10',['PipelineComparison',['../namespacelost.html#ad2caa7f022ed5c5dba03ab479414dafc',1,'lost']]],
   ['pipelineinput_11',['PipelineInput',['../classlost_1_1PipelineInput.html',1,'lost']]],
-  ['pipelineinputfactory_12',['PipelineInputFactory',['../namespacelost.html#a5552f98af725481dee70b9b39e12e064',1,'lost']]],
-  ['pipelineinputlist_13',['PipelineInputList',['../namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84',1,'lost']]],
-  ['pipelineoptions_14',['PipelineOptions',['../classlost_1_1PipelineOptions.html',1,'lost']]],
-  ['pipelineoutput_15',['PipelineOutput',['../structlost_1_1PipelineOutput.html',1,'lost']]],
-  ['pngpipelineinput_16',['PngPipelineInput',['../classlost_1_1PngPipelineInput.html',1,'lost::PngPipelineInput'],['../classlost_1_1PngPipelineInput.html#adee57652282fb256ea2deeb737b81afe',1,'lost::PngPipelineInput::PngPipelineInput()']]],
-  ['position_17',['position',['../classlost_1_1Star.html#a8e9b2320d742fb5324397ac406c859ea',1,'lost::Star']]],
-  ['pyramidstaridalgorithm_18',['PyramidStarIdAlgorithm',['../classlost_1_1PyramidStarIdAlgorithm.html',1,'lost::PyramidStarIdAlgorithm'],['../classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c',1,'lost::PyramidStarIdAlgorithm::PyramidStarIdAlgorithm()']]]
+  ['pipelineinputlist_12',['PipelineInputList',['../namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84',1,'lost']]],
+  ['pipelineoptions_13',['PipelineOptions',['../classlost_1_1PipelineOptions.html',1,'lost']]],
+  ['pipelineoutput_14',['PipelineOutput',['../structlost_1_1PipelineOutput.html',1,'lost']]],
+  ['pngpipelineinput_15',['PngPipelineInput',['../classlost_1_1PngPipelineInput.html',1,'lost::PngPipelineInput'],['../classlost_1_1PngPipelineInput.html#adee57652282fb256ea2deeb737b81afe',1,'lost::PngPipelineInput::PngPipelineInput()']]],
+  ['position_16',['position',['../classlost_1_1Star.html#a8e9b2320d742fb5324397ac406c859ea',1,'lost::Star']]],
+  ['pyramidstaridalgorithm_17',['PyramidStarIdAlgorithm',['../classlost_1_1PyramidStarIdAlgorithm.html',1,'lost::PyramidStarIdAlgorithm'],['../classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c',1,'lost::PyramidStarIdAlgorithm::PyramidStarIdAlgorithm()']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hashcode_0',['HashCode',['../namespacelost.html#a41a5c6a8158775578cdc478dcd042e8d',1,'lost']]]
+  ['multidatabasedescriptor_0',['MultiDatabaseDescriptor',['../namespacelost.html#a5bf45e706aaa546ec4b7dd356d9cce3b',1,'lost']]]
 ];

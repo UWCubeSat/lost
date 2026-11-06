@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['pipelinecomparator_0',['PipelineComparator',['../namespacelost.html#ab001adf3b7887c7b7a72d308893c48b2',1,'lost']]],
-  ['pipelineinputfactory_1',['PipelineInputFactory',['../namespacelost.html#a5552f98af725481dee70b9b39e12e064',1,'lost']]],
-  ['pipelineinputlist_2',['PipelineInputList',['../namespacelost.html#acbd12c57a0797b6b786ebfc87aae0c84',1,'lost']]]
+  ['staridentifiers_0',['StarIdentifiers',['../namespacelost.html#a288b872531de219e9cfc87beb8d8bada',1,'lost']]],
+  ['stars_1',['Stars',['../namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5',1,'lost']]]
 ];
