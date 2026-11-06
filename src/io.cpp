@@ -265,13 +265,6 @@ void SurfacePlot(std::string description,
 }
 
 // ALGORITHM PROMPTERS
-typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
-typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
-typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
-
-typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
-
-typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 SerializeContext serFromDbValues(const DatabaseOptions &values) {
     return SerializeContext(values.swapIntegerEndianness, values.swapDecimalEndianness);
@@ -819,8 +812,6 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
 
     return result;
 }
-
-typedef PipelineInputList (*PipelineInputFactory)();
 
 /// Come up with a list of pipeline inputs based on command line options.
 PipelineInputList GetPipelineInput(const PipelineOptions &values) {
