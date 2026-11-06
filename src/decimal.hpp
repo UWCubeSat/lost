@@ -55,7 +55,6 @@
 #define DECIMAL_ATAN2(x,y)      ((decimal) std::atan2(x,y))
 
 // Float methods wrapped with Decimal typecast)
-#define DECIMAL_FMA(x,y,z)      ((decimal) std::fma(x,y,z))
 #define DECIMAL_HYPOT(x,y)      ((decimal) std::hypot(x,y))
 
 #endif // decimal.hpp
