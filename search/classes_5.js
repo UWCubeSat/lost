@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['image_0',['Image',['../classlost_1_1Image.html',1,'lost']]],
-  ['irunidentifiedcentroid_1',['IRUnidentifiedCentroid',['../classlost_1_1IRUnidentifiedCentroid.html',1,'lost']]],
-  ['iterativeweightedcenterofgravityalgorithm_2',['IterativeWeightedCenterOfGravityAlgorithm',['../classlost_1_1IterativeWeightedCenterOfGravityAlgorithm.html',1,'lost']]],
-  ['iwcogparams_3',['IWCoGParams',['../structlost_1_1IWCoGParams.html',1,'lost']]]
+  ['generatedpipelineinput_0',['GeneratedPipelineInput',['../classlost_1_1GeneratedPipelineInput.html',1,'lost']]],
+  ['generatedstar_1',['GeneratedStar',['../classlost_1_1GeneratedStar.html',1,'lost']]],
+  ['geometricvotingstaridalgorithm_2',['GeometricVotingStarIdAlgorithm',['../classlost_1_1GeometricVotingStarIdAlgorithm.html',1,'lost']]]
 ];

@@ -40,6 +40,7 @@ var annotated_dup =
       [ "DeserializeContext", "classlost_1_1DeserializeContext.html", "classlost_1_1DeserializeContext" ],
       [ "IRUnidentifiedCentroid", "classlost_1_1IRUnidentifiedCentroid.html", "classlost_1_1IRUnidentifiedCentroid" ],
       [ "PairDistanceInvolvingIterator", "classlost_1_1PairDistanceInvolvingIterator.html", "classlost_1_1PairDistanceInvolvingIterator" ],
+      [ "FlatPairMap", "structlost_1_1FlatPairMap.html", "structlost_1_1FlatPairMap" ],
       [ "StarIdAlgorithm", "classlost_1_1StarIdAlgorithm.html", "classlost_1_1StarIdAlgorithm" ],
       [ "TetraStarIdAlgorithm", "classlost_1_1TetraStarIdAlgorithm.html", "classlost_1_1TetraStarIdAlgorithm" ],
       [ "DummyStarIdAlgorithm", "classlost_1_1DummyStarIdAlgorithm.html", "classlost_1_1DummyStarIdAlgorithm" ],

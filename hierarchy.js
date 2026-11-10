@@ -19,6 +19,7 @@ var hierarchy =
     [ "lost::DatabaseOptions", "classlost_1_1DatabaseOptions.html", null ],
     [ "lost::DeserializeContext", "classlost_1_1DeserializeContext.html", null ],
     [ "lost::EulerAngles", "classlost_1_1EulerAngles.html", null ],
+    [ "lost::FlatPairMap", "structlost_1_1FlatPairMap.html", null ],
     [ "lost::Image", "classlost_1_1Image.html", null ],
     [ "lost::IRUnidentifiedCentroid", "classlost_1_1IRUnidentifiedCentroid.html", null ],
     [ "lost::IWCoGParams", "structlost_1_1IWCoGParams.html", null ],

@@ -183,6 +183,8 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">unidentified centroid used in IdentifyRemainingStarsPairDistance The "angles" through here are "triangular angles".  <a href="classlost_1_1IRUnidentifiedCentroid.html#details">More...</a><br /></td></tr>
 <tr class="memitem:PairDistanceInvolvingIterator" id="r_PairDistanceInvolvingIterator"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1PairDistanceInvolvingIterator.html">PairDistanceInvolvingIterator</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a list of star pairs, finds all those pairs which involve a certain star.  <a href="classlost_1_1PairDistanceInvolvingIterator.html#details">More...</a><br /></td></tr>
+<tr class="memitem:FlatPairMap" id="r_FlatPairMap"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlost_1_1FlatPairMap.html">FlatPairMap</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given the result of a pair-distance kvector query, build a table of stars to other stars that appeared with it in the query.  <a href="structlost_1_1FlatPairMap.html#details">More...</a><br /></td></tr>
 <tr class="memitem:StarIdAlgorithm" id="r_StarIdAlgorithm"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1StarIdAlgorithm.html">StarIdAlgorithm</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A star idenification algorithm.  <a href="classlost_1_1StarIdAlgorithm.html#details">More...</a><br /></td></tr>
 <tr class="memitem:TetraStarIdAlgorithm" id="r_TetraStarIdAlgorithm"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classlost_1_1TetraStarIdAlgorithm.html">TetraStarIdAlgorithm</a></td></tr>
@@ -329,8 +331,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a788b77a0d64ad007d1f71778cfc91a4e" id="r_a788b77a0d64ad007d1f71778cfc91a4e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a788b77a0d64ad007d1f71778cfc91a4e">IdentifyRemainingStarsPairDistance</a> (<a class="el" href="#a288b872531de219e9cfc87beb8d8bada">StarIdentifiers</a> *identifiers, const <a class="el" href="#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, const <a class="el" href="classlost_1_1PairDistanceKVectorDatabase.html">PairDistanceKVectorDatabase</a> &amp;db, const <a class="el" href="#aef1a1d4dd4620ebdc2197877569a44f6">Catalog</a> &amp;catalog, const <a class="el" href="classlost_1_1Camera.html">Camera</a> &amp;camera, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> tolerance)</td></tr>
 <tr class="memdesc:a788b77a0d64ad007d1f71778cfc91a4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given some identified stars, attempt to identify the rest.  <br /></td></tr>
 <tr class="memitem:a7283a0756178459ca257b9f610138b12" id="r_a7283a0756178459ca257b9f610138b12"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7283a0756178459ca257b9f610138b12">ConsumeInvolvingIterator</a> (<a class="el" href="classlost_1_1PairDistanceInvolvingIterator.html">PairDistanceInvolvingIterator</a> it)</td></tr>
-<tr class="memitem:ac54a09de254e4156d369b56dc3b8f188" id="r_ac54a09de254e4156d369b56dc3b8f188"><td class="memItemLeft" align="right" valign="top">std::unordered_multimap&lt; int16_t, int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac54a09de254e4156d369b56dc3b8f188">PairDistanceQueryToMap</a> (const int16_t *pairs, const int16_t *end)</td></tr>
-<tr class="memdesc:ac54a09de254e4156d369b56dc3b8f188"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars that appeared with it in the query.  <br /></td></tr>
 <tr class="memitem:a0ba9ed8fa3910607aeff533f4779dafc" id="r_a0ba9ed8fa3910607aeff533f4779dafc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classlost_1_1IRUnidentifiedCentroid.html">IRUnidentifiedCentroid</a> * &gt;::iterator &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ba9ed8fa3910607aeff533f4779dafc">FindUnidentifiedCentroidsInRange</a> (std::vector&lt; <a class="el" href="classlost_1_1IRUnidentifiedCentroid.html">IRUnidentifiedCentroid</a> * &gt; *centroids, const <a class="el" href="classlost_1_1Star.html">Star</a> &amp;star, const <a class="el" href="classlost_1_1Camera.html">Camera</a> &amp;camera, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance)</td></tr>
 <tr class="memdesc:a0ba9ed8fa3910607aeff533f4779dafc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return all the unidentified centroids within the requested distance bounds from <span class="tt">star</span>.  <br /></td></tr>
 <tr class="memitem:af9b934e077b49bfc0b7eca88188013fe" id="r_af9b934e077b49bfc0b7eca88188013fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9b934e077b49bfc0b7eca88188013fe">AddToAllUnidentifiedCentroids</a> (const <a class="el" href="classlost_1_1StarIdentifier.html">StarIdentifier</a> &amp;starId, const <a class="el" href="#a4bd359d9c09dbecb81c3a3e536f0b5c5">Stars</a> &amp;stars, std::vector&lt; <a class="el" href="classlost_1_1IRUnidentifiedCentroid.html">IRUnidentifiedCentroid</a> * &gt; *aboveThresholdCentroids, std::vector&lt; <a class="el" href="classlost_1_1IRUnidentifiedCentroid.html">IRUnidentifiedCentroid</a> * &gt; *belowThresholdCentroids, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> minDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> maxDistance, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> angleFrom90Threshold, const <a class="el" href="classlost_1_1Camera.html">Camera</a> &amp;camera)</td></tr>
@@ -560,7 +560,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00615">615</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00636">636</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -1928,7 +1928,7 @@ Here is the caller graph for this function:</div>
 <p>Return all the unidentified centroids within the requested distance bounds from <span class="tt">star</span>. </p>
 <p>The returned vector has pointers into the vector passed as an argument. Thus, it's important not to modify the <span class="tt">centroids</span> argument after calling. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00564">564</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00585">585</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2421,7 +2421,7 @@ Here is the caller graph for this function:</div>
 <p>Given some identified stars, attempt to identify the rest. </p>
 <p>Requires a pair distance database to be present. Iterates through the unidentified centroids in an intelligent order, identifying them one by one. </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00726">726</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00747">747</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2527,7 +2527,7 @@ Here is the caller graph for this function:</div>
 <p>Given two already-identified centroids, and the distance from each to an as-yet unidentified third centroid, return a list of candidate catalog stars that could be the third centroid. </p>
 <p>The order in which the two centroids are passed in /does/ matter wrt spectral-ness. If the first supplied catalog star is <span class="tt">a</span>, second is <span class="tt">b</span>, and the unidentified is <span class="tt">c</span>, then (<span class="tt">a</span> crossproduct <span class="tt">b</span>) dot <span class="tt">c</span> will be positive for all returned <span class="tt">c</span>. Intuitively, if the triangle is fairly small on the surface of the sphere, then viewed from the origin, the vertices <span class="tt">a</span>, <span class="tt">b</span>, and <span class="tt">c</span> should be clockwise (then, the cross product of <span class="tt">a</span> and <span class="tt">b</span> will point mostly towards <span class="tt">c</span>, and a little outwards, so that dot product with <span class="tt">c</span> captures that positive outward part). </p>
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00649">649</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00670">670</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2894,42 +2894,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00039">39</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
-
-</div>
-</div>
-<a id="ac54a09de254e4156d369b56dc3b8f188" name="ac54a09de254e4156d369b56dc3b8f188"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac54a09de254e4156d369b56dc3b8f188">&#9670;&#160;</a></span>PairDistanceQueryToMap()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unordered_multimap&lt; int16_t, int16_t &gt; lost::PairDistanceQueryToMap </td>
-          <td>(</td>
-          <td class="paramtype">const int16_t *</td>          <td class="paramname"><span class="paramname"><em>pairs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int16_t *</td>          <td class="paramname"><span class="paramname"><em>end</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Given the result of a pair-distance kvector query, build a hashmultimap of stars to other stars that appeared with it in the query. </p>
-<p>The resulting map is "symmetrical" in the sense that if a star B is in the map for star A, then star A is also in the map for star B. </p>
-
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00524">524</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="namespacelost_ac54a09de254e4156d369b56dc3b8f188_icgraph.png" border="0" usemap="#anamespacelost_ac54a09de254e4156d369b56dc3b8f188_icgraph" loading="lazy" alt=""/></div>
-<map name="anamespacelost_ac54a09de254e4156d369b56dc3b8f188_icgraph" id="anamespacelost_ac54a09de254e4156d369b56dc3b8f188_icgraph">
-<area shape="rect" title="Given the result of a pair&#45;distance kvector query, build a hashmultimap of stars to other stars that ..." alt="" coords="289,5,504,33"/>
-<area shape="rect" href="classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a" title="Actualy perform the star idenification. This is the &quot;main&quot; function for StarIdAlgorithm." alt="" coords="5,5,241,33"/>
-<area shape="poly" title=" " alt="" coords="270,19,241,22,241,17,275,19"/>
-</map>
-</div>
 
 </div>
 </div>
@@ -3398,7 +3362,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00694">694</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00715">715</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -4742,7 +4706,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00718">718</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="star-id_8cpp_source.html#l00739">739</a> of file <a class="el" href="star-id_8cpp_source.html">star-id.cpp</a>.</p>
 
 </div>
 </div>

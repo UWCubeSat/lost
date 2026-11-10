@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['mat3_0',['Mat3',['../classlost_1_1Mat3.html',1,'lost']]],
-  ['multidatabase_1',['MultiDatabase',['../classlost_1_1MultiDatabase.html',1,'lost']]],
-  ['multidatabaseentry_2',['MultiDatabaseEntry',['../classlost_1_1MultiDatabaseEntry.html',1,'lost']]]
+  ['kvectorindex_0',['KVectorIndex',['../classlost_1_1KVectorIndex.html',1,'lost']]],
+  ['kvectorpair_1',['KVectorPair',['../structlost_1_1KVectorPair.html',1,'lost']]]
 ];
