@@ -21,7 +21,6 @@ var io_8hpp =
     [ "DECIMAL_ERF", "io_8hpp.html#ad9ba1d630c8789578b5f7a31b1d22c51", null ],
     [ "DECIMAL_EXP", "io_8hpp.html#aecfbc39709657fd5eecb522d45a9ab54", null ],
     [ "DECIMAL_FLOOR", "io_8hpp.html#af8bb135de5573bfe8c0d7d43cacacee9", null ],
-    [ "DECIMAL_FMA", "io_8hpp.html#a36c4a4a57b570617190116b1d05c7229", null ],
     [ "DECIMAL_H", "io_8hpp.html#affc86f4995bfe88e94f1143393b8f07b", null ],
     [ "DECIMAL_HYPOT", "io_8hpp.html#a48c6d79be3f117fa2e9858e923a67d87", null ],
     [ "DECIMAL_LOG", "io_8hpp.html#a0f5f80288df1dfd2b557bfdb3790dbc6", null ],
