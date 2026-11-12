@@ -67,6 +67,12 @@ static int LostMain(int argc, char** argv) {
     dbCmd->add_option("--swap-decimal-endianness", dbOptions.swapDecimalEndianness)
         ->expected(0, 1)
         ->default_str("true");
+    dbCmd->add_option("--tetra", dbOptions.tetra)->expected(0, 1)->default_str("true");
+    dbCmd->add_option("--tetra-max-fov", dbOptions.tetraMaxFov)->capture_default_str();
+    dbCmd->add_option("--tetra-edge-ratio-bins", dbOptions.tetraEdgeRatioBins)
+        ->capture_default_str();
+    dbCmd->add_option("--tetra-pattern-stars-per-fov", dbOptions.tetraPatternStarsPerFov)
+        ->capture_default_str();
     dbCmd->add_option("--output", dbOptions.outputPath)->capture_default_str();
 
     // --- pipeline subcommand ---
@@ -108,6 +114,14 @@ static int LostMain(int argc, char** argv) {
     pipelineCmd->add_option("--attitude-algo", pipelineOptions.attitudeAlgo)
         ->expected(0, 1)
         ->default_str("dqm");
+    pipelineCmd->add_option("--tetra-pairing", pipelineOptions.tetraPairingMode)
+        ->capture_default_str();
+    pipelineCmd
+        ->add_option("--tetra-pattern-search-range", pipelineOptions.tetraPatternSearchRange)
+        ->capture_default_str();
+    pipelineCmd
+        ->add_option("--tetra-pattern-match-tolerance", pipelineOptions.tetraPatternMatchTolerance)
+        ->capture_default_str();
 
     // Output comparison
     pipelineCmd

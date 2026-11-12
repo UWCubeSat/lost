@@ -1,4 +1,4 @@
-.TH DATABASE 3 "06 November 2021" 
+.TH DATABASE 3 "06 November 2021"
 
 .SH NAME
 
@@ -38,6 +38,8 @@ Different star identification algorithms require different databases:
 \fBPyramid\fP: Catalog + Pair-distance KVector.
 .IP \[bu] 2
 \fBGeometric Voting\fP: Catalog + Pair-distance KVector.
+.IP \[bu] 2
+\fBTetra\fP: Catalog + Tetra pattern table.
 .LP
 
 .SH CATALOG NARROWING OPTIONS
@@ -79,6 +81,32 @@ Sets the maximum distance \fImax\fP (degrees). Defaults to 15 if option is not s
 .TP
 \fB--kvector-distance-bins\fP \fInum-bins\fP
 Sets the number of distance bins in the kvector building method to \fInum-bins\fP.  Defaults to 10000 if option is not selected, which is pretty reasonable for most cases.
+
+.SH TETRA DATABASE OPTIONS
+
+The Tetra database is needed for the Tetra star identification algorithm.
+The database stores a hash table of 4-star patterns. Each pattern is characterized by
+the angular distances between its 6 star pairs. These distances are converted into scale-invariant edge ratios,
+which are finally discretized into bins and hashed for fast lookup during star identification time.
+
+.TP
+\fB--tetra\fP
+Generate a Tetra database.
+
+.TP
+\fB--tetra-max-fov\fP \fIfov\fP
+Sets the maximum field of view for Tetra patterns to \fIfov\fP degrees. All stars in a pattern must be within this angle of each other.
+Should be at least as large as the camera's FOV. Defaults to 12.
+
+.TP
+\fB--tetra-edge-ratio-bins\fP \fInum-bins\fP
+Number of bins used to discretize edge ratios when hashing patterns.
+Higher values give finer discretization and fewer hash collisions. Defaults to 50.
+
+.TP
+\fB--tetra-pattern-stars-per-fov\fP \fInum-stars\fP
+Maximum number of pattern stars allowed within half the FOV of any other given pattern star during catalog preprocessing.
+Be careful adjusting this value. Increasing it can cause large growth in database size while lowering it risks gaps in sky coverage. Defaults to 10.
 
 .SH OTHER OPTIONS
 

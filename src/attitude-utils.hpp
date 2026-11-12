@@ -1,11 +1,10 @@
 #ifndef ATTITUDE_UTILS_H
 #define ATTITUDE_UTILS_H
 
-#include <memory>
-#include <vector>
+#include <ostream>
 
-#include "serialize-helpers.hpp"
 #include "decimal.hpp"
+#include "serialize-helpers.hpp"
 
 namespace lost {
 
@@ -27,6 +26,8 @@ struct Vec2 {
     Vec2 operator*(const decimal &) const;
     Vec2 operator-(const Vec2 &) const;
     Vec2 operator+(const Vec2 &) const;
+
+    friend std::ostream &operator<<(std::ostream &output, const Vec2 &vec);
 };
 
 class Mat3; // define above so we can use in Vec3 class
@@ -38,6 +39,9 @@ public:
     decimal y;
     decimal z;
 
+    Vec3(){};
+    Vec3(decimal x, decimal y, decimal z) : x(x), y(y), z(z){};
+
     decimal Magnitude() const;
     decimal MagnitudeSq() const;
     Vec3 Normalize() const;
@@ -46,8 +50,11 @@ public:
     Vec3 operator*(const decimal &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
+    Vec3 operator+(const Vec3 &) const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
+
+    friend std::ostream &operator<<(std::ostream &output, const Vec3 &vec);
 };
 
 /// 3x3 vector with decimaling point components
@@ -186,6 +193,6 @@ decimal DecimalModulo(decimal x, decimal mod);
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
-}
+}  // namespace lost
 
 #endif

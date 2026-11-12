@@ -5,27 +5,23 @@
 
 #include <cairo/cairo.h>
 
-#include <random>
-#include <vector>
-#include <map>
-#include <utility>
-#include <string>
-#include <sstream>
 #include <iostream>
 #include <memory>
-
+#include <random>
+#include <string>
+#include <vector>
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
 #endif
 
-#include "centroiders.hpp"
-#include "star-utils.hpp"
-#include "star-id.hpp"
-#include "camera.hpp"
-#include "attitude-utils.hpp"
 #include "attitude-estimators.hpp"
+#include "attitude-utils.hpp"
+#include "camera.hpp"
+#include "centroiders.hpp"
 #include "databases.hpp"
+#include "star-id.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -95,6 +91,9 @@ public:
     int estimatedNumFalseStars = 500;
     decimal maxMismatchProb = .001;
     std::string attitudeAlgo = "";
+    std::string tetraPairingMode = "triad";
+    decimal tetraPatternSearchRange = 0.001;
+    decimal tetraPatternMatchTolerance = 0.001;
 
     // Output comparison
     decimal centroidCompareThreshold = 2;
@@ -352,6 +351,10 @@ public:
     long kvectorNumDistanceBins = 10000;
     bool swapIntegerEndianness = false;
     bool swapDecimalEndianness = false;
+    bool tetra = false;
+    decimal tetraMaxFov = 12;
+    int tetraEdgeRatioBins = 50;
+    int tetraPatternStarsPerFov = 10;
     std::string outputPath = "-";
 };
 

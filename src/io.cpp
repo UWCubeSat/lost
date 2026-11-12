@@ -1,26 +1,25 @@
 #include "io.hpp"
 
-#include <cairo/cairo.h>
-#include <stdio.h>
-#include <inttypes.h>
-#include <math.h>
-#include <errno.h>
 #include <assert.h>
-#include <stdlib.h>
+#include <cairo/cairo.h>
+#include <errno.h>
 #include <limits.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include <vector>
-#include <string>
+#include <algorithm>
+#include <chrono>
+#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <memory>
-#include <cstring>
-#include <random>
-#include <algorithm>
 #include <map>
-#include <chrono>
+#include <memory>
+#include <random>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
@@ -212,15 +211,15 @@ void SurfacePlot(std::string description,
             // Rectangles should be entirely /outside/ the radius of the star, so the star is
             // fully visible.
             cairo_rectangle(cairoCtx,
-                            centroid.position.x - radiusX,
-                            centroid.position.y - radiusY,
-                            radiusX * 2,
-                            radiusY * 2);
+                            (double) (centroid.position.x - radiusX),
+                            (double) (centroid.position.y - radiusY),
+                            (double) (radiusX * 2),
+                            (double) (radiusY * 2));
             cairo_stroke(cairoCtx);
         } else {
             cairo_rectangle(cairoCtx,
-                            DECIMAL_FLOOR(centroid.position.x),
-                            DECIMAL_FLOOR(centroid.position.y),
+                            (double) DECIMAL_FLOOR(centroid.position.x),
+                            (double) DECIMAL_FLOOR(centroid.position.y),
                             1, 1);
             cairo_fill(cairoCtx);
         }
@@ -235,13 +234,13 @@ void SurfacePlot(std::string description,
             const Star &centroid = stars[starId.starIndex];
             cairo_move_to(cairoCtx,
 
-                          centroid.radiusX > DECIMAL(0.0)
-                          ? centroid.position.x + centroid.radiusX + 3
-                          : centroid.position.x + 8,
+                          (double) (centroid.radiusX > DECIMAL(0.0)
+                                    ? centroid.position.x + centroid.radiusX + 3
+                                    : centroid.position.x + 8),
 
-                          centroid.radiusY > DECIMAL(0.0)
-                          ? centroid.position.y - centroid.radiusY + textHeight
-                          : centroid.position.y + 10);
+                          (double) (centroid.radiusY > DECIMAL(0.0)
+                                    ? centroid.position.y - centroid.radiusY + textHeight
+                                    : centroid.position.y + 10));
 
             int plotName = rawStarIndexes ? starId.catalogIndex : (*catalog)[starId.catalogIndex].name;
             cairo_show_text(cairoCtx, std::to_string(plotName).c_str());
@@ -258,7 +257,7 @@ void SurfacePlot(std::string description,
     }
 
     // plot metadata
-    cairo_move_to(cairoCtx, 3, 3 + textHeight);
+    cairo_move_to(cairoCtx, 3, (double) (3 + textHeight));
     cairo_show_text(cairoCtx, metadata.c_str());
 
     cairo_font_options_destroy(cairoFontOptions);
@@ -266,13 +265,6 @@ void SurfacePlot(std::string description,
 }
 
 // ALGORITHM PROMPTERS
-typedef CentroidAlgorithm *(*CentroidAlgorithmFactory)();
-typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
-typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
-
-typedef StarIdAlgorithm *(*StarIdAlgorithmFactory)();
-
-typedef AttitudeEstimationAlgorithm *(*AttitudeEstimationAlgorithmFactory)();
 
 SerializeContext serFromDbValues(const DatabaseOptions &values) {
     return SerializeContext(values.swapIntegerEndianness, values.swapDecimalEndianness);
@@ -293,7 +285,22 @@ MultiDatabaseDescriptor GenerateDatabases(const Catalog &catalog, const Database
         SerializeContext ser = serFromDbValues(values);
         SerializePairDistanceKVector(&ser, catalog, minDistance, maxDistance, numBins);
         dbEntries.emplace_back(PairDistanceKVectorDatabase::kMagicValue, ser.buffer);
-    } else {
+    }
+
+    if (values.tetra) {
+        decimal maxFovDeg = values.tetraMaxFov;
+
+        std::vector<uint16_t> catalogPatternStarInds =
+            TetraPreprocessCatalog(catalog, maxFovDeg, values.tetraPatternStarsPerFov);
+        std::cerr << "Number of pattern stars: " << catalogPatternStarInds.size() << std::endl;
+
+        SerializeContext ser = serFromDbValues(values);
+        SerializeTetraDatabase(
+            &ser, catalog, maxFovDeg, catalogPatternStarInds, values.tetraEdgeRatioBins);
+        dbEntries.emplace_back(TetraDatabase::kMagicValue, ser.buffer);
+    }
+
+    if (dbEntries.size() <= 1) {
         std::cerr << "No database builder selected -- no database generated." << std::endl;
         exit(1);
     }
@@ -532,9 +539,6 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     // multiply up proportionally!
     decimal zeroMagPeakPhotonDensity = zeroMagTotalPhotons / (2*DECIMAL_M_PI * starSpreadStdDev*starSpreadStdDev);
 
-    // TODO: Is it 100% correct to just copy the standard deviation in both dimensions?
-    std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
-
     Catalog catalogWithFalse = catalog;
 
     std::uniform_real_distribution<decimal> uniformDistribution(DECIMAL(0.0), DECIMAL(1.0));
@@ -594,6 +598,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // for input, though, add perturbation and stuff.
             Star inputStar = star;
             if (perturbationStddev > DECIMAL(0.0)) {
+                std::normal_distribution<decimal> perturbation1DDistribution(DECIMAL(0.0), perturbationStddev);
                 // clamp to within 2 standard deviations for some reason:
                 inputStar.position.x += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
                 inputStar.position.y += std::max(std::min(perturbation1DDistribution(*rng), 2*perturbationStddev), -2*perturbationStddev);
@@ -603,7 +608,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 // and also don't add it if it's too dim.
                 && (cutoffMag >= 10000 // but always add the star if the cutoff is very high
                     || !isTrueStar // and always add the false stars
-                    || std::bernoulli_distribution(CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
+                    || std::bernoulli_distribution((double) CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
                 inputStars.push_back(inputStar);
                 if (isTrueStar) {
                     inputStarIds.push_back(StarIdentifier(inputStars.size()-1, i));
@@ -670,7 +675,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         }
     }
 
-    std::normal_distribution<decimal> readNoiseDist(DECIMAL(0.0), readNoiseStdDev);
+    std::normal_distribution<decimal> standardNormalDist(DECIMAL(0.0), DECIMAL(1.0));
 
     // convert from photon counts to observed pixel brightnesses, applying noise and such.
     imageData = std::vector<unsigned char>(image.width*image.height);
@@ -682,7 +687,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
         curBrightness += darkCurrent;
 
         // read noise (Gaussian)
-        curBrightness += readNoiseDist(*rng);
+        curBrightness += readNoiseStdDev * standardNormalDist(*rng);
 
         // shot noise (Poisson), and quantize
         long quantizedPhotons;
@@ -696,8 +701,13 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                 std::cout << "ERROR: One of the pixels had too many photons. Generated image would not be physically accurate, exiting." << std::endl;
                 exit(1);
             }
-            std::poisson_distribution<long> shotNoiseDist(photonsBuffer[i]);
-            quantizedPhotons = shotNoiseDist(*rng);
+            // std::poisson_distribution requires mean > 0
+            if (photons > DECIMAL(0.0)) {
+                std::poisson_distribution<long> shotNoiseDist((double) photons);
+                quantizedPhotons = shotNoiseDist(*rng);
+            } else {
+                quantizedPhotons = 0;
+            }
         } else {
             quantizedPhotons = round(photonsBuffer[i]);
         }
@@ -803,8 +813,6 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
     return result;
 }
 
-typedef PipelineInputList (*PipelineInputFactory)();
-
 /// Come up with a list of pipeline inputs based on command line options.
 PipelineInputList GetPipelineInput(const PipelineOptions &values) {
 
@@ -886,7 +894,21 @@ Pipeline SetPipeline(const PipelineOptions &values) {
     } else if (values.idAlgo == "gv") {
         result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new GeometricVotingStarIdAlgorithm(DegToRad(values.angularTolerance)));
     } else if (values.idAlgo == "py") {
-        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(DegToRad(values.angularTolerance), values.estimatedNumFalseStars, values.maxMismatchProb, 1000));
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(new PyramidStarIdAlgorithm(
+            DegToRad(values.angularTolerance), values.estimatedNumFalseStars,
+            values.maxMismatchProb, 1000));
+    } else if (values.idAlgo == "tetra") {
+        TetraStarIdAlgorithm::PairingMode pairingMode;
+        if (values.tetraPairingMode == "triad") {
+            pairingMode = TetraStarIdAlgorithm::TRIAD_PERMUTATION;
+        } else if (values.tetraPairingMode == "centroid-radius") {
+            pairingMode = TetraStarIdAlgorithm::CENTROID_RADIUS;
+        } else {
+            std::cerr << "Illegal tetra pairing mode: " << values.tetraPairingMode << std::endl;
+            exit(1);
+        }
+        result.starIdAlgorithm = std::unique_ptr<StarIdAlgorithm>(
+            new TetraStarIdAlgorithm(pairingMode, values.tetraPatternSearchRange, values.tetraPatternMatchTolerance));
     } else if (values.idAlgo != "") {
         std::cout << "Illegal id algorithm." << std::endl;
         exit(1);

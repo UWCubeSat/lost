@@ -1,25 +1,56 @@
 #ifndef STAR_ID_H
 #define STAR_ID_H
 
-#include <vector>
-
-#include "centroiders.hpp"
-#include "star-utils.hpp"
 #include "camera.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
 /**
  * A star idenification algorithm.
- * An algorithm which takes a list of centroids plus some (possibly algorithm-specific) database, and then determines which centroids corresponds to which catalog stars.
+ * An algorithm which takes a list of centroids plus some (possibly algorithm-specific) database,
+ * and then determines which centroids corresponds to which catalog stars.
  */
 class StarIdAlgorithm {
-public:
+   public:
     /// Actualy perform the star idenification. This is the "main" function for StarIdAlgorithm
-    virtual StarIdentifiers Go(
-        const unsigned char *database, const Stars &, const Catalog &, const Camera &) const = 0;
+    virtual StarIdentifiers Go(const unsigned char* database,
+                               const Stars&,
+                               const Catalog&,
+                               const Camera&) const = 0;
 
-    virtual ~StarIdAlgorithm() { };
+    virtual ~StarIdAlgorithm() {};
+};
+
+/**
+ * Tetra star identification algorithm based on the one originally proposed by Brown & Stubis
+ * Creates patterns/mini-constellations of 4 stars and hashes them for quick lookup
+ */
+class TetraStarIdAlgorithm : public StarIdAlgorithm {
+   public:
+    // How to pair the 4 observed stars with the 4 catalog stars of a matched pattern
+    enum PairingMode {
+        TRIAD_PERMUTATION,  // Try all 24 pairings, pick the one with lowest TRIAD residual
+        CENTROID_RADIUS,    // Sort by distance from centroid (can swap stars in more symmetric
+                            // patterns, cheaper)
+    };
+
+    TetraStarIdAlgorithm(PairingMode pairingMode,
+                         decimal patternSearchRange,
+                         decimal patternMatchTolerance)
+        : pairingMode_(pairingMode),
+          patternSearchRange_(patternSearchRange),
+          patternMatchTolerance_(patternMatchTolerance) {};
+
+    StarIdentifiers Go(const unsigned char* database,
+                       const Stars& centroids,
+                       const Catalog& catalog,
+                       const Camera&) const;
+
+   private:
+    PairingMode pairingMode_;
+    decimal patternSearchRange_;
+    decimal patternMatchTolerance_;
 };
 
 /// A star-id algorithm that returns random results. For debugging.
@@ -70,6 +101,6 @@ private:
     long cutoff;
 };
 
-}
+}  // namespace lost
 
 #endif

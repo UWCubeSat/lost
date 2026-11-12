@@ -1,12 +1,12 @@
 #include "databases.hpp"
 
-#include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <vector>
-#include <cstdint>
+#include <stdlib.h>
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
+#include <vector>
 
 #include "attitude-utils.hpp"
 #include "serialize-helpers.hpp"
@@ -15,6 +15,7 @@
 namespace lost {
 
 const int32_t PairDistanceKVectorDatabase::kMagicValue = 0x2536f009;
+const int32_t TetraDatabase::kMagicValue = 0x26683787;
 
 inline bool isFlagSet(uint32_t dbFlags, uint32_t flag) {
    return (dbFlags & flag) != 0;
@@ -217,6 +218,82 @@ void SerializePairDistanceKVector(SerializeContext *ser, const Catalog &catalog,
     }
 }
 
+std::vector<uint16_t> TetraPreprocessCatalog(const Catalog& catalog,
+                                             const decimal maxFovDeg,
+                                             int numPatternStarsPerFov) {
+    // To eliminate ambiguity (double stars), enforce that all
+    // pattern stars must be > 0.05 degrees apart
+    const decimal starMinSepRad = DegToRad(DECIMAL(0.05));
+    const decimal maxFovRad = DegToRad(maxFovDeg);
+
+    // Catalog is sorted brightest first so brighter stars get priority,
+    // banking on the assumption that brighter stars have lower centroiding error
+    std::vector<uint16_t> patternStarInds{0};
+
+    for (size_t i = 1; i < catalog.size(); i++) {
+        const Vec3& vec = catalog[i].spatial;
+
+        // Reject catalog star if it is a double star of an already-kept star, or if there are
+        // already numPatternStarsPerFov kept stars within maxFov/2 of it
+        bool keep = true;
+        int numPatternStarsInFov = 0;
+        for (uint16_t j : patternStarInds) {
+            decimal angle = Angle(vec, catalog[j].spatial);
+            if (angle < starMinSepRad) {
+                keep = false;
+                break;
+            }
+            if (angle < maxFovRad / 2 && ++numPatternStarsInFov >= numPatternStarsPerFov) {
+                keep = false;
+                break;
+            }
+        }
+
+        if (keep) {
+            patternStarInds.push_back(i);
+        }
+    }
+    return patternStarInds;
+}
+
+TetraDatabase::TetraDatabase(DeserializeContext* des) {
+    maxFov_ = DeserializePrimitive<decimal>(des);
+    numEdgeRatioBins_ = DeserializePrimitive<int32_t>(des);
+    patternTableSize_ = DeserializePrimitive<uint64_t>(des);
+    tetraCatalogSize_ = DeserializePrimitive<uint16_t>(des);
+    patternTable_ =
+        DeserializeArray<uint16_t>(des, TetraConstants::numPatternStars * patternTableSize_);
+    catalogIndices_ = DeserializeArray<uint16_t>(des, tetraCatalogSize_);
+}
+
+TetraPattern TetraDatabase::GetPattern(size_t index) const {
+    TetraPattern res;
+    for (int i = 0; i < TetraConstants::numPatternStars; i++) {
+        res[i] = patternTable_[TetraConstants::numPatternStars * index + i];
+    }
+    return res;
+}
+
+uint16_t TetraDatabase::CatalogIndex(int tetraCatalogInd) const {
+    return catalogIndices_[tetraCatalogInd];
+}
+
+std::vector<TetraPattern> TetraDatabase::GetPatternMatches(size_t index) const {
+    std::vector<TetraPattern> res;
+    for (size_t probeStep = 0; probeStep < PatternTableSize(); probeStep++) {
+        size_t i = (index + probeStep * probeStep) % PatternTableSize();
+
+        TetraPattern tableRow = GetPattern(i);
+
+        if (tableRow[0] == 0 && tableRow[1] == 0) {
+            break;
+        } else {
+            res.push_back(tableRow);
+        }
+    }
+    return res;
+}
+
 /// Create the database from a serialized buffer.
 PairDistanceKVectorDatabase::PairDistanceKVectorDatabase(DeserializeContext *des)
     : index(KVectorIndex(des)) {
@@ -294,6 +371,96 @@ std::vector<decimal> PairDistanceKVectorDatabase::StarDistances(int16_t star, co
     return result;
 }
 
+void SerializeTetraDatabase(SerializeContext* ser,
+                            const Catalog& catalog,
+                            decimal maxFovDeg,
+                            const std::vector<uint16_t>& catalogPatternStarInds,
+                            int numEdgeRatioBins) {
+    const decimal maxFovRad = DegToRad(maxFovDeg);
+    const decimal cosMaxFov = DECIMAL_COS(maxFovRad);
+
+    const size_t numPatternStars = catalogPatternStarInds.size();
+
+    // Helper to look up a star's spatial vector given Tetra-internal star catalog index
+    auto spatial = [&](size_t tetraInd) -> const Vec3& {
+        return catalog[catalogPatternStarInds[tetraInd]].spatial;
+    };
+
+    // Every star is a pattern star. Each star is marked unavailable after being
+    // used as the first vertex, so each 4-star group is generated exactly once.
+    std::vector<bool> available(numPatternStars, true);
+
+    std::vector<TetraPattern> patterns;
+
+    for (size_t firstStarInd = 0; firstStarInd < numPatternStars; firstStarInd++) {
+        available[firstStarInd] = false;
+
+        const Vec3& v = spatial(firstStarInd);
+
+        // Find all remaining pattern stars within maxFov
+        std::vector<uint16_t> nearbyStars;
+        for (size_t starId = 0; starId < numPatternStars; starId++) {
+            if (!available[starId]) continue;
+            if (v * spatial(starId) > cosMaxFov) {
+                nearbyStars.push_back(starId);
+            }
+        }
+        CombinationIterator combos(3, nearbyStars.size());
+        while (combos.next()) {
+            const std::vector<int>& idx = combos.indices();
+            TetraPattern patt = {(uint16_t)firstStarInd,
+                                 nearbyStars[idx[0]],
+                                 nearbyStars[idx[1]],
+                                 nearbyStars[idx[2]]};
+
+            bool pattFits = AllPairsWithinFov(
+                TetraConstants::numPatternStars,
+                [&](int i) -> const Vec3& { return spatial(patt[i]); },
+                cosMaxFov);
+
+            if (pattFits) {
+                patterns.push_back(patt);
+            }
+        }
+    }
+
+    std::cerr << "Tetra found " << patterns.size() << " patterns" << std::endl;
+    // Ensure load factor just < 0.5 to prevent against cycling
+    size_t patternTableSize = 2 * patterns.size() + 1;
+    std::vector<TetraPattern> patternTable(patternTableSize);
+    for (const TetraPattern& patt : patterns) {
+        std::vector<decimal> edgeRatios = TetraEdgeRatios(
+            TetraConstants::numPatternStars, [&](int i) -> const Vec3& { return spatial(patt[i]); });
+
+        std::vector<int> binnedEdgeRatios;
+        for (decimal edgeRatio : edgeRatios) {
+            binnedEdgeRatios.push_back(int(edgeRatio * numEdgeRatioBins));
+        }
+
+        size_t patternInd =
+            TetraFindPatternIndex(binnedEdgeRatios.data(), binnedEdgeRatios.size(), numEdgeRatioBins, patternTableSize);
+        for (size_t probeStep = 0; probeStep < patternTableSize; probeStep++) {
+            size_t index = (patternInd + probeStep * probeStep) % patternTableSize;
+            if (patternTable[index][0] == 0 && patternTable[index][1] == 0) {
+                patternTable[index] = patt;
+                break;
+            }
+        }
+    }
+    SerializePrimitive<decimal>(ser, maxFovDeg);                       // maxFov_
+    SerializePrimitive<int32_t>(ser, numEdgeRatioBins);                // numEdgeRatioBins_
+    SerializePrimitive<uint64_t>(ser, patternTable.size());            // patternTableSize_
+    SerializePrimitive<uint16_t>(ser, catalogPatternStarInds.size());  // tetraCatalogSize_
+    for (const TetraPattern& patt : patternTable) {
+        for (int i = 0; i < TetraConstants::numPatternStars; i++) {
+            SerializePrimitive<uint16_t>(ser, patt[i]);
+        }
+    }
+    for (uint16_t ind : catalogPatternStarInds) {
+        SerializePrimitive<uint16_t>(ser, ind);
+    }
+}
+
 /**
    MultiDatabase memory layout:
 
@@ -311,7 +478,8 @@ std::vector<decimal> PairDistanceKVectorDatabase::StarDistances(int16_t star, co
  * @brief return a pointer to the start of the database type indicated by the magic value, if such
  * a sub-database is present in the database
  * @param magicValue
- * @return Returns a pointer to the start of the database type indicated by the magic value, null if not found
+ * @return Returns a pointer to the start of the database type indicated by the magic value, null if
+ * not found
  */
 const unsigned char *MultiDatabase::SubDatabasePointer(int32_t magicValue) const {
     DeserializeContext desValue(buffer);
@@ -363,7 +531,7 @@ void SerializeMultiDatabase(SerializeContext *ser,
     SerializePrimitive<int32_t>(ser, 0); // caboose
 }
 
-}
+}  // namespace lost
 
 // TODO: after creating the database, print more statistics, such as average number of pairs per
 // star, stars per bin, space distribution between array and index.
