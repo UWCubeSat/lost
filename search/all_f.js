@@ -8,5 +8,6 @@ var searchData=
   ['operator_3c_3c_5',['operator&lt;&lt;',['../structlost_1_1Vec2.html#af81c6d9a1982b08e7bd82571a5760f5b',1,'lost::Vec2::operator&lt;&lt;()'],['../classlost_1_1Vec3.html#ad617c4b5fa538168e69b08d06e67721a',1,'lost::Vec3::operator&lt;&lt;()'],['../namespacelost.html#ae5596b47947f3a6f449a8930590fc590',1,'lost::operator&lt;&lt;(std::ostream &amp;output, const Vec2 &amp;vec)'],['../namespacelost.html#af65d33aa3bc33d9d06ce273a3c676e8e',1,'lost::operator&lt;&lt;(std::ostream &amp;output, const Vec3 &amp;vec)'],['../namespacelost.html#afd0ad3291fda13bb1bf50fb13906769c',1,'lost::operator&lt;&lt;(std::ostream &amp;os, const Camera &amp;camera)']]],
   ['operator_3d_3d_6',['operator==',['../classlost_1_1StarIdentifier.html#a643cda988c3a7e9e1dd79ec77e7bb2b2',1,'lost::StarIdentifier']]],
   ['otsusthreshold_7',['OtsusThreshold',['../namespacelost.html#a1c383b038ea9376eacf4858247d765be',1,'lost']]],
-  ['outerproduct_8',['OuterProduct',['../classlost_1_1Vec3.html#a571a631a6bd21ff61f9111c98f751e5f',1,'lost::Vec3']]]
+  ['outerproduct_8',['OuterProduct',['../classlost_1_1Vec3.html#a571a631a6bd21ff61f9111c98f751e5f',1,'lost::Vec3']]],
+  ['outputpath_9',['outputPath',['../classlost_1_1DatabaseOptions.html#a7ca2152ee5808b32dc28db232f8af508',1,'lost::DatabaseOptions']]]
 ];

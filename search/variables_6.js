@@ -1,4 +1,30 @@
 var searchData=
 [
-  ['height_0',['height',['../classlost_1_1Image.html#a705ef08de937ac85cf4a5c5e1084475e',1,'lost::Image']]]
+  ['generate_0',['generate',['../classlost_1_1PipelineOptions.html#a37bfd704f4273f536657ce157dcb05d6',1,'lost::PipelineOptions']]],
+  ['generateblurde_1',['generateBlurDe',['../classlost_1_1PipelineOptions.html#ac2cb4bec28fadd03c6263a722109f31c',1,'lost::PipelineOptions']]],
+  ['generateblurra_2',['generateBlurRa',['../classlost_1_1PipelineOptions.html#aa06f6a95767b6417c8480bd928949337',1,'lost::PipelineOptions']]],
+  ['generateblurroll_3',['generateBlurRoll',['../classlost_1_1PipelineOptions.html#a7f20732d7dacb66cd3564d98f7c3e4a8',1,'lost::PipelineOptions']]],
+  ['generatecentroidsonly_4',['generateCentroidsOnly',['../classlost_1_1PipelineOptions.html#a0da21bbdcb754f49a740a827229826ce',1,'lost::PipelineOptions']]],
+  ['generatecutoffmag_5',['generateCutoffMag',['../classlost_1_1PipelineOptions.html#a6db34891847e99b183dd79f4d01e2a15',1,'lost::PipelineOptions']]],
+  ['generatedarkcurrent_6',['generateDarkCurrent',['../classlost_1_1PipelineOptions.html#ad5e216493a0b563d8c2e75e175fc2d51',1,'lost::PipelineOptions']]],
+  ['generatede_7',['generateDe',['../classlost_1_1PipelineOptions.html#a006d9fba546ecb1e09c5f00dcb479d12',1,'lost::PipelineOptions']]],
+  ['generateexposure_8',['generateExposure',['../classlost_1_1PipelineOptions.html#a03736ce3a10a87ac373b82a4e6ab7900',1,'lost::PipelineOptions']]],
+  ['generatefalsemaxmag_9',['generateFalseMaxMag',['../classlost_1_1PipelineOptions.html#a4eadb136a8f4d162fb36951fa7ce3845',1,'lost::PipelineOptions']]],
+  ['generatefalseminmag_10',['generateFalseMinMag',['../classlost_1_1PipelineOptions.html#ab3b560bf6c2c2e42bfc5833d57535e49',1,'lost::PipelineOptions']]],
+  ['generatenumfalsestars_11',['generateNumFalseStars',['../classlost_1_1PipelineOptions.html#a146ba933dff60ae7b9fcc22e0acbad30',1,'lost::PipelineOptions']]],
+  ['generateoversampling_12',['generateOversampling',['../classlost_1_1PipelineOptions.html#a8b2941eab3fa616fd497365c0e16c006',1,'lost::PipelineOptions']]],
+  ['generateperturbationstddev_13',['generatePerturbationStddev',['../classlost_1_1PipelineOptions.html#a635bc80f7bce44ee3dfe95a0ce79cf70',1,'lost::PipelineOptions']]],
+  ['generatera_14',['generateRa',['../classlost_1_1PipelineOptions.html#af8930d04570107ae78c5ce4ed3b1c46a',1,'lost::PipelineOptions']]],
+  ['generaterandomattitudes_15',['generateRandomAttitudes',['../classlost_1_1PipelineOptions.html#a2d159e09ef3eb284cce7bd491ad33fe7',1,'lost::PipelineOptions']]],
+  ['generatereadnoisestddev_16',['generateReadNoiseStdDev',['../classlost_1_1PipelineOptions.html#af87172a5bad163763a3deddcf7effddd',1,'lost::PipelineOptions']]],
+  ['generatereadouttime_17',['generateReadoutTime',['../classlost_1_1PipelineOptions.html#acc36459c4ca484f79f0a1bb32d73d3c7',1,'lost::PipelineOptions']]],
+  ['generateroll_18',['generateRoll',['../classlost_1_1PipelineOptions.html#ab50256e1e5b8968d845a985d47575051',1,'lost::PipelineOptions']]],
+  ['generatesaturationphotons_19',['generateSaturationPhotons',['../classlost_1_1PipelineOptions.html#a66c01d9aadd8dea050bcef4973614ca9',1,'lost::PipelineOptions']]],
+  ['generateseed_20',['generateSeed',['../classlost_1_1PipelineOptions.html#af00d94041905d65a55c70ced25132fda',1,'lost::PipelineOptions']]],
+  ['generateshotnoise_21',['generateShotNoise',['../classlost_1_1PipelineOptions.html#a2c4789f40b0a8563b97e898cf089ccdc',1,'lost::PipelineOptions']]],
+  ['generatespreadstddev_22',['generateSpreadStdDev',['../classlost_1_1PipelineOptions.html#a5348346fe44dc4cea4bb18d315ccde30',1,'lost::PipelineOptions']]],
+  ['generatexres_23',['generateXRes',['../classlost_1_1PipelineOptions.html#a9620483b4bb2c76df97417750da6d9f7',1,'lost::PipelineOptions']]],
+  ['generateyres_24',['generateYRes',['../classlost_1_1PipelineOptions.html#a13ae8ab21fb74fca486cb0931ff55b0c',1,'lost::PipelineOptions']]],
+  ['generatezeromagphotons_25',['generateZeroMagPhotons',['../classlost_1_1PipelineOptions.html#ae0802c3b9367e29b89e3fabb706eb35d',1,'lost::PipelineOptions']]],
+  ['guess_26',['guess',['../structlost_1_1IWCoGParams.html#ac76a11e21cf5252a2077908357540ad7',1,'lost::IWCoGParams']]]
 ];

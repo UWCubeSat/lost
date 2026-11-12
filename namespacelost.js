@@ -34,7 +34,7 @@ var namespacelost =
     [ "PipelineOutput", "structlost_1_1PipelineOutput.html", "structlost_1_1PipelineOutput" ],
     [ "StarIdComparison", "structlost_1_1StarIdComparison.html", "structlost_1_1StarIdComparison" ],
     [ "Pipeline", "classlost_1_1Pipeline.html", "classlost_1_1Pipeline" ],
-    [ "DatabaseOptions", "classlost_1_1DatabaseOptions.html", null ],
+    [ "DatabaseOptions", "classlost_1_1DatabaseOptions.html", "classlost_1_1DatabaseOptions" ],
     [ "SerializeContext", "classlost_1_1SerializeContext.html", "classlost_1_1SerializeContext" ],
     [ "DeserializeContext", "classlost_1_1DeserializeContext.html", "classlost_1_1DeserializeContext" ],
     [ "IRUnidentifiedCentroid", "classlost_1_1IRUnidentifiedCentroid.html", "classlost_1_1IRUnidentifiedCentroid" ],
@@ -63,7 +63,6 @@ var namespacelost =
     [ "Angle", "namespacelost.html#a6bdf1016fe03a8c46f98bc4633f644d3", null ],
     [ "AngleUnit", "namespacelost.html#a4d066d222770cdbde925ab67813193dc", null ],
     [ "ArcSecToRad", "namespacelost.html#a0bf2bbf8b3bc82f9647c9f327d1369de", null ],
-    [ "atobool", "namespacelost.html#ad716669cae846c56701cf10aff6f8e5f", null ],
     [ "BadThreshold", "namespacelost.html#a27ae3010999abecce396cebbdee8ef0d", null ],
     [ "BasicThreshold", "namespacelost.html#ae369ca6366d9b3c350a14a403107641a", null ],
     [ "BasicThresholdOnePass", "namespacelost.html#acd1a58a1120e97d8cf060e3e9b11576c", null ],
@@ -144,6 +143,5 @@ var namespacelost =
     [ "kAngleFrom90SoftThreshold", "namespacelost.html#a10f83f3109f16381af2ee6b56e586271", null ],
     [ "kCatalogMagicValue", "namespacelost.html#a280b11c878f729f878b2968037ccbc3d", null ],
     [ "kIdentityMat3", "namespacelost.html#a66abb8e44054268322b5ccba535bb975", null ],
-    [ "kMaxBrightness", "namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45", null ],
-    [ "kNoDefaultArgument", "namespacelost.html#adbeb358ec7311bc89886a09aa017388c", null ]
+    [ "kMaxBrightness", "namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45", null ]
 ];

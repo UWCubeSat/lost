@@ -112,28 +112,1031 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="io_8hpp_source.html">io.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:ab75340602025dbbadfb8cf5dc483ef7a" id="r_ab75340602025dbbadfb8cf5dc483ef7a"><td class="memItemLeft" align="right" valign="top">typedef double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab75340602025dbbadfb8cf5dc483ef7a">decimal</a></td></tr>
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a7027fbcaac97dda89dff97ca56ccdbe1" id="r_a7027fbcaac97dda89dff97ca56ccdbe1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7027fbcaac97dda89dff97ca56ccdbe1">png</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a67c77708326a51725b815d76a8e0b431" id="r_a67c77708326a51725b815d76a8e0b431"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67c77708326a51725b815d76a8e0b431">focalLength</a> = 0</td></tr>
+<tr class="memitem:ab9fbe0a61dbd268387847642105e8879" id="r_ab9fbe0a61dbd268387847642105e8879"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab9fbe0a61dbd268387847642105e8879">pixelSize</a> = -1</td></tr>
+<tr class="memitem:a4321d10145adc930c2fd5315cb7d4900" id="r_a4321d10145adc930c2fd5315cb7d4900"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4321d10145adc930c2fd5315cb7d4900">fov</a> = 20</td></tr>
+<tr class="memitem:ae71cde65c81e52466407d64032e62c59" id="r_ae71cde65c81e52466407d64032e62c59"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae71cde65c81e52466407d64032e62c59">centroidAlgo</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a6027f4a71e982e1d9b6acb0a51ba3be2" id="r_a6027f4a71e982e1d9b6acb0a51ba3be2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6027f4a71e982e1d9b6acb0a51ba3be2">centroidDummyNumStars</a> = 5</td></tr>
+<tr class="memitem:a6acd64a9346eb5b99c738e378ff97306" id="r_a6acd64a9346eb5b99c738e378ff97306"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6acd64a9346eb5b99c738e378ff97306">centroidMagFilter</a> = -1</td></tr>
+<tr class="memitem:a700eba10789892e9eb98c5f1ef91bccd" id="r_a700eba10789892e9eb98c5f1ef91bccd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a700eba10789892e9eb98c5f1ef91bccd">centroidFilterBrightest</a> = -1</td></tr>
+<tr class="memitem:a8602d941c784479aa5f0518ab97febc5" id="r_a8602d941c784479aa5f0518ab97febc5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8602d941c784479aa5f0518ab97febc5">databasePath</a> = &quot;&quot;</td></tr>
+<tr class="memitem:ae55cec884d64a85fc7887552d534f8fd" id="r_ae55cec884d64a85fc7887552d534f8fd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae55cec884d64a85fc7887552d534f8fd">idAlgo</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a7f70415999cc514c6d9b2b975a20d818" id="r_a7f70415999cc514c6d9b2b975a20d818"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f70415999cc514c6d9b2b975a20d818">angularTolerance</a> = .04</td></tr>
+<tr class="memitem:ac5ffd25c4a637b550114ef6b248bb136" id="r_ac5ffd25c4a637b550114ef6b248bb136"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5ffd25c4a637b550114ef6b248bb136">estimatedNumFalseStars</a> = 500</td></tr>
+<tr class="memitem:a9b520d87d04379e2170e9d4584b7d72f" id="r_a9b520d87d04379e2170e9d4584b7d72f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b520d87d04379e2170e9d4584b7d72f">maxMismatchProb</a> = .001</td></tr>
+<tr class="memitem:a2a6d3422324a4fe0d19ca2c65ea8f59a" id="r_a2a6d3422324a4fe0d19ca2c65ea8f59a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2a6d3422324a4fe0d19ca2c65ea8f59a">attitudeAlgo</a> = &quot;&quot;</td></tr>
+<tr class="memitem:abd0dcf3b03dfa98b79280e365bde841b" id="r_abd0dcf3b03dfa98b79280e365bde841b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd0dcf3b03dfa98b79280e365bde841b">tetraPairingMode</a> = &quot;triad&quot;</td></tr>
+<tr class="memitem:a82890adfe30e8d68b9a0b20f5907e40c" id="r_a82890adfe30e8d68b9a0b20f5907e40c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82890adfe30e8d68b9a0b20f5907e40c">tetraPatternSearchRange</a> = 0.001</td></tr>
+<tr class="memitem:ace285e3d0bf1c7c892fbc9ba3bb3f223" id="r_ace285e3d0bf1c7c892fbc9ba3bb3f223"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace285e3d0bf1c7c892fbc9ba3bb3f223">tetraPatternMatchTolerance</a> = 0.001</td></tr>
+<tr class="memitem:a78aabe62fe7ea95ab5372201d8f5d769" id="r_a78aabe62fe7ea95ab5372201d8f5d769"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78aabe62fe7ea95ab5372201d8f5d769">centroidCompareThreshold</a> = 2</td></tr>
+<tr class="memitem:a3473b9ca834deb0b232182f3382125f8" id="r_a3473b9ca834deb0b232182f3382125f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3473b9ca834deb0b232182f3382125f8">attitudeCompareThreshold</a> = 1</td></tr>
+<tr class="memitem:a22b4b9addbd03654ecf97de06e873c96" id="r_a22b4b9addbd03654ecf97de06e873c96"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22b4b9addbd03654ecf97de06e873c96">plotRawInput</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a6c4f5f983961cead21323c0b7ee72e12" id="r_a6c4f5f983961cead21323c0b7ee72e12"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6c4f5f983961cead21323c0b7ee72e12">plotInput</a> = &quot;&quot;</td></tr>
+<tr class="memitem:aaf46512316dc03c82ac55b80c30c968d" id="r_aaf46512316dc03c82ac55b80c30c968d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf46512316dc03c82ac55b80c30c968d">plotExpected</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a9caf6803f2be9840714eb0d90d497e85" id="r_a9caf6803f2be9840714eb0d90d497e85"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9caf6803f2be9840714eb0d90d497e85">plotCentroidIndices</a> = &quot;&quot;</td></tr>
+<tr class="memitem:afeefb87a38b20f1738dd81f4673a205d" id="r_afeefb87a38b20f1738dd81f4673a205d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afeefb87a38b20f1738dd81f4673a205d">plotOutput</a> = &quot;&quot;</td></tr>
+<tr class="memitem:ab3290775309250f4b3cb56abd12fd5db" id="r_ab3290775309250f4b3cb56abd12fd5db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab3290775309250f4b3cb56abd12fd5db">printExpectedCentroids</a> = &quot;&quot;</td></tr>
+<tr class="memitem:abffb1e31bef621dd37709141f508ee15" id="r_abffb1e31bef621dd37709141f508ee15"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abffb1e31bef621dd37709141f508ee15">printInputCentroids</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a685b7b50b94f322e9bef5856dc6f010c" id="r_a685b7b50b94f322e9bef5856dc6f010c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a685b7b50b94f322e9bef5856dc6f010c">printActualCentroids</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a7c9ab43782da89aed8b4dedfaed6b9cb" id="r_a7c9ab43782da89aed8b4dedfaed6b9cb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7c9ab43782da89aed8b4dedfaed6b9cb">printAttitude</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a753523af31840c6153ae4bc310996d56" id="r_a753523af31840c6153ae4bc310996d56"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a753523af31840c6153ae4bc310996d56">printExpectedAttitude</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a30ac2feba122da22b4828ad0c70ef8db" id="r_a30ac2feba122da22b4828ad0c70ef8db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30ac2feba122da22b4828ad0c70ef8db">printSpeed</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a0998e44611f9618720db66f43d0ca5f9" id="r_a0998e44611f9618720db66f43d0ca5f9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0998e44611f9618720db66f43d0ca5f9">compareCentroids</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a026476771b90512deb6d51b5d1f3a5ce" id="r_a026476771b90512deb6d51b5d1f3a5ce"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a026476771b90512deb6d51b5d1f3a5ce">compareStarIds</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a10a5ad6e0c9c547519e01b8dfc840e7e" id="r_a10a5ad6e0c9c547519e01b8dfc840e7e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10a5ad6e0c9c547519e01b8dfc840e7e">compareAttitudes</a> = &quot;&quot;</td></tr>
+<tr class="memitem:a37bfd704f4273f536657ce157dcb05d6" id="r_a37bfd704f4273f536657ce157dcb05d6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37bfd704f4273f536657ce157dcb05d6">generate</a> = 0</td></tr>
+<tr class="memitem:a9620483b4bb2c76df97417750da6d9f7" id="r_a9620483b4bb2c76df97417750da6d9f7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9620483b4bb2c76df97417750da6d9f7">generateXRes</a> = 1024</td></tr>
+<tr class="memitem:a13ae8ab21fb74fca486cb0931ff55b0c" id="r_a13ae8ab21fb74fca486cb0931ff55b0c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a13ae8ab21fb74fca486cb0931ff55b0c">generateYRes</a> = 1024</td></tr>
+<tr class="memitem:a0da21bbdcb754f49a740a827229826ce" id="r_a0da21bbdcb754f49a740a827229826ce"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0da21bbdcb754f49a740a827229826ce">generateCentroidsOnly</a> = false</td></tr>
+<tr class="memitem:ae0802c3b9367e29b89e3fabb706eb35d" id="r_ae0802c3b9367e29b89e3fabb706eb35d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0802c3b9367e29b89e3fabb706eb35d">generateZeroMagPhotons</a> = 20000</td></tr>
+<tr class="memitem:a66c01d9aadd8dea050bcef4973614ca9" id="r_a66c01d9aadd8dea050bcef4973614ca9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66c01d9aadd8dea050bcef4973614ca9">generateSaturationPhotons</a> = 150</td></tr>
+<tr class="memitem:a5348346fe44dc4cea4bb18d315ccde30" id="r_a5348346fe44dc4cea4bb18d315ccde30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5348346fe44dc4cea4bb18d315ccde30">generateSpreadStdDev</a> = 1</td></tr>
+<tr class="memitem:a2c4789f40b0a8563b97e898cf089ccdc" id="r_a2c4789f40b0a8563b97e898cf089ccdc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c4789f40b0a8563b97e898cf089ccdc">generateShotNoise</a> = true</td></tr>
+<tr class="memitem:ad5e216493a0b563d8c2e75e175fc2d51" id="r_ad5e216493a0b563d8c2e75e175fc2d51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5e216493a0b563d8c2e75e175fc2d51">generateDarkCurrent</a> = 0.1</td></tr>
+<tr class="memitem:af87172a5bad163763a3deddcf7effddd" id="r_af87172a5bad163763a3deddcf7effddd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af87172a5bad163763a3deddcf7effddd">generateReadNoiseStdDev</a> = .05</td></tr>
+<tr class="memitem:af8930d04570107ae78c5ce4ed3b1c46a" id="r_af8930d04570107ae78c5ce4ed3b1c46a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8930d04570107ae78c5ce4ed3b1c46a">generateRa</a> = 88</td></tr>
+<tr class="memitem:a006d9fba546ecb1e09c5f00dcb479d12" id="r_a006d9fba546ecb1e09c5f00dcb479d12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a006d9fba546ecb1e09c5f00dcb479d12">generateDe</a> = 7</td></tr>
+<tr class="memitem:ab50256e1e5b8968d845a985d47575051" id="r_ab50256e1e5b8968d845a985d47575051"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab50256e1e5b8968d845a985d47575051">generateRoll</a> = 0</td></tr>
+<tr class="memitem:a2d159e09ef3eb284cce7bd491ad33fe7" id="r_a2d159e09ef3eb284cce7bd491ad33fe7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d159e09ef3eb284cce7bd491ad33fe7">generateRandomAttitudes</a> = false</td></tr>
+<tr class="memitem:aa06f6a95767b6417c8480bd928949337" id="r_aa06f6a95767b6417c8480bd928949337"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa06f6a95767b6417c8480bd928949337">generateBlurRa</a> = 0</td></tr>
+<tr class="memitem:ac2cb4bec28fadd03c6263a722109f31c" id="r_ac2cb4bec28fadd03c6263a722109f31c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac2cb4bec28fadd03c6263a722109f31c">generateBlurDe</a> = 0</td></tr>
+<tr class="memitem:a7f20732d7dacb66cd3564d98f7c3e4a8" id="r_a7f20732d7dacb66cd3564d98f7c3e4a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f20732d7dacb66cd3564d98f7c3e4a8">generateBlurRoll</a> = 0</td></tr>
+<tr class="memitem:a03736ce3a10a87ac373b82a4e6ab7900" id="r_a03736ce3a10a87ac373b82a4e6ab7900"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03736ce3a10a87ac373b82a4e6ab7900">generateExposure</a> = 0.2</td></tr>
+<tr class="memitem:acc36459c4ca484f79f0a1bb32d73d3c7" id="r_acc36459c4ca484f79f0a1bb32d73d3c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc36459c4ca484f79f0a1bb32d73d3c7">generateReadoutTime</a> = 0</td></tr>
+<tr class="memitem:a8b2941eab3fa616fd497365c0e16c006" id="r_a8b2941eab3fa616fd497365c0e16c006"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b2941eab3fa616fd497365c0e16c006">generateOversampling</a> = 4</td></tr>
+<tr class="memitem:a146ba933dff60ae7b9fcc22e0acbad30" id="r_a146ba933dff60ae7b9fcc22e0acbad30"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a146ba933dff60ae7b9fcc22e0acbad30">generateNumFalseStars</a> = 0</td></tr>
+<tr class="memitem:ab3b560bf6c2c2e42bfc5833d57535e49" id="r_ab3b560bf6c2c2e42bfc5833d57535e49"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab3b560bf6c2c2e42bfc5833d57535e49">generateFalseMinMag</a> = 8</td></tr>
+<tr class="memitem:a4eadb136a8f4d162fb36951fa7ce3845" id="r_a4eadb136a8f4d162fb36951fa7ce3845"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4eadb136a8f4d162fb36951fa7ce3845">generateFalseMaxMag</a> = 1</td></tr>
+<tr class="memitem:a635bc80f7bce44ee3dfe95a0ce79cf70" id="r_a635bc80f7bce44ee3dfe95a0ce79cf70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a635bc80f7bce44ee3dfe95a0ce79cf70">generatePerturbationStddev</a> = 0</td></tr>
+<tr class="memitem:a6db34891847e99b183dd79f4d01e2a15" id="r_a6db34891847e99b183dd79f4d01e2a15"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6db34891847e99b183dd79f4d01e2a15">generateCutoffMag</a> = 6.0</td></tr>
+<tr class="memitem:af00d94041905d65a55c70ced25132fda" id="r_af00d94041905d65a55c70ced25132fda"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af00d94041905d65a55c70ced25132fda">generateSeed</a> = 394859</td></tr>
+<tr class="memitem:a967df6f4cc5d2e31ffcceccc81c143b7" id="r_a967df6f4cc5d2e31ffcceccc81c143b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a967df6f4cc5d2e31ffcceccc81c143b7">timeSeed</a> = false</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The command line options passed when running a pipeline. </p>
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00077">77</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
-</div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Member Typedef Documentation</h2>
-<a id="ab75340602025dbbadfb8cf5dc483ef7a" name="ab75340602025dbbadfb8cf5dc483ef7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab75340602025dbbadfb8cf5dc483ef7a">&#9670;&#160;</a></span>decimal</h2>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00075">75</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<a id="a7f70415999cc514c6d9b2b975a20d818" name="a7f70415999cc514c6d9b2b975a20d818"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f70415999cc514c6d9b2b975a20d818">&#9670;&#160;</a></span>angularTolerance</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef double <a class="el" href="#ab75340602025dbbadfb8cf5dc483ef7a">lost::PipelineOptions::decimal</a></td>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::angularTolerance = .04</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00009">9</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00090">90</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2a6d3422324a4fe0d19ca2c65ea8f59a" name="a2a6d3422324a4fe0d19ca2c65ea8f59a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a6d3422324a4fe0d19ca2c65ea8f59a">&#9670;&#160;</a></span>attitudeAlgo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::attitudeAlgo = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00093">93</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a3473b9ca834deb0b232182f3382125f8" name="a3473b9ca834deb0b232182f3382125f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3473b9ca834deb0b232182f3382125f8">&#9670;&#160;</a></span>attitudeCompareThreshold</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::attitudeCompareThreshold = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00100">100</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae71cde65c81e52466407d64032e62c59" name="ae71cde65c81e52466407d64032e62c59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae71cde65c81e52466407d64032e62c59">&#9670;&#160;</a></span>centroidAlgo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::centroidAlgo = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00084">84</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a78aabe62fe7ea95ab5372201d8f5d769" name="a78aabe62fe7ea95ab5372201d8f5d769"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78aabe62fe7ea95ab5372201d8f5d769">&#9670;&#160;</a></span>centroidCompareThreshold</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::centroidCompareThreshold = 2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00099">99</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6027f4a71e982e1d9b6acb0a51ba3be2" name="a6027f4a71e982e1d9b6acb0a51ba3be2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6027f4a71e982e1d9b6acb0a51ba3be2">&#9670;&#160;</a></span>centroidDummyNumStars</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::centroidDummyNumStars = 5</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00085">85</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a700eba10789892e9eb98c5f1ef91bccd" name="a700eba10789892e9eb98c5f1ef91bccd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a700eba10789892e9eb98c5f1ef91bccd">&#9670;&#160;</a></span>centroidFilterBrightest</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::centroidFilterBrightest = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00087">87</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6acd64a9346eb5b99c738e378ff97306" name="a6acd64a9346eb5b99c738e378ff97306"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6acd64a9346eb5b99c738e378ff97306">&#9670;&#160;</a></span>centroidMagFilter</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::centroidMagFilter = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00086">86</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a10a5ad6e0c9c547519e01b8dfc840e7e" name="a10a5ad6e0c9c547519e01b8dfc840e7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10a5ad6e0c9c547519e01b8dfc840e7e">&#9670;&#160;</a></span>compareAttitudes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::compareAttitudes = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00114">114</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a0998e44611f9618720db66f43d0ca5f9" name="a0998e44611f9618720db66f43d0ca5f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0998e44611f9618720db66f43d0ca5f9">&#9670;&#160;</a></span>compareCentroids</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::compareCentroids = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00112">112</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a026476771b90512deb6d51b5d1f3a5ce" name="a026476771b90512deb6d51b5d1f3a5ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a026476771b90512deb6d51b5d1f3a5ce">&#9670;&#160;</a></span>compareStarIds</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::compareStarIds = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00113">113</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8602d941c784479aa5f0518ab97febc5" name="a8602d941c784479aa5f0518ab97febc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8602d941c784479aa5f0518ab97febc5">&#9670;&#160;</a></span>databasePath</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::databasePath = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00088">88</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac5ffd25c4a637b550114ef6b248bb136" name="ac5ffd25c4a637b550114ef6b248bb136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5ffd25c4a637b550114ef6b248bb136">&#9670;&#160;</a></span>estimatedNumFalseStars</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::estimatedNumFalseStars = 500</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00091">91</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a67c77708326a51725b815d76a8e0b431" name="a67c77708326a51725b815d76a8e0b431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67c77708326a51725b815d76a8e0b431">&#9670;&#160;</a></span>focalLength</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::focalLength = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00079">79</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4321d10145adc930c2fd5315cb7d4900" name="a4321d10145adc930c2fd5315cb7d4900"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4321d10145adc930c2fd5315cb7d4900">&#9670;&#160;</a></span>fov</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::fov = 20</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00081">81</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a37bfd704f4273f536657ce157dcb05d6" name="a37bfd704f4273f536657ce157dcb05d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37bfd704f4273f536657ce157dcb05d6">&#9670;&#160;</a></span>generate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::generate = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00117">117</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac2cb4bec28fadd03c6263a722109f31c" name="ac2cb4bec28fadd03c6263a722109f31c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2cb4bec28fadd03c6263a722109f31c">&#9670;&#160;</a></span>generateBlurDe</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateBlurDe = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00132">132</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aa06f6a95767b6417c8480bd928949337" name="aa06f6a95767b6417c8480bd928949337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa06f6a95767b6417c8480bd928949337">&#9670;&#160;</a></span>generateBlurRa</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateBlurRa = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00131">131</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7f20732d7dacb66cd3564d98f7c3e4a8" name="a7f20732d7dacb66cd3564d98f7c3e4a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f20732d7dacb66cd3564d98f7c3e4a8">&#9670;&#160;</a></span>generateBlurRoll</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateBlurRoll = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00133">133</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a0da21bbdcb754f49a740a827229826ce" name="a0da21bbdcb754f49a740a827229826ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0da21bbdcb754f49a740a827229826ce">&#9670;&#160;</a></span>generateCentroidsOnly</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool lost::PipelineOptions::generateCentroidsOnly = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00120">120</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6db34891847e99b183dd79f4d01e2a15" name="a6db34891847e99b183dd79f4d01e2a15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6db34891847e99b183dd79f4d01e2a15">&#9670;&#160;</a></span>generateCutoffMag</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateCutoffMag = 6.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00141">141</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ad5e216493a0b563d8c2e75e175fc2d51" name="ad5e216493a0b563d8c2e75e175fc2d51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5e216493a0b563d8c2e75e175fc2d51">&#9670;&#160;</a></span>generateDarkCurrent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateDarkCurrent = 0.1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00125">125</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a006d9fba546ecb1e09c5f00dcb479d12" name="a006d9fba546ecb1e09c5f00dcb479d12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a006d9fba546ecb1e09c5f00dcb479d12">&#9670;&#160;</a></span>generateDe</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateDe = 7</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00128">128</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a03736ce3a10a87ac373b82a4e6ab7900" name="a03736ce3a10a87ac373b82a4e6ab7900"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03736ce3a10a87ac373b82a4e6ab7900">&#9670;&#160;</a></span>generateExposure</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateExposure = 0.2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00134">134</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4eadb136a8f4d162fb36951fa7ce3845" name="a4eadb136a8f4d162fb36951fa7ce3845"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eadb136a8f4d162fb36951fa7ce3845">&#9670;&#160;</a></span>generateFalseMaxMag</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateFalseMaxMag = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00139">139</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab3b560bf6c2c2e42bfc5833d57535e49" name="ab3b560bf6c2c2e42bfc5833d57535e49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3b560bf6c2c2e42bfc5833d57535e49">&#9670;&#160;</a></span>generateFalseMinMag</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateFalseMinMag = 8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00138">138</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a146ba933dff60ae7b9fcc22e0acbad30" name="a146ba933dff60ae7b9fcc22e0acbad30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a146ba933dff60ae7b9fcc22e0acbad30">&#9670;&#160;</a></span>generateNumFalseStars</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::generateNumFalseStars = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00137">137</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8b2941eab3fa616fd497365c0e16c006" name="a8b2941eab3fa616fd497365c0e16c006"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2941eab3fa616fd497365c0e16c006">&#9670;&#160;</a></span>generateOversampling</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::generateOversampling = 4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00136">136</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a635bc80f7bce44ee3dfe95a0ce79cf70" name="a635bc80f7bce44ee3dfe95a0ce79cf70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a635bc80f7bce44ee3dfe95a0ce79cf70">&#9670;&#160;</a></span>generatePerturbationStddev</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generatePerturbationStddev = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00140">140</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af8930d04570107ae78c5ce4ed3b1c46a" name="af8930d04570107ae78c5ce4ed3b1c46a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8930d04570107ae78c5ce4ed3b1c46a">&#9670;&#160;</a></span>generateRa</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateRa = 88</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00127">127</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2d159e09ef3eb284cce7bd491ad33fe7" name="a2d159e09ef3eb284cce7bd491ad33fe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d159e09ef3eb284cce7bd491ad33fe7">&#9670;&#160;</a></span>generateRandomAttitudes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool lost::PipelineOptions::generateRandomAttitudes = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00130">130</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af87172a5bad163763a3deddcf7effddd" name="af87172a5bad163763a3deddcf7effddd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af87172a5bad163763a3deddcf7effddd">&#9670;&#160;</a></span>generateReadNoiseStdDev</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateReadNoiseStdDev = .05</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00126">126</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acc36459c4ca484f79f0a1bb32d73d3c7" name="acc36459c4ca484f79f0a1bb32d73d3c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc36459c4ca484f79f0a1bb32d73d3c7">&#9670;&#160;</a></span>generateReadoutTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateReadoutTime = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00135">135</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab50256e1e5b8968d845a985d47575051" name="ab50256e1e5b8968d845a985d47575051"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab50256e1e5b8968d845a985d47575051">&#9670;&#160;</a></span>generateRoll</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateRoll = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00129">129</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a66c01d9aadd8dea050bcef4973614ca9" name="a66c01d9aadd8dea050bcef4973614ca9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66c01d9aadd8dea050bcef4973614ca9">&#9670;&#160;</a></span>generateSaturationPhotons</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateSaturationPhotons = 150</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00122">122</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af00d94041905d65a55c70ced25132fda" name="af00d94041905d65a55c70ced25132fda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af00d94041905d65a55c70ced25132fda">&#9670;&#160;</a></span>generateSeed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::generateSeed = 394859</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00142">142</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2c4789f40b0a8563b97e898cf089ccdc" name="a2c4789f40b0a8563b97e898cf089ccdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c4789f40b0a8563b97e898cf089ccdc">&#9670;&#160;</a></span>generateShotNoise</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool lost::PipelineOptions::generateShotNoise = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00124">124</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5348346fe44dc4cea4bb18d315ccde30" name="a5348346fe44dc4cea4bb18d315ccde30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5348346fe44dc4cea4bb18d315ccde30">&#9670;&#160;</a></span>generateSpreadStdDev</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateSpreadStdDev = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00123">123</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9620483b4bb2c76df97417750da6d9f7" name="a9620483b4bb2c76df97417750da6d9f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9620483b4bb2c76df97417750da6d9f7">&#9670;&#160;</a></span>generateXRes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::generateXRes = 1024</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00118">118</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a13ae8ab21fb74fca486cb0931ff55b0c" name="a13ae8ab21fb74fca486cb0931ff55b0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13ae8ab21fb74fca486cb0931ff55b0c">&#9670;&#160;</a></span>generateYRes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int lost::PipelineOptions::generateYRes = 1024</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00119">119</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae0802c3b9367e29b89e3fabb706eb35d" name="ae0802c3b9367e29b89e3fabb706eb35d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0802c3b9367e29b89e3fabb706eb35d">&#9670;&#160;</a></span>generateZeroMagPhotons</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::generateZeroMagPhotons = 20000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00121">121</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae55cec884d64a85fc7887552d534f8fd" name="ae55cec884d64a85fc7887552d534f8fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae55cec884d64a85fc7887552d534f8fd">&#9670;&#160;</a></span>idAlgo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::idAlgo = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00089">89</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9b520d87d04379e2170e9d4584b7d72f" name="a9b520d87d04379e2170e9d4584b7d72f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b520d87d04379e2170e9d4584b7d72f">&#9670;&#160;</a></span>maxMismatchProb</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::maxMismatchProb = .001</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00092">92</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab9fbe0a61dbd268387847642105e8879" name="ab9fbe0a61dbd268387847642105e8879"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9fbe0a61dbd268387847642105e8879">&#9670;&#160;</a></span>pixelSize</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::pixelSize = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00080">80</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9caf6803f2be9840714eb0d90d497e85" name="a9caf6803f2be9840714eb0d90d497e85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9caf6803f2be9840714eb0d90d497e85">&#9670;&#160;</a></span>plotCentroidIndices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::plotCentroidIndices = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00104">104</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aaf46512316dc03c82ac55b80c30c968d" name="aaf46512316dc03c82ac55b80c30c968d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf46512316dc03c82ac55b80c30c968d">&#9670;&#160;</a></span>plotExpected</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::plotExpected = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00103">103</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6c4f5f983961cead21323c0b7ee72e12" name="a6c4f5f983961cead21323c0b7ee72e12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c4f5f983961cead21323c0b7ee72e12">&#9670;&#160;</a></span>plotInput</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::plotInput = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00102">102</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="afeefb87a38b20f1738dd81f4673a205d" name="afeefb87a38b20f1738dd81f4673a205d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afeefb87a38b20f1738dd81f4673a205d">&#9670;&#160;</a></span>plotOutput</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::plotOutput = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00105">105</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a22b4b9addbd03654ecf97de06e873c96" name="a22b4b9addbd03654ecf97de06e873c96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22b4b9addbd03654ecf97de06e873c96">&#9670;&#160;</a></span>plotRawInput</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::plotRawInput = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00101">101</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7027fbcaac97dda89dff97ca56ccdbe1" name="a7027fbcaac97dda89dff97ca56ccdbe1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7027fbcaac97dda89dff97ca56ccdbe1">&#9670;&#160;</a></span>png</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::png = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00078">78</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a685b7b50b94f322e9bef5856dc6f010c" name="a685b7b50b94f322e9bef5856dc6f010c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a685b7b50b94f322e9bef5856dc6f010c">&#9670;&#160;</a></span>printActualCentroids</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::printActualCentroids = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00108">108</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7c9ab43782da89aed8b4dedfaed6b9cb" name="a7c9ab43782da89aed8b4dedfaed6b9cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c9ab43782da89aed8b4dedfaed6b9cb">&#9670;&#160;</a></span>printAttitude</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::printAttitude = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00109">109</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a753523af31840c6153ae4bc310996d56" name="a753523af31840c6153ae4bc310996d56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a753523af31840c6153ae4bc310996d56">&#9670;&#160;</a></span>printExpectedAttitude</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::printExpectedAttitude = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00110">110</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab3290775309250f4b3cb56abd12fd5db" name="ab3290775309250f4b3cb56abd12fd5db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3290775309250f4b3cb56abd12fd5db">&#9670;&#160;</a></span>printExpectedCentroids</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::printExpectedCentroids = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00106">106</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abffb1e31bef621dd37709141f508ee15" name="abffb1e31bef621dd37709141f508ee15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abffb1e31bef621dd37709141f508ee15">&#9670;&#160;</a></span>printInputCentroids</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::printInputCentroids = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00107">107</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a30ac2feba122da22b4828ad0c70ef8db" name="a30ac2feba122da22b4828ad0c70ef8db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30ac2feba122da22b4828ad0c70ef8db">&#9670;&#160;</a></span>printSpeed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::printSpeed = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00111">111</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abd0dcf3b03dfa98b79280e365bde841b" name="abd0dcf3b03dfa98b79280e365bde841b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd0dcf3b03dfa98b79280e365bde841b">&#9670;&#160;</a></span>tetraPairingMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string lost::PipelineOptions::tetraPairingMode = &quot;triad&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00094">94</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ace285e3d0bf1c7c892fbc9ba3bb3f223" name="ace285e3d0bf1c7c892fbc9ba3bb3f223"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace285e3d0bf1c7c892fbc9ba3bb3f223">&#9670;&#160;</a></span>tetraPatternMatchTolerance</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::tetraPatternMatchTolerance = 0.001</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00096">96</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a82890adfe30e8d68b9a0b20f5907e40c" name="a82890adfe30e8d68b9a0b20f5907e40c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82890adfe30e8d68b9a0b20f5907e40c">&#9670;&#160;</a></span>tetraPatternSearchRange</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> lost::PipelineOptions::tetraPatternSearchRange = 0.001</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00095">95</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a967df6f4cc5d2e31ffcceccc81c143b7" name="a967df6f4cc5d2e31ffcceccc81c143b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a967df6f4cc5d2e31ffcceccc81c143b7">&#9670;&#160;</a></span>timeSeed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool lost::PipelineOptions::timeSeed = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="io_8hpp_source.html#l00143">143</a> of file <a class="el" href="io_8hpp_source.html">io.hpp</a>.</p>
 
 </div>
 </div>

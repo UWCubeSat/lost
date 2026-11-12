@@ -41,14 +41,14 @@ var searchData=
   ['starindex_38',['starIndex',['../classlost_1_1StarIdentifier.html#afb04c9b116a8a67e31083d50e28cdce2',1,'lost::StarIdentifier']]],
   ['stars_39',['Stars',['../namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5',1,'lost']]],
   ['stars_40',['stars',['../structlost_1_1PipelineOutput.html#a7743f8496f64299c8af36ac0ec080699',1,'lost::PipelineOutput']]],
-  ['str_5fto_5fdecimal_41',['STR_TO_DECIMAL',['../decimal_8hpp.html#a7a155f9188b9b83cd40dafccc0b59b61',1,'STR_TO_DECIMAL:&#160;decimal.hpp'],['../io_8hpp.html#a7a155f9188b9b83cd40dafccc0b59b61',1,'STR_TO_DECIMAL:&#160;io.hpp'],['../main_8cpp.html#a7a155f9188b9b83cd40dafccc0b59b61',1,'STR_TO_DECIMAL:&#160;main.cpp']]],
+  ['str_5fto_5fdecimal_41',['STR_TO_DECIMAL',['../decimal_8hpp.html#a7a155f9188b9b83cd40dafccc0b59b61',1,'decimal.hpp']]],
   ['stream_42',['Stream',['../classlost_1_1UserSpecifiedOutputStream.html#a90c03c7698d07380741389f5f8834214',1,'lost::UserSpecifiedOutputStream']]],
   ['subdatabasepointer_43',['SubDatabasePointer',['../classlost_1_1MultiDatabase.html#ad013d7640b19cb78268c9be5f6c64544',1,'lost::MultiDatabase']]],
   ['surfaceplot_44',['SurfacePlot',['../namespacelost.html#a8298f03c0d1b408401e4200d17305018',1,'lost']]],
   ['surfacetograyscaleimage_45',['SurfaceToGrayscaleImage',['../namespacelost.html#a1c3caf3f02508df448ec6c761a2d764e',1,'lost']]],
-  ['swapdecimalendianness_46',['swapDecimalEndianness',['../classlost_1_1SerializeContext.html#a336ba4abc0106fd590f9eae9dbb16f04',1,'lost::SerializeContext']]],
+  ['swapdecimalendianness_46',['swapDecimalEndianness',['../classlost_1_1DatabaseOptions.html#a686f6bd44643f79e54ceaaab733635a1',1,'lost::DatabaseOptions::swapDecimalEndianness'],['../classlost_1_1SerializeContext.html#a336ba4abc0106fd590f9eae9dbb16f04',1,'lost::SerializeContext::swapDecimalEndianness']]],
   ['swapendianness_47',['SwapEndianness',['../namespacelost.html#aaa3aa9350f84fa1b7725b5e3de8483ba',1,'lost']]],
   ['swapendiannessifnecessary_48',['SwapEndiannessIfNecessary',['../namespacelost.html#a9704a9fb2cf67873155e69407a976074',1,'lost']]],
   ['swapendiannessifnecessary_3c_20decimal_20_3e_49',['SwapEndiannessIfNecessary&lt; decimal &gt;',['../namespacelost.html#a3493422e7893b68e566182e4e2372a6e',1,'lost']]],
-  ['swapintegerendianness_50',['swapIntegerEndianness',['../classlost_1_1SerializeContext.html#a93856379ded65d82189d464c8a384596',1,'lost::SerializeContext']]]
+  ['swapintegerendianness_50',['swapIntegerEndianness',['../classlost_1_1DatabaseOptions.html#ae870654df87756fe60dba9f089873ee6',1,'lost::DatabaseOptions::swapIntegerEndianness'],['../classlost_1_1SerializeContext.html#a93856379ded65d82189d464c8a384596',1,'lost::SerializeContext::swapIntegerEndianness']]]
 ];

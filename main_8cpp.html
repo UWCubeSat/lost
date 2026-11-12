@@ -106,125 +106,93 @@ $(function() {
   <div class="headertitle"><div class="title">main.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;assert.h&gt;</code><br />
-<code>#include &lt;getopt.h&gt;</code><br />
-<code>#include &lt;sys/types.h&gt;</code><br />
-<code>#include &lt;unistd.h&gt;</code><br />
-<code>#include &lt;bitset&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
+<div class="textblock"><code>#include &lt;bitset&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &quot;CLI11.hpp&quot;</code><br />
 <code>#include &quot;<a class="el" href="databases_8hpp_source.html">databases.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="decimal_8hpp_source.html">decimal.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="io_8hpp_source.html">io.hpp</a>&quot;</code><br />
-<code>#include &quot;man-database.h&quot;</code><br />
-<code>#include &quot;man-pipeline.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="star-utils_8hpp_source.html">star-utils.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="database-options_8hpp_source.html">database-options.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="pipeline-options_8hpp_source.html">pipeline-options.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for main.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="main_8cpp__incl.png" border="0" usemap="#asrc_2main_8cpp" loading="lazy" alt=""/></div>
 <map name="asrc_2main_8cpp" id="asrc_2main_8cpp">
-<area shape="rect" title=" " alt="" coords="652,5,757,33"/>
-<area shape="rect" title=" " alt="" coords="5,81,79,109"/>
-<area shape="poly" title=" " alt="" coords="650,25,415,43,257,60,95,83,92,79,257,55,414,38,654,21"/>
-<area shape="rect" title=" " alt="" coords="103,81,178,109"/>
-<area shape="poly" title=" " alt="" coords="650,26,455,46,327,62,195,83,192,78,326,57,454,41,654,23"/>
-<area shape="rect" title=" " alt="" coords="202,81,298,109"/>
-<area shape="poly" title=" " alt="" coords="650,29,504,52,314,83,312,78,503,46,654,26"/>
-<area shape="rect" title=" " alt="" coords="321,81,395,109"/>
-<area shape="poly" title=" " alt="" coords="650,32,411,83,409,78,654,29"/>
-<area shape="rect" title=" " alt="" coords="418,81,476,109"/>
-<area shape="poly" title=" " alt="" coords="654,35,493,82,491,77,658,32"/>
-<area shape="rect" title=" " alt="" coords="500,81,565,109"/>
-<area shape="poly" title=" " alt="" coords="672,35,579,77,576,72,676,32"/>
-<area shape="rect" title=" " alt="" coords="742,157,822,184"/>
-<area shape="poly" title=" " alt="" coords="712,31,771,143,766,142,710,36"/>
-<area shape="rect" title=" " alt="" coords="1918,232,1976,260"/>
-<area shape="poly" title=" " alt="" coords="757,20,1028,31,1408,55,1596,73,1760,96,1883,122,1925,138,1949,155,1958,169,1961,186,1958,220,1954,216,1956,186,1953,171,1945,158,1922,143,1882,128,1759,101,1595,79,1407,61,1028,36,758,25"/>
-<area shape="rect" title=" " alt="" coords="724,535,786,563"/>
-<area shape="poly" title=" " alt="" coords="696,31,662,79,620,147,600,188,584,231,573,275,569,321,569,399,572,424,583,446,598,466,618,484,664,512,712,534,706,533,662,517,615,488,595,470,578,449,567,425,563,399,563,320,568,274,579,229,595,186,615,145,658,76,692,35"/>
-<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="902,232,1019,260"/>
-<area shape="poly" title=" " alt="" coords="704,31,702,64,703,104,711,146,720,165,732,182,756,198,795,212,890,234,884,235,793,217,754,203,728,186,715,168,706,148,697,104,697,64,701,36"/>
-<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="1803,535,1905,563"/>
-<area shape="poly" title=" " alt="" coords="757,17,1012,17,1382,23,1576,31,1758,42,1915,57,2032,78,2096,89,2153,98,2177,106,2196,119,2208,140,2213,169,2213,399,2210,421,2204,442,2181,476,2147,502,2105,522,2058,535,2009,544,1920,551,1920,545,2009,538,2057,530,2103,517,2144,498,2177,472,2199,440,2205,420,2207,399,2207,169,2203,142,2192,123,2175,111,2152,103,2095,94,2031,84,1914,63,1758,47,1576,36,1382,29,1012,23,758,23"/>
-<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="811,308,918,336"/>
-<area shape="poly" title=" " alt="" coords="701,31,687,76,673,135,671,167,673,199,680,230,695,258,715,279,740,295,768,306,798,315,793,315,767,311,738,300,712,284,691,262,675,232,667,200,665,167,668,134,682,74,697,36"/>
-<area shape="rect" href="io_8hpp.html" title=" " alt="" coords="1219,81,1281,109"/>
-<area shape="poly" title=" " alt="" coords="757,25,1206,86,1202,89,758,30"/>
-<area shape="rect" href="pipeline-options_8hpp.html" title=" " alt="" coords="2010,157,2172,184"/>
-<area shape="poly" title=" " alt="" coords="757,18,1030,22,1416,32,1782,49,1915,62,1961,70,1992,79,2017,92,2039,108,2075,146,2070,145,2036,112,2014,96,1990,83,1960,75,1914,68,1781,55,1416,37,1029,27,758,24"/>
-<area shape="rect" href="database-options_8hpp.html" title=" " alt="" coords="1773,157,1935,184"/>
-<area shape="poly" title=" " alt="" coords="757,22,990,44,1293,78,1550,116,1766,153,1761,154,1549,121,1292,84,990,49,758,28"/>
-<area shape="rect" title=" " alt="" coords="2248,81,2375,109"/>
-<area shape="poly" title=" " alt="" coords="757,18,989,20,1351,28,1784,46,2009,60,2229,78,2235,81,2229,81,2228,84,2008,65,1784,51,1351,33,989,25,758,23"/>
-<area shape="rect" title=" " alt="" coords="2400,81,2519,109"/>
-<area shape="poly" title=" " alt="" coords="757,19,1530,37,2015,55,2223,66,2387,81,2382,81,2223,71,2015,60,1530,43,758,24"/>
-<area shape="poly" title=" " alt="" coords="899,256,848,275,823,290,801,310,785,334,772,361,758,419,753,475,754,522,750,518,748,475,752,418,767,359,780,331,797,306,820,286,846,270,905,254"/>
-<area shape="rect" title=" " alt="" coords="995,308,1065,336"/>
-<area shape="poly" title=" " alt="" coords="974,258,1010,297,1005,296,972,263"/>
-<area shape="rect" title=" " alt="" coords="1089,308,1144,336"/>
-<area shape="poly" title=" " alt="" coords="989,258,1078,301,1072,301,988,263"/>
-<area shape="rect" title=" " alt="" coords="1168,308,1233,336"/>
-<area shape="poly" title=" " alt="" coords="1004,258,1156,306,1150,306,1003,263"/>
-<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="894,459,1051,487"/>
-<area shape="poly" title=" " alt="" coords="963,258,973,445,969,442,959,262"/>
-<area shape="poly" title=" " alt="" coords="946,259,895,301,893,296,941,262"/>
-<area shape="poly" title=" " alt="" coords="936,487,802,535,801,529,931,488"/>
-<area shape="rect" title=" " alt="" coords="1022,535,1092,563"/>
-<area shape="poly" title=" " alt="" coords="989,485,1033,525,1028,524,987,490"/>
-<area shape="rect" title=" " alt="" coords="938,535,997,563"/>
-<area shape="poly" title=" " alt="" coords="974,486,971,521,967,517,970,489"/>
-<area shape="rect" title=" " alt="" coords="824,535,908,563"/>
-<area shape="poly" title=" " alt="" coords="956,487,898,529,896,524,951,488"/>
-<area shape="poly" title=" " alt="" coords="1052,478,1790,542,1785,542,1052,484"/>
-<area shape="poly" title=" " alt="" coords="861,335,770,523,766,519,856,337"/>
-<area shape="poly" title=" " alt="" coords="875,333,957,447,952,446,873,338"/>
-<area shape="poly" title=" " alt="" coords="867,334,868,521,864,518,863,338"/>
-<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="1373,384,1506,411"/>
-<area shape="poly" title=" " alt="" coords="919,327,1360,385,1355,386,919,333"/>
-<area shape="poly" title=" " alt="" coords="1375,409,1067,460,1066,454,1370,410"/>
-<area shape="poly" title=" " alt="" coords="1476,409,1806,530,1801,529,1475,415"/>
-<area shape="rect" title=" " alt="" coords="1402,459,1477,487"/>
-<area shape="poly" title=" " alt="" coords="1441,410,1441,445,1437,442,1438,414"/>
-<area shape="poly" title=" " alt="" coords="1217,101,1057,125,841,159,838,160,836,155,840,154,1057,119,1222,99"/>
-<area shape="poly" title=" " alt="" coords="1279,107,1383,154,1411,170,1440,182,1570,211,1700,229,1816,238,1905,244,1900,245,1816,244,1699,235,1569,217,1439,187,1409,174,1381,159,1279,112"/>
-<area shape="poly" title=" " alt="" coords="1216,98,1155,104,1070,113,974,131,879,159,857,172,835,187,795,201,762,208,730,216,694,235,640,270,625,290,619,321,619,399,622,420,629,439,653,474,685,503,719,528,714,526,682,507,649,478,624,441,617,421,614,399,614,320,620,288,637,266,691,230,729,211,761,203,794,196,833,182,854,168,877,154,972,126,1069,108,1155,98,1222,96"/>
-<area shape="poly" title=" " alt="" coords="1217,104,1151,126,1074,159,1026,191,986,224,983,220,1023,187,1071,154,1149,121,1222,102"/>
-<area shape="poly" title=" " alt="" coords="1216,98,1150,109,1060,130,1013,148,968,170,927,199,892,234,877,263,869,295,865,291,872,261,888,231,924,195,965,166,1011,143,1058,125,1149,104,1221,97"/>
-<area shape="poly" title=" " alt="" coords="1273,107,1346,154,1392,189,1428,219,1455,255,1477,307,1479,325,1476,342,1461,373,1457,369,1470,340,1473,324,1471,309,1451,258,1424,223,1389,193,1343,159,1273,112"/>
-<area shape="rect" title=" " alt="" coords="1451,157,1553,184"/>
-<area shape="poly" title=" " alt="" coords="1281,102,1445,152,1440,152,1281,108"/>
-<area shape="rect" title=" " alt="" coords="1577,157,1654,184"/>
-<area shape="poly" title=" " alt="" coords="1281,99,1564,156,1559,157,1281,104"/>
-<area shape="rect" title=" " alt="" coords="1677,157,1748,184"/>
-<area shape="poly" title=" " alt="" coords="1281,97,1441,117,1664,156,1659,156,1440,122,1281,102"/>
-<area shape="rect" href="attitude-estimators_8hpp.html" title=" " alt="" coords="1100,157,1275,184"/>
-<area shape="poly" title=" " alt="" coords="1241,108,1210,147,1207,143,1237,111"/>
-<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="1344,308,1442,336"/>
-<area shape="poly" title=" " alt="" coords="1265,107,1338,175,1372,209,1390,231,1398,262,1398,294,1394,291,1393,263,1385,234,1368,213,1334,179,1264,112"/>
-<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="1043,232,1134,260"/>
-<area shape="poly" title=" " alt="" coords="1217,98,1187,105,1151,115,1117,132,1089,158,1083,172,1081,187,1083,219,1078,216,1075,186,1078,170,1085,155,1114,128,1149,110,1186,100,1222,97"/>
-<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="705,232,827,260"/>
-<area shape="poly" title=" " alt="" coords="1216,100,1096,121,1019,137,943,159,880,188,804,227,802,222,877,183,941,154,1018,132,1095,115,1221,99"/>
-<area shape="poly" title=" " alt="" coords="1281,96,1948,154,1997,161,1992,161,1947,159,1281,102"/>
-<area shape="poly" title=" " alt="" coords="1281,97,1760,156,1755,157,1281,102"/>
-<area shape="poly" title=" " alt="" coords="1266,182,1328,201,1389,230,1431,262,1445,281,1457,307,1460,339,1453,371,1449,367,1455,339,1451,309,1440,283,1427,265,1386,235,1326,206,1266,188"/>
-<area shape="rect" title=" " alt="" coords="1158,232,1347,260"/>
-<area shape="poly" title=" " alt="" coords="1200,182,1234,221,1229,220,1198,187"/>
-<area shape="poly" title=" " alt="" coords="1268,182,1317,200,1341,214,1361,231,1381,260,1391,294,1386,291,1376,263,1357,234,1338,218,1315,205,1268,188"/>
-<area shape="poly" title=" " alt="" coords="1172,184,1119,225,1117,221,1167,186"/>
-<area shape="poly" title=" " alt="" coords="1402,334,1425,372,1421,370,1400,339"/>
-<area shape="poly" title=" " alt="" coords="1051,260,920,305,918,300,1046,261"/>
-<area shape="poly" title=" " alt="" coords="1135,256,1331,305,1325,305,1135,261"/>
-<area shape="poly" title=" " alt="" coords="784,258,838,299,833,298,783,263"/>
-<area shape="poly" title=" " alt="" coords="2068,184,1987,228,1986,223,2063,186"/>
-<area shape="poly" title=" " alt="" coords="2088,183,2068,243,2059,281,2055,321,2055,399,2052,424,2042,447,2027,467,2008,484,1964,512,1918,532,1916,527,1961,508,2005,480,2023,463,2037,444,2047,423,2050,399,2050,320,2054,281,2063,242,2084,186"/>
-<area shape="poly" title=" " alt="" coords="1871,182,1922,223,1916,222,1870,187"/>
-<area shape="poly" title=" " alt="" coords="1856,183,1857,320,1857,399,1856,521,1852,517,1851,399,1851,320,1852,187"/>
+<area shape="rect" title=" " alt="" coords="190,5,295,33"/>
+<area shape="rect" title=" " alt="" coords="5,81,64,109"/>
+<area shape="poly" title=" " alt="" coords="204,36,80,80,76,76,207,31"/>
+<area shape="rect" title=" " alt="" coords="190,157,269,184"/>
+<area shape="poly" title=" " alt="" coords="239,31,230,81,229,142,224,141,225,81,238,36"/>
+<area shape="rect" title=" " alt="" coords="293,157,352,184"/>
+<area shape="poly" title=" " alt="" coords="279,31,313,50,328,64,340,80,345,96,345,112,338,144,333,142,340,112,340,97,335,82,324,67,310,55,280,36"/>
+<area shape="rect" title=" " alt="" coords="614,535,676,563"/>
+<area shape="poly" title=" " alt="" coords="214,36,182,57,145,87,116,125,107,146,104,169,104,399,108,416,119,432,137,447,161,461,224,485,301,504,383,519,465,530,601,545,596,545,465,535,383,524,300,510,223,490,159,466,134,452,115,436,103,418,99,399,99,169,102,145,111,122,141,83,179,53,217,31"/>
+<area shape="rect" title=" " alt="" coords="240,81,325,109"/>
+<area shape="poly" title=" " alt="" coords="250,31,271,67,265,67,250,36"/>
+<area shape="rect" href="databases_8hpp.html" title=" " alt="" coords="362,232,478,260"/>
+<area shape="poly" title=" " alt="" coords="228,36,206,64,181,103,172,124,168,145,170,164,179,183,205,200,247,214,349,235,344,238,245,220,202,205,175,186,165,166,163,144,167,122,176,101,201,61,230,31"/>
+<area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="1206,535,1308,563"/>
+<area shape="poly" title=" " alt="" coords="295,19,573,27,761,37,957,50,1142,69,1298,95,1358,110,1405,127,1435,146,1444,157,1446,169,1446,399,1443,423,1434,446,1419,465,1401,483,1359,511,1315,532,1314,526,1357,507,1398,479,1415,462,1429,443,1438,422,1441,399,1441,169,1439,160,1432,150,1403,132,1357,115,1296,100,1141,75,956,56,760,42,572,33,296,24"/>
+<area shape="rect" href="io_8hpp.html" title=" " alt="" coords="693,81,754,109"/>
+<area shape="poly" title=" " alt="" coords="295,26,680,85,676,88,295,31"/>
+<area shape="poly" title=" " alt="" coords="385,262,362,276,340,293,326,313,325,323,329,335,354,373,385,407,421,437,459,463,535,504,602,533,597,533,533,509,456,468,418,441,382,411,350,376,324,337,320,324,321,311,336,290,359,272,389,259"/>
+<area shape="rect" title=" " alt="" coords="508,308,577,336"/>
+<area shape="poly" title=" " alt="" coords="442,258,510,300,505,300,442,263"/>
+<area shape="rect" title=" " alt="" coords="339,308,394,336"/>
+<area shape="poly" title=" " alt="" coords="412,259,387,297,383,294,408,262"/>
+<area shape="rect" title=" " alt="" coords="418,308,483,336"/>
+<area shape="poly" title=" " alt="" coords="426,258,442,294,437,293,424,263"/>
+<area shape="rect" href="serialize-helpers_8hpp.html" title=" " alt="" coords="784,459,941,487"/>
+<area shape="poly" title=" " alt="" coords="464,258,525,279,590,306,660,342,728,381,834,451,829,450,725,385,658,346,588,310,523,284,464,263"/>
+<area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="809,308,916,336"/>
+<area shape="poly" title=" " alt="" coords="479,255,796,308,791,310,479,260"/>
+<area shape="poly" title=" " alt="" coords="826,487,692,535,691,529,821,488"/>
+<area shape="rect" title=" " alt="" coords="743,535,814,563"/>
+<area shape="poly" title=" " alt="" coords="850,487,806,527,804,522,845,488"/>
+<area shape="rect" title=" " alt="" coords="838,535,898,563"/>
+<area shape="poly" title=" " alt="" coords="865,486,868,521,864,518,862,490"/>
+<area shape="rect" title=" " alt="" coords="927,535,1011,563"/>
+<area shape="poly" title=" " alt="" coords="882,485,940,527,935,525,881,490"/>
+<area shape="poly" title=" " alt="" coords="934,485,1194,535,1189,535,933,490"/>
+<area shape="poly" title=" " alt="" coords="853,335,670,526,667,521,848,337"/>
+<area shape="poly" title=" " alt="" coords="864,334,865,445,860,442,861,338"/>
+<area shape="poly" title=" " alt="" coords="875,334,915,386,937,421,956,458,965,489,969,521,965,518,960,491,951,460,933,424,911,389,873,338"/>
+<area shape="rect" href="attitude-utils_8hpp.html" title=" " alt="" coords="1153,384,1286,411"/>
+<area shape="poly" title=" " alt="" coords="917,332,1144,380,1138,380,917,337"/>
+<area shape="poly" title=" " alt="" coords="1158,412,942,458,941,453,1153,412"/>
+<area shape="poly" title=" " alt="" coords="1225,409,1252,521,1248,518,1221,414"/>
+<area shape="rect" title=" " alt="" coords="1145,459,1220,487"/>
+<area shape="poly" title=" " alt="" coords="1215,410,1197,448,1194,443,1211,413"/>
+<area shape="poly" title=" " alt="" coords="690,101,523,122,285,159,283,154,522,117,695,98"/>
+<area shape="poly" title=" " alt="" coords="691,102,553,125,371,159,368,160,365,155,370,154,553,120,695,99"/>
+<area shape="poly" title=" " alt="" coords="731,107,742,144,743,165,738,185,728,201,715,211,703,219,693,234,677,271,666,311,651,391,646,464,646,521,642,518,641,464,646,391,660,310,672,269,688,231,700,216,712,206,724,198,733,183,737,164,736,144,728,112"/>
+<area shape="poly" title=" " alt="" coords="690,98,624,105,540,115,463,133,435,144,417,158,410,171,407,186,412,218,407,217,402,186,405,170,412,155,432,140,462,127,539,110,624,100,695,96"/>
+<area shape="poly" title=" " alt="" coords="745,107,775,128,802,155,824,189,841,226,860,294,855,292,836,228,819,192,798,158,771,132,745,112"/>
+<area shape="poly" title=" " alt="" coords="755,94,863,98,1008,107,1151,125,1209,138,1252,154,1313,190,1340,210,1362,232,1378,255,1386,280,1384,308,1370,337,1356,353,1340,366,1302,384,1301,379,1337,362,1353,349,1366,334,1379,306,1381,281,1374,257,1358,235,1337,214,1310,195,1249,159,1208,143,1150,130,1007,113,862,103,756,99"/>
+<area shape="rect" title=" " alt="" coords="426,157,528,184"/>
+<area shape="poly" title=" " alt="" coords="690,107,537,154,535,149,695,104"/>
+<area shape="rect" title=" " alt="" coords="552,157,629,184"/>
+<area shape="poly" title=" " alt="" coords="698,111,628,151,626,147,702,108"/>
+<area shape="rect" title=" " alt="" coords="652,157,724,184"/>
+<area shape="poly" title=" " alt="" coords="719,107,703,144,699,141,716,111"/>
+<area shape="rect" href="attitude-estimators_8hpp.html" title=" " alt="" coords="1022,157,1197,184"/>
+<area shape="poly" title=" " alt="" coords="755,99,1028,152,1023,154,755,105"/>
+<area shape="rect" href="camera_8hpp.html" title=" " alt="" coords="1257,308,1356,336"/>
+<area shape="poly" title=" " alt="" coords="755,95,854,101,987,112,1118,129,1171,141,1210,154,1238,169,1259,184,1275,204,1292,231,1303,262,1308,294,1303,291,1298,263,1287,233,1271,207,1255,188,1236,174,1208,159,1169,146,1117,135,987,117,854,106,756,100"/>
+<area shape="rect" href="star-id_8hpp.html" title=" " alt="" coords="900,232,991,260"/>
+<area shape="poly" title=" " alt="" coords="755,100,817,119,851,135,883,155,913,185,934,220,929,218,908,188,879,159,849,139,815,124,755,105"/>
+<area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="703,232,825,260"/>
+<area shape="poly" title=" " alt="" coords="742,107,765,128,782,156,786,172,786,188,778,220,774,216,781,188,781,172,777,158,761,131,741,112"/>
+<area shape="poly" title=" " alt="" coords="1153,182,1189,201,1205,215,1218,231,1232,266,1236,303,1234,339,1229,370,1225,366,1229,338,1231,303,1227,267,1214,234,1202,218,1186,206,1153,188"/>
+<area shape="rect" title=" " alt="" coords="1015,232,1203,260"/>
+<area shape="poly" title=" " alt="" coords="1111,183,1111,218,1107,215,1108,187"/>
+<area shape="poly" title=" " alt="" coords="1168,182,1217,201,1240,214,1262,230,1285,260,1300,295,1295,292,1281,263,1258,234,1237,219,1214,206,1168,188"/>
+<area shape="poly" title=" " alt="" coords="1082,184,989,228,987,223,1077,186"/>
+<area shape="poly" title=" " alt="" coords="1293,335,1248,376,1245,371,1289,337"/>
+<area shape="poly" title=" " alt="" coords="933,259,890,300,887,295,928,262"/>
+<area shape="poly" title=" " alt="" coords="991,255,1003,257,1245,308,1239,308,1002,263,992,260"/>
+<area shape="poly" title=" " alt="" coords="782,258,836,299,830,298,781,263"/>
 </map>
 </div>
 </div>
@@ -235,911 +203,10 @@ Namespaces</h2></td></tr>
 <tr class="memitem:lost" id="r_lost"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html">lost</a></td></tr>
 <tr class="memdesc:namespacelost"><td class="mdescLeft">&#160;</td><td class="mdescRight">LOST starting point. <br /></td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a089bd9a13d6fb6149353c65fdf20f83c" id="r_a089bd9a13d6fb6149353c65fdf20f83c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a>()</td></tr>
-<tr class="memdesc:a089bd9a13d6fb6149353c65fdf20f83c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle optional CLI arguments <a href="https://stackoverflow.com/a/69177115">https://stackoverflow.com/a/69177115</a>.  <br /></td></tr>
-<tr class="memitem:a68d9f1b201a18b8388ba6593ab8039f6" id="r_a68d9f1b201a18b8388ba6593ab8039f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68d9f1b201a18b8388ba6593ab8039f6">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)</td></tr>
-<tr class="memitem:affc86f4995bfe88e94f1143393b8f07b" id="r_affc86f4995bfe88e94f1143393b8f07b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#affc86f4995bfe88e94f1143393b8f07b">DECIMAL_H</a></td></tr>
-<tr class="memitem:a7a155f9188b9b83cd40dafccc0b59b61" id="r_a7a155f9188b9b83cd40dafccc0b59b61"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a155f9188b9b83cd40dafccc0b59b61">STR_TO_DECIMAL</a>(x)</td></tr>
-<tr class="memitem:a261bd8f8874ffe8d498f9c3cb9af7f5c" id="r_a261bd8f8874ffe8d498f9c3cb9af7f5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a261bd8f8874ffe8d498f9c3cb9af7f5c">DECIMAL</a>(x)</td></tr>
-<tr class="memitem:adb7c3a168fb2dae974fd520cbc3aca4d" id="r_adb7c3a168fb2dae974fd520cbc3aca4d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb7c3a168fb2dae974fd520cbc3aca4d">DECIMAL_M_E</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_E)           /* e */</td></tr>
-<tr class="memitem:a7759253b1830f717df4e9956191985f6" id="r_a7759253b1830f717df4e9956191985f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7759253b1830f717df4e9956191985f6">DECIMAL_M_LOG2E</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LOG2E)       /* log_2 e */</td></tr>
-<tr class="memitem:ab0e9ec896c607297069fb48a163a5155" id="r_ab0e9ec896c607297069fb48a163a5155"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0e9ec896c607297069fb48a163a5155">DECIMAL_M_LOG10E</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LOG10E)      /* log_10 e */</td></tr>
-<tr class="memitem:af45501daadddc6b37e8565c1b618803c" id="r_af45501daadddc6b37e8565c1b618803c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af45501daadddc6b37e8565c1b618803c">DECIMAL_M_LN2</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LN2)         /* log_e 2 */</td></tr>
-<tr class="memitem:a057efc464c7458a952d79d44bb1a0eec" id="r_a057efc464c7458a952d79d44bb1a0eec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a057efc464c7458a952d79d44bb1a0eec">DECIMAL_M_LN10</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LN10)        /* log_e 10 */</td></tr>
-<tr class="memitem:a4239f65c1338d3621c3f5ce50d8ae928" id="r_a4239f65c1338d3621c3f5ce50d8ae928"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4239f65c1338d3621c3f5ce50d8ae928">DECIMAL_M_PI</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_PI)          /* pi */</td></tr>
-<tr class="memitem:a9eebd6e84e82d7ebb1eb46b3fe0a2679" id="r_a9eebd6e84e82d7ebb1eb46b3fe0a2679"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9eebd6e84e82d7ebb1eb46b3fe0a2679">DECIMAL_M_PI_2</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_PI_2)        /* pi/2 */</td></tr>
-<tr class="memitem:a5365adec6c470e04e3c3677276bdc280" id="r_a5365adec6c470e04e3c3677276bdc280"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5365adec6c470e04e3c3677276bdc280">DECIMAL_M_PI_4</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_PI_4)        /* pi/4 */</td></tr>
-<tr class="memitem:a89d8e637d15ccbfddbcfbbe06fd0dd70" id="r_a89d8e637d15ccbfddbcfbbe06fd0dd70"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89d8e637d15ccbfddbcfbbe06fd0dd70">DECIMAL_M_1_PI</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_1_PI)        /* 1/pi */</td></tr>
-<tr class="memitem:a15735ad0b5b14da97c2178edd6228edd" id="r_a15735ad0b5b14da97c2178edd6228edd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15735ad0b5b14da97c2178edd6228edd">DECIMAL_M_2_PI</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_2_PI)        /* 2/pi */</td></tr>
-<tr class="memitem:a850856ae2421d80dec62fc6c36d26982" id="r_a850856ae2421d80dec62fc6c36d26982"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a850856ae2421d80dec62fc6c36d26982">DECIMAL_M_2_SQRTPI</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_2_SQRTPI)    /* 2/sqrt(pi) */</td></tr>
-<tr class="memitem:a386a0c2d14d7ddeae07a7cc94f323dfb" id="r_a386a0c2d14d7ddeae07a7cc94f323dfb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a386a0c2d14d7ddeae07a7cc94f323dfb">DECIMAL_M_SQRT2</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_SQRT2)       /* sqrt(2) */</td></tr>
-<tr class="memitem:a83f92097e3d861905cafe34266f2eb85" id="r_a83f92097e3d861905cafe34266f2eb85"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a83f92097e3d861905cafe34266f2eb85">DECIMAL_M_SQRT1_2</a>&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_SQRT1_2)     /* 1/sqrt(2) */</td></tr>
-<tr class="memitem:a3e2c08cf2cbb9071d37e64ec0444edad" id="r_a3e2c08cf2cbb9071d37e64ec0444edad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e2c08cf2cbb9071d37e64ec0444edad">DECIMAL_POW</a>(base,  power)</td></tr>
-<tr class="memitem:aadce8b7d5c59d658cb596671b3330d02" id="r_aadce8b7d5c59d658cb596671b3330d02"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aadce8b7d5c59d658cb596671b3330d02">DECIMAL_SQRT</a>(x)</td></tr>
-<tr class="memitem:a0f5f80288df1dfd2b557bfdb3790dbc6" id="r_a0f5f80288df1dfd2b557bfdb3790dbc6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f5f80288df1dfd2b557bfdb3790dbc6">DECIMAL_LOG</a>(x)</td></tr>
-<tr class="memitem:aecfbc39709657fd5eecb522d45a9ab54" id="r_aecfbc39709657fd5eecb522d45a9ab54"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aecfbc39709657fd5eecb522d45a9ab54">DECIMAL_EXP</a>(x)</td></tr>
-<tr class="memitem:ad9ba1d630c8789578b5f7a31b1d22c51" id="r_ad9ba1d630c8789578b5f7a31b1d22c51"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad9ba1d630c8789578b5f7a31b1d22c51">DECIMAL_ERF</a>(x)</td></tr>
-<tr class="memitem:a2562bda367ecef5f1c60df62450e23ad" id="r_a2562bda367ecef5f1c60df62450e23ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2562bda367ecef5f1c60df62450e23ad">DECIMAL_ROUND</a>(x)</td></tr>
-<tr class="memitem:a9f4f1ed42bca607dbe2a3326f9612ad6" id="r_a9f4f1ed42bca607dbe2a3326f9612ad6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f4f1ed42bca607dbe2a3326f9612ad6">DECIMAL_CEIL</a>(x)</td></tr>
-<tr class="memitem:af8bb135de5573bfe8c0d7d43cacacee9" id="r_af8bb135de5573bfe8c0d7d43cacacee9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8bb135de5573bfe8c0d7d43cacacee9">DECIMAL_FLOOR</a>(x)</td></tr>
-<tr class="memitem:a9c74c7f21e27343c8a46da2ea345054d" id="r_a9c74c7f21e27343c8a46da2ea345054d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c74c7f21e27343c8a46da2ea345054d">DECIMAL_ABS</a>(x)</td></tr>
-<tr class="memitem:a904c27af59c769840fd8e7fe742affd2" id="r_a904c27af59c769840fd8e7fe742affd2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a904c27af59c769840fd8e7fe742affd2">DECIMAL_SIN</a>(x)</td></tr>
-<tr class="memitem:aec47c5335165b89764e2d598af713495" id="r_aec47c5335165b89764e2d598af713495"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec47c5335165b89764e2d598af713495">DECIMAL_COS</a>(x)</td></tr>
-<tr class="memitem:a0722894990fe7d0ab7824f52dbbc9b1a" id="r_a0722894990fe7d0ab7824f52dbbc9b1a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0722894990fe7d0ab7824f52dbbc9b1a">DECIMAL_TAN</a>(x)</td></tr>
-<tr class="memitem:a09f424203ece4d54fdf0803dae4ef650" id="r_a09f424203ece4d54fdf0803dae4ef650"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09f424203ece4d54fdf0803dae4ef650">DECIMAL_ASIN</a>(x)</td></tr>
-<tr class="memitem:aee57d54bc1c144bea46cd7e049f50aac" id="r_aee57d54bc1c144bea46cd7e049f50aac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aee57d54bc1c144bea46cd7e049f50aac">DECIMAL_ACOS</a>(x)</td></tr>
-<tr class="memitem:ab83c62825423d139a8fc951417f38f75" id="r_ab83c62825423d139a8fc951417f38f75"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab83c62825423d139a8fc951417f38f75">DECIMAL_ATAN</a>(x)</td></tr>
-<tr class="memitem:ab47e1ed4f2b4c9e27bc3eac8692dc0f8" id="r_ab47e1ed4f2b4c9e27bc3eac8692dc0f8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab47e1ed4f2b4c9e27bc3eac8692dc0f8">DECIMAL_ATAN2</a>(x,  y)</td></tr>
-<tr class="memitem:a48c6d79be3f117fa2e9858e923a67d87" id="r_a48c6d79be3f117fa2e9858e923a67d87"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48c6d79be3f117fa2e9858e923a67d87">DECIMAL_HYPOT</a>(x,  y)</td></tr>
-<tr class="memitem:a69a133ed7ceb30ba9269cbfc2957e700" id="r_a69a133ed7ceb30ba9269cbfc2957e700"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69a133ed7ceb30ba9269cbfc2957e700">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)</td></tr>
-<tr class="memitem:aa852bb8186c17d467451eeebc6d3e0ff" id="r_aa852bb8186c17d467451eeebc6d3e0ff"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa852bb8186c17d467451eeebc6d3e0ff">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)</td></tr>
-<tr class="memitem:a4332086d71e5c3c6ca868038c730a2f1" id="r_a4332086d71e5c3c6ca868038c730a2f1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4332086d71e5c3c6ca868038c730a2f1">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)</td></tr>
-<tr class="memitem:a443c62ce8b70eb9172b07350040d424d" id="r_a443c62ce8b70eb9172b07350040d424d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a443c62ce8b70eb9172b07350040d424d">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)</td></tr>
-<tr class="memitem:a62fbb64e63026c89bedbd27b575f23b3" id="r_a62fbb64e63026c89bedbd27b575f23b3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62fbb64e63026c89bedbd27b575f23b3">LOST_CLI_OPTION</a>(name,  type,  prop,  defaultVal,  converter,  defaultArg)</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad716669cae846c56701cf10aff6f8e5f" id="r_ad716669cae846c56701cf10aff6f8e5f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad716669cae846c56701cf10aff6f8e5f">lost::atobool</a> (const char *cstr)</td></tr>
-<tr class="memdesc:ad716669cae846c56701cf10aff6f8e5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert string to boolean.  <br /></td></tr>
 <tr class="memitem:a3c04138a5bfe5d72780bb7e82a18e627" id="r_a3c04138a5bfe5d72780bb7e82a18e627"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c04138a5bfe5d72780bb7e82a18e627">main</a> (int argc, char **argv)</td></tr>
 </table>
-<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
-<a id="a261bd8f8874ffe8d498f9c3cb9af7f5c" name="a261bd8f8874ffe8d498f9c3cb9af7f5c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a261bd8f8874ffe8d498f9c3cb9af7f5c">&#9670;&#160;</a></span>DECIMAL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) x)</div>
-<div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> <a href="decimal_8hpp_source.html#l00008">decimal.hpp:8</a></div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a9c74c7f21e27343c8a46da2ea345054d" name="a9c74c7f21e27343c8a46da2ea345054d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c74c7f21e27343c8a46da2ea345054d">&#9670;&#160;</a></span>DECIMAL_ABS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ABS</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::abs(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aee57d54bc1c144bea46cd7e049f50aac" name="aee57d54bc1c144bea46cd7e049f50aac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee57d54bc1c144bea46cd7e049f50aac">&#9670;&#160;</a></span>DECIMAL_ACOS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ACOS</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::acos(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a09f424203ece4d54fdf0803dae4ef650" name="a09f424203ece4d54fdf0803dae4ef650"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09f424203ece4d54fdf0803dae4ef650">&#9670;&#160;</a></span>DECIMAL_ASIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ASIN</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::asin(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="ab83c62825423d139a8fc951417f38f75" name="ab83c62825423d139a8fc951417f38f75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab83c62825423d139a8fc951417f38f75">&#9670;&#160;</a></span>DECIMAL_ATAN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ATAN</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::atan(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="ab47e1ed4f2b4c9e27bc3eac8692dc0f8" name="ab47e1ed4f2b4c9e27bc3eac8692dc0f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab47e1ed4f2b4c9e27bc3eac8692dc0f8">&#9670;&#160;</a></span>DECIMAL_ATAN2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ATAN2</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::atan2(x,y))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a9f4f1ed42bca607dbe2a3326f9612ad6" name="a9f4f1ed42bca607dbe2a3326f9612ad6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f4f1ed42bca607dbe2a3326f9612ad6">&#9670;&#160;</a></span>DECIMAL_CEIL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_CEIL</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::ceil(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aec47c5335165b89764e2d598af713495" name="aec47c5335165b89764e2d598af713495"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec47c5335165b89764e2d598af713495">&#9670;&#160;</a></span>DECIMAL_COS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_COS</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::cos(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="ad9ba1d630c8789578b5f7a31b1d22c51" name="ad9ba1d630c8789578b5f7a31b1d22c51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9ba1d630c8789578b5f7a31b1d22c51">&#9670;&#160;</a></span>DECIMAL_ERF</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ERF</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::erf(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aecfbc39709657fd5eecb522d45a9ab54" name="aecfbc39709657fd5eecb522d45a9ab54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aecfbc39709657fd5eecb522d45a9ab54">&#9670;&#160;</a></span>DECIMAL_EXP</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_EXP</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::exp(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="af8bb135de5573bfe8c0d7d43cacacee9" name="af8bb135de5573bfe8c0d7d43cacacee9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8bb135de5573bfe8c0d7d43cacacee9">&#9670;&#160;</a></span>DECIMAL_FLOOR</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_FLOOR</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::floor(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="affc86f4995bfe88e94f1143393b8f07b" name="affc86f4995bfe88e94f1143393b8f07b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#affc86f4995bfe88e94f1143393b8f07b">&#9670;&#160;</a></span>DECIMAL_H</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_H</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a48c6d79be3f117fa2e9858e923a67d87" name="a48c6d79be3f117fa2e9858e923a67d87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48c6d79be3f117fa2e9858e923a67d87">&#9670;&#160;</a></span>DECIMAL_HYPOT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_HYPOT</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::hypot(x,y))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a0f5f80288df1dfd2b557bfdb3790dbc6" name="a0f5f80288df1dfd2b557bfdb3790dbc6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f5f80288df1dfd2b557bfdb3790dbc6">&#9670;&#160;</a></span>DECIMAL_LOG</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_LOG</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::log(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a89d8e637d15ccbfddbcfbbe06fd0dd70" name="a89d8e637d15ccbfddbcfbbe06fd0dd70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89d8e637d15ccbfddbcfbbe06fd0dd70">&#9670;&#160;</a></span>DECIMAL_M_1_PI</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_1_PI&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_1_PI)        /* 1/pi */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a15735ad0b5b14da97c2178edd6228edd" name="a15735ad0b5b14da97c2178edd6228edd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a15735ad0b5b14da97c2178edd6228edd">&#9670;&#160;</a></span>DECIMAL_M_2_PI</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_2_PI&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_2_PI)        /* 2/pi */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a850856ae2421d80dec62fc6c36d26982" name="a850856ae2421d80dec62fc6c36d26982"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a850856ae2421d80dec62fc6c36d26982">&#9670;&#160;</a></span>DECIMAL_M_2_SQRTPI</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_2_SQRTPI&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_2_SQRTPI)    /* 2/sqrt(pi) */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adb7c3a168fb2dae974fd520cbc3aca4d" name="adb7c3a168fb2dae974fd520cbc3aca4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb7c3a168fb2dae974fd520cbc3aca4d">&#9670;&#160;</a></span>DECIMAL_M_E</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_E&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_E)           /* e */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a057efc464c7458a952d79d44bb1a0eec" name="a057efc464c7458a952d79d44bb1a0eec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a057efc464c7458a952d79d44bb1a0eec">&#9670;&#160;</a></span>DECIMAL_M_LN10</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_LN10&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LN10)        /* log_e 10 */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af45501daadddc6b37e8565c1b618803c" name="af45501daadddc6b37e8565c1b618803c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af45501daadddc6b37e8565c1b618803c">&#9670;&#160;</a></span>DECIMAL_M_LN2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_LN2&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LN2)         /* log_e 2 */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab0e9ec896c607297069fb48a163a5155" name="ab0e9ec896c607297069fb48a163a5155"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0e9ec896c607297069fb48a163a5155">&#9670;&#160;</a></span>DECIMAL_M_LOG10E</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_LOG10E&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LOG10E)      /* log_10 e */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7759253b1830f717df4e9956191985f6" name="a7759253b1830f717df4e9956191985f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7759253b1830f717df4e9956191985f6">&#9670;&#160;</a></span>DECIMAL_M_LOG2E</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_LOG2E&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_LOG2E)       /* log_2 e */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4239f65c1338d3621c3f5ce50d8ae928" name="a4239f65c1338d3621c3f5ce50d8ae928"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4239f65c1338d3621c3f5ce50d8ae928">&#9670;&#160;</a></span>DECIMAL_M_PI</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_PI&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_PI)          /* pi */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9eebd6e84e82d7ebb1eb46b3fe0a2679" name="a9eebd6e84e82d7ebb1eb46b3fe0a2679"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9eebd6e84e82d7ebb1eb46b3fe0a2679">&#9670;&#160;</a></span>DECIMAL_M_PI_2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_PI_2&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_PI_2)        /* pi/2 */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5365adec6c470e04e3c3677276bdc280" name="a5365adec6c470e04e3c3677276bdc280"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5365adec6c470e04e3c3677276bdc280">&#9670;&#160;</a></span>DECIMAL_M_PI_4</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_PI_4&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_PI_4)        /* pi/4 */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a83f92097e3d861905cafe34266f2eb85" name="a83f92097e3d861905cafe34266f2eb85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83f92097e3d861905cafe34266f2eb85">&#9670;&#160;</a></span>DECIMAL_M_SQRT1_2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_SQRT1_2&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_SQRT1_2)     /* 1/sqrt(2) */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a386a0c2d14d7ddeae07a7cc94f323dfb" name="a386a0c2d14d7ddeae07a7cc94f323dfb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a386a0c2d14d7ddeae07a7cc94f323dfb">&#9670;&#160;</a></span>DECIMAL_M_SQRT2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_M_SQRT2&#160;&#160;&#160;((<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) M_SQRT2)       /* sqrt(2) */</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3e2c08cf2cbb9071d37e64ec0444edad" name="a3e2c08cf2cbb9071d37e64ec0444edad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e2c08cf2cbb9071d37e64ec0444edad">&#9670;&#160;</a></span>DECIMAL_POW</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_POW</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>base</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>power</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::pow(base, power))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a2562bda367ecef5f1c60df62450e23ad" name="a2562bda367ecef5f1c60df62450e23ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2562bda367ecef5f1c60df62450e23ad">&#9670;&#160;</a></span>DECIMAL_ROUND</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_ROUND</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::round(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a904c27af59c769840fd8e7fe742affd2" name="a904c27af59c769840fd8e7fe742affd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a904c27af59c769840fd8e7fe742affd2">&#9670;&#160;</a></span>DECIMAL_SIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_SIN</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::sin(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aadce8b7d5c59d658cb596671b3330d02" name="aadce8b7d5c59d658cb596671b3330d02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadce8b7d5c59d658cb596671b3330d02">&#9670;&#160;</a></span>DECIMAL_SQRT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_SQRT</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::sqrt(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a0722894990fe7d0ab7824f52dbbc9b1a" name="a0722894990fe7d0ab7824f52dbbc9b1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0722894990fe7d0ab7824f52dbbc9b1a">&#9670;&#160;</a></span>DECIMAL_TAN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DECIMAL_TAN</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">((<a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>) std::tan(x))</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a62fbb64e63026c89bedbd27b575f23b3" name="a62fbb64e63026c89bedbd27b575f23b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62fbb64e63026c89bedbd27b575f23b3">&#9670;&#160;</a></span>LOST_CLI_OPTION <span class="overload">[1/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_CLI_OPTION</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>prop</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultVal</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>converter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultArg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                <span class="keywordflow">case</span> (<span class="keywordtype">int</span>)PipelineCliOption::prop :                         \</div>
-<div class="line">                    if (defaultArg == 0) {    \</div>
-<div class="line">                        pipelineOptions.prop = converter;       \</div>
-<div class="line">                    } <span class="keywordflow">else</span> {                                    \</div>
-<div class="line">                        if (<a class="code hl_define" href="#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a>()) {           \</div>
-<div class="line">                            pipelineOptions.prop = converter;   \</div>
-<div class="line">                        } <span class="keywordflow">else</span> {                                \</div>
-<div class="line">                            pipelineOptions.prop = defaultArg;  \</div>
-<div class="line">                        }                                       \</div>
-<div class="line">                    }                                           \</div>
-<div class="line">            <span class="keywordflow">break</span>;</div>
-<div class="ttc" id="amain_8cpp_html_a089bd9a13d6fb6149353c65fdf20f83c"><div class="ttname"><a href="#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a></div><div class="ttdeci">#define LOST_OPTIONAL_OPTARG()</div><div class="ttdoc">Handle optional CLI arguments https://stackoverflow.com/a/69177115.</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00120">main.cpp:120</a></div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a443c62ce8b70eb9172b07350040d424d" name="a443c62ce8b70eb9172b07350040d424d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a443c62ce8b70eb9172b07350040d424d">&#9670;&#160;</a></span>LOST_CLI_OPTION <span class="overload">[2/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_CLI_OPTION</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>prop</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultVal</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>converter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultArg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">            {name,                                                      \</div>
-<div class="line">             defaultArg == 0 ? required_argument : optional_argument, \</div>
-<div class="line">             0,                                                         \</div>
-<div class="line">             (int)PipelineCliOption::prop},</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a4332086d71e5c3c6ca868038c730a2f1" name="a4332086d71e5c3c6ca868038c730a2f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4332086d71e5c3c6ca868038c730a2f1">&#9670;&#160;</a></span>LOST_CLI_OPTION <span class="overload">[3/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_CLI_OPTION</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>prop</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultVal</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>converter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultArg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">prop,</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="aa852bb8186c17d467451eeebc6d3e0ff" name="aa852bb8186c17d467451eeebc6d3e0ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa852bb8186c17d467451eeebc6d3e0ff">&#9670;&#160;</a></span>LOST_CLI_OPTION <span class="overload">[4/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_CLI_OPTION</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>prop</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultVal</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>converter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultArg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                <span class="keywordflow">case</span> (<span class="keywordtype">int</span>)DatabaseCliOption::prop :                     \</div>
-<div class="line">                    if (defaultArg == 0) {     \</div>
-<div class="line">                        databaseOptions.prop = converter;       \</div>
-<div class="line">                    } <span class="keywordflow">else</span> {                                    \</div>
-<div class="line">                        if (<a class="code hl_define" href="#a089bd9a13d6fb6149353c65fdf20f83c">LOST_OPTIONAL_OPTARG</a>()) {           \</div>
-<div class="line">                            databaseOptions.prop = converter;   \</div>
-<div class="line">                        } <span class="keywordflow">else</span> {                                \</div>
-<div class="line">                            databaseOptions.prop = defaultArg;  \</div>
-<div class="line">                        }                                       \</div>
-<div class="line">                    }                                           \</div>
-<div class="line">            <span class="keywordflow">break</span>;</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a69a133ed7ceb30ba9269cbfc2957e700" name="a69a133ed7ceb30ba9269cbfc2957e700"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69a133ed7ceb30ba9269cbfc2957e700">&#9670;&#160;</a></span>LOST_CLI_OPTION <span class="overload">[5/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_CLI_OPTION</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>prop</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultVal</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>converter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultArg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">            {name,                                                      \</div>
-<div class="line">             defaultArg == 0 ? required_argument : optional_argument, \</div>
-<div class="line">             0,                                                         \</div>
-<div class="line">             (int)DatabaseCliOption::prop},</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a68d9f1b201a18b8388ba6593ab8039f6" name="a68d9f1b201a18b8388ba6593ab8039f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68d9f1b201a18b8388ba6593ab8039f6">&#9670;&#160;</a></span>LOST_CLI_OPTION <span class="overload">[6/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_CLI_OPTION</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>prop</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultVal</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>converter</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>defaultArg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">prop,</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a089bd9a13d6fb6149353c65fdf20f83c" name="a089bd9a13d6fb6149353c65fdf20f83c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a089bd9a13d6fb6149353c65fdf20f83c">&#9670;&#160;</a></span>LOST_OPTIONAL_OPTARG</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOST_OPTIONAL_OPTARG</td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    ((optarg == NULL &amp;&amp; optind &lt; argc &amp;&amp; argv[optind][0] != <span class="charliteral">&#39;-&#39;</span>) \</div>
-<div class="line">     ? (bool) (optarg = argv[optind++])                          \</div>
-<div class="line">     : (optarg != NULL))</div>
-</div><!-- fragment -->
-<p>Handle optional CLI arguments <a href="https://stackoverflow.com/a/69177115">https://stackoverflow.com/a/69177115</a>. </p>
-
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00120">120</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a7a155f9188b9b83cd40dafccc0b59b61" name="a7a155f9188b9b83cd40dafccc0b59b61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a155f9188b9b83cd40dafccc0b59b61">&#9670;&#160;</a></span>STR_TO_DECIMAL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STR_TO_DECIMAL</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">std::stod(x)</div>
-</div><!-- fragment -->
-</div>
-</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="a3c04138a5bfe5d72780bb7e82a18e627" name="a3c04138a5bfe5d72780bb7e82a18e627"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3c04138a5bfe5d72780bb7e82a18e627">&#9670;&#160;</a></span>main()</h2>
@@ -1160,7 +227,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00250">250</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00615">615</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>

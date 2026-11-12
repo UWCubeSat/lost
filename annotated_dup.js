@@ -35,7 +35,7 @@ var annotated_dup =
       [ "PipelineOutput", "structlost_1_1PipelineOutput.html", "structlost_1_1PipelineOutput" ],
       [ "StarIdComparison", "structlost_1_1StarIdComparison.html", "structlost_1_1StarIdComparison" ],
       [ "Pipeline", "classlost_1_1Pipeline.html", "classlost_1_1Pipeline" ],
-      [ "DatabaseOptions", "classlost_1_1DatabaseOptions.html", null ],
+      [ "DatabaseOptions", "classlost_1_1DatabaseOptions.html", "classlost_1_1DatabaseOptions" ],
       [ "SerializeContext", "classlost_1_1SerializeContext.html", "classlost_1_1SerializeContext" ],
       [ "DeserializeContext", "classlost_1_1DeserializeContext.html", "classlost_1_1DeserializeContext" ],
       [ "IRUnidentifiedCentroid", "classlost_1_1IRUnidentifiedCentroid.html", "classlost_1_1IRUnidentifiedCentroid" ],

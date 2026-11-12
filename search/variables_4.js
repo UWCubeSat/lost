@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flags_0',['flags',['../classlost_1_1MultiDatabaseEntry.html#ace2cf20a17ec8c58e40965438df8df06',1,'lost::MultiDatabaseEntry']]]
+  ['estimatednumfalsestars_0',['estimatedNumFalseStars',['../classlost_1_1PipelineOptions.html#ac5ffd25c4a637b550114ef6b248bb136',1,'lost::PipelineOptions']]]
 ];

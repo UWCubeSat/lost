@@ -1,8 +1,13 @@
 var searchData=
 [
-  ['magicvalue_0',['magicValue',['../classlost_1_1MultiDatabaseEntry.html#aeede63708b59ea0086338286eef438c8',1,'lost::MultiDatabaseEntry']]],
-  ['magnitude_1',['magnitude',['../classlost_1_1CatalogStar.html#aac362b166dd1a5cfe95e33a7e2d18e3a',1,'lost::CatalogStar::magnitude'],['../classlost_1_1Star.html#aa39328327649f570b9008f08951af7bf',1,'lost::Star::magnitude']]],
-  ['magsum_2',['magSum',['../structlost_1_1CentroidParams.html#aedcfd69a00c255c1e9166508ee5e58ff',1,'lost::CentroidParams']]],
-  ['maxintensity_3',['maxIntensity',['../structlost_1_1IWCoGParams.html#a0b8ea8754acc0d8d48f6ef9cb1cc326c',1,'lost::IWCoGParams']]],
-  ['meanerror_4',['meanError',['../classlost_1_1CentroidComparison.html#abf8602cb33542eb054672deafccfdde8',1,'lost::CentroidComparison']]]
+  ['k_0',['k',['../classlost_1_1Quaternion.html#a5b3471fa3003bd2cfa1ec40dfe75bcca',1,'lost::Quaternion']]],
+  ['kanglefrom90softthreshold_1',['kAngleFrom90SoftThreshold',['../namespacelost.html#a10f83f3109f16381af2ee6b56e586271',1,'lost']]],
+  ['kcatalogmagicvalue_2',['kCatalogMagicValue',['../namespacelost.html#a280b11c878f729f878b2968037ccbc3d',1,'lost']]],
+  ['kidentitymat3_3',['kIdentityMat3',['../namespacelost.html#a66abb8e44054268322b5ccba535bb975',1,'lost']]],
+  ['kmagicvalue_4',['kMagicValue',['../classlost_1_1PairDistanceKVectorDatabase.html#a6d5d477e5e2d9557f0e284e917361a54',1,'lost::PairDistanceKVectorDatabase::kMagicValue'],['../classlost_1_1TetraDatabase.html#a6b4518dc4fcc1158d8927256f520f5a2',1,'lost::TetraDatabase::kMagicValue']]],
+  ['kmaxbrightness_5',['kMaxBrightness',['../namespacelost.html#a9b3311f3ebda1282ad7bf650de30cf45',1,'lost']]],
+  ['kvector_6',['kvector',['../classlost_1_1DatabaseOptions.html#af7894c3539eb5d79faa9675e52d2ea97',1,'lost::DatabaseOptions']]],
+  ['kvectormaxdistance_7',['kvectorMaxDistance',['../classlost_1_1DatabaseOptions.html#ab15ecb5302166f90dd64771e7f784037',1,'lost::DatabaseOptions']]],
+  ['kvectormindistance_8',['kvectorMinDistance',['../classlost_1_1DatabaseOptions.html#ada715930f1c27232ad0ea410c7a7835f',1,'lost::DatabaseOptions']]],
+  ['kvectornumdistancebins_9',['kvectorNumDistanceBins',['../classlost_1_1DatabaseOptions.html#a3dee9c69a127c5b896443008059428a7',1,'lost::DatabaseOptions']]]
 ];
