@@ -1,7 +1,7 @@
 var searchData=
 [
   ['badthreshold_0',['BadThreshold',['../namespacelost.html#a27ae3010999abecce396cebbdee8ef0d',1,'lost']]],
-  ['basicthreshold_1',['BasicThreshold',['../namespacelost.html#ae369ca6366d9b3c350a14a403107641a',1,'lost']]],
+  ['basicthreshold_1',['BasicThreshold',['../namespacelost.html#ad1dbff4deef51811c744f6316281c9c9',1,'lost']]],
   ['basicthresholdonepass_2',['BasicThresholdOnePass',['../namespacelost.html#acd1a58a1120e97d8cf060e3e9b11576c',1,'lost']]],
   ['bestanglefrom90_3',['bestAngleFrom90',['../classlost_1_1IRUnidentifiedCentroid.html#af7d40149f6387faa1aa0c8e54d2f0381',1,'lost::IRUnidentifiedCentroid']]],
   ['beststar1_4',['bestStar1',['../classlost_1_1IRUnidentifiedCentroid.html#aab377ad525cebf57723091ad9e4a4ee1',1,'lost::IRUnidentifiedCentroid']]],

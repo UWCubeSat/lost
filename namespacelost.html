@@ -254,7 +254,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a96ba4670682e2bfdbe3fd350b0162e38" id="r_a96ba4670682e2bfdbe3fd350b0162e38"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96ba4670682e2bfdbe3fd350b0162e38">FocalLengthToFov</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> focalLength, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> xResolution, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> pixelSize)</td></tr>
 <tr class="memitem:a27ae3010999abecce396cebbdee8ef0d" id="r_a27ae3010999abecce396cebbdee8ef0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27ae3010999abecce396cebbdee8ef0d">BadThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
 <tr class="memitem:a1c383b038ea9376eacf4858247d765be" id="r_a1c383b038ea9376eacf4858247d765be"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c383b038ea9376eacf4858247d765be">OtsusThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
-<tr class="memitem:ae369ca6366d9b3c350a14a403107641a" id="r_ae369ca6366d9b3c350a14a403107641a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae369ca6366d9b3c350a14a403107641a">BasicThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
+<tr class="memitem:ad1dbff4deef51811c744f6316281c9c9" id="r_ad1dbff4deef51811c744f6316281c9c9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1dbff4deef51811c744f6316281c9c9">BasicThreshold</a> (unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; unsigned char &gt; *rowMax=nullptr)</td></tr>
 <tr class="memitem:acd1a58a1120e97d8cf060e3e9b11576c" id="r_acd1a58a1120e97d8cf060e3e9b11576c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acd1a58a1120e97d8cf060e3e9b11576c">BasicThresholdOnePass</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
 <tr class="memitem:a789d628bbeab011d5552a6dc551b77a2" id="r_a789d628bbeab011d5552a6dc551b77a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a789d628bbeab011d5552a6dc551b77a2">IWCoGHelper</a> (<a class="el" href="structlost_1_1IWCoGParams.html">IWCoGParams</a> *p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; int &gt; *starIndices)</td></tr>
 <tr class="memitem:a9a6ccd2f576c452a68db8152dc2edb24" id="r_a9a6ccd2f576c452a68db8152dc2edb24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a6ccd2f576c452a68db8152dc2edb24">isFlagSet</a> (uint32_t dbFlags, uint32_t flag)</td></tr>
@@ -827,12 +827,12 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00029">29</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00030">30</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ae369ca6366d9b3c350a14a403107641a" name="ae369ca6366d9b3c350a14a403107641a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae369ca6366d9b3c350a14a403107641a">&#9670;&#160;</a></span>BasicThreshold()</h2>
+<a id="ad1dbff4deef51811c744f6316281c9c9" name="ad1dbff4deef51811c744f6316281c9c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1dbff4deef51811c744f6316281c9c9">&#9670;&#160;</a></span>BasicThreshold()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -850,17 +850,22 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>imageHeight</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>imageHeight</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; unsigned char &gt; *</td>          <td class="paramname"><span class="paramname"><em>rowMax</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00079">79</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00080">80</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacelost_ae369ca6366d9b3c350a14a403107641a_icgraph.png" border="0" usemap="#anamespacelost_ae369ca6366d9b3c350a14a403107641a_icgraph" loading="lazy" alt=""/></div>
-<map name="anamespacelost_ae369ca6366d9b3c350a14a403107641a_icgraph" id="anamespacelost_ae369ca6366d9b3c350a14a403107641a_icgraph">
+<div class="center"><img src="namespacelost_ad1dbff4deef51811c744f6316281c9c9_icgraph.png" border="0" usemap="#anamespacelost_ad1dbff4deef51811c744f6316281c9c9_icgraph" loading="lazy" alt=""/></div>
+<map name="anamespacelost_ad1dbff4deef51811c744f6316281c9c9_icgraph" id="anamespacelost_ad1dbff4deef51811c744f6316281c9c9_icgraph">
 <area shape="rect" title=" " alt="" coords="303,36,455,64"/>
 <area shape="rect" href="classlost_1_1CenterOfGravityAlgorithm.html#a47d588a30c71d8b61f1d7791f2d08ea3" title="Actually perform the centroid detection." alt="" coords="5,5,255,33"/>
 <area shape="poly" title=" " alt="" coords="285,39,247,36,247,31,290,38"/>
@@ -895,7 +900,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00095">95</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00104">104</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 
 </div>
 </div>
@@ -2644,7 +2649,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00197">197</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00211">211</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -2869,7 +2874,7 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00039">39</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00040">40</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 
 </div>
 </div>
@@ -4666,7 +4671,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00183">183</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="centroiders_8cpp_source.html#l00197">197</a> of file <a class="el" href="centroiders_8cpp_source.html">centroiders.cpp</a>.</p>
 
 </div>
 </div>

@@ -1,6 +1,6 @@
 <map id="lost::IterativeWeightedCenterOfGravityAlgorithm::Go" name="lost::IterativeWeightedCenterOfGravityAlgorithm::Go">
 <area shape="rect" id="Node000001" title="Actually perform the centroid detection." alt="" coords="5,36,218,80"/>
-<area shape="rect" id="Node000002" href="$namespacelost.html#ae369ca6366d9b3c350a14a403107641a" title=" " alt="" coords="266,5,418,33"/>
+<area shape="rect" id="Node000002" href="$namespacelost.html#ad1dbff4deef51811c744f6316281c9c9" title=" " alt="" coords="266,5,418,33"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="217,37,253,34,248,35,219,43"/>
 <area shape="rect" id="Node000003" href="$namespacelost.html#a789d628bbeab011d5552a6dc551b77a2" title=" " alt="" coords="272,81,412,109"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="218,72,259,81,254,81,218,78"/>

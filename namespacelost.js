@@ -64,7 +64,7 @@ var namespacelost =
     [ "AngleUnit", "namespacelost.html#a4d066d222770cdbde925ab67813193dc", null ],
     [ "ArcSecToRad", "namespacelost.html#a0bf2bbf8b3bc82f9647c9f327d1369de", null ],
     [ "BadThreshold", "namespacelost.html#a27ae3010999abecce396cebbdee8ef0d", null ],
-    [ "BasicThreshold", "namespacelost.html#ae369ca6366d9b3c350a14a403107641a", null ],
+    [ "BasicThreshold", "namespacelost.html#ad1dbff4deef51811c744f6316281c9c9", null ],
     [ "BasicThresholdOnePass", "namespacelost.html#acd1a58a1120e97d8cf060e3e9b11576c", null ],
     [ "BscParse", "namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f", null ],
     [ "CatalogRead", "namespacelost.html#a41f5bb669129790c12bd70e1d641441f", null ],
