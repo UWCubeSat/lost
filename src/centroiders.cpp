@@ -103,10 +103,10 @@ int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight,
 
 // Is q + k <= mean + 5 * std, where mean = q + r/n?
 static bool WithinThreshold(uint64_t k, uint64_t n, uint64_t r, uint64_t scaledSquares) {
-    uint64_t plus = scaledSquares + 2 * k * r;
-    uint64_t minus = k * k * n;
-    if (plus < minus) return false;
-    uint64_t rest = plus - minus;
+    uint64_t added = scaledSquares + 2 * k * r;
+    uint64_t subtracted = k * k * n;
+    if (added < subtracted) return false;
+    uint64_t rest = added - subtracted;
     if (rest >= 26 * n) return true;
     return 26 * r * r <= n * rest;
 }
