@@ -207,24 +207,28 @@ static CLI::Option* AddCameraOptions(CLI::App* cmd, PipelineOptions& opts) {
 
 static void AddCentroidOptions(CLI::App* cmd, PipelineOptions& opts) {
     const std::string group = "CENTROID OPTIONS";
-    cmd->add_option(
-           "--centroid-algo",
-           opts.centroidAlgo,
-           "Runs the algo centroiding algorithm. Recognized options are: dummy (random centroid "
-           "algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity). "
-           " "
-           "Defaults to dummy if option is not selected.")
-        ->check(CLI::IsMember({"dummy", "cog", "iwcog"}))
-        ->group(group);
+    CLI::Option* centroidAlgo =
+        cmd->add_option("--centroid-algo",
+                        opts.centroidAlgo,
+                        "Runs the algo centroiding algorithm. Recognized options are: dummy "
+                        "(random centroid "
+                        "algorithm), cog (center of gravity), and iwcog (iterative weighted center "
+                        "of gravity). "
+                        "If not selected, the centroiding stage is skipped.")
+            ->check(CLI::IsMember({"dummy", "cog", "iwcog"}))
+            ->group(group);
     cmd->add_option("--centroid-dummy-stars",
                     opts.centroidDummyNumStars,
                     "Runs the dummy centroiding algorithm (random centroid algorithm) with "
                     "num-stars stars centroided. Defaults to 5 if option is not selected.")
         ->check(CLI::NonNegativeNumber)
         ->group(group);
+    // The magnitude filters run on the centroiding stage's output, so they would be silently
+    // ignored without a centroid algorithm.
     cmd->add_option("--centroid-mag-filter",
                     opts.centroidMagFilter,
                     "Will not consider centroids with magnitude below min-mag.")
+        ->needs(centroidAlgo)
         ->group(group);
     cmd->add_option(
            "--centroid-filter-brightest",
@@ -234,6 +238,7 @@ static void AddCentroidOptions(CLI::App* cmd, PipelineOptions& opts) {
            "ensure that you keep enough stars to do star-id. If both this option and "
            "--centroid-mag-filter are provided, then all stars satisfying both criteria are kept "
            "(intersection).")
+        ->needs(centroidAlgo)
         ->group(group);
 }
 
@@ -247,7 +252,8 @@ static void AddStarIdOptions(CLI::App* cmd, PipelineOptions& opts) {
            "--star-id-algo",
            opts.idAlgo,
            "Runs the algo star identification algorithm. Current options are \"dummy\", \"gv\", "
-           "\"tetra\", and \"pyramid\". Defaults to \"dummy\" if option is not selected.")
+           "\"tetra\", and \"py\" (pyramid). If not selected, the star identification stage is "
+           "skipped.")
         ->check(CLI::IsMember({"dummy", "gv", "py", "tetra"}))
         ->group(group);
     cmd->add_option("--angular-tolerance",
@@ -461,7 +467,7 @@ static void AddImageGenerationOptions(CLI::App* cmd, PipelineOptions& opts, CLI:
         ->group(group);
     cmd->add_flag("--generate-time-based-seed",
                   opts.timeSeed,
-                  "If true (the default), uses the current timestamp as a random seed. "
+                  "If set, uses the current timestamp as a random seed. "
                   "--generate-seed is ignored if time based seed is set.")
         ->group(group);
 }
@@ -495,7 +501,7 @@ static void AddComparatorOptions(CLI::App* cmd, PipelineOptions& opts) {
               "labeling the stars with the catalog star they were identified as, labels them with "
               "their centroid index.\n"
               "If a centroid algo was provided, prints those indices. Otherwise, prints the "
-              "\"input centrtoid\" indices, which is whatever would be passed to the star-id algo "
+              "\"input centroid\" indices, which is whatever would be passed to the star-id algo "
               "(so for generated images, after perturbations and magnitude cutoff is applied).");
     addOutput("--print-actual-centroids",
               opts.printActualCentroids,
@@ -525,7 +531,6 @@ static void AddComparatorOptions(CLI::App* cmd, PipelineOptions& opts) {
               opts.printAttitude,
               "Argument is optional. Print the determined right ascension, declination, and roll "
               "to path. TODO: Option to print as quaternion. Defaults to stdout.");
-    // Not documented in the old man page.
     addOutput("--print-expected-attitude",
               opts.printExpectedAttitude,
               "Argument is optional. Print the expected right ascension, declination, and roll to "
@@ -534,10 +539,11 @@ static void AddComparatorOptions(CLI::App* cmd, PipelineOptions& opts) {
               opts.printSpeed,
               "Print the average, min, max, and upper 95th percentile of how long each stage of "
               "the pipeline took to run.");
-    addOutput("--compare-centroids",
-              opts.compareCentroids,
-              "Argument is option. Compare expected to actual centroids. Prints to path. Defaults "
-              "to stdout.");
+    addOutput(
+        "--compare-centroids",
+        opts.compareCentroids,
+        "Argument is optional. Compare expected to actual centroids. Prints to path. Defaults "
+        "to stdout.");
     addOutput("--compare-star-ids",
               opts.compareStarIds,
               "Argument is optional. Compare expected to actual star identifiers. Prints to path. "

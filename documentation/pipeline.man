@@ -111,7 +111,7 @@ Prints the contents of the manual entry for the command to the terminal.
 
 .TP
 \fB--centroid-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random centroid algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity).  Defaults to dummy if option is not selected.
+Runs the \fIalgo\fP centroiding algorithm. Recognized options are: dummy (random centroid algorithm), cog (center of gravity), and iwcog (iterative weighted center of gravity). If not selected, the centroiding stage is skipped.
 
 .TP
 \fB--centroid-dummy-stars\fP \fInum-stars\fP
@@ -121,7 +121,7 @@ Runs the dummy centroiding algorithm (random centroid algorithm) with \fInum-sta
 
 .TP
 \fB--star-id-algo\fP \fIalgo\fP
-Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", "tetra", and "pyramid". Defaults to "dummy" if option is not selected.
+Runs the \fIalgo\fP star identification algorithm. Current options are "dummy", "gv", "tetra", and "py" (pyramid). If not selected, the star identification stage is skipped.
 
 .TP
 \fB--angular-tolerance\fP [\fItolerance\fP] Sets the estimated angular centroiding error tolerance,
@@ -261,7 +261,7 @@ stage we can conveniently compare against!
 
 .TP
 \fB--generate-time-based-seed\fP [\fIenable\fP]
-If true (the default), uses the current timestamp as a random seed. \fB--generate-seed\fP is ignored if time based seed is set.
+If set, uses the current timestamp as a random seed. \fB--generate-seed\fP is ignored if time based seed is set.
 
 .TP
 \fB--plot-raw-input\fP [\fIpath\fP]
