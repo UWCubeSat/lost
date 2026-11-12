@@ -96,7 +96,7 @@ parameters can be explicitly set by using the appropriate flags:
   --generate-x-resolution 1024 \
   --generate-y-resolution 1024 \
   --fov 30 \
-  --generate-reference-brightness 100 \
+  --generate-zero-mag-photons 20000 \
   --generate-spread-stddev 1 \
   --generate-read-noise-stddev 0.05 \
   --generate-ra 88 \

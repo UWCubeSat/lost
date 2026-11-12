@@ -2,11 +2,13 @@
 #define DATABASE_BUILDER_H
 
 #include <stdlib.h>
-#include <inttypes.h>
+
+#include <array>
+#include <cstdint>
 #include <vector>
 
-#include "star-utils.hpp"
 #include "serialize-helpers.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
 
@@ -16,7 +18,7 @@ inline bool isFlagSet(uint32_t dbFlags, uint32_t flag);
 
 /**
  * A data structure enabling constant-time range queries into fixed numerical data.
- * 
+ *
  * @note Not an instantiable database on its own -- used in other databases
  */
 // TODO: QueryConservative, QueryExact, QueryTrapezoidal?
@@ -76,6 +78,68 @@ private:
     const int16_t *pairs;
 };
 
+// Filter star catalog to just the ones that'll be used to generate patterns
+std::vector<uint16_t> TetraPreprocessCatalog(const Catalog&,
+                                             const decimal maxFovDeg,
+                                             int numPatternStarsPerFov);
+
+void SerializeTetraDatabase(SerializeContext*,
+                            const Catalog&,
+                            decimal maxFovDeg,
+                            const std::vector<uint16_t>& catalogPatternStarInds,
+                            int numEdgeRatioBins);
+
+// Tetra star pattern = 4 star IDs (Tetra-internal indices)
+using TetraPattern = std::array<uint16_t, TetraConstants::numPatternStars>;
+
+/**
+ * A database storing Tetra star patterns
+ *
+ * Layout:
+ * | size (bytes)                           | name             | description                                    |
+ * |----------------------------------------+------------------+------------------------------------------------|
+ * | sizeof(decimal)                        | maxFov           | max angle (deg) between any 2 pattern stars    |
+ * | sizeof(int32_t)                        | numEdgeRatioBins | number of bins for edge ratio discretization   |
+ * | sizeof(uint64_t)                       | patternTableSize | number of slots in pattern hash table          |
+ * | sizeof(uint16_t)                       | tetraCatalogSize | number of stars in Tetra preprocessed catalog  |
+ * | 4 * patternTableSize * sizeof(uint16_t)| patternTable     | hash table of 4-star patterns                  |
+ * | tetraCatalogSize * sizeof(uint16_t)    | catalogIndices   | maps Tetra index to real catalog index         |
+ * |----------------------------------------+------------------+------------------------------------------------|
+ */
+class TetraDatabase {
+   public:
+    explicit TetraDatabase(DeserializeContext* des);
+
+    // Max FOV (in degrees) allowed between stars in the same pattern
+    decimal MaxFov() const { return maxFov_; }
+
+    // Number of bins used for edge ratio binning
+    int NumEdgeRatioBins() const { return numEdgeRatioBins_; }
+
+    // Number of slots in the pattern hash table
+    uint64_t PatternTableSize() const { return patternTableSize_; }
+
+    // Get the 4-tuple pattern at index
+    TetraPattern GetPattern(size_t index) const;
+
+    // Returns a list of patterns from the pattern table
+    // Under the hood, start from index and do quadratic probing
+    std::vector<TetraPattern> GetPatternMatches(size_t index) const;
+
+    uint16_t CatalogIndex(int tetraCatalogInd) const;
+
+    /// Magic value to use when storing inside a MultiDatabase
+    static const int32_t kMagicValue;
+
+   private:
+    decimal maxFov_;
+    int32_t numEdgeRatioBins_;
+    uint64_t patternTableSize_;
+    uint16_t tetraCatalogSize_;
+    const uint16_t* patternTable_;
+    const uint16_t* catalogIndices_;
+};
+
 // /**
 //  * @brief Stores "inner angles" between star triples
 //  * @details Unsensitive to first-order error in basic camera
@@ -120,7 +184,7 @@ public:
     std::vector<unsigned char> bytes;
 };
 
-typedef std::vector<MultiDatabaseEntry> MultiDatabaseDescriptor;
+using MultiDatabaseDescriptor = std::vector<MultiDatabaseEntry>;
 
 void SerializeMultiDatabase(SerializeContext *, const MultiDatabaseDescriptor &dbs, uint32_t flags);
 

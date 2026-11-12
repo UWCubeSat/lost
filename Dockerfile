@@ -1,2 +1,2 @@
-FROM gcc:latest
+FROM gcc:15
 RUN apt update && apt upgrade -y && apt install -y libc6-dbg gdb valgrind doxygen graphviz groff xxd libcairo2-dev libeigen3-dev

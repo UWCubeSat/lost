@@ -8,19 +8,40 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    container: huskysat/lost:latest
+    container: gcc:15
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: apt-get update && apt-get install -y groff xxd libcairo2-dev libeigen3-dev
     - name: Build Double
       run: CXXFLAGS=-Werror make -j$(($(nproc)+1))
     - name: Test Double
       run: CXXFLAGS=-Werror make test -j$(($(nproc)+1))
     - name: Build Float
-      run: CXXFLAGS=-Werror make clean all LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
+      run: make clean && CXXFLAGS=-Werror make all LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
     - name: Test Float
       run: CXXFLAGS=-Werror make test LOST_FLOAT_MODE=1 -j$(($(nproc)+1))
-  
+
+  build-and-test-macos:
+    runs-on: macos-latest
+    # AddressSanitizer builds hang on macOS; the Linux job still runs with ASAN.
+    env:
+      LOST_DISABLE_ASAN: 1
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: brew install cairo eigen groff
+    - name: Build Double
+      run: CXXFLAGS=-Werror make -j$(($(sysctl -n hw.ncpu)+1))
+    - name: Test Double
+      run: CXXFLAGS=-Werror make test -j$(($(sysctl -n hw.ncpu)+1))
+    - name: Build Float
+      run: make clean && CXXFLAGS=-Werror make all LOST_FLOAT_MODE=1 -j$(($(sysctl -n hw.ncpu)+1))
+    - name: Test Float
+      run: CXXFLAGS=-Werror make test LOST_FLOAT_MODE=1 -j$(($(sysctl -n hw.ncpu)+1))
+
   lint:
     runs-on: ubuntu-latest
 
@@ -31,4 +52,4 @@ jobs:
     - name: Lint
       run: make lint
     - name: Line Endings
-      uses: erclu/check-crlf@v1
+      uses: erclu/check-crlf@master

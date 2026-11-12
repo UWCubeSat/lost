@@ -5,31 +5,25 @@
 
 #include <cairo/cairo.h>
 
-#include <random>
-#include <vector>
-#include <map>
-#include <utility>
-#include <string>
-#include <sstream>
 #include <iostream>
 #include <memory>
-
+#include <random>
+#include <string>
+#include <vector>
 
 #ifndef CAIRO_HAS_PNG_FUNCTIONS
 #error LOST requires Cairo to be compiled with PNG support
 #endif
 
-#include "centroiders.hpp"
-#include "star-utils.hpp"
-#include "star-id.hpp"
-#include "camera.hpp"
-#include "attitude-utils.hpp"
 #include "attitude-estimators.hpp"
+#include "attitude-utils.hpp"
+#include "camera.hpp"
+#include "centroiders.hpp"
 #include "databases.hpp"
+#include "star-id.hpp"
+#include "star-utils.hpp"
 
 namespace lost {
-
-const char kNoDefaultArgument = 0;
 
 /// An output stream which might be a file or stdout
 class UserSpecifiedOutputStream {
@@ -80,10 +74,73 @@ public:
 /// The command line options passed when running a pipeline
 class PipelineOptions {
 public:
-#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    type prop = defaultVal;
-#include "./pipeline-options.hpp"
-#undef LOST_CLI_OPTION
+    // Camera
+    std::string png = "";
+    decimal focalLength = 0;
+    decimal pixelSize = -1;
+    decimal fov = 20;
+
+    // Pipeline stages
+    std::string centroidAlgo = "";
+    int centroidDummyNumStars = 5;
+    decimal centroidMagFilter = -1;
+    int centroidFilterBrightest = -1;
+    std::string databasePath = "";
+    std::string idAlgo = "";
+    decimal angularTolerance = .04;
+    int estimatedNumFalseStars = 500;
+    decimal maxMismatchProb = .001;
+    std::string attitudeAlgo = "";
+    std::string tetraPairingMode = "triad";
+    decimal tetraPatternSearchRange = 0.001;
+    decimal tetraPatternMatchTolerance = 0.001;
+
+    // Output comparison
+    decimal centroidCompareThreshold = 2;
+    decimal attitudeCompareThreshold = 1;
+    std::string plotRawInput = "";
+    std::string plotInput = "";
+    std::string plotExpected = "";
+    std::string plotCentroidIndices = "";
+    std::string plotOutput = "";
+    std::string printExpectedCentroids = "";
+    std::string printInputCentroids = "";
+    std::string printActualCentroids = "";
+    std::string printAttitude = "";
+    std::string printExpectedAttitude = "";
+    std::string printSpeed = "";
+    std::string compareCentroids = "";
+    std::string compareStarIds = "";
+    std::string compareAttitudes = "";
+
+    // Image generation
+    int generate = 0;
+    int generateXRes = 1024;
+    int generateYRes = 1024;
+    bool generateCentroidsOnly = false;
+    decimal generateZeroMagPhotons = 20000;
+    decimal generateSaturationPhotons = 150;
+    decimal generateSpreadStdDev = 1;
+    bool generateShotNoise = true;
+    decimal generateDarkCurrent = 0.1;
+    decimal generateReadNoiseStdDev = .05;
+    decimal generateRa = 88;
+    decimal generateDe = 7;
+    decimal generateRoll = 0;
+    bool generateRandomAttitudes = false;
+    decimal generateBlurRa = 0;
+    decimal generateBlurDe = 0;
+    decimal generateBlurRoll = 0;
+    decimal generateExposure = 0.2;
+    decimal generateReadoutTime = 0;
+    int generateOversampling = 4;
+    int generateNumFalseStars = 0;
+    decimal generateFalseMinMag = 8;
+    decimal generateFalseMaxMag = 1;
+    decimal generatePerturbationStddev = 0;
+    decimal generateCutoffMag = 6.0;
+    int generateSeed = 394859;
+    bool timeSeed = false;
 };
 
 /**
@@ -282,13 +339,23 @@ StarIdComparison StarIdsCompare(const StarIdentifiers &expected, const StarIdent
 // DB BUILDER //
 ////////////////
 
-/// Commannd line options when using the `database` command.
+/// Command line options when using the `database` command.
 class DatabaseOptions {
 public:
-#define LOST_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-    type prop = defaultVal;
-#include "database-options.hpp"
-#undef LOST_CLI_OPTION
+    decimal minMag = 100;
+    int maxStars = 10000;
+    decimal minSeparation = 0.08;
+    bool kvector = false;
+    decimal kvectorMinDistance = 0.5;
+    decimal kvectorMaxDistance = 15;
+    long kvectorNumDistanceBins = 10000;
+    bool swapIntegerEndianness = false;
+    bool swapDecimalEndianness = false;
+    bool tetra = false;
+    decimal tetraMaxFov = 12;
+    int tetraEdgeRatioBins = 50;
+    int tetraPatternStarsPerFov = 10;
+    std::string outputPath = "-";
 };
 
 SerializeContext serFromDbValues(const DatabaseOptions &values);

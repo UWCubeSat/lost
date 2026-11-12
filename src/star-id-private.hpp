@@ -3,11 +3,12 @@
 #ifndef STAR_ID_PRIVATE_H
 #define STAR_ID_PRIVATE_H
 
+#include <cstdint>
 #include <limits>
 #include <utility>
 #include <vector>
 
-#include "star-id.hpp"
+#include "camera.hpp"
 #include "databases.hpp"
 
 namespace lost {

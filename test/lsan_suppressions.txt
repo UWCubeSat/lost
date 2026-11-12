@@ -1,0 +1,3 @@
+leak:libcairo
+leak:libfontconfig
+leak:libexpat

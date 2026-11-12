@@ -1,9 +1,6 @@
 #ifndef CENTROID_H
 #define CENTROID_H
 
-#include <iostream>
-#include <vector>
-
 #include "star-utils.hpp"
 
 namespace lost {
