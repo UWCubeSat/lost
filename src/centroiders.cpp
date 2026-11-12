@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <algorithm>
 #include <cmath>
 #include <vector>
 #include <unordered_set>
@@ -76,12 +77,20 @@ int OtsusThreshold(unsigned char *image, int imageWidth, int imageHeight) {
 }
 
 // a simple, but well tested thresholding algorithm that works well with star images
-int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight) {
+int BasicThreshold(unsigned char *image, int imageWidth, int imageHeight,
+                   std::vector<unsigned char> *rowMax = nullptr) {
     unsigned long totalMag = 0;
     decimal std = 0;
     long totalPixels = imageHeight * imageWidth;
-    for (long i = 0; i < totalPixels; i++) {
-        totalMag += image[i];
+    if (rowMax != nullptr) rowMax->assign(imageHeight, 0);
+    for (int y = 0; y < imageHeight; y++) {
+        const unsigned char *row = image + (long)y * imageWidth;
+        unsigned char brightest = 0;
+        for (int x = 0; x < imageWidth; x++) {
+            totalMag += row[x];
+            brightest = std::max(brightest, row[x]);
+        }
+        if (rowMax != nullptr) (*rowMax)[y] = brightest;
     }
     decimal mean = DECIMAL(totalMag) / totalPixels;
     for (long i = 0; i < totalPixels; i++) {
@@ -122,56 +131,61 @@ struct CentroidParams {
 std::vector<Star> CenterOfGravityAlgorithm::Go(unsigned char* image, int imageWidth, int imageHeight) const {
     std::vector<Star> result;
 
-    int cutoff = BasicThreshold(image, imageWidth, imageHeight);
+    std::vector<unsigned char> rowMax;
+    int cutoff = BasicThreshold(image, imageWidth, imageHeight, &rowMax);
     const int offsets[] = {1, -1, imageWidth, -imageWidth};
     const long n = imageWidth * imageHeight;
     std::vector<bool> visited(n, false);
 
-    for (long i = 0; i < n; i++) {
-        if (image[i] >= cutoff && !visited[i]) {
-            visited[i] = true;
+    for (int row = 0; row < imageHeight; row++) {
+        if (rowMax[row] < cutoff) continue;
+        const long rowEnd = (long)(row + 1) * imageWidth;
+        for (long i = (long)row * imageWidth; i < rowEnd; i++) {
+            if (image[i] >= cutoff && !visited[i]) {
+                visited[i] = true;
 
-            // If any pixels are on the edge of the image then we don't centroid
-            // this star, in case part of the star is missing
-            bool isValid = true;
-            int centroidSize = 0;
-            std::vector<long> queue = {i};
-            CentroidParams p(i % imageWidth, i / imageWidth);
+                // If any pixels are on the edge of the image then we don't centroid
+                // this star, in case part of the star is missing
+                bool isValid = true;
+                int centroidSize = 0;
+                std::vector<long> queue = {i};
+                CentroidParams p(i % imageWidth, i / imageWidth);
 
-            while (!queue.empty()) {
-                long ind = queue.back();
-                queue.pop_back();
-                centroidSize++;
-                long x = ind % imageWidth, y = ind / imageWidth;
-                if (x == 0 || x == imageWidth - 1 || y == 0 || y == imageHeight - 1) {
-                    isValid = false;
-                }
+                while (!queue.empty()) {
+                    long ind = queue.back();
+                    queue.pop_back();
+                    centroidSize++;
+                    long x = ind % imageWidth, y = ind / imageWidth;
+                    if (x == 0 || x == imageWidth - 1 || y == 0 || y == imageHeight - 1) {
+                        isValid = false;
+                    }
 
-                p.magSum += image[ind];
-                p.xCoordMagSum += x * image[ind];
-                p.yCoordMagSum += y * image[ind];
+                    p.magSum += image[ind];
+                    p.xCoordMagSum += x * image[ind];
+                    p.yCoordMagSum += y * image[ind];
 
-                if (x > p.xMax) p.xMax = x;
-                if (x < p.xMin) p.xMin = x;
-                if (y > p.yMax) p.yMax = y;
-                if (y < p.yMin) p.yMin = y;
+                    if (x > p.xMax) p.xMax = x;
+                    if (x < p.xMin) p.xMin = x;
+                    if (y > p.yMax) p.yMax = y;
+                    if (y < p.yMin) p.yMin = y;
 
-                for (int offset : offsets) {
-                    long ni = ind + offset;
-                    if (ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
-                        queue.push_back(ni);
-                        visited[ni] = true;
+                    for (int offset : offsets) {
+                        long ni = ind + offset;
+                        if (ni >= 0 && ni < n && std::abs((ni % imageWidth)-x) <= 1 && image[ni] >= cutoff && !visited[ni]) {
+                            queue.push_back(ni);
+                            visited[ni] = true;
+                        }
                     }
                 }
-            }
 
-            int xDiameter = (p.xMax - p.xMin) + 1;
-            int yDiameter = (p.yMax - p.yMin) + 1;
+                int xDiameter = (p.xMax - p.xMin) + 1;
+                int yDiameter = (p.yMax - p.yMin) + 1;
 
-            if (isValid && p.magSum > 0) {
-                decimal xCoord = p.xCoordMagSum / DECIMAL(p.magSum);
-                decimal yCoord = p.yCoordMagSum / DECIMAL(p.magSum);
-                result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), centroidSize));
+                if (isValid && p.magSum > 0) {
+                    decimal xCoord = p.xCoordMagSum / DECIMAL(p.magSum);
+                    decimal yCoord = p.yCoordMagSum / DECIMAL(p.magSum);
+                    result.push_back(Star(xCoord + DECIMAL(0.5), yCoord + DECIMAL(0.5), (xDiameter)/DECIMAL(2.0), (yDiameter)/DECIMAL(2.0), centroidSize));
+                }
             }
         }
     }
