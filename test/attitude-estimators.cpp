@@ -1,6 +1,5 @@
-#include <catch.hpp>
-
 #include <random>
+#include <catch.hpp>
 
 #include "attitude-estimators.hpp"
 #include "attitude-utils.hpp"
