@@ -8,6 +8,7 @@
 namespace lost {
 
 #define EPSILON DECIMAL(0.0001)       // threshold for 0 for Newton-Raphson method
+#define QUEST_MAX_ITERATIONS 20       // stops Newton-Raphson from looping forever if it never settles (happens in float mode)
 
 Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
@@ -173,10 +174,12 @@ decimal QuestCharPolyPrime(decimal x, decimal a, decimal b, decimal c) {return 4
  */
 decimal QuestEigenvalueEstimator(decimal guess, decimal a, decimal b, decimal c, decimal d, decimal s) {
     decimal height;
+    int iterations = 0;
     do {
         height = QuestCharPoly(guess, a, b, c, d, s) / QuestCharPolyPrime(guess, a, b, c);
         guess -= height;
-    } while (abs(height) >= EPSILON);
+        iterations++;
+    } while (DECIMAL_ABS(height) >= EPSILON && iterations < QUEST_MAX_ITERATIONS);
 
     return guess;
 }
@@ -198,7 +201,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     Mat3 B = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (const StarIdentifier &s : starIdentifiers) {
         Star bStar = stars[s.starIndex];
-        Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
+        Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position).Normalize();
 
         CatalogStar rStar = catalog[s.catalogIndex];
         Vec3 rStarSpatial = {rStar.spatial.x, rStar.spatial.y, rStar.spatial.z};
