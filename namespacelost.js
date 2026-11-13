@@ -112,7 +112,7 @@ var namespacelost =
     [ "QuaternionToDCM", "namespacelost.html#a08209cdf2c6b9415866d576343c35bf2", null ],
     [ "QuestCharPoly", "namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01", null ],
     [ "QuestCharPolyPrime", "namespacelost.html#ae543ffda8031beff6f8015261f1c495c", null ],
-    [ "QuestEigenvalueEstimator", "namespacelost.html#a4c5445cb888227769955b2cdda5ee93a", null ],
+    [ "QuestEigenvalueEstimator", "namespacelost.html#a75d81f422a923a9ebb7a85e7831ace8d", null ],
     [ "RadToArcSec", "namespacelost.html#a0b4575c6e2f6eb0bc7faebf429fb9b7d", null ],
     [ "RadToDeg", "namespacelost.html#a65410f365157111a72350076d9c434c0", null ],
     [ "SelectNextUnidentifiedCentroid", "namespacelost.html#a2ade3595afedbda0c590f6a3610df81c", null ],

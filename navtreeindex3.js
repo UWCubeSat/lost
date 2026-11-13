@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"index.html":[0],
 "index.html#autotoc_md1":[0,0],
 "index.html#autotoc_md2":[0,1],
 "io_8cpp.html":[4,0,1,11],
@@ -40,7 +41,6 @@ var NAVTREEINDEX3 =
 "namespacelost.html#a41f5bb669129790c12bd70e1d641441f":[2,0,0,67],
 "namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7":[2,0,0,101],
 "namespacelost.html#a4bd359d9c09dbecb81c3a3e536f0b5c5":[2,0,0,56],
-"namespacelost.html#a4c5445cb888227769955b2cdda5ee93a":[2,0,0,112],
 "namespacelost.html#a4d066d222770cdbde925ab67813193dc":[2,0,0,61],
 "namespacelost.html#a543c802e0faa7d19b8bfb148573309fe":[2,0,0,77],
 "namespacelost.html#a562a86693dfa8ef7024526934fbfa8bb":[2,0,0,128],
@@ -58,6 +58,7 @@ var NAVTREEINDEX3 =
 "namespacelost.html#a7154dcfc9b2bd4d0051304ebeb68db2b":[2,0,0,136],
 "namespacelost.html#a7283a0756178459ca257b9f610138b12":[2,0,0,74],
 "namespacelost.html#a72e465adc8dcb532e46b956261bf93fe":[2,0,0,94],
+"namespacelost.html#a75d81f422a923a9ebb7a85e7831ace8d":[2,0,0,112],
 "namespacelost.html#a787971c8764f348166cc197813d98307":[2,0,0,69],
 "namespacelost.html#a788b77a0d64ad007d1f71778cfc91a4e":[2,0,0,96],
 "namespacelost.html#a789d628bbeab011d5552a6dc551b77a2":[2,0,0,100],

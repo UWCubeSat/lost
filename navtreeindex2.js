@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c":[3,0,0,44,0],
 "classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a":[2,0,0,44,1],
 "classlost_1_1PyramidStarIdAlgorithm.html#ac4d954f0b508e6b1818f416cbed5c67a":[3,0,0,44,1],
 "classlost_1_1Quaternion.html":[2,0,0,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "globals_func.html":[4,1,1],
 "globals_type.html":[4,1,2],
 "hierarchy.html":[3,2],
-"index.html":[],
-"index.html":[0]
+"index.html":[]
 };

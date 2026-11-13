@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['str_5fto_5fdecimal_0',['STR_TO_DECIMAL',['../decimal_8hpp.html#a7a155f9188b9b83cd40dafccc0b59b61',1,'decimal.hpp']]]
+  ['quest_5fmax_5fiterations_0',['QUEST_MAX_ITERATIONS',['../attitude-estimators_8cpp.html#a0a8dd8f4bc4034b0d884606c61e3d8f9',1,'attitude-estimators.cpp']]]
 ];

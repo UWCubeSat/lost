@@ -3,6 +3,7 @@ var NAVTREEINDEX0 =
 "annotated.html":[3,0],
 "attitude-estimators_8cpp.html":[4,0,1,0],
 "attitude-estimators_8cpp.html#a002b2f4894492820fe708b1b7e7c5e70":[4,0,1,0,0],
+"attitude-estimators_8cpp.html#a0a8dd8f4bc4034b0d884606c61e3d8f9":[4,0,1,0,1],
 "attitude-estimators_8cpp_source.html":[4,0,1,0],
 "attitude-estimators_8hpp.html":[4,0,1,1],
 "attitude-estimators_8hpp_source.html":[4,0,1,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classlost_1_1KVectorIndex.html#a45a9b59e42bd033e9a12fda60da06b92":[3,0,0,18,2],
 "classlost_1_1KVectorIndex.html#a6cd151dd8a9224581c9fdeaa40831379":[2,0,0,18,0],
 "classlost_1_1KVectorIndex.html#a6cd151dd8a9224581c9fdeaa40831379":[3,0,0,18,0],
-"classlost_1_1KVectorIndex.html#a6f3c702412e3a12501bfabb5d7936b05":[2,0,0,18,5],
-"classlost_1_1KVectorIndex.html#a6f3c702412e3a12501bfabb5d7936b05":[3,0,0,18,5]
+"classlost_1_1KVectorIndex.html#a6f3c702412e3a12501bfabb5d7936b05":[2,0,0,18,5]
 };

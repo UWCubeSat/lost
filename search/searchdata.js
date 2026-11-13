@@ -10,7 +10,7 @@ var indexSectionsWithContent =
   7: "p",
   8: "ct",
   9: "os",
-  10: "_delms",
+  10: "_delmqs",
   11: "cdlt"
 };
 

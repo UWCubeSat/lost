@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"classlost_1_1KVectorIndex.html#a6f3c702412e3a12501bfabb5d7936b05":[3,0,0,18,5],
 "classlost_1_1KVectorIndex.html#a6f3ee957485b41a9bf8500232a8033fe":[2,0,0,18,3],
 "classlost_1_1KVectorIndex.html#a6f3ee957485b41a9bf8500232a8033fe":[3,0,0,18,3],
 "classlost_1_1KVectorIndex.html#a98f4a93e0009038d0bb529412ac895d5":[2,0,0,18,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "classlost_1_1PngPipelineInput.html#adee57652282fb256ea2deeb737b81afe":[3,0,0,30,0],
 "classlost_1_1PyramidStarIdAlgorithm.html":[2,0,0,44],
 "classlost_1_1PyramidStarIdAlgorithm.html":[3,0,0,44],
-"classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c":[2,0,0,44,0],
-"classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c":[3,0,0,44,0]
+"classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c":[2,0,0,44,0]
 };

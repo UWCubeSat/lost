@@ -5,5 +5,5 @@ var searchData=
   ['queryliberal_2',['QueryLiberal',['../classlost_1_1KVectorIndex.html#a6f3c702412e3a12501bfabb5d7936b05',1,'lost::KVectorIndex']]],
   ['questcharpoly_3',['QuestCharPoly',['../namespacelost.html#a94bdddcfa030dfce3201661f42cc7d01',1,'lost']]],
   ['questcharpolyprime_4',['QuestCharPolyPrime',['../namespacelost.html#ae543ffda8031beff6f8015261f1c495c',1,'lost']]],
-  ['questeigenvalueestimator_5',['QuestEigenvalueEstimator',['../namespacelost.html#a4c5445cb888227769955b2cdda5ee93a',1,'lost']]]
+  ['questeigenvalueestimator_5',['QuestEigenvalueEstimator',['../namespacelost.html#a75d81f422a923a9ebb7a85e7831ace8d',1,'lost']]]
 ];
