@@ -8,6 +8,7 @@
 namespace lost {
 
 #define EPSILON DECIMAL(0.0001)       // threshold for 0 for Newton-Raphson method
+#define QUEST_MAX_ITERATIONS 20       // stops Newton-Raphson from looping forever if it never settles (happens in float mode)
 
 Attitude DavenportQAlgorithm::Go(const Camera &camera,
                                  const Stars &stars,
@@ -170,15 +171,19 @@ decimal QuestCharPolyPrime(decimal x, decimal a, decimal b, decimal c) {return 4
 /**
  * Approximates roots of a real function using the Newton-Raphson algorithm
  * @see https://www.geeksforgeeks.org/program-for-newton-raphson-method/
+ * @return false if it doesn't converge within QUEST_MAX_ITERATIONS
  */
-decimal QuestEigenvalueEstimator(decimal guess, decimal a, decimal b, decimal c, decimal d, decimal s) {
-    decimal height;
-    do {
-        height = QuestCharPoly(guess, a, b, c, d, s) / QuestCharPolyPrime(guess, a, b, c);
+bool QuestEigenvalueEstimator(decimal guess, decimal a, decimal b, decimal c, decimal d, decimal s,
+                              decimal *eig) {
+    for (int i = 0; i < QUEST_MAX_ITERATIONS; i++) {
+        decimal height = QuestCharPoly(guess, a, b, c, d, s) / QuestCharPolyPrime(guess, a, b, c);
         guess -= height;
-    } while (abs(height) >= EPSILON);
-
-    return guess;
+        if (DECIMAL_ABS(height) < EPSILON) {
+            *eig = guess;
+            return true;
+        }
+    }
+    return false;
 }
 
 Attitude QuestAlgorithm::Go(const Camera &camera,
@@ -198,7 +203,7 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     Mat3 B = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (const StarIdentifier &s : starIdentifiers) {
         Star bStar = stars[s.starIndex];
-        Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position);
+        Vec3 bStarSpatial = camera.CameraToSpatial(bStar.position).Normalize();
 
         CatalogStar rStar = catalog[s.catalogIndex];
         Vec3 rStarSpatial = {rStar.spatial.x, rStar.spatial.y, rStar.spatial.z};
@@ -231,7 +236,11 @@ Attitude QuestAlgorithm::Go(const Camera &camera,
     decimal d = Z * (S * S) * Z;
 
     // Newton-Raphson method for estimating the largest eigenvalue
-    decimal eig = QuestEigenvalueEstimator(guess, a, b, c, d, sigma);
+    decimal eig;
+    if (!QuestEigenvalueEstimator(guess, a, b, c, d, sigma, &eig)) {
+        // Didn't converge (can happen with 2 stars in float mode), so report no attitude
+        return Attitude();
+    }
 
     // solve for the optimal quaternion: from https://ahrs.readthedocs.io/en/latest/filters/quest.html
     decimal alpha = DECIMAL_POW(eig,2) - DECIMAL_POW(sigma, 2) + kappa;
