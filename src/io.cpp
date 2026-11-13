@@ -776,8 +776,14 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
         Attitude inputAttitude;
         if (values.generateRandomAttitudes) {
             inputAttitude = RandomAttitude(&attitudeRng);
+            EulerAngles ea = inputAttitude.ToSpherical();
+            std::cerr << "Random attitude:" << std::endl
+                      << RadToDeg(ea.ra) << ", " << RadToDeg(ea.de) << ", " << RadToDeg(ea.roll) << std::endl;
         } else {
             inputAttitude = attitude;
+            EulerAngles ea = inputAttitude.ToSpherical();
+            std::cerr << "Given attitude:" << std::endl
+                      << RadToDeg(ea.ra) << ", " << RadToDeg(ea.de) << ", " << RadToDeg(ea.roll) << std::endl;
         }
 
         GeneratedPipelineInput *curr = new GeneratedPipelineInput(
@@ -1502,6 +1508,11 @@ static void PipelineComparatorStarIds(std::ostream &os,
             os << "starid_num_total " << comparison.numTotal << std::endl;
         }
 
+        os << "starid_image " << i
+           << " correct=" << comparison.numCorrect
+           << " incorrect=" << comparison.numIncorrect
+           << " total=" << comparison.numTotal << std::endl;
+
         if (comparison.numCorrect > 0 && comparison.numIncorrect == 0) {
             numImagesCorrect++;
         }
@@ -1575,6 +1586,18 @@ static void PipelineComparatorAttitude(std::ostream &os,
             Quaternion actualQuaternion = actual[i].attitude->GetQuaternion();
             decimal attitudeError = (expectedQuaternion * actualQuaternion.Conjugate()).SmallestAngle();
             assert(attitudeError >= 0);
+
+            EulerAngles expectedEa = expected[i]->ExpectedAttitude()->ToSpherical();
+            EulerAngles actualEa = actual[i].attitude->ToSpherical();
+            os << "attitude_error_image " << RadToDeg(attitudeError)
+               << " image=" << i
+               << " expected_ra=" << RadToDeg(expectedEa.ra)
+               << " expected_de=" << RadToDeg(expectedEa.de)
+               << " expected_roll=" << RadToDeg(expectedEa.roll)
+               << " actual_ra=" << RadToDeg(actualEa.ra)
+               << " actual_de=" << RadToDeg(actualEa.de)
+               << " actual_roll=" << RadToDeg(actualEa.roll)
+               << std::endl;
 
             if (attitudeError <= angleThreshold) {
                 attitudeErrorSum += attitudeError;
