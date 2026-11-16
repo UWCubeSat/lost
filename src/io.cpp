@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <cairo/cairo.h>
+#include <dirent.h>
 #include <errno.h>
 #include <limits.h>
 #include <math.h>
@@ -384,14 +385,8 @@ PngPipelineInput::~PngPipelineInput() {
 }
 
 /// Create a PngPipelineInput using command line options.
-PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
-    // I'm not sure why, but i can't get an initializer list to work here. Probably something to do
-    // with copying unique ptrs
-    PipelineInputList result;
-    cairo_surface_t *cairoSurface = NULL;
-    std::string pngPath = values.png;
-
-    cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
+static std::unique_ptr<PipelineInput> ReadPngPipelineInput(const std::string &pngPath, const PipelineOptions &values) {
+    cairo_surface_t *cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
     std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
     if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
         exit(1);
@@ -402,8 +397,44 @@ PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     decimal focalLengthPixels = FocalLengthFromOptions(values, xResolution);
     Camera cam = Camera(focalLengthPixels, xResolution, yResolution);
 
-    result.push_back(std::unique_ptr<PipelineInput>(new PngPipelineInput(cairoSurface, cam, CatalogRead())));
+    std::unique_ptr<PipelineInput> result(new PngPipelineInput(cairoSurface, cam, CatalogRead()));
     cairo_surface_destroy(cairoSurface);
+    return result;
+}
+
+PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
+    PipelineInputList result;
+    result.push_back(ReadPngPipelineInput(values.png, values));
+    return result;
+}
+
+/// Every .png file in a directory, in order of file name, as the frames of one sequence.
+static PipelineInputList GetImageDirPipelineInput(const PipelineOptions &values) {
+    DIR *dir = opendir(values.imageDir.c_str());
+    if (dir == NULL) {
+        std::cerr << "ERROR: Can't open directory " << values.imageDir << ": " << strerror(errno) << std::endl;
+        exit(1);
+    }
+    std::vector<std::string> names;
+    while (struct dirent *entry = readdir(dir)) {
+        std::string name = entry->d_name;
+        std::string extension = name.size() > 4 ? name.substr(name.size() - 4) : "";
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+        if (extension == ".png") {
+            names.push_back(name);
+        }
+    }
+    closedir(dir);
+    if (names.empty()) {
+        std::cerr << "ERROR: No .png files in " << values.imageDir << std::endl;
+        exit(1);
+    }
+    std::sort(names.begin(), names.end());
+
+    PipelineInputList result;
+    for (const std::string &name : names) {
+        result.push_back(ReadPngPipelineInput(values.imageDir + "/" + name, values));
+    }
     return result;
 }
 
@@ -818,6 +849,8 @@ PipelineInputList GetPipelineInput(const PipelineOptions &values) {
 
     if (values.png != "") {
         return GetPngPipelineInput(values);
+    } else if (values.imageDir != "") {
+        return GetImageDirPipelineInput(values);
     } else {
         return GetGeneratedPipelineInput(values);
     }
@@ -1540,9 +1573,10 @@ static void PipelineComparatorPrintAttitude(std::ostream &os,
                                             const PipelineInputList &,
                                             const std::vector<PipelineOutput> &actual,
                                             const PipelineOptions &) {
-    assert(actual.size() == 1);
-    assert(actual[0].attitude);
-    PrintAttitude(os, "", *actual[0].attitude);
+    for (const PipelineOutput &output : actual) {
+        assert(output.attitude);
+        PrintAttitude(os, "", *output.attitude);
+    }
 }
 
 static void PipelineComparatorPrintExpectedAttitude(std::ostream &os,
@@ -1797,8 +1831,8 @@ void PipelineComparison(const PipelineInputList &expected,
                               PipelineComparatorStarIds, values.compareStarIds, false);
     }
     if (values.printAttitude != "") {
-        LOST_PIPELINE_COMPARE(actual[0].attitude && actual.size() == 1,
-                              "--print-attitude requires exactly 1 output image, and for attitude to be available on that output image. " + std::to_string(actual.size()) + " many output images were provided.",
+        LOST_PIPELINE_COMPARE(std::all_of(actual.begin(), actual.end(), [](const PipelineOutput &output) { return output.attitude != nullptr; }),
+                              "--print-attitude requires attitude to be available on every output image. " + std::to_string(actual.size()) + " many output images were provided.",
                               PipelineComparatorPrintAttitude, values.printAttitude, false);
     }
     if (values.printExpectedAttitude != "") {

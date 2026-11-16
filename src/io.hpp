@@ -76,6 +76,7 @@ class PipelineOptions {
 public:
     // Camera
     std::string png = "";
+    std::string imageDir = "";
     decimal focalLength = 0;
     decimal pixelSize = -1;
     decimal fov = 20;
