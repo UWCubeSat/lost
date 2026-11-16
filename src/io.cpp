@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <algorithm>
@@ -389,6 +390,7 @@ static std::unique_ptr<PipelineInput> ReadPngPipelineInput(const std::string &pn
     cairo_surface_t *cairoSurface = cairo_image_surface_create_from_png(pngPath.c_str());
     std::cerr << "PNG Read status: " << cairo_status_to_string(cairo_surface_status(cairoSurface)) << std::endl;
     if (cairoSurface == NULL || cairo_surface_status(cairoSurface) != CAIRO_STATUS_SUCCESS) {
+        std::cerr << "ERROR: Can't read " << pngPath << " as a PNG image." << std::endl;
         exit(1);
     }
 
@@ -420,7 +422,10 @@ static PipelineInputList GetImageDirPipelineInput(const PipelineOptions &values)
         std::string name = entry->d_name;
         std::string extension = name.size() > 4 ? name.substr(name.size() - 4) : "";
         std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-        if (extension == ".png") {
+        // skip directories, pipes, etc. that happen to be named like images
+        struct stat status;
+        bool notAFile = stat((values.imageDir + "/" + name).c_str(), &status) == 0 && !S_ISREG(status.st_mode);
+        if (extension == ".png" && !notAFile) {
             names.push_back(name);
         }
     }
