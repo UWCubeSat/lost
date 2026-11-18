@@ -35,6 +35,12 @@ run_script ./lost pipeline --generate 1 --plot-raw-input - | grep -q 'WARNING' |
 # Run the generator without centroids a whole bunch and make sure no assertions go off
 ./lost pipeline --generate 200 --generate-perturb-centroids 5 --generate-centroids-only || exit 1
 
+# Issue #109: --generate-centroids-only with a centroid algo should print an error, not segfault
+centroids_only_out=$(./lost pipeline --generate 1 --generate-centroids-only --centroid-algo cog 2>&1) && exit 1
+[[ $centroids_only_out == 'ERROR: Centroid algorithm specified, but no input image'* ]] || exit 1
+plot_raw_out=$(./lost pipeline --generate 1 --generate-centroids-only --plot-raw-input /dev/null 2>&1) && exit 1
+[[ $plot_raw_out == 'ERROR: Comparator not applicable: --plot-raw-input'* ]] || exit 1
+
 # Error message for database that does not exist
 no_database_out=$(./lost pipeline --generate 1 --database 'does not.exist' --star-id-algo py 2>&1) && exit 1
 [[ $no_database_out == 'Error reading database!'* ]] || exit 1
