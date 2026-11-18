@@ -193,7 +193,7 @@ public:
                            decimal perturbationStddev);
 
 
-    const Image *InputImage() const override { return &image; };
+    const Image *InputImage() const override { return centroidsOnly ? NULL : &image; };
     const Stars *InputStars() const override { return &inputStars; };
     const Stars *ExpectedStars() const override { return &expectedStars; };
     const Camera *InputCamera() const override { return &camera; };
@@ -214,6 +214,8 @@ private:
     const Catalog &catalog;
     StarIdentifiers inputStarIds;
     StarIdentifiers expectedStarIds;
+    /// If true, no pixel data was generated, so InputImage() returns NULL
+    bool centroidsOnly;
 };
 
 typedef std::vector<std::unique_ptr<PipelineInput>> PipelineInputList;

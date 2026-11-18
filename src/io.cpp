@@ -511,7 +511,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                int falseStarMaxMagnitude,
                                                int cutoffMag,
                                                decimal perturbationStddev)
-    : camera(camera), attitude(attitude), catalog(catalog) {
+    : camera(camera), attitude(attitude), catalog(catalog), centroidsOnly(centroidsOnly) {
 
     assert(falseStarMaxMagnitude <= falseStarMinMagnitude);
     assert(perturbationStddev >= DECIMAL(0.0));
