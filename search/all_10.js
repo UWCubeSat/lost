@@ -19,7 +19,7 @@ var searchData=
   ['plotinput_16',['plotInput',['../classlost_1_1PipelineOptions.html#a6c4f5f983961cead21323c0b7ee72e12',1,'lost::PipelineOptions']]],
   ['plotoutput_17',['plotOutput',['../classlost_1_1PipelineOptions.html#afeefb87a38b20f1738dd81f4673a205d',1,'lost::PipelineOptions']]],
   ['plotrawinput_18',['plotRawInput',['../classlost_1_1PipelineOptions.html#a22b4b9addbd03654ecf97de06e873c96',1,'lost::PipelineOptions']]],
-  ['png_19',['png',['../classlost_1_1PipelineOptions.html#a7027fbcaac97dda89dff97ca56ccdbe1',1,'lost::PipelineOptions']]],
+  ['png_19',['png',['../classlost_1_1PipelineOptions.html#aaefa0e2bf5de267df32ee9bb4f32cc4d',1,'lost::PipelineOptions']]],
   ['pngpipelineinput_20',['PngPipelineInput',['../classlost_1_1PngPipelineInput.html',1,'lost::PngPipelineInput'],['../classlost_1_1PngPipelineInput.html#adee57652282fb256ea2deeb737b81afe',1,'lost::PngPipelineInput::PngPipelineInput()']]],
   ['position_21',['position',['../classlost_1_1Star.html#a8e9b2320d742fb5324397ac406c859ea',1,'lost::Star']]],
   ['printactualcentroids_22',['printActualCentroids',['../classlost_1_1PipelineOptions.html#a685b7b50b94f322e9bef5856dc6f010c',1,'lost::PipelineOptions']]],

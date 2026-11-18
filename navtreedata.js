@@ -65,8 +65,8 @@ var NAVTREEINDEX =
 [
 "annotated.html",
 "classlost_1_1KVectorIndex.html#a6f3c702412e3a12501bfabb5d7936b05",
-"classlost_1_1PyramidStarIdAlgorithm.html#a558b3037bf30cd916ce7c2236999912c",
-"index.html"
+"classlost_1_1PyramidStarIdAlgorithm.html",
+"hierarchy.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';
