@@ -193,7 +193,7 @@ public:
                            decimal perturbationStddev);
 
 
-    const Image *InputImage() const override { return centroidsOnly ? NULL : &image; };
+    const Image *InputImage() const override { return centroidsOnly ? nullptr : &image; };
     const Stars *InputStars() const override { return &inputStars; };
     const Stars *ExpectedStars() const override { return &expectedStars; };
     const Camera *InputCamera() const override { return &camera; };
