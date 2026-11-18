@@ -184,8 +184,17 @@ static void AddDatabaseOptions(CLI::App* cmd, DatabaseOptions& opts) {
 static CLI::Option* AddCameraOptions(CLI::App* cmd, PipelineOptions& opts) {
     const std::string group = "CAMERA OPTIONS";
     CLI::Option* png =
-        cmd->add_option("--png", opts.png, "Identify the png image at the given filepath.")
+        cmd->add_option("--png",
+                        opts.png,
+                        "Identify the png image at the given filepath. Can be given several "
+                        "times, or with several filepaths, to identify the images in that order.")
             ->group(group);
+    cmd->add_option("--image-dir",
+                    opts.imageDir,
+                    "Identify every .png image in the given directory, in order of file name, as "
+                    "consecutive frames of one sequence (so zero-pad frame numbers).")
+        ->excludes(png)
+        ->group(group);
     cmd->add_option("--focal-length",
                     opts.focalLength,
                     "The focal length of the camera that took the picture (in mm).")
@@ -313,9 +322,11 @@ static void AddImageGenerationOptions(CLI::App* cmd, PipelineOptions& opts, CLI:
     const std::string group = "IMAGE GENERATION OPTIONS";
     cmd->add_option("--generate",
                     opts.generate,
-                    "Generates num-images many images. Mutually exclusive with --png.")
+                    "Generates num-images many images. Mutually exclusive with --png and "
+                    "--image-dir.")
         ->check(CLI::NonNegativeNumber)
         ->excludes(png)
+        ->excludes(cmd->get_option("--image-dir"))
         ->group(group);
     cmd->add_option("--generate-x-resolution",
                     opts.generateXRes,
