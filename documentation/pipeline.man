@@ -71,8 +71,8 @@ Print the raw output of each stage (\fB--print-actual-centroids\fP, \fB--print-e
 .SH BASIC OPTIONS
 
 .TP
-\fB--png\fP \fIfilepath\fP
-Identify the png image at the given \fIfilepath\fP.
+\fB--png\fP \fIfilepath\fP...
+Identify the png image at the given \fIfilepath\fP. Can be given several times, or with several \fIfilepath\fPs, to identify the images in that order.
 
 .TP
 \fB--image-dir\fP \fIdirectory\fP

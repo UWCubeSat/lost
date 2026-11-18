@@ -406,7 +406,9 @@ static std::unique_ptr<PipelineInput> ReadPngPipelineInput(const std::string &pn
 
 PipelineInputList GetPngPipelineInput(const PipelineOptions &values) {
     PipelineInputList result;
-    result.push_back(ReadPngPipelineInput(values.png, values));
+    for (const std::string &pngPath : values.png) {
+        result.push_back(ReadPngPipelineInput(pngPath, values));
+    }
     return result;
 }
 
@@ -422,10 +424,17 @@ static PipelineInputList GetImageDirPipelineInput(const PipelineOptions &values)
         std::string name = entry->d_name;
         std::string extension = name.size() > 4 ? name.substr(name.size() - 4) : "";
         std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-        // skip directories, pipes, etc. that happen to be named like images
+        if (extension != ".png") {
+            continue;
+        }
         struct stat status;
-        bool notAFile = stat((values.imageDir + "/" + name).c_str(), &status) == 0 && !S_ISREG(status.st_mode);
-        if (extension == ".png" && !notAFile) {
+        if (stat((values.imageDir + "/" + name).c_str(), &status) != 0) {
+            // broken link or unreadable file: stop instead of skipping a frame
+            std::cerr << "ERROR: Can't read " << values.imageDir << "/" << name << ": " << strerror(errno) << std::endl;
+            exit(1);
+        }
+        // skip directories, pipes, etc. that happen to be named like images
+        if (S_ISREG(status.st_mode)) {
             names.push_back(name);
         }
     }
@@ -852,7 +861,7 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
 /// Come up with a list of pipeline inputs based on command line options.
 PipelineInputList GetPipelineInput(const PipelineOptions &values) {
 
-    if (values.png != "") {
+    if (!values.png.empty()) {
         return GetPngPipelineInput(values);
     } else if (values.imageDir != "") {
         return GetImageDirPipelineInput(values);
