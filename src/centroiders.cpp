@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <vector>
 #include <unordered_set>
 
@@ -316,6 +317,210 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
             if (p.isValid) {
                 result.push_back(Star(guessXCoord + DECIMAL(0.5), guessYCoord + DECIMAL(0.5), xDiameter/DECIMAL(2.0), yDiameter/DECIMAL(2.0), starIndices.size()));
             }
+        }
+    }
+    return result;
+}
+
+// WINDOWED CENTER OF GRAVITY
+
+namespace {
+
+struct WindowedMatch {
+    int prediction;
+    int blob;  ///< index of the first pixel of the star's blob, identifying it
+    Star star;
+    Vec2 offset;  ///< star position minus prediction
+};
+
+/// The threshold is at least this many gray levels above the background, even in a noiseless image.
+const int kMinThresholdAboveBackground = 3;
+/// The threshold is this many noise standard deviations above the background.
+const int kThresholdSigmas = 5;
+
+/// Median and median absolute deviation of the gray levels in a histogram holding `count` pixels.
+void HistogramMedianAndMad(const int histogram[256], int count, int *median, int *mad) {
+    int below = 0;
+    *median = 0;
+    while (below + histogram[*median] <= count / 2) {
+        below += histogram[(*median)++];
+    }
+    // smallest r such that more than half the pixels lie within r of the median
+    int within = histogram[*median];
+    *mad = 0;
+    while (within <= count / 2) {
+        (*mad)++;
+        if (*median - *mad >= 0) within += histogram[*median - *mad];
+        if (*median + *mad < 256) within += histogram[*median + *mad];
+    }
+}
+
+}  // namespace
+
+Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, int imageHeight,
+                                  const std::vector<Vec2> &predictions,
+                                  std::vector<int> *matchedPredictions) const {
+    if (matchedPredictions != nullptr) {
+        matchedPredictions->clear();
+    }
+    if (image == nullptr || gateRadius < 0 || gateRadius > kMaxRadius || maxStarRadius < 0 || maxStarRadius > kMaxRadius) {
+        return Stars();
+    }
+
+    const int halfWindow = gateRadius + maxStarRadius;
+    const int windowSide = 2 * halfWindow + 1;
+    std::vector<unsigned char> visited(windowSide * windowSide);
+    std::vector<int> stack;
+    std::vector<WindowedMatch> matches;
+
+    for (int p = 0; p < (int)predictions.size(); p++) {
+        const Vec2 &prediction = predictions[p];
+        // written so that it also skips a non-finite prediction
+        if (!(prediction.x >= 0 && prediction.x <= imageWidth && prediction.y >= 0 && prediction.y <= imageHeight)) {
+            continue;
+        }
+        // pixel (x, y) covers [x, x+1) * [y, y+1), so this is the pixel containing the prediction
+        const int windowX0 = (int)DECIMAL_FLOOR(prediction.x) - halfWindow;
+        const int windowY0 = (int)DECIMAL_FLOOR(prediction.y) - halfWindow;
+        const int windowX1 = windowX0 + windowSide - 1;
+        const int windowY1 = windowY0 + windowSide - 1;
+        const int xMin = std::max(0, windowX0), xMax = std::min(imageWidth - 1, windowX1);
+        const int yMin = std::max(0, windowY0), yMax = std::min(imageHeight - 1, windowY1);
+        if (xMin >= xMax || yMin >= yMax) {
+            continue;
+        }
+
+        // background and noise from the window border; median and MAD ignore a star crossing it
+        int histogram[256] = {};
+        int count = 0;
+        for (int x = xMin; x <= xMax; x++) {
+            histogram[image[yMin * imageWidth + x]]++;
+            histogram[image[yMax * imageWidth + x]]++;
+            count += 2;
+        }
+        for (int y = yMin + 1; y < yMax; y++) {
+            histogram[image[y * imageWidth + xMin]]++;
+            histogram[image[y * imageWidth + xMax]]++;
+            count += 2;
+        }
+        int background, mad;
+        HistogramMedianAndMad(histogram, count, &background, &mad);
+        // 1.4826 * MAD estimates the standard deviation of Gaussian noise
+        const int threshold = background + std::max(kMinThresholdAboveBackground,
+                                                    (int)DECIMAL_CEIL(kThresholdSigmas * DECIMAL(1.4826) * mad));
+
+        // seed: brightest pixel whose center is within the gate
+        int seed = -1;
+        int seedValue = -1;
+        for (int y = std::max(yMin, windowY0 + maxStarRadius); y <= std::min(yMax, windowY1 - maxStarRadius); y++) {
+            for (int x = std::max(xMin, windowX0 + maxStarRadius); x <= std::min(xMax, windowX1 - maxStarRadius); x++) {
+                decimal dx = x + DECIMAL(0.5) - prediction.x;
+                decimal dy = y + DECIMAL(0.5) - prediction.y;
+                if (dx * dx + dy * dy <= gateRadius * gateRadius && image[y * imageWidth + x] > seedValue) {
+                    seedValue = image[y * imageWidth + x];
+                    seed = y * imageWidth + x;
+                }
+            }
+        }
+        if (seedValue < threshold) {
+            continue;
+        }
+
+        // flood fill inside the window
+        std::fill(visited.begin(), visited.end(), 0);
+        stack.assign(1, seed);
+        visited[(seed / imageWidth - windowY0) * windowSide + (seed % imageWidth - windowX0)] = 1;
+        int64_t weightSum = 0, xWeightSum = 0, yWeightSum = 0;
+        int pixels = 0;
+        int blob = seed;
+        int starXMin = seed % imageWidth, starXMax = starXMin;
+        int starYMin = seed / imageWidth, starYMax = starYMin;
+        bool touchesEdge = false;
+        while (!stack.empty()) {
+            const int index = stack.back();
+            stack.pop_back();
+            const int x = index % imageWidth;
+            const int y = index / imageWidth;
+            if (x == xMin || x == xMax || y == yMin || y == yMax) {
+                touchesEdge = true;  // clipped by the window or the image; centroid would be biased
+            }
+            const int weight = image[index] - background;
+            weightSum += weight;
+            xWeightSum += (int64_t)weight * x;
+            yWeightSum += (int64_t)weight * y;
+            pixels++;
+            blob = std::min(blob, index);
+            starXMin = std::min(starXMin, x);
+            starXMax = std::max(starXMax, x);
+            starYMin = std::min(starYMin, y);
+            starYMax = std::max(starYMax, y);
+
+            const int neighborX[4] = {x + 1, x - 1, x, x};
+            const int neighborY[4] = {y, y, y + 1, y - 1};
+            for (int n = 0; n < 4; n++) {
+                const int nx = neighborX[n], ny = neighborY[n];
+                if (nx < xMin || nx > xMax || ny < yMin || ny > yMax) {
+                    continue;
+                }
+                unsigned char &seen = visited[(ny - windowY0) * windowSide + (nx - windowX0)];
+                if (!seen && image[ny * imageWidth + nx] >= threshold) {
+                    seen = 1;
+                    stack.push_back(ny * imageWidth + nx);
+                }
+            }
+        }
+        if (touchesEdge) {
+            continue;
+        }
+
+        const Vec2 position = {
+            (decimal)xWeightSum / weightSum + DECIMAL(0.5),
+            (decimal)yWeightSum / weightSum + DECIMAL(0.5),
+        };
+        const Vec2 offset = position - prediction;
+        if (offset.MagnitudeSq() > gateRadius * gateRadius) {
+            continue;
+        }
+        matches.push_back({p, blob,
+                           Star(position.x, position.y,
+                                (starXMax - starXMin + 1) / DECIMAL(2.0), (starYMax - starYMin + 1) / DECIMAL(2.0),
+                                pixels),
+                           offset});
+    }
+
+    // a blob reached from more than one prediction is ambiguous: drop all its matches
+    std::sort(matches.begin(), matches.end(),
+              [](const WindowedMatch &a, const WindowedMatch &b) { return a.blob < b.blob; });
+    std::vector<WindowedMatch> unique;
+    for (size_t i = 0; i < matches.size();) {
+        size_t end = i + 1;
+        while (end < matches.size() && matches[end].blob == matches[i].blob) end++;
+        if (end == i + 1) unique.push_back(matches[i]);
+        i = end;
+    }
+
+    // drop matches that disagree with the frame's common shift
+    if (unique.size() >= 3) {
+        std::vector<decimal> xOffsets, yOffsets;
+        for (const WindowedMatch &match : unique) {
+            xOffsets.push_back(match.offset.x);
+            yOffsets.push_back(match.offset.y);
+        }
+        std::nth_element(xOffsets.begin(), xOffsets.begin() + xOffsets.size() / 2, xOffsets.end());
+        std::nth_element(yOffsets.begin(), yOffsets.begin() + yOffsets.size() / 2, yOffsets.end());
+        const Vec2 medianOffset = {xOffsets[xOffsets.size() / 2], yOffsets[yOffsets.size() / 2]};
+        unique.erase(std::remove_if(unique.begin(), unique.end(), [&](const WindowedMatch &match) {
+            return (match.offset - medianOffset).MagnitudeSq() > outlierRadius * outlierRadius;
+        }), unique.end());
+    }
+
+    std::sort(unique.begin(), unique.end(),
+              [](const WindowedMatch &a, const WindowedMatch &b) { return a.prediction < b.prediction; });
+    Stars result;
+    for (const WindowedMatch &match : unique) {
+        result.push_back(match.star);
+        if (matchedPredictions != nullptr) {
+            matchedPredictions->push_back(match.prediction);
         }
     }
     return result;
