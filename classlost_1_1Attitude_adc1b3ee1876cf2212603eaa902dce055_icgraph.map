@@ -1,6 +1,6 @@
 <map id="lost::Attitude::GetQuaternion" name="lost::Attitude::GetQuaternion">
 <area shape="rect" id="Node000001" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="897,44,1105,72"/>
-<area shape="rect" id="Node000002" href="$classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="642,5,849,50"/>
+<area shape="rect" id="Node000002" href="$classlost_1_1GeneratedPipelineInput.html#aa02072cd3c6de2b384fcc629d62be8be" title="Create a generated pipeline input." alt="" coords="642,5,849,50"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="878,44,849,43,849,37,884,44"/>
 <area shape="rect" id="Node000003" href="$classlost_1_1Attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="652,74,839,102"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="884,72,840,80,839,74,878,72"/>

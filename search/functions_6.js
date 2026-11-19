@@ -1,7 +1,7 @@
 var searchData=
 [
   ['generatedatabases_0',['GenerateDatabases',['../namespacelost.html#ac0ac19dd0e9f2f1ce471617d9c837949',1,'lost']]],
-  ['generatedpipelineinput_1',['GeneratedPipelineInput',['../classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098',1,'lost::GeneratedPipelineInput']]],
+  ['generatedpipelineinput_1',['GeneratedPipelineInput',['../classlost_1_1GeneratedPipelineInput.html#aa02072cd3c6de2b384fcc629d62be8be',1,'lost::GeneratedPipelineInput']]],
   ['generatedstar_2',['GeneratedStar',['../classlost_1_1GeneratedStar.html#a53c8237a1eef1b7b80c211a82905d339',1,'lost::GeneratedStar']]],
   ['geometricvotingstaridalgorithm_3',['GeometricVotingStarIdAlgorithm',['../classlost_1_1GeometricVotingStarIdAlgorithm.html#aa846baf66d54b2dfc9212722d9be7518',1,'lost::GeometricVotingStarIdAlgorithm']]],
   ['getcatalog_4',['GetCatalog',['../classlost_1_1PipelineInput.html#a5f54da9be7e6398d3f042b825d4d5908',1,'lost::PipelineInput::GetCatalog()'],['../classlost_1_1GeneratedPipelineInput.html#aa8e662acb998bdc440b62c4917488685',1,'lost::GeneratedPipelineInput::GetCatalog()'],['../classlost_1_1PngPipelineInput.html#a16b6a8189b29c8c1a90967eb463cb8a8',1,'lost::PngPipelineInput::GetCatalog()']]],

@@ -2,10 +2,10 @@ var searchData=
 [
   ['magicvalue_0',['magicValue',['../classlost_1_1MultiDatabaseEntry.html#aeede63708b59ea0086338286eef438c8',1,'lost::MultiDatabaseEntry']]],
   ['magnitude_1',['Magnitude',['../structlost_1_1Vec2.html#a8c0ffde8f19b509026b6a0d47ad2f5f3',1,'lost::Vec2::Magnitude()'],['../classlost_1_1Vec3.html#ad42993980fb53047751b5bb3d26a9f32',1,'lost::Vec3::Magnitude()']]],
-  ['magnitude_2',['magnitude',['../classlost_1_1CatalogStar.html#aac362b166dd1a5cfe95e33a7e2d18e3a',1,'lost::CatalogStar::magnitude'],['../classlost_1_1Star.html#aa39328327649f570b9008f08951af7bf',1,'lost::Star::magnitude']]],
+  ['magnitude_2',['magnitude',['../classlost_1_1CatalogStar.html#a7a4d5f028115e996591d1c4f79c61d6c',1,'lost::CatalogStar::magnitude'],['../classlost_1_1Star.html#af8cbb0d6f135c031fa1e2b4727b327b1',1,'lost::Star::magnitude']]],
   ['magnitudesq_3',['MagnitudeSq',['../structlost_1_1Vec2.html#a3cb220d12e9a20f74f1afbad9d944e98',1,'lost::Vec2::MagnitudeSq()'],['../classlost_1_1Vec3.html#a4e5f7e17cafd3a1184962363f0ee123e',1,'lost::Vec3::MagnitudeSq()']]],
   ['magsum_4',['magSum',['../structlost_1_1CentroidParams.html#aedcfd69a00c255c1e9166508ee5e58ff',1,'lost::CentroidParams']]],
-  ['magtobrightness_5',['MagToBrightness',['../namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7',1,'lost']]],
+  ['magtobrightness_5',['MagToBrightness',['../namespacelost.html#afaf211d8769f3ec32766bc89fe0da918',1,'lost']]],
   ['main_6',['main',['../main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main.cpp']]],
   ['main_2ecpp_7',['main.cpp',['../main_8cpp.html',1,'']]],
   ['mat3_8',['Mat3',['../classlost_1_1Mat3.html',1,'lost']]],

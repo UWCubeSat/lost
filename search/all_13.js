@@ -23,7 +23,7 @@ var searchData=
   ['spatialtospherical_20',['SpatialToSpherical',['../namespacelost.html#a24e63568aa9052a67ee2a3bc1a7900b3',1,'lost']]],
   ['sphericaltoquaternion_21',['SphericalToQuaternion',['../namespacelost.html#a562a86693dfa8ef7024526934fbfa8bb',1,'lost']]],
   ['sphericaltospatial_22',['SphericalToSpatial',['../namespacelost.html#a5bcac28daa68fac6e7141aea7d789e10',1,'lost']]],
-  ['star_23',['Star',['../classlost_1_1Star.html',1,'lost::Star'],['../classlost_1_1Star.html#a34c4cb3833310e0afe4715602210e595',1,'lost::Star::Star(decimal x, decimal y, decimal radiusX, decimal radiusY, int magnitude)'],['../classlost_1_1Star.html#a91019f88f47806e59cabb67b014bb55a',1,'lost::Star::Star(decimal x, decimal y, decimal radiusX)'],['../classlost_1_1Star.html#a63e85dbeb2f271e63b2d975cf83ae1b3',1,'lost::Star::Star()']]],
+  ['star_23',['Star',['../classlost_1_1Star.html',1,'lost::Star'],['../classlost_1_1Star.html#a06e83e2c8abfc89d617591a367686820',1,'lost::Star::Star(decimal x, decimal y, decimal radiusX, decimal radiusY, decimal magnitude)'],['../classlost_1_1Star.html#a91019f88f47806e59cabb67b014bb55a',1,'lost::Star::Star(decimal x, decimal y, decimal radiusX)'],['../classlost_1_1Star.html#a63e85dbeb2f271e63b2d975cf83ae1b3',1,'lost::Star::Star()']]],
   ['star_24',['star',['../classlost_1_1IRUnidentifiedCentroid.html#a60b94d7e80d7e60c5a2d94d746f0362b',1,'lost::IRUnidentifiedCentroid']]],
   ['star_2did_2dprivate_2ehpp_25',['star-id-private.hpp',['../star-id-private_8hpp.html',1,'']]],
   ['star_2did_2ecpp_26',['star-id.cpp',['../star-id_8cpp.html',1,'']]],

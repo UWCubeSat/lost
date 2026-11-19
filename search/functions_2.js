@@ -5,7 +5,7 @@ var searchData=
   ['canonicalize_2',['Canonicalize',['../classlost_1_1Quaternion.html#a0df3e917ca129d6a8d608d49ab9e5bbd',1,'lost::Quaternion']]],
   ['catalogindex_3',['CatalogIndex',['../classlost_1_1TetraDatabase.html#a185593510381b61bacbfbf40ea1e3221',1,'lost::TetraDatabase']]],
   ['catalogread_4',['CatalogRead',['../namespacelost.html#a41f5bb669129790c12bd70e1d641441f',1,'lost']]],
-  ['catalogstar_5',['CatalogStar',['../classlost_1_1CatalogStar.html#af2f1fc27b7b16f497e652a1fd1caa00e',1,'lost::CatalogStar::CatalogStar()=default'],['../classlost_1_1CatalogStar.html#a01e0c6d1367a68757a13091c5287075f',1,'lost::CatalogStar::CatalogStar(decimal raj2000, decimal dej2000, int magnitude, int name)'],['../classlost_1_1CatalogStar.html#a8d74d0477614cda6ab24a4732b33227e',1,'lost::CatalogStar::CatalogStar(Vec3 spatial, int magnitude, int name)']]],
+  ['catalogstar_5',['CatalogStar',['../classlost_1_1CatalogStar.html#af2f1fc27b7b16f497e652a1fd1caa00e',1,'lost::CatalogStar::CatalogStar()=default'],['../classlost_1_1CatalogStar.html#a24d26d6f954a0fa0eb62136b17efc860',1,'lost::CatalogStar::CatalogStar(decimal raj2000, decimal dej2000, decimal magnitude, int name)'],['../classlost_1_1CatalogStar.html#ada8d96527a5b81f0ba5a918bc24788e4',1,'lost::CatalogStar::CatalogStar(Vec3 spatial, decimal magnitude, int name)']]],
   ['catalogstarmagnitudecompare_6',['CatalogStarMagnitudeCompare',['../namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035',1,'lost']]],
   ['catalogtopairdistances_7',['CatalogToPairDistances',['../namespacelost.html#a787971c8764f348166cc197813d98307',1,'lost']]],
   ['centerofgravityalgorithm_8',['CenterOfGravityAlgorithm',['../classlost_1_1CenterOfGravityAlgorithm.html#ad138e20f7ba0fe236847b1616219a49b',1,'lost::CenterOfGravityAlgorithm']]],

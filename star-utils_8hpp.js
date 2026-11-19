@@ -11,8 +11,8 @@ var star_utils_8hpp =
     [ "lost::AllPairsWithinFov", "namespacelost.html#a037f862f943aa7d04406349a543e3ef2", null ],
     [ "lost::DeserializeCatalog", "namespacelost.html#a3d0e0e4b5dd7521775ee2d00143ab022", null ],
     [ "lost::FindNamedStar", "namespacelost.html#ac722314f3b14385ade7e5f05699ef006", null ],
-    [ "lost::MagToBrightness", "namespacelost.html#a433010bbab5f3763241a7aa3f87fbfc7", null ],
-    [ "lost::NarrowCatalog", "namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2", null ],
+    [ "lost::MagToBrightness", "namespacelost.html#afaf211d8769f3ec32766bc89fe0da918", null ],
+    [ "lost::NarrowCatalog", "namespacelost.html#a8b35fcb65dc5437a60a4740e8f9b7940", null ],
     [ "lost::SerializeCatalog", "namespacelost.html#a2cc7e2e970e07d707f25c00fcd3071a3", null ],
     [ "lost::TetraEdgeRatios", "namespacelost.html#a7154dcfc9b2bd4d0051304ebeb68db2b", null ],
     [ "lost::TetraFindPatternIndex", "namespacelost.html#a3a350cbfc2335a5d73b82c97ae7d9042", null ]

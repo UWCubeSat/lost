@@ -26,7 +26,7 @@
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1365,58,1326,60,1325,54,1370,56"/>
 <area shape="rect" id="Node000004" href="$classlost_1_1Attitude.html#adc1b3ee1876cf2212603eaa902dce055" title="Get the quaternion representing the attitude, converting from whatever format is stored." alt="" coords="897,43,1105,71"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1137,58,1106,60,1105,54,1142,56"/>
-<area shape="rect" id="Node000005" href="$classlost_1_1GeneratedPipelineInput.html#a7e48b3e9c25cfd4fb36cd600f05f5098" title="Create a generated pipeline input." alt="" coords="642,5,849,50"/>
+<area shape="rect" id="Node000005" href="$classlost_1_1GeneratedPipelineInput.html#aa02072cd3c6de2b384fcc629d62be8be" title="Create a generated pipeline input." alt="" coords="642,5,849,50"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="878,44,849,42,848,37,884,43"/>
 <area shape="rect" id="Node000006" href="$classlost_1_1Attitude.html#a1af3ee1daabfc256ec56554b260bdbee" title="Get the euler angles from the attitude, converting from whatever format is stored." alt="" coords="652,74,839,102"/>
 <area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="878,72,840,79,839,74,884,70"/>

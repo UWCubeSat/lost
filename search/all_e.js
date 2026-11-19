@@ -1,7 +1,7 @@
 var searchData=
 [
   ['name_0',['name',['../classlost_1_1CatalogStar.html#a72d3cdf9c85caa2fc2819644862e26ee',1,'lost::CatalogStar']]],
-  ['narrowcatalog_1',['NarrowCatalog',['../namespacelost.html#a97bab24607652ec26c12d9a3d3aa52b2',1,'lost']]],
+  ['narrowcatalog_1',['NarrowCatalog',['../namespacelost.html#a8b35fcb65dc5437a60a4740e8f9b7940',1,'lost']]],
   ['next_2',['next',['../classlost_1_1CombinationIterator.html#a835fa704fad7432b2fedbfcca2e34a96',1,'lost::CombinationIterator']]],
   ['normalize_3',['Normalize',['../structlost_1_1Vec2.html#a031e09c0d302a0484fd250f0ef162cbf',1,'lost::Vec2::Normalize()'],['../classlost_1_1Vec3.html#a13c75aca8d96b36a1c004f770d3bf55e',1,'lost::Vec3::Normalize()']]],
   ['numbins_4',['NumBins',['../classlost_1_1KVectorIndex.html#a6f3ee957485b41a9bf8500232a8033fe',1,'lost::KVectorIndex']]],
