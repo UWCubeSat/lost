@@ -193,3 +193,53 @@ TEST_CASE("EKF covariance prediction matches finite differences of the state pre
         }
     }
 }
+
+TEST_CASE("EKF covariance after an update is expressed about the corrected attitude", "[kalman]") {
+    // a large correction and very different sigmas, so that the change of reference shows
+    const decimal rollSigma = DECIMAL(0.6), crossSigma = DECIMAL(0.2), baseline = DECIMAL(0.5);
+    const decimal variance[3] = {rollSigma * rollSigma, crossSigma * crossSigma, crossSigma * crossSigma};
+    const Quaternion identity(1, 0, 0, 0);
+    AttitudeEKF ekf(crossSigma, rollSigma, DECIMAL(0.01));
+    REQUIRE(ekf.Reset(identity, Vec3(0, 0, 0), baseline));
+    REQUIRE(ekf.Update(RotationVectorToQuaternion(Vec3(0, 0, DECIMAL(0.6))), DECIMAL(16.27)));
+
+    // Straight after a reset each axis is independent, with as much prior as measurement variance,
+    // so the update goes halfway to the measurement...
+    const Vec3 correction(0, 0, DECIMAL(0.3));
+    CHECK(AngleBetween(ekf.AttitudeQuaternion(), RotationVectorToQuaternion(correction)) < DECIMAL(1e-5));
+    // ...and leaves this covariance, as seen from the attitude before the correction
+    AttitudeEKF::Mat6 aboutOld{};
+    for (int i = 0; i < 3; i++) {
+        aboutOld[i][i] = variance[i] / 2;
+        aboutOld[i][i + 3] = aboutOld[i + 3][i] = variance[i] / (2 * baseline);
+        aboutOld[i + 3][i + 3] = 3 * variance[i] / (2 * baseline * baseline);
+    }
+
+    // change of error coordinates from the old attitude to the corrected one, by central differences
+    AttitudeEKF::Mat6 change{};
+    const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    const decimal epsilon = DECIMAL(1e-2);
+    for (int j = 0; j < 3; j++) {
+        const Quaternion plus = RotationVectorToQuaternion(correction + basis[j] * epsilon);
+        const Quaternion minus = RotationVectorToQuaternion(correction - basis[j] * epsilon);
+        const Vec3 column = QuaternionToRotationVector(plus * minus.Conjugate()) * (1 / (2 * epsilon));
+        change[0][j] = column.x;
+        change[1][j] = column.y;
+        change[2][j] = column.z;
+        change[j + 3][j + 3] = 1;
+    }
+
+    const AttitudeEKF::Mat6 &after = ekf.Covariance();
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            decimal expected = 0;
+            for (int k = 0; k < 6; k++) {
+                for (int l = 0; l < 6; l++) expected += change[i][k] * aboutOld[k][l] * change[j][l];
+            }
+            INFO("covariance entry " << i << ", " << j);
+            CHECK(after[i][j] == Approx(expected).margin(1e-4));
+        }
+    }
+    // roll and cross-boresight uncertainty differ, so the turn about z couples x and y
+    CHECK(after[0][1] == Approx(0.0235).margin(5e-4));
+}

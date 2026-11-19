@@ -244,6 +244,17 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
         }
     }
 
+    // That covariance is of the error about the old attitude. Re-express it about the corrected
+    // one: Exp(correction + e) = Exp(J * e) * Exp(correction). The rate error is unaffected.
+    decimal jacobian[3][3];
+    LeftJacobian({correction[0], correction[1], correction[2]}, jacobian);
+    Mat6 recenter{};
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) recenter[i][j] = jacobian[i][j];
+        recenter[i + 3][i + 3] = 1;
+    }
+    covariance = Congruence(recenter, covariance);
+
     if (!corrected.IsUnit(kUnitTolerance) || !IsFinite(correctedRate) || !IsFinite(covariance)) {
         return false;  // overflow; keep the last good state
     }
