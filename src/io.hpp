@@ -189,8 +189,8 @@ public:
                            decimal sensitivity, decimal darkCurrent, decimal readNoiseStdDev,
                            Attitude motionBlurDirection, decimal exposureTime, decimal readoutTime,
                            bool shotNoise, int oversampling,
-                           int numFalseStars, int falseMinMagnitude, int falseMaxMagnitude,
-                           int cutoffMag,
+                           int numFalseStars, decimal falseMinMagnitude, decimal falseMaxMagnitude,
+                           decimal cutoffMag,
                            decimal perturbationStddev);
 
 
@@ -303,7 +303,7 @@ private:
     std::unique_ptr<CentroidAlgorithm> centroidAlgorithm;
 
     // next two options are for magnitude filter:
-    int centroidMinMagnitude = 0;
+    decimal centroidMinMagnitude = 0;
     int centroidMinStars = 0;
 
     std::unique_ptr<StarIdAlgorithm> starIdAlgorithm;

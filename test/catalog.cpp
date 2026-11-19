@@ -2,6 +2,7 @@
 
 #include <catch.hpp>
 
+#include "decimal.hpp"
 #include "io.hpp"
 #include "star-utils.hpp"
 
@@ -9,11 +10,11 @@ using namespace lost; // NOLINT
 
 TEST_CASE("Narrow catalog, maxStars and maxMagnitude", "[narrow-catalog]") {
     const Catalog &catalog = CatalogRead();
-    int maxMagnitude = std::max_element(catalog.begin(), catalog.end(),
+    decimal maxMagnitude = std::max_element(catalog.begin(), catalog.end(),
                                         [](const CatalogStar &a, const CatalogStar &b) {
                                             return a.magnitude < b.magnitude;
                                         })->magnitude;
-    CHECK(maxMagnitude > 600);
+    CHECK(maxMagnitude > DECIMAL(6.0));
 
     Catalog narrowed;
     SECTION("Narrow by maxStars") {
@@ -21,15 +22,15 @@ TEST_CASE("Narrow catalog, maxStars and maxMagnitude", "[narrow-catalog]") {
         CHECK(narrowed.size() == 5000);
     }
     SECTION("Narrow by maxMagnitude") {
-        narrowed = NarrowCatalog(catalog, 600, 9999, 0);
+        narrowed = NarrowCatalog(catalog, DECIMAL(6.0), 9999, 0);
     }
 
-    // assert that there are no stars with magnitude >600
-    int narrowedMaxMagnitude = std::max_element(narrowed.begin(), narrowed.end(),
+    // assert that there are no stars with magnitude >6.0
+    decimal narrowedMaxMagnitude = std::max_element(narrowed.begin(), narrowed.end(),
                                         [](const CatalogStar &a, const CatalogStar &b) {
                                             return a.magnitude < b.magnitude;
                                         })->magnitude;
-    CHECK(narrowedMaxMagnitude <= 600);
+    CHECK(narrowedMaxMagnitude <= DECIMAL(6.0));
 }
 
 TEST_CASE("Narrow catalog, minDistance", "[narrow-catalog]") {

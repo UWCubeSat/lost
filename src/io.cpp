@@ -59,37 +59,32 @@ UserSpecifiedOutputStream::~UserSpecifiedOutputStream() {
 /// Parse the bright star catalog from the TSV file on disk.
 std::vector<CatalogStar> BscParse(std::string tsvPath) {
     std::vector<CatalogStar> result;
-    FILE *file;
+    FILE* file;
     decimal raj2000, dej2000;
-    int magnitudeHigh, magnitudeLow, name;
+    decimal magnitude;
+    int name;
     char weird;
 
     file = fopen(tsvPath.c_str(), "r");
 
     if (file == NULL) {
         printf("Error opening file: %s\n", strerror(errno));
-        exit(1); // TODO: do we want any other error handling?
+        exit(1);  // TODO: do we want any other error handling?
         return result;
     }
 
-    #ifdef LOST_FLOAT_MODE
-        std::string format = "%f|%f|%d|%c|%d.%d";
-    #else
-        std::string format = "%lf|%lf|%d|%c|%d.%d";
-    #endif
+#ifdef LOST_FLOAT_MODE
+    std::string format = "%f|%f|%d|%c|%f";
+#else
+    std::string format = "%lf|%lf|%d|%c|%lf";
+#endif
 
-    while (EOF != fscanf(file, format.c_str(),
-                         &raj2000, &dej2000,
-                         &name, &weird,
-                         &magnitudeHigh, &magnitudeLow)) {
-        result.push_back(CatalogStar(DegToRad(raj2000),
-                                     DegToRad(dej2000),
-                                     magnitudeHigh*100 + (magnitudeHigh < 0 ? -magnitudeLow : magnitudeLow),
-                                     name));
+    while (EOF != fscanf(file, format.c_str(), &raj2000, &dej2000, &name, &weird, &magnitude)) {
+        result.push_back(CatalogStar(DegToRad(raj2000), DegToRad(dej2000), magnitude, name));
     }
 
     fclose(file);
-    assert(result.size() > 9000); // basic sanity check
+    assert(result.size() > 9000);  // basic sanity check
     return result;
 }
 
@@ -552,9 +547,9 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
                                                bool shotNoise,
                                                int oversampling,
                                                int numFalseStars,
-                                               int falseStarMinMagnitude,
-                                               int falseStarMaxMagnitude,
-                                               int cutoffMag,
+                                               decimal falseStarMinMagnitude,
+                                               decimal falseStarMaxMagnitude,
+                                               decimal cutoffMag,
                                                decimal perturbationStddev)
     : camera(camera), attitude(attitude), catalog(catalog), centroidsOnly(centroidsOnly) {
 
@@ -587,7 +582,8 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
     Catalog catalogWithFalse = catalog;
 
     std::uniform_real_distribution<decimal> uniformDistribution(DECIMAL(0.0), DECIMAL(1.0));
-    std::uniform_int_distribution<int> magnitudeDistribution(falseStarMaxMagnitude, falseStarMinMagnitude);
+    std::uniform_real_distribution<decimal> magnitudeDistribution(falseStarMaxMagnitude,
+                                                                  falseStarMinMagnitude);
     for (int i = 0; i < numFalseStars; i++) {
         decimal ra = uniformDistribution(*rng) * 2*DECIMAL_M_PI;
         // to be uniform around sphere. Borel-Kolmogorov paradox is calling
@@ -651,7 +647,7 @@ GeneratedPipelineInput::GeneratedPipelineInput(const Catalog &catalog,
             // If it got perturbed outside of the sensor, don't add it.
             if (camera.InSensor(inputStar.position)
                 // and also don't add it if it's too dim.
-                && (cutoffMag >= 10000 // but always add the star if the cutoff is very high
+                && (cutoffMag >= 100 // but always add the star if the cutoff is very high
                     || !isTrueStar // and always add the false stars
                     || std::bernoulli_distribution((double) CentroidImagingProbability(catalogStar.magnitude, cutoffMag))(*rng))) {
                 inputStars.push_back(inputStar);
@@ -843,9 +839,9 @@ PipelineInputList GetGeneratedPipelineInput(const PipelineOptions &values) {
                 values.generateShotNoise,
                 values.generateOversampling,
                 values.generateNumFalseStars,
-                (values.generateFalseMinMag * 100),
-                (values.generateFalseMaxMag * 100),
-                (values.generateCutoffMag * 100),
+                values.generateFalseMinMag,
+                values.generateFalseMaxMag,
+                values.generateCutoffMag,
                 values.generatePerturbationStddev);
 
             result.push_back(std::unique_ptr<PipelineInput>(curr));
@@ -1017,7 +1013,7 @@ PipelineOutput Pipeline::Go(const PipelineInput &input) {
         result.centroidingTimeNs = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
         // MAGNITUDE FILTERING
-        int minMagnitude = centroidMinMagnitude;
+        decimal minMagnitude = centroidMinMagnitude;
         if (centroidMinStars > 0
             // don't need to filter if we don't even have that many stars
             && centroidMinStars < (int)unfilteredStars.size()) {

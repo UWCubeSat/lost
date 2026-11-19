@@ -18,7 +18,7 @@ namespace lost {
 
 static void DatabaseBuild(const DatabaseOptions& values) {
     Catalog narrowedCatalog = NarrowCatalog(
-        CatalogRead(), (int)(values.minMag * 100), values.maxStars, DegToRad(values.minSeparation));
+        CatalogRead(), values.minMag, values.maxStars, DegToRad(values.minSeparation));
     std::cerr << "Narrowed catalog has " << narrowedCatalog.size() << " stars." << std::endl;
 
     MultiDatabaseDescriptor dbEntries = GenerateDatabases(narrowedCatalog, values);
