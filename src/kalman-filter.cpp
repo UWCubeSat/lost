@@ -49,6 +49,30 @@ static bool IsFinite(const Mat6 &m) {
     return true;
 }
 
+/**
+ * Left Jacobian of the rotation Exp(v): to first order in d,
+ * Exp(v + d) = Exp(J * d) * Exp(v).
+ */
+static void LeftJacobian(const Vec3 &v, decimal jacobian[3][3]) {
+    const decimal angle = v.Magnitude();
+    // sin(angle)/angle and (1 - cos(angle))/angle, the latter written to avoid cancellation
+    decimal sinc = 1, cosc = angle / 2;
+    Vec3 axis(0, 0, 0);
+    if (angle > DECIMAL(1e-6)) {
+        const decimal sinHalf = DECIMAL_SIN(angle / 2);
+        sinc = DECIMAL_SIN(angle) / angle;
+        cosc = 2 * sinHalf * sinHalf / angle;
+        axis = v * (DECIMAL(1.0) / angle);
+    }
+    const decimal a[3] = {axis.x, axis.y, axis.z};
+    const decimal cross[3][3] = {{0, -a[2], a[1]}, {a[2], 0, -a[0]}, {-a[1], a[0], 0}};
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            jacobian[i][j] = (i == j ? sinc : 0) + (1 - sinc) * a[i] * a[j] + cosc * cross[i][j];
+        }
+    }
+}
+
 /// A * B^T
 static Mat6 MultiplyTransposed(const Mat6 &a, const Mat6 &b) {
     Mat6 result{};
@@ -115,7 +139,10 @@ bool AttitudeEKF::Predict(decimal dt) {
     Quaternion predicted = Normalized(step * q);
 
     // Attitude error rotates with the step: Exp(step(theta)) * step = step * Exp(theta).
-    // Rate error integrates into attitude error.
+    // Rate error integrates into attitude error through the same step:
+    // Exp((w + dw) * dt) = Exp(J * dw * dt) * step.
+    decimal jacobian[3][3];
+    LeftJacobian(w * dt, jacobian);
     Mat6 phi{};
     const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
     for (int j = 0; j < 3; j++) {
@@ -123,12 +150,14 @@ bool AttitudeEKF::Predict(decimal dt) {
         phi[0][j] = column.x;
         phi[1][j] = column.y;
         phi[2][j] = column.z;
-        phi[j][j + 3] = dt;
+        for (int i = 0; i < 3; i++) {
+            phi[i][j + 3] = dt * jacobian[i][j];
+        }
         phi[j + 3][j + 3] = 1;
     }
     Mat6 covariance = Congruence(phi, P);
 
-    // white angular acceleration, integrated over dt
+    // white angular acceleration, integrated over dt (to first order in the step's angle)
     decimal dt2 = dt * dt;
     for (int i = 0; i < 3; i++) {
         covariance[i][i] += accelerationVariance * dt2 * dt / 3;

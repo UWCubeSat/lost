@@ -57,7 +57,8 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
  * that touches the window or image edge (its centroid would be biased), or that ends up farther than
  * gateRadius from its prediction.
  *
- * Then checks the matches against each other: a star reached from two predictions is ambiguous and
+ * Then checks the matches against each other: stars found from two predictions whose pixel
+ * bounding boxes overlap (the same star, or two too close to tell apart) are ambiguous and both
  * dropped, and since the prediction error of a whole frame is almost a common shift (attitude
  * error), stars whose offset from their prediction is more than outlierRadius from the median
  * offset are dropped too.

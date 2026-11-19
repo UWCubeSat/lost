@@ -328,7 +328,7 @@ namespace {
 
 struct WindowedMatch {
     int prediction;
-    int blob;  ///< index of the first pixel of the star's blob, identifying it
+    int xMin, xMax, yMin, yMax;  ///< bounding box of the star's pixels
     Star star;
     Vec2 offset;  ///< star position minus prediction
 };
@@ -432,7 +432,6 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
         visited[(seed / imageWidth - windowY0) * windowSide + (seed % imageWidth - windowX0)] = 1;
         int64_t weightSum = 0, xWeightSum = 0, yWeightSum = 0;
         int pixels = 0;
-        int blob = seed;
         int starXMin = seed % imageWidth, starXMax = starXMin;
         int starYMin = seed / imageWidth, starYMax = starYMin;
         bool touchesEdge = false;
@@ -449,7 +448,6 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
             xWeightSum += (int64_t)weight * x;
             yWeightSum += (int64_t)weight * y;
             pixels++;
-            blob = std::min(blob, index);
             starXMin = std::min(starXMin, x);
             starXMax = std::max(starXMax, x);
             starYMin = std::min(starYMin, y);
@@ -481,22 +479,29 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
         if (offset.MagnitudeSq() > gateRadius * gateRadius) {
             continue;
         }
-        matches.push_back({p, blob,
+        matches.push_back({p, starXMin, starXMax, starYMin, starYMax,
                            Star(position.x, position.y,
                                 (starXMax - starXMin + 1) / DECIMAL(2.0), (starYMax - starYMin + 1) / DECIMAL(2.0),
                                 pixels),
                            offset});
     }
 
-    // a blob reached from more than one prediction is ambiguous: drop all its matches
-    std::sort(matches.begin(), matches.end(),
-              [](const WindowedMatch &a, const WindowedMatch &b) { return a.blob < b.blob; });
+    // A star reached from more than one prediction is ambiguous: drop all its matches. Each
+    // prediction has its own threshold, so the same star need not come out as the same pixels, but
+    // an accepted star is everything connected to its seed above its threshold, so two that share
+    // (or touch at) a pixel always have overlapping bounding boxes.
+    std::vector<bool> ambiguous(matches.size(), false);
+    for (size_t a = 0; a < matches.size(); a++) {
+        for (size_t b = a + 1; b < matches.size(); b++) {
+            if (matches[a].xMin <= matches[b].xMax && matches[b].xMin <= matches[a].xMax
+                && matches[a].yMin <= matches[b].yMax && matches[b].yMin <= matches[a].yMax) {
+                ambiguous[a] = ambiguous[b] = true;
+            }
+        }
+    }
     std::vector<WindowedMatch> unique;
-    for (size_t i = 0; i < matches.size();) {
-        size_t end = i + 1;
-        while (end < matches.size() && matches[end].blob == matches[i].blob) end++;
-        if (end == i + 1) unique.push_back(matches[i]);
-        i = end;
+    for (size_t i = 0; i < matches.size(); i++) {
+        if (!ambiguous[i]) unique.push_back(matches[i]);
     }
 
     // drop matches that disagree with the frame's common shift

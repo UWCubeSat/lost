@@ -255,3 +255,34 @@ TEST_CASE("Windowed CoG finds nothing with unusable settings, and accepts a null
 
     CHECK(WindowedCenterOfGravity(4, 4, 3).Go(image.data(), w, h, predictions, nullptr).size() == 1);
 }
+
+TEST_CASE("Windowed CoG drops a star claimed by two predictions whose thresholds differ", "[centroid]") {
+    const int w = 64, h = 64;
+    // background brighter on the left, so that the prediction left of the star gets a higher threshold
+    std::vector<unsigned char> image(w * h);
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) image[y * w + x] = x < 30 ? 30 : 10;
+    }
+    for (int y = 31; y <= 33; y++) {
+        for (int x = 31; x <= 33; x++) image[y * w + x] = 200;
+    }
+    image[30 * w + 32] = 25;  // part of the star for the right-hand prediction only
+
+    WindowedCenterOfGravity centroider(4, 4, 3);
+    std::vector<int> matched;
+    // each prediction alone finds the star, with a different set of pixels
+    Stars left = centroider.Go(image.data(), w, h, {{DECIMAL(29.5), DECIMAL(32.5)}}, &matched);
+    Stars right = centroider.Go(image.data(), w, h, {{DECIMAL(34.5), DECIMAL(32.5)}}, &matched);
+    REQUIRE(left.size() == 1);
+    REQUIRE(right.size() == 1);
+    CHECK(left[0].magnitude != right[0].magnitude);
+
+    // together, the star is ambiguous, while a star with a single prediction is kept
+    for (int y = 49; y <= 51; y++) {
+        for (int x = 49; x <= 51; x++) image[y * w + x] = 200;
+    }
+    Stars stars = centroider.Go(image.data(), w, h,
+                                {{DECIMAL(29.5), DECIMAL(32.5)}, {DECIMAL(50.5), DECIMAL(50.5)}, {DECIMAL(34.5), DECIMAL(32.5)}},
+                                &matched);
+    CHECK(matched == std::vector<int>{1});
+}

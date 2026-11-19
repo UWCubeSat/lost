@@ -131,3 +131,65 @@ TEST_CASE("EKF with unusable noise settings never accepts a measurement", "[kalm
     CHECK_FALSE(broken.Update(identity, DECIMAL(16.27)));
     CHECK(broken.AttitudeQuaternion().IsUnit(kUnitTolerance));
 }
+
+TEST_CASE("EKF covariance prediction matches finite differences of the state prediction", "[kalman]") {
+    // a large step, so that any shortcut that only holds for small rotations shows
+    const Quaternion start = SphericalToQuaternion(DECIMAL(0.4), DECIMAL(-0.3), DECIMAL(1.1));
+    const Vec3 rate(DECIMAL(0.3), DECIMAL(-0.2), DECIMAL(1.5));
+    const decimal dt = DECIMAL(1.0);
+    const decimal baseline = DECIMAL(0.5);
+    const decimal accelerationSigma = DECIMAL(1e-5);
+    const decimal epsilon = DECIMAL(1e-2);
+
+    auto predicted = [&](const Quaternion &attitude, const Vec3 &startRate) {
+        AttitudeEKF ekf(DECIMAL(1e-3), DECIMAL(3e-3), accelerationSigma);
+        REQUIRE(ekf.Reset(attitude, startRate, baseline));
+        REQUIRE(ekf.Predict(dt));
+        return ekf;
+    };
+    const AttitudeEKF nominal = predicted(start, rate);
+    AttitudeEKF atReset(DECIMAL(1e-3), DECIMAL(3e-3), accelerationSigma);
+    REQUIRE(atReset.Reset(start, rate, baseline));
+    const AttitudeEKF::Mat6 before = atReset.Covariance();
+
+    // state transition by central differences: column j is the change of the predicted error state
+    // per unit of error component j before the prediction
+    AttitudeEKF::Mat6 phi{};
+    const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    for (int j = 0; j < 6; j++) {
+        Quaternion attitudes[2] = {start, start};
+        Vec3 rates[2] = {rate, rate};
+        for (int side = 0; side < 2; side++) {
+            const decimal step = side == 0 ? epsilon : -epsilon;
+            if (j < 3) {
+                attitudes[side] = RotationVectorToQuaternion(basis[j] * step) * start;
+            } else {
+                rates[side] = rate + basis[j - 3] * step;
+            }
+        }
+        const AttitudeEKF plus = predicted(attitudes[0], rates[0]);
+        const AttitudeEKF minus = predicted(attitudes[1], rates[1]);
+        const Vec3 attitudeChange = QuaternionToRotationVector(
+            plus.AttitudeQuaternion() * minus.AttitudeQuaternion().Conjugate()) * (1 / (2 * epsilon));
+        const Vec3 rateChange = (plus.Rate() - minus.Rate()) * (1 / (2 * epsilon));
+        const decimal column[6] = {attitudeChange.x, attitudeChange.y, attitudeChange.z,
+                                   rateChange.x, rateChange.y, rateChange.z};
+        for (int i = 0; i < 6; i++) phi[i][j] = column[i];
+    }
+
+    // a rate error perpendicular to the turn axis does not simply add dt times itself to the attitude
+    CHECK(std::abs(phi[0][3] - dt) > DECIMAL(0.05));
+
+    // expected covariance: phi * before * phi^T (the process noise here is negligible)
+    const AttitudeEKF::Mat6 &after = nominal.Covariance();
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            decimal expected = 0;
+            for (int k = 0; k < 6; k++) {
+                for (int l = 0; l < 6; l++) expected += phi[i][k] * before[k][l] * phi[j][l];
+            }
+            INFO("covariance entry " << i << ", " << j);
+            CHECK(after[i][j] == Approx(expected).margin(2e-8));
+        }
+    }
+}
