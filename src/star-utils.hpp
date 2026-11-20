@@ -20,10 +20,10 @@ public:
      * @param magnitude See ::magnitude
      * @param name See ::name
      */
-    CatalogStar(decimal raj2000, decimal dej2000, int magnitude, int name) :
+    CatalogStar(decimal raj2000, decimal dej2000, decimal magnitude, int name) :
         spatial(SphericalToSpatial(raj2000, dej2000)), magnitude(magnitude), name(name) {}
 
-    CatalogStar(Vec3 spatial, int magnitude, int name) :
+    CatalogStar(Vec3 spatial, decimal magnitude, int name) :
         spatial(spatial), magnitude(magnitude), name(name) {}
 
     /**
@@ -31,11 +31,8 @@ public:
      * The earth is at the center of the sphere. A star with right ascension and declination both equal to zero will lie at (1,0,0).
      */
     Vec3 spatial;
-    /**
-     * The magnitude of the star, with the decimal point shifted two places right.
-     * I.e., multiply this by 10<sup>-2</sup> to get the magnitude.
-     */
-    int magnitude;
+    /// The apparent magnitude of the star (e.g., Sirius = -1.46, Polaris = 1.98).
+    decimal magnitude;
     /**
      * A unique number which unambiguously identifies the catalog star.
      * The catalog is an array, so in algorithms we usually refer to catalog stars by their index in the catalog. However, if the catalog is filtered (say, to remove stars that are too dim or too close to each other), the indexes change, which makes everything really hard to debug because indexes change based on how the catalog was filtered. That's what names are for: They're fixed and don't change.
@@ -49,7 +46,7 @@ public:
  */
 class Star {
 public:
-    Star(decimal x, decimal y, decimal radiusX, decimal radiusY, int magnitude) :
+    Star(decimal x, decimal y, decimal radiusX, decimal radiusY, decimal magnitude) :
         position({x, y}), radiusX(radiusX), radiusY(radiusY), magnitude(magnitude) {};
 
     /// Convenience constructor that sets Star.radiusY = radiusX and Star.magnitude = 0
@@ -68,7 +65,7 @@ public:
      * A relative measure of magnitude of the star. Larger is brighter.
      * It's impossible to tell the true magnitude of the star from the image, without really good camera calibration. Anyway, this field is not meant to correspond to the usual measurement of magnitude. Instead, it's just some measure of brightness which may be specific to the centroiding algorithm. For example, it might be the total number of bright pixels in the star.
      */
-    int magnitude;
+    decimal magnitude;
     // eccentricity?
 };
 
@@ -108,8 +105,7 @@ Catalog DeserializeCatalog(DeserializeContext *des, bool *inclMagnitudeReturn, b
 Catalog::const_iterator FindNamedStar(const Catalog &catalog, int name);
 
 /// returns some relative brightness measure, which is proportional to the total number of photons received from a star.
-/// As always, the magnitude is actually 100* the usual magnitude
-decimal MagToBrightness(int magnitude);
+decimal MagToBrightness(decimal magnitude);
 
 /**
  * Remove unwanted stars from an unfiltered catalog.
@@ -117,9 +113,8 @@ decimal MagToBrightness(int magnitude);
  * TODO: Don't necessarily remove both stars when they're within minSeparation. Instead, if the
  * brightnesses are different enough, just keep the brightest one!
  *
- * @param maxMagnitude Should be 100*(magnitude), just like CatalogStar::magnitude. The narrowed
- * catalog will only contain stars at least as bright as that (i.e., lower magnitude). Pass
- * something like 9999 to not filter based on magnitude.
+ * @param maxMagnitude The narrowed catalog will only contain stars at least as bright as that
+ * (i.e., lower magnitude). Pass something like 9999 to not filter based on magnitude.
  *
  * @param maxStars No more than maxStars many stars will be in the narrowed catalog (prefers
  * brightest). Pass something like 99999 to not filter maxStars.
@@ -130,7 +125,7 @@ decimal MagToBrightness(int magnitude);
  * mark, so that star-id algorithms can reason about them instead of thinking they are false stars,
  * but no such provision is made yet.
  */
-Catalog NarrowCatalog(const Catalog &, int maxMagnitude, int maxStars, decimal minSeparation);
+Catalog NarrowCatalog(const Catalog &, decimal maxMagnitude, int maxStars, decimal minSeparation);
 
 // Hash binned edge ratios of a Tetra star pattern into an index in the pattern table.
 size_t TetraFindPatternIndex(const int* patternEdgeRatios,

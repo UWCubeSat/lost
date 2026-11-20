@@ -18,7 +18,7 @@ bool CatalogStarMagnitudeCompare(const CatalogStar &a, const CatalogStar &b) {
     return a.magnitude < b.magnitude;
 }
 
-Catalog NarrowCatalog(const Catalog &catalog, int maxMagnitude, int maxStars, decimal minSeparation) {
+Catalog NarrowCatalog(const Catalog &catalog, decimal maxMagnitude, int maxStars, decimal minSeparation) {
     Catalog result;
     for (int i = 0; i < (int)catalog.size(); i++) {
         // Higher magnitude implies the star is dimmer
@@ -110,7 +110,7 @@ CatalogStar DeserializeCatalogStar(DeserializeContext *des, bool inclMagnitude, 
     if (inclMagnitude) {
         result.magnitude = DeserializePrimitive<decimal>(des);
     } else {
-        result.magnitude = -424242; // TODO, what to do about special values, since there's no good ones for ints.
+        result.magnitude = NAN;
     }
     if (inclName) {
         result.name = DeserializePrimitive<int16_t>(des);
@@ -165,8 +165,8 @@ Catalog DeserializeCatalog(DeserializeContext *des, bool *inclMagnitudeReturn, b
     return result;
 }
 
-decimal MagToBrightness(int mag) {
-    return DECIMAL_POW(DECIMAL(10.0), -mag/DECIMAL(250.0));
+decimal MagToBrightness(decimal mag) {
+    return DECIMAL_POW(DECIMAL(10.0), -mag/DECIMAL(2.5));
 }
 
 }  // namespace lost
