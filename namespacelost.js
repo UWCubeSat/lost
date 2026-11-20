@@ -65,7 +65,7 @@ var namespacelost =
     [ "ArcSecToRad", "namespacelost.html#a0bf2bbf8b3bc82f9647c9f327d1369de", null ],
     [ "BadThreshold", "namespacelost.html#a27ae3010999abecce396cebbdee8ef0d", null ],
     [ "BasicThreshold", "namespacelost.html#ad1dbff4deef51811c744f6316281c9c9", null ],
-    [ "BasicThresholdOnePass", "namespacelost.html#acd1a58a1120e97d8cf060e3e9b11576c", null ],
+    [ "BasicThresholdOnePass", "namespacelost.html#a068335db3743725616bcbe93c66b3b82", null ],
     [ "BscParse", "namespacelost.html#a7e4f3f2c08ce4ce06e5d84993c3ac01f", null ],
     [ "CatalogRead", "namespacelost.html#a41f5bb669129790c12bd70e1d641441f", null ],
     [ "CatalogStarMagnitudeCompare", "namespacelost.html#a5c01d4154fbfefd3af1f3c081a372035", null ],

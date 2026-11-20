@@ -111,6 +111,7 @@ $(function() {
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;unordered_set&gt;</code><br />
@@ -120,25 +121,27 @@ Include dependency graph for centroiders.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="centroiders_8cpp__incl.png" border="0" usemap="#asrc_2centroiders_8cpp" loading="lazy" alt=""/></div>
 <map name="asrc_2centroiders_8cpp" id="asrc_2centroiders_8cpp">
-<area shape="rect" title=" " alt="" coords="517,5,662,33"/>
+<area shape="rect" title=" " alt="" coords="552,5,696,33"/>
 <area shape="rect" href="centroiders_8hpp.html" title=" " alt="" coords="296,81,418,109"/>
-<area shape="poly" title=" " alt="" coords="546,35,415,78,412,73,550,32"/>
+<area shape="poly" title=" " alt="" coords="574,35,420,79,418,74,579,32"/>
 <area shape="rect" title=" " alt="" coords="32,384,117,411"/>
-<area shape="poly" title=" " alt="" coords="515,26,295,46,185,62,141,72,108,84,69,99,37,114,25,123,16,135,10,150,8,169,8,247,13,282,25,315,57,370,52,372,20,317,8,283,3,248,3,169,5,149,11,132,21,120,34,110,67,94,106,78,139,67,184,57,295,41,519,23"/>
+<area shape="poly" title=" " alt="" coords="549,26,314,45,194,61,146,72,110,84,71,99,38,114,25,123,16,135,10,150,8,169,8,247,13,282,25,315,57,370,52,372,20,317,8,283,3,248,3,169,5,148,11,132,22,119,35,109,69,94,108,78,145,67,193,56,313,40,553,22"/>
 <area shape="rect" title=" " alt="" coords="141,384,203,411"/>
-<area shape="poly" title=" " alt="" coords="515,27,384,42,307,54,232,69,164,88,109,111,88,124,72,138,62,153,59,169,59,247,61,267,67,286,87,320,114,349,142,374,137,375,110,353,83,323,62,288,56,268,53,248,53,169,57,151,68,135,84,120,106,106,162,83,231,64,306,49,383,37,519,24"/>
+<area shape="poly" title=" " alt="" coords="549,26,410,40,328,50,247,65,173,84,113,108,90,121,73,136,62,152,59,169,59,247,61,267,67,286,87,320,114,349,142,374,137,375,110,353,83,323,62,288,56,268,53,248,53,169,57,150,69,133,87,117,111,103,172,79,246,60,327,45,409,34,554,23"/>
 <area shape="rect" href="decimal_8hpp.html" title=" " alt="" coords="437,384,539,411"/>
-<area shape="poly" title=" " alt="" coords="591,32,592,169,592,248,590,274,585,295,560,337,541,358,521,377,518,372,538,355,555,334,580,293,585,274,587,247,587,169,588,36"/>
+<area shape="poly" title=" " alt="" coords="621,31,603,92,595,130,592,169,592,248,590,274,585,295,560,337,541,358,521,377,518,372,538,355,555,334,580,293,585,274,587,247,587,169,590,129,598,91,617,35"/>
 <area shape="rect" title=" " alt="" coords="336,384,406,411"/>
-<area shape="poly" title=" " alt="" coords="583,32,557,92,546,130,541,169,541,248,538,271,529,293,516,312,500,330,461,358,421,380,419,375,458,354,496,326,512,309,525,290,533,270,536,247,536,169,541,129,552,90,580,35"/>
+<area shape="poly" title=" " alt="" coords="612,32,591,58,568,90,549,128,541,169,541,248,538,271,529,293,516,312,500,330,461,358,421,380,419,375,458,354,496,326,512,309,525,290,533,270,536,247,536,169,544,127,563,88,587,55,608,35"/>
 <area shape="rect" title=" " alt="" coords="627,81,693,109"/>
-<area shape="poly" title=" " alt="" coords="602,31,640,70,634,70,601,36"/>
+<area shape="poly" title=" " alt="" coords="631,31,649,68,644,66,630,36"/>
 <area shape="rect" title=" " alt="" coords="717,81,787,109"/>
-<area shape="poly" title=" " alt="" coords="619,31,712,74,707,75,618,36"/>
-<area shape="rect" title=" " alt="" coords="810,81,872,109"/>
-<area shape="poly" title=" " alt="" coords="635,31,798,79,792,81,635,36"/>
-<area shape="rect" title=" " alt="" coords="896,81,1010,109"/>
-<area shape="poly" title=" " alt="" coords="655,31,883,78,878,80,655,36"/>
+<area shape="poly" title=" " alt="" coords="647,31,719,73,714,73,647,36"/>
+<area shape="rect" title=" " alt="" coords="811,81,877,109"/>
+<area shape="poly" title=" " alt="" coords="663,31,799,77,794,78,663,36"/>
+<area shape="rect" title=" " alt="" coords="901,81,963,109"/>
+<area shape="poly" title=" " alt="" coords="686,31,888,80,883,81,686,36"/>
+<area shape="rect" title=" " alt="" coords="987,81,1101,109"/>
+<area shape="poly" title=" " alt="" coords="696,30,974,80,969,81,697,36"/>
 <area shape="rect" href="star-utils_8hpp.html" title=" " alt="" coords="220,157,327,184"/>
 <area shape="poly" title=" " alt="" coords="340,111,301,148,298,144,344,107"/>
 <area shape="poly" title=" " alt="" coords="254,187,203,234,141,307,94,372,90,369,137,304,199,230,258,183"/>
@@ -177,7 +180,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a27ae3010999abecce396cebbdee8ef0d" id="r_a27ae3010999abecce396cebbdee8ef0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a27ae3010999abecce396cebbdee8ef0d">lost::BadThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
 <tr class="memitem:a1c383b038ea9376eacf4858247d765be" id="r_a1c383b038ea9376eacf4858247d765be"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a1c383b038ea9376eacf4858247d765be">lost::OtsusThreshold</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
 <tr class="memitem:ad1dbff4deef51811c744f6316281c9c9" id="r_ad1dbff4deef51811c744f6316281c9c9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#ad1dbff4deef51811c744f6316281c9c9">lost::BasicThreshold</a> (unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; unsigned char &gt; *rowMax=nullptr)</td></tr>
-<tr class="memitem:acd1a58a1120e97d8cf060e3e9b11576c" id="r_acd1a58a1120e97d8cf060e3e9b11576c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#acd1a58a1120e97d8cf060e3e9b11576c">lost::BasicThresholdOnePass</a> (unsigned char *image, int imageWidth, int imageHeight)</td></tr>
+<tr class="memitem:a068335db3743725616bcbe93c66b3b82" id="r_a068335db3743725616bcbe93c66b3b82"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a068335db3743725616bcbe93c66b3b82">lost::BasicThresholdOnePass</a> (unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; unsigned char &gt; *rowMax=nullptr)</td></tr>
 <tr class="memitem:a789d628bbeab011d5552a6dc551b77a2" id="r_a789d628bbeab011d5552a6dc551b77a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelost.html#a789d628bbeab011d5552a6dc551b77a2">lost::IWCoGHelper</a> (<a class="el" href="structlost_1_1IWCoGParams.html">IWCoGParams</a> *p, long i, unsigned char *image, int imageWidth, int imageHeight, std::vector&lt; int &gt; *starIndices)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
