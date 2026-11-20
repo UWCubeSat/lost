@@ -8,7 +8,7 @@
 namespace lost {
 
 /**
- * Multiplicative extended Kalman filter (MEKF) for spacecraft attitude and angular rate.
+ * Multiplicative extended Kalman filter (MEKF) for attitude and angular rate determination.
  *
  * State: the attitude quaternion `q` (inertial to body, as everywhere in LOST) and the rate `w`.
  * The error state is 6-dimensional: a small rotation `theta` applied on the left of `q`
@@ -54,7 +54,7 @@ public:
     bool Predict(decimal dt);
 
     /**
-     * Correct the state with a measured attitude.
+     * Update the state with a measured attitude.
      * @param gate Largest accepted squared Mahalanobis distance between measurement and prediction.
      * It is chi-square distributed with 3 degrees of freedom: 16.27 rejects 0.1% of good measurements.
      * @return false if the measurement is not a unit quaternion or fails the gate. Always false if
