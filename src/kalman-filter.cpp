@@ -1,5 +1,6 @@
 #include "kalman-filter.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <limits>
@@ -101,32 +102,47 @@ static void LeftJacobianInverse(const Vec3 &v, decimal inverse[3][3]) {
     SkewPolynomial(v, DECIMAL(-0.5), b, inverse);
 }
 
-/// The smallest pivot IsPositiveDefinite accepts. Rounding in the factorization is below this, so
-/// a covariance that passes is positive definite as stored, not only as computed.
-static const decimal kMinPivot = 64 * std::numeric_limits<decimal>::epsilon();
+/**
+ * How far above zero every eigenvalue of a covariance's correlation matrix must be for
+ * IsPositiveDefinite to accept it. Two requirements set it:
+ *  - It must exceed the rounding error of the check itself, which works in double precision
+ *    whatever `decimal` is. That error is a few times 1e-14 for a 6 by 6 correlation matrix.
+ *  - It should exceed the rounding error of the filter's own arithmetic, which is in `decimal`,
+ *    so that the smallest eigenvalue it certifies is not just noise.
+ */
+static const double kEigenvalueMargin = std::max(64 * static_cast<double>(std::numeric_limits<decimal>::epsilon()),
+                                                 4096 * std::numeric_limits<double>::epsilon());
 
 /**
- * Whether a covariance is positive definite with room to spare: the Cholesky factorization of
- * its correlation matrix (so that the different scales of attitude and rate do not matter) has
- * every pivot at least kMinPivot. A pivot is the share of a component's variance that the
- * components before it do not explain, so this fails when two error components become so nearly
- * the same that the matrix cannot tell them apart at this precision. Also false for a matrix
- * that is not finite.
+ * Whether a covariance, exactly as stored, is positive definite with room to spare.
+ *
+ * It forms the correlation matrix (so that the different scales of attitude and rate do not
+ * matter), subtracts kEigenvalueMargin from its diagonal, and runs a Cholesky factorization on
+ * the result, all in double precision. A Cholesky factorization that completes shows that the
+ * matrix it was given, give or take its own rounding error, has no negative eigenvalue. So
+ * success means every eigenvalue of the correlation matrix is at least kEigenvalueMargin less
+ * that rounding error, which is positive. The stored entries convert to double exactly, so this
+ * is a statement about the stored matrix, not about a rounded copy of it.
+ *
+ * It fails when two error components have become so nearly the same thing that the matrix
+ * cannot tell them apart at the precision of `decimal`, and for a matrix that is not finite.
  */
 static bool IsPositiveDefinite(const Mat6 &p) {
-    decimal scale[6];
+    double scale[6];
     for (int i = 0; i < 6; i++) {
         if (!(p[i][i] > 0)) return false;
-        scale[i] = 1 / DECIMAL_SQRT(p[i][i]);
+        scale[i] = 1 / std::sqrt(static_cast<double>(p[i][i]));
     }
-    decimal l[6][6] = {};
+    double l[6][6] = {};
     for (int j = 0; j < 6; j++) {
         for (int i = j; i < 6; i++) {
-            decimal value = p[i][j] * scale[i] * scale[j];
+            double value = static_cast<double>(p[i][j]) * scale[i] * scale[j];
+            if (i == j) value -= kEigenvalueMargin;
             for (int k = 0; k < j; k++) value -= l[i][k] * l[j][k];
             if (i == j) {
-                if (!(value >= kMinPivot)) return false;
-                l[j][j] = DECIMAL_SQRT(value);
+                // written so that NaN is refused too
+                if (!(value > 0)) return false;
+                l[j][j] = std::sqrt(value);
             } else {
                 l[i][j] = value / l[j][j];
             }
@@ -202,9 +218,11 @@ AttitudeEKF::AttitudeEKF(decimal crossBoresightSigma, decimal rollSigma, decimal
                     && std::isfinite(accelerationVariance)),
       initialized(false) { }
 
-/// The largest turn between the two fixes given to Reset, in radians. A rate taken from two fixes
-/// cannot show more than half a turn; the margin allows for rounding.
-static const decimal kMaxResetTurn = DECIMAL_M_PI * DECIMAL(1.001);
+/// The largest turn between the two fixes given to Reset, in radians: a quarter turn. Two fixes
+/// cannot tell a turn from the opposite turn that completes the circle, and near half a turn an
+/// ordinary fix error is enough to make the shorter of the two the wrong one. Below a quarter
+/// turn it would take a fix error of a quarter turn.
+static const decimal kMaxResetTurn = DECIMAL_M_PI / 2;
 
 bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline) {
     // !(x > 0), not x <= 0, so that NaN is refused too

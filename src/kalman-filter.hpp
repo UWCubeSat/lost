@@ -50,15 +50,18 @@ public:
      * measurements imply, with the angular acceleration there may have been between them, so it
      * is only right for a rate obtained this way.
      * @return false if the attitude is not unit, the rate is not finite, the baseline is not
-     * positive and finite, the two imply more than half a turn, or the covariance is not
+     * positive and finite, the two imply more than a quarter turn (two fixes that far apart
+     * do not say reliably which way the spacecraft turned), or the covariance is not
      * representable.
      */
     bool Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline);
 
     /**
      * Propagate the state `dt` seconds forward assuming constant rate. One call for a long gap
-     * and many calls for short steps give the same covariance to within 0.1%; the attitude is
-     * only as good as the constant-rate assumption.
+     * and many calls for short steps give nearly the same covariance: the tests compare one step
+     * with a thousand, for turns of up to 20 radians, and every entry agrees to 0.1% of
+     * sqrt(P_ii * P_jj). Splitting a gap into very many tiny steps adds rounding error instead,
+     * most of all in float mode. The attitude is only as good as the constant-rate assumption.
      * @return false before the first successful Reset, if `dt` is negative or not finite, if the
      * step turns more than 64 radians (take it in shorter steps), or if the covariance would
      * overflow or cannot be held at this precision.
