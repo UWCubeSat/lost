@@ -246,6 +246,9 @@ TEST_CASE("Windowed CoG finds nothing with unusable settings, and accepts a null
     CHECK(WindowedCenterOfGravity(4, -1, 3).Go(image.data(), w, h, predictions, &matched).empty());
     CHECK(WindowedCenterOfGravity(1 << 30, 4, 3).Go(image.data(), w, h, predictions, &matched).empty());
     CHECK(WindowedCenterOfGravity(4, 1 << 30, 3).Go(image.data(), w, h, predictions, &matched).empty());
+    CHECK(WindowedCenterOfGravity(4, 4, -1).Go(image.data(), w, h, predictions, &matched).empty());
+    CHECK(WindowedCenterOfGravity(4, 4, std::numeric_limits<decimal>::quiet_NaN())
+          .Go(image.data(), w, h, predictions, &matched).empty());
     CHECK(WindowedCenterOfGravity(4, 4, 3).Go(nullptr, w, h, predictions, &matched).empty());
     CHECK(WindowedCenterOfGravity(4, 4, 3).Go(image.data(), 0, 0, predictions, &matched).empty());
     CHECK(WindowedCenterOfGravity(4, 4, 3).Go(image.data(), -5, 7, predictions, &matched).empty());

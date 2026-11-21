@@ -11,19 +11,22 @@ namespace lost {
 using Mat6 = AttitudeEKF::Mat6;
 
 Quaternion RotationVectorToQuaternion(const Vec3 &v) {
+    // Implements Exp(v) = cos(theta/2) + u sin(theta/2), with theta = |v| and u = v / theta
     decimal angle = v.Magnitude();
+    // first order; exact to rounding for angles this small
     if (angle < DECIMAL(1e-12)) {
-        // first order; exact to rounding for angles this small
         return Quaternion(DECIMAL(1.0), v.x / 2, v.y / 2, v.z / 2);
     }
     return Quaternion(v * (DECIMAL(1.0) / angle), angle);
 }
 
 Vec3 QuaternionToRotationVector(const Quaternion &q) {
+    // Implements Log(q) = 2 * vec * arctan(|vec|, w) / |vec|, with w the real part and vec the vector part
     // q and -q are the same rotation; pick the one with the smaller angle
     decimal sign = q.real < 0 ? DECIMAL(-1.0) : DECIMAL(1.0);
     Vec3 axis = Vec3(q.i, q.j, q.k) * sign;
     decimal sinHalf = axis.Magnitude();
+    // first order; avoids dividing by zero at the identity
     if (sinHalf < DECIMAL(1e-12)) {
         return axis * DECIMAL(2.0);
     }
@@ -50,21 +53,24 @@ static bool IsFinite(const Mat6 &m) {
 }
 
 /**
- * Left Jacobian of the rotation Exp(v): to first order in d,
- * Exp(v + d) = Exp(J * d) * Exp(v).
+ * Left Jacobian of Exp at v: to first order in d, Exp(v + d) = Exp(J * d) * Exp(v).
+ * With angle = |v| and unit axis a = v / angle:
+ *   J = sinc * I + (1 - sinc) * a * a^T + cosc * [a]x,
+ * where sinc = sin(angle) / angle and cosc = (1 - cos(angle)) / angle.
  */
 static void LeftJacobian(const Vec3 &v, decimal jacobian[3][3]) {
     const decimal angle = v.Magnitude();
-    // sin(angle)/angle and (1 - cos(angle))/angle, the latter written to avoid cancellation
+    // Small angles: J is the identity to within angle / 2, and the axis is undefined.
     decimal sinc = 1, cosc = angle / 2;
     Vec3 axis(0, 0, 0);
     if (angle > DECIMAL(1e-6)) {
         const decimal sinHalf = DECIMAL_SIN(angle / 2);
         sinc = DECIMAL_SIN(angle) / angle;
-        cosc = 2 * sinHalf * sinHalf / angle;
+        cosc = 2 * sinHalf * sinHalf / angle;  // 1 - cos(angle) = 2 sin^2(angle / 2), without cancellation
         axis = v * (DECIMAL(1.0) / angle);
     }
     const decimal a[3] = {axis.x, axis.y, axis.z};
+    // [a]x, the matrix with [a]x * b = a cross b
     const decimal cross[3][3] = {{0, -a[2], a[1]}, {a[2], 0, -a[0]}, {-a[1], a[0], 0}};
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -111,11 +117,13 @@ AttitudeEKF::AttitudeEKF(decimal crossBoresightSigma, decimal rollSigma, decimal
       accelerationVariance(angularAccelerationSigma * angularAccelerationSigma) { }
 
 bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline) {
-    // written so that non-finite values are refused too
+    // refuse non-finite values
     if (!attitude.IsUnit(kUnitTolerance) || !IsFinite(rate) || !(baseline > 0)) {
         return false;
     }
-    // rate = (theta2 - theta1) / baseline, attitude = theta2, with independent measurement errors
+    // The attitude is the newer of two readings and the rate is their difference over the baseline.
+    // With independent fix errors of variance R per axis, that gives:
+    //   attitude variance R, attitude-rate covariance R / baseline, rate variance 2R / baseline^2.
     Mat6 covariance{};
     for (int i = 0; i < 3; i++) {
         covariance[i][i] = R[i];
@@ -132,15 +140,20 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
 }
 
 bool AttitudeEKF::Predict(decimal dt) {
+    // refuse a negative or non-finite step
     if (!(dt >= 0) || !std::isfinite(dt)) {
         return false;
     }
+    // State: q <- Exp(w * dt) * q. The rate stays as it is.
     Quaternion step = RotationVectorToQuaternion(w * dt);
     Quaternion predicted = Normalized(step * q);
 
-    // Attitude error rotates with the step: Exp(step(theta)) * step = step * Exp(theta).
-    // Rate error integrates into attitude error through the same step:
-    // Exp((w + dw) * dt) = Exp(J * dw * dt) * step.
+    // Transition matrix phi of the error, ordered attitude then rate:
+    //   attitude block: the step's rotation matrix. The attitude error rotates with the step,
+    //     Exp(step(theta)) * step = step * Exp(theta).
+    //   rate-to-attitude block: dt * J, with J the left Jacobian at w * dt. A rate error
+    //     integrates into attitude error, Exp((w + dw) * dt) = Exp(J * dw * dt) * step.
+    //   rate block: the identity.
     decimal jacobian[3][3];
     LeftJacobian(w * dt, jacobian);
     Mat6 phi{};
@@ -155,9 +168,12 @@ bool AttitudeEKF::Predict(decimal dt) {
         }
         phi[j + 3][j + 3] = 1;
     }
+    // P <- phi * P * phi^T
     Mat6 covariance = Congruence(phi, P);
 
-    // white angular acceleration, integrated over dt (to first order in the step's angle)
+    // Process noise of white angular acceleration over dt, to first order in the step's angle.
+    // Each term is times accelerationVariance:
+    //   attitude variance dt^3 / 3, attitude-rate covariance dt^2 / 2, rate variance dt.
     decimal dt2 = dt * dt;
     for (int i = 0; i < 3; i++) {
         covariance[i][i] += accelerationVariance * dt2 * dt / 3;
@@ -166,8 +182,9 @@ bool AttitudeEKF::Predict(decimal dt) {
         covariance[i + 3][i + 3] += accelerationVariance * dt;
     }
 
+    // overflow; keep the last good state
     if (!predicted.IsUnit(kUnitTolerance) || !IsFinite(covariance)) {
-        return false;  // overflow; keep the last good state
+        return false;
     }
     q = predicted;
     P = covariance;
@@ -175,19 +192,22 @@ bool AttitudeEKF::Predict(decimal dt) {
 }
 
 bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
+    // refuse a measurement that is not a rotation (or not finite)
     if (!measured.IsUnit(kUnitTolerance)) {
-        return false;  // not a rotation (or not finite)
+        return false;
     }
+    // Innovation: Log(measured * q^-1), the rotation from the predicted attitude to the measured one.
     Vec3 innovationVec = QuaternionToRotationVector(measured * q.Conjugate());
     const decimal innovation[3] = {innovationVec.x, innovationVec.y, innovationVec.z};
 
-    // innovation covariance S = P_theta + R, factored as L * L^T
+    // Innovation covariance S = P_theta + R, where P_theta is the attitude block of P.
     decimal s[3][3];
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             s[i][j] = P[i][j] + (i == j ? R[i] : 0);
         }
     }
+    // Cholesky factorization S = L * L^T. Fails if S is not positive definite.
     decimal l[3][3] = {};
     for (int j = 0; j < 3; j++) {
         decimal diagonal = s[j][j];
@@ -200,7 +220,7 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
             l[i][j] = value / l[j][j];
         }
     }
-    // x <- S^-1 x
+    // x <- S^-1 * x, by forward then back substitution with L
     auto solve = [&l](decimal x[3]) {
         for (int i = 0; i < 3; i++) {
             for (int k = 0; k < i; k++) x[i] -= l[i][k] * x[k];
@@ -212,26 +232,30 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
         }
     };
 
+    // Gate on the squared Mahalanobis distance innovation^T * S^-1 * innovation.
     decimal weighted[3] = {innovation[0], innovation[1], innovation[2]};
     solve(weighted);
     decimal mahalanobisSq = innovation[0] * weighted[0] + innovation[1] * weighted[1] + innovation[2] * weighted[2];
     if (!(mahalanobisSq <= gate)) return false;
 
-    // gain K = P H^T S^-1, where H = [I 0]; S is symmetric, so row i of K is S^-1 (row i of P_theta)
+    // Gain K = P * H^T * S^-1, where H = [I 0] picks out the attitude error.
+    // S is symmetric, so row i of K is S^-1 * (the first three entries of row i of P).
     decimal gain[6][3];
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 3; j++) gain[i][j] = P[i][j];
         solve(gain[i]);
     }
 
+    // Correction K * innovation, ordered attitude then rate.
     decimal correction[6] = {};
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 3; j++) correction[i] += gain[i][j] * innovation[j];
     }
+    // Apply it: q <- Exp(attitude correction) * q, w <- w + rate correction.
     Quaternion corrected = Normalized(RotationVectorToQuaternion({correction[0], correction[1], correction[2]}) * q);
     Vec3 correctedRate = w + Vec3(correction[3], correction[4], correction[5]);
 
-    // Joseph form: P = (I - K H) P (I - K H)^T + K R K^T
+    // Joseph form: P <- (I - K H) * P * (I - K H)^T + K * R * K^T
     Mat6 iMinusKh{};
     for (int i = 0; i < 6; i++) {
         iMinusKh[i][i] = 1;
@@ -245,7 +269,8 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
     }
 
     // That covariance is of the error about the old attitude. Re-express it about the corrected
-    // one: Exp(correction + e) = Exp(J * e) * Exp(correction). The rate error is unaffected.
+    // one: P <- G * P * G^T with G = diag(J, I), J the left Jacobian at the attitude correction,
+    // since Exp(correction + e) = Exp(J * e) * Exp(correction). The rate error is unaffected.
     decimal jacobian[3][3];
     LeftJacobian({correction[0], correction[1], correction[2]}, jacobian);
     Mat6 recenter{};
@@ -255,8 +280,9 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
     }
     covariance = Congruence(recenter, covariance);
 
+    // overflow; keep the last good state
     if (!corrected.IsUnit(kUnitTolerance) || !IsFinite(correctedRate) || !IsFinite(covariance)) {
-        return false;  // overflow; keep the last good state
+        return false;
     }
     q = corrected;
     w = correctedRate;

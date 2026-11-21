@@ -399,7 +399,9 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
     if (matchedPredictions != nullptr) {
         matchedPredictions->clear();
     }
-    if (image == nullptr || gateRadius < 0 || gateRadius > kMaxRadius || maxStarRadius < 0 || maxStarRadius > kMaxRadius) {
+    // unusable settings; the last is written so that a NaN outlierRadius is refused too
+    if (image == nullptr || gateRadius < 0 || gateRadius > kMaxRadius || maxStarRadius < 0 || maxStarRadius > kMaxRadius
+        || !(outlierRadius >= 0)) {
         return Stars();
     }
 
@@ -411,7 +413,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
 
     for (int p = 0; p < (int)predictions.size(); p++) {
         const Vec2 &prediction = predictions[p];
-        // written so that it also skips a non-finite prediction
+        // skip predictions off the image; written so that non-finite ones are skipped too
         if (!(prediction.x >= 0 && prediction.x <= imageWidth && prediction.y >= 0 && prediction.y <= imageHeight)) {
             continue;
         }

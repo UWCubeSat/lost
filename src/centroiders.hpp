@@ -1,6 +1,7 @@
 #ifndef CENTROID_H
 #define CENTROID_H
 
+#include <iostream>
 #include <vector>
 
 #include "star-utils.hpp"
@@ -50,38 +51,31 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
 };
 
 /**
- * Centroids stars near predicted positions, e.g. where the previous frames say each star will be.
- * For each prediction: estimates the background and noise from the border of a square window around
- * it, seeds at the brightest pixel within gateRadius of the prediction, flood-fills the connected
- * pixels above threshold, and takes their background-subtracted center of gravity. Rejects a star
- * that touches the window or image edge (its centroid would be biased), or that ends up farther than
- * gateRadius from its prediction.
+ * Centroids stars near predicted positions. For each prediction: takes background and noise from
+ * the border of a square window, seeds at the brightest pixel within gateRadius, flood-fills the
+ * connected pixels above threshold, and takes their background-subtracted center of gravity.
  *
- * Then checks the matches against each other: stars found from two predictions whose pixel
- * bounding boxes overlap (the same star, or two too close to tell apart) are ambiguous and both
- * dropped, and since the prediction error of a whole frame is almost a common shift (attitude
- * error), stars whose offset from their prediction is more than outlierRadius from the median
- * offset are dropped too.
+ * Drops a star that touches the window or image edge, that lies farther than gateRadius from its
+ * prediction, whose pixel bounding box overlaps another match's, or whose offset from its
+ * prediction is more than outlierRadius from the frame's median offset.
  */
 class WindowedCenterOfGravity {
 public:
     /**
-     * @param gateRadius Largest expected distance, in pixels, between a star and its prediction.
-     * @param maxStarRadius Largest expected star radius in pixels. The window around each
-     * prediction extends this much beyond the gate, so that whole stars fit in it.
-     * Go finds nothing if either radius is negative or more than kMaxRadius.
-     * @param outlierRadius See class description, in pixels.
+     * @param gateRadius Largest expected distance between a star and its prediction, in pixels.
+     * @param maxStarRadius Largest expected star radius, in pixels; the window extends this far past the gate.
+     * @param outlierRadius Largest accepted distance of a match's offset from the median offset, in pixels.
+     * Go finds nothing if it is negative or NaN.
      */
     WindowedCenterOfGravity(int gateRadius, int maxStarRadius, decimal outlierRadius)
         : gateRadius(gateRadius), maxStarRadius(maxStarRadius), outlierRadius(outlierRadius) { };
 
-    /// Largest gateRadius and maxStarRadius accepted, in pixels.
+    /// Largest gateRadius and maxStarRadius accepted, in pixels. Outside 0..kMaxRadius, Go finds nothing.
     static const int kMaxRadius = 1024;
 
     /**
-     * @param predictions Predicted star positions in pixel coordinates (same as Star::position).
-     * Predictions outside the image, or not finite, are skipped.
-     * @param[out] matchedPredictions For each returned star, the index of its prediction. May be null.
+     * @param predictions Predicted star positions in pixels (as Star::position). Off-image ones are skipped.
+     * @param[out] matchedPredictions The prediction index of each returned star. May be null.
      * @return The stars found, in increasing order of prediction index.
      */
     Stars Go(const unsigned char *image, int imageWidth, int imageHeight,
