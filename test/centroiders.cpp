@@ -656,8 +656,21 @@ TEST_CASE("Windowed CoG on a noisy 8-bit frame with several stars, a common shif
 TEST_CASE("Windowed CoG finds nothing in an image too large to index", "[centroid]") {
     Image image(4, 10);
     const int huge = std::numeric_limits<int>::max() / 2;
-    CHECK(WindowedCenterOfGravity(4, 4, 3).Go(image.data(), huge, 3, {{DECIMAL(1.5), DECIMAL(1.5)}}, nullptr).empty());
-    CHECK(WindowedCenterOfGravity(4, 4, 3).Go(image.data(), 3, huge, {{DECIMAL(1.5), DECIMAL(1.5)}}, nullptr).empty());
+    WindowedCenterOfGravity centroider(4, 4, 3);
+    CHECK(centroider.Go(image.data(), huge, 3, {{DECIMAL(1.5), DECIMAL(1.5)}}, nullptr).empty());
+    CHECK(centroider.Go(image.data(), 3, huge, {{DECIMAL(1.5), DECIMAL(1.5)}}, nullptr).empty());
+
+    // One row or column, few enough pixels to index, but too long for window coordinates to be
+    // safe near its far end. The image is never read.
+    const int longest = std::numeric_limits<int>::max();
+    const int tooLong = WindowedCenterOfGravity::kMaxImageSide + 1;
+    for (int side : {longest, tooLong}) {
+        INFO("side " << side);
+        const decimal farEnd = static_cast<decimal>(side) - DECIMAL(2.5);
+        CHECK(centroider.Go(image.data(), side, 1, {{farEnd, DECIMAL(0.5)}, {DECIMAL(1.5), DECIMAL(0.5)}}, nullptr).empty());
+        CHECK(centroider.Go(image.data(), 1, side, {{DECIMAL(0.5), farEnd}, {DECIMAL(0.5), DECIMAL(1.5)}}, nullptr).empty());
+        CHECK(centroider.Go(image.data(), side, 2, {{farEnd, DECIMAL(0.5)}, {DECIMAL(1.5), DECIMAL(0.5)}}, nullptr).empty());
+    }
 }
 
 TEST_CASE("Windowed CoG rarely takes noise for a star", "[centroid]") {

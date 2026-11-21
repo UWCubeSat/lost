@@ -42,7 +42,8 @@ public:
     /**
      * Start from the newer of two measured attitudes `baseline` seconds apart, and the rate
      * between them: Log(newer * older^-1) / baseline. The initial covariance is what those two
-     * measurements imply, so it is only right for a rate obtained this way.
+     * measurements imply, with the angular acceleration there may have been between them, so it
+     * is only right for a rate obtained this way.
      * @return false if the attitude is not unit, the rate is not finite, the baseline is not
      * positive and finite, the two imply more than half a turn, or the covariance is not
      * representable.
@@ -50,7 +51,9 @@ public:
     bool Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline);
 
     /**
-     * Propagate the state `dt` seconds forward assuming constant rate.
+     * Propagate the state `dt` seconds forward assuming constant rate. One call for a long gap
+     * and many calls for short steps give nearly the same covariance, and it stays positive
+     * semidefinite either way; the attitude is only as good as the constant-rate assumption.
      * @return false before the first successful Reset, if `dt` is negative or not finite, or if
      * the covariance would overflow.
      */

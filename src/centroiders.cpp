@@ -422,14 +422,17 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
         || !(outlierRadius >= 0)) {
         return Stars();
     }
-    // pixel indices are ints
-    if (imageWidth <= 0 || imageHeight <= 0 || imageWidth > std::numeric_limits<int>::max() / imageHeight) {
+    // Pixel indices and window coordinates are ints, and positions must be exact in a float.
+    if (imageWidth <= 0 || imageHeight <= 0 || imageWidth > kMaxImageSide || imageHeight > kMaxImageSide
+        || imageWidth > std::numeric_limits<int>::max() / imageHeight) {
         return Stars();
     }
 
     const int halfWindow = gateRadius + maxStarRadius;
     const int windowSide = 2 * halfWindow + 1;
-    std::vector<unsigned char> visited(windowSide * windowSide);
+    // marks for the flood fill: one per pixel of a window, which is never larger than the image
+    const int visitedWidth = std::min(windowSide, imageWidth);
+    std::vector<unsigned char> visited(visitedWidth * std::min(windowSide, imageHeight));
     std::vector<int> stack;
     std::vector<WindowedMatch> matches;
 
@@ -491,7 +494,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
         // flood fill inside the window
         std::fill(visited.begin(), visited.end(), 0);
         stack.assign(1, seed);
-        visited[(seed / imageWidth - windowY0) * windowSide + (seed % imageWidth - windowX0)] = 1;
+        visited[(seed / imageWidth - yMin) * visitedWidth + (seed % imageWidth - xMin)] = 1;
         int64_t weightSum = 0, xWeightSum = 0, yWeightSum = 0;
         int pixels = 0;
         int starXMin = seed % imageWidth, starXMax = starXMin;
@@ -523,7 +526,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
                 if (nx < xMin || nx > xMax || ny < yMin || ny > yMax) {
                     continue;
                 }
-                unsigned char &seen = visited[(ny - windowY0) * windowSide + (nx - windowX0)];
+                unsigned char &seen = visited[(ny - yMin) * visitedWidth + (nx - xMin)];
                 if (!seen && image[ny * imageWidth + nx] >= threshold) {
                     seen = 1;
                     stack.push_back(ny * imageWidth + nx);

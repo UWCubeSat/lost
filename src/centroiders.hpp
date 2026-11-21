@@ -61,8 +61,11 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
  * are left, also drops any whose offset from its prediction is more than outlierRadius from the
  * frame's median offset.
  *
- * Go uses (2 * (gateRadius + maxStarRadius) + 1)^2 bytes of working memory and compares every
- * pair of matches, so keep the radii and the number of predictions to what the frame needs.
+ * Working memory, not measured on the flight computer: one byte per pixel of a window, which is
+ * (2 * (gateRadius + maxStarRadius) + 1) pixels square or the image if that is smaller, allocated
+ * once per call; up to 8 more bytes per pixel of the largest star, for the flood fill's stack;
+ * and a few hundred bytes per prediction. Go also compares every pair of matches. So keep the
+ * radii and the number of predictions to what the frame needs.
  */
 class WindowedCenterOfGravity {
 public:
@@ -77,6 +80,9 @@ public:
 
     /// Largest gateRadius and maxStarRadius accepted, in pixels. Outside 0..kMaxRadius, Go finds nothing.
     static const int kMaxRadius = 1024;
+    /// Largest image width and height accepted, in pixels. Go finds nothing in a larger image, or
+    /// in one with more pixels than an int can index.
+    static const int kMaxImageSide = 1 << 24;
 
     /**
      * @param predictions Predicted star positions in pixels (as Star::position). Off-image ones are skipped.

@@ -66,6 +66,65 @@ double Nees(const AttitudeEKF::Mat6 &covariance, const double error[6]) {
     return result;
 }
 
+/**
+ * Whether a covariance is positive definite. Judged on its correlation matrix, so that the
+ * different scales of attitude and rate do not matter: Cholesky in double precision, with every
+ * pivot at least `tolerance`. (A pivot is the share of a component's variance that the
+ * components before it do not explain.)
+ */
+bool IsPositiveDefinite(const AttitudeEKF::Mat6 &covariance, double tolerance) {
+    double l[6][6] = {};
+    for (int j = 0; j < 6; j++) {
+        if (!(covariance[j][j] > 0)) return false;
+        for (int i = j; i < 6; i++) {
+            if (!(covariance[i][i] > 0)) return false;
+            double value = static_cast<double>(covariance[i][j])
+                / std::sqrt(static_cast<double>(covariance[i][i]) * static_cast<double>(covariance[j][j]));
+            for (int k = 0; k < j; k++) value -= l[i][k] * l[j][k];
+            if (i == j) {
+                if (!(value >= tolerance)) return false;
+                l[j][j] = std::sqrt(value);
+            } else {
+                l[i][j] = value / l[j][j];
+            }
+        }
+    }
+    return true;
+}
+
+/// A spacecraft whose rate wanders with white angular acceleration, and a star tracker on it.
+class NoisyTruth {
+public:
+    NoisyTruth(const Quaternion &attitude, const Vec3 &rate, decimal crossSigma, decimal rollSigma,
+               decimal accelerationSigma, Gaussian *gaussian)
+        : attitude(attitude), rate(rate), crossSigma(crossSigma), rollSigma(rollSigma),
+          accelerationSigma(accelerationSigma), gaussian(gaussian) { }
+
+    /// Move on by dt: the rate change over dt and the attitude change it causes.
+    void Advance(decimal dt) {
+        decimal rateStep[3], angleStep[3];
+        for (int i = 0; i < 3; i++) {
+            const decimal n1 = (*gaussian)(), n2 = (*gaussian)();
+            rateStep[i] = accelerationSigma * DECIMAL_SQRT(dt) * n1;
+            angleStep[i] = accelerationSigma * dt * DECIMAL_SQRT(dt) * (n1 / 2 + n2 / DECIMAL_SQRT(DECIMAL(12.0)));
+        }
+        attitude = RotationVectorToQuaternion(rate * dt + Vec3(angleStep[0], angleStep[1], angleStep[2])) * attitude;
+        rate = rate + Vec3(rateStep[0], rateStep[1], rateStep[2]);
+    }
+
+    Quaternion Measure() {
+        const Vec3 noise(rollSigma * (*gaussian)(), crossSigma * (*gaussian)(), crossSigma * (*gaussian)());
+        return RotationVectorToQuaternion(noise) * attitude;
+    }
+
+    Quaternion attitude;
+    Vec3 rate;
+
+private:
+    decimal crossSigma, rollSigma, accelerationSigma;
+    Gaussian *gaussian;
+};
+
 /// The rotation matrix of q, in double precision.
 void RotationMatrix(const Quaternion &q, double matrix[3][3]) {
     const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
@@ -392,15 +451,20 @@ TEST_CASE("Rotation vector conversions match known values at every scale", "[kal
     CHECK(half.z == 0);
 }
 
-TEST_CASE("EKF Reset from two fixes with no turn between them stores a unit attitude and R, R/b, 2R/b^2", "[kalman]") {
+TEST_CASE("EKF Reset from two fixes with no turn between them stores a unit attitude and R, R/b, 2R/b^2 + s*b/3", "[kalman]") {
     const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec, baseline = DECIMAL(0.25);
     const Quaternion start = SphericalToQuaternion(DECIMAL(1.0), DECIMAL(0.5), DECIMAL(0.3));
     // within kUnitTolerance of unit, but not unit
     const decimal scale = DECIMAL(1.0002);
     const Quaternion scaled(start.real * scale, start.i * scale, start.j * scale, start.k * scale);
     const Vec3 rate(0, 0, 0);
+    // the rate is the average over the baseline; angular acceleration makes the rate at its end differ
+    const decimal accelerationSigma = DECIMAL(5e-4);
+    const decimal wander = accelerationSigma * accelerationSigma * baseline / 3;
+    // it is a real part of the rate variance: more than the cross-boresight fix errors' share
+    CHECK(wander > 2 * crossSigma * crossSigma / (baseline * baseline));
 
-    AttitudeEKF ekf(crossSigma, rollSigma, DECIMAL(0.01));
+    AttitudeEKF ekf(crossSigma, rollSigma, accelerationSigma);
     REQUIRE(ekf.Reset(scaled, rate, baseline));
     CHECK(NormSq(ekf.AttitudeQuaternion()) == Approx(1.0).margin(1e-6));
     CHECK(AngleBetween(ekf.AttitudeQuaternion(), start) < DECIMAL(1e-6));
@@ -413,10 +477,12 @@ TEST_CASE("EKF Reset from two fixes with no turn between them stores a unit atti
             INFO("covariance entry " << i << ", " << j);
             if (i % 3 != j % 3) {
                 CHECK(covariance[i][j] == 0);
+            } else if (i == j && i >= 3) {
+                CHECK(covariance[i][j] == Approx(2 * variance[i % 3] / (baseline * baseline) + wander).epsilon(1e-5));
             } else if (i < 3 && j < 3) {
                 CHECK(covariance[i][j] == Approx(variance[i]).epsilon(1e-5));
             } else if (i >= 3 && j >= 3) {
-                CHECK(covariance[i][j] == Approx(2 * variance[i % 3] / (baseline * baseline)).epsilon(1e-5));
+                CHECK(covariance[i][j] == Approx(2 * variance[i % 3] / (baseline * baseline) + wander).epsilon(1e-5));
             } else {
                 CHECK(covariance[i][j] == Approx(variance[i % 3] / baseline).epsilon(1e-5));
             }
@@ -437,7 +503,8 @@ TEST_CASE("EKF process noise is that of white angular acceleration", "[kalman]")
     REQUIRE(ekf.Predict(dt));
     const AttitudeEKF::Mat6 &covariance = ekf.Covariance();
     for (int i = 0; i < 3; i++) {
-        const decimal attitude = variance[i], cross = variance[i] / baseline, rate = 2 * variance[i] / (baseline * baseline);
+        const decimal attitude = variance[i], cross = variance[i] / baseline;
+        const decimal rate = 2 * variance[i] / (baseline * baseline) + a * baseline / 3;
         INFO("axis " << i);
         // the process noise is a large part of each: about 9e-9, 4.5e-8 and 3e-7
         CHECK(covariance[i][i] == Approx(attitude + 2 * dt * cross + dt * dt * rate + a * dt * dt * dt / 3).epsilon(1e-4));
@@ -620,7 +687,7 @@ TEST_CASE("EKF gate sits at the stated Mahalanobis distance on each axis", "[kal
     CHECK_FALSE(accepts(Vec3(rollLimit * third * DECIMAL(1.02), crossLimit * third * DECIMAL(1.02), crossLimit * third * DECIMAL(1.02))));
 }
 
-TEST_CASE("EKF state stays unit, symmetric and positive over a long run", "[kalman]") {
+TEST_CASE("EKF state stays unit, symmetric and positive definite over a long run", "[kalman]") {
     const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec, dt = DECIMAL(0.1);
     const Vec3 rate(DECIMAL(0.02), DECIMAL(-0.03), DECIMAL(0.01));
     Quaternion truth = SphericalToQuaternion(DECIMAL(1.0), DECIMAL(0.5), DECIMAL(0.3));
@@ -638,9 +705,9 @@ TEST_CASE("EKF state stays unit, symmetric and positive over a long run", "[kalm
         if (ekf.Update(RotationVectorToQuaternion(noise) * truth, DECIMAL(16.27))) accepted++;
 
         const AttitudeEKF::Mat6 &covariance = ekf.Covariance();
-        bool symmetric = true, positive = true;
+        bool symmetric = true;
+        const bool positive = IsPositiveDefinite(covariance, 1e-6);
         for (int i = 0; i < 6; i++) {
-            positive = positive && covariance[i][i] > 0;
             for (int j = 0; j < i; j++) symmetric = symmetric && covariance[i][j] == covariance[j][i];
         }
         if (!symmetric || !positive || std::abs(NormSq(ekf.AttitudeQuaternion()) - 1) > unitTolerance) {
@@ -654,7 +721,14 @@ TEST_CASE("EKF state stays unit, symmetric and positive over a long run", "[kalm
     CHECK(accepted > 19900);
     CHECK(AngleBetween(ekf.AttitudeQuaternion(), truth) < 30 * kArcsec);
     // prediction alone, as when no fix arrives for a long time, also keeps the attitude unit
-    for (int frame = 0; frame < 20000; frame++) REQUIRE(ekf.Predict(dt));
+    // and the covariance positive definite
+    for (int frame = 0; frame < 20000; frame++) {
+        REQUIRE(ekf.Predict(dt));
+        if (!IsPositiveDefinite(ekf.Covariance(), 1e-6)) {
+            INFO("frame " << frame << " of prediction alone");
+            REQUIRE(IsPositiveDefinite(ekf.Covariance(), 1e-6));
+        }
+    }
     CHECK(std::abs(NormSq(ekf.AttitudeQuaternion()) - 1) <= unitTolerance);
 }
 
@@ -745,7 +819,8 @@ TEST_CASE("EKF Reset covariance is what two noisy fixes a turn apart imply", "[k
     };
     const Vec3 rate = rateFrom(Vec3(0, 0, 0), Vec3(0, 0, 0));
 
-    AttitudeEKF ekf(crossSigma, rollSigma, DECIMAL(0.01));
+    const decimal accelerationSigma = DECIMAL(0.02);
+    AttitudeEKF ekf(crossSigma, rollSigma, accelerationSigma);
     REQUIRE(ekf.Reset(newer, rate, baseline));
     CHECK(AngleBetween(ekf.AttitudeQuaternion(), newer) < DECIMAL(1e-6));
     CHECK((ekf.Rate() - rate).Magnitude() == 0);
@@ -770,7 +845,45 @@ TEST_CASE("EKF Reset covariance is what two noisy fixes a turn apart imply", "[k
             for (int k = 0; k < 6; k++) expected[i][j] += sensitivity[i][k] * variance[k % 3] * sensitivity[j][k];
         }
     }
+    // The rate is the average over the baseline, used as the rate at the newer fix. An impulse of
+    // angular acceleration a time t after the older fix, with the rate at the newer fix held at
+    // `rate`, means the rate before it was (rate - impulse); the rate two exact fixes would give
+    // is then off by this much:
+    auto rateErrorFrom = [&](const Vec3 &impulse, decimal t) {
+        const Quaternion turned = RotationVectorToQuaternion(rate * (baseline - t))
+            * RotationVectorToQuaternion((rate - impulse) * t);
+        return QuaternionToRotationVector(turned) * (1 / baseline) - rate;
+    };
+    // white acceleration is a train of independent impulses, each of variance density * slice
+    const int slices = 400;
+    const double slice = static_cast<double>(baseline) / slices;
+    const double density = static_cast<double>(accelerationSigma * accelerationSigma);
+    double wander[3][3] = {};
+    for (int n = 0; n < slices; n++) {
+        const decimal t = static_cast<decimal>((n + 0.5) * slice);
+        double impulseSensitivity[3][3];
+        for (int j = 0; j < 3; j++) {
+            const Vec3 change = (rateErrorFrom(basis[j] * epsilon, t) - rateErrorFrom(basis[j] * -epsilon, t))
+                * (1 / (2 * epsilon));
+            impulseSensitivity[0][j] = static_cast<double>(change.x);
+            impulseSensitivity[1][j] = static_cast<double>(change.y);
+            impulseSensitivity[2][j] = static_cast<double>(change.z);
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) wander[i][j] += density * slice * impulseSensitivity[i][k] * impulseSensitivity[j][k];
+            }
+        }
+    }
+    // both parts matter here: the wander is between a tenth and ten times the fix errors' share
+    CHECK(wander[1][1] > 0.1 * expected[4][4]);
+    CHECK(wander[1][1] < 10 * expected[4][4]);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) expected[i + 3][j + 3] += wander[i][j];
+    }
+
     const AttitudeEKF::Mat6 &covariance = ekf.Covariance();
+    CHECK(IsPositiveDefinite(covariance, 1e-6));
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 6; j++) {
             INFO("covariance entry " << i << ", " << j);
@@ -779,21 +892,32 @@ TEST_CASE("EKF Reset covariance is what two noisy fixes a turn apart imply", "[k
         }
     }
     // the turn matters: the rate variance about z is far from the 2R/b^2 of two fixes with no turn
-    CHECK(expected[5][5] > 3 * 2 * variance[2] / static_cast<double>(baseline * baseline));
+    CHECK(expected[5][5] - wander[2][2] > 3 * 2 * variance[2] / static_cast<double>(baseline * baseline));
 }
 
 TEST_CASE("EKF prediction covariance matches numerical integration through a turn", "[kalman]") {
-    const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec, baseline = DECIMAL(0.5);
+    const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec;
     const Quaternion start = SphericalToQuaternion(DECIMAL(0.4), DECIMAL(-0.3), DECIMAL(1.1));
+    decimal baseline = DECIMAL(0.5);
     Vec3 rate;
     decimal dt, accelerationSigma;
     bool noiseDominates;
+    double tolerance = 1e-3;  // of each entry's scale
+    SECTION("a 115 degree step, as after a long gap") {
+        // the process noise is a three-point quadrature, so it is approximate for a turn this large
+        rate = Vec3(DECIMAL(0.012), DECIMAL(-0.010), DECIMAL(0.013));
+        dt = DECIMAL(100.0);
+        accelerationSigma = DECIMAL(2e-4);
+        noiseDominates = true;
+        tolerance = 1e-3;
+    }
     SECTION("a 3.5 degree step with strong process noise") {
         // a rate far beyond a star tracker's, so that the turn's effect on the process noise is in plain view
         rate = Vec3(DECIMAL(0.3), DECIMAL(-0.4), DECIMAL(0.35));
         dt = DECIMAL(0.1);
         accelerationSigma = DECIMAL(0.05);
         noiseDominates = true;
+        baseline = DECIMAL(0.02);  // short, so that the rate uncertainty Reset leaves is small beside the noise
     }
     SECTION("a 0.45 degree step with almost no process noise") {
         // a step small enough for the Jacobian's series, over a time long enough for it to matter
@@ -860,16 +984,116 @@ TEST_CASE("EKF prediction covariance matches numerical integration through a tur
             }
         }
     }
+    CHECK(IsPositiveDefinite(after, 1e-6));
+    double worst = 0;
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 6; j++) {
             INFO("covariance entry " << i << ", " << j);
-            CHECK(static_cast<double>(after[i][j])
-                  == Approx(expected[i][j]).margin(1e-3 * std::sqrt(expected[i][i] * expected[j][j])));
+            const double scale = std::sqrt(expected[i][i] * expected[j][j]);
+            worst = std::max(worst, std::abs(static_cast<double>(after[i][j]) - expected[i][j]) / scale);
+            CHECK(static_cast<double>(after[i][j]) == Approx(expected[i][j]).margin(tolerance * scale));
         }
     }
+    CAPTURE(worst);
     // each scenario shows what it is there for: the process noise dominates, or it is negligible
-    const double noiseShare = density * noise[3][3] / expected[3][3];
-    CHECK((noiseDominates ? noiseShare > 0.99 : noiseShare < 0.01));
+    const double noiseShare = density * noise[4][4] / expected[4][4];
+    CHECK((noiseDominates ? noiseShare > 0.9 : noiseShare < 0.01));
     // and the turn shows: the attitude-rate block is not symmetric
     CHECK(std::abs(expected[0][4] - expected[1][3]) > 5e-3 * std::sqrt(expected[0][0] * expected[4][4]));
+}
+
+TEST_CASE("EKF covariance stays positive definite through one long step and the update after it", "[kalman]") {
+    // The settings of the consistency test, turning at 1.15 degrees per second, with no fix for
+    // a while: one Predict call covers the whole gap.
+    const decimal gaps[] = {DECIMAL(1.0), DECIMAL(10.0), DECIMAL(50.0), DECIMAL(87.0), DECIMAL(100.0),
+                            DECIMAL(157.0), DECIMAL(400.0), DECIMAL(3000.0)};
+    for (decimal gap : gaps) {
+        INFO("gap of " << gap << " s, a turn of " << gap * DECIMAL(0.02) << " rad");
+        AttitudeEKF ekf(5 * kArcsec, 30 * kArcsec, DECIMAL(2e-4));
+        REQUIRE(ekf.Reset(Quaternion(1, 0, 0, 0), Vec3(0, 0, DECIMAL(0.02)), DECIMAL(1.0)));
+        REQUIRE(ekf.Predict(gap));
+        CHECK(IsPositiveDefinite(ekf.Covariance(), 1e-6));
+        // the measurement agrees exactly with the prediction
+        REQUIRE(ekf.Update(ekf.AttitudeQuaternion(), DECIMAL(16.27)));
+        CHECK(IsPositiveDefinite(ekf.Covariance(), 1e-6));
+        for (int i = 0; i < 6; i++) CHECK(ekf.Covariance()[i][i] > 0);
+    }
+}
+
+TEST_CASE("EKF prediction over a gap is nearly the same in one step as in many", "[kalman]") {
+    struct Gap { decimal seconds; double tolerance; };
+    // turning at 1.16 degrees per second: turns of 0.2, 0.5, 1 and 2 radians
+    const Gap gaps[] = {{DECIMAL(10.0), 1e-3}, {DECIMAL(25.0), 1e-3}, {DECIMAL(50.0), 1e-3}, {DECIMAL(100.0), 1e-3}};
+    const Vec3 rate(DECIMAL(0.012), DECIMAL(-0.010), DECIMAL(0.013));
+    const Quaternion start = SphericalToQuaternion(DECIMAL(0.4), DECIMAL(-0.3), DECIMAL(1.1));
+    for (const Gap &gap : gaps) {
+        INFO("gap of " << gap.seconds << " s");
+        AttitudeEKF whole(5 * kArcsec, 30 * kArcsec, DECIMAL(2e-4));
+        AttitudeEKF stepped(5 * kArcsec, 30 * kArcsec, DECIMAL(2e-4));
+        REQUIRE(whole.Reset(start, rate, DECIMAL(1.0)));
+        REQUIRE(stepped.Reset(start, rate, DECIMAL(1.0)));
+        REQUIRE(whole.Predict(gap.seconds));
+        const int steps = 1000;
+        for (int step = 0; step < steps; step++) REQUIRE(stepped.Predict(gap.seconds / steps));
+
+        CHECK(AngleBetween(whole.AttitudeQuaternion(), stepped.AttitudeQuaternion()) < DECIMAL(1e-3));
+        CHECK(IsPositiveDefinite(whole.Covariance(), 1e-6));
+        CHECK(IsPositiveDefinite(stepped.Covariance(), 1e-6));
+        double worst = 0;
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                INFO("covariance entry " << i << ", " << j);
+                const double scale = std::sqrt(static_cast<double>(stepped.Covariance()[i][i])
+                                               * static_cast<double>(stepped.Covariance()[j][j]));
+                const double difference = static_cast<double>(whole.Covariance()[i][j])
+                    - static_cast<double>(stepped.Covariance()[i][j]);
+                worst = std::max(worst, std::abs(difference) / scale);
+                CHECK(std::abs(difference) <= gap.tolerance * scale);
+            }
+        }
+        CAPTURE(worst);
+    }
+}
+
+TEST_CASE("EKF covariance straight after Reset is consistent with its actual error", "[kalman]") {
+    // Two fixes a second apart on a spacecraft whose rate wanders in between. The rate they give
+    // is the average over that second, not the rate at its end, and the covariance has to say so:
+    // here that is eleven times the uncertainty the fix errors alone put on the cross-boresight rate.
+    const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec;
+    const decimal accelerationSigma = DECIMAL(2e-4), dt = DECIMAL(0.1);
+    const int runs = 2000, framesBetweenFixes = 10;
+    Gaussian gaussian(20261121);
+
+    double neesSum = 0;
+    int rejectedAtFirstGate = 0;
+    for (int run = 0; run < runs; run++) {
+        NoisyTruth truth(SphericalToQuaternion(DECIMAL(0.003) * run, DECIMAL(0.3), DECIMAL(0.7)),
+                         Vec3(DECIMAL(0.015), DECIMAL(-0.02), DECIMAL(0.008)),
+                         crossSigma, rollSigma, accelerationSigma, &gaussian);
+        const Quaternion first = truth.Measure();
+        for (int frame = 0; frame < framesBetweenFixes; frame++) truth.Advance(dt);
+        const Quaternion second = truth.Measure();
+        const decimal baseline = dt * framesBetweenFixes;
+        AttitudeEKF ekf(crossSigma, rollSigma, accelerationSigma);
+        REQUIRE(ekf.Reset(second, QuaternionToRotationVector(second * first.Conjugate()) * (1 / baseline), baseline));
+
+        const Vec3 attitudeError = QuaternionToRotationVector(truth.attitude * ekf.AttitudeQuaternion().Conjugate());
+        const Vec3 rateError = truth.rate - ekf.Rate();
+        const double error[6] = {static_cast<double>(attitudeError.x), static_cast<double>(attitudeError.y),
+                                 static_cast<double>(attitudeError.z), static_cast<double>(rateError.x),
+                                 static_cast<double>(rateError.y), static_cast<double>(rateError.z)};
+        neesSum += Nees(ekf.Covariance(), error);
+
+        // and the next fix, a second later, passes the gate as often as it should
+        for (int frame = 0; frame < framesBetweenFixes; frame++) truth.Advance(dt);
+        REQUIRE(ekf.Predict(baseline));
+        if (!ekf.Update(truth.Measure(), DECIMAL(16.27))) rejectedAtFirstGate++;
+    }
+    const double nees = neesSum / runs;
+    CAPTURE(nees, rejectedAtFirstGate);
+    // the mean of 2000 samples of a chi-square with 6 degrees of freedom is 6 give or take 0.08
+    CHECK(nees > 5.6);
+    CHECK(nees < 6.4);
+    // 0.1% of honest measurements fall outside the gate: 2 expected of 2000
+    CHECK(rejectedAtFirstGate <= 10);
 }

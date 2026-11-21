@@ -101,6 +101,23 @@ static void LeftJacobianInverse(const Vec3 &v, decimal inverse[3][3]) {
     SkewPolynomial(v, DECIMAL(-0.5), b, inverse);
 }
 
+/**
+ * B(t): the integral of the rotation Exp(w * tau) over tau from 0 to t, which is t * J(w * t)
+ * with J the left Jacobian. It is how much attitude error a unit of rate error becomes after
+ * time t at rate w.
+ */
+static void IntegratedRotation(const Vec3 &w, decimal t, decimal result[3][3]) {
+    LeftJacobian(w * t, result);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) result[i][j] *= t;
+    }
+}
+
+/// Points and weights of 3-point Gauss-Legendre quadrature on the interval from 0 to 1. The
+/// weights are positive, so a sum of positive semidefinite terms formed with them is too.
+static const decimal kQuadraturePoints[3] = {DECIMAL(0.1127016653792583), DECIMAL(0.5), DECIMAL(0.8872983346207417)};
+static const decimal kQuadratureWeights[3] = {DECIMAL(5.0) / 18, DECIMAL(8.0) / 18, DECIMAL(5.0) / 18};
+
 /// A * B^T
 static Mat6 MultiplyTransposed(const Mat6 &a, const Mat6 &b) {
     Mat6 result{};
@@ -161,12 +178,20 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
 
     // The attitude is the newer of two fixes and the rate is Log(newer * older^-1) / baseline.
     // Call the fix errors e1 (newer) and e0 (older): independent, each with covariance R. To first
-    // order the attitude error is e1 and the rate error is J^-1 * (e1 - D * e0) / baseline, where
-    // D is the rotation of the turn between the fixes and J the left Jacobian at that turn. So:
+    // order the attitude error is e1 and the rate error is J^-1 * (e1 - D * e0 + a) / baseline,
+    // where D is the rotation of the turn between the fixes, J the left Jacobian at that turn, and
+    // a is explained below. So:
     //   attitude covariance R,
     //   attitude-rate covariance R * J^-T / baseline,
-    //   rate covariance J^-1 * (R + D * R * D^T) * J^-T / baseline^2.
-    // With no turn, D and J are the identity and these are R, R / baseline and 2R / baseline^2.
+    //   rate covariance J^-1 * (R + D * R * D^T + A) * J^-T / baseline^2.
+    // With no turn, D and J are the identity and these are R, R / baseline and (2R + A) / baseline^2.
+    //
+    // a and its covariance A: two fixes give the average rate over the baseline, and it is used as
+    // the rate at the newer fix. Angular acceleration between the fixes makes those differ. An
+    // impulse of acceleration a time v after the older fix shifts the turn by C(v) times the
+    // impulse, with C(v) = B(baseline) - B(baseline - v). For white acceleration of spectral
+    // density s, A = s * integral of C * C^T over v from 0 to baseline, by Gauss-Legendre
+    // quadrature. With no turn A = s * baseline^3 / 3, so the rate variance gains s * baseline / 3.
     decimal scaled[3][3];  // J^-1 / baseline
     LeftJacobianInverse(turn, scaled);
     for (int i = 0; i < 3; i++) {
@@ -181,11 +206,26 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
         d[1][j] = column.y;
         d[2][j] = column.z;
     }
-    decimal both[3][3];  // R + D * R * D^T
+    decimal both[3][3];  // R + D * R * D^T + A
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             both[i][j] = i == j ? R[i] : 0;
             for (int k = 0; k < 3; k++) both[i][j] += d[i][k] * R[k] * d[j][k];
+        }
+    }
+    decimal whole[3][3];  // B(baseline)
+    IntegratedRotation(rate, baseline, whole);
+    for (int point = 0; point < 3; point++) {
+        decimal c[3][3];  // C(v) at this quadrature point
+        IntegratedRotation(rate, baseline * (1 - kQuadraturePoints[point]), c);
+        const decimal weight = accelerationVariance * baseline * kQuadratureWeights[point];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) c[i][j] = whole[i][j] - c[i][j];
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) both[i][j] += weight * (c[i][k] * c[j][k]);
+            }
         }
     }
 
@@ -256,22 +296,25 @@ bool AttitudeEKF::Predict(decimal dt) {
     // P <- phi * P * phi^T
     Mat6 covariance = Congruence(phi, P);
 
-    // Process noise of white angular acceleration with spectral density s = accelerationVariance,
-    // integrated through the same dynamics over dt:
-    //   attitude block s * dt^3 / 3 * I, rate block s * dt * I,
-    //   attitude-rate block s * (dt^2 / 2 * I + dt^3 / 6 * [w]x), and its transpose.
-    // Terms of second order in the step's angle are left out. They are less than angle^2 / 12 of
-    // each block: 0.03% for a 3.5 degree step.
-    const decimal dt2 = dt * dt;
-    const decimal skew[3][3] = {{0, -w.z, w.y}, {w.z, 0, -w.x}, {-w.y, w.x, 0}};
-    for (int i = 0; i < 3; i++) {
-        covariance[i][i] += accelerationVariance * dt2 * dt / 3;
-        covariance[i][i + 3] += accelerationVariance * dt2 / 2;
-        covariance[i + 3][i] += accelerationVariance * dt2 / 2;
-        covariance[i + 3][i + 3] += accelerationVariance * dt;
-        for (int j = 0; j < 3; j++) {
-            covariance[i][j + 3] += accelerationVariance * dt2 * dt / 6 * skew[i][j];
-            covariance[j + 3][i] += accelerationVariance * dt2 * dt / 6 * skew[i][j];
+    // Process noise of white angular acceleration with spectral density s = accelerationVariance.
+    // An impulse of acceleration with time tau left in the step adds B(tau) times the impulse to
+    // the attitude error and the impulse itself to the rate error, so the noise covariance is
+    //   s * integral over tau from 0 to dt of [B * B^T, B; B^T, I].
+    // By Gauss-Legendre quadrature: each point adds a positive multiple of [B; I] * [B; I]^T, so
+    // the sum is positive semidefinite however far the step turns. It is exact with no turn
+    // (s * dt^3 / 3, s * dt^2 / 2, s * dt) and within 0.1% of each block's scale for a turn of up
+    // to half a radian; the tests give the error for larger turns.
+    for (int point = 0; point < 3; point++) {
+        decimal b[3][3];
+        IntegratedRotation(w, dt * kQuadraturePoints[point], b);
+        const decimal weight = accelerationVariance * dt * kQuadratureWeights[point];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) covariance[i][j] += weight * (b[i][k] * b[j][k]);
+                covariance[i][j + 3] += weight * b[i][j];
+                covariance[j + 3][i] += weight * b[i][j];
+            }
+            covariance[i + 3][i + 3] += weight;
         }
     }
 
