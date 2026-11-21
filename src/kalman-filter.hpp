@@ -23,8 +23,13 @@ namespace lost {
  *
  * The filter does nothing until Reset succeeds: before that, Predict and Update return false and
  * the state is the identity attitude with zero rate and zero covariance. From then on the state
- * is always usable (unit attitude, finite rate and covariance): Reset, Predict and Update return
- * false and change nothing rather than break that.
+ * is always usable (unit attitude, finite rate, positive definite covariance): Reset, Predict and
+ * Update return false and change nothing rather than break that. When one of them returns false
+ * for a reason the caller cannot fix, start again with Reset.
+ *
+ * In float mode the covariance cannot hold attitude and rate errors that are more than about
+ * 99.999% correlated. They get there when Predict runs for a few hundred times the Reset
+ * baseline with no Update and next to no process noise; Predict then returns false.
  */
 class AttitudeEKF {
 public:
@@ -52,10 +57,11 @@ public:
 
     /**
      * Propagate the state `dt` seconds forward assuming constant rate. One call for a long gap
-     * and many calls for short steps give nearly the same covariance, and it stays positive
-     * semidefinite either way; the attitude is only as good as the constant-rate assumption.
-     * @return false before the first successful Reset, if `dt` is negative or not finite, or if
-     * the covariance would overflow.
+     * and many calls for short steps give the same covariance to within 0.1%; the attitude is
+     * only as good as the constant-rate assumption.
+     * @return false before the first successful Reset, if `dt` is negative or not finite, if the
+     * step turns more than 64 radians (take it in shorter steps), or if the covariance would
+     * overflow or cannot be held at this precision.
      */
     bool Predict(decimal dt);
 
@@ -64,8 +70,8 @@ public:
      * @param gate Largest accepted squared Mahalanobis distance between measurement and prediction.
      * If the filter's noise settings match the sensor, that distance is chi-square distributed
      * with 3 degrees of freedom, and a gate of 16.27 rejects 0.1% of good measurements.
-     * @return false before the first successful Reset, if the measurement is not unit, or if it
-     * fails the gate.
+     * @return false before the first successful Reset, if the measurement is not unit, if it
+     * fails the gate, or if the covariance cannot be held at this precision.
      */
     bool Update(const Quaternion &measured, decimal gate);
 

@@ -1022,8 +1022,9 @@ TEST_CASE("EKF covariance stays positive definite through one long step and the 
 
 TEST_CASE("EKF prediction over a gap is nearly the same in one step as in many", "[kalman]") {
     struct Gap { decimal seconds; double tolerance; };
-    // turning at 1.16 degrees per second: turns of 0.2, 0.5, 1 and 2 radians
-    const Gap gaps[] = {{DECIMAL(10.0), 1e-3}, {DECIMAL(25.0), 1e-3}, {DECIMAL(50.0), 1e-3}, {DECIMAL(100.0), 1e-3}};
+    // turning at 1.16 degrees per second: turns of 0.2, 0.5, 1, 2, 6.4 and 20 radians
+    const Gap gaps[] = {{DECIMAL(10.0), 1e-3}, {DECIMAL(25.0), 1e-3}, {DECIMAL(50.0), 1e-3}, {DECIMAL(100.0), 1e-3},
+                        {DECIMAL(314.0), 1e-3}, {DECIMAL(1000.0), 1e-3}};
     const Vec3 rate(DECIMAL(0.012), DECIMAL(-0.010), DECIMAL(0.013));
     const Quaternion start = SphericalToQuaternion(DECIMAL(0.4), DECIMAL(-0.3), DECIMAL(1.1));
     for (const Gap &gap : gaps) {
@@ -1096,4 +1097,137 @@ TEST_CASE("EKF covariance straight after Reset is consistent with its actual err
     CHECK(nees < 6.4);
     // 0.1% of honest measurements fall outside the gate: 2 expected of 2000
     CHECK(rejectedAtFirstGate <= 10);
+}
+
+TEST_CASE("EKF prediction through whole turns matches the exact process noise, in one step or many", "[kalman]") {
+    // Turning about z at 0.02 rad/s for exactly two turns. Over whole turns a transverse rate
+    // error integrates to no transverse attitude error at all, and the process noise on a
+    // transverse attitude axis is exactly 2 * density * time / rate^2.
+    const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec;
+    const decimal accelerationSigma = DECIMAL(2e-6), rateZ = DECIMAL(0.02);
+    const decimal gap = 4 * DECIMAL_M_PI / rateZ;  // 628 s
+    const double noise = 2 * static_cast<double>(accelerationSigma * accelerationSigma) * static_cast<double>(gap)
+        / static_cast<double>(rateZ * rateZ);
+    const double expectedRoll = static_cast<double>(rollSigma * rollSigma) + noise;
+    const double expectedCross = static_cast<double>(crossSigma * crossSigma) + noise;
+    // the noise is nearly all of it, so this is a test of the noise
+    CHECK(noise > 0.99 * expectedRoll);
+
+    const Quaternion start(1, 0, 0, 0);
+    const int steps = 1000;
+    auto predicted = [&](bool inOneStep) {
+        AttitudeEKF ekf(crossSigma, rollSigma, accelerationSigma);
+        REQUIRE(ekf.Reset(start, Vec3(0, 0, rateZ), DECIMAL(1.0)));
+        if (inOneStep) {
+            REQUIRE(ekf.Predict(gap));
+        } else {
+            for (int step = 0; step < steps; step++) REQUIRE(ekf.Predict(gap / steps));
+        }
+        return ekf;
+    };
+    for (bool inOneStep : {true, false}) {
+        INFO((inOneStep ? "one step" : "a thousand steps"));
+        const AttitudeEKF ekf = predicted(inOneStep);
+        CHECK(static_cast<double>(ekf.Covariance()[0][0]) == Approx(expectedRoll).epsilon(2e-3));
+        CHECK(static_cast<double>(ekf.Covariance()[1][1]) == Approx(expectedCross).epsilon(2e-3));
+
+        // So the same fix gets the same verdict either way. About x the innovation variance is
+        // expectedRoll plus the roll measurement variance: 0.0123 rad is 12.0 against the gate
+        // of 16.27, and 0.0150 rad is 17.8.
+        AttitudeEKF inside = ekf, outside = ekf;
+        CHECK(inside.Update(RotationVectorToQuaternion(Vec3(DECIMAL(0.0123), 0, 0)) * ekf.AttitudeQuaternion(),
+                            DECIMAL(16.27)));
+        CHECK_FALSE(outside.Update(RotationVectorToQuaternion(Vec3(DECIMAL(0.0150), 0, 0)) * ekf.AttitudeQuaternion(),
+                                   DECIMAL(16.27)));
+    }
+}
+
+TEST_CASE("EKF Predict takes a step of up to 64 radians of turn and refuses a longer one", "[kalman]") {
+    const Quaternion start = SphericalToQuaternion(DECIMAL(1.0), DECIMAL(0.5), DECIMAL(0.3));
+    const Vec3 rate(0, 0, DECIMAL(0.02));
+    AttitudeEKF ekf(5 * kArcsec, 30 * kArcsec, DECIMAL(2e-4));
+    REQUIRE(ekf.Reset(start, rate, DECIMAL(1.0)));
+    const AttitudeEKF::Mat6 before = ekf.Covariance();
+
+    CHECK_FALSE(ekf.Predict(DECIMAL(3300.0)));  // 66 radians
+    CHECK(AngleBetween(ekf.AttitudeQuaternion(), start) < DECIMAL(1e-6));
+    CHECK((ekf.Rate() - rate).Magnitude() == 0);
+    CHECK(ekf.Covariance() == before);
+
+    // the same gap in two steps
+    CHECK(ekf.Predict(DECIMAL(3100.0)));  // 62 radians
+    CHECK(ekf.Predict(DECIMAL(200.0)));
+    CHECK(IsPositiveDefinite(ekf.Covariance(), 1e-6));
+}
+
+TEST_CASE("EKF never commits a covariance that is not positive definite", "[kalman]") {
+    const Quaternion identity(1, 0, 0, 0);
+    const decimal crossSigma = 5 * kArcsec, rollSigma = 30 * kArcsec;
+
+    // Nothing moves, and no fix arrives for 273 s after two fixes 0.1 s apart, with little or no
+    // process noise. The attitude and rate errors are then within a few parts in a hundred
+    // million of perfectly correlated, which a float covariance cannot hold. So in float mode
+    // Predict refuses; in double it goes through and the covariance is sound.
+    for (decimal accelerationSigma : {DECIMAL(1e-8), DECIMAL(0.0)}) {
+        INFO("acceleration sigma " << accelerationSigma);
+        AttitudeEKF ekf(crossSigma, rollSigma, accelerationSigma);
+        REQUIRE(ekf.Reset(identity, Vec3(0, 0, 0), DECIMAL(0.1)));
+        const AttitudeEKF::Mat6 before = ekf.Covariance();
+        const bool predicted = ekf.Predict(DECIMAL(273.0));
+#ifdef LOST_FLOAT_MODE
+        CHECK_FALSE(predicted);
+#else
+        CHECK(predicted);
+#endif
+        if (predicted) {
+            CHECK(IsPositiveDefinite(ekf.Covariance(), 0));
+            REQUIRE(ekf.Update(identity, DECIMAL(16.27)));
+            CHECK(IsPositiveDefinite(ekf.Covariance(), 0));
+            for (int i = 0; i < 6; i++) CHECK(ekf.Covariance()[i][i] > 0);
+        } else {
+            // refused: nothing changed
+            CHECK(ekf.Covariance() == before);
+            CHECK(AngleBetween(ekf.AttitudeQuaternion(), identity) == 0);
+            // a shorter step still works, and so does starting again
+            CHECK(ekf.Predict(DECIMAL(1.0)));
+            CHECK(ekf.Reset(identity, Vec3(0, 0, 0), DECIMAL(0.1)));
+            CHECK(ekf.Update(identity, DECIMAL(16.27)));
+            CHECK(IsPositiveDefinite(ekf.Covariance(), 0));
+        }
+    }
+
+    // Whatever the baseline, the gap, the process noise and the rate: either the call is refused
+    // and changes nothing, or what it leaves is positive definite.
+    int committed = 0, refused = 0;
+    for (decimal baseline : {DECIMAL(0.01), DECIMAL(0.1), DECIMAL(1.0)}) {
+        for (decimal gap : {DECIMAL(1.0), DECIMAL(10.0), DECIMAL(100.0), DECIMAL(1e3), DECIMAL(1e4), DECIMAL(1e5),
+                            DECIMAL(1e6), DECIMAL(1e8)}) {
+            for (decimal accelerationSigma : {DECIMAL(0.0), DECIMAL(1e-8), DECIMAL(1e-5), DECIMAL(1e-3)}) {
+                for (decimal rateZ : {DECIMAL(0.0), DECIMAL(1e-5), DECIMAL(0.02)}) {
+                    INFO("baseline " << baseline << ", gap " << gap << ", acceleration sigma " << accelerationSigma
+                         << ", rate " << rateZ);
+                    AttitudeEKF ekf(crossSigma, rollSigma, accelerationSigma);
+                    REQUIRE(ekf.Reset(identity, Vec3(0, 0, rateZ), baseline));
+                    const AttitudeEKF::Mat6 before = ekf.Covariance();
+                    if (!ekf.Predict(gap)) {
+                        refused++;
+                        CHECK(ekf.Covariance() == before);
+                        continue;
+                    }
+                    committed++;
+                    CHECK(IsPositiveDefinite(ekf.Covariance(), 0));
+                    const AttitudeEKF::Mat6 predictedCovariance = ekf.Covariance();
+                    if (ekf.Update(ekf.AttitudeQuaternion(), DECIMAL(16.27))) {
+                        CHECK(IsPositiveDefinite(ekf.Covariance(), 0));
+                    } else {
+                        CHECK(ekf.Covariance() == predictedCovariance);
+                    }
+                }
+            }
+        }
+    }
+    CAPTURE(committed, refused);
+    // both outcomes are exercised
+    CHECK(committed > 100);
+    CHECK(refused > 20);
 }

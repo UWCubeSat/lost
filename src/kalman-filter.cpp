@@ -101,6 +101,40 @@ static void LeftJacobianInverse(const Vec3 &v, decimal inverse[3][3]) {
     SkewPolynomial(v, DECIMAL(-0.5), b, inverse);
 }
 
+/// The smallest pivot IsPositiveDefinite accepts. Rounding in the factorization is below this, so
+/// a covariance that passes is positive definite as stored, not only as computed.
+static const decimal kMinPivot = 64 * std::numeric_limits<decimal>::epsilon();
+
+/**
+ * Whether a covariance is positive definite with room to spare: the Cholesky factorization of
+ * its correlation matrix (so that the different scales of attitude and rate do not matter) has
+ * every pivot at least kMinPivot. A pivot is the share of a component's variance that the
+ * components before it do not explain, so this fails when two error components become so nearly
+ * the same that the matrix cannot tell them apart at this precision. Also false for a matrix
+ * that is not finite.
+ */
+static bool IsPositiveDefinite(const Mat6 &p) {
+    decimal scale[6];
+    for (int i = 0; i < 6; i++) {
+        if (!(p[i][i] > 0)) return false;
+        scale[i] = 1 / DECIMAL_SQRT(p[i][i]);
+    }
+    decimal l[6][6] = {};
+    for (int j = 0; j < 6; j++) {
+        for (int i = j; i < 6; i++) {
+            decimal value = p[i][j] * scale[i] * scale[j];
+            for (int k = 0; k < j; k++) value -= l[i][k] * l[j][k];
+            if (i == j) {
+                if (!(value >= kMinPivot)) return false;
+                l[j][j] = DECIMAL_SQRT(value);
+            } else {
+                l[i][j] = value / l[j][j];
+            }
+        }
+    }
+    return true;
+}
+
 /**
  * B(t): the integral of the rotation Exp(w * tau) over tau from 0 to t, which is t * J(w * t)
  * with J the left Jacobian. It is how much attitude error a unit of rate error becomes after
@@ -115,8 +149,15 @@ static void IntegratedRotation(const Vec3 &w, decimal t, decimal result[3][3]) {
 
 /// Points and weights of 3-point Gauss-Legendre quadrature on the interval from 0 to 1. The
 /// weights are positive, so a sum of positive semidefinite terms formed with them is too.
+/// An integral over a turn is split into panels of at most a radian, each with these points:
+/// three points cannot follow a rotation through more than that.
 static const decimal kQuadraturePoints[3] = {DECIMAL(0.1127016653792583), DECIMAL(0.5), DECIMAL(0.8872983346207417)};
 static const decimal kQuadratureWeights[3] = {DECIMAL(5.0) / 18, DECIMAL(8.0) / 18, DECIMAL(5.0) / 18};
+
+/// The number of quadrature panels for an integral over a turn of the given size, in radians.
+static int QuadraturePanels(decimal turn) {
+    return turn > 1 ? (int)DECIMAL_CEIL(turn) : 1;
+}
 
 /// A * B^T
 static Mat6 MultiplyTransposed(const Mat6 &a, const Mat6 &b) {
@@ -215,16 +256,20 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
     }
     decimal whole[3][3];  // B(baseline)
     IntegratedRotation(rate, baseline, whole);
-    for (int point = 0; point < 3; point++) {
-        decimal c[3][3];  // C(v) at this quadrature point
-        IntegratedRotation(rate, baseline * (1 - kQuadraturePoints[point]), c);
-        const decimal weight = accelerationVariance * baseline * kQuadratureWeights[point];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) c[i][j] = whole[i][j] - c[i][j];
-        }
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) both[i][j] += weight * (c[i][k] * c[j][k]);
+    const int resetPanels = QuadraturePanels(turn.Magnitude());
+    for (int panel = 0; panel < resetPanels; panel++) {
+        for (int point = 0; point < 3; point++) {
+            const decimal fraction = (panel + kQuadraturePoints[point]) / resetPanels;
+            decimal c[3][3];  // C(v) at this quadrature point
+            IntegratedRotation(rate, baseline * (1 - fraction), c);
+            const decimal weight = accelerationVariance * baseline * kQuadratureWeights[point] / resetPanels;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) c[i][j] = whole[i][j] - c[i][j];
+            }
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    for (int k = 0; k < 3; k++) both[i][j] += weight * (c[i][k] * c[j][k]);
+                }
             }
         }
     }
@@ -252,8 +297,8 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
             return false;
         }
     }
-    // a baseline so short that the covariance overflows
-    if (!IsFinite(covariance)) {
+    // a baseline so short that the covariance overflows, or a covariance this precision cannot hold
+    if (!IsFinite(covariance) || !IsPositiveDefinite(covariance)) {
         return false;
     }
     q = Normalized(attitude);
@@ -263,9 +308,18 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
     return true;
 }
 
+/// The largest turn in one Predict call, in radians: about ten full turns. The process noise is
+/// integrated in panels of at most a radian, so this bounds the work in one call.
+static const decimal kMaxPredictTurn = 64;
+
 bool AttitudeEKF::Predict(decimal dt) {
     // refuse a filter that was never started, and a negative or non-finite step
     if (!initialized || !(dt >= 0) || !std::isfinite(dt)) {
+        return false;
+    }
+    // and a step that turns too far; written so that an overflowing turn is refused too
+    const decimal stepTurn = w.Magnitude() * dt;
+    if (!(stepTurn <= kMaxPredictTurn)) {
         return false;
     }
     // State: q <- Exp(w * dt) * q. The rate stays as it is.
@@ -300,26 +354,31 @@ bool AttitudeEKF::Predict(decimal dt) {
     // An impulse of acceleration with time tau left in the step adds B(tau) times the impulse to
     // the attitude error and the impulse itself to the rate error, so the noise covariance is
     //   s * integral over tau from 0 to dt of [B * B^T, B; B^T, I].
-    // By Gauss-Legendre quadrature: each point adds a positive multiple of [B; I] * [B; I]^T, so
-    // the sum is positive semidefinite however far the step turns. It is exact with no turn
-    // (s * dt^3 / 3, s * dt^2 / 2, s * dt) and within 0.1% of each block's scale for a turn of up
-    // to half a radian; the tests give the error for larger turns.
-    for (int point = 0; point < 3; point++) {
-        decimal b[3][3];
-        IntegratedRotation(w, dt * kQuadraturePoints[point], b);
-        const decimal weight = accelerationVariance * dt * kQuadratureWeights[point];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) covariance[i][j] += weight * (b[i][k] * b[j][k]);
-                covariance[i][j + 3] += weight * b[i][j];
-                covariance[j + 3][i] += weight * b[i][j];
+    // By Gauss-Legendre quadrature in panels of at most a radian of turn: each point adds a
+    // positive multiple of [B; I] * [B; I]^T, so the sum is positive semidefinite however far the
+    // step turns. It is exact with no turn (s * dt^3 / 3, s * dt^2 / 2, s * dt), and the tests
+    // hold it to 0.1% of each block's scale against references for turns of up to 20 radians.
+    const int panels = QuadraturePanels(stepTurn);
+    for (int panel = 0; panel < panels; panel++) {
+        for (int point = 0; point < 3; point++) {
+            const decimal fraction = (panel + kQuadraturePoints[point]) / panels;
+            decimal b[3][3];
+            IntegratedRotation(w, dt * fraction, b);
+            const decimal weight = accelerationVariance * dt * kQuadratureWeights[point] / panels;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    for (int k = 0; k < 3; k++) covariance[i][j] += weight * (b[i][k] * b[j][k]);
+                    covariance[i][j + 3] += weight * b[i][j];
+                    covariance[j + 3][i] += weight * b[i][j];
+                }
+                covariance[i + 3][i + 3] += weight;
             }
-            covariance[i + 3][i + 3] += weight;
         }
     }
 
-    // overflow; keep the last good state
-    if (!predicted.IsUnit(kUnitTolerance) || !IsFinite(covariance)) {
+    // Overflow, or a covariance this precision cannot hold (after a long time with no fix the
+    // attitude and rate errors become nearly the same thing). Keep the last good state.
+    if (!predicted.IsUnit(kUnitTolerance) || !IsFinite(covariance) || !IsPositiveDefinite(covariance)) {
         return false;
     }
     q = predicted;
@@ -417,8 +476,9 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
     }
     covariance = Congruence(recenter, covariance);
 
-    // overflow; keep the last good state
-    if (!corrected.IsUnit(kUnitTolerance) || !IsFinite(correctedRate) || !IsFinite(covariance)) {
+    // overflow, or a covariance this precision cannot hold; keep the last good state
+    if (!corrected.IsUnit(kUnitTolerance) || !IsFinite(correctedRate) || !IsFinite(covariance)
+        || !IsPositiveDefinite(covariance)) {
         return false;
     }
     q = corrected;

@@ -700,3 +700,25 @@ TEST_CASE("Windowed CoG rarely takes noise for a star", "[centroid]") {
     CHECK(windows > 3000);
     CHECK(falseStars <= 6);
 }
+
+TEST_CASE("Windowed CoG keeps half-pixel positions exact at the far side of the largest image", "[centroid]") {
+    const int w = WindowedCenterOfGravity::kMaxImageSide, h = 5;
+    Image image(w * h, 10);
+    const int column = w - 6;
+    image[2 * w + column] = 200;
+    // gate radius zero: the prediction must be exactly on the pixel's center
+    WindowedCenterOfGravity exact(0, 2, 3);
+    Stars stars = exact.Go(image.data(), w, h, {{column + DECIMAL(0.5), DECIMAL(2.5)}}, nullptr);
+    REQUIRE(stars.size() == 1);
+    CHECK(stars[0].position.x == Approx(column + 0.5).margin(1e-2));
+    CHECK(stars[0].position.y == Approx(2.5).margin(1e-2));
+    // half a pixel either side is outside the gate, in float mode too
+    CHECK(exact.Go(image.data(), w, h, {{static_cast<decimal>(column), DECIMAL(2.5)}}, nullptr).empty());
+    CHECK(exact.Go(image.data(), w, h, {{static_cast<decimal>(column + 1), DECIMAL(2.5)}}, nullptr).empty());
+
+    // An image so wide that a float cannot tell a pixel's edge from its center is refused. It is
+    // never read.
+    const int wide = (1 << 23) + 4;
+    Image small(4, 10);
+    CHECK(exact.Go(small.data(), wide, 3, {{static_cast<decimal>(1 << 23), DECIMAL(1.5)}}, nullptr).empty());
+}

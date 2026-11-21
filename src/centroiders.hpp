@@ -80,9 +80,10 @@ public:
 
     /// Largest gateRadius and maxStarRadius accepted, in pixels. Outside 0..kMaxRadius, Go finds nothing.
     static const int kMaxRadius = 1024;
-    /// Largest image width and height accepted, in pixels. Go finds nothing in a larger image, or
-    /// in one with more pixels than an int can index.
-    static const int kMaxImageSide = 1 << 24;
+    /// Largest image width and height accepted, in pixels. Go finds nothing in a larger image.
+    /// Up to this size pixel centers, which are at half-integers, are exact in a float, with at
+    /// least 1/128 of a pixel to spare for the centroid.
+    static const int kMaxImageSide = 1 << 16;
 
     /**
      * @param predictions Predicted star positions in pixels (as Star::position). Off-image ones are skipped.

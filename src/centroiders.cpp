@@ -422,7 +422,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
         || !(outlierRadius >= 0)) {
         return Stars();
     }
-    // Pixel indices and window coordinates are ints, and positions must be exact in a float.
+    // Pixel indices and window coordinates are ints, and pixel centers must be exact in a float.
     if (imageWidth <= 0 || imageHeight <= 0 || imageWidth > kMaxImageSide || imageHeight > kMaxImageSide
         || imageWidth > std::numeric_limits<int>::max() / imageHeight) {
         return Stars();
