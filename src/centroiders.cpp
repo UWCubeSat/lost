@@ -372,18 +372,16 @@ struct WindowedMatch {
     Vec2 offset;  ///< star position minus prediction
 };
 
-/// The threshold is this many noise standard deviations above the background.
+/// Threshold, in noise standard deviations above the background.
 static const int kThresholdSigmas = 5;
-/// Added to the median absolute deviation, in gray levels, before it is turned into a standard
-/// deviation. Gray levels are whole numbers and the window border is a small sample, so the
-/// measured deviation can come out too small; without this the threshold is often well under
-/// kThresholdSigmas true standard deviations. It also puts the threshold at least 3.7 gray
-/// levels above the background of a noiseless image.
+/// Added to the MAD, in gray levels, before converting it to a standard deviation. Gray levels
+/// are whole numbers and the border is a small sample, so the MAD often comes out too small.
+/// Also keeps the threshold at least 3.7 gray levels above a noiseless background.
 static const decimal kMadAllowance = DECIMAL(0.5);
 
 /**
- * The sum of the two middle values of `count` samples given as a histogram, which is twice their
- * median. With an odd count the middle value is counted twice.
+ * Twice the median of `count` samples in a histogram: the sum of the two middle values (the
+ * middle value twice if count is odd).
  */
 static int TwiceMedian(const int *histogram, int bins, int count) {
     int lower = -1;
@@ -393,17 +391,17 @@ static int TwiceMedian(const int *histogram, int bins, int count) {
         if (lower < 0 && seen > (count - 1) / 2) lower = value;
         if (seen > count / 2) return lower + value;
     }
-    return 0;  // not reached when the histogram holds `count` samples
+    return 0;  // not reached if the histogram holds `count` samples
 }
 
 /**
- * Median and median absolute deviation (MAD) of the gray levels in a histogram holding `count`
- * pixels, with an even count averaging the two middle values. Returned as twice the median and
- * four times the MAD, which are whole numbers.
+ * Median and median absolute deviation (MAD) of a histogram of `count` gray levels. An even
+ * count averages the two middle values. Returned as twice the median and four times the MAD,
+ * which are whole numbers.
  */
 static void HistogramMedianAndMad(const int histogram[256], int count, int *twiceMedian, int *fourTimesMad) {
     *twiceMedian = TwiceMedian(histogram, 256, count);
-    // histogram of |2 * level - twiceMedian|: twice each pixel's distance from the median
+    // histogram of |2 * level - twiceMedian|, twice each pixel's distance from the median
     int deviations[511] = {};
     for (int level = 0; level < 256; level++) {
         deviations[std::abs(2 * level - *twiceMedian)] += histogram[level];
@@ -417,12 +415,12 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
     if (matchedPredictions != nullptr) {
         matchedPredictions->clear();
     }
-    // unusable settings; the last is written so that a NaN outlierRadius is refused too
+    // unusable settings; the last check refuses a NaN outlierRadius too
     if (image == nullptr || gateRadius < 0 || gateRadius > kMaxRadius || maxStarRadius < 0 || maxStarRadius > kMaxRadius
         || !(outlierRadius >= 0)) {
         return Stars();
     }
-    // Pixel indices and window coordinates are ints, and pixel centers must be exact in a float.
+    // pixel indices and window coordinates are ints; pixel centers must be exact in a float
     if (imageWidth <= 0 || imageHeight <= 0 || imageWidth > kMaxImageSide || imageHeight > kMaxImageSide
         || imageWidth > std::numeric_limits<int>::max() / imageHeight) {
         return Stars();
@@ -430,7 +428,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
 
     const int halfWindow = gateRadius + maxStarRadius;
     const int windowSide = 2 * halfWindow + 1;
-    // marks for the flood fill: one per pixel of a window, which is never larger than the image
+    // flood fill marks, one per window pixel; a window is never larger than the image
     const int visitedWidth = std::min(windowSide, imageWidth);
     std::vector<unsigned char> visited(visitedWidth * std::min(windowSide, imageHeight));
     std::vector<int> stack;
@@ -438,11 +436,11 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
 
     for (int p = 0; p < (int)predictions.size(); p++) {
         const Vec2 &prediction = predictions[p];
-        // skip predictions off the image; written so that non-finite ones are skipped too
+        // skip predictions off the image; non-finite ones are skipped too
         if (!(prediction.x >= 0 && prediction.x <= imageWidth && prediction.y >= 0 && prediction.y <= imageHeight)) {
             continue;
         }
-        // pixel (x, y) covers [x, x+1) * [y, y+1), so this is the pixel containing the prediction
+        // pixel (x, y) covers [x, x+1) * [y, y+1): this is the pixel containing the prediction
         const int windowX0 = (int)DECIMAL_FLOOR(prediction.x) - halfWindow;
         const int windowY0 = (int)DECIMAL_FLOOR(prediction.y) - halfWindow;
         const int windowX1 = windowX0 + windowSide - 1;
@@ -453,8 +451,8 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
             continue;
         }
 
-        // Background and noise from the window border. The median and MAD change little when a
-        // star crosses the border.
+        // background and noise from the window border
+        // (a star crossing it barely moves the median and MAD)
         int histogram[256] = {};
         int count = 0;
         for (int x = xMin; x <= xMax; x++) {
@@ -471,7 +469,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
         HistogramMedianAndMad(histogram, count, &twiceBackground, &fourTimesMad);
         // 1.4826 * MAD estimates the standard deviation of Gaussian noise
         const decimal sigma = DECIMAL(1.4826) * (fourTimesMad / DECIMAL(4.0) + kMadAllowance);
-        // a pixel belongs to a star if it is at least this bright
+        // star pixels are at least this bright
         const int threshold = (int)DECIMAL_CEIL(twiceBackground / DECIMAL(2.0) + kThresholdSigmas * sigma);
 
         // seed: brightest pixel whose center is within the gate
@@ -508,7 +506,7 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
             if (x == xMin || x == xMax || y == yMin || y == yMax) {
                 touchesEdge = true;  // possibly clipped by the window or the image
             }
-            // twice the pixel's level above the background; the factor cancels in the centroid
+            // twice the level above the background; the factor cancels in the centroid
             const int weight = 2 * image[index] - twiceBackground;
             weightSum += weight;
             xWeightSum += (int64_t)weight * x;
@@ -552,10 +550,10 @@ Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, in
                            offset});
     }
 
-    // A star reached from more than one prediction is ambiguous: drop all its matches. Each
-    // prediction has its own threshold, so the same star need not come out as the same pixels, but
-    // an accepted star is everything connected to its seed above its threshold, so two that share
-    // (or touch at) a pixel always have overlapping bounding boxes.
+    // A star reached from more than one prediction is ambiguous: drop all its matches.
+    // Thresholds differ per prediction, so the same star can come out as different pixels. But a
+    // star is everything connected to its seed above its threshold, so two that share or touch
+    // at a pixel always have overlapping bounding boxes.
     std::vector<bool> ambiguous(matches.size(), false);
     for (size_t a = 0; a < matches.size(); a++) {
         for (size_t b = a + 1; b < matches.size(); b++) {

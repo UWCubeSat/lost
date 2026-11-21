@@ -51,44 +51,41 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
 };
 
 /**
- * Centroids stars near predicted positions. For each prediction: takes background and noise from
- * the border of a square window, seeds at the brightest pixel within gateRadius, flood-fills the
- * connected pixels at or above threshold, and takes their background-subtracted center of gravity.
- * Only those pixels count, so the faint wings of a star are left out.
+ * Centroids stars near predicted positions. For each prediction: background and noise from the
+ * border of a square window, seed at the brightest pixel within gateRadius, flood fill of the
+ * connected pixels at or above threshold, then their background-subtracted center of gravity.
+ * Pixels below threshold do not count, so faint wings are left out.
  *
- * Drops a star that touches the window or image edge, that lies farther than gateRadius from its
- * prediction, or whose pixel bounding box overlaps another match's. When at least three stars
- * are left, also drops any whose offset from its prediction is more than outlierRadius from the
- * frame's median offset.
+ * Drops a star that touches the window or image edge, is farther than gateRadius from its
+ * prediction, or whose bounding box overlaps another match's. With three or more stars left,
+ * also drops any whose offset is more than outlierRadius from the median offset.
  *
- * Working memory, not measured on the flight computer: one byte per pixel of a window, which is
- * (2 * (gateRadius + maxStarRadius) + 1) pixels square or the image if that is smaller, allocated
- * once per call; up to 8 more bytes per pixel of the largest star, for the flood fill's stack;
- * and a few hundred bytes per prediction. Go also compares every pair of matches. So keep the
- * radii and the number of predictions to what the frame needs.
+ * Memory (not measured on the flight computer): one byte per window pixel, where the window is
+ * 2 * (gateRadius + maxStarRadius) + 1 pixels square or the image if smaller; up to 8 bytes per
+ * pixel of the largest star; a few hundred bytes per prediction. Every pair of matches is
+ * compared. Keep the radii and the number of predictions small.
  */
 class WindowedCenterOfGravity {
 public:
     /**
      * @param gateRadius Largest expected distance between a star and its prediction, in pixels.
-     * @param maxStarRadius Largest expected star radius, in pixels; the window extends this far past the gate.
-     * @param outlierRadius Largest accepted distance of a match's offset from the median offset, in pixels.
-     * Go finds nothing if it is negative or NaN.
+     * @param maxStarRadius Largest expected star radius, in pixels. Pads the window past the gate.
+     * @param outlierRadius Largest distance of a match's offset from the median offset, in pixels.
+     * Negative or NaN: Go finds nothing.
      */
     WindowedCenterOfGravity(int gateRadius, int maxStarRadius, decimal outlierRadius)
         : gateRadius(gateRadius), maxStarRadius(maxStarRadius), outlierRadius(outlierRadius) { };
 
-    /// Largest gateRadius and maxStarRadius accepted, in pixels. Outside 0..kMaxRadius, Go finds nothing.
+    /// Largest gateRadius and maxStarRadius, in pixels. Outside 0..kMaxRadius, Go finds nothing.
     static const int kMaxRadius = 1024;
-    /// Largest image width and height accepted, in pixels. Go finds nothing in a larger image.
-    /// Up to this size pixel centers, which are at half-integers, are exact in a float, with at
-    /// least 1/128 of a pixel to spare for the centroid.
+    /// Largest image width and height, in pixels. Larger: Go finds nothing.
+    /// Up to this size a float holds pixel centers exactly, to 1/128 pixel.
     static const int kMaxImageSide = 1 << 16;
 
     /**
-     * @param predictions Predicted star positions in pixels (as Star::position). Off-image ones are skipped.
-     * @param[out] matchedPredictions The prediction index of each returned star. May be null.
-     * @return The stars found, in increasing order of prediction index.
+     * @param predictions Predicted positions in pixels, as Star::position. Off-image ones are skipped.
+     * @param[out] matchedPredictions Prediction index of each returned star. May be null.
+     * @return The stars found, ordered by prediction index.
      */
     Stars Go(const unsigned char *image, int imageWidth, int imageHeight,
              const std::vector<Vec2> &predictions, std::vector<int> *matchedPredictions) const;

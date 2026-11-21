@@ -8,28 +8,26 @@
 namespace lost {
 
 /**
- * Multiplicative extended Kalman filter (MEKF) for attitude and angular rate determination.
+ * Multiplicative extended Kalman filter (MEKF) for attitude and angular rate.
  *
  * State: the attitude quaternion `q` (inertial to body) and the rate `w`.
- * The error state is 6-dimensional: a small rotation `theta` applied on the left of `q`
- * (q_true = Exp(theta) * q) and an additive rate error. `P` is its covariance, ordered
- * (theta_x, theta_y, theta_z, w_x, w_y, w_z), in radians and radians per second.
+ * Error state: a small rotation `theta` on the left of `q` (q_true = Exp(theta) * q) and an
+ * additive rate error. `P` is its covariance, ordered (theta_x, theta_y, theta_z, w_x, w_y, w_z),
+ * in radians and radians per second.
  *
- * `w` is defined by q(t + dt) = Exp(w * dt) * q(t). Since LOST quaternions rotate inertial vectors
- * into the body frame, `w` is the body-frame angular velocity with its sign flipped. This must be
+ * `w` is defined by q(t + dt) = Exp(w * dt) * q(t). LOST quaternions rotate inertial vectors into
+ * the body frame, so `w` is the body-frame angular velocity with its sign flipped. This must be
  * kept in mind before feeding in gyro measurements.
  *
  * The only measurement is a full attitude quaternion (e.g. from Davenport Q).
  *
- * The filter does nothing until Reset succeeds: before that, Predict and Update return false and
- * the state is the identity attitude with zero rate and zero covariance. From then on the state
- * is always usable (unit attitude, finite rate, positive definite covariance): Reset, Predict and
- * Update return false and change nothing rather than break that. When one of them returns false
- * for a reason the caller cannot fix, start again with Reset.
+ * Nothing happens until Reset succeeds. After that the state is always usable: unit attitude,
+ * finite rate, positive definite covariance. Reset, Predict and Update return false and change
+ * nothing rather than break that. If one keeps returning false, start again with Reset.
  *
- * In float mode the covariance cannot hold attitude and rate errors that are more than about
- * 99.999% correlated. They get there when Predict runs for a few hundred times the Reset
- * baseline with no Update and next to no process noise; Predict then returns false.
+ * Float mode cannot hold attitude and rate errors that are almost perfectly correlated. That
+ * happens after about a hundred Reset baselines of Predict with no Update and almost no process
+ * noise. Predict then returns false.
  */
 class AttitudeEKF {
 public:
@@ -39,42 +37,34 @@ public:
      * @param crossBoresightSigma 1-sigma error across the boresight (body y and z), in radians.
      * @param rollSigma 1-sigma error about the boresight (body x), in radians.
      * @param angularAccelerationSigma Unmodeled angular acceleration density, in rad/s^(3/2).
-     * The first two must be positive and the third at least zero, all finite; otherwise Reset
-     * always returns false.
+     * All finite, the first two positive, the third not negative. Otherwise Reset returns false.
      */
     AttitudeEKF(decimal crossBoresightSigma, decimal rollSigma, decimal angularAccelerationSigma);
 
     /**
-     * Start from the newer of two measured attitudes `baseline` seconds apart, and the rate
-     * between them: Log(newer * older^-1) / baseline. The initial covariance is what those two
-     * measurements imply, with the angular acceleration there may have been between them, so it
-     * is only right for a rate obtained this way.
+     * Start from the newer of two fixes `baseline` seconds apart and the rate between them,
+     * Log(newer * older^-1) / baseline. The covariance assumes the rate was found this way.
      * @return false if the attitude is not unit, the rate is not finite, the baseline is not
-     * positive and finite, the two imply more than a quarter turn (two fixes that far apart
-     * do not say reliably which way the spacecraft turned), or the covariance is not
-     * representable.
+     * positive and finite, the fixes are more than a quarter turn apart, or the covariance
+     * cannot be held.
      */
     bool Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline);
 
     /**
-     * Propagate the state `dt` seconds forward assuming constant rate. One call for a long gap
-     * and many calls for short steps give nearly the same covariance: the tests compare one step
-     * with a thousand, for turns of up to 20 radians, and every entry agrees to 0.1% of
-     * sqrt(P_ii * P_jj). Splitting a gap into very many tiny steps adds rounding error instead,
-     * most of all in float mode. The attitude is only as good as the constant-rate assumption.
-     * @return false before the first successful Reset, if `dt` is negative or not finite, if the
-     * step turns more than 64 radians (take it in shorter steps), or if the covariance would
-     * overflow or cannot be held at this precision.
+     * Propagate the state `dt` seconds at constant rate. One long call and many short calls
+     * give nearly the same covariance (tested: one step against 1000, turns up to 20 rad, within
+     * 0.1% of sqrt(P_ii * P_jj)). Very many tiny steps add rounding error, most in float mode.
+     * @return false before Reset, if `dt` is negative or not finite, if the step turns more than
+     * 64 rad, or if the covariance overflows or cannot be held.
      */
     bool Predict(decimal dt);
 
     /**
      * Update the state with a measured attitude.
-     * @param gate Largest accepted squared Mahalanobis distance between measurement and prediction.
-     * If the filter's noise settings match the sensor, that distance is chi-square distributed
-     * with 3 degrees of freedom, and a gate of 16.27 rejects 0.1% of good measurements.
-     * @return false before the first successful Reset, if the measurement is not unit, if it
-     * fails the gate, or if the covariance cannot be held at this precision.
+     * @param gate Largest accepted squared Mahalanobis distance. With correct noise settings it
+     * is chi-square with 3 degrees of freedom: 16.27 rejects 0.1% of good measurements.
+     * @return false before Reset, if the measurement is not unit, if it fails the gate, or if
+     * the covariance cannot be held.
      */
     bool Update(const Quaternion &measured, decimal gate);
 
@@ -87,23 +77,23 @@ private:
     Vec3 w;
     Mat6 P;
 
-    /// Measurement noise variances about body x (roll), y and z, in rad^2 (the covariance is diagonal).
+    /// Measurement noise variances about body x (roll), y and z, in rad^2.
     std::array<decimal, 3> R;
-    /// Spectral density of the unmodeled angular acceleration, in rad^2/s^3.
+    /// Angular acceleration spectral density, in rad^2/s^3.
     decimal accelerationVariance;
-    /// Whether the constructor's arguments can be used at all.
+    /// True if the constructor's sigmas are usable.
     bool settingsValid;
-    /// Whether Reset has succeeded.
+    /// True once Reset has succeeded.
     bool initialized;
 };
 
-/// How far the squared norm of a quaternion may be from 1 for it to be taken as an attitude.
+/// Largest | |q|^2 - 1 | for a quaternion to count as an attitude.
 const decimal kUnitTolerance = DECIMAL(1e-3);
 
-/// Exp: the unit quaternion for rotation vector v, a rotation of |v| radians about v.
+/// Exp: unit quaternion for rotation vector v, |v| radians about v.
 Quaternion RotationVectorToQuaternion(const Vec3 &v);
-/// Log: the rotation vector of unit quaternion q, taking the rotation of at most pi radians.
-/// At exactly pi radians q and -q give opposite vectors, both of them correct.
+/// Log: rotation vector of unit quaternion q, at most pi radians.
+/// At exactly pi, q and -q give opposite vectors. Both are correct.
 Vec3 QuaternionToRotationVector(const Quaternion &q);
 
 }  // namespace lost

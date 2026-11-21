@@ -54,11 +54,10 @@ static bool IsFinite(const Mat6 &m) {
     return true;
 }
 
-/// Below this angle the Jacobian coefficients come from their Taylor series, which is then more
-/// accurate than the closed forms (those divide one small number by another).
+/// Below this angle use the Taylor series. The closed forms lose accuracy there.
 static const decimal kSeriesAngle = DECIMAL(1e-2);
 
-/// I + a * [v]x + b * [v]x^2, where [v]x is the cross-product matrix of v: [v]x * c = v cross c.
+/// I + a * [v]x + b * [v]x^2. [v]x is the cross-product matrix: [v]x * c = v cross c.
 static void SkewPolynomial(const Vec3 &v, decimal a, decimal b, decimal result[3][3]) {
     const decimal c[3] = {v.x, v.y, v.z};
     const decimal cross[3][3] = {{0, -c[2], c[1]}, {c[2], 0, -c[0]}, {-c[1], c[0], 0}};
@@ -72,9 +71,8 @@ static void SkewPolynomial(const Vec3 &v, decimal a, decimal b, decimal result[3
 }
 
 /**
- * Left Jacobian of Exp at v: to first order in d, Exp(v + d) = Exp(J * d) * Exp(v).
- *   J = I + (1 - cos(angle)) / angle^2 * [v]x + (angle - sin(angle)) / angle^3 * [v]x^2,
- * with angle = |v|.
+ * Left Jacobian of Exp at v. To first order in d: Exp(v + d) = Exp(J * d) * Exp(v).
+ * J = I + (1 - cos(angle)) / angle^2 * [v]x + (angle - sin(angle)) / angle^3 * [v]x^2, angle = |v|.
  */
 static void LeftJacobian(const Vec3 &v, decimal jacobian[3][3]) {
     const decimal angle = v.Magnitude();
@@ -82,16 +80,16 @@ static void LeftJacobian(const Vec3 &v, decimal jacobian[3][3]) {
     decimal b = DECIMAL(1.0) / 6 - angle * angle / 120;
     if (angle > kSeriesAngle) {
         const decimal sinHalf = DECIMAL_SIN(angle / 2);
-        a = 2 * sinHalf * sinHalf / (angle * angle);  // 1 - cos(angle) = 2 sin^2(angle / 2), without cancellation
+        // 1 - cos(angle) = 2 sin^2(angle / 2), no cancellation
+        a = 2 * sinHalf * sinHalf / (angle * angle);
         b = (angle - DECIMAL_SIN(angle)) / (angle * angle * angle);
     }
     SkewPolynomial(v, a, b, jacobian);
 }
 
 /**
- * Inverse of the left Jacobian at v, for |v| less than a full turn:
- *   J^-1 = I - [v]x / 2 + (1 / angle^2 - cot(angle / 2) / (2 * angle)) * [v]x^2,
- * with angle = |v|.
+ * Inverse of the left Jacobian at v, for |v| under a full turn.
+ * J^-1 = I - [v]x / 2 + (1 / angle^2 - cot(angle / 2) / (2 * angle)) * [v]x^2, angle = |v|.
  */
 static void LeftJacobianInverse(const Vec3 &v, decimal inverse[3][3]) {
     const decimal angle = v.Magnitude();
@@ -103,29 +101,22 @@ static void LeftJacobianInverse(const Vec3 &v, decimal inverse[3][3]) {
 }
 
 /**
- * How far above zero every eigenvalue of a covariance's correlation matrix must be for
- * IsPositiveDefinite to accept it. Two requirements set it:
- *  - It must exceed the rounding error of the check itself, which works in double precision
- *    whatever `decimal` is. That error is a few times 1e-14 for a 6 by 6 correlation matrix.
- *  - It should exceed the rounding error of the filter's own arithmetic, which is in `decimal`,
- *    so that the smallest eigenvalue it certifies is not just noise.
+ * Margin for IsPositiveDefinite: the smallest eigenvalue it accepts in the correlation matrix.
+ * Larger than the rounding error of the check (a few 1e-14, it runs in double) and of the
+ * filter's own arithmetic (in `decimal`).
  */
 static const double kEigenvalueMargin = std::max(64 * static_cast<double>(std::numeric_limits<decimal>::epsilon()),
                                                  4096 * std::numeric_limits<double>::epsilon());
 
 /**
- * Whether a covariance, exactly as stored, is positive definite with room to spare.
+ * True if the covariance as stored is positive definite with margin.
  *
- * It forms the correlation matrix (so that the different scales of attitude and rate do not
- * matter), subtracts kEigenvalueMargin from its diagonal, and runs a Cholesky factorization on
- * the result, all in double precision. A Cholesky factorization that completes shows that the
- * matrix it was given, give or take its own rounding error, has no negative eigenvalue. So
- * success means every eigenvalue of the correlation matrix is at least kEigenvalueMargin less
- * that rounding error, which is positive. The stored entries convert to double exactly, so this
- * is a statement about the stored matrix, not about a rounded copy of it.
+ * Cholesky in double of the correlation matrix with kEigenvalueMargin taken off the diagonal.
+ * If it completes, every eigenvalue is above the margin less rounding, so above zero. Stored
+ * entries convert to double exactly, so this holds for the stored matrix.
  *
- * It fails when two error components have become so nearly the same thing that the matrix
- * cannot tell them apart at the precision of `decimal`, and for a matrix that is not finite.
+ * Fails when two error components are too correlated to tell apart in `decimal`, or the matrix
+ * is not finite.
  */
 static bool IsPositiveDefinite(const Mat6 &p) {
     double scale[6];
@@ -140,7 +131,7 @@ static bool IsPositiveDefinite(const Mat6 &p) {
             if (i == j) value -= kEigenvalueMargin;
             for (int k = 0; k < j; k++) value -= l[i][k] * l[j][k];
             if (i == j) {
-                // written so that NaN is refused too
+                // refuses NaN too
                 if (!(value > 0)) return false;
                 l[j][j] = std::sqrt(value);
             } else {
@@ -152,9 +143,8 @@ static bool IsPositiveDefinite(const Mat6 &p) {
 }
 
 /**
- * B(t): the integral of the rotation Exp(w * tau) over tau from 0 to t, which is t * J(w * t)
- * with J the left Jacobian. It is how much attitude error a unit of rate error becomes after
- * time t at rate w.
+ * B(t) = integral of Exp(w * tau) for tau from 0 to t = t * J(w * t), J the left Jacobian.
+ * The attitude error that a unit rate error becomes after time t.
  */
 static void IntegratedRotation(const Vec3 &w, decimal t, decimal result[3][3]) {
     LeftJacobian(w * t, result);
@@ -163,10 +153,9 @@ static void IntegratedRotation(const Vec3 &w, decimal t, decimal result[3][3]) {
     }
 }
 
-/// Points and weights of 3-point Gauss-Legendre quadrature on the interval from 0 to 1. The
-/// weights are positive, so a sum of positive semidefinite terms formed with them is too.
-/// An integral over a turn is split into panels of at most a radian, each with these points:
-/// three points cannot follow a rotation through more than that.
+/// 3-point Gauss-Legendre points and weights on [0, 1]. The weights are positive, so sums of
+/// positive semidefinite terms stay positive semidefinite. Use one panel per radian of turn:
+/// three points cannot follow more.
 static const decimal kQuadraturePoints[3] = {DECIMAL(0.1127016653792583), DECIMAL(0.5), DECIMAL(0.8872983346207417)};
 static const decimal kQuadratureWeights[3] = {DECIMAL(5.0) / 18, DECIMAL(8.0) / 18, DECIMAL(5.0) / 18};
 
@@ -181,7 +170,7 @@ static void RotationMatrix(const Quaternion &q, decimal matrix[3][3]) {
     }
 }
 
-/// The number of quadrature panels for an integral over a turn of the given size, in radians.
+/// Quadrature panels for a turn, in radians.
 static int QuadraturePanels(decimal turn) {
     return turn > 1 ? (int)DECIMAL_CEIL(turn) : 1;
 }
@@ -222,21 +211,19 @@ AttitudeEKF::AttitudeEKF(decimal crossBoresightSigma, decimal rollSigma, decimal
     : q(DECIMAL(1.0), 0, 0, 0), w(0, 0, 0), P{},
       R{rollSigma * rollSigma, crossBoresightSigma * crossBoresightSigma, crossBoresightSigma * crossBoresightSigma},
       accelerationVariance(angularAccelerationSigma * angularAccelerationSigma),
-      // Written so that NaN is refused too. The squares are checked as well, in case a sigma is
-      // so small or so large that its square is not representable.
+      // refuses NaN too; the squares are checked in case one overflows or underflows
       settingsValid(crossBoresightSigma > 0 && rollSigma > 0 && angularAccelerationSigma >= 0
                     && R[0] > 0 && std::isfinite(R[0]) && R[1] > 0 && std::isfinite(R[1])
                     && std::isfinite(accelerationVariance)),
       initialized(false) { }
 
-/// The largest turn between the two fixes given to Reset, in radians: a quarter turn. Two fixes
-/// cannot tell a turn from the opposite turn that completes the circle, and near half a turn an
-/// ordinary fix error is enough to make the shorter of the two the wrong one. Below a quarter
-/// turn it would take a fix error of a quarter turn.
+/// Largest turn between the two fixes given to Reset: a quarter turn. Two fixes cannot tell a
+/// turn from the opposite turn the long way round, and near half a turn a small fix error picks
+/// the wrong one.
 static const decimal kMaxResetTurn = DECIMAL_M_PI / 2;
 
 bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline) {
-    // !(x > 0), not x <= 0, so that NaN is refused too
+    // !(x > 0), not x <= 0: refuses NaN too
     if (!settingsValid || !attitude.IsUnit(kUnitTolerance) || !IsFinite(rate)
         || !(baseline > 0) || !std::isfinite(baseline)) {
         return false;
@@ -246,22 +233,20 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
         return false;
     }
 
-    // The attitude is the newer of two fixes and the rate is Log(newer * older^-1) / baseline.
-    // Call the fix errors e1 (newer) and e0 (older): independent, each with covariance R. To first
-    // order the attitude error is e1 and the rate error is J^-1 * (e1 - D * e0 + a) / baseline,
-    // where D is the rotation of the turn between the fixes, J the left Jacobian at that turn, and
-    // a is explained below. So:
+    // Attitude = the newer fix. Rate = Log(newer * older^-1) / baseline.
+    // Fix errors e1 (newer) and e0 (older) are independent with covariance R. To first order the
+    // attitude error is e1 and the rate error is J^-1 * (e1 - D * e0 + a) / baseline.
+    // D = rotation of the turn between the fixes, J = left Jacobian at that turn. So:
     //   attitude covariance R,
     //   attitude-rate covariance R * J^-T / baseline,
     //   rate covariance J^-1 * (R + D * R * D^T + A) * J^-T / baseline^2.
-    // With no turn, D and J are the identity and these are R, R / baseline and (2R + A) / baseline^2.
+    // No turn: R, R / baseline, (2R + A) / baseline^2.
     //
-    // a and its covariance A: two fixes give the average rate over the baseline, and it is used as
-    // the rate at the newer fix. Angular acceleration between the fixes makes those differ. An
-    // impulse of acceleration a time v after the older fix shifts the turn by C(v) times the
-    // impulse, with C(v) = B(baseline) - B(baseline - v). For white acceleration of spectral
-    // density s, A = s * integral of C * C^T over v from 0 to baseline, by Gauss-Legendre
-    // quadrature. With no turn A = s * baseline^3 / 3, so the rate variance gains s * baseline / 3.
+    // a, with covariance A: the fixes give the average rate, used as the rate at the newer fix.
+    // Acceleration in between makes them differ. An impulse at time v after the older fix shifts
+    // the turn by C(v) = B(baseline) - B(baseline - v) times the impulse. For spectral density s,
+    // A = s * integral of C * C^T for v from 0 to baseline, by quadrature.
+    // No turn: A = s * baseline^3 / 3, so the rate variance gains s * baseline / 3.
     decimal scaled[3][3];  // J^-1 / baseline
     LeftJacobianInverse(turn, scaled);
     for (int i = 0; i < 3; i++) {
@@ -313,13 +298,12 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
             const decimal mean = (covariance[i + 3][j + 3] + covariance[j + 3][i + 3]) / 2;
             covariance[i + 3][j + 3] = covariance[j + 3][i + 3] = mean;
         }
-        // A baseline so long that the rate variance underflows would leave a covariance that is
-        // not positive definite.
+        // baseline so long that the rate variance underflows
         if (!(covariance[i + 3][i + 3] >= std::numeric_limits<decimal>::min())) {
             return false;
         }
     }
-    // a baseline so short that the covariance overflows, or a covariance this precision cannot hold
+    // baseline so short that the covariance overflows, or a covariance that cannot be held
     if (!IsFinite(covariance) || !IsPositiveDefinite(covariance)) {
         return false;
     }
@@ -330,31 +314,29 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
     return true;
 }
 
-/// The largest turn in one Predict call, in radians: about ten full turns. The process noise is
-/// integrated in panels of at most a radian, so this bounds the work in one call.
+/// Largest turn in one Predict call, in radians (about ten turns). Bounds the quadrature work.
 static const decimal kMaxPredictTurn = 64;
 
 bool AttitudeEKF::Predict(decimal dt) {
-    // refuse a filter that was never started, and a negative or non-finite step
+    // refuse an unstarted filter and a negative or non-finite step
     if (!initialized || !(dt >= 0) || !std::isfinite(dt)) {
         return false;
     }
-    // and a step that turns too far; written so that an overflowing turn is refused too
+    // refuse a step that turns too far; an overflowing turn is refused too
     const decimal stepTurn = w.Magnitude() * dt;
     if (!(stepTurn <= kMaxPredictTurn)) {
         return false;
     }
-    // State: q <- Exp(w * dt) * q. The rate stays as it is.
+    // State: q <- Exp(w * dt) * q. The rate is unchanged.
     Quaternion step = RotationVectorToQuaternion(w * dt);
     Quaternion predicted = Normalized(step * q);
 
-    // Transition matrix phi of the error, ordered attitude then rate:
-    //   attitude block: the step's rotation matrix. The attitude error rotates with the step,
-    //     Exp(step(theta)) * step = step * Exp(theta), exactly.
-    //   rate-to-attitude block: dt * J, with J the left Jacobian at w * dt. A rate error
-    //     integrates into attitude error: to first order in dw,
+    // Transition matrix phi of the error, attitude then rate:
+    //   attitude block: the step's rotation matrix. Exact:
+    //     Exp(step(theta)) * step = step * Exp(theta).
+    //   rate-to-attitude block: dt * J, J the left Jacobian at w * dt. To first order in dw:
     //     Exp((w + dw) * dt) = Exp(J * dw * dt) * step.
-    //   rate block: the identity.
+    //   rate block: identity.
     decimal jacobian[3][3];
     LeftJacobian(w * dt, jacobian);
     decimal stepMatrix[3][3];
@@ -370,14 +352,14 @@ bool AttitudeEKF::Predict(decimal dt) {
     // P <- phi * P * phi^T
     Mat6 covariance = Congruence(phi, P);
 
-    // Process noise of white angular acceleration with spectral density s = accelerationVariance.
-    // An impulse of acceleration with time tau left in the step adds B(tau) times the impulse to
-    // the attitude error and the impulse itself to the rate error, so the noise covariance is
-    //   s * integral over tau from 0 to dt of [B * B^T, B; B^T, I].
-    // By Gauss-Legendre quadrature in panels of at most a radian of turn: each point adds a
-    // positive multiple of [B; I] * [B; I]^T, so the sum is positive semidefinite however far the
-    // step turns. It is exact with no turn (s * dt^3 / 3, s * dt^2 / 2, s * dt), and the tests
-    // hold it to 0.1% of each block's scale against references for turns of up to 20 radians.
+    // Process noise for white angular acceleration, spectral density s = accelerationVariance.
+    // An impulse with time tau left in the step adds B(tau) * impulse to the attitude error and
+    // the impulse to the rate error. So the noise covariance is
+    //   s * integral of [B * B^T, B; B^T, I] for tau from 0 to dt.
+    // By quadrature, one panel per radian of turn. Each point adds a positive multiple of
+    // [B; I] * [B; I]^T, so the sum is positive semidefinite for any step.
+    // No turn: s * dt^3 / 3, s * dt^2 / 2, s * dt, exactly.
+    // Tested to 0.1% for turns up to 20 rad.
     const int panels = QuadraturePanels(stepTurn);
     for (int panel = 0; panel < panels; panel++) {
         for (int point = 0; point < 3; point++) {
@@ -396,8 +378,7 @@ bool AttitudeEKF::Predict(decimal dt) {
         }
     }
 
-    // Overflow, or a covariance this precision cannot hold (after a long time with no fix the
-    // attitude and rate errors become nearly the same thing). Keep the last good state.
+    // overflow, or a covariance that cannot be held (long time with no fix); keep the last good state
     if (!predicted.IsUnit(kUnitTolerance) || !IsFinite(covariance) || !IsPositiveDefinite(covariance)) {
         return false;
     }
@@ -407,22 +388,22 @@ bool AttitudeEKF::Predict(decimal dt) {
 }
 
 bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
-    // refuse a filter that was never started, and a measurement that is not a rotation (or not finite)
+    // refuse an unstarted filter and a measurement that is not a rotation
     if (!initialized || !measured.IsUnit(kUnitTolerance)) {
         return false;
     }
-    // Innovation: Log(measured * q^-1), the rotation from the predicted attitude to the measured one.
+    // Innovation: Log(measured * q^-1), the rotation from predicted to measured.
     Vec3 innovationVec = QuaternionToRotationVector(measured * q.Conjugate());
     const decimal innovation[3] = {innovationVec.x, innovationVec.y, innovationVec.z};
 
-    // Innovation covariance S = P_theta + R, where P_theta is the attitude block of P.
+    // Innovation covariance S = P_theta + R. P_theta is the attitude block of P.
     decimal s[3][3];
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             s[i][j] = P[i][j] + (i == j ? R[i] : 0);
         }
     }
-    // Cholesky factorization S = L * L^T. Fails if S is not positive definite.
+    // Cholesky S = L * L^T. Fails if S is not positive definite.
     decimal l[3][3] = {};
     for (int j = 0; j < 3; j++) {
         decimal diagonal = s[j][j];
@@ -447,26 +428,26 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
         }
     };
 
-    // Gate on the squared Mahalanobis distance innovation^T * S^-1 * innovation.
+    // Gate on innovation^T * S^-1 * innovation, the squared Mahalanobis distance.
     decimal weighted[3] = {innovation[0], innovation[1], innovation[2]};
     solve(weighted);
     decimal mahalanobisSq = innovation[0] * weighted[0] + innovation[1] * weighted[1] + innovation[2] * weighted[2];
     if (!(mahalanobisSq <= gate)) return false;
 
-    // Gain K = P * H^T * S^-1, where H = [I 0] picks out the attitude error.
-    // S is symmetric, so row i of K is S^-1 * (the first three entries of row i of P).
+    // Gain K = P * H^T * S^-1, H = [I 0].
+    // S is symmetric, so row i of K is S^-1 * (first three entries of row i of P).
     decimal gain[6][3];
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 3; j++) gain[i][j] = P[i][j];
         solve(gain[i]);
     }
 
-    // Correction K * innovation, ordered attitude then rate.
+    // Correction K * innovation, attitude then rate.
     decimal correction[6] = {};
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 3; j++) correction[i] += gain[i][j] * innovation[j];
     }
-    // Apply it: q <- Exp(attitude correction) * q, w <- w + rate correction.
+    // Apply: q <- Exp(attitude correction) * q, w <- w + rate correction.
     Quaternion corrected = Normalized(RotationVectorToQuaternion({correction[0], correction[1], correction[2]}) * q);
     Vec3 correctedRate = w + Vec3(correction[3], correction[4], correction[5]);
 
@@ -483,10 +464,10 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
         }
     }
 
-    // That covariance is of the error about the old attitude. Re-express it about the corrected
-    // one: P <- G * P * G^T with G = diag(J, I), J the left Jacobian at the attitude correction,
-    // since to first order in e, Exp(correction + e) = Exp(J * e) * Exp(correction). The rate
-    // error is unaffected.
+    // That covariance is about the old attitude. Move it to the corrected one:
+    // P <- G * P * G^T, G = diag(J, I), J the left Jacobian at the attitude correction.
+    // To first order in e: Exp(correction + e) = Exp(J * e) * Exp(correction).
+    // The rate error is unchanged.
     decimal jacobian[3][3];
     LeftJacobian({correction[0], correction[1], correction[2]}, jacobian);
     Mat6 recenter{};
@@ -496,7 +477,7 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
     }
     covariance = Congruence(recenter, covariance);
 
-    // overflow, or a covariance this precision cannot hold; keep the last good state
+    // overflow, or a covariance that cannot be held; keep the last good state
     if (!corrected.IsUnit(kUnitTolerance) || !IsFinite(correctedRate) || !IsFinite(covariance)
         || !IsPositiveDefinite(covariance)) {
         return false;
