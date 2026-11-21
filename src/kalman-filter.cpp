@@ -170,6 +170,17 @@ static void IntegratedRotation(const Vec3 &w, decimal t, decimal result[3][3]) {
 static const decimal kQuadraturePoints[3] = {DECIMAL(0.1127016653792583), DECIMAL(0.5), DECIMAL(0.8872983346207417)};
 static const decimal kQuadratureWeights[3] = {DECIMAL(5.0) / 18, DECIMAL(8.0) / 18, DECIMAL(5.0) / 18};
 
+/// The rotation matrix of q: column j is basis vector j rotated by q.
+static void RotationMatrix(const Quaternion &q, decimal matrix[3][3]) {
+    const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    for (int j = 0; j < 3; j++) {
+        const Vec3 column = q.Rotate(basis[j]);
+        matrix[0][j] = column.x;
+        matrix[1][j] = column.y;
+        matrix[2][j] = column.z;
+    }
+}
+
 /// The number of quadrature panels for an integral over a turn of the given size, in radians.
 static int QuadraturePanels(decimal turn) {
     return turn > 1 ? (int)DECIMAL_CEIL(turn) : 1;
@@ -256,15 +267,8 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) scaled[i][j] /= baseline;
     }
-    const Quaternion turnRotation = RotationVectorToQuaternion(turn);
-    const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
     decimal d[3][3];
-    for (int j = 0; j < 3; j++) {
-        const Vec3 column = turnRotation.Rotate(basis[j]);
-        d[0][j] = column.x;
-        d[1][j] = column.y;
-        d[2][j] = column.z;
-    }
+    RotationMatrix(RotationVectorToQuaternion(turn), d);
     decimal both[3][3];  // R + D * R * D^T + A
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -353,17 +357,15 @@ bool AttitudeEKF::Predict(decimal dt) {
     //   rate block: the identity.
     decimal jacobian[3][3];
     LeftJacobian(w * dt, jacobian);
+    decimal stepMatrix[3][3];
+    RotationMatrix(step, stepMatrix);
     Mat6 phi{};
-    const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-    for (int j = 0; j < 3; j++) {
-        Vec3 column = step.Rotate(basis[j]);
-        phi[0][j] = column.x;
-        phi[1][j] = column.y;
-        phi[2][j] = column.z;
-        for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            phi[i][j] = stepMatrix[i][j];
             phi[i][j + 3] = dt * jacobian[i][j];
         }
-        phi[j + 3][j + 3] = 1;
+        phi[i + 3][i + 3] = 1;
     }
     // P <- phi * P * phi^T
     Mat6 covariance = Congruence(phi, P);

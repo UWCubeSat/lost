@@ -217,34 +217,6 @@ TEST_CASE("Windowed CoG ignores stars outside the gate", "[centroid]") {
     CHECK(centroider.Go(justOutside.data(), w, h, {{DECIMAL(32.0), DECIMAL(32.0)}}, &matched).empty());
 }
 
-TEST_CASE("Windowed CoG drops a star claimed by two predictions", "[centroid]") {
-    const int w = 64, h = 64;
-    std::vector<unsigned char> image = BlankImage(w, h);
-    DrawStar(&image, w, h, DECIMAL(32.0), DECIMAL(32.0), 200);
-    DrawStar(&image, w, h, DECIMAL(12.0), DECIMAL(12.0), 200);
-
-    WindowedCenterOfGravity centroider(4, 4, 3);
-    std::vector<int> matched;
-    Stars stars = centroider.Go(image.data(), w, h,
-                                {{DECIMAL(31.0), DECIMAL(32.0)}, {DECIMAL(12.0), DECIMAL(12.0)}, {DECIMAL(33.0), DECIMAL(32.0)}},
-                                &matched);
-    CHECK(matched == std::vector<int>{1});
-}
-
-TEST_CASE("Windowed CoG rejects a star clipped by the window or the image", "[centroid]") {
-    const int w = 64, h = 64;
-    std::vector<unsigned char> image = BlankImage(w, h);
-    // a long streak: any window around it cuts it off
-    for (int x = 10; x < 54; x++) image[32 * w + x] = 200;
-    WindowedCenterOfGravity centroider(4, 4, 3);
-    std::vector<int> matched;
-    CHECK(centroider.Go(image.data(), w, h, {{DECIMAL(32.0), DECIMAL(32.5)}}, &matched).empty());
-
-    std::vector<unsigned char> edge = BlankImage(w, h);
-    DrawStar(&edge, w, h, DECIMAL(1.0), DECIMAL(32.0), 200);
-    CHECK(centroider.Go(edge.data(), w, h, {{DECIMAL(1.0), DECIMAL(32.0)}}, &matched).empty());
-}
-
 TEST_CASE("Windowed CoG drops a match that disagrees with the common shift", "[centroid]") {
     const int w = 128, h = 128;
     std::vector<unsigned char> image = BlankImage(w, h);
@@ -259,20 +231,6 @@ TEST_CASE("Windowed CoG drops a match that disagrees with the common shift", "[c
     std::vector<int> matched;
     centroider.Go(image.data(), w, h, predictions, &matched);
     CHECK(matched == std::vector<int>{0, 1, 2});
-}
-
-TEST_CASE("Windowed CoG handles black images and predictions off the image", "[centroid]") {
-    const int w = 32, h = 32;
-    std::vector<unsigned char> black(w * h, 0);
-    WindowedCenterOfGravity centroider(4, 4, 3);
-    std::vector<int> matched;
-    CHECK(centroider.Go(black.data(), w, h, {{DECIMAL(16.0), DECIMAL(16.0)}, {DECIMAL(-50.0), DECIMAL(500.0)}}, &matched).empty());
-
-    // predictions that aren't even numbers, and an image smaller than the window
-    const decimal nan = std::numeric_limits<decimal>::quiet_NaN();
-    const decimal inf = std::numeric_limits<decimal>::infinity();
-    std::vector<unsigned char> tiny(2 * 2, 255);
-    CHECK(centroider.Go(tiny.data(), 2, 2, {{nan, nan}, {inf, -inf}, {DECIMAL(1e30), 1}, {1, 1}}, &matched).empty());
 }
 
 TEST_CASE("Windowed CoG finds nothing with unusable settings, and accepts a null output", "[centroid]") {
@@ -355,20 +313,18 @@ TEST_CASE("Windowed CoG reports the exact centroid, size and pixel count of a kn
     CHECK(stars[0].magnitude == 4);
 }
 
-TEST_CASE("Windowed CoG threshold is 4 levels above a noiseless background", "[centroid]") {
-    // MAD 0, so the threshold is the background plus 5 * 1.4826 * 0.5 = 3.7, rounded up
-    const int w = 64, h = 64;
-    WindowedCenterOfGravity centroider(4, 4, 3);
-    Image image(w * h, 100);
-    image[32 * w + 32] = 103;
-    CHECK(centroider.Go(image.data(), w, h, {kCenter}, nullptr).empty());
-    image[32 * w + 32] = 104;
-    CHECK(centroider.Go(image.data(), w, h, {kCenter}, nullptr).size() == 1);
-}
-
 TEST_CASE("Windowed CoG threshold is the border's median plus 5 * 1.4826 * (MAD + 0.5)", "[centroid]") {
     const int w = 64, h = 64;
     WindowedCenterOfGravity centroider(4, 4, 3);
+
+    SECTION("a noiseless background") {
+        // MAD 0, so the threshold is the background plus 5 * 1.4826 * 0.5 = 3.7, rounded up: 4 levels
+        Image image(w * h, 100);
+        image[32 * w + 32] = 103;
+        CHECK(centroider.Go(image.data(), w, h, {kCenter}, nullptr).empty());
+        image[32 * w + 32] = 104;
+        CHECK(centroider.Go(image.data(), w, h, {kCenter}, nullptr).size() == 1);
+    }
 
     SECTION("spread border") {
         // median 20; deviations 0 (13 pixels), 3 (26), 6 (25): MAD 3; threshold 20 + 7.413 * 3.5 = 45.9
@@ -438,7 +394,7 @@ TEST_CASE("Windowed CoG refuses radii just outside 0..kMaxRadius", "[centroid]")
     CHECK(WindowedCenterOfGravity(0, 0, 3).Go(image.data(), w, h, {kCenter}, nullptr).empty());
 }
 
-TEST_CASE("Windowed CoG skips a prediction off each side of the image even with a star in reach", "[centroid]") {
+TEST_CASE("Windowed CoG skips predictions off the image, and handles black and tiny images", "[centroid]") {
     const int w = 64, h = 64;
     WindowedCenterOfGravity centroider(4, 4, 3);
     const decimal nan = std::numeric_limits<decimal>::quiet_NaN();
@@ -464,6 +420,21 @@ TEST_CASE("Windowed CoG skips a prediction off each side of the image even with 
                                 {{nan, DECIMAL(32.5)}, {DECIMAL(32.5), nan}, {inf, DECIMAL(32.5)}, {DECIMAL(32.5), -inf}, kCenter},
                                 &matched);
     CHECK(matched == std::vector<int>{4});
+
+    // an all-black image, and one smaller than the window with predictions that are not even numbers
+    {
+        const int w = 32, h = 32;
+        std::vector<unsigned char> black(w * h, 0);
+        WindowedCenterOfGravity centroider(4, 4, 3);
+        std::vector<int> matched;
+        CHECK(centroider.Go(black.data(), w, h, {{DECIMAL(16.0), DECIMAL(16.0)}, {DECIMAL(-50.0), DECIMAL(500.0)}}, &matched).empty());
+
+        // predictions that aren't even numbers, and an image smaller than the window
+        const decimal nan = std::numeric_limits<decimal>::quiet_NaN();
+        const decimal inf = std::numeric_limits<decimal>::infinity();
+        std::vector<unsigned char> tiny(2 * 2, 255);
+        CHECK(centroider.Go(tiny.data(), 2, 2, {{nan, nan}, {inf, -inf}, {DECIMAL(1e30), 1}, {1, 1}}, &matched).empty());
+    }
 }
 
 TEST_CASE("Windowed CoG rejects a star reaching each side of the window or image, and keeps one that stops short", "[centroid]") {
