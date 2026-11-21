@@ -53,11 +53,16 @@ class IterativeWeightedCenterOfGravityAlgorithm : public CentroidAlgorithm {
 /**
  * Centroids stars near predicted positions. For each prediction: takes background and noise from
  * the border of a square window, seeds at the brightest pixel within gateRadius, flood-fills the
- * connected pixels above threshold, and takes their background-subtracted center of gravity.
+ * connected pixels at or above threshold, and takes their background-subtracted center of gravity.
+ * Only those pixels count, so the faint wings of a star are left out.
  *
  * Drops a star that touches the window or image edge, that lies farther than gateRadius from its
- * prediction, whose pixel bounding box overlaps another match's, or whose offset from its
- * prediction is more than outlierRadius from the frame's median offset.
+ * prediction, or whose pixel bounding box overlaps another match's. When at least three stars
+ * are left, also drops any whose offset from its prediction is more than outlierRadius from the
+ * frame's median offset.
+ *
+ * Go uses (2 * (gateRadius + maxStarRadius) + 1)^2 bytes of working memory and compares every
+ * pair of matches, so keep the radii and the number of predictions to what the frame needs.
  */
 class WindowedCenterOfGravity {
 public:

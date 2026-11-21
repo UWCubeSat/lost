@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cmath>
+#include <limits>
 
 #include "attitude-utils.hpp"
 #include "decimal.hpp"
@@ -52,31 +53,52 @@ static bool IsFinite(const Mat6 &m) {
     return true;
 }
 
+/// Below this angle the Jacobian coefficients come from their Taylor series, which is then more
+/// accurate than the closed forms (those divide one small number by another).
+static const decimal kSeriesAngle = DECIMAL(1e-2);
+
+/// I + a * [v]x + b * [v]x^2, where [v]x is the cross-product matrix of v: [v]x * c = v cross c.
+static void SkewPolynomial(const Vec3 &v, decimal a, decimal b, decimal result[3][3]) {
+    const decimal c[3] = {v.x, v.y, v.z};
+    const decimal cross[3][3] = {{0, -c[2], c[1]}, {c[2], 0, -c[0]}, {-c[1], c[0], 0}};
+    const decimal normSq = c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            // [v]x^2 = v * v^T - |v|^2 * I
+            result[i][j] = (i == j ? 1 - b * normSq : 0) + a * cross[i][j] + b * c[i] * c[j];
+        }
+    }
+}
+
 /**
  * Left Jacobian of Exp at v: to first order in d, Exp(v + d) = Exp(J * d) * Exp(v).
- * With angle = |v| and unit axis a = v / angle:
- *   J = sinc * I + (1 - sinc) * a * a^T + cosc * [a]x,
- * where sinc = sin(angle) / angle and cosc = (1 - cos(angle)) / angle.
+ *   J = I + (1 - cos(angle)) / angle^2 * [v]x + (angle - sin(angle)) / angle^3 * [v]x^2,
+ * with angle = |v|.
  */
 static void LeftJacobian(const Vec3 &v, decimal jacobian[3][3]) {
     const decimal angle = v.Magnitude();
-    // Small angles: J is the identity to within angle / 2, and the axis is undefined.
-    decimal sinc = 1, cosc = angle / 2;
-    Vec3 axis(0, 0, 0);
-    if (angle > DECIMAL(1e-6)) {
+    decimal a = DECIMAL(0.5) - angle * angle / 24;
+    decimal b = DECIMAL(1.0) / 6 - angle * angle / 120;
+    if (angle > kSeriesAngle) {
         const decimal sinHalf = DECIMAL_SIN(angle / 2);
-        sinc = DECIMAL_SIN(angle) / angle;
-        cosc = 2 * sinHalf * sinHalf / angle;  // 1 - cos(angle) = 2 sin^2(angle / 2), without cancellation
-        axis = v * (DECIMAL(1.0) / angle);
+        a = 2 * sinHalf * sinHalf / (angle * angle);  // 1 - cos(angle) = 2 sin^2(angle / 2), without cancellation
+        b = (angle - DECIMAL_SIN(angle)) / (angle * angle * angle);
     }
-    const decimal a[3] = {axis.x, axis.y, axis.z};
-    // [a]x, the matrix with [a]x * b = a cross b
-    const decimal cross[3][3] = {{0, -a[2], a[1]}, {a[2], 0, -a[0]}, {-a[1], a[0], 0}};
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            jacobian[i][j] = (i == j ? sinc : 0) + (1 - sinc) * a[i] * a[j] + cosc * cross[i][j];
-        }
+    SkewPolynomial(v, a, b, jacobian);
+}
+
+/**
+ * Inverse of the left Jacobian at v, for |v| less than a full turn:
+ *   J^-1 = I - [v]x / 2 + (1 / angle^2 - cot(angle / 2) / (2 * angle)) * [v]x^2,
+ * with angle = |v|.
+ */
+static void LeftJacobianInverse(const Vec3 &v, decimal inverse[3][3]) {
+    const decimal angle = v.Magnitude();
+    decimal b = DECIMAL(1.0) / 12 + angle * angle / 720;
+    if (angle > kSeriesAngle) {
+        b = 1 / (angle * angle) - DECIMAL_COS(angle / 2) / (2 * angle * DECIMAL_SIN(angle / 2));
     }
+    SkewPolynomial(v, DECIMAL(-0.5), b, inverse);
 }
 
 /// A * B^T
@@ -114,34 +136,96 @@ static Mat6 Congruence(const Mat6 &a, const Mat6 &p) {
 AttitudeEKF::AttitudeEKF(decimal crossBoresightSigma, decimal rollSigma, decimal angularAccelerationSigma)
     : q(DECIMAL(1.0), 0, 0, 0), w(0, 0, 0), P{},
       R{rollSigma * rollSigma, crossBoresightSigma * crossBoresightSigma, crossBoresightSigma * crossBoresightSigma},
-      accelerationVariance(angularAccelerationSigma * angularAccelerationSigma) { }
+      accelerationVariance(angularAccelerationSigma * angularAccelerationSigma),
+      // Written so that NaN is refused too. The squares are checked as well, in case a sigma is
+      // so small or so large that its square is not representable.
+      settingsValid(crossBoresightSigma > 0 && rollSigma > 0 && angularAccelerationSigma >= 0
+                    && R[0] > 0 && std::isfinite(R[0]) && R[1] > 0 && std::isfinite(R[1])
+                    && std::isfinite(accelerationVariance)),
+      initialized(false) { }
+
+/// The largest turn between the two fixes given to Reset, in radians. A rate taken from two fixes
+/// cannot show more than half a turn; the margin allows for rounding.
+static const decimal kMaxResetTurn = DECIMAL_M_PI * DECIMAL(1.001);
 
 bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal baseline) {
-    // refuse non-finite values
-    if (!attitude.IsUnit(kUnitTolerance) || !IsFinite(rate) || !(baseline > 0)) {
+    // !(x > 0), not x <= 0, so that NaN is refused too
+    if (!settingsValid || !attitude.IsUnit(kUnitTolerance) || !IsFinite(rate)
+        || !(baseline > 0) || !std::isfinite(baseline)) {
         return false;
     }
-    // The attitude is the newer of two readings and the rate is their difference over the baseline.
-    // With independent fix errors of variance R per axis, that gives:
-    //   attitude variance R, attitude-rate covariance R / baseline, rate variance 2R / baseline^2.
+    const Vec3 turn = rate * baseline;
+    if (!(turn.Magnitude() <= kMaxResetTurn)) {
+        return false;
+    }
+
+    // The attitude is the newer of two fixes and the rate is Log(newer * older^-1) / baseline.
+    // Call the fix errors e1 (newer) and e0 (older): independent, each with covariance R. To first
+    // order the attitude error is e1 and the rate error is J^-1 * (e1 - D * e0) / baseline, where
+    // D is the rotation of the turn between the fixes and J the left Jacobian at that turn. So:
+    //   attitude covariance R,
+    //   attitude-rate covariance R * J^-T / baseline,
+    //   rate covariance J^-1 * (R + D * R * D^T) * J^-T / baseline^2.
+    // With no turn, D and J are the identity and these are R, R / baseline and 2R / baseline^2.
+    decimal scaled[3][3];  // J^-1 / baseline
+    LeftJacobianInverse(turn, scaled);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) scaled[i][j] /= baseline;
+    }
+    const Quaternion turnRotation = RotationVectorToQuaternion(turn);
+    const Vec3 basis[3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    decimal d[3][3];
+    for (int j = 0; j < 3; j++) {
+        const Vec3 column = turnRotation.Rotate(basis[j]);
+        d[0][j] = column.x;
+        d[1][j] = column.y;
+        d[2][j] = column.z;
+    }
+    decimal both[3][3];  // R + D * R * D^T
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            both[i][j] = i == j ? R[i] : 0;
+            for (int k = 0; k < 3; k++) both[i][j] += d[i][k] * R[k] * d[j][k];
+        }
+    }
+
     Mat6 covariance{};
     for (int i = 0; i < 3; i++) {
         covariance[i][i] = R[i];
-        covariance[i][i + 3] = covariance[i + 3][i] = R[i] / baseline;
-        covariance[i + 3][i + 3] = 2 * R[i] / (baseline * baseline);
+        for (int j = 0; j < 3; j++) {
+            covariance[i][j + 3] = covariance[j + 3][i] = R[i] * scaled[j][i];
+            decimal sum = 0;
+            for (int k = 0; k < 3; k++) {
+                for (int l = 0; l < 3; l++) sum += scaled[i][k] * both[k][l] * scaled[j][l];
+            }
+            covariance[i + 3][j + 3] = sum;
+        }
     }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < i; j++) {
+            const decimal mean = (covariance[i + 3][j + 3] + covariance[j + 3][i + 3]) / 2;
+            covariance[i + 3][j + 3] = covariance[j + 3][i + 3] = mean;
+        }
+        // A baseline so long that the rate variance underflows would leave a covariance that is
+        // not positive definite.
+        if (!(covariance[i + 3][i + 3] >= std::numeric_limits<decimal>::min())) {
+            return false;
+        }
+    }
+    // a baseline so short that the covariance overflows
     if (!IsFinite(covariance)) {
         return false;
     }
     q = Normalized(attitude);
     w = rate;
     P = covariance;
+    initialized = true;
     return true;
 }
 
 bool AttitudeEKF::Predict(decimal dt) {
-    // refuse a negative or non-finite step
-    if (!(dt >= 0) || !std::isfinite(dt)) {
+    // refuse a filter that was never started, and a negative or non-finite step
+    if (!initialized || !(dt >= 0) || !std::isfinite(dt)) {
         return false;
     }
     // State: q <- Exp(w * dt) * q. The rate stays as it is.
@@ -150,9 +234,10 @@ bool AttitudeEKF::Predict(decimal dt) {
 
     // Transition matrix phi of the error, ordered attitude then rate:
     //   attitude block: the step's rotation matrix. The attitude error rotates with the step,
-    //     Exp(step(theta)) * step = step * Exp(theta).
+    //     Exp(step(theta)) * step = step * Exp(theta), exactly.
     //   rate-to-attitude block: dt * J, with J the left Jacobian at w * dt. A rate error
-    //     integrates into attitude error, Exp((w + dw) * dt) = Exp(J * dw * dt) * step.
+    //     integrates into attitude error: to first order in dw,
+    //     Exp((w + dw) * dt) = Exp(J * dw * dt) * step.
     //   rate block: the identity.
     decimal jacobian[3][3];
     LeftJacobian(w * dt, jacobian);
@@ -171,15 +256,23 @@ bool AttitudeEKF::Predict(decimal dt) {
     // P <- phi * P * phi^T
     Mat6 covariance = Congruence(phi, P);
 
-    // Process noise of white angular acceleration over dt, to first order in the step's angle.
-    // Each term is times accelerationVariance:
-    //   attitude variance dt^3 / 3, attitude-rate covariance dt^2 / 2, rate variance dt.
-    decimal dt2 = dt * dt;
+    // Process noise of white angular acceleration with spectral density s = accelerationVariance,
+    // integrated through the same dynamics over dt:
+    //   attitude block s * dt^3 / 3 * I, rate block s * dt * I,
+    //   attitude-rate block s * (dt^2 / 2 * I + dt^3 / 6 * [w]x), and its transpose.
+    // Terms of second order in the step's angle are left out. They are less than angle^2 / 12 of
+    // each block: 0.03% for a 3.5 degree step.
+    const decimal dt2 = dt * dt;
+    const decimal skew[3][3] = {{0, -w.z, w.y}, {w.z, 0, -w.x}, {-w.y, w.x, 0}};
     for (int i = 0; i < 3; i++) {
         covariance[i][i] += accelerationVariance * dt2 * dt / 3;
         covariance[i][i + 3] += accelerationVariance * dt2 / 2;
         covariance[i + 3][i] += accelerationVariance * dt2 / 2;
         covariance[i + 3][i + 3] += accelerationVariance * dt;
+        for (int j = 0; j < 3; j++) {
+            covariance[i][j + 3] += accelerationVariance * dt2 * dt / 6 * skew[i][j];
+            covariance[j + 3][i] += accelerationVariance * dt2 * dt / 6 * skew[i][j];
+        }
     }
 
     // overflow; keep the last good state
@@ -192,8 +285,8 @@ bool AttitudeEKF::Predict(decimal dt) {
 }
 
 bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
-    // refuse a measurement that is not a rotation (or not finite)
-    if (!measured.IsUnit(kUnitTolerance)) {
+    // refuse a filter that was never started, and a measurement that is not a rotation (or not finite)
+    if (!initialized || !measured.IsUnit(kUnitTolerance)) {
         return false;
     }
     // Innovation: Log(measured * q^-1), the rotation from the predicted attitude to the measured one.
@@ -270,7 +363,8 @@ bool AttitudeEKF::Update(const Quaternion &measured, decimal gate) {
 
     // That covariance is of the error about the old attitude. Re-express it about the corrected
     // one: P <- G * P * G^T with G = diag(J, I), J the left Jacobian at the attitude correction,
-    // since Exp(correction + e) = Exp(J * e) * Exp(correction). The rate error is unaffected.
+    // since to first order in e, Exp(correction + e) = Exp(J * e) * Exp(correction). The rate
+    // error is unaffected.
     decimal jacobian[3][3];
     LeftJacobian({correction[0], correction[1], correction[2]}, jacobian);
     Mat6 recenter{};
