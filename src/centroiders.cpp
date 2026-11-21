@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cstdint>
 #include <cmath>
-#include <cstdint>
 #include <vector>
 #include <unordered_set>
 
@@ -365,8 +364,6 @@ Stars IterativeWeightedCenterOfGravityAlgorithm::Go(unsigned char *image, int im
 
 // WINDOWED CENTER OF GRAVITY
 
-namespace {
-
 struct WindowedMatch {
     int prediction;
     int xMin, xMax, yMin, yMax;  ///< bounding box of the star's pixels
@@ -375,12 +372,12 @@ struct WindowedMatch {
 };
 
 /// The threshold is at least this many gray levels above the background, even in a noiseless image.
-const int kMinThresholdAboveBackground = 3;
+static const int kMinThresholdAboveBackground = 3;
 /// The threshold is this many noise standard deviations above the background.
-const int kThresholdSigmas = 5;
+static const int kThresholdSigmas = 5;
 
 /// Median and median absolute deviation of the gray levels in a histogram holding `count` pixels.
-void HistogramMedianAndMad(const int histogram[256], int count, int *median, int *mad) {
+static void HistogramMedianAndMad(const int histogram[256], int count, int *median, int *mad) {
     int below = 0;
     *median = 0;
     while (below + histogram[*median] <= count / 2) {
@@ -395,8 +392,6 @@ void HistogramMedianAndMad(const int histogram[256], int count, int *median, int
         if (*median + *mad < 256) within += histogram[*median + *mad];
     }
 }
-
-}  // namespace
 
 Stars WindowedCenterOfGravity::Go(const unsigned char *image, int imageWidth, int imageHeight,
                                   const std::vector<Vec2> &predictions,
