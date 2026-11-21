@@ -234,19 +234,28 @@ bool AttitudeEKF::Reset(const Quaternion &attitude, const Vec3 &rate, decimal ba
     }
 
     // Attitude = the newer fix. Rate = Log(newer * older^-1) / baseline.
-    // Fix errors e1 (newer) and e0 (older) are independent with covariance R. To first order the
-    // attitude error is e1 and the rate error is J^-1 * (e1 - D * e0 + a) / baseline.
-    // D = rotation of the turn between the fixes, J = left Jacobian at that turn. So:
-    //   attitude covariance R,
-    //   attitude-rate covariance R * J^-T / baseline,
-    //   rate covariance J^-1 * (R + D * R * D^T + A) * J^-T / baseline^2.
-    // No turn: R, R / baseline, (2R + A) / baseline^2.
+    // The rate is uncertain for two reasons:
+    //   1. Both fixes are noisy: errors e1 (newer) and e0 (older), independent, covariance R.
+    //   2. The rate may have changed between the fixes. They give the average rate, but it is
+    //      used as the rate at the newer fix. Call the difference a, with covariance A.
     //
-    // a, with covariance A: the fixes give the average rate, used as the rate at the newer fix.
-    // Acceleration in between makes them differ. An impulse at time v after the older fix shifts
-    // the turn by C(v) = B(baseline) - B(baseline - v) times the impulse. For spectral density s,
-    // A = s * integral of C * C^T for v from 0 to baseline, by quadrature.
-    // No turn: A = s * baseline^3 / 3, so the rate variance gains s * baseline / 3.
+    // To first order the attitude error is e1 and the rate error is
+    //   J^-1 * (e1 - D * e0 + a) / baseline,
+    // with D = rotation of the turn between the fixes and J = left Jacobian at that turn. So:
+    //   attitude covariance       R
+    //   attitude-rate covariance  R * J^-T / baseline
+    //   rate covariance           J^-1 * (R + D * R * D^T + A) * J^-T / baseline^2
+    //
+    // Finding A. Take one small impulse of acceleration at time v after the older fix. Before it
+    // the rate differed from the final rate by that impulse, for a time v. So the turn over the
+    // baseline is not what the final rate implies. The gap is C(v) * impulse, with
+    //   C(v) = B(baseline) - B(baseline - v)      (just v when there is no turn).
+    // That gap is the impulse's share of a. White acceleration of spectral density s is a stream
+    // of independent impulses, so their shares add up:
+    //   A = s * integral of C * C^T for v from 0 to baseline, by quadrature.
+    //
+    // Check with no turn (D = J = I): R, R / baseline, (2R + A) / baseline^2, and
+    // A = s * baseline^3 / 3, so the rate variance gains s * baseline / 3.
     decimal scaled[3][3];  // J^-1 / baseline
     LeftJacobianInverse(turn, scaled);
     for (int i = 0; i < 3; i++) {
